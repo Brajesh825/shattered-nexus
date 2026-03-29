@@ -812,18 +812,37 @@ function advanceTurn() {
 /* ============================================================
    VISUAL EFFECTS
    ============================================================ */
-function createEffectOverlay(targetIdx, element, targetType = 'enemy') {
+function createEffectOverlay(targetIdx, element, targetType = 'enemy', abilityId = null) {
   if (targetIdx === undefined || targetIdx === null) return;
 
   const overlay = document.createElement('div');
-  overlay.className = `effect-overlay element-${element}`;
 
-  // Determine animation duration based on element
+  // Map of ultimate abilities to their CSS classes
+  const ultimateClasses = {
+    'cryoclasm': 'cryoclasm-blades',
+    'guide_to_afterlife': 'guide-to-afterlife-ultimate',
+    'hajras_hymn': 'hajras-hymn-ultimate',
+    'mastery_of_pain': 'mastery-of-pain-ultimate'
+  };
+
+  const isUltimate = ultimateClasses.hasOwnProperty(abilityId);
+
+  if (isUltimate) {
+    overlay.className = `effect-overlay ${ultimateClasses[abilityId]}`;
+  } else {
+    overlay.className = `effect-overlay element-${element}`;
+  }
+
+  // Determine animation duration based on element or ability
   const durations = {
     'ice': 600, 'fire': 650, 'wind': 600, 'electric': 500,
-    'water': 600, 'light': 700, 'dark': 650, 'physical': 500
+    'water': 600, 'light': 700, 'dark': 650, 'physical': 500,
+    'cryoclasm': 3000,
+    'guide_to_afterlife': 3000,
+    'hajras_hymn': 3000,
+    'mastery_of_pain': 3000
   };
-  const duration = durations[element] || 600;
+  const duration = durations[abilityId] || durations[element] || 600;
 
   // Position overlay on target sprite (enemy right side or party left side)
   const sprId = targetType === 'enemy' ? `espr-${targetIdx}` : `pspr-${targetIdx}`;
@@ -831,8 +850,11 @@ function createEffectOverlay(targetIdx, element, targetType = 'enemy') {
   if (spr) {
     const rect = spr.getBoundingClientRect();
     const sceneRect = document.getElementById('battle-scene').getBoundingClientRect();
-    overlay.style.left = (rect.left - sceneRect.left + 8) + 'px';
-    overlay.style.top = (rect.top - sceneRect.top - 10) + 'px';
+    // Adjust positioning for signature move (larger size)
+    const offset = abilityId === 'cryoclasm' ? 0 : 8;
+    const topOffset = abilityId === 'cryoclasm' ? -30 : -10;
+    overlay.style.left = (rect.left - sceneRect.left + offset) + 'px';
+    overlay.style.top = (rect.top - sceneRect.top + topOffset) + 'px';
   }
 
   document.getElementById('battle-scene').appendChild(overlay);
@@ -924,7 +946,7 @@ function heroAbility(ab) {
       enemy.hp  = Math.max(0, enemy.hp - dmg);
       if (enemy.hp <= 0) enemy.isKO = true;
       UI.popEnemy(G.targetEnemyIdx, dmg, 'dmg', element);
-      createEffectOverlay(G.targetEnemyIdx, element, 'enemy');
+      createEffectOverlay(G.targetEnemyIdx, element, 'enemy', ab.id);
       const enemySpr = document.getElementById('espr-' + G.targetEnemyIdx);
       if (enemySpr) {
         enemySpr.classList.add('sprite-damage-flash');
@@ -935,19 +957,56 @@ function heroAbility(ab) {
 
     } else if (ab.type === 'magic_damage') {
       if (typeof SFX !== 'undefined') SFX.magic();
-      const passiveBonus = actor.passive?.id === 'arcane_surge' ? 1.15 : 1.0;
-      const dmg = Battle.magicDmg(actor.mag, e.dmgMultiplier || 1.5, passiveBonus, actor.lv || 1);
-      enemy.hp  = Math.max(0, enemy.hp - dmg);
-      if (enemy.hp <= 0) enemy.isKO = true;
-      UI.popEnemy(G.targetEnemyIdx, dmg, 'magic', element);
-      createEffectOverlay(G.targetEnemyIdx, element, 'enemy');
-      const enemySpr = document.getElementById('espr-' + G.targetEnemyIdx);
-      if (enemySpr) {
-        enemySpr.classList.add('sprite-damage-flash');
-        setTimeout(() => enemySpr.classList.remove('sprite-damage-flash'), 200);
+
+      // Map of ultimate abilities to their channel messages
+      const ultimateMessages = {
+        'cryoclasm': 'channels ice blades...',
+        'guide_to_afterlife': 'channels soul fire...',
+        'hajras_hymn': 'channels star blessing...',
+        'mastery_of_pain': 'channels karmic winds...'
+      };
+
+      // Special handling for all ultimates: delay damage until animation completes
+      const isUltimate = ultimateMessages.hasOwnProperty(ab.id);
+
+      if (isUltimate) {
+        // Show animation overlay only
+        createEffectOverlay(G.targetEnemyIdx, element, 'enemy', ab.id);
+        UI.addLog(`${actor.displayName} ${ultimateMessages[ab.id]}`, 'magic');
+
+        // Wait for 3000ms (animation duration) then apply damage
+        setTimeout(() => {
+          const passiveBonus = actor.passive?.id === 'arcane_surge' ? 1.15 : 1.0;
+          const dmg = Battle.magicDmg(actor.mag, e.dmgMultiplier || 1.5, passiveBonus, actor.lv || 1);
+          enemy.hp  = Math.max(0, enemy.hp - dmg);
+          if (enemy.hp <= 0) enemy.isKO = true;
+          UI.popEnemy(G.targetEnemyIdx, dmg, 'magic', element);
+          const enemySpr = document.getElementById('espr-' + G.targetEnemyIdx);
+          if (enemySpr) {
+            enemySpr.classList.add('sprite-damage-flash');
+            setTimeout(() => enemySpr.classList.remove('sprite-damage-flash'), 200);
+          }
+          shakeEnemy(G.targetEnemyIdx);
+          UI.addLog(`${enemy.name} took ${dmg} magic damage!`, 'magic');
+          UI.renderEnemyRow(); UI.renderPartyStatus();
+          setTimeout(advanceTurn, 750);
+        }, 3000);
+      } else {
+        // Normal magic damage: calculate immediately
+        const passiveBonus = actor.passive?.id === 'arcane_surge' ? 1.15 : 1.0;
+        const dmg = Battle.magicDmg(actor.mag, e.dmgMultiplier || 1.5, passiveBonus, actor.lv || 1);
+        enemy.hp  = Math.max(0, enemy.hp - dmg);
+        if (enemy.hp <= 0) enemy.isKO = true;
+        UI.popEnemy(G.targetEnemyIdx, dmg, 'magic', element);
+        createEffectOverlay(G.targetEnemyIdx, element, 'enemy', ab.id);
+        const enemySpr = document.getElementById('espr-' + G.targetEnemyIdx);
+        if (enemySpr) {
+          enemySpr.classList.add('sprite-damage-flash');
+          setTimeout(() => enemySpr.classList.remove('sprite-damage-flash'), 200);
+        }
+        shakeEnemy(G.targetEnemyIdx);
+        UI.addLog(`${enemy.name} took ${dmg} magic damage!`, 'magic');
       }
-      shakeEnemy(G.targetEnemyIdx);
-      UI.addLog(`${enemy.name} took ${dmg} magic damage!`, 'magic');
 
     } else if (ab.type === 'heal') {
       if (typeof SFX !== 'undefined') SFX.heal();
@@ -1002,6 +1061,12 @@ function heroAbility(ab) {
       UI.addLog('Could not escape!', 'dmg');
       UI.renderEnemyRow(); UI.renderPartyStatus();
       setTimeout(advanceTurn, 800);
+      return;
+    }
+
+    // Skip normal render/turn for all ultimates (handled in special timing)
+    const ultimateIds = ['cryoclasm', 'guide_to_afterlife', 'hajras_hymn', 'mastery_of_pain'];
+    if (ab.type === 'magic_damage' && ultimateIds.includes(ab.id)) {
       return;
     }
 

@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Xiao Tornado Animation Options</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #0a0e27;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      padding: 40px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 40px;
+      color: #a8d8a8;
+    }
+
+    .demo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 40px;
+      margin-bottom: 60px;
+    }
+
+    .demo-card {
+      background: #1a1f3a;
+      border: 2px solid #2a4030;
+      padding: 30px;
+      border-radius: 10px;
+    }
+
+    .demo-card h2 {
+      color: #7ddc5f;
+      margin-bottom: 20px;
+      font-size: 18px;
+    }
+
+    .demo-card p {
+      font-size: 14px;
+      color: #aaa;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .demo-canvas {
+      background: #0a0e27;
+      border: 1px solid #333;
+      height: 300px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      border-radius: 5px;
+    }
+
+    /* ===== OPTION 1: Classic Cone Tornado ===== */
+    @keyframes tornado-cone {
+      0% {
+        transform: translateX(-100px) scaleY(0.5) rotate(0deg);
+        opacity: 0;
+      }
+      15% {
+        opacity: 1;
+      }
+      50% {
+        transform: translateX(20px) scaleY(1.2) rotate(1080deg);
+        opacity: 1;
+      }
+      85% {
+        opacity: 0.9;
+      }
+      100% {
+        transform: translateX(120px) scaleY(0.6) rotate(2160deg);
+        opacity: 0;
+      }
+    }
+
+    .tornado-cone {
+      width: 80px;
+      height: 120px;
+      background: linear-gradient(135deg, transparent 0%, #7ddc5f 25%, transparent 50%);
+      border-radius: 50% 50% 30% 30%;
+      clip-path: polygon(50% 0%, 100% 30%, 100% 100%, 0% 100%, 0% 30%);
+      box-shadow:
+        inset -10px 0 30px rgba(125, 220, 95, 0.5),
+        0 0 30px #7ddc5f;
+      animation: tornado-cone 3s ease-in-out forwards;
+    }
+
+    /* ===== OPTION 2: Spiral Helix ===== */
+    @keyframes tornado-spiral {
+      0% {
+        transform: translateX(-100px) scale(0.3) rotate(0deg) translateY(0);
+        opacity: 0;
+      }
+      15% {
+        opacity: 1;
+      }
+      25% {
+        transform: translateX(-40px) scale(0.6) rotate(360deg) translateY(20px);
+      }
+      50% {
+        transform: translateX(20px) scale(1) rotate(1080deg) translateY(0);
+        opacity: 1;
+      }
+      75% {
+        transform: translateX(60px) scale(0.7) rotate(1800deg) translateY(-20px);
+      }
+      100% {
+        transform: translateX(120px) scale(0.2) rotate(2520deg) translateY(0);
+        opacity: 0;
+      }
+    }
+
+    .tornado-spiral {
+      width: 90px;
+      height: 140px;
+      background: conic-gradient(from 0deg,
+        #a8d8a8 0%,
+        #7ddc5f 25%,
+        #5dae7d 50%,
+        #7ddc5f 75%,
+        #a8d8a8 100%);
+      border-radius: 50% 50% 40% 40%;
+      clip-path: polygon(
+        50% 0%, 60% 5%, 70% 8%, 75% 15%, 80% 25%, 85% 40%, 88% 60%, 85% 75%, 75% 85%,
+        50% 100%,
+        25% 85%, 15% 75%, 12% 60%, 15% 40%, 20% 25%, 25% 15%, 30% 8%, 40% 5%
+      );
+      box-shadow:
+        inset 0 10px 30px rgba(125, 220, 95, 0.4),
+        0 0 40px rgba(125, 220, 95, 0.8);
+      animation: tornado-spiral 3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    /* ===== OPTION 3: Twisted Vortex ===== */
+    @keyframes tornado-twisted {
+      0% {
+        transform: translateX(-100px) scale(0.2) rotateZ(0deg) rotateX(45deg);
+        opacity: 0;
+      }
+      15% {
+        opacity: 1;
+      }
+      50% {
+        transform: translateX(20px) scale(1.1) rotateZ(1080deg) rotateX(20deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(120px) scale(0.3) rotateZ(2160deg) rotateX(45deg);
+        opacity: 0;
+      }
+    }
+
+    .tornado-twisted {
+      width: 100px;
+      height: 140px;
+      background: linear-gradient(90deg,
+        transparent 0%,
+        #7ddc5f 20%,
+        #a8d8a8 40%,
+        #7ddc5f 60%,
+        transparent 80%
+      );
+      border-radius: 50%;
+      box-shadow:
+        0 0 10px #5dae7d,
+        inset 0 0 20px rgba(125, 220, 95, 0.6),
+        0 0 30px #7ddc5f,
+        0 0 50px rgba(168, 216, 168, 0.5);
+      animation: tornado-twisted 3s ease-out forwards;
+    }
+
+    /* ===== OPTION 4: Wind Column with Stripes ===== */
+    @keyframes tornado-column {
+      0% {
+        transform: translateX(-100px) scaleX(0.2) scaleY(0.4) rotate(0deg);
+        opacity: 0;
+      }
+      15% {
+        opacity: 1;
+      }
+      50% {
+        transform: translateX(20px) scaleX(1) scaleY(1.3) rotate(1080deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(120px) scaleX(0.3) scaleY(0.5) rotate(2160deg);
+        opacity: 0;
+      }
+    }
+
+    .tornado-column {
+      width: 70px;
+      height: 150px;
+      background: repeating-linear-gradient(
+        45deg,
+        #7ddc5f 0px,
+        #7ddc5f 5px,
+        #a8d8a8 5px,
+        #a8d8a8 10px,
+        #5dae7d 10px,
+        #5dae7d 15px
+      );
+      border-radius: 50% 50% 45% 45%;
+      box-shadow:
+        inset -15px 0 30px rgba(0, 0, 0, 0.4),
+        0 0 25px #7ddc5f,
+        0 0 40px rgba(125, 220, 95, 0.6);
+      animation: tornado-column 3s ease-in-out forwards;
+    }
+
+    /* ===== OPTION 5: Swirling Wind Ball ===== */
+    @keyframes tornado-swirl {
+      0% {
+        transform: translateX(-100px) scale(0.1) rotate(0deg);
+        opacity: 0;
+        filter: blur(0);
+      }
+      15% {
+        opacity: 1;
+      }
+      50% {
+        transform: translateX(20px) scale(1.2) rotate(1080deg);
+        opacity: 1;
+        filter: blur(1px);
+      }
+      100% {
+        transform: translateX(120px) scale(0.2) rotate(2160deg);
+        opacity: 0;
+        filter: blur(2px);
+      }
+    }
+
+    .tornado-swirl {
+      width: 110px;
+      height: 110px;
+      background: radial-gradient(circle at 30% 30%,
+        #fff 0%,
+        #a8d8a8 25%,
+        #7ddc5f 50%,
+        #5dae7d 75%,
+        transparent 100%
+      );
+      border-radius: 50%;
+      box-shadow:
+        0 -50px 20px -20px #7ddc5f,
+        0 50px 20px -20px #5dae7d,
+        -50px 0 20px -20px #a8d8a8,
+        50px 0 20px -20px #a8d8a8,
+        inset 0 0 40px rgba(125, 220, 95, 0.3),
+        0 0 40px #7ddc5f;
+      animation: tornado-swirl 3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    }
+
+    /* ===== OPTION 6: Sharp Pointed Tornado ===== */
+    @keyframes tornado-sharp {
+      0% {
+        transform: translateX(-100px) scale(0.15) rotate(0deg);
+        opacity: 0;
+      }
+      15% {
+        opacity: 1;
+      }
+      50% {
+        transform: translateX(20px) scale(1) rotate(1080deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(120px) scale(0.25) rotate(2160deg);
+        opacity: 0;
+      }
+    }
+
+    .tornado-sharp {
+      width: 80px;
+      height: 150px;
+      background: linear-gradient(180deg,
+        #a8d8a8 0%,
+        #7ddc5f 15%,
+        #5dae7d 50%,
+        #7ddc5f 85%,
+        transparent 100%
+      );
+      clip-path: polygon(
+        50% 0%,
+        60% 8%, 70% 12%, 80% 20%, 85% 35%, 88% 50%, 90% 70%, 85% 85%, 70% 95%,
+        50% 100%,
+        30% 95%, 15% 85%, 10% 70%, 12% 50%, 15% 35%, 20% 20%, 30% 12%, 40% 8%
+      );
+      box-shadow:
+        inset -10px 30px 40px rgba(0, 0, 0, 0.3),
+        0 0 30px #7ddc5f,
+        0 0 50px rgba(125, 220, 95, 0.7);
+      animation: tornado-sharp 3s ease-in-out forwards;
+    }
+
+    .option-label {
+      margin-top: 15px;
+      padding: 10px;
+      background: #0a0e27;
+      border-left: 3px solid #7ddc5f;
+      font-size: 12px;
+      color: #aaa;
+    }
+
+    .choice-button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      background: #7ddc5f;
+      color: #0a0e27;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      width: 100%;
+    }
+
+    .choice-button:hover {
+      background: #a8d8a8;
+    }
+
+    /* ===== OPTION 7: Horizontal 3D Spinning Tornado ===== */
+    @keyframes tornado-3d-spin {
+      0% {
+        transform: translateX(-100px) scale(0.3) rotateY(0deg) rotateX(0deg);
+        opacity: 0;
+      }
+      15% {
+        opacity: 1;
+      }
+      50% {
+        transform: translateX(20px) scale(1.1) rotateY(1080deg) rotateX(180deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(120px) scale(0.3) rotateY(2160deg) rotateX(360deg);
+        opacity: 0;
+      }
+    }
+
+    .tornado-3d-spin {
+      width: 100px;
+      height: 100px;
+      background: conic-gradient(from 0deg,
+        #7ddc5f 0%,
+        #a8d8a8 20%,
+        #5dae7d 40%,
+        #7ddc5f 60%,
+        #a8d8a8 80%,
+        #7ddc5f 100%);
+      border-radius: 50%;
+      box-shadow:
+        inset 0 0 30px rgba(125, 220, 95, 0.5),
+        0 0 35px #7ddc5f,
+        0 0 60px rgba(125, 220, 95, 0.7);
+      animation: tornado-3d-spin 3s ease-in-out forwards;
+      transform-style: preserve-3d;
+    }
+
+    /* ===== OPTION 8: Double Helix Spiral ===== */
+    @keyframes tornado-double-helix {
+      0% {
+        transform: translateX(-100px) scale(0.2) rotate(0deg);
+        opacity: 0;
+      }
+      15% {
+        opacity: 1;
+      }
+      50% {
+        transform: translateX(20px) scale(1) rotate(1080deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(120px) scale(0.3) rotate(2160deg);
+        opacity: 0;
+      }
+    }
+
+    .tornado-double-helix {
+      width: 95px;
+      height: 130px;
+      background: repeating-linear-gradient(
+        45deg,
+        #7ddc5f 0px,
+        #7ddc5f 8px,
+        transparent 8px,
+        transparent 16px,
+        #a8d8a8 16px,
+        #a8d8a8 24px,
+        transparent 24px,
+        transparent 32px
+      );
+      border-radius: 50% 50% 35% 35%;
+      box-shadow:
+        inset 0 0 25px rgba(125, 220, 95, 0.6),
+        0 0 30px #7ddc5f,
+        0 0 50px rgba(125, 220, 95, 0.8);
+      animation: tornado-double-helix 3s ease-in-out forwards;
+    }
+
+    /* ===== OPTION 9: Diamond Rotating Tornado ===== */
+    @keyframes tornado-diamond {
+      0% {
+        transform: translateX(-100px) scale(0.2) rotate(0deg) rotateZ(45deg);
+        opacity: 0;
+      }
+      15% {
+        opacity: 1;
+      }
+      50% {
+        transform: translateX(20px) scale(1) rotate(1080deg) rotateZ(45deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(120px) scale(0.3) rotate(2160deg) rotateZ(45deg);
+        opacity: 0;
+      }
+    }
+
+    .tornado-diamond {
+      width: 90px;
+      height: 130px;
+      background: linear-gradient(45deg, transparent 40%, #7ddc5f 40%, #7ddc5f 60%, transparent 60%);
+      box-shadow:
+        0 0 30px #7ddc5f,
+        inset 0 0 20px rgba(125, 220, 95, 0.5),
+        0 0 50px rgba(125, 220, 95, 0.7);
+      animation: tornado-diamond 3s ease-in-out forwards;
+      clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+    }
+
+    /* ===== OPTION 10: Ribbon Spiral Tornado ===== */
+    @keyframes tornado-ribbon {
+      0% {
+        transform: translateX(-100px) scale(0.25) rotate(0deg) skewY(0deg);
+        opacity: 0;
+      }
+      15% {
+        opacity: 1;
+      }
+      50% {
+        transform: translateX(20px) scale(1) rotate(1080deg) skewY(5deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(120px) scale(0.3) rotate(2160deg) skewY(-5deg);
+        opacity: 0;
+      }
+    }
+
+    .tornado-ribbon {
+      width: 85px;
+      height: 140px;
+      background: linear-gradient(90deg,
+        transparent 0%,
+        #7ddc5f 15%,
+        #a8d8a8 30%,
+        transparent 45%,
+        transparent 55%,
+        #a8d8a8 70%,
+        #7ddc5f 85%,
+        transparent 100%
+      );
+      border-radius: 50%;
+      box-shadow:
+        0 0 25px #7ddc5f,
+        inset 0 10px 20px rgba(125, 220, 95, 0.4),
+        0 0 40px rgba(125, 220, 95, 0.6);
+      animation: tornado-ribbon 3s ease-in-out forwards;
+    }
+
+    /* ===== OPTION 11: Sphere Compress Tornado ===== */
+    @keyframes tornado-compress {
+      0% {
+        transform: translateX(-100px) scale(0.15) rotate(0deg);
+        opacity: 0;
+      }
+      15% {
+        opacity: 1;
+      }
+      25% {
+        transform: translateX(-40px) scale(0.7) rotate(180deg);
+      }
+      50% {
+        transform: translateX(20px) scale(1.3) rotate(1080deg);
+        opacity: 1;
+      }
+      75% {
+        transform: translateX(70px) scale(0.8) rotate(1800deg);
+      }
+      100% {
+        transform: translateX(120px) scale(0.2) rotate(2160deg);
+        opacity: 0;
+      }
+    }
+
+    .tornado-compress {
+      width: 110px;
+      height: 110px;
+      background: radial-gradient(circle at center,
+        #fff 0%,
+        #a8d8a8 20%,
+        #7ddc5f 45%,
+        #5dae7d 70%,
+        transparent 95%
+      );
+      border-radius: 50%;
+      box-shadow:
+        0 0 20px #7ddc5f,
+        inset 0 0 30px rgba(125, 220, 95, 0.5),
+        0 0 40px rgba(125, 220, 95, 0.8);
+      animation: tornado-compress 3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    /* ===== OPTION 12: 3D Spiral Vortex ===== */
+    @keyframes vortex-spiral-layer-1 {
+      0% {
+        transform: translateX(-100px) rotateZ(0deg) scale(1.2) translateY(0);
+        opacity: 0.3;
+      }
+      15% {
+        opacity: 0.7;
+      }
+      50% {
+        transform: translateX(20px) rotateZ(1080deg) scale(1) translateY(0);
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateX(120px) rotateZ(2160deg) scale(0.4) translateY(0);
+        opacity: 0;
+      }
+    }
+
+    @keyframes vortex-spiral-layer-2 {
+      0% {
+        transform: translateX(-100px) rotateZ(0deg) scale(1) translateY(10px);
+        opacity: 0.4;
+      }
+      15% {
+        opacity: 0.8;
+      }
+      50% {
+        transform: translateX(20px) rotateZ(1440deg) scale(0.8) translateY(0);
+        opacity: 0.9;
+      }
+      100% {
+        transform: translateX(120px) rotateZ(2880deg) scale(0.3) translateY(0);
+        opacity: 0;
+      }
+    }
+
+    @keyframes vortex-spiral-layer-3 {
+      0% {
+        transform: translateX(-100px) rotateZ(0deg) scale(0.8) translateY(-10px);
+        opacity: 0.5;
+      }
+      15% {
+        opacity: 0.9;
+      }
+      50% {
+        transform: translateX(20px) rotateZ(1800deg) scale(0.6) translateY(0);
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(120px) rotateZ(3600deg) scale(0.2) translateY(0);
+        opacity: 0;
+      }
+    }
+
+    @keyframes vortex-spiral-layer-4 {
+      0% {
+        transform: translateX(-100px) rotateZ(0deg) scale(0.6) translateY(5px);
+        opacity: 0.6;
+      }
+      15% {
+        opacity: 1;
+      }
+      50% {
+        transform: translateX(20px) rotateZ(2160deg) scale(0.4) translateY(0);
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(120px) rotateZ(4320deg) scale(0.1) translateY(0);
+        opacity: 0;
+      }
+    }
+
+    @keyframes vortex-spiral-core {
+      0% {
+        transform: translateX(-100px) scale(0.3);
+        opacity: 0;
+      }
+      15% {
+        opacity: 0.5;
+      }
+      50% {
+        transform: translateX(20px) scale(0.8);
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateX(120px) scale(0.2);
+        opacity: 0;
+      }
+    }
+
+    .vortex-3d-container {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      transform-style: preserve-3d;
+    }
+
+    .vortex-layer {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 3px solid;
+      top: 0;
+      left: 0;
+      transform-style: preserve-3d;
+    }
+
+    .vortex-layer-1 {
+      border-color: #7ddc5f;
+      box-shadow: inset 0 0 15px rgba(125, 220, 95, 0.4), 0 0 20px rgba(125, 220, 95, 0.6);
+      animation: vortex-spiral-layer-1 3s ease-in-out forwards;
+    }
+
+    .vortex-layer-2 {
+      border-color: #a8d8a8;
+      width: 80%;
+      height: 80%;
+      top: 10%;
+      left: 10%;
+      box-shadow: inset 0 0 15px rgba(168, 216, 168, 0.3), 0 0 20px rgba(168, 216, 168, 0.5);
+      animation: vortex-spiral-layer-2 3s ease-in-out forwards;
+    }
+
+    .vortex-layer-3 {
+      border-color: #5dae7d;
+      width: 60%;
+      height: 60%;
+      top: 20%;
+      left: 20%;
+      box-shadow: inset 0 0 15px rgba(93, 174, 125, 0.4), 0 0 20px rgba(93, 174, 125, 0.6);
+      animation: vortex-spiral-layer-3 3s ease-in-out forwards;
+    }
+
+    .vortex-layer-4 {
+      border-color: #7ddc5f;
+      width: 40%;
+      height: 40%;
+      top: 30%;
+      left: 30%;
+      box-shadow: inset 0 0 15px rgba(125, 220, 95, 0.5), 0 0 20px rgba(125, 220, 95, 0.7);
+      animation: vortex-spiral-layer-4 3s ease-in-out forwards;
+    }
+
+    .vortex-core {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      top: 40%;
+      left: 40%;
+      background: radial-gradient(circle, #fff, #a8d8a8, #7ddc5f);
+      box-shadow: 0 0 15px #7ddc5f, inset 0 0 10px rgba(255, 255, 255, 0.5);
+      animation: vortex-spiral-core 3s ease-in-out forwards;
+    }
+
+    /* ===== OPTION 13: Layered Cone Vortex ===== */
+    @keyframes cone-spiral-1 {
+      0% {
+        transform: translateX(-100px) scaleY(1.5) rotate(0deg) translateY(0);
+        opacity: 0.3;
+      }
+      15% {
+        opacity: 0.7;
+      }
+      50% {
+        transform: translateX(20px) scaleY(1.2) rotate(1080deg) translateY(-10px);
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateX(120px) scaleY(0.5) rotate(2160deg) translateY(10px);
+        opacity: 0;
+      }
+    }
+
+    @keyframes cone-spiral-2 {
+      0% {
+        transform: translateX(-100px) scaleY(1.3) rotate(0deg) translateY(5px);
+        opacity: 0.4;
+      }
+      15% {
+        opacity: 0.8;
+      }
+      50% {
+        transform: translateX(20px) scaleY(1) rotate(1440deg) translateY(0);
+        opacity: 0.9;
+      }
+      100% {
+        transform: translateX(120px) scaleY(0.4) rotate(2880deg) translateY(-5px);
+        opacity: 0;
+      }
+    }
+
+    @keyframes cone-spiral-3 {
+      0% {
+        transform: translateX(-100px) scaleY(1.1) rotate(0deg) translateY(-5px);
+        opacity: 0.5;
+      }
+      15% {
+        opacity: 0.9;
+      }
+      50% {
+        transform: translateX(20px) scaleY(0.9) rotate(1800deg) translateY(5px);
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(120px) scaleY(0.3) rotate(3600deg) translateY(0);
+        opacity: 0;
+      }
+    }
+
+    @keyframes cone-spiral-4 {
+      0% {
+        transform: translateX(-100px) scaleY(0.9) rotate(0deg) translateY(0);
+        opacity: 0.6;
+      }
+      15% {
+        opacity: 1;
+      }
+      50% {
+        transform: translateX(20px) scaleY(0.7) rotate(2160deg) translateY(-5px);
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(120px) scaleY(0.2) rotate(4320deg) translateY(5px);
+        opacity: 0;
+      }
+    }
+
+    @keyframes cone-center-spiral {
+      0% {
+        transform: translateX(-100px) scale(0.4);
+        opacity: 0;
+      }
+      15% {
+        opacity: 0.5;
+      }
+      50% {
+        transform: translateX(20px) scale(0.9);
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateX(120px) scale(0.2);
+        opacity: 0;
+      }
+    }
+
+    .layered-cone-container {
+      position: relative;
+      width: 110px;
+      height: 140px;
+      transform-style: preserve-3d;
+    }
+
+    .cone-layer {
+      position: absolute;
+      left: 0;
+      background: linear-gradient(180deg, #a8d8a8 0%, #7ddc5f 50%, #5dae7d 100%);
+      border-radius: 50% 50% 30% 30%;
+      box-shadow: inset -10px 20px 30px rgba(0, 0, 0, 0.3), 0 0 20px rgba(125, 220, 95, 0.6);
+      transform-style: preserve-3d;
+    }
+
+    .cone-1 {
+      width: 110px;
+      height: 140px;
+      top: 0;
+      animation: cone-spiral-1 3s ease-in-out forwards;
+    }
+
+    .cone-2 {
+      width: 85px;
+      height: 110px;
+      top: 15px;
+      left: 12.5px;
+      animation: cone-spiral-2 3s ease-in-out forwards;
+    }
+
+    .cone-3 {
+      width: 60px;
+      height: 80px;
+      top: 30px;
+      left: 25px;
+      animation: cone-spiral-3 3s ease-in-out forwards;
+    }
+
+    .cone-4 {
+      width: 35px;
+      height: 50px;
+      top: 45px;
+      left: 37.5px;
+      animation: cone-spiral-4 3s ease-in-out forwards;
+    }
+
+    .cone-center {
+      position: absolute;
+      width: 15px;
+      height: 25px;
+      top: 57.5px;
+      left: 47.5px;
+      background: radial-gradient(ellipse, #fff, #a8d8a8, #7ddc5f);
+      border-radius: 50%;
+      box-shadow: 0 0 15px #7ddc5f, inset 0 0 8px rgba(255, 255, 255, 0.6);
+      animation: cone-center-spiral 3s ease-in-out forwards;
+    }
+
+    /* ===== OPTION 14: Nested Rings Vortex ===== */
+    @keyframes ring-rotate-1 {
+      0% {
+        transform: translateX(-100px) rotateZ(0deg) rotateX(30deg);
+        opacity: 0.4;
+      }
+      15% {
+        opacity: 0.8;
+      }
+      50% {
+        transform: translateX(20px) rotateZ(720deg) rotateX(30deg);
+        opacity: 0.9;
+      }
+      100% {
+        transform: translateX(120px) rotateZ(1440deg) rotateX(30deg);
+        opacity: 0;
+      }
+    }
+
+    @keyframes ring-rotate-2 {
+      0% {
+        transform: translateX(-100px) rotateZ(0deg) rotateX(20deg);
+        opacity: 0.5;
+      }
+      15% {
+        opacity: 0.9;
+      }
+      50% {
+        transform: translateX(20px) rotateZ(900deg) rotateX(20deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(120px) rotateZ(1800deg) rotateX(20deg);
+        opacity: 0;
+      }
+    }
+
+    @keyframes ring-rotate-3 {
+      0% {
+        transform: translateX(-100px) rotateZ(0deg) rotateX(10deg);
+        opacity: 0.6;
+      }
+      15% {
+        opacity: 0.95;
+      }
+      50% {
+        transform: translateX(20px) rotateZ(1080deg) rotateX(10deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(120px) rotateZ(2160deg) rotateX(10deg);
+        opacity: 0;
+      }
+    }
+
+    @keyframes ring-rotate-4 {
+      0% {
+        transform: translateX(-100px) rotateZ(0deg) rotateX(0deg);
+        opacity: 0.7;
+      }
+      15% {
+        opacity: 1;
+      }
+      50% {
+        transform: translateX(20px) rotateZ(1260deg) rotateX(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(120px) rotateZ(2520deg) rotateX(0deg);
+        opacity: 0;
+      }
+    }
+
+    @keyframes ring-rotate-5 {
+      0% {
+        transform: translateX(-100px) rotateZ(0deg) rotateX(-10deg);
+        opacity: 0.8;
+      }
+      15% {
+        opacity: 1;
+      }
+      50% {
+        transform: translateX(20px) rotateZ(1440deg) rotateX(-10deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(120px) rotateZ(2880deg) rotateX(-10deg);
+        opacity: 0;
+      }
+    }
+
+    @keyframes ring-core-spin {
+      0% {
+        transform: translateX(-100px) scale(0.2);
+        opacity: 0;
+      }
+      15% {
+        opacity: 0.4;
+      }
+      50% {
+        transform: translateX(20px) scale(0.5);
+        opacity: 0.6;
+      }
+      100% {
+        transform: translateX(120px) scale(0.1);
+        opacity: 0;
+      }
+    }
+
+    .rings-container {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      transform-style: preserve-3d;
+      perspective: 1000px;
+    }
+
+    .ring {
+      position: absolute;
+      border: 2px solid;
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform-style: preserve-3d;
+    }
+
+    .ring-1 {
+      width: 120px;
+      height: 120px;
+      margin-top: -60px;
+      margin-left: -60px;
+      border-color: #7ddc5f;
+      box-shadow: 0 0 20px #7ddc5f;
+      animation: ring-rotate-1 3s ease-in-out forwards;
+    }
+
+    .ring-2 {
+      width: 95px;
+      height: 95px;
+      margin-top: -47.5px;
+      margin-left: -47.5px;
+      border-color: #a8d8a8;
+      box-shadow: 0 0 15px #a8d8a8;
+      animation: ring-rotate-2 3s ease-in-out forwards;
+    }
+
+    .ring-3 {
+      width: 70px;
+      height: 70px;
+      margin-top: -35px;
+      margin-left: -35px;
+      border-color: #7ddc5f;
+      box-shadow: 0 0 12px #7ddc5f;
+      animation: ring-rotate-3 3s ease-in-out forwards;
+    }
+
+    .ring-4 {
+      width: 45px;
+      height: 45px;
+      margin-top: -22.5px;
+      margin-left: -22.5px;
+      border-color: #5dae7d;
+      box-shadow: 0 0 10px #5dae7d;
+      animation: ring-rotate-4 3s ease-in-out forwards;
+    }
+
+    .ring-5 {
+      width: 20px;
+      height: 20px;
+      margin-top: -10px;
+      margin-left: -10px;
+      border-color: #a8d8a8;
+      box-shadow: 0 0 8px #a8d8a8;
+      animation: ring-rotate-5 3s ease-in-out forwards;
+    }
+
+    .ring-core {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      top: 50%;
+      left: 50%;
+      margin-top: -6px;
+      margin-left: -6px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fff, #a8d8a8);
+      box-shadow: 0 0 15px #7ddc5f;
+      animation: ring-core-spin 3s ease-in-out forwards;
+    }
+
+    /* ===== OPTION 15: Twisted Ribbon Vortex ===== */
+    @keyframes ribbon-twist-1 {
+      0% {
+        transform: translateX(-100px) rotateZ(0deg) skewY(0deg) scaleX(1) scaleY(0.5);
+        opacity: 0.3;
+      }
+      15% {
+        opacity: 0.7;
+      }
+      50% {
+        transform: translateX(20px) rotateZ(1080deg) skewY(30deg) scaleX(0.8) scaleY(1);
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateX(120px) rotateZ(2160deg) skewY(-30deg) scaleX(0.3) scaleY(0.2);
+        opacity: 0;
+      }
+    }
+
+    @keyframes ribbon-twist-2 {
+      0% {
+        transform: translateX(-100px) rotateZ(0deg) skewY(0deg) scaleX(0.9) scaleY(0.4);
+        opacity: 0.4;
+      }
+      15% {
+        opacity: 0.8;
+      }
+      50% {
+        transform: translateX(20px) rotateZ(1440deg) skewY(-30deg) scaleX(0.7) scaleY(0.9);
+        opacity: 0.9;
+      }
+      100% {
+        transform: translateX(120px) rotateZ(2880deg) skewY(30deg) scaleX(0.2) scaleY(0.1);
+        opacity: 0;
+      }
+    }
+
+    @keyframes ribbon-twist-3 {
+      0% {
+        transform: translateX(-100px) rotateZ(0deg) skewY(0deg) scaleX(0.8) scaleY(0.3);
+        opacity: 0.5;
+      }
+      15% {
+        opacity: 0.9;
+      }
+      50% {
+        transform: translateX(20px) rotateZ(1800deg) skewY(30deg) scaleX(0.6) scaleY(0.8);
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(120px) rotateZ(3600deg) skewY(-30deg) scaleX(0.1) scaleY(0);
+        opacity: 0;
+      }
+    }
+
+    @keyframes ribbon-twist-4 {
+      0% {
+        transform: translateX(-100px) rotateZ(0deg) skewY(0deg) scaleX(0.7) scaleY(0.2);
+        opacity: 0.6;
+      }
+      15% {
+        opacity: 1;
+      }
+      50% {
+        transform: translateX(20px) rotateZ(2160deg) skewY(-30deg) scaleX(0.5) scaleY(0.7);
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(120px) rotateZ(4320deg) skewY(30deg) scaleX(0) scaleY(0);
+        opacity: 0;
+      }
+    }
+
+    .ribbon-vortex-container {
+      position: relative;
+      width: 100px;
+      height: 140px;
+      transform-style: preserve-3d;
+    }
+
+    .ribbon {
+      position: absolute;
+      left: 0;
+      background: linear-gradient(90deg, transparent 10%, #7ddc5f 30%, #a8d8a8 50%, #7ddc5f 70%, transparent 90%);
+      border-radius: 50%;
+      height: 140px;
+      transform-style: preserve-3d;
+    }
+
+    .ribbon-1 {
+      width: 100px;
+      top: 0;
+      box-shadow: inset 0 10px 20px rgba(125, 220, 95, 0.4), 0 0 20px rgba(125, 220, 95, 0.5);
+      animation: ribbon-twist-1 3s ease-in-out forwards;
+    }
+
+    .ribbon-2 {
+      width: 80px;
+      top: 20px;
+      left: 10px;
+      box-shadow: inset 0 10px 20px rgba(168, 216, 168, 0.3), 0 0 15px rgba(168, 216, 168, 0.4);
+      animation: ribbon-twist-2 3s ease-in-out forwards;
+    }
+
+    .ribbon-3 {
+      width: 60px;
+      top: 40px;
+      left: 20px;
+      box-shadow: inset 0 10px 20px rgba(93, 174, 125, 0.3), 0 0 15px rgba(93, 174, 125, 0.5);
+      animation: ribbon-twist-3 3s ease-in-out forwards;
+    }
+
+    .ribbon-4 {
+      width: 40px;
+      top: 60px;
+      left: 30px;
+      box-shadow: inset 0 10px 20px rgba(125, 220, 95, 0.4), 0 0 12px rgba(125, 220, 95, 0.6);
+      animation: ribbon-twist-4 3s ease-in-out forwards;
+    }
+  </style>
+</head>
+<body>
+  <h1>⚡ Xiao's Mastery of Pain - Tornado Animation Options ⚡</h1>
+
+  <div class="demo-grid">
+    <!-- Option 1 -->
+    <div class="demo-card">
+      <h2>Option 1: Classic Cone Tornado</h2>
+      <p>Traditional funnel shape tornado. Simple, clean cone silhouette with soft gradient.</p>
+      <div class="demo-canvas">
+        <div class="tornado-cone"></div>
+      </div>
+      <div class="option-label">Smooth, tapered cone shape. Good for classic tornado feel.</div>
+      <button class="choice-button">Choose This</button>
+    </div>
+
+    <!-- Option 2 -->
+    <div class="demo-card">
+      <h2>Option 2: Spiral Helix</h2>
+      <p>Conic gradient tornado with jagged edges. Creates a more detailed spiral look.</p>
+      <div class="demo-canvas">
+        <div class="tornado-spiral"></div>
+      </div>
+      <div class="option-label">Complex spiral with vertical wobble. More dynamic and wild.</div>
+      <button class="choice-button">Choose This</button>
+    </div>
+
+    <!-- Option 3 -->
+    <div class="demo-card">
+      <h2>Option 3: Twisted Vortex</h2>
+      <p>3D twisted effect with rotation on multiple axes. Creates spinning depth.</p>
+      <div class="demo-canvas">
+        <div class="tornado-twisted"></div>
+      </div>
+      <div class="option-label">Multi-axis rotation for 3D spiral feel. Most dramatic.</div>
+      <button class="choice-button">Choose This</button>
+    </div>
+
+    <!-- Option 4 -->
+    <div class="demo-card">
+      <h2>Option 4: Wind Column with Stripes</h2>
+      <p>Tall striped column design. Emphasizes the funnel shape with wind stripes.</p>
+      <div class="demo-canvas">
+        <div class="tornado-column"></div>
+      </div>
+      <div class="option-label">Striped pattern shows wind direction. Very wind-like.</div>
+      <button class="choice-button">Choose This</button>
+    </div>
+
+    <!-- Option 5 -->
+    <div class="demo-card">
+      <h2>Option 5: Swirling Wind Ball</h2>
+      <p>Radial gradient sphere with blur effect. Looks like concentrated wind energy.</p>
+      <div class="demo-canvas">
+        <div class="tornado-swirl"></div>
+      </div>
+      <div class="option-label">More abstract, glowing wind ball. Magical feel.</div>
+      <button class="choice-button">Choose This</button>
+    </div>
+
+    <!-- Option 6 -->
+    <div class="demo-card">
+      <h2>Option 6: Sharp Pointed Tornado</h2>
+      <p>Detailed funnel with sharp jagged top edges. Most realistic tornado shape.</p>
+      <div class="demo-canvas">
+        <div class="tornado-sharp"></div>
+      </div>
+      <div class="option-label">Pointed top edges = sharp wind attacks. Very detailed.</div>
+      <button class="choice-button">Choose This</button>
+    </div>
+
+    <!-- Option 7: Horizontal 3D Spinning Tornado -->
+    <div class="demo-card">
+      <h2>Option 7: Horizontal 3D Spinning</h2>
+      <p>Tornado spinning horizontally with full 3D rotation. Spins like a drill/cyclone sideways.</p>
+      <div class="demo-canvas">
+        <div class="tornado-3d-spin"></div>
+      </div>
+      <div class="option-label">Full 3D rotation - spins like a horizontal drill/cyclone. Very dynamic!</div>
+      <button class="choice-button">Choose This</button>
+    </div>
+
+    <!-- Option 8: Dual Spiral Tornado -->
+    <div class="demo-card">
+      <h2>Option 8: Double Helix Spiral</h2>
+      <p>Two intertwined spirals rotating around each other. Chaotic wind energy.</p>
+      <div class="demo-canvas">
+        <div class="tornado-double-helix"></div>
+      </div>
+      <div class="option-label">Dual counter-rotating spirals. Intense and powerful looking.</div>
+      <button class="choice-button">Choose This</button>
+    </div>
+
+    <!-- Option 9: Diamond Rotating Tornado -->
+    <div class="demo-card">
+      <h2>Option 9: Diamond Rotator</h2>
+      <p>Diamond-shaped tornado that tumbles and spins along the path. Unique geometric look.</p>
+      <div class="demo-canvas">
+        <div class="tornado-diamond"></div>
+      </div>
+      <div class="option-label">Geometric diamond shape + tumbling rotation. Very flashy and unique.</div>
+      <button class="choice-button">Choose This</button>
+    </div>
+
+    <!-- Option 10: Ribbon Spiral Tornado -->
+    <div class="demo-card">
+      <h2>Option 10: Ribbon Spiral</h2>
+      <p>Ribbon-like strands spiraling around a central axis. Like wind ribbons.</p>
+      <div class="demo-canvas">
+        <div class="tornado-ribbon"></div>
+      </div>
+      <div class="option-label">Flowing ribbon effect with spiral. Graceful and wind-like.</div>
+      <button class="choice-button">Choose This</button>
+    </div>
+
+    <!-- Option 11: Sphere Compress Tornado -->
+    <div class="demo-card">
+      <h2>Option 11: Compressing Sphere</h2>
+      <p>Sphere that compresses and expands while rotating. Pulsing wind energy ball.</p>
+      <div class="demo-canvas">
+        <div class="tornado-compress"></div>
+      </div>
+      <div class="option-label">Pulsing sphere with compression. Looks like concentrated wind energy.</div>
+      <button class="choice-button">Choose This</button>
+    </div>
+
+    <!-- Option 12: 3D Multi-Layer Spiral Vortex -->
+    <div class="demo-card">
+      <h2>Option 12: 3D Spiral Vortex</h2>
+      <p>Multiple spiral layers creating deep 3D vortex effect. You can see INTO the tornado.</p>
+      <div class="demo-canvas">
+        <div class="vortex-3d-container">
+          <div class="vortex-layer vortex-layer-1"></div>
+          <div class="vortex-layer vortex-layer-2"></div>
+          <div class="vortex-layer vortex-layer-3"></div>
+          <div class="vortex-layer vortex-layer-4"></div>
+          <div class="vortex-core"></div>
+        </div>
+      </div>
+      <div class="option-label">Real 3D depth! Multiple rotating layers create deep spiral tunnel.</div>
+      <button class="choice-button">Choose This</button>
+    </div>
+
+    <!-- Option 13: Layered Tornado Cone -->
+    <div class="demo-card">
+      <h2>Option 13: Layered Cone Vortex</h2>
+      <p>Stacked cone layers that spiral inward. Shows clear depth and 3D structure.</p>
+      <div class="demo-canvas">
+        <div class="layered-cone-container">
+          <div class="cone-layer cone-1"></div>
+          <div class="cone-layer cone-2"></div>
+          <div class="cone-layer cone-3"></div>
+          <div class="cone-layer cone-4"></div>
+          <div class="cone-center"></div>
+        </div>
+      </div>
+      <div class="option-label">Stacked layers show real 3D funnel structure with depth.</div>
+      <button class="choice-button">Choose This</button>
+    </div>
+
+    <!-- Option 14: Nested Rings Vortex -->
+    <div class="demo-card">
+      <h2>Option 14: Nested Rings Vortex</h2>
+      <p>Concentric spinning rings creating a wormhole effect. Deep layered spiral.</p>
+      <div class="demo-canvas">
+        <div class="rings-container">
+          <div class="ring ring-1"></div>
+          <div class="ring ring-2"></div>
+          <div class="ring ring-3"></div>
+          <div class="ring ring-4"></div>
+          <div class="ring ring-5"></div>
+          <div class="ring-core"></div>
+        </div>
+      </div>
+      <div class="option-label">Wormhole-like effect. Rings at different speeds = hypnotic vortex.</div>
+      <button class="choice-button">Choose This</button>
+    </div>
+
+    <!-- Option 15: Twisted Ribbon Vortex -->
+    <div class="demo-card">
+      <h2>Option 15: Twisted Ribbon Vortex</h2>
+      <p>Multiple twisted ribbons spiraling inward. Shows 3D ribbon structure.</p>
+      <div class="demo-canvas">
+        <div class="ribbon-vortex-container">
+          <div class="ribbon ribbon-1"></div>
+          <div class="ribbon ribbon-2"></div>
+          <div class="ribbon ribbon-3"></div>
+          <div class="ribbon ribbon-4"></div>
+        </div>
+      </div>
+      <div class="option-label">Twisted ribbons create 3D helix effect. Very elegant vortex.</div>
+      <button class="choice-button">Choose This</button>
+    </div>
+  </div>
+
+  <div style="text-align: center; margin-top: 60px; padding: 40px; background: #1a1f3a; border: 2px solid #2a4030; border-radius: 10px;">
+    <h3 style="color: #7ddc5f; margin-bottom: 20px;">👇 Let me know which one you prefer!</h3>
+    <p style="color: #aaa;">Simply tell me the option number (1-6) and I'll update the game with your choice.</p>
+  </div>
+
+</body>
+</html>
