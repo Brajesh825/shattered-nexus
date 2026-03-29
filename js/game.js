@@ -165,93 +165,123 @@ const UI = {
     });
   },
 
-  /* ── Enemy cards ────────────────────────────────────── */
+  /* ── Enemy sprites (2x2 grid on RIGHT side) ────────── */
   renderEnemyRow() {
-    const row = this.el('enemy-row');
-    if (!row) return;
-
-    // Keep existing cards, only add new ones
-    const existing = {};
-    row.querySelectorAll('.ecrd').forEach(c => { existing[c.dataset.idx] = c; });
+    const container = this.el('enemy-container');
+    if (!container) return;
+    container.innerHTML = '';
 
     G.enemyGroup.forEach((e, i) => {
-      let card = existing[i];
-      if (!card) {
-        card = document.createElement('div');
-        card.className   = 'ecrd';
-        card.dataset.idx = i;
-        card.onclick     = () => selectTarget(i);
-
-        const spr = document.createElement('img');
-        spr.className = 'ecrd-spr'; spr.id = 'espr-' + i;
-        SpriteRenderer.drawEnemy(spr, e.id, e.palette);
-
-        const cursor = document.createElement('div');
-        cursor.className = 'ecrd-cursor';
-        cursor.textContent = '▼';
-
-        const name  = document.createElement('div'); name.className  = 'ecrd-name';
-        const hpBg  = document.createElement('div'); hpBg.className  = 'ecrd-hp-bg';
-        const hpBar = document.createElement('div'); hpBar.className = 'ecrd-hp-bar';
-        const hpTxt = document.createElement('div'); hpTxt.className = 'ecrd-hp-txt';
-        hpBg.appendChild(hpBar);
-
-        card.appendChild(cursor);
-        card.appendChild(spr);
-        card.appendChild(name);
-        card.appendChild(hpBg);
-        card.appendChild(hpTxt);
-        row.appendChild(card);
-      }
-
       const alive = Battle.alive(e);
       const pct   = Math.max(0, e.hp / e.maxHp * 100);
-      card.classList.toggle('targeted', i === G.targetEnemyIdx && alive);
-      card.classList.toggle('ko-enemy', !alive);
-      card.querySelector('.ecrd-name').textContent    = e.name;
-      card.querySelector('.ecrd-hp-txt').textContent  = alive ? `${e.hp}/${e.maxHp}` : 'DEFEATED';
-      const bar = card.querySelector('.ecrd-hp-bar');
-      bar.style.width      = pct + '%';
-      bar.style.background = pct > 50 ? 'var(--hp-hi)' : pct > 25 ? 'var(--hp-mid)' : 'var(--hp-lo)';
+
+      // Enemy wrapper
+      const enemy = document.createElement('div');
+      enemy.className = 'enemy' + (!alive ? ' ko-enemy' : '');
+      enemy.dataset.idx = i;
+      enemy.onclick = () => selectTarget(i);
+
+      // Sprite
+      const spr = document.createElement('img');
+      spr.className = 'enemy-sprite';
+      spr.id = 'espr-' + i;
+      SpriteRenderer.drawEnemy(spr, e.id, e.palette);
+      enemy.appendChild(spr);
+
+      // HP bar background
+      const hpBg = document.createElement('div');
+      hpBg.className = 'enemy-hp-bar-bg';
+      enemy.appendChild(hpBg);
+
+      // HP bar fill
+      const hpBar = document.createElement('div');
+      hpBar.className = 'enemy-hp-bar-fill';
+      hpBar.style.width = pct + '%';
+      hpBar.style.background = pct > 50 ? '#4ade80' : pct > 25 ? '#eab308' : '#ef4444';
+      hpBg.appendChild(hpBar);
+
+      // Enemy info (name + level)
+      const info = document.createElement('div');
+      info.className = 'enemy-info';
+      info.innerHTML = `<div class="enemy-name">${e.name}</div><div class="enemy-level">Lv ${e.level}</div>`;
+      enemy.appendChild(info);
+
+      // Target indicator
+      if (i === G.targetEnemyIdx && alive) {
+        const indicator = document.createElement('div');
+        indicator.className = 'target-indicator';
+        indicator.textContent = '◀';
+        enemy.appendChild(indicator);
+      }
+
+      container.appendChild(enemy);
     });
   },
 
-  /* ── Party sprites ──────────────────────────────────── */
+  /* ── Party sprites (2x2 grid at bottom) ────────────── */
   renderPartyRow() {
-    const row = this.el('party-row');
-    if (!row) return;
-    row.innerHTML = '';
+    const container = this.el('party-container');
+    if (!container) return;
+    container.innerHTML = '';
+
     G.party.forEach((m, i) => {
-      const col  = CHAR_COLOR[m.charId] || '#c0b8e8';
-      const wrap = document.createElement('div');
-      wrap.className   = 'pmb';
-      wrap.dataset.idx = i;
-      if (!Battle.alive(m)) wrap.classList.add('ko-pmb');
+      const col   = CHAR_COLOR[m.charId] || '#c0b8e8';
+      const alive = Battle.alive(m);
+      const pct   = Math.max(0, m.hp / m.maxHp * 100);
 
+      // Party member wrapper
+      const member = document.createElement('div');
+      member.className = 'party-member' + (!alive ? ' ko-member' : '');
+      member.dataset.idx = i;
+      member.style.borderColor = col + '30';
+
+      // Sprite
       const spr = document.createElement('img');
-      spr.className = 'pmb-spr'; spr.id = 'pspr-' + i;
+      spr.className = 'party-sprite';
+      spr.id = 'pspr-' + i;
       SpriteRenderer.drawHero(spr, m.charId, m.char, m.cls);
+      member.appendChild(spr);
 
-      const koLbl = document.createElement('div');
-      koLbl.className = 'pmb-ko';
-      koLbl.textContent = 'KO';
+      // HP bar background
+      const hpBg = document.createElement('div');
+      hpBg.className = 'party-hp-bar-bg';
+      member.appendChild(hpBg);
 
-      wrap.style.borderColor = col + '40';
-      wrap.appendChild(spr);
-      wrap.appendChild(koLbl);
-      row.appendChild(wrap);
+      // HP bar fill
+      const hpBar = document.createElement('div');
+      hpBar.className = 'party-hp-bar-fill';
+      hpBar.style.width = pct + '%';
+      hpBar.style.background = pct > 50 ? '#4ade80' : pct > 25 ? '#eab308' : '#ef4444';
+      hpBg.appendChild(hpBar);
+
+      // Party member info (name + level)
+      const info = document.createElement('div');
+      info.className = 'party-info';
+      info.style.color = col;
+      info.innerHTML = `<div class="party-name">${m.displayName}</div><div class="party-level">Lv ${m.lv}</div>`;
+      member.appendChild(info);
+
+      // KO indicator
+      if (!alive) {
+        const koLbl = document.createElement('div');
+        koLbl.className = 'ko-badge';
+        koLbl.textContent = 'KO';
+        member.appendChild(koLbl);
+      }
+
+      container.appendChild(member);
     });
     this._highlightActiveMember();
   },
 
   _highlightActiveMember() {
     const t = G.turnQueue[G.turnIdx];
-    document.querySelectorAll('.pmb').forEach((w, i) => {
+    document.querySelectorAll('.party-member').forEach((w, i) => {
       const isActive = t && t.type === 'party' && t.idx === i;
-      w.classList.toggle('active-pmb', isActive);
+      w.classList.toggle('active-member', isActive);
       const col = CHAR_COLOR[G.party[i]?.charId] || '#c0b8e8';
-      w.style.borderColor = isActive ? col : col + '40';
-      w.style.boxShadow   = isActive ? `0 0 14px ${col}99` : 'none';
+      w.style.borderColor = isActive ? col + '50' : col + '30';
+      w.style.filter = isActive ? `drop-shadow(0 0 6px ${col}80)` : 'none';
     });
   },
 
@@ -738,8 +768,13 @@ function heroAttack() {
   const enemy = G.enemy;
   if (!actor || !enemy) { G.busy = false; return; }
 
-  const spr = document.getElementById('pspr-' + G.activeMemberIdx);
-  if (spr) { spr.classList.add('anim-slash'); setTimeout(() => spr.classList.remove('anim-slash'), 460); }
+  // Play attack animation on party sprite
+  const actorSpr = document.getElementById('pspr-' + G.activeMemberIdx);
+  if (actorSpr) {
+    actorSpr.classList.add('anim-slash');
+    setTimeout(() => actorSpr.classList.remove('anim-slash'), 460);
+  }
+
   UI.setLog([`${actor.displayName} attacks ${enemy.name}!`], ['hi']);
 
   setTimeout(() => {
@@ -747,7 +782,17 @@ function heroAttack() {
     const dmg = Battle.physDmg(actor.atk, enemy.def, 1, actor.lv || 1, enemy.level || 1);
     enemy.hp  = Math.max(0, enemy.hp - dmg);
     if (enemy.hp <= 0) enemy.isKO = true;
+
+    // Damage number popup
     UI.popEnemy(G.targetEnemyIdx, dmg);
+
+    // Enemy sprite flash
+    const enemySpr = document.getElementById('espr-' + G.targetEnemyIdx);
+    if (enemySpr) {
+      enemySpr.classList.add('sprite-damage-flash');
+      setTimeout(() => enemySpr.classList.remove('sprite-damage-flash'), 200);
+    }
+
     shakeEnemy(G.targetEnemyIdx);
     UI.addLog(`Dealt ${dmg} damage!`, 'dmg');
     UI.renderEnemyRow();
@@ -778,6 +823,11 @@ function heroAbility(ab) {
       enemy.hp  = Math.max(0, enemy.hp - dmg);
       if (enemy.hp <= 0) enemy.isKO = true;
       UI.popEnemy(G.targetEnemyIdx, dmg);
+      const enemySpr = document.getElementById('espr-' + G.targetEnemyIdx);
+      if (enemySpr) {
+        enemySpr.classList.add('sprite-damage-flash');
+        setTimeout(() => enemySpr.classList.remove('sprite-damage-flash'), 200);
+      }
       shakeEnemy(G.targetEnemyIdx);
       UI.addLog(`${enemy.name} took ${dmg} damage!`, 'dmg');
 
@@ -788,6 +838,11 @@ function heroAbility(ab) {
       enemy.hp  = Math.max(0, enemy.hp - dmg);
       if (enemy.hp <= 0) enemy.isKO = true;
       UI.popEnemy(G.targetEnemyIdx, dmg, 'magic');
+      const enemySpr = document.getElementById('espr-' + G.targetEnemyIdx);
+      if (enemySpr) {
+        enemySpr.classList.add('sprite-damage-flash');
+        setTimeout(() => enemySpr.classList.remove('sprite-damage-flash'), 200);
+      }
       shakeEnemy(G.targetEnemyIdx);
       UI.addLog(`${enemy.name} took ${dmg} magic damage!`, 'magic');
 
