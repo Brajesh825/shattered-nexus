@@ -1,0 +1,493 @@
+{
+  "meta": {
+    "resolution": "1024x1024",
+    "downscale_to": "256x256 (enemies) / 128x192 (heroes)",
+    "negative": "cropped, cut off, bad anatomy, extra limbs, watermark, text, logo, blurry, low quality, realistic photo, 3d render"
+  },
+  "heroes": [
+    {
+      "id": "ayaka",
+      "name": "Kamisato Ayaka",
+      "category": "heroes",
+      "filename": "ayaka.png",
+      "target_path": "images/heroes/ayaka.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Kamisato Ayaka from Genshin Impact), (long light blue white hair), (tied ponytail with ornate blue kanzashi), (pale blue eyes), (elegant white and light blue kimono-style dress), (floral snowflake patterns on fabric), (cryo ice blue glow around hands), (slender katana at side), (graceful noble posture), (gentle serene smile), (blue butterfly hair ornament), (Inazuma noble clan attire)"
+    },
+    {
+      "id": "hutao",
+      "name": "Hu Tao",
+      "category": "heroes",
+      "filename": "hutao.png",
+      "target_path": "images/heroes/hutao.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Hu Tao from Genshin Impact), (dark brown hair in long twin braids), (brown crimson gradient hair tips), (red amber eyes with flower pupils), (dark brown crimson Chinese-style funeral dress), (Wangsheng Funeral Parlor symbols), (paper talisman hat on head), (polearm spear with ghost fire flame), (pyro orange red glow), (mischievous grin), (slender energetic build), (ghost fire wisps floating around)"
+    },
+    {
+      "id": "nilou",
+      "name": "Nilou",
+      "category": "heroes",
+      "filename": "nilou.png",
+      "target_path": "images/heroes/nilou.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Nilou from Genshin Impact), (long teal cyan hair), (blue green eyes), (layered dancer outfit with flowing teal and white fabrics), (Sumeru Middle Eastern dancer style), (ornate golden headpiece with veil), (hydro water droplet accessories), (elegant curved sword), (teal blue hydro water glow), (warm gentle smile), (dancer graceful pose), (flower petal ornaments in hair), (bare midriff with jeweled belt)"
+    },
+    {
+      "id": "xiao",
+      "name": "Xiao",
+      "category": "heroes",
+      "filename": "xiao.png",
+      "target_path": "images/heroes/xiao.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1boy, solo, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Xiao from Genshin Impact), (short dark black hair with teal green highlights), (teal green glowing eyes), (dark teal and black adeptus combat outfit), (gold green trim details), (yaksha mask pushed up on forehead), (polearm spear with anemo wind glow), (glowing adeptal green tattoo markings on arm), (anemo green wind swirls), (stoic serious expression), (slender athletic build), (Liyue adeptus warrior aesthetic)"
+    }
+  ],
+  "enemies": [
+    {
+      "id": "goblin",
+      "name": "Goblin Scout",
+      "category": "enemies",
+      "tier": 1,
+      "filename": "goblin.png",
+      "target_path": "images/enemies/goblin.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (goblin monster), (small green skinned creature), (rusty short sword), (leather scrap armor), (big yellow eyes), (pointy ears), (sneaky grin), (barefoot)"
+    },
+    {
+      "id": "bat",
+      "name": "Giant Bat",
+      "category": "enemies",
+      "tier": 1,
+      "filename": "bat.png",
+      "target_path": "images/enemies/bat.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (giant bat monster), (dark purple black fur), (huge spread wings), (glowing red eyes), (sharp fangs dripping), (leathery wing membranes)"
+    },
+    {
+      "id": "rat",
+      "name": "Giant Rat",
+      "category": "enemies",
+      "tier": 1,
+      "filename": "rat.png",
+      "target_path": "images/enemies/rat.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (giant rat monster), (bloated brown grey fur), (long scaly tail), (beady red eyes), (broken yellow fangs), (mangy matted fur), (sewer-dweller look)"
+    },
+    {
+      "id": "mushroom",
+      "name": "Spore Mushroom",
+      "category": "enemies",
+      "tier": 1,
+      "filename": "mushroom.png",
+      "target_path": "images/enemies/mushroom.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (giant mushroom monster), (red spotted cap), (stubby legs), (releasing toxic purple spore clouds), (glowing white spots), (creepy blank face), (roots as feet)"
+    },
+    {
+      "id": "imp",
+      "name": "Fire Imp",
+      "category": "enemies",
+      "tier": 1,
+      "filename": "imp.png",
+      "target_path": "images/enemies/imp.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (small fire imp demon), (red skin), (tiny bat wings), (glowing yellow eyes), (flames on fists), (small horns), (mischievous grin), (pointed tail)"
+    },
+    {
+      "id": "crab",
+      "name": "Armored Crab",
+      "category": "enemies",
+      "tier": 1,
+      "filename": "crab.png",
+      "target_path": "images/enemies/crab.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (giant armored crab monster), (orange red shell), (massive claws raised), (black beady eyes on stalks), (barnacle encrusted shell), (thick heavy carapace)"
+    },
+    {
+      "id": "wolf",
+      "name": "Dire Wolf",
+      "category": "enemies",
+      "tier": 1,
+      "filename": "wolf.png",
+      "target_path": "images/enemies/wolf.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (dire wolf monster), (massive black fur wolf), (glowing golden eyes), (snarling bared fangs), (muscular powerful build), (dark mist around paws)"
+    },
+    {
+      "id": "spider",
+      "name": "Poison Spider",
+      "category": "enemies",
+      "tier": 1,
+      "filename": "spider.png",
+      "target_path": "images/enemies/spider.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (giant poison spider monster), (dark purple black body), (eight red eyes), (dripping green venom fangs), (striped abdomen), (web threads hanging from body)"
+    },
+    {
+      "id": "zombie",
+      "name": "Rotting Zombie",
+      "category": "enemies",
+      "tier": 1,
+      "filename": "zombie.png",
+      "target_path": "images/enemies/zombie.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (zombie monster), (rotting decayed flesh), (tattered clothing), (glowing yellow eyes), (missing chunks of body), (outstretched arms), (open gaping mouth)"
+    },
+    {
+      "id": "wisp",
+      "name": "Lost Wisp",
+      "category": "enemies",
+      "tier": 1,
+      "filename": "wisp.png",
+      "target_path": "images/enemies/wisp.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (ghost wisp spirit), (glowing blue orb body), (spectral trails of light), (ghostly white face inside the orb), (floating energy particles), (ethereal translucent form)"
+    },
+    {
+      "id": "lizardman",
+      "name": "Lizardman Scout",
+      "category": "enemies",
+      "tier": 1,
+      "filename": "lizardman.png",
+      "target_path": "images/enemies/lizardman.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (lizardman warrior), (green scaly bipedal lizard), (crude spear and shield), (yellow slit eyes), (long tail), (tribal markings on scales), (swamp armor)"
+    },
+    {
+      "id": "bandit",
+      "name": "Road Bandit",
+      "category": "enemies",
+      "tier": 1,
+      "filename": "bandit.png",
+      "target_path": "images/enemies/bandit.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (road bandit human), (masked face bandana), (worn leather armor), (twin daggers), (scar on cheek), (hooded cloak), (menacing posture), (pouches of stolen gold)"
+    },
+    {
+      "id": "scarecrow",
+      "name": "Cursed Scarecrow",
+      "category": "enemies",
+      "tier": 1,
+      "filename": "scarecrow.png",
+      "target_path": "images/enemies/scarecrow.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (cursed scarecrow monster), (stuffed straw body), (stitched burlap face with glowing orange eyes), (tattered hat), (wooden cross-frame body), (dark magic runes glowing), (straw spilling out)"
+    },
+    {
+      "id": "slime",
+      "name": "Toxic Slime",
+      "category": "enemies",
+      "tier": 1,
+      "filename": "slime.png",
+      "target_path": "images/enemies/slime.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (toxic slime monster), (bright green gelatinous blob), (cute round white eyes), (dripping acid), (shiny translucent body), (bubbles inside body), (wide grin)"
+    },
+    {
+      "id": "skeleton",
+      "name": "Bone Knight",
+      "category": "enemies",
+      "tier": 1,
+      "filename": "skeleton.png",
+      "target_path": "images/enemies/skeleton.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (skeleton warrior), (undead knight), (rusted sword and battered shield), (glowing blue eye sockets), (cracked tattered armor), (exposed ribcage), (bony hands gripping sword)"
+    },
+    {
+      "id": "harpy",
+      "name": "Storm Harpy",
+      "category": "enemies",
+      "tier": 2,
+      "filename": "harpy.png",
+      "target_path": "images/enemies/harpy.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (harpy monster), (woman upper body with large eagle wings), (golden brown feathers), (sharp talons for feet and hands), (glowing cyan eyes), (crackling lightning around wings), (fierce screaming expression)"
+    },
+    {
+      "id": "ghost",
+      "name": "Phantom Ghost",
+      "category": "enemies",
+      "tier": 2,
+      "filename": "ghost.png",
+      "target_path": "images/enemies/ghost.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (phantom ghost), (translucent blue white spirit), (wailing open mouth), (hollow black eye sockets), (wispy fading lower body), (ghostly chains), (spectral glow), (haunting expression)"
+    },
+    {
+      "id": "merman",
+      "name": "Deep Merman",
+      "category": "enemies",
+      "tier": 2,
+      "filename": "merman.png",
+      "target_path": "images/enemies/merman.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (deep sea merman), (teal green scaled fish tail), (muscular blue upper body), (coral crown), (trident weapon), (glowing aqua eyes), (barnacle covered skin), (deep sea markings)"
+    },
+    {
+      "id": "witch",
+      "name": "Swamp Witch",
+      "category": "enemies",
+      "tier": 2,
+      "filename": "witch.png",
+      "target_path": "images/enemies/witch.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (swamp witch hag), (old woman in tattered green robes), (wide brimmed hat), (glowing yellow eyes), (gnarled staff with skull), (warts on face), (purple dark magic aura), (cackling expression)"
+    },
+    {
+      "id": "werewolf",
+      "name": "Werewolf",
+      "category": "enemies",
+      "tier": 2,
+      "filename": "werewolf.png",
+      "target_path": "images/enemies/werewolf.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (werewolf monster), (bipedal wolf beast), (dark brown fur), (muscular hulking body), (glowing amber eyes), (long sharp claws), (snarling fangs), (torn clothing remnants), (full moon glow behind)"
+    },
+    {
+      "id": "vampire",
+      "name": "Crimson Vampire",
+      "category": "enemies",
+      "tier": 2,
+      "filename": "vampire.png",
+      "target_path": "images/enemies/vampire.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (vampire nobleman), (pale white skin), (long dark red cape with high collar), (glowing red eyes), (sharp fangs), (elegant dark suit), (blood dripping from fingers), (aristocratic sinister smile)"
+    },
+    {
+      "id": "medusa",
+      "name": "Medusa",
+      "category": "enemies",
+      "tier": 2,
+      "filename": "medusa.png",
+      "target_path": "images/enemies/medusa.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (medusa gorgon), (woman upper body with snake lower body), (hair made of living snakes), (glowing orange petrifying eyes), (green scales), (golden armlets), (serpentine tail), (ancient greek style)"
+    },
+    {
+      "id": "orc",
+      "name": "Orc Berserker",
+      "category": "enemies",
+      "tier": 2,
+      "filename": "orc.png",
+      "target_path": "images/enemies/orc.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (orc berserker), (large green muscular orc), (tusks protruding from jaw), (heavy axe weapon), (spiked iron armor), (war paint markings), (glowing red rage eyes), (battle scars)"
+    },
+    {
+      "id": "naga",
+      "name": "Naga Warrior",
+      "category": "enemies",
+      "tier": 2,
+      "filename": "naga.png",
+      "target_path": "images/enemies/naga.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (naga serpent warrior), (humanoid upper body with large snake lower body), (blue scales), (curved sword), (glowing orange eyes), (jeweled crown), (mystical water magic swirling around), (elegant dangerous pose)"
+    },
+    {
+      "id": "centaur",
+      "name": "Centaur Archer",
+      "category": "enemies",
+      "tier": 2,
+      "filename": "centaur.png",
+      "target_path": "images/enemies/centaur.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (centaur archer), (human upper body horse lower body), (tan skin and brown horse body), (large composite bow drawn), (quiver of arrows), (muscular build), (battle armband), (fierce determined expression)"
+    },
+    {
+      "id": "gargoyle",
+      "name": "Stone Gargoyle",
+      "category": "enemies",
+      "tier": 2,
+      "filename": "gargoyle.png",
+      "target_path": "images/enemies/gargoyle.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (stone gargoyle monster), (grey stone demon creature), (large bat wings), (horned head), (glowing orange eyes), (clawed hands and feet), (ancient stone texture with cracks), (demonic snarling face)"
+    },
+    {
+      "id": "cyclops",
+      "name": "Cave Cyclops",
+      "category": "enemies",
+      "tier": 2,
+      "filename": "cyclops.png",
+      "target_path": "images/enemies/cyclops.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (cyclops giant), (huge one-eyed giant creature), (single large red eye in forehead), (club weapon made from tree trunk), (cave troll skin), (crude animal skin clothes), (massive muscular arms), (bald head)"
+    },
+    {
+      "id": "minotaur",
+      "name": "Iron Minotaur",
+      "category": "enemies",
+      "tier": 2,
+      "filename": "minotaur.png",
+      "target_path": "images/enemies/minotaur.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (minotaur monster), (bull head on muscular human body), (iron plate armor), (massive battle axe), (glowing red eyes), (large curved horns with iron rings), (hooves for feet), (charging stance)"
+    },
+    {
+      "id": "basilisk",
+      "name": "Stone Basilisk",
+      "category": "enemies",
+      "tier": 2,
+      "filename": "basilisk.png",
+      "target_path": "images/enemies/basilisk.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (basilisk lizard monster), (massive serpent lizard), (grey green stone-like scales), (six legs), (glowing golden petrifying eyes with stone crack effect), (crown of spines on head), (long spiked tail)"
+    },
+    {
+      "id": "ogre",
+      "name": "Armored Ogre",
+      "category": "enemies",
+      "tier": 2,
+      "filename": "ogre.png",
+      "target_path": "images/enemies/ogre.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (armored ogre), (huge grey skinned ogre), (mismatched stolen plate armor), (giant spiked club), (small beady red eyes), (big flat nose), (multiple scars), (massive belly), (dumb menacing expression)"
+    },
+    {
+      "id": "troll",
+      "name": "Swamp Troll",
+      "category": "enemies",
+      "tier": 2,
+      "filename": "troll.png",
+      "target_path": "images/enemies/troll.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (swamp troll monster), (hunched green brown warty creature), (long gangly arms dragging on ground), (moss and vines growing on body), (yellow eyes), (wide flat feet), (regenerating wounds), (swamp muck dripping off)"
+    },
+    {
+      "id": "lesser_demon",
+      "name": "Lesser Demon",
+      "category": "enemies",
+      "tier": 2,
+      "filename": "lesser_demon.png",
+      "target_path": "images/enemies/lesser_demon.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (lesser demon), (red skinned demon humanoid), (small curled horns), (bat wings), (clawed hands with hellfire), (spiked tail), (glowing yellow eyes), (hellfire aura surrounding body), (sinister smirk)"
+    },
+    {
+      "id": "golem",
+      "name": "Stone Golem",
+      "category": "enemies",
+      "tier": 2,
+      "filename": "golem.png",
+      "target_path": "images/enemies/golem.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (stone golem), (ancient rock construct), (cracked grey stone body), (glowing blue crystal eyes), (mossy patches on surface), (massive stone fists), (ancient rune carvings on chest), (lumbering powerful stance)"
+    },
+    {
+      "id": "fire_elemental",
+      "name": "Fire Elemental",
+      "category": "enemies",
+      "tier": 2,
+      "filename": "fire_elemental.png",
+      "target_path": "images/enemies/fire_elemental.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (fire elemental spirit), (humanoid shape made entirely of fire), (bright orange red flames forming body), (white hot core), (burning yellow eyes), (fire tendrils as arms), (embers swirling around), (intense heat haze)"
+    },
+    {
+      "id": "iron_golem",
+      "name": "Iron Golem",
+      "category": "enemies",
+      "tier": 2,
+      "filename": "iron_golem.png",
+      "target_path": "images/enemies/iron_golem.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (iron golem construct), (massive body made of riveted black iron plates), (glowing green magical eyes), (steam venting from joints), (ancient magical runes etched on chest), (thick iron fists), (mechanical joints)"
+    },
+    {
+      "id": "dark_knight",
+      "name": "Dark Knight",
+      "category": "enemies",
+      "tier": 3,
+      "filename": "dark_knight.png",
+      "target_path": "images/enemies/dark_knight.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (dark knight warrior), (black full plate armor), (purple glowing visor), (shadow aura surrounding body), (large dark greatsword), (intimidating menacing stance), (horned helmet), (void energy crackling)"
+    },
+    {
+      "id": "wyvern",
+      "name": "Venom Wyvern",
+      "category": "enemies",
+      "tier": 3,
+      "filename": "wyvern.png",
+      "target_path": "images/enemies/wyvern.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (wyvern dragon), (dark green scales), (large bat-like wings spread wide), (glowing yellow eyes), (acid dripping from jaws), (serpentine body), (two legs and wings only), (venomous spines along back and tail)"
+    },
+    {
+      "id": "lich",
+      "name": "Ancient Lich",
+      "category": "enemies",
+      "tier": 3,
+      "filename": "lich.png",
+      "target_path": "images/enemies/lich.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (ancient lich undead sorcerer), (skeletal face with glowing cyan eyes), (dark purple tattered robes), (floating crown of bone), (staff with glowing soul orb), (dark magic energy swirling hands), (undead aura), (immortal ancient power)"
+    },
+    {
+      "id": "chimera",
+      "name": "Chimera Beast",
+      "category": "enemies",
+      "tier": 3,
+      "filename": "chimera.png",
+      "target_path": "images/enemies/chimera.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (chimera monster), (lion body with goat head on back and dragon head front), (snake tail), (large leathery wings), (fire breathing dragon head), (fierce lion mane), (goat horns on second head), (fearsome three-headed beast)"
+    },
+    {
+      "id": "necromancer",
+      "name": "Death Necromancer",
+      "category": "enemies",
+      "tier": 3,
+      "filename": "necromancer.png",
+      "target_path": "images/enemies/necromancer.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (death necromancer), (robed skeleton or undead sorcerer), (dark tattered robes), (glowing green eyes), (staff with skull topper), (summoning green death magic from hands), (bone fragments floating around), (shadow aura)"
+    },
+    {
+      "id": "dark_phoenix",
+      "name": "Dark Phoenix",
+      "category": "enemies",
+      "tier": 3,
+      "filename": "dark_phoenix.png",
+      "target_path": "images/enemies/dark_phoenix.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (dark phoenix bird), (massive black purple firebird), (wings spread wide made of dark flames), (glowing red orange eyes), (shadow fire trail behind), (purple black feathers burning), (corrupted divine aura), (ethereal dark energy)"
+    },
+    {
+      "id": "kraken",
+      "name": "Sea Kraken",
+      "category": "enemies",
+      "tier": 3,
+      "filename": "kraken.png",
+      "target_path": "images/enemies/kraken.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (sea kraken), (massive deep sea cephalopod monster), (dark navy blue body), (dozens of huge tentacles raised), (enormous glowing yellow eyes), (beak visible), (ink cloud aura), (crushing tentacles with suckers), (ancient leviathan)"
+    },
+    {
+      "id": "titan",
+      "name": "Stone Titan",
+      "category": "enemies",
+      "tier": 3,
+      "filename": "titan.png",
+      "target_path": "images/enemies/titan.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (stone titan giant), (colossal ancient giant made of stone and earth), (cracked rocky skin), (glowing orange lava cracks in body), (enormous size), (raising fist to smash), (ancient runes glowing on body), (mountains crumbling around feet)"
+    },
+    {
+      "id": "demon_lord",
+      "name": "Demon Lord",
+      "category": "enemies",
+      "tier": 3,
+      "filename": "demon_lord.png",
+      "target_path": "images/enemies/demon_lord.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (demon lord), (towering red demon prince), (massive curved horns), (large black bat wings), (hellfire surrounding body), (glowing orange eyes), (dark iron armor), (menacing royal crown of bone), (absolute evil power radiating)"
+    },
+    {
+      "id": "bone_dragon",
+      "name": "Bone Dragon",
+      "category": "enemies",
+      "tier": 3,
+      "filename": "bone_dragon.png",
+      "target_path": "images/enemies/bone_dragon.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (bone dragon undead), (skeleton dragon made entirely of bones), (glowing green necromantic eyes), (tattered wing membranes between bone), (dark death aura), (jaw open breathing death energy), (ancient massive undead dragon)"
+    },
+    {
+      "id": "abomination",
+      "name": "Flesh Abomination",
+      "category": "enemies",
+      "tier": 3,
+      "filename": "abomination.png",
+      "target_path": "images/enemies/abomination.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (flesh abomination monster), (horrific mass of stitched body parts), (multiple arms and eyes in wrong places), (yellow glowing eyes all over body), (stitches and staples holding flesh together), (acid dripping from mouth), (grotesque body horror)"
+    },
+    {
+      "id": "void_knight",
+      "name": "Void Knight",
+      "category": "enemies",
+      "tier": 3,
+      "filename": "void_knight.png",
+      "target_path": "images/enemies/void_knight.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (void knight), (armored warrior made of pure darkness and void energy), (deep black armor with purple glowing edges), (no visible face only glowing purple eyes in darkness), (void sword crackling with dark energy), (reality warping aura around body)"
+    },
+    {
+      "id": "fallen_angel",
+      "name": "Fallen Angel",
+      "category": "enemies",
+      "tier": 3,
+      "filename": "fallen_angel.png",
+      "target_path": "images/enemies/fallen_angel.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (fallen angel), (beautiful humanoid with broken black wings), (torn white and gold armor stained with darkness), (glowing pink red eyes), (broken halo above head), (dark holy energy in hands), (expression of sorrow and rage), (divine corruption)"
+    },
+    {
+      "id": "shadow_emperor",
+      "name": "Shadow Emperor",
+      "category": "enemies",
+      "tier": 3,
+      "filename": "shadow_emperor.png",
+      "target_path": "images/enemies/shadow_emperor.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (shadow emperor boss), (supreme dark ruler in black royal armor), (crown made of void energy), (cape of pure darkness flowing behind), (glowing magenta eyes), (absolute darkness surrounding figure), (void energy erupting from hands), (final boss aura of overwhelming power)"
+    },
+    {
+      "id": "dragon",
+      "name": "Shadow Dragon",
+      "category": "enemies",
+      "tier": 3,
+      "filename": "dragon.png",
+      "target_path": "images/enemies/dragon.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (shadow dragon), (massive dark purple scaled dragon), (large bat wings spread), (burning red eyes), (dark flame breath), (curved horns), (glowing purple magic aura), (legendary ancient evil), (imposing final boss size)"
+    }
+  ]
+}

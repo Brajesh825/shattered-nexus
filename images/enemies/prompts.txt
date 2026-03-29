@@ -1,0 +1,183 @@
+CRYSTAL CHRONICLES — ENEMY IMAGE PROMPTS
+==========================================
+Generate at 1024x1024, then downscale to 256x256.
+Use simple/transparent background. Full body, front view, facing viewer.
+Base format: masterpiece, best quality, amazing quality, very aesthetic, absurdres,
+simple background, (full body:1.4), (standing:1.2), front view, facing viewer,
+(clean lineart:1.2), (full color), (bold outlines:1.2), [SUBJECT]
+
+Save each file as: [id].png in this folder.
+
+==========================================
+TIER 1 — Easy Enemies
+==========================================
+
+01. goblin.png — Goblin Scout
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (goblin monster), (small green skinned creature), (rusty short sword), (leather scrap armor), (big yellow eyes), (pointy ears), (sneaky grin), (barefoot)
+
+02. bat.png — Giant Bat
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (giant bat monster), (dark purple black fur), (huge spread wings), (glowing red eyes), (sharp fangs dripping), (leathery wing membranes)
+
+03. rat.png — Giant Rat
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (giant rat monster), (bloated brown grey fur), (long scaly tail), (beady red eyes), (broken yellow fangs), (mangy matted fur), (sewer-dweller look)
+
+04. mushroom.png — Spore Mushroom
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (giant mushroom monster), (red spotted cap), (stubby legs), (releasing toxic purple spore clouds), (glowing white spots), (creepy blank face), (roots as feet)
+
+05. imp.png — Fire Imp
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (small fire imp demon), (red skin), (tiny bat wings), (glowing yellow eyes), (flames on fists), (small horns), (mischievous grin), (pointed tail)
+
+06. crab.png — Armored Crab
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (giant armored crab monster), (orange red shell), (massive claws raised), (black beady eyes on stalks), (barnacle encrusted shell), (thick heavy carapace)
+
+07. wolf.png — Dire Wolf
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (dire wolf monster), (massive black fur wolf), (glowing golden eyes), (snarling bared fangs), (muscular powerful build), (dark mist around paws)
+
+08. spider.png — Poison Spider
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (giant poison spider monster), (dark purple black body), (eight red eyes), (dripping green venom fangs), (striped abdomen), (web threads hanging from body)
+
+09. zombie.png — Rotting Zombie
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (zombie monster), (rotting decayed flesh), (tattered clothing), (glowing yellow eyes), (missing chunks of body), (outstretched arms), (open gaping mouth)
+
+10. wisp.png — Lost Wisp
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (ghost wisp spirit), (glowing blue orb body), (spectral trails of light), (ghostly white face inside the orb), (floating energy particles), (ethereal translucent form)
+
+11. lizardman.png — Lizardman Scout
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (lizardman warrior), (green scaly bipedal lizard), (crude spear and shield), (yellow slit eyes), (long tail), (tribal markings on scales), (swamp armor)
+
+12. bandit.png — Road Bandit
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (road bandit human), (masked face bandana), (worn leather armor), (twin daggers), (scar on cheek), (hooded cloak), (menacing posture), (pouches of stolen gold)
+
+13. scarecrow.png — Cursed Scarecrow
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (cursed scarecrow monster), (stuffed straw body), (stitched burlap face with glowing orange eyes), (tattered hat), (wooden cross-frame body), (dark magic runes glowing), (straw spilling out)
+
+14. slime.png — Toxic Slime
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (toxic slime monster), (bright green gelatinous blob), (cute round white eyes), (dripping acid), (shiny translucent body), (bubbles inside body), (wide grin)
+
+15. skeleton.png — Bone Knight
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (skeleton warrior), (undead knight), (rusted sword and battered shield), (glowing blue eye sockets), (cracked tattered armor), (exposed ribcage), (bony hands gripping sword)
+
+==========================================
+TIER 2 — Medium Enemies
+==========================================
+
+16. harpy.png — Storm Harpy
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (harpy monster), (woman upper body with large eagle wings), (golden brown feathers), (sharp talons for feet and hands), (glowing cyan eyes), (crackling lightning around wings), (fierce screaming expression)
+
+17. ghost.png — Phantom Ghost
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (phantom ghost), (translucent blue white spirit), (wailing open mouth), (hollow black eye sockets), (wispy fading lower body), (ghostly chains), (spectral glow), (haunting expression)
+
+18. merman.png — Deep Merman
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (deep sea merman), (teal green scaled fish tail), (muscular blue upper body), (coral crown), (trident weapon), (glowing aqua eyes), (barnacle covered skin), (deep sea markings)
+
+19. witch.png — Swamp Witch
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (swamp witch hag), (old woman in tattered green robes), (wide brimmed hat), (glowing yellow eyes), (gnarled staff with skull), (warts on face), (purple dark magic aura), (cackling expression)
+
+20. werewolf.png — Werewolf
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (werewolf monster), (bipedal wolf beast), (dark brown fur), (muscular hulking body), (glowing amber eyes), (long sharp claws), (snarling fangs), (torn clothing remnants), (full moon glow behind)
+
+21. vampire.png — Crimson Vampire
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (vampire nobleman), (pale white skin), (long dark red cape with high collar), (glowing red eyes), (sharp fangs), (elegant dark suit), (blood dripping from fingers), (aristocratic sinister smile)
+
+22. medusa.png — Medusa
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (medusa gorgon), (woman upper body with snake lower body), (hair made of living snakes), (glowing orange petrifying eyes), (green scales), (golden armlets), (serpentine tail), (ancient greek style)
+
+23. orc.png — Orc Berserker
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (orc berserker), (large green muscular orc), (tusks protruding from jaw), (heavy axe weapon), (spiked iron armor), (war paint markings), (glowing red rage eyes), (battle scars)
+
+24. naga.png — Naga Warrior
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (naga serpent warrior), (humanoid upper body with large snake lower body), (blue scales), (curved sword), (glowing orange eyes), (jeweled crown), (mystical water magic swirling around), (elegant dangerous pose)
+
+25. centaur.png — Centaur Archer
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (centaur archer), (human upper body horse lower body), (tan skin and brown horse body), (large composite bow drawn), (quiver of arrows), (muscular build), (battle armband), (fierce determined expression)
+
+26. gargoyle.png — Stone Gargoyle
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (stone gargoyle monster), (grey stone demon creature), (large bat wings), (horned head), (glowing orange eyes), (clawed hands and feet), (ancient stone texture with cracks), (demonic snarling face)
+
+27. cyclops.png — Cave Cyclops
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (cyclops giant), (huge one-eyed giant creature), (single large red eye in forehead), (club weapon made from tree trunk), (cave troll skin), (crude animal skin clothes), (massive muscular arms), (bald head)
+
+28. minotaur.png — Iron Minotaur
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (minotaur monster), (bull head on muscular human body), (iron plate armor), (massive battle axe), (glowing red eyes), (large curved horns with iron rings), (hooves for feet), (charging stance)
+
+29. basilisk.png — Stone Basilisk
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (basilisk lizard monster), (massive serpent lizard), (grey green stone-like scales), (six legs), (glowing golden petrifying eyes with stone crack effect), (crown of spines on head), (long spiked tail)
+
+30. ogre.png — Armored Ogre
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (armored ogre), (huge grey skinned ogre), (mismatched stolen plate armor), (giant spiked club), (small beady red eyes), (big flat nose), (multiple scars), (massive belly), (dumb menacing expression)
+
+31. troll.png — Swamp Troll
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (swamp troll monster), (hunched green brown warty creature), (long gangly arms dragging on ground), (moss and vines growing on body), (yellow eyes), (wide flat feet), (regenerating wounds), (swamp muck dripping off)
+
+32. lesser_demon.png — Lesser Demon
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (lesser demon), (red skinned demon humanoid), (small curled horns), (bat wings), (clawed hands with hellfire), (spiked tail), (glowing yellow eyes), (hellfire aura surrounding body), (sinister smirk)
+
+33. golem.png — Stone Golem
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (stone golem), (ancient rock construct), (cracked grey stone body), (glowing blue crystal eyes), (mossy patches on surface), (massive stone fists), (ancient rune carvings on chest), (lumbering powerful stance)
+
+34. fire_elemental.png — Fire Elemental
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (fire elemental spirit), (humanoid shape made entirely of fire), (bright orange red flames forming body), (white hot core), (burning yellow eyes), (fire tendrils as arms), (embers swirling around), (intense heat haze)
+
+35. iron_golem.png — Iron Golem
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (iron golem construct), (massive body made of riveted black iron plates), (glowing green magical eyes), (steam venting from joints), (ancient magical runes etched on chest), (thick iron fists), (mechanical joints)
+
+==========================================
+TIER 3 — Hard Enemies
+==========================================
+
+36. dark_knight.png — Dark Knight
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (dark knight warrior), (black full plate armor), (purple glowing visor), (shadow aura surrounding body), (large dark greatsword), (intimidating menacing stance), (horned helmet), (void energy crackling)
+
+37. wyvern.png — Venom Wyvern
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (wyvern dragon), (dark green scales), (large bat-like wings spread wide), (glowing yellow eyes), (acid dripping from jaws), (serpentine body), (two legs and wings only), (venomous spines along back and tail)
+
+38. lich.png — Ancient Lich
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (ancient lich undead sorcerer), (skeletal face with glowing cyan eyes), (dark purple tattered robes), (floating crown of bone), (staff with glowing soul orb), (dark magic energy swirling hands), (undead aura), (immortal ancient power)
+
+39. chimera.png — Chimera Beast
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (chimera monster), (lion body with goat head on back and dragon head front), (snake tail), (large leathery wings), (fire breathing dragon head), (fierce lion mane), (goat horns on second head), (fearsome three-headed beast)
+
+40. kraken.png — Sea Kraken
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (sea kraken), (massive deep sea cephalopod monster), (dark navy blue body), (dozens of huge tentacles raised), (enormous glowing yellow eyes), (beak visible), (ink cloud aura), (crushing tentacles with suckers), (ancient leviathan)
+
+41. dark_phoenix.png — Dark Phoenix
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (dark phoenix bird), (massive black purple firebird), (wings spread wide made of dark flames), (glowing red orange eyes), (shadow fire trail behind), (purple black feathers burning), (corrupted divine aura), (ethereal dark energy)
+
+42. necromancer.png — Death Necromancer
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (death necromancer), (robed skeleton or undead sorcerer), (dark tattered robes), (glowing green eyes), (staff with skull topper), (summoning green death magic from hands), (bone fragments floating around), (shadow aura)
+
+43. titan.png — Stone Titan
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (stone titan giant), (colossal ancient giant made of stone and earth), (cracked rocky skin), (glowing orange lava cracks in body), (enormous size), (raising fist to smash), (ancient runes glowing on body), (mountains crumbling around feet)
+
+44. demon_lord.png — Demon Lord
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (demon lord), (towering red demon prince), (massive curved horns), (large black bat wings), (hellfire surrounding body), (glowing orange eyes), (dark iron armor), (menacing royal crown of bone), (absolute evil power radiating)
+
+45. bone_dragon.png — Bone Dragon
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (bone dragon undead), (skeleton dragon made entirely of bones), (glowing green necromantic eyes), (tattered wing membranes between bone), (dark death aura), (jaw open breathing death energy), (ancient massive undead dragon)
+
+46. abomination.png — Flesh Abomination
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (flesh abomination monster), (horrific mass of stitched body parts), (multiple arms and eyes in wrong places), (yellow glowing eyes all over body), (stitches and staples holding flesh together), (acid dripping from mouth), (grotesque body horror)
+
+47. void_knight.png — Void Knight
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (void knight), (armored warrior made of pure darkness and void energy), (deep black armor with purple glowing edges), (no visible face only glowing purple eyes in darkness), (void sword crackling with dark energy), (reality warping aura around body)
+
+48. fallen_angel.png — Fallen Angel
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (fallen angel), (beautiful humanoid with broken black wings), (torn white and gold armor stained with darkness), (glowing pink red eyes), (broken halo above head), (dark holy energy in hands), (expression of sorrow and rage), (divine corruption)
+
+49. shadow_emperor.png — Shadow Emperor
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (shadow emperor boss), (supreme dark ruler in black royal armor), (crown made of void energy), (cape of pure darkness flowing behind), (glowing magenta eyes), (absolute darkness surrounding figure), (void energy erupting from hands), (final boss aura of overwhelming power)
+
+50. dragon.png — Shadow Dragon
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (shadow dragon), (massive dark purple scaled dragon), (large bat wings spread), (burning red eyes), (dark flame breath), (curved horns), (glowing purple magic aura), (legendary ancient evil), (imposing final boss size)
+
+==========================================
+GENERATION NOTES
+==========================================
+- Resolution: 1024x1024 → downscale to 256x256
+- Background: pure white (#ffffff) or transparent
+- Style: anime/fantasy game sprite
+- All creatures face FORWARD toward viewer
+- Avoid portrait crops — show the full body
+- Negative prompt suggestion:
+  cropped, cut off, bad anatomy, extra limbs, watermark, text, logo,
+  blurry, low quality, realistic photo, 3d render

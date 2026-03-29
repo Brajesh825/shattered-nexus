@@ -1,0 +1,202 @@
+[
+  {
+    "id": "warrior",
+    "name": "Warrior",
+    "icon": "⚔️",
+    "tag": "Physical / Tank",
+    "description": "Masters of physical combat who fight on the front lines. High HP and DEF with powerful weapon skills.",
+    "color": "#e06030",
+    "stat_multipliers": {
+      "hp": 1.3, "mp": 0.7, "atk": 1.3, "def": 1.2, "spd": 0.9, "mag": 0.7
+    },
+    "abilities": [
+      {
+        "id": "cleave",
+        "name": "Cleave",
+        "icon": "⚔",
+        "mp": 0,
+        "type": "physical",
+        "description": "Heavy strike — 1.6x physical damage",
+        "effect": { "dmgMultiplier": 1.6, "element": "physical" }
+      },
+      {
+        "id": "war_cry",
+        "name": "War Cry",
+        "icon": "📣",
+        "mp": 6,
+        "type": "buff",
+        "description": "Raise ATK by 40% for 3 turns",
+        "effect": { "stat": "atk", "multiplier": 1.4, "duration": 3 }
+      },
+      {
+        "id": "shield_bash",
+        "name": "Shield Bash",
+        "icon": "🛡",
+        "mp": 5,
+        "type": "stun",
+        "description": "60% chance to stun enemy for 1 turn",
+        "effect": { "stunChance": 0.6 }
+      },
+      {
+        "id": "second_wind",
+        "name": "Second Wind",
+        "icon": "💨",
+        "mp": 8,
+        "type": "heal",
+        "description": "Recover 35% of max HP",
+        "effect": { "healBase": 25, "healRandom": 20 }
+      }
+    ],
+    "growthPerLevel": { "hp": 14, "mp": 2, "atk": 4, "def": 3, "spd": 1, "mag": 1 }
+  },
+  {
+    "id": "mage",
+    "name": "Mage",
+    "icon": "🔮",
+    "tag": "Magic / Burst",
+    "description": "Devastating spellcasters who harness fire, ice and lightning. Low defense but unmatched magical power.",
+    "color": "#7050e0",
+    "stat_multipliers": {
+      "hp": 0.7, "mp": 1.5, "atk": 0.7, "def": 0.7, "spd": 1.0, "mag": 1.5
+    },
+    "abilities": [
+      {
+        "id": "fire",
+        "name": "Fire",
+        "icon": "🔥",
+        "mp": 5,
+        "type": "magic_damage",
+        "description": "Fire blast — 2.0x magic damage",
+        "effect": { "dmgMultiplier": 2.0, "element": "fire" }
+      },
+      {
+        "id": "blizzard",
+        "name": "Blizzard",
+        "icon": "❄",
+        "mp": 7,
+        "type": "magic_damage",
+        "description": "Ice shards — 2.5x magic + slow",
+        "effect": { "dmgMultiplier": 2.5, "element": "ice" }
+      },
+      {
+        "id": "thunder",
+        "name": "Thunder",
+        "icon": "⚡",
+        "mp": 9,
+        "type": "magic_damage",
+        "description": "Lightning bolt — 3.0x magic damage",
+        "effect": { "dmgMultiplier": 3.0, "element": "lightning" }
+      },
+      {
+        "id": "mana_shield",
+        "name": "Mana Shield",
+        "icon": "🌀",
+        "mp": 10,
+        "type": "buff",
+        "description": "Convert MP into DEF boost for 2 turns",
+        "effect": { "stat": "def", "multiplier": 1.6, "duration": 2 }
+      }
+    ],
+    "growthPerLevel": { "hp": 5, "mp": 9, "atk": 1, "def": 1, "spd": 1, "mag": 5 }
+  },
+  {
+    "id": "rogue",
+    "name": "Rogue",
+    "icon": "🗡️",
+    "tag": "Speed / Trick",
+    "description": "Swift and cunning fighters who exploit weaknesses. They evade danger and strike when least expected.",
+    "color": "#30a060",
+    "stat_multipliers": {
+      "hp": 0.9, "mp": 1.0, "atk": 1.2, "def": 0.8, "spd": 1.5, "mag": 0.9
+    },
+    "abilities": [
+      {
+        "id": "backstab",
+        "name": "Backstab",
+        "icon": "🗡",
+        "mp": 4,
+        "type": "physical",
+        "description": "Sneak attack — 2.2x damage if enemy is stunned/debuffed",
+        "effect": { "dmgMultiplier": 2.2, "element": "physical" }
+      },
+      {
+        "id": "poison_blade",
+        "name": "Poison Blade",
+        "icon": "☠",
+        "mp": 5,
+        "type": "debuff",
+        "description": "Lower enemy ATK by 35% for 3 turns",
+        "effect": { "stat": "atk", "multiplier": 0.65, "duration": 3 }
+      },
+      {
+        "id": "steal",
+        "name": "Steal",
+        "icon": "💰",
+        "mp": 2,
+        "type": "steal",
+        "description": "70% chance to steal gold from enemy",
+        "effect": { "stealChance": 0.7 }
+      },
+      {
+        "id": "vanish",
+        "name": "Vanish",
+        "icon": "👻",
+        "mp": 0,
+        "type": "run",
+        "description": "Escape from battle instantly",
+        "effect": { "guaranteedRun": true }
+      }
+    ],
+    "growthPerLevel": { "hp": 7, "mp": 3, "atk": 3, "def": 1, "spd": 4, "mag": 1 }
+  },
+  {
+    "id": "healer",
+    "name": "Healer",
+    "icon": "✨",
+    "tag": "Support / Holy",
+    "description": "Sacred magic wielders who mend wounds and purify corruption. Resilient defenders with holy offensive power.",
+    "color": "#d0a030",
+    "stat_multipliers": {
+      "hp": 1.1, "mp": 1.3, "atk": 0.9, "def": 1.1, "spd": 0.9, "mag": 1.2
+    },
+    "abilities": [
+      {
+        "id": "cure",
+        "name": "Cure",
+        "icon": "💚",
+        "mp": 4,
+        "type": "heal",
+        "description": "Restore 30–50 HP",
+        "effect": { "healBase": 30, "healRandom": 20 }
+      },
+      {
+        "id": "regen",
+        "name": "Regen",
+        "icon": "🌱",
+        "mp": 8,
+        "type": "buff",
+        "description": "Heal 8 HP per turn for 4 turns",
+        "effect": { "stat": "hp_regen", "amount": 8, "duration": 4 }
+      },
+      {
+        "id": "holy",
+        "name": "Holy",
+        "icon": "☀",
+        "mp": 10,
+        "type": "magic_damage",
+        "description": "Holy light — 2.4x magic damage",
+        "effect": { "dmgMultiplier": 2.4, "element": "holy" }
+      },
+      {
+        "id": "protect",
+        "name": "Protect",
+        "icon": "🔰",
+        "mp": 6,
+        "type": "buff",
+        "description": "Raise DEF by 50% for 2 turns",
+        "effect": { "stat": "def", "multiplier": 1.5, "duration": 2 }
+      }
+    ],
+    "growthPerLevel": { "hp": 9, "mp": 7, "atk": 2, "def": 2, "spd": 1, "mag": 3 }
+  }
+]

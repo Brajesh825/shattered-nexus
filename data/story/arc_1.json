@@ -1,0 +1,140 @@
+{
+  "id": "arc_1",
+  "number": 1,
+  "name": "The Rift Awakening",
+  "subtitle": "Four strangers, one fractured world",
+  "theme": "Arrival / Trust / Purpose",
+  "location": "The Summoning Grounds to Sacred Ruins of Aethoria",
+  "shard": {
+    "id": "seal_origin",
+    "name": "Seal Fragment of Origin",
+    "description": "A pale white crystal that pulses like a heartbeat. The echo of a world that once was whole.",
+    "color": "#e0e8ff"
+  },
+  "enemies_pool": ["goblin", "bat", "wolf", "spider", "skeleton", "imp"],
+  "boss_enemy": "void_knight",
+  "boss_chapter": {
+    "title": "The Unmade Knight",
+    "background": "sacred_ruins_boss",
+    "pre_dialogue": [
+      { "speaker": "narrator", "emotion": "grave", "text": "The Sacred Ruins of Aethoria. What was once a place of light and ceremony is now a hollow throne of shadow. And on that throne — something waits." },
+      { "speaker": "narrator", "emotion": "ominous", "text": "It was a warrior once. A name. A life. Valdris took both and left only the shape of a soldier, filled with darkness and given one purpose: guard the Seal Fragment. Forever." },
+      { "speaker": "Xiao", "emotion": "grim", "text": "I can feel what it lost. There is no malice in it. Only obedience. That makes it more dangerous, not less." },
+      { "speaker": "Hutao", "emotion": "unusually_quiet", "text": "...I have guided many souls onward. I have never seen one forced to stay like this. This is not death. This is something worse." },
+      { "speaker": "Nilou", "emotion": "sorrowful", "text": "Can we free it? After we —" },
+      { "speaker": "Ayaka", "emotion": "controlled", "text": "We defeat it first. Then we ask that question." },
+      { "speaker": "narrator", "emotion": "tense", "text": "The Void Knight raises its blade. It does not speak. It has forgotten how. The only thing left in it is the order it was given — and the four of them stand between it and that order." }
+    ],
+    "post_dialogue": [
+      { "speaker": "narrator", "emotion": "solemn", "text": "The Void Knight staggers. The darkness holding it together begins to fracture — hairline cracks of pale light splitting through the shadow armor." },
+      { "speaker": "Hutao", "emotion": "quiet", "text": "There. Do you see it? Underneath all that shadow — there is still something in there." },
+      { "speaker": "Xiao", "emotion": "low", "text": "A remnant. It has been in there the whole time." },
+      { "speaker": "narrator", "emotion": "gentle", "text": "The Void Knight goes still. The blade lowers. And for one brief, impossible moment — something like recognition crosses what remains of its face." },
+      { "speaker": "Nilou", "emotion": "soft", "text": "...It remembers. Even now, it remembers." },
+      { "speaker": "narrator", "emotion": "solemn", "text": "Then the shadow collapses inward. The knight crumbles. And where it stood, a pale crystal pulses once — like a heartbeat — and goes quiet. The first Seal Fragment." },
+      { "speaker": "Ayaka", "emotion": "resolved", "text": "One fragment. Four to go. We honour what it was by finishing this." },
+      { "speaker": "Hutao", "emotion": "earnest", "text": "I will remember its name. When we find out what it was — I will remember." },
+      { "speaker": "Xiao", "emotion": "quiet", "text": "...So will I." }
+    ]
+  },
+
+  "chapters": [
+    {
+      "id": "arc1_ch1",
+      "title": "Between Worlds",
+      "type": "cutscene",
+      "background": "summoning_ruins",
+      "scenes": [
+        {
+          "narration": "Silence. Then light — violent, white, all-consuming. Then the sound of breathing that is not one's own.",
+          "dialogue": []
+        },
+        {
+          "narration": "Ayaka lands on cracked stone, sword already drawn by instinct. The ruins around her are ancient and broken. This is not Inazuma.",
+          "dialogue": [
+            { "speaker": "Ayaka", "emotion": "calm", "text": "...Where am I? This architecture resembles nothing in Teyvat records." }
+          ]
+        },
+        {
+          "narration": "A burst of flame ignites nearby as Hu Tao tumbles through a crackling rift, already grinning.",
+          "dialogue": [
+            { "speaker": "Hutao", "emotion": "delighted", "text": "Ohoho~! Now THIS is the most interesting thing that has happened to me all week, and I was chasing a malevolent spirit this morning!" },
+            { "speaker": "Ayaka", "emotion": "surprised", "text": "...You seem remarkably calm for someone who just fell out of thin air." },
+            { "speaker": "Hutao", "emotion": "cheerful", "text": "Funeral directors must stay composed around the unexpected! Also this is exciting, not scary. Very important distinction." }
+          ]
+        },
+        {
+          "narration": "Water cascades from a second rift as Nilou steps through, her dancer instincts keeping her upright.",
+          "dialogue": [
+            { "speaker": "Nilou", "emotion": "awed", "text": "Oh... the stars here are a different color. Did we cross worlds?" },
+            { "speaker": "Hutao", "emotion": "philosophical", "text": "The boundary between worlds is thinner than people think. I have always suspected as much." },
+            { "speaker": "Ayaka", "emotion": "focused", "text": "Whatever brought us here, we should assess before assuming we are safe." }
+          ]
+        },
+        {
+          "narration": "He does not fall through the rift. He steps through it. Xiao surveys the ruins with eyes that have seen the end of things before.",
+          "dialogue": [
+            { "speaker": "Xiao", "emotion": "grim", "text": "This place reeks of karmic contamination. Something ancient has been wounded here." },
+            { "speaker": "Nilou", "emotion": "gentle", "text": "You can sense that? Are you an adeptus?" },
+            { "speaker": "Xiao", "emotion": "flat", "text": "I am the last yaksha. I carry enough karma to recognize when a world is dying. This world is dying." },
+            { "speaker": "Hutao", "emotion": "thoughtful", "text": "A world on the edge of passing, and something called us here rather than letting it go quietly. Rude. I am intrigued." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "arc1_ch2",
+      "title": "The Oracle Call",
+      "type": "battle",
+      "background": "shattered_ruins",
+      "pre_dialogue": [
+        { "speaker": "narrator", "emotion": "tense", "text": "The ruins are not empty. Shadow creatures lurk among the broken columns, drawn to the light of the summoning." },
+        { "speaker": "Xiao", "emotion": "alert", "text": "Shadow-touched. They serve the Emperor. End them." },
+        { "speaker": "Hutao", "emotion": "eager", "text": "I was just starting to feel restless! Let us go!" }
+      ],
+      "post_dialogue": [
+        { "speaker": "Nilou", "emotion": "relieved", "text": "We work well together. Considering we just met." },
+        { "speaker": "Ayaka", "emotion": "composed", "text": "I am Kamisato Ayaka. I am glad to have met warriors of your caliber." },
+        { "speaker": "Hutao", "emotion": "cheerful", "text": "Hu Tao, 77th Director of Wangsheng Funeral Parlor! Amateur poet! Very pleased!" },
+        { "speaker": "Xiao", "emotion": "quiet", "text": "Xiao. We can trade names later. We are being watched." }
+      ]
+    },
+    {
+      "id": "arc1_ch3",
+      "title": "What the Oracle Knows",
+      "type": "cutscene",
+      "background": "oracle_chamber",
+      "scenes": [
+        {
+          "narration": "At the heart of the ruins stands a figure barely corporeal, wrapped in flickering light. The Oracle of Aethoria.",
+          "dialogue": [
+            { "speaker": "narrator", "emotion": "solemn", "text": "Oracle: I called you from the furthest reaches of existence. Four who carry the resonance of the broken Seals. Forgive me — I had no right. And yet I had no choice." },
+            { "speaker": "Xiao", "emotion": "direct", "text": "Explain." },
+            { "speaker": "narrator", "emotion": "grave", "text": "Oracle: The Shadow Emperor Valdris has shattered four of the Five Elemental Seals. When the final Seal breaks, every world connected to Aethoria will be consumed — including yours." }
+          ]
+        },
+        {
+          "narration": "Ayaka tightens her grip. Nilou catches her breath. Hutao tilts her head with professional interest. Xiao closes his eyes.",
+          "dialogue": [
+            { "speaker": "Ayaka", "emotion": "resolved", "text": "If our worlds are at risk, we have no choice but to act. What must be done?" },
+            { "speaker": "narrator", "emotion": "urgent", "text": "Oracle: Valdris draws power from four Seal Fragments scattered as anchors across Aethoria. Destroy them, and he will be weak enough to face directly." },
+            { "speaker": "Hutao", "emotion": "grinning", "text": "A scavenger hunt for ancient doom-crystals. Much more interesting than the average Tuesday." },
+            { "speaker": "Nilou", "emotion": "determined", "text": "Tell us where to go. We will handle the rest." },
+            { "speaker": "narrator", "emotion": "solemn", "text": "Oracle: The first Fragment lies in the Sacred Ruins, guarded by the Void Knight — a warrior Valdris unmade and rebuilt in shadow." },
+            { "speaker": "Ayaka", "emotion": "calm", "text": "It never does." }
+          ]
+        },
+        {
+          "narration": "As they turn to leave, a cold stillness descends over the ruins. The air pressure drops. The shadows around the chamber's edge lengthen — inward, toward the four of them — without any source of light changing.",
+          "dialogue": [
+            { "speaker": "Xiao", "emotion": "tense", "text": "Something is watching." },
+            { "speaker": "Hutao", "emotion": "unusually_quiet", "text": "...I feel it too. Something very, very old." },
+            { "speaker": "Nilou", "emotion": "steady", "text": "It is not the Oracle." },
+            { "speaker": "Ayaka", "emotion": "controlled", "text": "No. It is not." },
+            { "speaker": "narrator", "emotion": "ominous", "text": "No voice. No form. Only the absolute, bone-deep certainty that whatever waits at the end of this road already knows their names. Has always known their names. And is in no hurry at all." }
+          ]
+        }
+      ]
+    }
+  ]
+}

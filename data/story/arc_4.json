@@ -1,0 +1,121 @@
+{
+  "id": "arc_4",
+  "number": 4,
+  "name": "The Void Gates",
+  "subtitle": "The Emperor watches from every shadow",
+  "theme": "Doubt / Strength / The nature of darkness",
+  "location": "Shadow Reach to the Fortress Outer Gate",
+  "shard": {
+    "id": "seal_wind",
+    "name": "Seal Fragment of Wind",
+    "description": "A swirling green-gold crystal that moves like trapped breath. It whispers — not words, just the impression of them.",
+    "color": "#86efac"
+  },
+  "enemies_pool": ["necromancer", "bone_dragon", "void_knight", "dark_phoenix", "abomination", "titan"],
+  "boss_enemy": "fallen_angel",
+  "chapters": [
+    {
+      "id": "arc4_ch1",
+      "title": "The Emperor Speaks",
+      "type": "cutscene",
+      "background": "shadow_citadel",
+      "scenes": [
+        {
+          "narration": "The Shadow Reach is where Valdris's power is absolute — perpetual half-dark, where even shadows cast shadows. The air tastes like the moment before a storm that never arrives.",
+          "dialogue": []
+        },
+        {
+          "narration": "A voice fills the air — not through sound, but through the space between thoughts. No echo. No direction. Everywhere at once.",
+          "dialogue": [
+            { "speaker": "narrator", "emotion": "sinister", "text": "Valdris: Four Seal Fragments reclaimed. I confess I did not expect you to reach this gate intact. The Oracle made a better choice than I gave her credit for." },
+            { "speaker": "Xiao", "emotion": "cold", "text": "You speak to distract. It will not work." },
+            { "speaker": "narrator", "emotion": "measured", "text": "Valdris: No. I speak because I am curious. A yaksha who has carried karmic contamination for two thousand years — every demon you devoured left a scar, and you kept going. That is either extraordinary will or extraordinary self-destruction. I have not decided which." },
+            { "speaker": "Xiao", "emotion": "tense", "text": "..." },
+            { "speaker": "narrator", "emotion": "turning", "text": "Valdris: The funeral director. You have been around death long enough to know it does not frighten you — but you have never truly faced the possibility that all that poetry and laughter might simply... stop. Have you?" },
+            { "speaker": "Hutao", "emotion": "flat", "text": "I provide a service to those experiencing a natural transition. There is a difference between my death and the ones I manage." },
+            { "speaker": "narrator", "emotion": "contemptuous", "text": "Valdris: Is there? You are very convincing. You almost convinced yourself." },
+            { "speaker": "Hutao", "emotion": "quiet", "text": "..." },
+            { "speaker": "narrator", "emotion": "soft_contempt", "text": "Valdris: The dancer with the water that answers her. The princess who carries the weight of a name larger than herself. I know all four of you better than you know each other. I have been patient. I have had time." },
+            { "speaker": "Nilou", "emotion": "resolved", "text": "You spoke to me in the water. You tried to make hopelessness feel reasonable. It did not work." },
+            { "speaker": "narrator", "emotion": "unmoved", "text": "Valdris: No. But it planted something. It always does. You will feel it in the gate — when the Fallen Angel comes at you and you wonder, just for a moment, if breaking beautiful things is the only honest act left in this world." },
+            { "speaker": "Ayaka", "emotion": "composed", "text": "Then we will answer that question by not breaking. Move. Together." }
+          ]
+        },
+        {
+          "narration": "The voice pulls back — not gone, just watching from a greater distance. Nilou lets out a slow, controlled breath.",
+          "dialogue": [
+            { "speaker": "Nilou", "emotion": "honest", "text": "He knew things. Specific things. Not just who we are — how we think." },
+            { "speaker": "Xiao", "emotion": "quiet", "text": "I have carried karma for two thousand years. I have been afraid before. I fought anyway. That is the only answer that matters." },
+            { "speaker": "Hutao", "emotion": "direct", "text": "...Knowing someone and stopping them are very different problems. He knows us. We are about to stop him. Advantage: ours." },
+            { "speaker": "Ayaka", "emotion": "warm", "text": "Well said. Both of you." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "arc4_ch2",
+      "title": "Breaking the Gate",
+      "type": "battle",
+      "background": "fortress_gate",
+      "pre_dialogue": [
+        { "speaker": "narrator", "emotion": "heavy", "text": "The Fallen Angel guards the fortress gate — a celestial warrior torn from divinity and rebuilt in Valdris's image. Vast wings of compressed shadow. Eyes with no memory of what they once were." },
+        { "speaker": "Xiao", "emotion": "somber", "text": "She was something sacred once. The shadow takes what is strong and breaks it into tools." },
+        { "speaker": "Ayaka", "emotion": "resolved", "text": "Then we undo what he made of her. One way or another." }
+      ],
+      "post_dialogue": [
+        { "speaker": "narrator", "emotion": "solemn", "text": "The Fallen Angel's shadow-form cracks. Light pours through the fractures — old light, from before the corruption. The Seal Fragment of Wind rises free, bright and clean." },
+        { "speaker": "Nilou", "emotion": "moved", "text": "Every time we free one of these... it feels like something unclenching. Like a held breath, finally released." },
+        { "speaker": "Hutao", "emotion": "serious", "text": "Four Seal Fragments. Four fights. Now we face the Emperor directly. I would be lying if I said I was not a little nervous." },
+        { "speaker": "Xiao", "emotion": "quiet", "text": "That is good. Nervousness keeps you precise." },
+        { "speaker": "Ayaka", "emotion": "steady", "text": "Together. That is how we have done everything else. That is how we will finish this." }
+      ]
+    },
+    {
+      "id": "arc4_ch3",
+      "title": "Cold Silence",
+      "type": "cutscene",
+      "background": "shadow_citadel_inner",
+      "scenes": [
+        {
+          "narration": "The Wind Fragment settles into their hands. For a moment the fortress is still — the kind of still that comes before a sentence is finished.",
+          "dialogue": [
+            { "speaker": "narrator", "emotion": "cold", "text": "Valdris: I made her." },
+            { "speaker": "Xiao", "emotion": "tense", "text": "..." },
+            { "speaker": "narrator", "emotion": "quiet_cold", "text": "Valdris: Centuries. Every flaw of her original form — corrected. Every limitation of divinity — stripped away. She was perfect. And you dismantled her in minutes." },
+            { "speaker": "Hutao", "emotion": "direct", "text": "She was not yours to make." },
+            { "speaker": "narrator", "emotion": "dangerous", "text": "Valdris: Everything in this world is mine. I built this silence over six hundred years. Bone by bone. World by world. You are four visitors with borrowed time, chipping at the edges of something you cannot comprehend." },
+            { "speaker": "Ayaka", "emotion": "calm", "text": "We do not need to comprehend it. We just need to end it." },
+            { "speaker": "narrator", "emotion": "precise_menace", "text": "Valdris: Then come through that gate. Into the heart of everything I have become. And we will not ask who is stronger. We will ask — who is willing to pay the full cost of being right?" },
+            { "speaker": "narrator", "emotion": "ominous", "text": "Valdris: I already paid mine. Centuries ago. The only question is whether you are ready to pay yours." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "arc4_ch4",
+      "title": "Before the Final Door",
+      "type": "cutscene",
+      "background": "inner_gate",
+      "scenes": [
+        {
+          "narration": "The four stand before the last door — a gate of pure compressed shadow, the boundary between the fortress and the Emperor's inner sanctum.",
+          "dialogue": [
+            { "speaker": "Hutao", "emotion": "quiet", "text": "I keep thinking about the people back in Liyue. The contracts I left on my desk." },
+            { "speaker": "Nilou", "emotion": "soft", "text": "I think about the Grand Bazaar. The crowd. The music starting. Whether they are wondering where I went." },
+            { "speaker": "Ayaka", "emotion": "wistful", "text": "My brother. He will be searching. He always knows when something has gone wrong." },
+            { "speaker": "Xiao", "emotion": "honest", "text": "I think about whether I will see Liyue again. The lanterns at Lantern Rite. I did not know I valued those things until the possibility of losing them became real." }
+          ]
+        },
+        {
+          "narration": "A beat of shared silence. These were strangers two weeks ago.",
+          "dialogue": [
+            { "speaker": "Hutao", "emotion": "grinning", "text": "Well! Now that we have all gotten properly sentimental — shall we go end an Emperor?" },
+            { "speaker": "Nilou", "emotion": "bright", "text": "Let us." },
+            { "speaker": "Ayaka", "emotion": "resolute", "text": "For Aethoria. For our own worlds. Let us not fail." },
+            { "speaker": "Xiao", "emotion": "ready", "text": "...Let us not." }
+          ]
+        }
+      ]
+    }
+  ]
+}

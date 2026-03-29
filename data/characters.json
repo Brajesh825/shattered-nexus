@@ -1,0 +1,151 @@
+[
+  {
+    "id": "ayaka",
+    "name": "Ayaka",
+    "title": "The Cryo Princess",
+    "gender": "female",
+    "age": 19,
+    "origin": "Inazuma, the Eternal Kingdom",
+    "description": "The eldest daughter of the Kamisato Clan, summoned mid-prayer to a world unknown. She fights with precise, frozen grace — every strike a bloom of ice.",
+    "personality": "Graceful, noble, quietly fierce",
+    "icon": "❄️",
+    "portrait_color": "#7dd3fc",
+    "hair_color": "#c0e8ff",
+    "skin_color": "#f8e8ff",
+    "armor_color": "#4b9fce",
+    "base_stats": {
+      "hp": 65,
+      "mp": 30,
+      "atk": 16,
+      "def": 12,
+      "spd": 18,
+      "mag": 14
+    },
+    "stat_bonuses": {
+      "spd": 3,
+      "atk": 2
+    },
+    "class_affinity": [
+      "rogue",
+      "warrior"
+    ],
+    "passive": {
+      "id": "frostflake",
+      "name": "Frostflake Dance",
+      "description": "Ayaka always acts first in battle — +3 SPD bonus and attacks carry a cryo edge."
+    },
+    "lore": "Torn from her world mid-prayer at the Kamisato estate. The last thing she saw was cherry blossoms — the first thing she felt was the cold darkness of the rift."
+  },
+  {
+    "id": "hutao",
+    "name": "Hu Tao",
+    "title": "The Ghost Guide",
+    "gender": "female",
+    "age": 20,
+    "origin": "Liyue, the Harbor of Stone",
+    "description": "Director of the Wangsheng Funeral Parlor and amateur poet. She was chasing a runaway spirit when the rift swallowed her whole — she considers it a professional hazard.",
+    "personality": "Mischievous, death-obsessed, surprisingly caring",
+    "icon": "🔥",
+    "portrait_color": "#ef4444",
+    "hair_color": "#4a2020",
+    "skin_color": "#f5c8a0",
+    "armor_color": "#c03010",
+    "base_stats": {
+      "hp": 50,
+      "mp": 22,
+      "atk": 20,
+      "def": 7,
+      "spd": 14,
+      "mag": 12
+    },
+    "stat_bonuses": {
+      "atk": 4,
+      "spd": 2
+    },
+    "class_affinity": [
+      "warrior",
+      "rogue"
+    ],
+    "passive": {
+      "id": "blood_blossom",
+      "name": "Blood Blossom",
+      "description": "When HP drops below 50%, ATK increases by 35%. Life fuels the flame."
+    },
+    "lore": "She once wrote a poem about her own funeral — three stanzas in, she realized she was genuinely enjoying it. Wangsheng Funeral Parlor has never known a more dedicated Director."
+  },
+  {
+    "id": "nilou",
+    "name": "Nilou",
+    "title": "The Star Dancer",
+    "gender": "female",
+    "age": 18,
+    "origin": "Sumeru, the City of Scholars",
+    "description": "A dancer of the Grand Bazaar, beloved by all who see her perform. She was dancing at the edge of the sacred pool when the summoning light carried her away.",
+    "personality": "Gentle, radiant, courageous at heart",
+    "icon": "💧",
+    "portrait_color": "#2dd4bf",
+    "hair_color": "#40d0c0",
+    "skin_color": "#f0d8c0",
+    "armor_color": "#0e9080",
+    "base_stats": {
+      "hp": 72,
+      "mp": 42,
+      "atk": 10,
+      "def": 13,
+      "spd": 11,
+      "mag": 20
+    },
+    "stat_bonuses": {
+      "hp": 8,
+      "mp": 8,
+      "mag": 4
+    },
+    "class_affinity": [
+      "healer",
+      "mage"
+    ],
+    "passive": {
+      "id": "dance_of_haftkarsvar",
+      "name": "Dance of Haftkarsvar",
+      "description": "All healing effects are amplified by 30%. Her dance brings life to all."
+    },
+    "lore": "She used to worry that her dancing was not grand enough for the gods. The moment she stepped through the rift, sword in hand, she stopped worrying about that."
+  },
+  {
+    "id": "xiao",
+    "name": "Xiao",
+    "title": "The Last Yaksha",
+    "gender": "male",
+    "age": 2000,
+    "origin": "Liyue, Guardian of the Mountain",
+    "description": "A guardian yaksha who has carried karmic debt for two thousand years. He arrived in this world following the scent of malevolent energy — and stayed because the darkness called to him by name.",
+    "personality": "Stoic, solitary, fiercely protective",
+    "icon": "🌀",
+    "portrait_color": "#4ade80",
+    "hair_color": "#1a6040",
+    "skin_color": "#d8e8c0",
+    "armor_color": "#0a4030",
+    "base_stats": {
+      "hp": 80,
+      "mp": 18,
+      "atk": 18,
+      "def": 16,
+      "spd": 13,
+      "mag": 8
+    },
+    "stat_bonuses": {
+      "atk": 3,
+      "def": 3
+    },
+    "class_affinity": [
+      "warrior",
+      "rogue"
+    ],
+    "passive": {
+      "id": "yakshas_valor",
+      "name": "Yaksha's Valor",
+      "description": "Takes 10% reduced damage. ATK +15% from karmic resolve."
+    },
+    "lore": "He has slain ten thousand demons. He does not speak of it. The shadows in this new world smell the same as the ones he burned long ago — and that is enough to make him stay."
+  }
+]

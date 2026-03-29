@@ -1,0 +1,540 @@
+/* ══════════════════════════════════════════════════════
+   map.css  —  World Map + Explore Screen
+   Supplements style.css
+   New visual style: Cinzel serif headings, gold border UI,
+   vignette canvas, cinematic map-select overlay.
+   ══════════════════════════════════════════════════════ */
+
+/* ── Font variables (augment style.css) ─────────────── */
+:root {
+  --cinzel:  'Cinzel', serif;
+  --crimson: 'Crimson Pro', Georgia, serif;
+
+  /* Explore-screen palette */
+  --ex-gold:       #c8a45a;
+  --ex-gold2:      #e8c87a;
+  --ex-ui-bg:      rgba(6, 4, 14, 0.84);
+  --ex-ui-border:  rgba(200, 164, 90, 0.32);
+  --ex-parchment:  #f2e8c8;
+}
+
+/* ══════════════════════════════════════════════════════
+   WORLD MAP SCREEN
+   ══════════════════════════════════════════════════════ */
+
+#map-screen {
+  min-height: 520px;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 20%, #100830 0%, transparent 65%),
+    radial-gradient(ellipse 50% 70% at 20% 80%, #060428 0%, transparent 55%),
+    #03020c;
+  align-items: stretch;
+}
+
+.map-header {
+  flex-shrink: 0;
+  padding: 16px 22px 12px;
+  text-align: center;
+  border-bottom: 1px solid #1a1050;
+  background: linear-gradient(180deg, rgba(10,5,28,0.9) 0%, transparent 100%);
+}
+
+.map-title-label {
+  font-family: var(--px);
+  font-size: 10px;
+  color: var(--gold);
+  letter-spacing: 4px;
+  text-shadow: 0 0 20px var(--gold-glow);
+}
+
+.map-arc-label {
+  font-family: var(--vt);
+  font-size: 22px;
+  color: #7060b0;
+  margin-top: 4px;
+  letter-spacing: 2px;
+}
+
+.map-area {
+  flex: 1 1 0;
+  position: relative;
+  min-height: 0;
+  margin: 14px 20px 4px;
+}
+
+.map-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* ── Map Nodes ────────────────────────────────────────── */
+.map-node {
+  position: absolute;
+  width: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  cursor: default;
+  transition: transform .2s ease;
+}
+.map-node:hover { transform: translateY(-3px); }
+
+.mn-status {
+  font-family: var(--px);
+  font-size: 6px;
+  letter-spacing: 0.5px;
+  color: #3a2860;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+  min-height: 10px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.mn-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 2px solid #2a1860;
+  background: rgba(5, 4, 20, 0.88);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  transition: border-color .3s, box-shadow .3s;
+  flex-shrink: 0;
+}
+
+.mn-num {
+  font-family: var(--px);
+  font-size: 6.5px;
+  color: #3a2870;
+  letter-spacing: 1px;
+  text-align: center;
+  white-space: nowrap;
+  margin-top: 5px;
+}
+
+.mn-name {
+  font-family: var(--vt);
+  font-size: 14px;
+  color: #5040a0;
+  text-align: center;
+  line-height: 1.1;
+  max-width: 80px;
+  word-break: break-word;
+  margin-top: 1px;
+}
+
+/* Node states */
+.map-node.done .mn-status { color: #44c060; }
+.map-node.done .mn-icon {
+  border-color: #4a3890;
+  background: rgba(30,20,60,0.9);
+  box-shadow: 0 0 10px #4a389040;
+}
+.map-node.done .mn-num  { color: #7060a0; }
+.map-node.done .mn-name { color: #7060a0; }
+
+.map-node.current .mn-status { color: var(--gold); }
+.map-node.current .mn-icon {
+  border-color: var(--gold);
+  background: rgba(40,28,80,0.95);
+  box-shadow: 0 0 18px var(--gold-glow), 0 0 32px #f5d06020;
+  animation: glowPulse 2s ease-in-out infinite;
+}
+.map-node.current .mn-num  { color: var(--gold); }
+.map-node.current .mn-name { color: #c0b0e8; font-size: 15px; }
+
+.map-node.next { cursor: pointer; }
+.map-node.next .mn-status { color: #60a8f0; }
+.map-node.next .mn-icon {
+  border-color: #5080c0;
+  background: rgba(10,20,50,0.92);
+  box-shadow: 0 0 14px #508090, 0 0 28px #50809030;
+  animation: glowPulse 2.5s ease-in-out infinite;
+}
+.map-node.next .mn-num  { color: #6090c0; }
+.map-node.next .mn-name { color: #90c0e8; }
+
+.map-node.locked .mn-status { color: #221840; }
+.map-node.locked .mn-icon {
+  opacity: 0.35;
+  filter: grayscale(1);
+}
+.map-node.locked .mn-num  { color: #2a2040; }
+.map-node.locked .mn-name { color: #2a2040; }
+
+/* Map info bar */
+.map-info-bar {
+  flex-shrink: 0;
+  padding: 10px 22px 8px;
+  text-align: center;
+  min-height: 52px;
+  border-top: 1px solid #12102040;
+}
+
+.map-info-name {
+  font-family: var(--px);
+  font-size: 11px;
+  color: #c0b0e8;
+  letter-spacing: 2px;
+}
+
+.map-info-loc {
+  font-family: var(--vt);
+  font-size: 17px;
+  color: #5040a0;
+  margin-top: 3px;
+  letter-spacing: 1px;
+}
+
+/* ══════════════════════════════════════════════════════
+   EXPLORE SCREEN
+   ══════════════════════════════════════════════════════ */
+
+#explore-screen {
+  height: 100%;
+  min-height: 500px;
+  background: #06040e;
+}
+
+/* ── Cinematic header bar ────────────────────────────── */
+.explore-header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+  height: 48px;
+  background: linear-gradient(180deg, rgba(6,4,14,0.98) 0%, rgba(6,4,14,0) 100%);
+  /* Sits above canvas via z-index but is part of flex flow */
+  position: relative;
+  z-index: 20;
+  border-bottom: 1px solid rgba(200,164,90,0.12);
+}
+
+.explore-header-left {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+}
+
+/* Map name — Cinzel serif gold */
+.explore-map-name {
+  font-family: var(--cinzel);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ex-gold2);
+  letter-spacing: 0.12em;
+  text-shadow: 0 0 18px rgba(232,200,122,0.45);
+}
+
+/* Subtle movement hint beside the name */
+.explore-map-hint {
+  font-family: var(--crimson);
+  font-size: 13px;
+  font-style: italic;
+  font-weight: 300;
+  color: rgba(242,232,200,0.35);
+  letter-spacing: 0.06em;
+}
+
+/* Exit button — gold border, Cinzel */
+.explore-back-btn {
+  font-family: var(--cinzel);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  padding: 7px 14px;
+  background: var(--ex-ui-bg);
+  border: 1px solid var(--ex-ui-border);
+  color: rgba(200,164,90,0.7);
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+  transition: color .18s, border-color .18s, background .18s;
+  white-space: nowrap;
+}
+.explore-back-btn:hover {
+  background: rgba(200,164,90,0.1);
+  border-color: rgba(200,164,90,0.65);
+  color: var(--ex-gold2);
+}
+
+/* ── Canvas wrap ─────────────────────────────────────── */
+#explore-canvas-wrap {
+  flex: 1 1 0;
+  min-height: 0;
+  position: relative;
+  overflow: hidden;
+  background: #050210;
+}
+
+#explore-canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+/* ── Map select overlay — cinematic ──────────────────── */
+#map-select-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 55%, rgba(18,10,40,0.94) 0%, rgba(6,4,14,0.99) 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  z-index: 10;
+}
+
+/* Inner card that holds crest + title + buttons */
+.map-sel-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+/* Large decorative crest emoji */
+.map-sel-crest {
+  font-size: 36px;
+  margin-bottom: 14px;
+  filter: drop-shadow(0 0 16px rgba(200,164,90,0.5));
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Main heading — Cinzel gold */
+.map-sel-title {
+  font-family: var(--cinzel);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ex-gold2);
+  letter-spacing: 0.16em;
+  text-shadow: 0 0 28px rgba(232,200,122,0.4);
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+/* Italic subheading */
+.map-sel-sub {
+  font-family: var(--crimson);
+  font-size: 16px;
+  font-style: italic;
+  font-weight: 300;
+  color: rgba(242,232,200,0.4);
+  letter-spacing: 0.06em;
+  margin-bottom: 28px;
+}
+
+/* Horizontal gold rule between subtitle and buttons */
+.map-sel-inner::after {
+  content: '';
+  display: block;
+  width: 180px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(200,164,90,0.4), transparent);
+  margin: -20px 0 20px;
+}
+
+/* Region buttons — Cinzel, gold border, shimmer sweep */
+.map-sel-btn {
+  font-family: var(--cinzel);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--ex-gold2);
+  background: rgba(200,164,90,0.05);
+  border: 1px solid rgba(200,164,90,0.28);
+  padding: 13px 40px;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  min-width: 260px;
+  text-align: center;
+  margin-bottom: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Shimmer sweep on hover */
+.map-sel-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(200,164,90,0.09), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.4s ease;
+}
+.map-sel-btn:hover::before { transform: translateX(100%); }
+
+.map-sel-btn:hover {
+  border-color: rgba(200,164,90,0.7);
+  background: rgba(200,164,90,0.11);
+  color: #fff;
+  text-shadow: 0 0 12px rgba(232,200,122,0.55);
+}
+
+/* ── Encounter flash (ember vignette) ────────────────── */
+#explore-flash {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(ellipse at 50% 50%,
+    rgba(224,96,48,0) 30%,
+    rgba(224,96,48,0.55) 100%);
+  transition: opacity 0.08s ease;
+}
+#explore-flash.show { opacity: 1; }
+
+/* ── Notification banner ─────────────────────────────── */
+#explore-notif {
+  position: absolute;
+  top: 58px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 40;
+  background: var(--ex-ui-bg);
+  border: 1px solid var(--ex-ui-border);
+  padding: 9px 26px;
+  font-family: var(--cinzel);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--ex-gold2);
+  text-align: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.28s ease;
+  white-space: nowrap;
+  backdrop-filter: blur(6px);
+  text-shadow: 0 0 10px rgba(232,200,122,0.38);
+}
+#explore-notif.show { opacity: 1; }
+
+/* ── Party HUD (bottom-left of canvas wrap) ──────────── */
+#explore-party-hud {
+  position: absolute;
+  bottom: 44px; /* sits above loc bar */
+  left: 14px;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  pointer-events: none;
+}
+
+.ex-hud-member {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--ex-ui-bg);
+  border: 1px solid var(--ex-ui-border);
+  border-left: 2px solid var(--ex-gold);
+  padding: 5px 9px 5px 7px;
+  min-width: 162px;
+  backdrop-filter: blur(4px);
+  position: relative;
+  overflow: hidden;
+}
+
+.ex-hud-avatar {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: rgba(200,164,90,0.12);
+  border: 1px solid rgba(200,164,90,0.28);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; flex-shrink: 0;
+}
+
+.ex-hud-info { flex: 1; min-width: 0; }
+
+.ex-hud-name {
+  font-family: var(--cinzel);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  color: var(--ex-gold2);
+  margin-bottom: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ex-hud-bar-wrap {
+  height: 3px;
+  background: rgba(255,255,255,0.07);
+  overflow: hidden;
+}
+
+.ex-hud-bar-fill {
+  height: 100%;
+  transition: width 0.4s ease, background 0.4s ease;
+  position: relative;
+}
+.ex-hud-bar-fill::after {
+  content: '';
+  position: absolute; right: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: rgba(255,255,255,0.55);
+}
+
+.ex-hud-hp {
+  font-size: 9px;
+  color: rgba(242,232,200,0.4);
+  margin-top: 2px;
+  font-style: italic;
+  font-family: var(--crimson);
+}
+
+/* ── Minimap (bottom-right of canvas wrap) ───────────── */
+#explore-minimap-wrap {
+  position: absolute;
+  bottom: 44px;
+  right: 14px;
+  z-index: 20;
+  background: var(--ex-ui-bg);
+  border: 1px solid var(--ex-ui-border);
+  padding: 9px;
+  backdrop-filter: blur(4px);
+  pointer-events: none;
+}
+
+.ex-minimap-label {
+  font-family: var(--cinzel);
+  font-size: 7px;
+  letter-spacing: 0.12em;
+  color: rgba(200,164,90,0.55);
+  text-align: center;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+}
+
+#explore-minimap { display: block; }
+
+/* ── Slim bottom hint bar ────────────────────────────── */
+.explore-loc-bar {
+  flex-shrink: 0;
+  padding: 5px 16px;
+  background: rgba(4,2,12,0.94);
+  border-top: 1px solid rgba(200,164,90,0.08);
+  height: 28px;
+  display: flex;
+  align-items: center;
+}
+
+#explore-loc {
+  font-family: var(--crimson);
+  font-size: 14px;
+  font-style: italic;
+  font-weight: 300;
+  color: rgba(200,164,90,0.35);
+  letter-spacing: 0.05em;
+}

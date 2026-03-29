@@ -1,0 +1,122 @@
+{
+  "id": "arc_2",
+  "number": 2,
+  "name": "The Scorched Kingdom",
+  "subtitle": "Where fire was meant to warm, not consume",
+  "theme": "Loss / Resolve / The cost of inaction",
+  "location": "Ember Wastes to Kingdom of Ashveil",
+  "shard": {
+    "id": "seal_fire",
+    "name": "Seal Fragment of Fire",
+    "description": "A smoldering red-orange crystal that burns without fuel. A fire that remembers what it used to protect.",
+    "color": "#f97316"
+  },
+  "enemies_pool": ["zombie", "werewolf", "imp", "scarecrow", "harpy", "minotaur"],
+  "boss_enemy": "demon_lord",
+  "chapters": [
+    {
+      "id": "arc2_ch1",
+      "title": "Ashes of Ashveil",
+      "type": "cutscene",
+      "background": "burning_kingdom",
+      "scenes": [
+        {
+          "narration": "The Kingdom of Ashveil was once the jewel of Aethoria. Now it is a canvas of smoke and silence. Buildings that stood for centuries are rubble.",
+          "dialogue": []
+        },
+        {
+          "narration": "Nilou kneels beside the remains of a public garden — flowers reduced to ash, a fountain cracked and dry.",
+          "dialogue": [
+            { "speaker": "Nilou", "emotion": "sorrowful", "text": "There were people here. Families. There is a child's shoe by that wall." },
+            { "speaker": "Hutao", "emotion": "quiet", "text": "...There is no one left to guide them across. That bothers me more than it should." },
+            { "speaker": "Ayaka", "emotion": "pained", "text": "This is what happens when darkness is left unopposed. I have seen what fear-driven choices cost people." }
+          ]
+        },
+        {
+          "narration": "An old keeper, burned and barely standing, watches them with hollow eyes.",
+          "dialogue": [
+            { "speaker": "narrator", "emotion": "grave", "text": "Old Keeper: You are not shadow-soldiers. You are real. I have not seen that in weeks." },
+            { "speaker": "Xiao", "emotion": "direct", "text": "The demon lord who did this — where is he?" },
+            { "speaker": "narrator", "emotion": "fearful", "text": "Old Keeper: The throne room. He has the red crystal — says it feeds him, that he will use it to call the Emperor here." },
+            { "speaker": "Hutao", "emotion": "dark", "text": "Calling the Emperor through a Fragment. Clever. In a catastrophically evil way." },
+            { "speaker": "Ayaka", "emotion": "resolved", "text": "Then we take it from him first." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "arc2_ch2",
+      "title": "Through the Ember Wastes",
+      "type": "battle",
+      "enemy_id": "zombie",
+      "background": "scorched_wastes",
+      "pre_dialogue": [
+        { "speaker": "narrator", "emotion": "tense", "text": "The path to the throne room cuts through ruins patrolled by shadow-corrupted beasts and undead soldiers." },
+        { "speaker": "Xiao", "emotion": "cold", "text": "They were soldiers once. Now they are instruments. Do not hesitate." },
+        { "speaker": "Hutao", "emotion": "focused", "text": "No sentimentality until after the fight. Then we can be sad properly." }
+      ],
+      "post_dialogue": [
+        { "speaker": "Nilou", "emotion": "steady", "text": "I keep thinking about those people who lived here. That is why we cannot stop." },
+        { "speaker": "Ayaka", "emotion": "warm", "text": "Hold onto that. It is a better reason to fight than duty alone." },
+        { "speaker": "Hutao", "emotion": "sincere", "text": "People who lose everything make the best companions. You stop taking things for granted." },
+        { "speaker": "Xiao", "emotion": "quiet", "text": "Move. The demon lord will not wait." }
+      ]
+    },
+    {
+      "id": "arc2_ch3",
+      "title": "The Cinder Passage",
+      "type": "explore",
+      "map": "crystal_cavern",
+      "background": "scorched_wastes",
+      "pre_dialogue": [
+        { "speaker": "narrator", "emotion": "tense", "text": "The direct path to the throne room is collapsed — floors caved in, walls crumbled to slag. There is only one way through: the old cinder passage beneath the city." },
+        { "speaker": "Ayaka", "emotion": "resolved", "text": "The underground tunnels. The old keeper mentioned them. They connect beneath the palace." },
+        { "speaker": "Hutao", "emotion": "delighted", "text": "Crawling through the underbelly of a ruined kingdom? I have done worse before breakfast. Lead on!" },
+        { "speaker": "Xiao", "emotion": "alert", "text": "The passage will not be empty. Stay together. Stay sharp." },
+        { "speaker": "Nilou", "emotion": "steady", "text": "Then we move. Together." }
+      ],
+      "map_hint": "Navigate the cinder passage — reach the palace entrance on the other side.",
+      "post_dialogue": [
+        { "speaker": "narrator", "emotion": "quiet", "text": "The passage opens into the palace undercroft. Scorched columns rise around them, and at the far end — a set of great doors, sealed with shadow fire." },
+        { "speaker": "Hutao", "emotion": "cheerful", "text": "Look at that. We made it through without getting horribly lost. I am genuinely impressed with us." },
+        { "speaker": "Xiao", "emotion": "grim", "text": "The throne room is beyond those doors. He knows we are here." },
+        { "speaker": "Ayaka", "emotion": "controlled", "text": "Then we do not make him wait." }
+      ]
+    }
+  ],
+
+  "boss_chapter": {
+    "title": "The Throne of Cinders",
+    "background": "throne_room",
+    "pre_dialogue": [
+      { "speaker": "narrator", "emotion": "intense", "text": "The Demon Lord sits on Ashveil's stolen throne, the fire Seal Fragment pulsing against his chest like a second heartbeat. The heat in the room is not natural. It presses against skin like a hand that has not decided whether to push or hold." },
+      { "speaker": "narrator", "emotion": "sinister", "text": "Demon Lord: Summoned warriors. How quaint. Valdris will be amused that you died before reaching him." },
+      { "speaker": "Hutao", "emotion": "bright", "text": "Ohoho~! Bold last words for someone about to learn what a funeral director can really do!" },
+      { "speaker": "Nilou", "emotion": "steady", "text": "That Fragment does not belong to you. It never did. Give it back to the world you took it from." },
+      { "speaker": "Xiao", "emotion": "flat", "text": "We have faced worse. Much worse. This ends now." }
+    ],
+    "post_dialogue": [
+      { "speaker": "narrator", "emotion": "solemn", "text": "The Demon Lord falls. Not with a roar — with a sound like an exhale. Like something holding its breath for a very long time finally letting go." },
+      { "speaker": "narrator", "emotion": "quiet", "text": "The red crystal floats free from the ash. Its burning light shifts — from predatory to something older. Warmer. Like a hearthfire that remembers what homes felt like." },
+      { "speaker": "Nilou", "emotion": "awed", "text": "It is changing. The moment he lost hold of it — it changed completely." },
+      { "speaker": "Ayaka", "emotion": "thoughtful", "text": "The corruption was in the wielder, not the Fragment itself. It was never evil. Just captured." },
+      { "speaker": "Hutao", "emotion": "content", "text": "Two down. Three to go. I think I am starting to genuinely enjoy this quest." },
+      { "speaker": "Xiao", "emotion": "quiet", "text": "You are not taking it seriously enough." },
+      { "speaker": "Hutao", "emotion": "grinning", "text": "I am taking it seriously AND enjoying it. Multitasking is a core funeral director skill." },
+      { "speaker": "narrator", "emotion": "cold", "text": "Then a presence settles over the throne room. Not a sound. Not a figure. A weight — the kind that has no temperature, that presses from every direction at once." },
+      { "speaker": "narrator", "emotion": "cold", "text": "Valdris: You freed the Fragment. Good. That creature was wasting it." },
+      { "speaker": "Ayaka", "emotion": "sharp", "text": "You are watching us." },
+      { "speaker": "narrator", "emotion": "measured", "text": "Valdris: I have always been watching. You are the most interesting thing to enter my world in a century. The Oracle chose well — four resonances, cleanly matched. I almost respect it." },
+      { "speaker": "Xiao", "emotion": "cold", "text": "The kingdom. The people. This destruction — this is your doing. Not the Demon Lord's. Yours." },
+      { "speaker": "narrator", "emotion": "indifferent", "text": "Valdris: I broke a Seal. The unraveling was a consequence. I do not govern consequences. That is what mortality is — an endless chain of consequences that someone else pays." },
+      { "speaker": "Hutao", "emotion": "quiet_fury", "text": "There was a child's shoe in that garden." },
+      { "speaker": "narrator", "emotion": "unmoved", "text": "Valdris: I have consumed worlds older than that child's entire civilization. Grief is a luxury I shed six centuries ago. Come. Shatter my anchors. Break everything I have built. I will be patient." },
+      { "speaker": "narrator", "emotion": "precise", "text": "Valdris: I am very good at patient." },
+      { "speaker": "narrator", "emotion": "quiet", "text": "The presence lifts. The ash settles. The four stand in the silence of a kingdom that will never fully recover — and carry the second Fragment forward anyway." },
+      { "speaker": "Nilou", "emotion": "shaken", "text": "He is not afraid of us at all." },
+      { "speaker": "Xiao", "emotion": "flat", "text": "No." },
+      { "speaker": "Hutao", "emotion": "steady", "text": "Good thing we are not doing this to frighten him." },
+      { "speaker": "Ayaka", "emotion": "resolute", "text": "Forward. That is all there is now." }
+    ]
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "title": "Shadows Across Worlds",
+  "subtitle": "~ THE SUMMONED ~",
+  "tagline": "They did not choose this world. But this world needed them.",
+  "lore": "Long ago, the realm of Aethoria flourished under the Five Elemental Seals — pillars of ancient power binding the Shadow Realm away from the living. Then came Valdris. Once a scholar who sought to study darkness, he was consumed by it. Over centuries, he shattered four of the five Seals and devoured their power, becoming something no single world could stop.\n\nWith the final Seal cracking and no champion left standing, the Oracle of Aethoria performed one last desperate ritual: a cross-world summoning. Four warriors, each bearing an elemental resonance matching a broken Seal, were pulled from their home worlds into the rift.\n\nAyaka of Inazuma. Hu Tao of Liyue. Nilou of Sumeru. Xiao, the last Yaksha. They did not know each other. They did not choose this. But they arrived in the shadow-scarred ruins of a dying realm — and that was enough to matter.",
+  "arcs": [
+    { "id": "arc_1", "file": "data/story/arc_1.json" },
+    { "id": "arc_2", "file": "data/story/arc_2.json" },
+    { "id": "arc_3", "file": "data/story/arc_3.json" },
+    { "id": "arc_4", "file": "data/story/arc_4.json" },
+    { "id": "arc_5", "file": "data/story/arc_5.json" }
+  ]
+}

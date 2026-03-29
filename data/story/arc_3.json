@@ -1,0 +1,114 @@
+{
+  "id": "arc_3",
+  "number": 3,
+  "name": "The Weeping Depths",
+  "subtitle": "The sea remembers everything it swallows",
+  "theme": "Perseverance / Hidden truths / The cost of power",
+  "location": "Sunken Temple to Drowned Citadel",
+  "shard": {
+    "id": "seal_water",
+    "name": "Seal Fragment of Water",
+    "description": "A deep blue crystal that weeps light continuously. It hums with the memory of countless tides.",
+    "color": "#38bdf8"
+  },
+  "enemies_pool": ["zombie", "skeleton", "harpy", "spider", "imp", "slime"],
+  "boss_enemy": "kraken",
+  "chapters": [
+    {
+      "id": "arc3_ch1",
+      "title": "Beneath the Surface",
+      "type": "cutscene",
+      "background": "sunken_ruins",
+      "scenes": [
+        {
+          "narration": "The Oracle's third marker leads to the coast of Aethoria's sunken west — a region that drowned when Valdris first shattered the Water Seal.",
+          "dialogue": []
+        },
+        {
+          "narration": "Nilou stands at the shoreline, watching the water with a strange expression — recognition, almost.",
+          "dialogue": [
+            { "speaker": "Nilou", "emotion": "wistful", "text": "In Sumeru, the sacred pools respond to dance. This water feels different. Grief-soaked." },
+            { "speaker": "Hutao", "emotion": "curious", "text": "Grief-soaked water. That is poetic. I might use that in a poem, if you do not mind." },
+            { "speaker": "Nilou", "emotion": "gentle", "text": "It is yours. Though I hope you give it a more cheerful ending than the sea did." }
+          ]
+        },
+        {
+          "narration": "Xiao crouches at the edge, scanning beneath the surface. Shadow-forms move in the depths — slow, circling.",
+          "dialogue": [
+            { "speaker": "Xiao", "emotion": "alert", "text": "The Kraken. Ancient. Pre-dates Valdris. He corrupted it when he broke the Seal — turned a guardian into a warden." },
+            { "speaker": "Ayaka", "emotion": "calm", "text": "A creature once protector of these waters, now their jailer. There is a particular sadness in that." },
+            { "speaker": "Hutao", "emotion": "focused", "text": "A sad fate. But also very large tentacles. Let us have a plan." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "arc3_ch2",
+      "title": "The Drowned Path",
+      "type": "battle",
+      "background": "underwater_ruins",
+      "pre_dialogue": [
+        { "speaker": "narrator", "emotion": "eerie", "text": "The descent into the Drowned Citadel takes them through corridors held up by nothing but old magic and shadow-power." },
+        { "speaker": "Nilou", "emotion": "steady", "text": "Shadow creatures ahead. They are between us and the Fragment." },
+        { "speaker": "Ayaka", "emotion": "focused", "text": "Then we go through them. Together." }
+      ],
+      "post_dialogue": [
+        { "speaker": "Hutao", "emotion": "impressed", "text": "Nilou — those water strikes hit harder than they look. Deceptively powerful for someone who mostly dances." },
+        { "speaker": "Nilou", "emotion": "light", "text": "Dancing requires great strength and precision. It just looks like something else." },
+        { "speaker": "Xiao", "emotion": "quiet", "text": "The Kraken is close. I can feel its karmic weight. Be ready." }
+      ]
+    },
+    {
+      "id": "arc3_ch3",
+      "title": "The Guardian Unbound",
+      "type": "battle",
+      "background": "deep_citadel",
+      "pre_dialogue": [
+        { "speaker": "narrator", "emotion": "tense", "text": "In the deepest chamber of the Drowned Citadel, the Sea Kraken awaits — a creature of immense age and corrupted sorrow, the Seal Fragment fused to its ancient body." },
+        { "speaker": "Xiao", "emotion": "solemn", "text": "It does not want to fight. The shadow compels it. Remember that." },
+        { "speaker": "Hutao", "emotion": "focused", "text": "We will make it quick, then. It deserves that much." },
+        { "speaker": "Nilou", "emotion": "resolute", "text": "And we will free it from the corruption. Whatever it costs." }
+      ],
+      "post_dialogue": [
+        { "speaker": "narrator", "emotion": "melancholy", "text": "As the Kraken's shadow-form dissolves, the water Seal Fragment rises from the depths — clear and cold and weeping light." },
+        { "speaker": "Xiao", "emotion": "quiet", "text": "It is gone now. The karma is lifting. It can rest." },
+        { "speaker": "Nilou", "emotion": "bittersweet", "text": "I am glad it is free. I just wish we could have done it without fighting." },
+        { "speaker": "Ayaka", "emotion": "gentle", "text": "Sometimes the only kindness left is the one that ends suffering. Not comfortable — but true." },
+        { "speaker": "Hutao", "emotion": "quiet", "text": "...I have seen enough to know she is right. Three Fragments down. One more before we face him." }
+      ]
+    },
+    {
+      "id": "arc3_ch4",
+      "title": "The Reflection",
+      "type": "cutscene",
+      "background": "sunken_surface",
+      "scenes": [
+        {
+          "narration": "As they ascend from the Drowned Citadel, Nilou pauses at the water's surface — now clearing as the shadow corruption retreats. She looks down at her reflection.",
+          "dialogue": [
+            { "speaker": "narrator", "emotion": "quiet_menace", "text": "Valdris: The dancer who speaks to water." },
+            { "speaker": "Nilou", "emotion": "startled", "text": "...You are in the water?" },
+            { "speaker": "narrator", "emotion": "almost_gentle", "text": "Valdris: The water carries everything that has ever been drowned in it. Memory. Grief. The weight of every world I have taken. It is honest, in its way. More honest than the living." },
+            { "speaker": "Nilou", "emotion": "careful", "text": "What do you want from me?" },
+            { "speaker": "narrator", "emotion": "soft_menace", "text": "Valdris: You are a creature of beauty in a world that constantly destroys beautiful things. You felt this water's grief the moment you touched it. Does it not tire you — all that feeling, all that care — when the ending is always the same?" },
+            { "speaker": "Nilou", "emotion": "steady", "text": "The ending being the same is exactly why the moments before it matter. You had that understanding once. The Oracle told us. You chose to discard it." },
+            { "speaker": "narrator", "emotion": "cold_pause", "text": "Valdris: I chose to survive it. There is a difference." },
+            { "speaker": "Nilou", "emotion": "resolute", "text": "No. There is not. Not when survival costs everything else." },
+            { "speaker": "narrator", "emotion": "long_pause", "text": "Valdris: ...Interesting." }
+          ]
+        },
+        {
+          "narration": "The reflection stills. The others have gathered close — Xiao with his hand near his weapon, Hutao watching the water surface, Ayaka standing beside Nilou.",
+          "dialogue": [
+            { "speaker": "Ayaka", "emotion": "concerned", "text": "Are you all right?" },
+            { "speaker": "Nilou", "emotion": "honest", "text": "He tried to make me feel hopeless. He almost had an argument." },
+            { "speaker": "Hutao", "emotion": "impressed", "text": "Almost?" },
+            { "speaker": "Nilou", "emotion": "quiet_strength", "text": "I have danced in front of thousands of people and felt every single one of them. That is not a weakness. That is why I am still here." },
+            { "speaker": "Xiao", "emotion": "quiet", "text": "Ancient things are persuasive. They have had long enough to find the exact words that fit each person." },
+            { "speaker": "Ayaka", "emotion": "firm", "text": "Then we keep moving. Together. That is what he cannot replicate — and that is exactly what will undo him." }
+          ]
+        }
+      ]
+    }
+  ]
+}

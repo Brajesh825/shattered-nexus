@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crystal Chronicles RPG</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/map.css">
+</head>
+<body>
+<div id="game">
+
+  <!-- persistent overlay buttons -->
+  <button id="mute-btn" onclick="SFX.toggleMute()" title="Toggle sound effects">🔊</button>
+  <button id="tts-btn"  onclick="TTS.toggle()"     title="Voice: OFF (click to enable)">💬</button>
+
+  <!-- ═══════════════════════════════════════
+       TITLE SCREEN
+       ═══════════════════════════════════════ -->
+  <div id="title-screen" class="screen active">
+    <div class="stars" id="stars"></div>
+    <div class="crystals">
+      <span class="crystal">💎</span>
+      <span class="crystal">💠</span>
+      <span class="crystal">🔷</span>
+      <span class="crystal">💎</span>
+    </div>
+    <div class="game-title">CRYSTAL<br>CHRONICLES</div>
+    <div class="subtitle">~ REBORN ~</div>
+    <div style="font-size:15px;color:#4a4080;text-align:center;z-index:1;line-height:2">
+      4 Characters · 4 Classes · 50 Enemies<br>
+      5 Arcs · One truth at the end
+    </div>
+
+    <button class="big-btn title-continue-btn blink" id="title-continue-btn"
+            onclick="Story.loadSave()" style="z-index:1;margin-top:8px;display:none">
+      ▶ CONTINUE
+    </button>
+    <div id="title-save-info" class="title-save-info" style="display:none"></div>
+
+    <button class="big-btn" onclick="startStoryMode()" style="z-index:1;margin-top:8px">
+      📖 NEW STORY
+    </button>
+    <button class="big-btn" onclick="goCharSelect()" style="z-index:1;margin-top:4px;background:transparent;border-color:#4a4080;color:#8080c0">
+      ⚔ FREE BATTLE
+    </button>
+    <button class="big-btn" onclick="startExplore()" style="z-index:1;margin-top:4px;background:transparent;border-color:#2a5040;color:#60c090">
+      🗺 EXPLORE
+    </button>
+    <div class="ver-tag">v3.0</div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       STEP BAR
+       ═══════════════════════════════════════ -->
+  <div class="step-bar" id="step-bar" style="display:none">
+    <div class="step" data-step="1"><div class="step-num">1</div> PARTY</div>
+    <div class="step-arrow">▶</div>
+    <div class="step" data-step="2"><div class="step-num">2</div> BATTLE</div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       CHARACTER SELECT
+       ═══════════════════════════════════════ -->
+  <div id="char-screen" class="screen">
+    <div class="screen-title">⚔ SELECT YOUR PARTY ⚔</div>
+    <div class="char-counter" id="char-counter">Party: <span>0</span> / 4</div>
+    <div class="char-grid" id="char-grid"></div>
+    <div class="detail-panel" id="char-detail">Click characters to add them to your party.</div>
+    <div style="padding:10px 12px 12px">
+      <button class="big-btn" id="char-confirm" onclick="startBattle()" disabled style="margin:0;width:100%">
+        SELECT 4 MORE →
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       WORLD MAP SCREEN
+       ═══════════════════════════════════════ -->
+  <div id="map-screen" class="screen">
+    <div class="map-header">
+      <div class="map-title-label">✦ WORLD MAP ✦</div>
+      <div class="map-arc-label" id="map-arc-label"></div>
+    </div>
+    <div class="map-area" id="map-area"></div>
+    <div class="map-info-bar">
+      <div class="map-info-name" id="map-info-name"></div>
+      <div class="map-info-loc"  id="map-info-loc"></div>
+    </div>
+    <button class="big-btn" id="map-proceed-btn" onclick="Story.proceedFromMap()" style="margin:0 12px 14px;align-self:flex-end">
+      ▶ TRAVEL THERE
+    </button>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       STORY SCREEN
+       ═══════════════════════════════════════ -->
+  <div id="story-screen" class="screen">
+    <div id="story-bg" class="story-bg bg--default"></div>
+    <div class="s-header">
+      <div class="s-header-left">
+        <div id="s-header-arc"  class="s-header-arc"></div>
+        <div id="s-header-chap" class="s-header-chap"></div>
+      </div>
+      <button class="s-skip-btn" onclick="Story.skip()">⏭ SKIP</button>
+    </div>
+    <div id="s-arc-intro" class="s-card s-arc-intro" style="display:none">
+      <div id="s-arc-num"   class="s-arc-num"></div>
+      <div id="s-arc-name"  class="s-arc-name"></div>
+      <div id="s-arc-sub"   class="s-arc-sub"></div>
+      <div id="s-arc-theme" class="s-arc-theme"></div>
+      <div id="s-arc-shard" class="s-arc-shard" style="display:none">
+        <div id="s-arc-shard-name"></div>
+      </div>
+    </div>
+    <div id="s-dialogue" class="s-dialogue" style="display:none">
+      <div class="s-dialogue-portrait">
+        <img id="s-portrait-img" class="s-portrait-img" src="" alt="" style="display:none">
+        <div id="s-portrait-emoji" class="s-portrait-emoji">📖</div>
+      </div>
+      <div class="s-dialogue-body">
+        <div id="s-speaker" class="s-speaker"></div>
+        <div id="s-text"    class="s-text"></div>
+      </div>
+    </div>
+    <div id="s-event" class="s-event" style="display:none">
+      <div class="s-event-header">🎭 CHOICE</div>
+      <div id="s-event-title" class="s-event-title"></div>
+      <div id="s-event-desc"  class="s-event-desc"></div>
+      <div id="s-choice-btns" class="s-choice-btns"></div>
+    </div>
+    <div id="s-arc-end" class="s-card s-arc-end" style="display:none">
+      <div class="s-ae-label">SHARD OBTAINED</div>
+      <div id="s-ae-shard" class="s-ae-shard"></div>
+      <div id="s-ae-desc"  class="s-ae-desc"></div>
+    </div>
+    <div id="s-epilogue" class="s-epilogue" style="display:none">
+      <div class="s-epi-title">EPILOGUE</div>
+      <div id="s-epi-cards" class="s-epi-cards"></div>
+    </div>
+    <button id="s-continue" class="s-continue-btn" onclick="Story.advance()" style="display:none">
+      ▶ CONTINUE
+    </button>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       BATTLE SCREEN
+       ═══════════════════════════════════════ -->
+  <div id="battle-screen" class="screen">
+    <div class="turn-bar" id="turn-bar"></div>
+    <div id="battle-scene">
+      <svg class="bg-mts" viewBox="0 0 900 96" preserveAspectRatio="none">
+        <polygon points="0,96 120,16 245,62 355,8 465,55 585,12 705,58 820,20 900,96" fill="#0f0530" stroke="none"/>
+        <polygon points="0,96 90,40 195,72 300,26 415,66 530,20 635,60 750,30 900,96" fill="#180848" stroke="none"/>
+      </svg>
+      <div class="bg-gnd"></div>
+      <div class="enemy-row" id="enemy-row"></div>
+      <div class="party-row" id="party-row"></div>
+    </div>
+    <div class="active-member-bar" id="active-member-bar"></div>
+    <div id="menu-area">
+      <div class="battle-log">
+        <p class="log-line" id="log0"></p>
+        <p class="log-line" id="log1"></p>
+        <p class="log-line" id="log2"></p>
+      </div>
+      <div class="cmd-grid" id="cmd-grid-main">
+        <button class="cmd-btn" onclick="heroAttack()">⚔ ATTACK</button>
+        <button class="cmd-btn" onclick="UI.openSub('ability-sub')">✨ ABILITY</button>
+        <button class="cmd-btn" onclick="heroItem()">🧪 ITEM</button>
+        <button class="cmd-btn" onclick="heroRun()">💨 RUN</button>
+        <button class="cmd-btn cmd-party-btn" onclick="openPartyMenu()">👥 PARTY</button>
+      </div>
+      <div class="sub-menu" id="ability-sub"></div>
+    </div>
+    <div class="party-status-bar" id="party-status-bar"></div>
+    <div class="stats-bar">
+      <span>LV <span id="stat-lv">1</span></span>
+      <span>ATK <span id="stat-atk">-</span></span>
+      <span>DEF <span id="stat-def">-</span></span>
+      <span>EXP <span id="stat-exp">0</span></span>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       PARTY MENU OVERLAY
+       ═══════════════════════════════════════ -->
+  <div id="party-menu" style="display:none">
+    <div class="pm-header">
+      <span class="pm-title">⚔ PARTY STATUS ⚔</span>
+      <button class="pm-close-btn" onclick="closePartyMenu()">✕ CLOSE</button>
+    </div>
+    <div class="pm-cards" id="pm-cards"></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       RESULT SCREEN
+       ═══════════════════════════════════════ -->
+  <div id="result-screen" class="screen">
+    <div class="result-title" id="result-title">VICTORY!</div>
+    <div class="result-stats" id="result-stats"></div>
+    <button class="big-btn" onclick="playAgain()">▶ PLAY AGAIN</button>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       EXPLORE SCREEN (tile map)
+       ═══════════════════════════════════════ -->
+  <div id="explore-screen" class="screen">
+
+    <!-- Cinematic header bar -->
+    <div class="explore-header">
+      <div class="explore-header-left">
+        <span id="explore-map-name" class="explore-map-name">✦ EXPLORE ✦</span>
+        <span class="explore-map-hint">↑↓←→ · WASD to move</span>
+      </div>
+      <button class="explore-back-btn" id="explore-back-btn" onclick="
+        MapEngine.stop();
+        if (typeof Story !== 'undefined' && Story.active && G.mode === 'story_explore') {
+          Story.onExploreComplete();
+        } else {
+          G.mode = 'free';
+          UI.show('title-screen');
+        }
+      ">← EXIT MAP</button>
+    </div>
+
+    <!-- Canvas fills all remaining height -->
+    <div id="explore-canvas-wrap">
+
+      <!-- Map select overlay — cinematic style -->
+      <div id="map-select-overlay" style="display:none">
+        <div class="map-sel-inner">
+          <div class="map-sel-crest">⚔</div>
+          <div class="map-sel-title">REALM OF ECHOES</div>
+          <div class="map-sel-sub">Choose your destination</div>
+        </div>
+      </div>
+
+      <!-- Encounter ember flash -->
+      <div id="explore-flash"></div>
+
+      <!-- Gold notification banner -->
+      <div id="explore-notif"></div>
+
+      <!-- Party HP strip (bottom-left, above loc bar) -->
+      <div id="explore-party-hud"></div>
+
+      <!-- Minimap panel (bottom-right, above loc bar) -->
+      <div id="explore-minimap-wrap">
+        <div class="ex-minimap-label">Overworld</div>
+        <canvas id="explore-minimap" width="96" height="60"></canvas>
+      </div>
+
+      <canvas id="explore-canvas"></canvas>
+    </div>
+
+    <!-- Slim location hint bar -->
+    <div class="explore-loc-bar">
+      <span id="explore-loc">Use WASD / arrow keys or the d-pad to move</span>
+    </div>
+
+  </div>
+
+</div><!-- /#game -->
+
+<script src="js/map/map-data.js"></script>
+<script src="js/map/map-entities.js"></script>
+<script src="js/map/map-ui.js"></script>
+<script src="js/map/map-engine.js"></script>
+<script src="js/sfx.js"></script>
+<script src="js/tts.js"></script>
+<script src="js/save.js"></script>
+<script src="js/sprites.js"></script>
+<script src="js/data-loader.js"></script>
+<script src="js/game.js"></script>
+<script src="js/story.js"></script>
+<script>
+  // Patch UI.show to manage step-bar visibility
+  const _origUIShow = UI.show.bind(UI);
+  UI.show = function(id) {
+    _origUIShow(id);
+    const bar = document.getElementById('step-bar');
+    bar.style.display = ['char-screen'].includes(id) ? 'flex' : 'none';
+    SFX.click();
+  };
+
+  TTS.init();
+  if (!TTS.supported) {
+    const b = document.getElementById('tts-btn');
+    if (b) b.style.display = 'none';
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    if (Save.exists()) {
+      const s = Save.read();
+      const btn  = document.getElementById('title-continue-btn');
+      const info = document.getElementById('title-save-info');
+      if (btn)  btn.style.display  = 'inline-block';
+      if (info && s) {
+        const arcName = s.arcName || `Arc ${(s.arcIdx || 0) + 1}`;
+        info.textContent = `${arcName}  ·  LV ${s.hero?.lv || 1}  ·  ${Save.dateStr(s.timestamp)}`;
+        info.style.display = 'block';
+      }
+    }
+  });
+</script>
+
+</body>
+</html>
