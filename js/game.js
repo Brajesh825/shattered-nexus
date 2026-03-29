@@ -110,18 +110,18 @@ const UI = {
     this.el('stat-exp').textContent = h.exp;
   },
 
-  pop(x, y, val, type = '') {
+  pop(x, y, val, type = '', element = 'physical') {
     const s = this.el('battle-scene');
     if (!s) return;
     const d = document.createElement('div');
-    d.className = 'dmg-pop ' + type;
+    d.className = 'dmg-pop ' + type + ' element-' + element;
     d.textContent = (type === 'heal' || type === 'regen') ? '+' + val : '-' + Math.abs(val);
     d.style.left = x + 'px'; d.style.top = y + 'px';
     s.appendChild(d);
     setTimeout(() => d.remove(), 1100);
   },
-  popEnemy(idx, val, type) { this.pop(ENEMY_POP_X[idx] || 580, 80, val, type); },
-  popParty(idx, val, type) { this.pop(PARTY_POP_X[idx] || 42, 210, val, type); },
+  popEnemy(idx, val, type, element = 'physical') { this.pop(ENEMY_POP_X[idx] || 580, 80, val, type, element); },
+  popParty(idx, val, type, element = 'light') { this.pop(PARTY_POP_X[idx] || 42, 210, val, type, element); },
 
   btns(on) { document.querySelectorAll('.cmd-btn').forEach(b => b.disabled = !on); },
 
@@ -810,6 +810,36 @@ function advanceTurn() {
 }
 
 /* ============================================================
+   VISUAL EFFECTS
+   ============================================================ */
+function createEffectOverlay(targetIdx, element, targetType = 'enemy') {
+  if (targetIdx === undefined || targetIdx === null) return;
+
+  const overlay = document.createElement('div');
+  overlay.className = `effect-overlay element-${element}`;
+
+  // Determine animation duration based on element
+  const durations = {
+    'ice': 600, 'fire': 650, 'wind': 600, 'electric': 500,
+    'water': 600, 'light': 700, 'dark': 650, 'physical': 500
+  };
+  const duration = durations[element] || 600;
+
+  // Position overlay on target sprite (enemy right side or party left side)
+  const sprId = targetType === 'enemy' ? `espr-${targetIdx}` : `pspr-${targetIdx}`;
+  const spr = document.getElementById(sprId);
+  if (spr) {
+    const rect = spr.getBoundingClientRect();
+    const sceneRect = document.getElementById('battle-scene').getBoundingClientRect();
+    overlay.style.left = (rect.left - sceneRect.left + 8) + 'px';
+    overlay.style.top = (rect.top - sceneRect.top - 10) + 'px';
+  }
+
+  document.getElementById('battle-scene').appendChild(overlay);
+  setTimeout(() => overlay.remove(), duration);
+}
+
+/* ============================================================
    HERO / PARTY ACTIONS  (actor = current party member)
    ============================================================ */
 function heroAttack() {
@@ -825,7 +855,11 @@ function heroAttack() {
   const actorSpr = document.getElementById('pspr-' + G.activeMemberIdx);
   if (actorSpr) {
     actorSpr.classList.add('anim-slash');
-    setTimeout(() => actorSpr.classList.remove('anim-slash'), 460);
+    actorSpr.classList.add('element-physical');
+    setTimeout(() => {
+      actorSpr.classList.remove('anim-slash');
+      actorSpr.classList.remove('element-physical');
+    }, 460);
   }
 
   UI.setLog([`${actor.displayName} attacks ${enemy.name}!`], ['hi']);
@@ -837,7 +871,10 @@ function heroAttack() {
     if (enemy.hp <= 0) enemy.isKO = true;
 
     // Damage number popup
-    UI.popEnemy(G.targetEnemyIdx, dmg);
+    UI.popEnemy(G.targetEnemyIdx, dmg, 'dmg', 'physical');
+
+    // Visual effect overlay on target
+    createEffectOverlay(G.targetEnemyIdx, 'physical', 'enemy');
 
     // Enemy sprite flash
     const enemySpr = document.getElementById('espr-' + G.targetEnemyIdx);
@@ -862,8 +899,19 @@ function heroAbility(ab) {
   G.busy = true; UI.btns(false);
 
   const e   = ab.effect || {};
+  const element = e.element || 'physical';
+  const isUltimate = ab.isUltimate || false;
+  const animDuration = isUltimate ? 800 : 560;
+
   const spr = document.getElementById('pspr-' + G.activeMemberIdx);
-  if (spr) { spr.classList.add('anim-cast'); setTimeout(() => spr.classList.remove('anim-cast'), 560); }
+  if (spr) {
+    spr.classList.add(isUltimate ? 'anim-ultimate' : 'anim-cast');
+    spr.classList.add(`element-${element}`);
+    setTimeout(() => {
+      spr.classList.remove(isUltimate ? 'anim-ultimate' : 'anim-cast');
+      spr.classList.remove(`element-${element}`);
+    }, animDuration);
+  }
   UI.setLog([`${actor.displayName} uses ${ab.name}!`], ['magic']);
   actor.mp = Math.max(0, actor.mp - ab.mp);
 
@@ -875,7 +923,8 @@ function heroAbility(ab) {
       const dmg = Battle.physDmg(actor.atk, enemy.def, e.dmgMultiplier || 1, actor.lv || 1, enemy.level || 1);
       enemy.hp  = Math.max(0, enemy.hp - dmg);
       if (enemy.hp <= 0) enemy.isKO = true;
-      UI.popEnemy(G.targetEnemyIdx, dmg);
+      UI.popEnemy(G.targetEnemyIdx, dmg, 'dmg', element);
+      createEffectOverlay(G.targetEnemyIdx, element, 'enemy');
       const enemySpr = document.getElementById('espr-' + G.targetEnemyIdx);
       if (enemySpr) {
         enemySpr.classList.add('sprite-damage-flash');
@@ -890,7 +939,8 @@ function heroAbility(ab) {
       const dmg = Battle.magicDmg(actor.mag, e.dmgMultiplier || 1.5, passiveBonus, actor.lv || 1);
       enemy.hp  = Math.max(0, enemy.hp - dmg);
       if (enemy.hp <= 0) enemy.isKO = true;
-      UI.popEnemy(G.targetEnemyIdx, dmg, 'magic');
+      UI.popEnemy(G.targetEnemyIdx, dmg, 'magic', element);
+      createEffectOverlay(G.targetEnemyIdx, element, 'enemy');
       const enemySpr = document.getElementById('espr-' + G.targetEnemyIdx);
       if (enemySpr) {
         enemySpr.classList.add('sprite-damage-flash');
@@ -903,7 +953,7 @@ function heroAbility(ab) {
       if (typeof SFX !== 'undefined') SFX.heal();
       const amt = (e.healBase || 20) + Math.floor(Math.random() * (e.healRandom || 15));
       actor.hp  = Math.min(actor.maxHp, actor.hp + amt);
-      UI.popParty(G.activeMemberIdx, amt, 'heal');
+      UI.popParty(G.activeMemberIdx, amt, 'heal', 'light');
       UI.addLog(`${actor.displayName} restored ${amt} HP!`, 'heal');
 
     } else if (ab.type === 'regen') {
@@ -956,8 +1006,8 @@ function heroAbility(ab) {
     }
 
     UI.renderEnemyRow(); UI.renderPartyStatus();
-    setTimeout(advanceTurn, 750);
-  }, 560);
+    setTimeout(advanceTurn, isUltimate ? 900 : 750);
+  }, animDuration);
 }
 
 function heroItem() {
@@ -1034,17 +1084,27 @@ function enemyAct(enemy, enemyIdx) {
   const target    = Math.random() < 0.6 ? alive[0] : alive[Math.floor(Math.random() * alive.length)];
   const targetIdx = G.party.indexOf(target);
 
+  const ab = Battle.pickAbility(enemy.abilityDefs);
+  const element = ab?.effect?.element || 'physical';
+  const animDuration = ab?.isUltimate ? 800 : 460;
+
   const enemySpr = document.getElementById('espr-' + enemyIdx);
-  if (enemySpr) { enemySpr.classList.add('anim-slash'); setTimeout(() => enemySpr.classList.remove('anim-slash'), 460); }
+  if (enemySpr) {
+    enemySpr.classList.add(ab?.isUltimate ? 'anim-ultimate' : 'anim-slash');
+    enemySpr.classList.add(`element-${element}`);
+    setTimeout(() => {
+      enemySpr.classList.remove(ab?.isUltimate ? 'anim-ultimate' : 'anim-slash');
+      enemySpr.classList.remove(`element-${element}`);
+    }, animDuration);
+  }
 
   setTimeout(() => {
-    const ab = Battle.pickAbility(enemy.abilityDefs);
-
     if (!ab || ab.type === 'physical') {
       if (typeof SFX !== 'undefined') { SFX.enemyHit(); setTimeout(() => SFX.attack(), 60); }
       const dmg  = Battle.physDmg(enemy.atk, target.def, ab?.dmgMultiplier || 1, enemy.level || 1, target.lv || 1);
       target.hp  = Math.max(0, target.hp - dmg);
-      UI.popParty(targetIdx, dmg);
+      UI.popParty(targetIdx, dmg, 'dmg', element);
+      createEffectOverlay(targetIdx, element, 'party');
       const pspr = document.getElementById('pspr-' + targetIdx);
       if (pspr) { pspr.classList.add('anim-shake'); setTimeout(() => pspr.classList.remove('anim-shake'), 380); }
       UI.setLog([`${enemy.name} attacks ${target.displayName}!`, `${target.displayName} took ${dmg} damage!`], ['','dmg']);
@@ -1053,7 +1113,8 @@ function enemyAct(enemy, enemyIdx) {
       if (typeof SFX !== 'undefined') SFX.magic();
       const dmg = Battle.magicDmg(enemy.atk * 0.8, ab.dmgMultiplier || 1.3, 1.0, enemy.level || 1);
       target.hp = Math.max(0, target.hp - dmg);
-      UI.popParty(targetIdx, dmg, 'magic');
+      UI.popParty(targetIdx, dmg, 'magic', element);
+      createEffectOverlay(targetIdx, element, 'party');
       UI.setLog([`${enemy.name} uses ${ab.name}!`, `${target.displayName} took ${dmg} magic damage!`], ['magic','dmg']);
 
     } else {

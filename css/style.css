@@ -974,10 +974,205 @@ html,body {
 @keyframes pulseGold{ 0%,100%{text-shadow:0 0 20px var(--gold-glow)} 50%{text-shadow:0 0 40px var(--gold-glow),0 0 60px #f5d06022} }
 @keyframes glowPulse{ 0%,100%{box-shadow:0 0 12px var(--gold-glow)} 50%{box-shadow:0 0 28px var(--gold-glow)} }
 
+/* ── Element Color Palette ──────────────────────────────── */
+:root {
+  --color-physical: #d4a574;
+  --color-fire:     #ff6b4a;
+  --color-ice:      #4ecdc4;
+  --color-wind:     #7ddc5f;
+  --color-electric: #ffe66d;
+  --color-water:    #5dade2;
+  --color-nature:   #2ecc71;
+  --color-light:    #f1c40f;
+  --color-dark:     #9b59b6;
+}
+
+/* ── Element-Specific Sprite Animations ──────────────────── */
+@keyframes fireFlare  { 0%{filter:brightness(1)} 30%{filter:brightness(1.4) saturate(1.5)} 70%{filter:brightness(1.2) saturate(1.2)} 100%{filter:brightness(1)} }
+@keyframes iceShimmer { 0%{filter:brightness(1)} 50%{filter:brightness(1.3) hue-rotate(200deg)} 100%{filter:brightness(1)} }
+@keyframes windSwirl  { 0%{transform:rotate(0deg) scale(1)} 50%{transform:rotate(6deg) scale(1.05)} 100%{transform:rotate(0deg) scale(1)} }
+@keyframes sparkFlash { 0%{filter:brightness(1)} 40%{filter:brightness(1.5) drop-shadow(0 0 12px var(--color-electric))} 100%{filter:brightness(1)} }
+@keyframes waterRipple{ 0%{filter:brightness(1)} 50%{filter:brightness(1.2) hue-rotate(10deg)} 100%{filter:brightness(1)} }
+@keyframes lightBurst { 0%{filter:brightness(1)} 30%{filter:brightness(1.6) drop-shadow(0 0 20px var(--color-light))} 100%{filter:brightness(1)} }
+@keyframes darkPulse  { 0%{filter:brightness(1) drop-shadow(0 0 0px var(--color-dark))} 50%{filter:brightness(0.9) drop-shadow(0 0 16px var(--color-dark))} 100%{filter:brightness(1) drop-shadow(0 0 0px var(--color-dark))} }
+
+/* Ultimate Attack - Special Animation */
+@keyframes ultimateCast {
+  0%   { transform:scale(1) rotate(0deg); filter:brightness(1); }
+  15%  { transform:scale(1.2) rotate(-8deg); filter:brightness(1.3) drop-shadow(0 0 20px rgba(255,255,255,0.8)); }
+  30%  { transform:scale(1.1) rotate(4deg); filter:brightness(1.1); }
+  50%  { transform:scale(0.95) rotate(-3deg); filter:brightness(1.4) drop-shadow(0 0 30px rgba(255,200,0,0.9)); }
+  100% { transform:scale(1) rotate(0deg); filter:brightness(1); }
+}
+
+@keyframes ultimaFlash {
+  0%   { opacity:0; }
+  20%  { opacity:1; }
+  80%  { opacity:1; }
+  100% { opacity:0; }
+}
+
+/* ── Ability Visual Effects on Target ────────────────────── */
+.effect-overlay {
+  position: absolute;
+  pointer-events: none;
+  z-index: 8;
+}
+
+/* Ice Whirl Effect */
+@keyframes iceWhirl {
+  0%   { transform: scale(0.3) rotate(0deg); opacity: 1; filter: drop-shadow(0 0 8px var(--color-ice)); }
+  50%  { transform: scale(1) rotate(180deg); opacity: 0.8; }
+  100% { transform: scale(1.2) rotate(360deg); opacity: 0; }
+}
+
+.effect-overlay.element-ice {
+  width: 80px;
+  height: 80px;
+  background: radial-gradient(circle, var(--color-ice) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: iceWhirl 600ms ease-out forwards;
+}
+
+/* Fire Burst Effect */
+@keyframes fireBurst {
+  0%   { transform: scale(0) rotate(0deg); opacity: 1; filter: drop-shadow(0 0 12px var(--color-fire)); }
+  40%  { transform: scale(1.3) rotate(90deg); opacity: 0.9; }
+  100% { transform: scale(1.8) rotate(180deg); opacity: 0; }
+}
+
+.effect-overlay.element-fire {
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle, var(--color-fire) 0%, #ff8844 40%, transparent 70%);
+  border-radius: 50%;
+  animation: fireBurst 650ms ease-out forwards;
+}
+
+/* Wind Swirl Effect */
+@keyframes windSwirl {
+  0%   { transform: scale(0.2) rotate(0deg); opacity: 1; }
+  50%  { transform: scale(1) rotate(180deg) skewX(5deg); opacity: 0.7; filter: drop-shadow(0 0 10px var(--color-wind)); }
+  100% { transform: scale(1.3) rotate(360deg) skewX(-5deg); opacity: 0; }
+}
+
+.effect-overlay.element-wind {
+  width: 90px;
+  height: 90px;
+  background: conic-gradient(from 0deg, transparent, var(--color-wind), transparent);
+  border-radius: 50%;
+  animation: windSwirl 600ms ease-out forwards;
+}
+
+/* Electric Bolt Effect */
+@keyframes electricBolt {
+  0%   { transform: scaleY(0.1) scaleX(0.5); opacity: 1; filter: drop-shadow(0 0 15px var(--color-electric)); }
+  50%  { transform: scaleY(1) scaleX(0.8); opacity: 0.9; }
+  100% { transform: scaleY(0.5) scaleX(1.5); opacity: 0; }
+}
+
+.effect-overlay.element-electric {
+  width: 60px;
+  height: 120px;
+  background: linear-gradient(180deg, var(--color-electric) 0%, transparent 100%);
+  clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 60% 60%, 100% 100%, 50% 70%, 0% 100%, 40% 60%, 0% 30%);
+  animation: electricBolt 500ms ease-out forwards;
+}
+
+/* Water Ripple Effect */
+@keyframes waterRipple {
+  0%   { transform: scale(0.3); opacity: 1; border: 3px solid var(--color-water); }
+  50%  { transform: scale(1); opacity: 0.6; border: 2px solid var(--color-water); }
+  100% { transform: scale(1.5); opacity: 0; border: 1px solid var(--color-water); }
+}
+
+.effect-overlay.element-water {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  animation: waterRipple 600ms ease-out forwards;
+}
+
+/* Light Starburst Effect */
+@keyframes lightBurst {
+  0%   { transform: scale(0); opacity: 1; filter: drop-shadow(0 0 20px var(--color-light)); }
+  60%  { transform: scale(1.2); opacity: 0.8; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+.effect-overlay.element-light {
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle, var(--color-light) 0%, rgba(241,196,15,0.5) 50%, transparent 70%);
+  border-radius: 50%;
+  animation: lightBurst 700ms ease-out forwards;
+}
+
+/* Dark Vortex Effect */
+@keyframes darkVortex {
+  0%   { transform: scale(0.1) rotate(0deg); opacity: 1; filter: drop-shadow(0 0 12px var(--color-dark)); }
+  50%  { transform: scale(1) rotate(180deg); opacity: 0.7; }
+  100% { transform: scale(1.3) rotate(360deg); opacity: 0; }
+}
+
+.effect-overlay.element-dark {
+  width: 90px;
+  height: 90px;
+  background: radial-gradient(circle, var(--color-dark) 0%, transparent 60%);
+  border-radius: 50%;
+  animation: darkVortex 650ms ease-out forwards;
+}
+
+/* Physical Impact - Dust cloud */
+@keyframes dustCloud {
+  0%   { transform: scale(0.5); opacity: 1; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+.effect-overlay.element-physical {
+  width: 70px;
+  height: 70px;
+  background: radial-gradient(circle, rgba(212,165,116,0.8) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: dustCloud 500ms ease-out forwards;
+}
+
 .anim-slash { animation:heroSlash  .44s ease; }
 .anim-cast  { animation:castAnim   .56s ease; }
+.anim-ultimate { animation:ultimateCast .8s ease; }
 .anim-shake { animation:shakeAnim  .38s ease; }
 .blink      { animation:blink     1.4s step-end infinite; }
+
+/* ── Element-Specific Sprite Glow ────────────────────────── */
+.sprite.element-fire    { filter: drop-shadow(0 0 12px var(--color-fire)); }
+.sprite.element-ice     { filter: drop-shadow(0 0 12px var(--color-ice)); }
+.sprite.element-wind    { filter: drop-shadow(0 0 12px var(--color-wind)); }
+.sprite.element-electric{ filter: drop-shadow(0 0 12px var(--color-electric)); }
+.sprite.element-water   { filter: drop-shadow(0 0 12px var(--color-water)); }
+.sprite.element-nature  { filter: drop-shadow(0 0 12px var(--color-nature)); }
+.sprite.element-light   { filter: drop-shadow(0 0 12px var(--color-light)); }
+.sprite.element-dark    { filter: drop-shadow(0 0 12px var(--color-dark)); }
+.sprite.element-physical{ filter: drop-shadow(0 0 8px rgba(212,165,116,0.6)); }
+
+/* ── Combine Element with Cast Animation ─────────────────── */
+.anim-cast.element-fire { animation: castAnim .56s ease, fireFlare .56s ease; }
+.anim-cast.element-ice { animation: castAnim .56s ease, iceShimmer .56s ease; }
+.anim-cast.element-wind { animation: castAnim .56s ease, windSwirl .56s ease; }
+.anim-cast.element-electric { animation: castAnim .56s ease, sparkFlash .56s ease; }
+.anim-cast.element-water { animation: castAnim .56s ease, waterRipple .56s ease; }
+.anim-cast.element-light { animation: castAnim .56s ease, lightBurst .56s ease; }
+.anim-cast.element-dark { animation: castAnim .56s ease, darkPulse .56s ease; }
+
+/* ── Element-Specific Damage Popups ──────────────────────── */
+.dmg-pop.element-fire     { color: var(--color-fire); text-shadow: 0 0 8px var(--color-fire); font-weight: bold; }
+.dmg-pop.element-ice      { color: var(--color-ice); text-shadow: 0 0 8px var(--color-ice); }
+.dmg-pop.element-wind     { color: var(--color-wind); text-shadow: 0 0 8px var(--color-wind); }
+.dmg-pop.element-electric { color: var(--color-electric); text-shadow: 0 0 8px var(--color-electric); font-weight: bold; }
+.dmg-pop.element-water    { color: var(--color-water); text-shadow: 0 0 8px var(--color-water); }
+.dmg-pop.element-nature   { color: var(--color-nature); text-shadow: 0 0 8px var(--color-nature); }
+.dmg-pop.element-light    { color: var(--color-light); text-shadow: 0 0 12px var(--color-light); font-weight: bold; }
+.dmg-pop.element-dark     { color: var(--color-dark); text-shadow: 0 0 8px var(--color-dark); }
+.dmg-pop.element-physical { color: var(--color-physical); text-shadow: 0 0 6px var(--color-physical); }
 
 /* ── RESPONSIVE ──────────────────────────────────────── */
 @media(max-width:920px){

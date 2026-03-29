@@ -44,6 +44,7 @@
         "icon": "❄",
         "mp": 10,
         "type": "magic_damage",
+        "isUltimate": true,
         "description": "Massive ice explosion — 3.0x magic damage, resets after 2 turns if enemy frozen",
         "effect": { "dmgMultiplier": 3.0, "element": "ice", "cooldown": 2 }
       }
@@ -95,6 +96,7 @@
         "icon": "💀",
         "mp": 12,
         "type": "magic_damage",
+        "isUltimate": true,
         "description": "Ultimate pyro skill — 4.0x magic damage, drain 30% enemy max HP as healing",
         "effect": { "dmgMultiplier": 4.0, "element": "fire", "lifeSteal": 0.3 }
       }
@@ -146,6 +148,7 @@
         "icon": "✨",
         "mp": 12,
         "type": "heal",
+        "isUltimate": true,
         "description": "Ultimate star dance — restore 50% max HP to all allies, cleanse all debuffs, +1 SPD",
         "effect": { "healPercent": 0.5, "aoe": true, "cleanse": true, "spdBuff": 1 }
       }
@@ -197,6 +200,7 @@
         "icon": "⚡",
         "mp": 14,
         "type": "magic_damage",
+        "isUltimate": true,
         "description": "Channel karmic energy — 3.5x magic damage, scales with DEF, applies guard mark",
         "effect": { "dmgMultiplier": 3.5, "statScale": "def", "element": "anemo", "guardMark": true }
       }

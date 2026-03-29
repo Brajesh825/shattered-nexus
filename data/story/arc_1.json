@@ -41,6 +41,159 @@
 
   "chapters": [
     {
+      "id": "arc1_prologue_xiao",
+      "title": "The Yaksha's Arrival",
+      "type": "cutscene",
+      "background": "summoning_ruins",
+      "cast": ["Xiao"],
+      "scenes": [
+        {
+          "narration": "Silence. Then a tearing of the world. The sound of something ancient waking. A figure stands alone in cracked stone ruins — not fallen, but arriving with the gravity of a stone dropped from heaven.",
+          "dialogue": []
+        },
+        {
+          "narration": "Xiao's eyes snap open. This place is not Liyue. The air tastes of old magic and dying light. His hand reaches automatically for the amber glow that should respond to his call — the power that has sustained him for two thousand years.",
+          "dialogue": [
+            { "speaker": "Xiao", "emotion": "alert", "text": "...The Vision. It does not..." },
+            { "speaker": "narrator", "emotion": "gentle", "text": "Your world is distant now, Yaksha. The power you carried belongs to Teyvat. Here, you carry something else." },
+            { "speaker": "Xiao", "emotion": "sharp", "text": "Who speaks? Show yourself." }
+          ]
+        },
+        {
+          "narration": "There is no figure. Only the ruins, and the strange purple luminescence that settles over them like twilight that never came before. Xiao reaches inward, past the familiar emptiness where his Vision should be, and finds something else awakening — deeper, older, more attuned to this wounded world.",
+          "dialogue": [
+            { "speaker": "Xiao", "emotion": "grim", "text": "Karmic resonance. This world suffers as I do. Something broke here — something fundamental." },
+            { "speaker": "narrator", "emotion": "solemn", "text": "You were called because you alone carry the weight to stand against it. Your burden in Teyvat has become your strength in Aethoria." }
+          ]
+        },
+        {
+          "narration": "Power thrums through him — not the familiar elemental clarity of Anemo, but something rawer. The karmic contamination that has plagued him for millennia suddenly makes sense here. It is not a curse in this place. It is a compass.",
+          "dialogue": [
+            { "speaker": "Xiao", "emotion": "quiet", "text": "Others have been called as well. I can sense it. Multiple presences, each touching down where the light is brightest." },
+            { "speaker": "narrator", "emotion": "knowing", "text": "Four summoned. Four anchors for a world falling apart. Will you stand?" },
+            { "speaker": "Xiao", "emotion": "resolved", "text": "...I have fought alone for two thousand years. It would be dishonest to say I am unwilling to try otherwise." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "arc1_prologue_ayaka",
+      "title": "The Kamisato's Duty",
+      "type": "cutscene",
+      "background": "summoning_ruins",
+      "cast": ["Ayaka"],
+      "scenes": [
+        {
+          "narration": "Light tears through existence. A figure falls through the break in worlds with the precision of training — rolling, rising, sword drawn in a single motion. Ayaka lands in a crouch on ancient stone, blade gleaming with frost that will not melt.",
+          "dialogue": [
+            { "speaker": "Ayaka", "emotion": "calm", "text": "...This is not Inazuma. Not any place in Teyvat I have been taught to recognize." }
+          ]
+        },
+        {
+          "narration": "She reaches for her Vision — the Cryo gem that has always answered her call, that has made her graceful strikes possible, that has been as much a part of her as her name. Her hand closes on emptiness.",
+          "dialogue": [
+            { "speaker": "Ayaka", "emotion": "composed", "text": "The Vision. It does not respond." },
+            { "speaker": "narrator", "emotion": "peaceful", "text": "What you carried was born from your world. In this world, you are born anew." },
+            { "speaker": "Ayaka", "emotion": "thoughtful", "text": "You speak as though you know me. Yet I know nothing of this place, and less of you." }
+          ]
+        },
+        {
+          "narration": "She does not panic. Instead, she stands, closing her eyes. Her brother taught her that composure is not the absence of feeling — it is the mastery of it. She breathes, and in that breathing, finds something else awakening within her. A connection to this place's pain. A pull toward something that needs to be done.",
+          "dialogue": [
+            { "speaker": "Ayaka", "emotion": "serene", "text": "There is something... broken. A world being unmade. And I have been called to help mend it." },
+            { "speaker": "narrator", "emotion": "warm", "text": "You carry the weight of legacy. Here, that weight becomes purpose." },
+            { "speaker": "Ayaka", "emotion": "resolved", "text": "Purpose I can bear. My clan has always answered when duty called. This is merely a different duty." }
+          ]
+        },
+        {
+          "narration": "Something stirs within her — not the sharp cryo magic of her Vision, but something broader. An ability to sense what this world needs from her, independent of her own power. A clarity that requires no gem to manifest.",
+          "dialogue": [
+            { "speaker": "Ayaka", "emotion": "calm", "text": "I am not alone here. There are others. I can feel them arriving, one by one." },
+            { "speaker": "narrator", "emotion": "knowing", "text": "Four will meet in the ruins. Four will be needed to hold back the shadow." },
+            { "speaker": "Ayaka", "emotion": "steady", "text": "Then I will stand with them. Whatever comes." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "arc1_prologue_nilou",
+      "title": "The Dancer's New Song",
+      "type": "cutscene",
+      "background": "summoning_ruins",
+      "cast": ["Nilou"],
+      "scenes": [
+        {
+          "narration": "Water cascades through a rift in the world. Nilou emerges not with violence but with grace, her dancer's instincts translating the chaos into something resembling a step. She lands on fractured stone, and the first thing she notices is the stars.",
+          "dialogue": [
+            { "speaker": "Nilou", "emotion": "awed", "text": "The constellations... they are wrong. Or perhaps I have never seen them at all." }
+          ]
+        },
+        {
+          "narration": "She reaches for the familiar coolness of her water Vision, seeking the connection to the sacred pools of Sumeru. For a moment, there is only silence. Then panic — small, carefully hidden behind a dancer's smile.",
+          "dialogue": [
+            { "speaker": "Nilou", "emotion": "gentle", "text": "Where is the water? Where are my waters?" },
+            { "speaker": "narrator", "emotion": "soft", "text": "Your vision belonged to Teyvat. Here, you must learn to hear a new song." },
+            { "speaker": "Nilou", "emotion": "sad", "text": "I do not know this place. I do not know its song." }
+          ]
+        },
+        {
+          "narration": "But as she stands there, surrounded by ruin and strangeness, something begins to come clear. Not a song she recognizes, but a rhythm. A heartbeat underneath the broken stone. The world itself bleeding, calling out, needing something to answer its tempo.",
+          "dialogue": [
+            { "speaker": "Nilou", "emotion": "wondering", "text": "This world is crying. I can hear it. Not in words, but... in feeling. In the spaces between things." },
+            { "speaker": "narrator", "emotion": "gentle", "text": "Your gift was always to feel beauty in the temporary. This world is temporary. Broken. Will you dance with it?" },
+            { "speaker": "Nilou", "emotion": "soft_strength", "text": "...Even broken things have beauty. Even dying things deserve to be heard." }
+          ]
+        },
+        {
+          "narration": "She does not move like a warrior. She moves like a dancer — and yet every motion carries purpose now, synchronized with the world's need. Her new power is not the sharp clarity of water magic, but the intuitive understanding of what this place feels.",
+          "dialogue": [
+            { "speaker": "Nilou", "emotion": "calm", "text": "There are others coming. Three more to join this broken world's song." },
+            { "speaker": "narrator", "emotion": "knowing", "text": "Four called to Aethoria. Four to dance with its final hope." },
+            { "speaker": "Nilou", "emotion": "determined", "text": "Then I will teach them the steps." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "arc1_prologue_hutao",
+      "title": "The Funeral Director's Calling",
+      "type": "cutscene",
+      "background": "summoning_ruins",
+      "cast": ["Hutao"],
+      "scenes": [
+        {
+          "narration": "A burst of flame, then laughter. Hu Tao tumbles through a rift in the world like it is the most natural thing, landing on broken stone with a grin that does not quite reach her eyes.",
+          "dialogue": [
+            { "speaker": "Hutao", "emotion": "delighted", "text": "Well! This is far more interesting than yesterday's paperwork~ Where am I this time?" }
+          ]
+        },
+        {
+          "narration": "She reaches for her Vision — the Pyro gem that has burned bright since she was young, the power that connected her to the spirit realm and all the souls that needed guidance. For a moment, her hand grips at nothing, and the smile falters.",
+          "dialogue": [
+            { "speaker": "Hutao", "emotion": "quiet", "text": "The flame. It will not answer." },
+            { "speaker": "narrator", "emotion": "solemn", "text": "Your world's fire burns no longer. But you have been called to this world's dying light." },
+            { "speaker": "Hutao", "emotion": "dark", "text": "Dying? Now that is poetic. And troubling. I do not usually guide the living." }
+          ]
+        },
+        {
+          "narration": "She steadies herself, straightens her coat, and forces the smile back. But beneath it, something deeper is stirring — a sensitivity to the boundary between life and death in this place. She can feel it now: a world at its ending, souls trapped in transition, a silence that should not be so quiet.",
+          "dialogue": [
+            { "speaker": "Hutao", "emotion": "serious", "text": "This world is dying. Not quickly. Not naturally. Someone is holding it here, letting it waste away piece by piece." },
+            { "speaker": "narrator", "emotion": "heavy", "text": "You see truly. And yet you were summoned not to mourn it, but to save it." },
+            { "speaker": "Hutao", "emotion": "genuine", "text": "A world worth saving, then. That changes things." }
+          ]
+        },
+        {
+          "narration": "Power ignites within her — not the familiar warmth of her Pyro Vision, but something deeper. An understanding of cycles, of endings, of when to let go and when to fight to hold on. Her gift is no longer to guide the dead — it is to understand what is worth saving from death.",
+          "dialogue": [
+            { "speaker": "Hutao", "emotion": "determined", "text": "Three others are being summoned. I can feel them — each one a voice in this dying world's chorus." },
+            { "speaker": "narrator", "emotion": "knowing", "text": "Four to answer. Four to choose what Aethoria will become." },
+            { "speaker": "Hutao", "emotion": "resolute", "text": "Then let us make sure it is a choice worth making." }
+          ]
+        }
+      ]
+    },
+    {
       "id": "arc1_ch1",
       "title": "Between Worlds",
       "type": "cutscene",
