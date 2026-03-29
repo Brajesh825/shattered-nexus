@@ -36,6 +36,7 @@ const MAP_DEFS = {
     playerStart: { x: 4, y: 10 },
     bgColor:     '#0a1a05',
     ambientLight:'rgba(60,180,60,0.04)',
+    enemyLevelRange: [1, 3],  // Beginner area: Lv 1-3 enemies
 
     enemies: [
       { id:'goblin', x:12, y:6,  patrol:'horizontal', range:3, speed:1.2 },
@@ -77,6 +78,7 @@ const MAP_DEFS = {
     playerStart: { x: 2, y: 9 },
     bgColor:     '#06020e',
     ambientLight:'rgba(120,60,220,0.05)',
+    enemyLevelRange: [5, 8],   // Intermediate area: Lv 5-8 enemies
 
     enemies: [
       { id:'bat',      x:8,  y:4,  patrol:'random',     range:3, speed:2.0 },

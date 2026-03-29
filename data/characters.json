@@ -26,8 +26,7 @@
       "atk": 2
     },
     "class_affinity": [
-      "rogue",
-      "warrior"
+      "cryo_bladestorm"
     ],
     "passive": {
       "id": "frostflake",
@@ -63,8 +62,7 @@
       "spd": 2
     },
     "class_affinity": [
-      "warrior",
-      "rogue"
+      "spirit_incinerator"
     ],
     "passive": {
       "id": "blood_blossom",
@@ -101,8 +99,7 @@
       "mag": 4
     },
     "class_affinity": [
-      "healer",
-      "mage"
+      "hydro_performer"
     ],
     "passive": {
       "id": "dance_of_haftkarsvar",
@@ -138,8 +135,7 @@
       "def": 3
     },
     "class_affinity": [
-      "warrior",
-      "rogue"
+      "yaksha_protector"
     ],
     "passive": {
       "id": "yakshas_valor",

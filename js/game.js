@@ -8,12 +8,17 @@
    BATTLE ENGINE (math helpers)
    ============================================================ */
 const Battle = {
-  physDmg(atk, def, mult = 1) {
-    const base = Math.max(1, atk - def * 0.4);
+  physDmg(atk, def, mult = 1, atkLevel = 1, defLevel = 1) {
+    // Level scales damage: +0.5 damage per level
+    const scaledAtk = atk + (atkLevel * 0.5);
+    const scaledDef = def + (defLevel * 0.3);
+    const base = Math.max(1, scaledAtk - scaledDef * 0.4);
     return Math.max(1, Math.floor(base * (0.85 + Math.random() * 0.3) * mult));
   },
-  magicDmg(mag, mult = 1, passiveBonus = 1) {
-    const base = Math.max(1, mag * 0.9);
+  magicDmg(mag, mult = 1, passiveBonus = 1, magLevel = 1) {
+    // Level scales magic: +0.3 damage per level (less than physical)
+    const scaledMag = mag + (magLevel * 0.3);
+    const base = Math.max(1, scaledMag * 0.9);
     return Math.max(1, Math.floor(base * (0.9 + Math.random() * 0.2) * mult * passiveBonus));
   },
   pickAbility(abilities) {
@@ -535,8 +540,6 @@ function computeStats(ch, cls) {
 /* ============================================================
    PARTY & ENEMY BUILDING
    ============================================================ */
-const DEFAULT_CLASS = { ayaka:'rogue', hutao:'warrior', nilou:'healer', xiao:'warrior' };
-
 function buildParty() {
   G.party = [];
   const charIds = G.selectedChars.length >= 4
@@ -545,7 +548,8 @@ function buildParty() {
   charIds.forEach(charId => {
     const ch       = G.chars.find(c => c.id === charId); if (!ch) return;
     const isPlayer = charId === G.selectedChar;
-    const classId  = isPlayer ? G.selectedClass : (DEFAULT_CLASS[charId] || ch.class_affinity[0]);
+    // Each character always uses their specific class affinity
+    const classId  = ch.class_affinity[0] || G.classes[0].id;
     const cls      = G.classes.find(c => c.id === classId) || G.classes[0];
     const s        = computeStats(ch, cls);
     G.party.push({
@@ -566,18 +570,46 @@ function buildParty() {
   });
 }
 
-function buildEnemyGroup(defs) {
-  G.enemyGroup = defs.map(def => ({
-    id: def.id, name: def.name,
-    hp: def.stats.hp, maxHp: def.stats.hp,
-    atk: def.stats.atk, atk_orig: def.stats.atk,
-    def: def.stats.def, spd: def.stats.spd,
-    exp: def.reward.exp, gold: def.reward.gold,
-    abilityDefs: def.abilities || [],
-    palette: def.palette,
-    subtitle: def.subtitle || '',
-    isKO: false, stunned: false, debuff: null,
-  }));
+function buildEnemyGroup(defs, spawnLevel = 1) {
+  // Tier-based growth rates
+  const tierGrowth = {
+    1: { hp: 3, atk: 0.4, def: 0.2, spd: 0.3, mag: 0.2, statMult: 1.0, expMult: 1.0 },
+    2: { hp: 5, atk: 0.7, def: 0.4, spd: 0.5, mag: 0.4, statMult: 1.3, expMult: 1.5 },
+    3: { hp: 8, atk: 1.0, def: 0.7, spd: 0.7, mag: 0.6, statMult: 1.7, expMult: 2.5 },
+  };
+
+  G.enemyGroup = defs.map(def => {
+    const tier = def.tier || 1;
+    const growth = tierGrowth[tier] || tierGrowth[1];
+
+    // Calculate stats: (base × tier_multiplier) + (growth_per_level × (level - 1))
+    const calcStat = (baseStat, statKey) => {
+      const base = baseStat * growth.statMult;
+      const levelBonus = growth[statKey] * (spawnLevel - 1);
+      return Math.floor(base + levelBonus);
+    };
+
+    const finalHp = calcStat(def.stats.hp, 'hp');
+    const finalAtk = calcStat(def.stats.atk, 'atk');
+    const finalDef = calcStat(def.stats.def, 'def');
+    const finalSpd = calcStat(def.stats.spd, 'spd');
+    const finalMag = calcStat(def.stats.mag, 'mag');
+    const finalExp = Math.floor(def.reward.exp * growth.expMult);
+    const finalGold = Math.floor(def.reward.gold * growth.expMult);
+
+    return {
+      id: def.id, name: def.name,
+      level: spawnLevel,
+      hp: finalHp, maxHp: finalHp,
+      atk: finalAtk, atk_orig: finalAtk,
+      def: finalDef, spd: finalSpd, mag: finalMag,
+      exp: finalExp, gold: finalGold,
+      abilityDefs: def.abilities || [],
+      palette: def.palette,
+      subtitle: def.subtitle || '',
+      isKO: false, stunned: false, debuff: null,
+    };
+  });
   G.targetEnemyIdx = 0;
 }
 
@@ -712,7 +744,7 @@ function heroAttack() {
 
   setTimeout(() => {
     if (typeof SFX !== 'undefined') { SFX.attack(); setTimeout(() => SFX.enemyHit(), 80); }
-    const dmg = Battle.physDmg(actor.atk, enemy.def);
+    const dmg = Battle.physDmg(actor.atk, enemy.def, 1, actor.lv || 1, enemy.level || 1);
     enemy.hp  = Math.max(0, enemy.hp - dmg);
     if (enemy.hp <= 0) enemy.isKO = true;
     UI.popEnemy(G.targetEnemyIdx, dmg);
@@ -742,7 +774,7 @@ function heroAbility(ab) {
 
     if (ab.type === 'physical') {
       if (typeof SFX !== 'undefined') { SFX.attack(); setTimeout(() => SFX.enemyHit(), 80); }
-      const dmg = Battle.physDmg(actor.atk, enemy.def, e.dmgMultiplier || 1);
+      const dmg = Battle.physDmg(actor.atk, enemy.def, e.dmgMultiplier || 1, actor.lv || 1, enemy.level || 1);
       enemy.hp  = Math.max(0, enemy.hp - dmg);
       if (enemy.hp <= 0) enemy.isKO = true;
       UI.popEnemy(G.targetEnemyIdx, dmg);
@@ -752,7 +784,7 @@ function heroAbility(ab) {
     } else if (ab.type === 'magic_damage') {
       if (typeof SFX !== 'undefined') SFX.magic();
       const passiveBonus = actor.passive?.id === 'arcane_surge' ? 1.15 : 1.0;
-      const dmg = Battle.magicDmg(actor.mag, e.dmgMultiplier || 1.5, passiveBonus);
+      const dmg = Battle.magicDmg(actor.mag, e.dmgMultiplier || 1.5, passiveBonus, actor.lv || 1);
       enemy.hp  = Math.max(0, enemy.hp - dmg);
       if (enemy.hp <= 0) enemy.isKO = true;
       UI.popEnemy(G.targetEnemyIdx, dmg, 'magic');
@@ -898,7 +930,7 @@ function enemyAct(enemy, enemyIdx) {
 
     if (!ab || ab.type === 'physical') {
       if (typeof SFX !== 'undefined') { SFX.enemyHit(); setTimeout(() => SFX.attack(), 60); }
-      const dmg  = Battle.physDmg(enemy.atk, target.def, ab?.dmgMultiplier || 1);
+      const dmg  = Battle.physDmg(enemy.atk, target.def, ab?.dmgMultiplier || 1, enemy.level || 1, target.lv || 1);
       target.hp  = Math.max(0, target.hp - dmg);
       UI.popParty(targetIdx, dmg);
       const pspr = document.getElementById('pspr-' + targetIdx);
@@ -907,7 +939,7 @@ function enemyAct(enemy, enemyIdx) {
 
     } else if (ab.type === 'magic_damage') {
       if (typeof SFX !== 'undefined') SFX.magic();
-      const dmg = Battle.magicDmg(enemy.atk * 0.8, ab.dmgMultiplier || 1.3);
+      const dmg = Battle.magicDmg(enemy.atk * 0.8, ab.dmgMultiplier || 1.3, 1.0, enemy.level || 1);
       target.hp = Math.max(0, target.hp - dmg);
       UI.popParty(targetIdx, dmg, 'magic');
       UI.setLog([`${enemy.name} uses ${ab.name}!`, `${target.displayName} took ${dmg} magic damage!`], ['magic','dmg']);
@@ -1060,10 +1092,10 @@ function startExplore() {
       alert('Game data not loaded yet. Try again in a moment.');
       return;
     }
-    // Auto-select all chars + first class
+    // Auto-select all chars (each with their own class)
     G.selectedChars = G.chars.slice(0, 4).map(c => c.id);
     G.selectedChar  = G.selectedChars[0];
-    G.selectedClass = G.selectedClass || G.classes[0].id;
+    // Don't set selectedClass — buildParty will use each character's class_affinity
     buildParty();
   }
   G.mode = 'explore';
@@ -1078,14 +1110,18 @@ function startExplore() {
   MapEngine.init(canvas);
 
   // Wire up encounter handler
-  MapEngine.onEncounterStart = (enc) => {
+  MapEngine.onEncounterStart = (enc, map) => {
     const enemyIds = enc.enemies || [];
     const enemyDefs = enemyIds
       .map(id => G.enemies.find(e => e.id === id))
       .filter(Boolean);
 
     if (enemyDefs.length > 0) {
-      buildEnemyGroup(enemyDefs);
+      // Get enemy level range from map
+      const [minLevel, maxLevel] = map?.enemyLevelRange || [1, 1];
+      const spawnLevel = minLevel + Math.floor(Math.random() * (maxLevel - minLevel + 1));
+
+      buildEnemyGroup(enemyDefs, spawnLevel);
       _initBattle();
       const names = G.enemyGroup.map(e => e.name).join(' & ');
       UI.setLog([`⚔ ${names} appeared!`, `Party to battle stations!`], ['hi','']);

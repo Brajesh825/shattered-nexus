@@ -384,7 +384,7 @@ const MapEngine = (() => {
     // Delegate to host game if wired up
     if (typeof MapEngine !== 'undefined' && typeof MapEngine.onEncounterStart === 'function') {
       stop();
-      setTimeout(() => MapEngine.onEncounterStart(enc), 120);
+      setTimeout(() => MapEngine.onEncounterStart(enc, _map), 120);
     }
   }
 

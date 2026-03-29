@@ -17,7 +17,7 @@ window.CHARACTERS_DATA = [
     "skin_color":"#f8e8ff","armor_color":"#4b9fce",
     "base_stats":{"hp":65,"mp":30,"atk":16,"def":12,"spd":18,"mag":14},
     "stat_bonuses":{"spd":3,"atk":2},
-    "class_affinity":["rogue","warrior"],
+    "class_affinity":["cryo_bladestorm"],
     "passive":{"id":"frostflake","name":"Frostflake Dance","description":"Always acts first. +3 SPD bonus and attacks carry a cryo edge."},
     "lore":"Torn from her world mid-prayer. The last thing she saw was cherry blossoms."
   },
@@ -29,7 +29,7 @@ window.CHARACTERS_DATA = [
     "skin_color":"#f5c8a0","armor_color":"#c03010",
     "base_stats":{"hp":50,"mp":22,"atk":20,"def":7,"spd":14,"mag":12},
     "stat_bonuses":{"atk":4,"spd":2},
-    "class_affinity":["warrior","rogue"],
+    "class_affinity":["spirit_incinerator"],
     "passive":{"id":"blood_blossom","name":"Blood Blossom","description":"Below 50% HP, ATK +35%. Life fuels the flame."},
     "lore":"She once wrote a poem about her own funeral and genuinely enjoyed it."
   },
@@ -41,7 +41,7 @@ window.CHARACTERS_DATA = [
     "skin_color":"#f0d8c0","armor_color":"#0e9080",
     "base_stats":{"hp":72,"mp":42,"atk":10,"def":13,"spd":11,"mag":20},
     "stat_bonuses":{"hp":8,"mp":8,"mag":4},
-    "class_affinity":["healer","mage"],
+    "class_affinity":["hydro_performer"],
     "passive":{"id":"dance_of_haftkarsvar","name":"Dance of Haftkarsvar","description":"All healing effects amplified by 30%."},
     "lore":"Stepped through the rift sword-first. She stopped worrying about being grand enough."
   },
@@ -53,7 +53,7 @@ window.CHARACTERS_DATA = [
     "skin_color":"#d8e8c0","armor_color":"#0a4030",
     "base_stats":{"hp":80,"mp":18,"atk":18,"def":16,"spd":13,"mag":8},
     "stat_bonuses":{"atk":3,"def":3},
-    "class_affinity":["warrior","rogue"],
+    "class_affinity":["yaksha_protector"],
     "passive":{"id":"yakshas_valor","name":"Yaksha's Valor","description":"10% reduced damage. ATK +15% from karmic resolve."},
     "lore":"He has slain ten thousand demons and does not speak of it."
   }
@@ -62,56 +62,60 @@ window.CHARACTERS_DATA = [
 // ── CLASSES ───────────────────────────────────────────────────
 window.CLASSES_DATA = [
   {
-    "id":"warrior","name":"Warrior","icon":"⚔️","tag":"Physical / Tank",
-    "description":"Masters of physical combat. High HP and DEF with powerful weapon skills.",
-    "color":"#e06030",
-    "stat_multipliers":{"hp":1.3,"mp":0.7,"atk":1.3,"def":1.2,"spd":0.9,"mag":0.7},
+    "id":"cryo_bladestorm","name":"Cryo Bladestorm","icon":"❄️","tag":"Ice / Swift Strike",
+    "description":"Ayaka's elegant frozen combat style. Swift ice-infused strikes that freeze enemies.",
+    "color":"#4b9fce",
+    "role":"Ranger",
+    "stat_multipliers":{"hp":0.95,"mp":1.1,"atk":1.25,"def":0.85,"spd":1.6,"mag":1.0},
     "abilities":[
-      {"id":"cleave","name":"Cleave","icon":"⚔","mp":0,"type":"physical","description":"Heavy strike — 1.6x damage","effect":{"dmgMultiplier":1.6}},
-      {"id":"war_cry","name":"War Cry","icon":"📣","mp":6,"type":"buff","description":"Raise ATK by 40% for 3 turns","effect":{"stat":"atk","multiplier":1.4,"duration":3}},
-      {"id":"shield_bash","name":"Shield Bash","icon":"🛡","mp":5,"type":"stun","description":"60% stun chance","effect":{"stunChance":0.6}},
-      {"id":"second_wind","name":"Second Wind","icon":"💨","mp":8,"type":"heal","description":"Recover 35% of max HP","effect":{"healBase":25,"healRandom":20}}
+      {"id":"frostblossom","name":"Frostblossom Slash","icon":"❄","mp":0,"type":"physical","description":"1.5x ATK, 40% slow chance","effect":{"dmgMultiplier":1.5,"element":"ice"}},
+      {"id":"glacial_waltz","name":"Glacial Waltz","icon":"❄","mp":8,"type":"magic_damage","description":"2.2x magic AoE, +1 SPD","effect":{"dmgMultiplier":2.2,"element":"ice","aoe":true}},
+      {"id":"permafrost","name":"Permafrost","icon":"🧊","mp":6,"type":"debuff","description":"60% freeze chance, DEF -20%","effect":{"freezeChance":0.6}},
+      {"id":"cryoclasm","name":"Cryoclasm","icon":"❄","mp":10,"type":"magic_damage","description":"3.0x magic, resets if enemy frozen","effect":{"dmgMultiplier":3.0,"element":"ice"}}
     ],
-    "growthPerLevel":{"hp":14,"mp":2,"atk":4,"def":3,"spd":1,"mag":1}
+    "growthPerLevel":{"hp":6,"mp":5,"atk":3,"def":2,"spd":5,"mag":3}
   },
   {
-    "id":"mage","name":"Mage","icon":"🔮","tag":"Magic / Burst",
-    "description":"Devastating spellcasters who harness fire, ice and lightning.",
-    "color":"#7050e0",
-    "stat_multipliers":{"hp":0.7,"mp":1.5,"atk":0.7,"def":0.7,"spd":1.0,"mag":1.5},
+    "id":"spirit_incinerator","name":"Spirit Incinerator","icon":"🔥","tag":"Fire / Life Force",
+    "description":"Hu Tao's pyromantic guide art. Harness ghost energy to incinerate foes while draining vitality.",
+    "color":"#c03010",
+    "role":"Warrior",
+    "stat_multipliers":{"hp":0.85,"mp":1.0,"atk":1.5,"def":0.7,"spd":1.15,"mag":1.1},
     "abilities":[
-      {"id":"fire","name":"Fire","icon":"🔥","mp":5,"type":"magic_damage","description":"2.0x fire damage","effect":{"dmgMultiplier":2.0,"element":"fire"}},
-      {"id":"blizzard","name":"Blizzard","icon":"❄","mp":7,"type":"magic_damage","description":"2.5x ice damage","effect":{"dmgMultiplier":2.5,"element":"ice"}},
-      {"id":"thunder","name":"Thunder","icon":"⚡","mp":9,"type":"magic_damage","description":"3.0x lightning damage","effect":{"dmgMultiplier":3.0,"element":"lightning"}},
-      {"id":"mana_shield","name":"Mana Shield","icon":"🌀","mp":10,"type":"buff","description":"DEF +60% for 2 turns","effect":{"stat":"def","multiplier":1.6,"duration":2}}
+      {"id":"spirit_flame","name":"Spirit Flame","icon":"🔥","mp":4,"type":"physical","description":"1.7x ATK, 20% lifesteal","effect":{"dmgMultiplier":1.7,"element":"fire"}},
+      {"id":"paramita_papilio","name":"Paramita Papilio","icon":"🔥","mp":7,"type":"magic_damage","description":"2.3x magic, ATK +50% next turn if HP<50%","effect":{"dmgMultiplier":2.3,"element":"fire"}},
+      {"id":"blood_blossom_enhanced","name":"Blood Blossom Aura","icon":"🌸","mp":6,"type":"buff","description":"3-turn: ATK +40%, heal from fire","effect":{"stat":"atk","multiplier":1.4,"duration":3}},
+      {"id":"guide_to_afterlife","name":"Guide to Afterlife","icon":"💀","mp":12,"type":"magic_damage","description":"4.0x magic, drain 30% enemy HP","effect":{"dmgMultiplier":4.0,"element":"fire"}}
     ],
-    "growthPerLevel":{"hp":5,"mp":9,"atk":1,"def":1,"spd":1,"mag":5}
+    "growthPerLevel":{"hp":7,"mp":4,"atk":5,"def":1,"spd":3,"mag":4}
   },
   {
-    "id":"rogue","name":"Rogue","icon":"🗡️","tag":"Speed / Trick",
-    "description":"Swift and cunning fighters who evade danger and exploit weaknesses.",
-    "color":"#30a060",
-    "stat_multipliers":{"hp":0.9,"mp":1.0,"atk":1.2,"def":0.8,"spd":1.5,"mag":0.9},
+    "id":"hydro_performer","name":"Hydro Performer","icon":"💧","tag":"Water / Grace",
+    "description":"Nilou's star-blessed dance. Graceful water magic that heals and supports the party.",
+    "color":"#0e9080",
+    "role":"Healer",
+    "stat_multipliers":{"hp":1.15,"mp":1.4,"atk":0.8,"def":1.0,"spd":0.95,"mag":1.3},
     "abilities":[
-      {"id":"backstab","name":"Backstab","icon":"🗡","mp":4,"type":"physical","description":"2.2x sneak attack","effect":{"dmgMultiplier":2.2}},
-      {"id":"poison_blade","name":"Poison Blade","icon":"☠","mp":5,"type":"debuff","description":"Enemy ATK -35% for 3 turns","effect":{"stat":"atk","multiplier":0.65,"duration":3}},
-      {"id":"steal","name":"Steal","icon":"💰","mp":2,"type":"steal","description":"70% steal chance","effect":{"stealChance":0.7}},
-      {"id":"vanish","name":"Vanish","icon":"👻","mp":0,"type":"run","description":"Guaranteed escape","effect":{"guaranteedRun":true}}
+      {"id":"dance_of_blessing","name":"Dance of Blessing","icon":"💚","mp":5,"type":"heal","description":"Heal 35-55 HP, +30% healing","effect":{"healBase":35,"healRandom":20}},
+      {"id":"water_wheel","name":"Water Wheel","icon":"💧","mp":8,"type":"magic_damage","description":"2.0x magic AoE, heal allies 50%","effect":{"dmgMultiplier":2.0,"element":"water","aoe":true}},
+      {"id":"harmony_preservation","name":"Harmony Preservation","icon":"🌊","mp":10,"type":"buff","description":"Party: ATK +20%, DEF +20%, regen 5 HP","effect":{"aoe":true}},
+      {"id":"hajras_hymn","name":"Hajra's Hymn","icon":"✨","mp":12,"type":"heal","description":"50% max HP all, cleanse, +SPD","effect":{"aoe":true}}
     ],
-    "growthPerLevel":{"hp":7,"mp":3,"atk":3,"def":1,"spd":4,"mag":1}
+    "growthPerLevel":{"hp":10,"mp":8,"atk":1,"def":2,"spd":1,"mag":5}
   },
   {
-    "id":"healer","name":"Healer","icon":"✨","tag":"Support / Holy",
-    "description":"Sacred magic wielders who mend wounds and purify corruption.",
-    "color":"#d0a030",
-    "stat_multipliers":{"hp":1.1,"mp":1.3,"atk":0.9,"def":1.1,"spd":0.9,"mag":1.2},
+    "id":"yaksha_protector","name":"Yaksha Protector","icon":"🌀","tag":"Guardian / Karmic",
+    "description":"Xiao's ancient yaksha power. Protective stance with karmic resolution and damage reduction.",
+    "color":"#0a4030",
+    "role":"Knight",
+    "stat_multipliers":{"hp":1.4,"mp":0.8,"atk":1.1,"def":1.4,"spd":0.85,"mag":0.7},
     "abilities":[
-      {"id":"cure","name":"Cure","icon":"💚","mp":4,"type":"heal","description":"Restore 30–50 HP","effect":{"healBase":30,"healRandom":20}},
-      {"id":"regen","name":"Regen","icon":"🌱","mp":8,"type":"regen","description":"Heal 8 HP/turn for 4 turns","effect":{"amount":8,"duration":4}},
-      {"id":"holy","name":"Holy","icon":"☀","mp":10,"type":"magic_damage","description":"2.4x holy damage","effect":{"dmgMultiplier":2.4,"element":"holy"}},
-      {"id":"protect","name":"Protect","icon":"🔰","mp":6,"type":"buff","description":"DEF +50% for 2 turns","effect":{"stat":"def","multiplier":1.5,"duration":2}}
+      {"id":"lancing_strike","name":"Lancing Strike","icon":"⚡","mp":0,"type":"physical","description":"1.4x ATK, ignore 20% DEF","effect":{"dmgMultiplier":1.4,"element":"physical"}},
+      {"id":"yaksha_valor_active","name":"Yaksha's Valor","icon":"🛡","mp":6,"type":"buff","description":"3-turn: -25% damage, +15% reflect","effect":{"stat":"def","multiplier":1.3,"duration":3}},
+      {"id":"karmic_barrier","name":"Karmic Barrier","icon":"🌀","mp":8,"type":"buff","description":"Party: DEF +40%, allies -10% damage","effect":{"aoe":true}},
+      {"id":"mastery_of_pain","name":"Mastery of Pain","icon":"⚡","mp":14,"type":"magic_damage","description":"3.5x magic, scales with DEF","effect":{"dmgMultiplier":3.5,"element":"anemo"}}
     ],
-    "growthPerLevel":{"hp":9,"mp":7,"atk":2,"def":2,"spd":1,"mag":3}
+    "growthPerLevel":{"hp":16,"mp":2,"atk":3,"def":5,"spd":0,"mag":1}
   }
 ];
 
