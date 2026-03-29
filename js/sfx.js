@@ -205,6 +205,12 @@ const SFX = {
     this._muted = !this._muted;
     const btn = document.getElementById('mute-btn');
     if (btn) btn.textContent = this._muted ? '🔇' : '🔊';
+
+    // Sync BGM mute
+    if (typeof BGM !== 'undefined') {
+      BGM.toggleMute(this._muted);
+    }
+
     return this._muted;
   },
 };

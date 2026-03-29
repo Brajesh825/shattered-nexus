@@ -13,10 +13,10 @@ const SPEAKER_COLOR = {
 
 /* ── Speaker portrait images ─────────────────────────────────────────────── */
 const SPEAKER_IMG = {
-  Ayaka: 'images/heroes/ayaka.png',
-  Hutao: 'images/heroes/hutao.png',
-  Nilou: 'images/heroes/nilou.png',
-  Xiao: 'images/heroes/xiao.png',
+  Ayaka: 'images/characters/spirits/ayaka_spirit.png',
+  Hutao: 'images/characters/spirits/hutao_spirit.png',
+  Nilou: 'images/characters/spirits/nilou_spirit.png',
+  Xiao: 'images/characters/spirits/xiao_spirit.png',
 };
 
 /* ── Speaker portrait emojis (narrator fallback) ────────────────────────── */
@@ -56,6 +56,11 @@ const Story = {
   _activeLines: [],   // current dialogue/narration array being rendered
   _onLinesDone: null, // callback when _activeLines exhausted
   _retrying: false,
+
+  // Scene character management
+  _charAppeared: {},  // tracks which characters have appeared: { "Ayaka": true, ... }
+  _charPositions: {}, // character positions: { "Ayaka": "left", "Hutao": "center", ... }
+  _posCounter: 0,     // counter for distributing positions
 
   // Typewriter
   _tw: { timer: null, full: '', done: true },
@@ -193,6 +198,9 @@ const Story = {
     const chap = this.currentChap;
     this.lineIdx = 0;
 
+    // Show dialogue again after battle
+    this._showSection('s-dialogue');
+
     if (this.phase === 'boss_in') {
       this.phase = 'boss_post';
       this._showLines(chap.post_dialogue || [], () => this._showCharMoment());
@@ -302,6 +310,20 @@ const Story = {
     this.currentChap = chap;
     this.sceneIdx = 0;
     this.lineIdx = 0;
+    this._charAppeared = {};  // reset character appearances
+    this._charPositions = {}; // reset character positions
+    this._posCounter = 0;     // reset position counter
+    this._clearSceneLayer();  // clear scene characters
+
+    // Clear dialogue content
+    const dialogue = this.el('s-dialogue');
+    if (dialogue) {
+      dialogue.style.display = 'none';
+      this.el('s-speaker').textContent = '';
+      this.el('s-text').textContent = '';
+      this.el('s-portrait-img').style.display = 'none';
+    }
+
     this._setHeader(`Arc ${this.arc.number}: ${this.arc.name}`, chap.title || '');
     this._setBg(chap.background);
 
@@ -433,6 +455,10 @@ const Story = {
     this.currentChap = boss;
     this.lineIdx = 0;
     this.phase = 'boss_pre';
+    this._charAppeared = {};  // reset character appearances
+    this._charPositions = {}; // reset character positions
+    this._posCounter = 0;     // reset position counter
+    this._clearSceneLayer();  // clear scene characters
     this._setHeader(`Arc ${this.arc.number}: ${this.arc.name}`, `⚔ BOSS: ${boss.title}`);
     this._setBg(boss.background);
     this._showLines(boss.pre_dialogue || [], () => this._launchBoss());
@@ -471,6 +497,10 @@ const Story = {
   },
 
   _launchStoryBattle(enemyId) {
+    // Hide dialogue during battle
+    const dialogue = this.el('s-dialogue');
+    if (dialogue) dialogue.style.display = 'none';
+
     const raw = this._allEnemies.find(e => e.id === enemyId);
     if (!raw) { console.warn('Story: enemy not found:', enemyId); this.onBattleWon(); return; }
     const def = this._scaleEnemy(raw);
@@ -626,6 +656,25 @@ const Story = {
 
     this._showSection('s-arc-end');
 
+    // Load face and spirit images
+    const heroName = G.hero?.id || 'ayaka';
+    const heroNameLower = heroName.toLowerCase();
+
+    // Face image (small icon, left)
+    const faceImg = this.el('s-ae-face');
+    faceImg.src = `images/characters/faces/${heroNameLower}_face.png`;
+    faceImg.style.display = 'block';
+    faceImg.onerror = () => {
+      faceImg.style.display = 'none';
+    };
+
+    // Spirit image (large, center)
+    const spiritImg = this.el('s-ae-spirit');
+    spiritImg.src = `images/characters/spirits/${heroNameLower}_spirit.png`;
+    spiritImg.onerror = () => {
+      spiritImg.style.display = 'none';
+    };
+
     const shard = arc.shard || {};
     const shardEl = this.el('s-ae-shard');
     shardEl.textContent = shard.name || arc.name;
@@ -727,6 +776,9 @@ const Story = {
      WORLD MAP
   ════════════════════════════════════════════════════════════════════════ */
   _showWorldMap() {
+    // Hide all story sections
+    this._showSection(null);
+
     const arcs = this.data.arcs;
     const nextIdx = this.arcIdx + 1;
     const area = this.el('map-area');
@@ -780,10 +832,10 @@ const Story = {
      SKIP
   ════════════════════════════════════════════════════════════════════════ */
   skip() {
-    if (!confirm('Skip story and go to free battle?')) return;
-    this.active = false;
-    G.enemies = this._allEnemies.slice();
-    goCharSelect();
+    // Skip current chapter and go to next
+    this._skipTw();
+    this.lineIdx = 999; // Set to high number to skip all lines
+    this._onLinesDone && this._onLinesDone();
   },
 
   /* ════════════════════════════════════════════════════════════════════════
@@ -825,20 +877,31 @@ const Story = {
     const txtEl = this.el('s-text');
     const imgEl = this.el('s-portrait-img');
     const emojiEl = this.el('s-portrait-emoji');
+    const spiritsRow = this.el('s-dialogue-spirits-row');
     if (!box) return;
 
     box.style.display = '';
     if (typeof SFX !== 'undefined') SFX.dialogue();
     if (typeof TTS !== 'undefined') TTS.stop();
+
+    // Render scene characters
+    if (speaker && this.currentChap && this.currentChap.cast) {
+      this._renderSceneCharacters(speaker);
+    }
+
     if (speaker) {
       spkEl.textContent = speaker.toUpperCase();
       spkEl.style.color = SPEAKER_COLOR[speaker] || '#f0f0f8';
       spkEl.style.display = 'block';
       box.dataset.speaker = speaker.toLowerCase();
 
-      const imgSrc = SPEAKER_IMG[speaker];
-      if (imgEl && imgSrc) {
-        imgEl.src = imgSrc;
+      // Get speaker character ID for face image path
+      const speakerLower = speaker.toLowerCase();
+      const faceImgSrc = `images/characters/faces/${speakerLower}_face.png`;
+
+      // Face image (left, small)
+      if (imgEl) {
+        imgEl.src = faceImgSrc;
         imgEl.alt = speaker;
         imgEl.style.display = 'block';
         imgEl.style.borderColor = SPEAKER_COLOR[speaker] || '#5040a0';
@@ -886,6 +949,57 @@ const Story = {
     if (typeof TTS !== 'undefined') TTS.stop();
     const el = this.el('s-text');
     if (el) el.textContent = this._tw.full;
+  },
+
+  _clearSceneLayer() {
+    const layer = this.el('s-scene-layer');
+    if (layer) layer.innerHTML = '';
+  },
+
+  _renderSceneCharacters(speaker) {
+    if (!this.currentChap || !this.currentChap.cast) return;
+
+    const layer = this.el('s-scene-layer');
+    if (!layer) return;
+
+    const cast = this.currentChap.cast;
+
+    cast.forEach(charName => {
+      if (!charName) return;
+
+      // First appearance - create character element
+      if (!this._charAppeared[charName]) {
+        this._charAppeared[charName] = true;
+
+        const charEl = document.createElement('div');
+        charEl.className = 's-scene-char';
+        charEl.id = `s-scene-char-${charName.toLowerCase()}`;
+
+        const img = document.createElement('img');
+        img.src = `images/characters/spirits/${charName.toLowerCase()}_spirit.png`;
+        img.alt = charName;
+
+        const nameEl = document.createElement('div');
+        nameEl.className = 's-scene-char-name';
+        nameEl.textContent = charName;
+
+        charEl.appendChild(img);
+        charEl.appendChild(nameEl);
+        layer.appendChild(charEl);
+      }
+
+      // Update active/dimmed state
+      const charEl = this.el(`s-scene-char-${charName.toLowerCase()}`);
+      if (charEl) {
+        if (speaker && speaker.toLowerCase() === charName.toLowerCase()) {
+          charEl.classList.add('active');
+          charEl.classList.remove('dimmed');
+        } else {
+          charEl.classList.remove('active');
+          charEl.classList.add('dimmed');
+        }
+      }
+    });
   },
 };
 

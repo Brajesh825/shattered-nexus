@@ -19,6 +19,7 @@
       "title": "Ashes of Ashveil",
       "type": "cutscene",
       "background": "burning_kingdom",
+      "cast": ["Ayaka", "Hutao", "Nilou", "Xiao"],
       "scenes": [
         {
           "narration": "The Kingdom of Ashveil was once the jewel of Aethoria. Now it is a canvas of smoke and silence. Buildings that stood for centuries are rubble.",
@@ -50,6 +51,7 @@
       "type": "battle",
       "enemy_id": "zombie",
       "background": "scorched_wastes",
+      "cast": ["Ayaka", "Hutao", "Nilou", "Xiao"],
       "pre_dialogue": [
         { "speaker": "narrator", "emotion": "tense", "text": "The path to the throne room cuts through ruins patrolled by shadow-corrupted beasts and undead soldiers." },
         { "speaker": "Xiao", "emotion": "cold", "text": "They were soldiers once. Now they are instruments. Do not hesitate." },
@@ -68,6 +70,7 @@
       "type": "explore",
       "map": "crystal_cavern",
       "background": "scorched_wastes",
+      "cast": ["Ayaka", "Hutao", "Nilou", "Xiao"],
       "pre_dialogue": [
         { "speaker": "narrator", "emotion": "tense", "text": "The direct path to the throne room is collapsed — floors caved in, walls crumbled to slag. There is only one way through: the old cinder passage beneath the city." },
         { "speaker": "Ayaka", "emotion": "resolved", "text": "The underground tunnels. The old keeper mentioned them. They connect beneath the palace." },
@@ -88,6 +91,7 @@
   "boss_chapter": {
     "title": "The Throne of Cinders",
     "background": "throne_room",
+    "cast": ["Ayaka", "Hutao", "Nilou", "Xiao"],
     "pre_dialogue": [
       { "speaker": "narrator", "emotion": "intense", "text": "The Demon Lord sits on Ashveil's stolen throne, the fire Seal Fragment pulsing against his chest like a second heartbeat. The heat in the room is not natural. It presses against skin like a hand that has not decided whether to push or hold." },
       { "speaker": "narrator", "emotion": "sinister", "text": "Demon Lord: Summoned warriors. How quaint. Valdris will be amused that you died before reaching him." },

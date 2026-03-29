@@ -15,6 +15,8 @@
   <!-- persistent overlay buttons -->
   <button id="mute-btn" onclick="SFX.toggleMute()" title="Toggle sound effects">🔊</button>
   <button id="tts-btn"  onclick="TTS.toggle()"     title="Voice: OFF (click to enable)">💬</button>
+  <button id="zoom-btn" onclick="zoomGame(1.2)" title="1.2x Fullscreen">1.2×</button>
+  <button id="reset-zoom-btn" onclick="zoomGame(1)" title="Reset Zoom">⟲</button>
 
   <!-- ═══════════════════════════════════════
        TITLE SCREEN
@@ -98,7 +100,10 @@
        STORY SCREEN
        ═══════════════════════════════════════ -->
   <div id="story-screen" class="screen">
-    <div id="story-bg" class="story-bg bg--default"></div>
+    <div id="story-bg" class="story-bg bg--default">
+      <!-- Character scene layer -->
+      <div class="s-scene-layer" id="s-scene-layer"></div>
+    </div>
     <div class="s-header">
       <div class="s-header-left">
         <div id="s-header-arc"  class="s-header-arc"></div>
@@ -116,13 +121,16 @@
       </div>
     </div>
     <div id="s-dialogue" class="s-dialogue" style="display:none">
-      <div class="s-dialogue-portrait">
-        <img id="s-portrait-img" class="s-portrait-img" src="" alt="" style="display:none">
-        <div id="s-portrait-emoji" class="s-portrait-emoji">📖</div>
-      </div>
-      <div class="s-dialogue-body">
-        <div id="s-speaker" class="s-speaker"></div>
-        <div id="s-text"    class="s-text"></div>
+      <!-- Chat area (bottom: face + text) -->
+      <div class="s-dialogue-chat">
+        <div class="s-dialogue-portrait">
+          <img id="s-portrait-img" class="s-portrait-img" src="" alt="" style="display:none">
+          <div id="s-portrait-emoji" class="s-portrait-emoji">📖</div>
+        </div>
+        <div class="s-dialogue-body">
+          <div id="s-speaker" class="s-speaker"></div>
+          <div id="s-text"    class="s-text"></div>
+        </div>
       </div>
     </div>
     <div id="s-event" class="s-event" style="display:none">
@@ -132,9 +140,24 @@
       <div id="s-choice-btns" class="s-choice-btns"></div>
     </div>
     <div id="s-arc-end" class="s-card s-arc-end" style="display:none">
-      <div class="s-ae-label">SHARD OBTAINED</div>
-      <div id="s-ae-shard" class="s-ae-shard"></div>
-      <div id="s-ae-desc"  class="s-ae-desc"></div>
+      <div class="s-ae-container">
+        <!-- Character face icon (left) -->
+        <div class="s-ae-face-section">
+          <img id="s-ae-face" class="s-ae-face" src="" alt="character face" style="display:none">
+        </div>
+
+        <!-- Spirit portrait (center) -->
+        <div class="s-ae-spirit-section">
+          <img id="s-ae-spirit" class="s-ae-spirit" src="" alt="spirit portrait">
+        </div>
+
+        <!-- Shard info (right) -->
+        <div class="s-ae-info-section">
+          <div class="s-ae-label">SHARD OBTAINED</div>
+          <div id="s-ae-shard" class="s-ae-shard"></div>
+          <div id="s-ae-desc"  class="s-ae-desc"></div>
+        </div>
+      </div>
     </div>
     <div id="s-epilogue" class="s-epilogue" style="display:none">
       <div class="s-epi-title">EPILOGUE</div>
@@ -273,6 +296,7 @@
 <script src="js/map/map-entities.js"></script>
 <script src="js/map/map-ui.js"></script>
 <script src="js/map/map-engine.js"></script>
+<script src="js/bgm.js"></script>
 <script src="js/sfx.js"></script>
 <script src="js/tts.js"></script>
 <script src="js/save.js"></script>
@@ -281,13 +305,33 @@
 <script src="js/game.js"></script>
 <script src="js/story.js"></script>
 <script>
-  // Patch UI.show to manage step-bar visibility
+  // Patch UI.show to manage step-bar visibility and BGM
   const _origUIShow = UI.show.bind(UI);
   UI.show = function(id) {
     _origUIShow(id);
+
+    // Hide dialogue when leaving story screen
+    const dialogue = document.getElementById('s-dialogue');
+    if (id !== 'story-screen' && dialogue) {
+      dialogue.style.display = 'none';
+    }
+
     const bar = document.getElementById('step-bar');
     bar.style.display = ['char-screen'].includes(id) ? 'flex' : 'none';
     SFX.click();
+
+    // Trigger BGM based on screen
+    if (id === 'title-screen') {
+      BGM.play('title');
+    } else if (id === 'battle-screen') {
+      BGM.play('battle');
+    } else if (id === 'explore-screen') {
+      BGM.play('exploration');
+    } else if (id === 'story-screen') {
+      BGM.play('story');
+    } else {
+      BGM.stop();
+    }
   };
 
   TTS.init();
@@ -296,6 +340,13 @@
     if (b) b.style.display = 'none';
   }
 
+  // Initialize BGM on page load
+  window.addEventListener('DOMContentLoaded', () => {
+    // Play title screen BGM
+    BGM.play('title');
+  });
+
+  // Fallback DOMContentLoaded for save state check
   window.addEventListener('DOMContentLoaded', () => {
     if (Save.exists()) {
       const s = Save.read();

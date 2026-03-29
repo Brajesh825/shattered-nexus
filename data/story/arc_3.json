@@ -19,6 +19,7 @@
       "title": "Beneath the Surface",
       "type": "cutscene",
       "background": "sunken_ruins",
+      "cast": ["Ayaka", "Hutao", "Nilou", "Xiao"],
       "scenes": [
         {
           "narration": "The Oracle's third marker leads to the coast of Aethoria's sunken west — a region that drowned when Valdris first shattered the Water Seal.",
@@ -46,7 +47,9 @@
       "id": "arc3_ch2",
       "title": "The Drowned Path",
       "type": "battle",
+      "enemy_id": "skeleton",
       "background": "underwater_ruins",
+      "cast": ["Ayaka", "Hutao", "Nilou", "Xiao"],
       "pre_dialogue": [
         { "speaker": "narrator", "emotion": "eerie", "text": "The descent into the Drowned Citadel takes them through corridors held up by nothing but old magic and shadow-power." },
         { "speaker": "Nilou", "emotion": "steady", "text": "Shadow creatures ahead. They are between us and the Fragment." },
@@ -60,21 +63,19 @@
     },
     {
       "id": "arc3_ch3",
-      "title": "The Guardian Unbound",
-      "type": "battle",
+      "title": "The Deep",
+      "type": "cutscene",
       "background": "deep_citadel",
-      "pre_dialogue": [
-        { "speaker": "narrator", "emotion": "tense", "text": "In the deepest chamber of the Drowned Citadel, the Sea Kraken awaits — a creature of immense age and corrupted sorrow, the Seal Fragment fused to its ancient body." },
-        { "speaker": "Xiao", "emotion": "solemn", "text": "It does not want to fight. The shadow compels it. Remember that." },
-        { "speaker": "Hutao", "emotion": "focused", "text": "We will make it quick, then. It deserves that much." },
-        { "speaker": "Nilou", "emotion": "resolute", "text": "And we will free it from the corruption. Whatever it costs." }
-      ],
-      "post_dialogue": [
-        { "speaker": "narrator", "emotion": "melancholy", "text": "As the Kraken's shadow-form dissolves, the water Seal Fragment rises from the depths — clear and cold and weeping light." },
-        { "speaker": "Xiao", "emotion": "quiet", "text": "It is gone now. The karma is lifting. It can rest." },
-        { "speaker": "Nilou", "emotion": "bittersweet", "text": "I am glad it is free. I just wish we could have done it without fighting." },
-        { "speaker": "Ayaka", "emotion": "gentle", "text": "Sometimes the only kindness left is the one that ends suffering. Not comfortable — but true." },
-        { "speaker": "Hutao", "emotion": "quiet", "text": "...I have seen enough to know she is right. Three Fragments down. One more before we face him." }
+      "cast": ["Ayaka", "Hutao", "Nilou", "Xiao"],
+      "scenes": [
+        {
+          "narration": "In the deepest chamber of the Drowned Citadel, the Sea Kraken awaits — a creature of immense age and corrupted sorrow, the Seal Fragment fused to its ancient body.",
+          "dialogue": [
+            { "speaker": "Xiao", "emotion": "solemn", "text": "It does not want to fight. The shadow compels it. Remember that." },
+            { "speaker": "Hutao", "emotion": "focused", "text": "We will make it quick, then. It deserves that much." },
+            { "speaker": "Nilou", "emotion": "resolute", "text": "And we will free it from the corruption. Whatever it costs." }
+          ]
+        }
       ]
     },
     {
@@ -82,6 +83,7 @@
       "title": "The Reflection",
       "type": "cutscene",
       "background": "sunken_surface",
+      "cast": ["Ayaka", "Hutao", "Nilou", "Xiao"],
       "scenes": [
         {
           "narration": "As they ascend from the Drowned Citadel, Nilou pauses at the water's surface — now clearing as the shadow corruption retreats. She looks down at her reflection.",
@@ -110,5 +112,24 @@
         }
       ]
     }
-  ]
+  ],
+
+  "boss_chapter": {
+    "title": "The Guardian Unbound",
+    "background": "deep_citadel",
+    "cast": ["Ayaka", "Hutao", "Nilou", "Xiao"],
+    "pre_dialogue": [
+      { "speaker": "narrator", "emotion": "intense", "text": "The Kraken rises from the depths. Ancient. Immense. Its corruption pulses with the captured Seal Fragment, and it comes for them with blind fury." },
+      { "speaker": "Xiao", "emotion": "grave", "text": "It does not want this fight. But it has no choice. That makes it more dangerous." },
+      { "speaker": "Nilou", "emotion": "determined", "text": "Then we end this quickly. For its sake." },
+      { "speaker": "Hutao", "emotion": "ready", "text": "For its sake, and for ours. Let us do what we came here to do." }
+    ],
+    "post_dialogue": [
+      { "speaker": "narrator", "emotion": "melancholy", "text": "The Kraken falls. As its shadow-form dissolves, the water Seal Fragment rises from the depths — clear and cold and weeping light." },
+      { "speaker": "Xiao", "emotion": "quiet", "text": "It is gone now. The karma is lifting. It can finally rest." },
+      { "speaker": "Nilou", "emotion": "bittersweet", "text": "I am glad it is free. I just wish we could have done it without the fighting." },
+      { "speaker": "Ayaka", "emotion": "gentle", "text": "Sometimes the only kindness left is the one that ends suffering. Not comfortable — but true." },
+      { "speaker": "Hutao", "emotion": "solemn", "text": "...I have seen enough to know she is right. Three Fragments down. One more before we truly face him." }
+    ]
+  }
 }

@@ -16,6 +16,7 @@
   "boss_chapter": {
     "title": "The Unmade Knight",
     "background": "sacred_ruins_boss",
+    "cast": ["Ayaka", "Hutao", "Nilou", "Xiao"],
     "pre_dialogue": [
       { "speaker": "narrator", "emotion": "grave", "text": "The Sacred Ruins of Aethoria. What was once a place of light and ceremony is now a hollow throne of shadow. And on that throne — something waits." },
       { "speaker": "narrator", "emotion": "ominous", "text": "It was a warrior once. A name. A life. Valdris took both and left only the shape of a soldier, filled with darkness and given one purpose: guard the Seal Fragment. Forever." },
@@ -44,6 +45,7 @@
       "title": "Between Worlds",
       "type": "cutscene",
       "background": "summoning_ruins",
+      "cast": ["Ayaka", "Hutao", "Nilou", "Xiao"],
       "scenes": [
         {
           "narration": "Silence. Then light — violent, white, all-consuming. Then the sound of breathing that is not one's own.",
@@ -87,6 +89,7 @@
       "title": "The Oracle Call",
       "type": "battle",
       "background": "shattered_ruins",
+      "cast": ["Ayaka", "Hutao", "Nilou", "Xiao"],
       "pre_dialogue": [
         { "speaker": "narrator", "emotion": "tense", "text": "The ruins are not empty. Shadow creatures lurk among the broken columns, drawn to the light of the summoning." },
         { "speaker": "Xiao", "emotion": "alert", "text": "Shadow-touched. They serve the Emperor. End them." },
@@ -104,6 +107,7 @@
       "title": "What the Oracle Knows",
       "type": "cutscene",
       "background": "oracle_chamber",
+      "cast": ["Ayaka", "Hutao", "Nilou", "Xiao"],
       "scenes": [
         {
           "narration": "At the heart of the ruins stands a figure barely corporeal, wrapped in flickering light. The Oracle of Aethoria.",

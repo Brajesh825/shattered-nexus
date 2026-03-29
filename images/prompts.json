@@ -11,7 +11,8 @@
       "category": "heroes",
       "filename": "ayaka.png",
       "target_path": "images/heroes/ayaka.png",
-      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (full body:1.4), (standing:1.2), side view, facing right, (full color), (bold outlines:1.2), (Kamisato Ayaka from Genshin Impact), (long light blue white hair), (tied ponytail with ornate blue kanzashi), (pale blue eyes), (slender katana at side)"
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (full body:1.4), (standing:1.2), side view, facing right, (full color), (bold outlines:1.2), (Kamisato Ayaka from Genshin Impact), (long light blue white hair), (tied ponytail with ornate blue kanzashi), (pale blue eyes), (slender katana at side)",
+      "prompt_face": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (portrait:1.4), (head and shoulders and upper body:1.2), facing viewer, (full color), (bold outlines:1.2), (Kamisato Ayaka), (long light blue white hair with ornate blue kanzashi), (pale blue eyes, serene gentle expression), (slender katana at side), (Kamisato Clan outfit), (blue and white noble attire), close-up character portrait, RPG icon style"
     },
     {
       "id": "hutao",
@@ -19,7 +20,8 @@
       "category": "heroes",
       "filename": "hutao.png",
       "target_path": "images/heroes/hutao.png",
-      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Hu Tao from Genshin Impact), (dark brown hair in long twin braids), (brown crimson gradient hair tips), (red amber eyes with flower pupils), (dark brown crimson Chinese-style funeral dress), (Wangsheng Funeral Parlor symbols), (paper talisman hat on head), (polearm spear with ghost fire flame), (pyro orange red glow), (mischievous grin), (slender energetic build), (ghost fire wisps floating around)"
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Hu Tao from Genshin Impact), (dark brown hair in long twin braids), (brown crimson gradient hair tips), (red amber eyes with flower pupils), (dark brown crimson Chinese-style funeral dress), (Wangsheng Funeral Parlor symbols), (paper talisman hat on head), (polearm spear with ghost fire flame), (pyro orange red glow), (mischievous grin), (slender energetic build), (ghost fire wisps floating around)",
+      "prompt_face": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (portrait:1.4), (head and shoulders and upper body:1.2), facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Hu Tao), (dark brown hair in long twin braids with crimson tips), (red amber eyes, mischievous playful expression), (paper talisman hat on head), (dark brown crimson Chinese-style funeral dress), (Wangsheng Funeral Parlor symbols), (polearm spear visible), ghost fire aesthetic, close-up character portrait, RPG icon style"
     },
     {
       "id": "nilou",
@@ -27,7 +29,8 @@
       "category": "heroes",
       "filename": "nilou.png",
       "target_path": "images/heroes/nilou.png",
-      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Nilou from Genshin Impact), (long teal cyan hair), (blue green eyes), (layered dancer outfit with flowing teal and white fabrics), (Sumeru Middle Eastern dancer style), (ornate golden headpiece with veil), (hydro water droplet accessories), (elegant curved sword), (teal blue hydro water glow), (warm gentle smile), (dancer graceful pose), (flower petal ornaments in hair), (bare midriff with jeweled belt)"
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Nilou from Genshin Impact), (long teal cyan hair), (blue green eyes), (layered dancer outfit with flowing teal and white fabrics), (Sumeru Middle Eastern dancer style), (ornate golden headpiece with veil), (hydro water droplet accessories), (elegant curved sword), (teal blue hydro water glow), (warm gentle smile), (dancer graceful pose), (flower petal ornaments in hair), (bare midriff with jeweled belt)",
+      "prompt_face": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (portrait:1.4), (face and head above upper breasts:1.2), facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Nilou), (long teal cyan hair with flower petals), (blue green eyes, warm gentle smile), (ornate golden headpiece with veil), hydro water glow, close-up character portrait, RPG icon style"
     },
     {
       "id": "xiao",
@@ -35,7 +38,8 @@
       "category": "heroes",
       "filename": "xiao.png",
       "target_path": "images/heroes/xiao.png",
-      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1boy, solo, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Xiao from Genshin Impact), (short dark black hair with teal green highlights), (teal green glowing eyes), (dark teal and black adeptus combat outfit), (gold green trim details), (yaksha mask pushed up on forehead), (polearm spear with anemo wind glow), (glowing adeptal green tattoo markings on arm), (anemo green wind swirls), (stoic serious expression), (slender athletic build), (Liyue adeptus warrior aesthetic)"
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1boy, solo, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Xiao from Genshin Impact), (short dark black hair with teal green highlights), (teal green glowing eyes), (dark teal and black adeptus combat outfit), (gold green trim details), (yaksha mask pushed up on forehead), (polearm spear with anemo wind glow), (glowing adeptal green tattoo markings on arm), (anemo green wind swirls), (stoic serious expression), (slender athletic build), (Liyue adeptus warrior aesthetic)",
+      "prompt_face": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1boy, solo, simple background, (portrait:1.4), (head and shoulders and upper body:1.2), facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Xiao), (short dark black hair with teal green highlights), (teal green glowing eyes, stoic serious expression), (dark teal and black adeptus combat outfit), (gold green trim details), (yaksha mask pushed up on forehead), (polearm spear with anemo wind glow), (glowing adeptal green tattoo markings on arm), anemo wind swirls, close-up character portrait, RPG icon style"
     }
   ],
   "enemies": [

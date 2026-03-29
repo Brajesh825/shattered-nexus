@@ -165,7 +165,7 @@ const UI = {
     });
   },
 
-  /* ── Enemy sprites (2x2 grid on RIGHT side) ────────── */
+  /* ── Enemy sprites (Pyramid on RIGHT side) ─────────── */
   renderEnemyRow() {
     const container = this.el('enemy-container');
     if (!container) return;
@@ -179,6 +179,7 @@ const UI = {
       const enemy = document.createElement('div');
       enemy.className = 'enemy' + (!alive ? ' ko-enemy' : '');
       enemy.dataset.idx = i;
+      enemy.dataset.target = i === G.targetEnemyIdx ? 'true' : 'false';
       enemy.onclick = () => selectTarget(i);
 
       // Sprite
@@ -233,7 +234,7 @@ const UI = {
       const member = document.createElement('div');
       member.className = 'party-member' + (!alive ? ' ko-member' : '');
       member.dataset.idx = i;
-      member.style.borderColor = col + '30';
+      member.style.color = col;
 
       // Sprite
       const spr = document.createElement('img');
@@ -280,7 +281,7 @@ const UI = {
       const isActive = t && t.type === 'party' && t.idx === i;
       w.classList.toggle('active-member', isActive);
       const col = CHAR_COLOR[G.party[i]?.charId] || '#c0b8e8';
-      w.style.borderColor = isActive ? col + '50' : col + '30';
+      w.style.borderColor = isActive ? col + '50' : 'transparent';
       w.style.filter = isActive ? `drop-shadow(0 0 6px ${col}80)` : 'none';
     });
   },
@@ -423,6 +424,54 @@ function initStars() {
     c.appendChild(s);
   }
 }
+
+/* ============================================================
+   MAP ENCOUNTER HANDLER (global setup)
+   ============================================================ */
+MapEngine.onEncounterStart = (enc, map) => {
+  console.log('[Encounter] Starting battle:', { enc, mode: G.mode, storyActive: typeof Story !== 'undefined' });
+
+  const enemyIds = enc.enemies || [];
+  console.log('[Encounter] Enemy IDs:', enemyIds);
+
+  const enemyDefs = enemyIds
+    .map(id => {
+      const def = G.enemies.find(e => e.id === id);
+      console.log(`[Encounter] Looking for enemy "${id}":`, def ? 'FOUND' : 'NOT FOUND');
+      return def;
+    })
+    .filter(Boolean);
+
+  console.log('[Encounter] Enemy defs count:', enemyDefs.length);
+  if (enemyDefs.length === 0) {
+    console.warn('[Encounter] No enemy definitions found, aborting');
+    return;
+  }
+
+  // Get enemy level range from map
+  const [minLevel, maxLevel] = map?.enemyLevelRange || [1, 1];
+  const spawnLevel = minLevel + Math.floor(Math.random() * (maxLevel - minLevel + 1));
+  console.log('[Encounter] Spawn level:', spawnLevel, 'range:', [minLevel, maxLevel]);
+
+  // Story mode: build battle but route back to story
+  if (G.mode === 'story_explore' && typeof Story !== 'undefined') {
+    console.log('[Encounter] Story mode detected, launching battle');
+    buildEnemyGroup(enemyDefs, spawnLevel);
+    _initBattle();
+    const names = G.enemyGroup.map(e => e.name).join(' & ');
+    UI.setLog([`⚔ ${names} appeared!`, `Party to battle stations!`], ['hi','']);
+    processCurrentTurn();
+    return;
+  }
+
+  // Free explore mode: direct battle
+  console.log('[Encounter] Free explore mode, launching battle');
+  buildEnemyGroup(enemyDefs, spawnLevel);
+  _initBattle();
+  const names = G.enemyGroup.map(e => e.name).join(' & ');
+  UI.setLog([`⚔ ${names} appeared!`, `Party to battle stations!`], ['hi','']);
+  processCurrentTurn();
+};
 
 /* ============================================================
    CHARACTER SELECT
@@ -656,6 +705,10 @@ function buildTurnQueue() {
 function selectTarget(enemyIdx) {
   if (!Battle.alive(G.enemyGroup[enemyIdx])) return;
   G.targetEnemyIdx = enemyIdx;
+  // Update target indicator on enemies
+  document.querySelectorAll('.enemy').forEach((e, i) => {
+    e.dataset.target = i === enemyIdx ? 'true' : 'false';
+  });
   UI.renderEnemyRow();
   if (typeof SFX !== 'undefined') SFX.click();
 }
@@ -858,13 +911,17 @@ function heroAbility(ab) {
       UI.addLog(`${actor.displayName}: Regen for ${actor.regenTurns} turns!`, 'regen');
 
     } else if (ab.type === 'buff') {
-      if (actor.buff) actor[actor.buff.stat] = actor.buff.origVal;
-      actor.buff = { stat: e.stat, origVal: actor[e.stat], turns: e.duration || 2 };
-      actor[e.stat] = Math.floor(actor[e.stat] * (e.multiplier || 1.3));
-      UI.addLog(`${actor.displayName}'s ${e.stat.toUpperCase()} raised!`, 'heal');
+      if (e.stat) {
+        if (actor.buff) actor[actor.buff.stat] = actor.buff.origVal;
+        actor.buff = { stat: e.stat, origVal: actor[e.stat], turns: e.duration || 2 };
+        actor[e.stat] = Math.floor(actor[e.stat] * (e.multiplier || 1.3));
+        UI.addLog(`${actor.displayName}'s ${e.stat.toUpperCase()} raised!`, 'heal');
+      } else {
+        UI.addLog(`${actor.displayName} gained a temporary boost!`, 'heal');
+      }
 
     } else if (ab.type === 'debuff') {
-      if (!enemy.debuff) {
+      if (!enemy.debuff && e.stat) {
         enemy.debuff = { stat: e.stat, origVal: enemy[e.stat], turns: e.duration || 2 };
         enemy[e.stat] = Math.floor(enemy[e.stat] * (e.multiplier || 0.7));
         UI.addLog(`${enemy.name}'s ${e.stat.toUpperCase()} lowered!`, 'magic');
@@ -1164,26 +1221,6 @@ function startExplore() {
 
   MapEngine.init(canvas);
 
-  // Wire up encounter handler
-  MapEngine.onEncounterStart = (enc, map) => {
-    const enemyIds = enc.enemies || [];
-    const enemyDefs = enemyIds
-      .map(id => G.enemies.find(e => e.id === id))
-      .filter(Boolean);
-
-    if (enemyDefs.length > 0) {
-      // Get enemy level range from map
-      const [minLevel, maxLevel] = map?.enemyLevelRange || [1, 1];
-      const spawnLevel = minLevel + Math.floor(Math.random() * (maxLevel - minLevel + 1));
-
-      buildEnemyGroup(enemyDefs, spawnLevel);
-      _initBattle();
-      const names = G.enemyGroup.map(e => e.name).join(' & ');
-      UI.setLog([`⚔ ${names} appeared!`, `Party to battle stations!`], ['hi','']);
-      processCurrentTurn();
-    }
-  };
-
   // D-pad touch support
   canvas.addEventListener('touchstart', e => {
     e.preventDefault();
@@ -1212,5 +1249,33 @@ function _updateExploreHeader() {
   if (lbl) {
     const m = MapEngine.getMap();
     lbl.textContent = m ? `✦ ${m.name.toUpperCase()} ✦` : '✦ EXPLORE ✦';
+  }
+}
+
+/* ============================================================
+   ZOOM & FULLSCREEN CONTROLS
+   ============================================================ */
+function zoomGame(scale) {
+  const game = document.getElementById('game');
+  if (!game) return;
+  if (scale === 1) {
+    game.style.transform = 'scale(1)';
+    game.style.transformOrigin = 'center center';
+  } else {
+    game.style.transform = `scale(${scale})`;
+    game.style.transformOrigin = 'center top';
+  }
+}
+
+function toggleFullscreen() {
+  const game = document.getElementById('game');
+  if (!game) return;
+
+  if (!document.fullscreenElement) {
+    game.requestFullscreen().catch(err => {
+      alert(`Error attempting to enable fullscreen: ${err.message}`);
+    });
+  } else {
+    document.exitFullscreen();
   }
 }

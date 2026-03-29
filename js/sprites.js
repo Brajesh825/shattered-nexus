@@ -823,7 +823,7 @@ const SpriteRenderer = (() => {
   // ─── PUBLIC API ────────────────────────────────────────────────
 
   function drawHero(imgEl, charId, charData, classData) {
-    const pngPath = `images/heroes/${charId}.png`;
+    const pngPath = `images/characters/spirits/${charId.toLowerCase()}_spirit.png`;
     const test = new Image();
     test.onload = () => {
       imgEl.src = pngPath;
