@@ -68,6 +68,36 @@ const CHAR_COLOR = { ayaka:'#7dd3fc', hutao:'#ef4444', nilou:'#2dd4bf', xiao:'#4
 const ENEMY_POP_X = [580, 720, 860];
 const PARTY_POP_X = [42, 108, 174, 240];
 
+/* ============================================================
+   MOVE ANIMATION MAPPINGS
+   Each move has actor duration, overlay duration, and ultimate flag
+   ============================================================ */
+const moveAnimations = {
+  // Cryo Bladestorm (Ayaka)
+  'frostblossom': { actorDuration: 560, overlayDuration: 600, isUltimate: false },
+  'glacial_waltz': { actorDuration: 560, overlayDuration: 600, isUltimate: false },
+  'permafrost': { actorDuration: 560, overlayDuration: 600, isUltimate: false },
+  'cryoclasm': { actorDuration: 800, overlayDuration: 3000, isUltimate: true },
+
+  // Spirit Incinerator (Hu Tao)
+  'spirit_flame': { actorDuration: 560, overlayDuration: 600, isUltimate: false },
+  'paramita_papilio': { actorDuration: 560, overlayDuration: 600, isUltimate: false },
+  'blood_blossom_enhanced': { actorDuration: 560, overlayDuration: 600, isUltimate: false },
+  'guide_to_afterlife': { actorDuration: 800, overlayDuration: 3000, isUltimate: true },
+
+  // Hydro Performer (Nilou)
+  'dance_of_blessing': { actorDuration: 560, overlayDuration: 600, isUltimate: false },
+  'water_wheel': { actorDuration: 560, overlayDuration: 600, isUltimate: false },
+  'harmony_preservation': { actorDuration: 560, overlayDuration: 600, isUltimate: false },
+  'hajras_hymn': { actorDuration: 800, overlayDuration: 3000, isUltimate: true },
+
+  // Yaksha Protector (Xiao)
+  'lancing_strike': { actorDuration: 560, overlayDuration: 600, isUltimate: false },
+  'yaksha_valor_active': { actorDuration: 560, overlayDuration: 600, isUltimate: false },
+  'karmic_barrier': { actorDuration: 560, overlayDuration: 600, isUltimate: false },
+  'mastery_of_pain': { actorDuration: 800, overlayDuration: 3000, isUltimate: true }
+};
+
 const UI = {
   el: id => document.getElementById(id),
 
@@ -815,34 +845,31 @@ function advanceTurn() {
 function createEffectOverlay(targetIdx, element, targetType = 'enemy', abilityId = null) {
   if (targetIdx === undefined || targetIdx === null) return;
 
-  const overlay = document.createElement('div');
+  // Try to get SVG animation from SVGAnimations factory
+  let overlay = null;
+  let duration = 600;
 
-  // Map of ultimate abilities to their CSS classes
-  const ultimateClasses = {
-    'cryoclasm': 'cryoclasm-blades',
-    'guide_to_afterlife': 'guide-to-afterlife-ultimate',
-    'hajras_hymn': 'hajras-hymn-ultimate',
-    'mastery_of_pain': 'mastery-of-pain-ultimate'
-  };
-
-  const isUltimate = ultimateClasses.hasOwnProperty(abilityId);
-
-  if (isUltimate) {
-    overlay.className = `effect-overlay ${ultimateClasses[abilityId]}`;
+  if (abilityId && SVGAnimations && SVGAnimations[abilityId]) {
+    // Use SVG animation factory
+    overlay = SVGAnimations[abilityId].create(targetIdx, targetType);
+    duration = SVGAnimations[abilityId].duration;
+  } else if (abilityId && moveAnimations[abilityId]) {
+    // Fallback to CSS overlay animation from moveAnimations
+    overlay = document.createElement('div');
+    overlay.className = `effect-overlay overlay-${abilityId}`;
+    duration = moveAnimations[abilityId].overlayDuration;
   } else {
+    // Fallback to element-based CSS animation
+    overlay = document.createElement('div');
     overlay.className = `effect-overlay element-${element}`;
+    const durations = {
+      'ice': 600, 'fire': 650, 'wind': 600, 'electric': 500,
+      'water': 600, 'light': 700, 'dark': 650, 'physical': 500
+    };
+    duration = durations[element] || 600;
   }
 
-  // Determine animation duration based on element or ability
-  const durations = {
-    'ice': 600, 'fire': 650, 'wind': 600, 'electric': 500,
-    'water': 600, 'light': 700, 'dark': 650, 'physical': 500,
-    'cryoclasm': 3000,
-    'guide_to_afterlife': 3000,
-    'hajras_hymn': 3000,
-    'mastery_of_pain': 3000
-  };
-  const duration = durations[abilityId] || durations[element] || 600;
+  if (!overlay) return;
 
   // Position overlay on target sprite (enemy right side or party left side)
   const sprId = targetType === 'enemy' ? `espr-${targetIdx}` : `pspr-${targetIdx}`;
@@ -850,11 +877,8 @@ function createEffectOverlay(targetIdx, element, targetType = 'enemy', abilityId
   if (spr) {
     const rect = spr.getBoundingClientRect();
     const sceneRect = document.getElementById('battle-scene').getBoundingClientRect();
-    // Adjust positioning for signature move (larger size)
-    const offset = abilityId === 'cryoclasm' ? 0 : 8;
-    const topOffset = abilityId === 'cryoclasm' ? -30 : -10;
-    overlay.style.left = (rect.left - sceneRect.left + offset) + 'px';
-    overlay.style.top = (rect.top - sceneRect.top + topOffset) + 'px';
+    overlay.style.left = (rect.left - sceneRect.left + 8) + 'px';
+    overlay.style.top = (rect.top - sceneRect.top - 10) + 'px';
   }
 
   document.getElementById('battle-scene').appendChild(overlay);
@@ -922,15 +946,17 @@ function heroAbility(ab) {
 
   const e   = ab.effect || {};
   const element = e.element || 'physical';
-  const isUltimate = ab.isUltimate || false;
-  const animDuration = isUltimate ? 800 : 560;
+
+  // Get move-specific animation config or use defaults
+  const moveConfig = moveAnimations[ab.id] || { actorDuration: 560, overlayDuration: 600, isUltimate: false };
+  const animDuration = moveConfig.actorDuration;
 
   const spr = document.getElementById('pspr-' + G.activeMemberIdx);
   if (spr) {
-    spr.classList.add(isUltimate ? 'anim-ultimate' : 'anim-cast');
+    spr.classList.add(`anim-${ab.id}`);
     spr.classList.add(`element-${element}`);
     setTimeout(() => {
-      spr.classList.remove(isUltimate ? 'anim-ultimate' : 'anim-cast');
+      spr.classList.remove(`anim-${ab.id}`);
       spr.classList.remove(`element-${element}`);
     }, animDuration);
   }
@@ -1013,10 +1039,12 @@ function heroAbility(ab) {
       const amt = (e.healBase || 20) + Math.floor(Math.random() * (e.healRandom || 15));
       actor.hp  = Math.min(actor.maxHp, actor.hp + amt);
       UI.popParty(G.activeMemberIdx, amt, 'heal', 'light');
+      createEffectOverlay(G.activeMemberIdx, element, 'party', ab.id);
       UI.addLog(`${actor.displayName} restored ${amt} HP!`, 'heal');
 
     } else if (ab.type === 'regen') {
       actor.regenTurns = e.duration || 3;
+      createEffectOverlay(G.activeMemberIdx, element, 'party', ab.id);
       UI.addLog(`${actor.displayName}: Regen for ${actor.regenTurns} turns!`, 'regen');
 
     } else if (ab.type === 'buff') {
@@ -1024,8 +1052,10 @@ function heroAbility(ab) {
         if (actor.buff) actor[actor.buff.stat] = actor.buff.origVal;
         actor.buff = { stat: e.stat, origVal: actor[e.stat], turns: e.duration || 2 };
         actor[e.stat] = Math.floor(actor[e.stat] * (e.multiplier || 1.3));
+        createEffectOverlay(G.activeMemberIdx, element, 'party', ab.id);
         UI.addLog(`${actor.displayName}'s ${e.stat.toUpperCase()} raised!`, 'heal');
       } else {
+        createEffectOverlay(G.activeMemberIdx, element, 'party', ab.id);
         UI.addLog(`${actor.displayName} gained a temporary boost!`, 'heal');
       }
 
@@ -1071,7 +1101,7 @@ function heroAbility(ab) {
     }
 
     UI.renderEnemyRow(); UI.renderPartyStatus();
-    setTimeout(advanceTurn, isUltimate ? 900 : 750);
+    setTimeout(advanceTurn, moveConfig.isUltimate ? 900 : 750);
   }, animDuration);
 }
 
@@ -1151,14 +1181,21 @@ function enemyAct(enemy, enemyIdx) {
 
   const ab = Battle.pickAbility(enemy.abilityDefs);
   const element = ab?.effect?.element || 'physical';
-  const animDuration = ab?.isUltimate ? 800 : 460;
+
+  // Get move-specific animation config or use defaults
+  const moveConfig = (ab?.id && moveAnimations[ab.id])
+    ? moveAnimations[ab.id]
+    : { actorDuration: 460, overlayDuration: 600, isUltimate: false };
+  const animDuration = moveConfig.actorDuration;
 
   const enemySpr = document.getElementById('espr-' + enemyIdx);
   if (enemySpr) {
-    enemySpr.classList.add(ab?.isUltimate ? 'anim-ultimate' : 'anim-slash');
+    // Use move-specific animation if available, otherwise use generic slash
+    const animClass = ab?.id ? `anim-${ab.id}` : 'anim-slash';
+    enemySpr.classList.add(animClass);
     enemySpr.classList.add(`element-${element}`);
     setTimeout(() => {
-      enemySpr.classList.remove(ab?.isUltimate ? 'anim-ultimate' : 'anim-slash');
+      enemySpr.classList.remove(animClass);
       enemySpr.classList.remove(`element-${element}`);
     }, animDuration);
   }

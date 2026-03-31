@@ -1,0 +1,345 @@
+/* ========================================================================
+   ANIMATIONS.CSS - Move-Specific Animations for RPG+
+   Contains actor sprite animations and target overlay animations
+   for each move in the game
+   ======================================================================== */
+
+/* ========== UTILITY ANIMATIONS (Used across moves) ========== */
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+@keyframes twinkle {
+  from { opacity: 0.08; }
+  to { opacity: 0.9; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes popUp {
+  0% { opacity: 1; transform: translateY(0) scale(1); }
+  20% { transform: translateY(-12px) scale(1.2); }
+  100% { opacity: 0; transform: translateY(-60px) scale(0.8); }
+}
+
+@keyframes shakeAnim {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-9px); }
+  75% { transform: translateX(9px); }
+}
+
+@keyframes scanline {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+@keyframes portraitPop {
+  0% { transform: scale(0.92); opacity: 0.6; }
+  60% { transform: scale(1.04); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* ========== CRYO BLADESTORM (AYAKA) ========== */
+
+@keyframes anim-frostblossom {
+  0% { filter: brightness(1); }
+  50% { filter: brightness(1.15) drop-shadow(0 0 8px #4ecdc4); }
+  100% { filter: brightness(1); }
+}
+
+@keyframes overlay-frostblossom {
+  0% { opacity: 1; transform: scale(1) rotateZ(0deg); filter: brightness(1); }
+  50% { opacity: 1; transform: scale(1.2) rotateZ(180deg); filter: brightness(1.3) saturate(1.5); }
+  100% { opacity: 0; transform: scale(0.8) rotateZ(360deg); filter: brightness(0.8); }
+}
+
+@keyframes anim-glacial_waltz {
+  0% { filter: brightness(1); }
+  50% { filter: brightness(1.2) drop-shadow(0 0 10px #4ecdc4); }
+  100% { filter: brightness(1); }
+}
+
+@keyframes overlay-glacial_waltz {
+  0% { opacity: 1; transform: scale(1) rotateZ(0deg); filter: brightness(1); }
+  50% { opacity: 1; transform: scale(1.25) rotateZ(180deg); filter: brightness(1.4) saturate(1.8); }
+  100% { opacity: 0; transform: scale(0.6) rotateZ(360deg); filter: brightness(0.7); }
+}
+
+@keyframes anim-permafrost {
+  0% { filter: brightness(1); }
+  50% { filter: brightness(1.1) drop-shadow(0 0 6px #4ecdc4); }
+  100% { filter: brightness(1); }
+}
+
+@keyframes overlay-permafrost {
+  0% { opacity: 1; transform: scale(1); filter: brightness(1) blur(0px); }
+  50% { opacity: 1; transform: scale(1.15); filter: brightness(1.4) blur(1px) hue-rotate(200deg); }
+  100% { opacity: 0; transform: scale(0.7); filter: brightness(0.6) blur(2px); }
+}
+
+@keyframes anim-cryoclasm {
+  0% { filter: brightness(1); }
+  50% { filter: brightness(1.25) drop-shadow(0 0 15px #4ecdc4); }
+  100% { filter: brightness(1); }
+}
+
+@keyframes overlay-cryoclasm {
+  0% { opacity: 1; transform: scale(1) rotateZ(0deg); filter: brightness(1); }
+  10% { opacity: 1; transform: scale(1.3) rotateZ(45deg); filter: brightness(1.5) saturate(2) drop-shadow(0 0 20px #4ecdc4); }
+  50% { opacity: 1; transform: scale(1.2) rotateZ(180deg); filter: brightness(1.2) saturate(1.5); }
+  80% { opacity: 0.8; transform: scale(1.1) rotateZ(270deg); filter: brightness(1); }
+  100% { opacity: 0; transform: scale(0.3) rotateZ(360deg); filter: brightness(0.5); }
+}
+
+/* ========== SPIRIT INCINERATOR (HU TAO) ========== */
+
+@keyframes anim-spirit_flame {
+  0% { filter: brightness(1); }
+  50% { filter: brightness(1.2) drop-shadow(0 0 12px #ff6b4a); }
+  100% { filter: brightness(1); }
+}
+
+@keyframes overlay-spirit_flame {
+  0% { opacity: 1; transform: scale(1); filter: brightness(1) saturate(1); }
+  50% { opacity: 1; transform: scale(1.25); filter: brightness(1.5) saturate(2) hue-rotate(10deg); }
+  100% { opacity: 0; transform: scale(0.7); filter: brightness(0.5) saturate(0.5); }
+}
+
+@keyframes anim-paramita_papilio {
+  0% { filter: brightness(1); }
+  50% { filter: brightness(1.15) drop-shadow(0 0 10px #ff6b4a); }
+  100% { filter: brightness(1); }
+}
+
+@keyframes overlay-paramita_papilio {
+  0% { opacity: 1; transform: scale(1) translateY(0); filter: brightness(1); }
+  50% { opacity: 1; transform: scale(1.3) translateY(-10px); filter: brightness(1.6) saturate(2) hue-rotate(15deg); }
+  100% { opacity: 0; transform: scale(0.6) translateY(20px); filter: brightness(0.4); }
+}
+
+@keyframes anim-blood_blossom_enhanced {
+  0% { filter: brightness(1); }
+  50% { filter: brightness(1.15) drop-shadow(0 0 10px #ff6b4a); }
+  100% { filter: brightness(1); }
+}
+
+@keyframes overlay-blood_blossom_enhanced {
+  0% { opacity: 1; transform: scale(1); filter: brightness(1); }
+  50% { opacity: 1; transform: scale(1.2); filter: brightness(1.4) saturate(2) drop-shadow(0 0 15px #ff6b4a); }
+  100% { opacity: 0; transform: scale(0.8); filter: brightness(0.6); }
+}
+
+@keyframes anim-guide_to_afterlife {
+  0% { filter: brightness(1); }
+  50% { filter: brightness(1.25) drop-shadow(0 0 15px #ff6b4a); }
+  100% { filter: brightness(1); }
+}
+
+@keyframes overlay-guide_to_afterlife {
+  0% { opacity: 1; transform: scale(1) rotateZ(0deg); filter: brightness(1) saturate(1); }
+  10% { opacity: 1; transform: scale(1.4) rotateZ(60deg); filter: brightness(1.6) saturate(2.5) hue-rotate(5deg); }
+  50% { opacity: 1; transform: scale(1.25) rotateZ(180deg); filter: brightness(1.3) saturate(1.8); }
+  80% { opacity: 0.6; transform: scale(1.1) rotateZ(270deg); filter: brightness(1); }
+  100% { opacity: 0; transform: scale(0.2) rotateZ(360deg); filter: brightness(0.3); }
+}
+
+/* ========== HYDRO PERFORMER (NILOU) ========== */
+
+@keyframes anim-dance_of_blessing {
+  0% { filter: brightness(1); }
+  50% { filter: brightness(1.1) drop-shadow(0 0 8px #5dade2); }
+  100% { filter: brightness(1); }
+}
+
+@keyframes overlay-dance_of_blessing {
+  0% { opacity: 1; transform: scale(1); filter: brightness(1); }
+  50% { opacity: 1; transform: scale(1.2); filter: brightness(1.3) saturate(1.5) hue-rotate(10deg); }
+  100% { opacity: 0; transform: scale(0.9); filter: brightness(0.8); }
+}
+
+@keyframes anim-water_wheel {
+  0% { filter: brightness(1); }
+  50% { filter: brightness(1.15) drop-shadow(0 0 10px #5dade2); }
+  100% { filter: brightness(1); }
+}
+
+@keyframes overlay-water_wheel {
+  0% { opacity: 1; transform: scale(1) rotateZ(0deg); filter: brightness(1); }
+  50% { opacity: 1; transform: scale(1.25) rotateZ(180deg); filter: brightness(1.4) saturate(1.8) hue-rotate(15deg); }
+  100% { opacity: 0; transform: scale(0.7) rotateZ(360deg); filter: brightness(0.6); }
+}
+
+@keyframes anim-harmony_preservation {
+  0% { filter: brightness(1); }
+  50% { filter: brightness(1.1) drop-shadow(0 0 10px #5dade2); }
+  100% { filter: brightness(1); }
+}
+
+@keyframes overlay-harmony_preservation {
+  0% { opacity: 1; transform: scale(1); filter: brightness(1); }
+  50% { opacity: 1; transform: scale(1.15); filter: brightness(1.35) saturate(1.5) drop-shadow(0 0 15px #5dade2); }
+  100% { opacity: 0; transform: scale(0.85); filter: brightness(0.7); }
+}
+
+@keyframes anim-hajras_hymn {
+  0% { filter: brightness(1); }
+  50% { filter: brightness(1.2) drop-shadow(0 0 15px #f1c40f); }
+  100% { filter: brightness(1); }
+}
+
+@keyframes overlay-hajras_hymn {
+  0% { opacity: 1; transform: scale(1) rotateZ(0deg); filter: brightness(1); }
+  10% { opacity: 1; transform: scale(1.35) rotateZ(45deg); filter: brightness(1.6) saturate(2) drop-shadow(0 0 25px #f1c40f); }
+  50% { opacity: 1; transform: scale(1.2) rotateZ(180deg); filter: brightness(1.3) saturate(1.8); }
+  80% { opacity: 0.7; transform: scale(1.1) rotateZ(270deg); filter: brightness(1.1); }
+  100% { opacity: 0; transform: scale(0.4) rotateZ(360deg); filter: brightness(0.4); }
+}
+
+/* ========== YAKSHA PROTECTOR (XIAO) ========== */
+
+@keyframes anim-lancing_strike {
+  0% { filter: brightness(1); }
+  50% { filter: brightness(1.1) drop-shadow(0 0 10px #7ddc5f); }
+  100% { filter: brightness(1); }
+}
+
+@keyframes overlay-lancing_strike {
+  0% { opacity: 1; transform: scale(1) translateY(0); filter: brightness(1); }
+  50% { opacity: 1; transform: scale(1.15) translateY(-8px); filter: brightness(1.3) saturate(1.5); }
+  100% { opacity: 0; transform: scale(0.8) translateY(8px); filter: brightness(0.7); }
+}
+
+@keyframes anim-yaksha_valor_active {
+  0% { filter: brightness(1); }
+  50% { filter: brightness(1.12) drop-shadow(0 0 10px #0a4030); }
+  100% { filter: brightness(1); }
+}
+
+@keyframes overlay-yaksha_valor_active {
+  0% { opacity: 1; transform: scale(1); filter: brightness(1); }
+  50% { opacity: 1; transform: scale(1.2); filter: brightness(1.3) saturate(1.5) hue-rotate(120deg); }
+  100% { opacity: 0; transform: scale(0.85); filter: brightness(0.7); }
+}
+
+@keyframes anim-karmic_barrier {
+  0% { filter: brightness(1); }
+  50% { filter: brightness(1.1) drop-shadow(0 0 10px #0a4030); }
+  100% { filter: brightness(1); }
+}
+
+@keyframes overlay-karmic_barrier {
+  0% { opacity: 1; transform: scale(1); filter: brightness(1); }
+  50% { opacity: 1; transform: scale(1.18); filter: brightness(1.25) saturate(1.4) drop-shadow(0 0 12px #0a4030); }
+  100% { opacity: 0; transform: scale(0.88); filter: brightness(0.75); }
+}
+
+@keyframes anim-mastery_of_pain {
+  0% { filter: brightness(1); }
+  50% { filter: brightness(1.2) drop-shadow(0 0 15px #7ddc5f); }
+  100% { filter: brightness(1); }
+}
+
+@keyframes overlay-mastery_of_pain {
+  0% { opacity: 1; transform: scale(1) rotateZ(0deg); filter: brightness(1); }
+  10% { opacity: 1; transform: scale(1.35) rotateZ(45deg); filter: brightness(1.5) saturate(2) drop-shadow(0 0 20px #7ddc5f); }
+  50% { opacity: 1; transform: scale(1.2) rotateZ(180deg); filter: brightness(1.25) saturate(1.6); }
+  80% { opacity: 0.6; transform: scale(1.1) rotateZ(270deg); filter: brightness(1); }
+  100% { opacity: 0; transform: scale(0.3) rotateZ(360deg); filter: brightness(0.4); }
+}
+
+/* ========== ENEMY-SPECIFIC ANIMATIONS ========== */
+
+@keyframes heroSlash {
+  0% { transform: translateX(0); }
+  45% { transform: translateX(64px) scaleX(1.12); }
+  100% { transform: translateX(0); }
+}
+
+@keyframes castAnim {
+  0% { transform: scale(1) rotate(0); }
+  30% { transform: scale(1.14) rotate(-8deg); }
+  65% { transform: scale(0.92) rotate(5deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+
+@keyframes ultimateCast {
+  0% { transform: scale(1) rotate(0deg); filter: brightness(1); }
+  15% { transform: scale(1.2) rotate(-8deg); filter: brightness(1.3) drop-shadow(0 0 20px rgba(255,255,255,0.8)); }
+  50% { transform: scale(1) rotate(8deg); }
+  100% { transform: scale(1.1) rotate(0deg); filter: brightness(1) drop-shadow(0 0 12px rgba(255,255,255,0.5)); }
+}
+
+/* ========== UI ANIMATIONS ========== */
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 12px var(--gold-glow); }
+  50% { box-shadow: 0 0 28px var(--gold-glow); }
+}
+
+@keyframes pulseGold {
+  0%, 100% { text-shadow: 0 0 20px var(--gold-glow); }
+  50% { text-shadow: 0 0 40px var(--gold-glow), 0 0 60px #f5d06022; }
+}
+
+/* ========== ANIMATION CLASSES ========== */
+
+.anim-frostblossom { animation: anim-frostblossom 560ms ease-out; }
+.anim-glacial_waltz { animation: anim-glacial_waltz 560ms ease-out; }
+.anim-permafrost { animation: anim-permafrost 560ms ease-out; }
+.anim-cryoclasm { animation: anim-cryoclasm 800ms ease-out; }
+
+.anim-spirit_flame { animation: anim-spirit_flame 560ms ease-out; }
+.anim-paramita_papilio { animation: anim-paramita_papilio 560ms ease-out; }
+.anim-blood_blossom_enhanced { animation: anim-blood_blossom_enhanced 560ms ease-out; }
+.anim-guide_to_afterlife { animation: anim-guide_to_afterlife 800ms ease-out; }
+
+.anim-dance_of_blessing { animation: anim-dance_of_blessing 560ms ease-out; }
+.anim-water_wheel { animation: anim-water_wheel 560ms ease-out; }
+.anim-harmony_preservation { animation: anim-harmony_preservation 560ms ease-out; }
+.anim-hajras_hymn { animation: anim-hajras_hymn 800ms ease-out; }
+
+.anim-lancing_strike { animation: anim-lancing_strike 560ms ease-out; }
+.anim-yaksha_valor_active { animation: anim-yaksha_valor_active 560ms ease-out; }
+.anim-karmic_barrier { animation: anim-karmic_barrier 560ms ease-out; }
+.anim-mastery_of_pain { animation: anim-mastery_of_pain 800ms ease-out; }
+
+/* Overlay animation classes */
+.overlay-frostblossom { animation: overlay-frostblossom 600ms ease-out forwards; }
+.overlay-glacial_waltz { animation: overlay-glacial_waltz 600ms ease-out forwards; }
+.overlay-permafrost { animation: overlay-permafrost 600ms ease-out forwards; }
+.overlay-cryoclasm { animation: overlay-cryoclasm 3000ms ease-out forwards; }
+
+.overlay-spirit_flame { animation: overlay-spirit_flame 600ms ease-out forwards; }
+.overlay-paramita_papilio { animation: overlay-paramita_papilio 600ms ease-out forwards; }
+.overlay-blood_blossom_enhanced { animation: overlay-blood_blossom_enhanced 600ms ease-out forwards; }
+.overlay-guide_to_afterlife { animation: overlay-guide_to_afterlife 3000ms ease-out forwards; }
+
+.overlay-dance_of_blessing { animation: overlay-dance_of_blessing 600ms ease-out forwards; }
+.overlay-water_wheel { animation: overlay-water_wheel 600ms ease-out forwards; }
+.overlay-harmony_preservation { animation: overlay-harmony_preservation 600ms ease-out forwards; }
+.overlay-hajras_hymn { animation: overlay-hajras_hymn 3000ms ease-out forwards; }
+
+.overlay-lancing_strike { animation: overlay-lancing_strike 600ms ease-out forwards; }
+.overlay-yaksha_valor_active { animation: overlay-yaksha_valor_active 600ms ease-out forwards; }
+.overlay-karmic_barrier { animation: overlay-karmic_barrier 600ms ease-out forwards; }
+.overlay-mastery_of_pain { animation: overlay-mastery_of_pain 3000ms ease-out forwards; }
+
+/* Basic animations */
+.anim-slash { animation: heroSlash 460ms ease-out; }
+.anim-cast { animation: castAnim 560ms ease-out; }
+.anim-ultimate { animation: ultimateCast 800ms ease-out; }
+.anim-shake { animation: shakeAnim 380ms ease-out; }

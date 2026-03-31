@@ -6,41 +6,176 @@
   },
   "heroes": [
     {
-      "id": "ayaka",
-      "name": "Kamisato Ayaka",
-      "category": "heroes",
-      "filename": "ayaka.png",
-      "target_path": "images/heroes/ayaka.png",
-      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (full body:1.4), (standing:1.2), side view, facing right, (full color), (bold outlines:1.2), (Kamisato Ayaka from Genshin Impact), (long light blue white hair), (tied ponytail with ornate blue kanzashi), (pale blue eyes), (slender katana at side)",
-      "prompt_face": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (portrait:1.4), (head and shoulders and upper body:1.2), facing viewer, (full color), (bold outlines:1.2), (Kamisato Ayaka), (long light blue white hair with ornate blue kanzashi), (pale blue eyes, serene gentle expression), (slender katana at side), (Kamisato Clan outfit), (blue and white noble attire), close-up character portrait, RPG icon style"
-    },
-    {
-      "id": "hutao",
-      "name": "Hu Tao",
-      "category": "heroes",
-      "filename": "hutao.png",
-      "target_path": "images/heroes/hutao.png",
-      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Hu Tao from Genshin Impact), (dark brown hair in long twin braids), (brown crimson gradient hair tips), (red amber eyes with flower pupils), (dark brown crimson Chinese-style funeral dress), (Wangsheng Funeral Parlor symbols), (paper talisman hat on head), (polearm spear with ghost fire flame), (pyro orange red glow), (mischievous grin), (slender energetic build), (ghost fire wisps floating around)",
-      "prompt_face": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (portrait:1.4), (head and shoulders and upper body:1.2), facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Hu Tao), (dark brown hair in long twin braids with crimson tips), (red amber eyes, mischievous playful expression), (paper talisman hat on head), (dark brown crimson Chinese-style funeral dress), (Wangsheng Funeral Parlor symbols), (polearm spear visible), ghost fire aesthetic, close-up character portrait, RPG icon style"
-    },
-    {
-      "id": "nilou",
-      "name": "Nilou",
-      "category": "heroes",
-      "filename": "nilou.png",
-      "target_path": "images/heroes/nilou.png",
-      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Nilou from Genshin Impact), (long teal cyan hair), (blue green eyes), (layered dancer outfit with flowing teal and white fabrics), (Sumeru Middle Eastern dancer style), (ornate golden headpiece with veil), (hydro water droplet accessories), (elegant curved sword), (teal blue hydro water glow), (warm gentle smile), (dancer graceful pose), (flower petal ornaments in hair), (bare midriff with jeweled belt)",
-      "prompt_face": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (portrait:1.4), (face and head above upper breasts:1.2), facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Nilou), (long teal cyan hair with flower petals), (blue green eyes, warm gentle smile), (ornate golden headpiece with veil), hydro water glow, close-up character portrait, RPG icon style"
-    },
-    {
-      "id": "xiao",
-      "name": "Xiao",
-      "category": "heroes",
-      "filename": "xiao.png",
-      "target_path": "images/heroes/xiao.png",
-      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1boy, solo, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Xiao from Genshin Impact), (short dark black hair with teal green highlights), (teal green glowing eyes), (dark teal and black adeptus combat outfit), (gold green trim details), (yaksha mask pushed up on forehead), (polearm spear with anemo wind glow), (glowing adeptal green tattoo markings on arm), (anemo green wind swirls), (stoic serious expression), (slender athletic build), (Liyue adeptus warrior aesthetic)",
-      "prompt_face": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1boy, solo, simple background, (portrait:1.4), (head and shoulders and upper body:1.2), facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Xiao), (short dark black hair with teal green highlights), (teal green glowing eyes, stoic serious expression), (dark teal and black adeptus combat outfit), (gold green trim details), (yaksha mask pushed up on forehead), (polearm spear with anemo wind glow), (glowing adeptal green tattoo markings on arm), anemo wind swirls, close-up character portrait, RPG icon style"
-    }
+    "id": "ayaka",
+    "name": "Kamisato Ayaka",
+    "category": "heroes",
+    "filename": "ayaka.png",
+    "target_path": "images/heroes/ayaka.png",
+    "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (full body:1.4), (standing:1.2), side view, facing right, (full color), (bold outlines:1.2), (Kamisato Ayaka from Genshin Impact), (long light blue white hair), (tied ponytail with ornate blue kanzashi), (pale blue eyes), (slender katana at side)",
+    "prompt_face": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (portrait:1.4), (head and shoulders and upper body:1.2), facing viewer, (full color), (bold outlines:1.2), (Kamisato Ayaka), (long light blue white hair with ornate blue kanzashi), (pale blue eyes, serene gentle expression), (slender katana at side), (Kamisato Clan outfit), (blue and white noble attire), close-up character portrait, RPG icon style"
+  },
+  {
+    "id": "hutao",
+    "name": "Hu Tao",
+    "category": "heroes",
+    "filename": "hutao.png",
+    "target_path": "images/heroes/hutao.png",
+    "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Hu Tao from Genshin Impact), (dark brown hair in long twin braids), (brown crimson gradient hair tips), (red amber eyes with flower pupils), (dark brown crimson Chinese-style funeral dress), (Wangsheng Funeral Parlor symbols), (paper talisman hat on head), (polearm spear with ghost fire flame), (pyro orange red glow), (mischievous grin), (slender energetic build), (ghost fire wisps floating around)",
+    "prompt_face": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (portrait:1.4), (head and shoulders and upper body:1.2), facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Hu Tao), (dark brown hair in long twin braids with crimson tips), (red amber eyes, mischievous playful expression), (paper talisman hat on head), (dark brown crimson Chinese-style funeral dress), (Wangsheng Funeral Parlor symbols), (polearm spear visible), ghost fire aesthetic, close-up character portrait, RPG icon style"
+  },
+  {
+    "id": "nilou",
+    "name": "Nilou",
+    "category": "heroes",
+    "filename": "nilou.png",
+    "target_path": "images/heroes/nilou.png",
+    "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Nilou from Genshin Impact), (long teal cyan hair), (blue green eyes), (layered dancer outfit with flowing teal and white fabrics), (Sumeru Middle Eastern dancer style), (ornate golden headpiece with veil), (hydro water droplet accessories), (elegant curved sword), (teal blue hydro water glow), (warm gentle smile), (dancer graceful pose), (flower petal ornaments in hair), (bare midriff with jeweled belt)",
+    "prompt_face": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (portrait:1.4), (face and head above upper breasts:1.2), facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Nilou), (long teal cyan hair with flower petals), (blue green eyes, warm gentle smile), (ornate golden headpiece with veil), hydro water glow, close-up character portrait, RPG icon style"
+  },
+  {
+    "id": "xiao",
+    "name": "Xiao",
+    "category": "heroes",
+    "filename": "xiao.png",
+    "target_path": "images/heroes/xiao.png",
+    "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1boy, solo, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Xiao from Genshin Impact), (short dark black hair with teal green highlights), (teal green glowing eyes), (dark teal and black adeptus combat outfit), (gold green trim details), (yaksha mask pushed up on forehead), (polearm spear with anemo wind glow), (glowing adeptal green tattoo markings on arm), (anemo green wind swirls), (stoic serious expression), (slender athletic build), (Liyue adeptus warrior aesthetic)",
+    "prompt_face": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1boy, solo, simple background, (portrait:1.4), (head and shoulders and upper body:1.2), facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Xiao), (short dark black hair with teal green highlights), (teal green glowing eyes, stoic serious expression), (dark teal and black adeptus combat outfit), (gold green trim details), (yaksha mask pushed up on forehead), (polearm spear with anemo wind glow), (glowing adeptal green tattoo markings on arm), anemo wind swirls, close-up character portrait, RPG icon style"
+  },
+  {
+    "id": "raiden",
+    "name": "Raiden Shogun",
+    "category": "heroes",
+    "filename": "raiden.png",
+    "target_path": "images/heroes/raiden.png",
+    "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Raiden Shogun from Genshin Impact), (long dark purple hair), (violet purple eyes with no pupils), (ornate purple and black Inazuman shogun armor), (gold trim details), (electro purple lightning sparks), (nodachi polearm blade of musou), (divine godly aura), (commanding regal expression), (vision gem on chest), (flowing dark purple kimono underlayer), (electro purple glow surrounding her)",
+    "prompt_face": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (portrait:1.4), (head and shoulders and upper body:1.2), facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Raiden Shogun), (long dark purple hair), (violet purple eyes, commanding regal expression), (ornate purple and black Inazuman shogun armor), (gold trim details), (electro purple lightning sparks), close-up character portrait, RPG icon style"
+  },
+  {
+    "id": "kazuha",
+    "name": "Kaedehara Kazuha",
+    "category": "heroes",
+    "filename": "kazuha.png",
+    "target_path": "images/heroes/kazuha.png",
+    "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1boy, solo, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Kaedehara Kazuha from Genshin Impact), (short white silver hair with red streaks), (red crimson eyes), (red and white Inazuman wanderer outfit), (maple leaf motifs), (katana sword at side), (anemo green wind swirls and maple leaves floating around), (calm gentle expression), (slender agile build), (red rope belt and layered fabrics), (wandering samurai aesthetic)",
+    "prompt_face": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1boy, solo, simple background, (portrait:1.4), (head and shoulders and upper body:1.2), facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Kaedehara Kazuha), (short white silver hair with red streaks), (red crimson eyes, calm gentle expression), (red and white Inazuman wanderer outfit), (maple leaf motifs), anemo wind swirls and maple leaves, close-up character portrait, RPG icon style"
+  },
+  {
+    "id": "ganyu",
+    "name": "Ganyu",
+    "category": "heroes",
+    "filename": "ganyu.png",
+    "target_path": "images/heroes/ganyu.png",
+    "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Ganyu from Genshin Impact), (long light blue hair tied in low twin tails), (small blue horns on head), (pale purple blue eyes), (blue and white qipao-style bodysuit with gold trim), (Liyue Qixing secretary attire), (cryo ice blue glow), (bow and arrow), (graceful elegant pose), (shy gentle expression), (adeptus half-qilin divine aura), (ice crystal frost particles floating around)",
+    "prompt_face": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (portrait:1.4), (head and shoulders and upper body:1.2), facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Ganyu), (long light blue hair with small blue horns), (pale purple blue eyes, shy gentle expression), (blue and white qipao-style bodysuit with gold trim), cryo ice blue glow, ice frost particles, close-up character portrait, RPG icon style"
+  },
+  {
+    "id": "yelan",
+    "name": "Yelan",
+    "category": "heroes",
+    "filename": "yelan.png",
+    "target_path": "images/heroes/yelan.png",
+    "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Yelan from Genshin Impact), (long dark navy blue hair), (teal blue eyes), (dark navy blue fitted bodysuit with gold dice motifs), (Liyue spy operative aesthetic), (hydro water blue glow), (bow and hydro water arrows), (mysterious confident smirk), (slender athletic figure), (gold bracelet and chain accessories), (playing card and dice symbols on outfit), (water ripple effects around her)",
+    "prompt_face": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (portrait:1.4), (head and shoulders and upper body:1.2), facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Yelan), (long dark navy blue hair), (teal blue eyes, mysterious confident smirk), (dark navy blue fitted bodysuit with gold dice motifs), hydro water blue glow, close-up character portrait, RPG icon style"
+  },
+  {
+    "id": "furina",
+    "name": "Furina",
+    "category": "heroes",
+    "filename": "furina.png",
+    "target_path": "images/heroes/furina.png",
+    "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Furina from Genshin Impact), (short light blue and white split-color hair), (heterochromatic eyes, one blue one teal), (ornate Fontaine Victorian court jester noble dress), (blue white and gold frills and ruffles), (hydro water glow), (elegant cane sword), (theatrical dramatic pose), (playful haughty expression), (top hat with feather), (Hydro Archon divine aura), (water bubble effects floating around)",
+    "prompt_face": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (portrait:1.4), (head and shoulders and upper body:1.2), facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Furina), (short light blue and white split-color hair), (heterochromatic eyes, playful haughty expression), (ornate Fontaine Victorian court noble dress with frills), (top hat with feather), hydro water glow, close-up character portrait, RPG icon style"
+  },
+  {
+    "id": "nahida",
+    "name": "Nahida",
+    "category": "heroes",
+    "filename": "nahida.png",
+    "target_path": "images/heroes/nahida.png",
+    "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Nahida from Genshin Impact), (short light green white hair), (large bright teal green eyes), (small child-like slender build), (white and green Sumeru divine robes), (dendro leaf green glow), (flower petal and leaf motifs on outfit), (small pointed elf ears), (barefoot with anklet accessories), (Dendro Archon Lesser Lord Kusanali divine aura), (glowing green dendro leaf symbols floating around), (warm innocent curious expression)",
+    "prompt_face": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (portrait:1.4), (head and shoulders and upper body:1.2), facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Nahida), (short light green white hair), (large bright teal green eyes, warm innocent curious expression), (white and green Sumeru divine robes), (small pointed elf ears), dendro leaf green glow, floating leaf symbols, close-up character portrait, RPG icon style"
+  },
+  {
+    "id": "arlecchino",
+    "name": "Arlecchino",
+    "category": "heroes",
+    "filename": "arlecchino.png",
+    "target_path": "images/heroes/arlecchino.png",
+    "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Arlecchino from Genshin Impact), (long straight black and white split hair), (pale pink red heterochromatic eyes with cross pupils), (dark formal Fatui black suit with red accents), (harlequin diamond patterns on outfit), (pyro crimson red fire glow), (long polearm spear with red flame), (imposing cold expression), (tall slender elegant build), (Fatui Harbinger fourth seat insignia), (burning crimson pyro flames surrounding her)",
+    "prompt_face": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (portrait:1.4), (head and shoulders and upper body:1.2), facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Arlecchino), (long straight black and white split hair), (pale pink red heterochromatic eyes with cross pupils, imposing cold expression), (dark formal Fatui black suit with red accents), (harlequin diamond patterns), pyro crimson fire glow, close-up character portrait, RPG icon style"
+  },
+  {
+    "id": "navia",
+    "name": "Navia",
+    "category": "heroes",
+    "filename": "navia.png",
+    "target_path": "images/heroes/navia.png",
+    "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Navia from Genshin Impact), (long wavy blonde gold hair), (bright blue eyes), (elegant white and gold Fontaine noble dress with roses), (rose and flower motifs on outfit), (large ornate gatling-style geo claymore cannon), (geo yellow gold glow), (crystalfly gem accessories), (warm confident smile), (Spina di Rosula leader aesthetic), (geo golden crystal shards floating around her)",
+    "prompt_face": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (portrait:1.4), (head and shoulders and upper body:1.2), facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Navia), (long wavy blonde gold hair), (bright blue eyes, warm confident smile), (elegant white and gold Fontaine noble dress with roses), geo yellow gold glow, crystal shards, close-up character portrait, RPG icon style"
+  },
+  {
+    "id": "clorinde",
+    "name": "Clorinde",
+    "category": "heroes",
+    "filename": "clorinde.png",
+    "target_path": "images/heroes/clorinde.png",
+    "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Clorinde from Genshin Impact), (long dark navy purple hair), (pale violet eyes), (dark Fontaine duelist champion outfit with white frills), (navy blue coat with gold buttons), (rapier sword with electro lightning glow), (electro purple lightning sparks), (serious focused duelist expression), (slender agile build), (Fontaine court champion aesthetic), (electro lightning crackling around her blade)",
+    "prompt_face": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (portrait:1.4), (head and shoulders and upper body:1.2), facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Clorinde), (long dark navy purple hair), (pale violet eyes, serious focused duelist expression), (dark Fontaine duelist outfit with white frills and gold buttons), (rapier sword visible), electro purple lightning sparks, close-up character portrait, RPG icon style"
+  },
+  {
+    "id": "venti",
+    "name": "Venti",
+    "category": "heroes",
+    "filename": "venti.png",
+    "target_path": "images/heroes/venti.png",
+    "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1boy, solo, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Venti from Genshin Impact), (long teal dark green twin braids), (teal green eyes), (Mondstadt bard outfit with blue green and white colors), (feathered hat with wind ornament), (lyre harp instrument), (anemo green wind swirls), (carefree playful smile), (slender short build), (Anemo Archon Barbatos divine aura), (wind dandelion seeds floating around), (elegant bardic performer aesthetic)",
+    "prompt_face": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1boy, solo, simple background, (portrait:1.4), (head and shoulders and upper body:1.2), facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Venti), (long teal dark green twin braids), (teal green eyes, carefree playful smile), (Mondstadt bard outfit in blue green and white), (feathered hat with wind ornament), anemo wind swirls, dandelion seeds floating, close-up character portrait, RPG icon style"
+  },
+  {
+    "id": "zhongli",
+    "name": "Zhongli",
+    "category": "heroes",
+    "filename": "zhongli.png",
+    "target_path": "images/heroes/zhongli.png",
+    "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1boy, solo, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Zhongli from Genshin Impact), (long dark black brown hair tied back), (amber gold glowing eyes), (elegant dark Liyue formal suit with gold trim), (geo golden rock motifs), (tall black polearm spear with golden tip), (geo golden yellow glow), (calm dignified expression), (tall imposing build), (Rex Lapis Geo Archon divine aura), (golden geo crystal pillars and rock formations around him)",
+    "prompt_face": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1boy, solo, simple background, (portrait:1.4), (head and shoulders and upper body:1.2), facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Zhongli), (long dark black brown hair tied back), (amber gold glowing eyes, calm dignified expression), (elegant dark Liyue formal suit with gold trim), (geo golden rock motifs), geo golden glow, crystal pillar aesthetic, close-up character portrait, RPG icon style"
+  },
+  {
+    "id": "kokomi",
+    "name": "Sangonomiya Kokomi",
+    "category": "heroes",
+    "filename": "kokomi.png",
+    "target_path": "images/heroes/kokomi.png",
+    "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Sangonomiya Kokomi from Genshin Impact), (long light pink hair with flowing waves), (light pink eyes), (ornate pink white and gold Watatsumi priestess robes), (jellyfish motifs on outfit), (hydro water glow), (catalyst orb with water bubbles), (serene composed expression), (divine priestess divine sea god aura), (pink jellyfish and water bubbles floating around her), (pearl and shell accessories in hair)",
+    "prompt_face": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (portrait:1.4), (head and shoulders and upper body:1.2), facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Sangonomiya Kokomi), (long light pink hair with flowing waves), (light pink eyes, serene composed expression), (ornate pink white and gold Watatsumi priestess robes), (jellyfish motifs), hydro water glow, jellyfish floating, close-up character portrait, RPG icon style"
+  },
+  {
+    "id": "shenhe",
+    "name": "Shenhe",
+    "category": "heroes",
+    "filename": "shenhe.png",
+    "target_path": "images/heroes/shenhe.png",
+    "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Shenhe from Genshin Impact), (long white silver hair with light blue tint), (pale icy blue eyes), (white and pale blue adeptus exorcist robes), (cryo rope bindings wrapped around arms), (cryo ice blue glow), (polearm spear with frost aura), (cold detached elegant expression), (tall slender graceful build), (Liyue adeptus exorcist divine aura), (ice crystal frost snowflake patterns floating around her)",
+    "prompt_face": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (portrait:1.4), (head and shoulders and upper body:1.2), facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Shenhe), (long white silver hair with light blue tint), (pale icy blue eyes, cold detached elegant expression), (white and pale blue adeptus exorcist robes), (cryo rope bindings on arms), cryo ice blue glow, frost snowflake patterns, close-up character portrait, RPG icon style"
+  },
+  {
+    "id": "eula",
+    "name": "Eula",
+    "category": "heroes",
+    "filename": "eula.png",
+    "target_path": "images/heroes/eula.png",
+    "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Eula from Genshin Impact), (long light blonde hair in high ponytail), (pale blue grey eyes), (dark navy blue Mondstadt cavalry captain uniform), (white frills and gold epaulettes), (large greatsword claymore with cryo ice glow), (cryo ice blue pale glow), (fierce proud noble expression), (tall athletic warrior build), (Lawrence Clan noble warrior aesthetic), (ice crystal shards and frost particles swirling around her)",
+    "prompt_face": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (portrait:1.4), (head and shoulders and upper body:1.2), facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Eula), (long light blonde hair in high ponytail), (pale blue grey eyes, fierce proud noble expression), (dark navy blue Mondstadt cavalry captain uniform with gold epaulettes), cryo ice glow, frost crystal shards, close-up character portrait, RPG icon style"
+  },
+  {
+    "id": "yaemiko",
+    "name": "Yae Miko",
+    "category": "heroes",
+    "filename": "yaemiko.png",
+    "target_path": "images/heroes/yaemiko.png",
+    "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Yae Miko from Genshin Impact), (long light pink sakura hair), (pale pink rose eyes with fox slit pupils), (white pink and red kitsune shrine maiden robes), (multiple fluffy white fox tails), (fox ears on head), (electro purple lightning glow), (ornate catalyst ofuda staff), (mischievous sly confident expression), (divine kitsune fox deity aura), (electro lightning sparks and sakura petals floating around her)",
+    "prompt_face": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (portrait:1.4), (head and shoulders and upper body:1.2), facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (Yae Miko), (long light pink sakura hair with fox ears), (pale pink rose eyes with fox slit pupils, mischievous sly expression), (white pink and red kitsune shrine maiden robes), (fluffy white fox tails visible), electro purple lightning glow, sakura petals, close-up character portrait, RPG icon style"
+  }
   ],
   "enemies": [
     {
