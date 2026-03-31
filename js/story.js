@@ -141,13 +141,32 @@ const Story = {
   begin() {
     Save.clear();
     this.init(() => {
-      if (!this.data) { alert('Story data not found.'); goCharSelect(); return; }
+      if (!this.data) { alert('Story data not found.'); return; }
       this.active = true;
       this.arcIdx = 0;
       this.chapIdx = -1;
       this.phase = null;
       G.mode = 'story';
-      goCharSelect();
+
+      // Load characters if not already loaded
+      if (!G.chars || G.chars.length === 0) {
+        if (window.CHARACTERS_DATA) {
+          G.chars = window.CHARACTERS_DATA;
+        }
+      }
+
+      // Set default 4 characters for story start (no selection screen)
+      const defaultChars = ['ayaka', 'hutao', 'nilou', 'xiao'];
+      G.selectedChar = defaultChars[0];
+      G.selectedChars = defaultChars;
+      G.unlockedChars = defaultChars;
+
+      // Find and set class for first character
+      const firstChar = (G.chars || []).find(c => c.id === defaultChars[0]);
+      if (firstChar) G.selectedClass = firstChar.classId || 'swordsman';
+
+      // Start the story directly (this will call Story.onHeroReady())
+      startBattle();
     });
   },
 
@@ -243,7 +262,6 @@ const Story = {
      CONTINUE BUTTON (called from HTML onclick)
   ════════════════════════════════════════════════════════════════════════ */
   advance() {
-    console.log('[Story.advance] Called, phase=', this.phase);
     // Skip typewriter first if still running
     if (!this._tw.done) { this._skipTw(); return; }
 
@@ -252,10 +270,8 @@ const Story = {
     }
 
     if (this.phase === 'arc_intro') {
-      // Show character selection for this arc
-      console.log('[Story.advance] Calling goArcCharSelect from arc_intro');
+      // Show character selection for this arc (for arcs 2+)
       goArcCharSelect();
-      console.log('[Story.advance] goArcCharSelect returned');
       return;
     }
 
