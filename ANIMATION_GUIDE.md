@@ -1,14 +1,74 @@
 # Animation System for Moves - Complete Guide
 
 ## Overview
-The animation system is built on three layers:
-1. **Actor Animation** - Applied to the attacker's sprite
-2. **Effect Overlay** - Visual element effect displayed on the target
+The animation system combines:
+1. **Actor Animation** - Subtle effect on the attacker's sprite (brightness glow)
+2. **SVG Effect Overlay** - Dynamic animated SVG displayed on the target sprite
 3. **Target Reactions** - Damage flash and shake effects on the target
 
 ---
 
-## 1. ACTOR ANIMATIONS (Party Member Sprite)
+## 1. SVG ANIMATION SYSTEM (NEW)
+
+### How It Works
+- Each of 16 moves has a unique animated SVG defined in `js/svg-animations.js`
+- SVGs are dynamically created and positioned relative to target sprites
+- Animations run with CSS keyframes embedded in the SVG
+- SVGs are automatically removed after their animation duration completes
+
+### SVG Animation Structure
+```javascript
+// In SVGAnimations factory object
+frostblossom: {
+  duration: 1900,  // Total animation duration in ms
+  create: (targetIdx, targetType) => {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 200 200');
+    svg.setAttribute('width', '200');
+    svg.setAttribute('height', '200');
+    svg.classList.add('battle-svg-animation');  // CSS class scales to 100x100px
+
+    // SVG content with embedded CSS animations
+    svg.innerHTML = `<defs><style>
+      @keyframes animName { ... }
+    </style></defs>
+    <g style="animation: animName 1900ms ease-out forwards">
+      <!-- animated elements -->
+    </g>`;
+
+    return svg;
+  }
+}
+```
+
+### Sizing
+- SVGs are created with viewBox="0 0 200 200" for consistent internal sizing
+- CSS class `.battle-svg-animation` scales them to **100x100px** (proportional to sprites)
+- Positioning is centered on target sprite using `getBoundingClientRect()`
+
+### All 16 Moves with Durations
+| Character | Move | Duration | Type |
+|-----------|------|----------|------|
+| **Ayaka** | Frostblossom Slash | 1900ms | Physical |
+| | Glacial Waltz | 2100ms | Magic |
+| | Permafrost | 1800ms | Magic |
+| | Cryoclasm | 2900ms | Ultimate ⭐ |
+| **Hu Tao** | Spirit Flame | 1900ms | Magic |
+| | Paramita Papilio | 2200ms | Magic |
+| | Blood Blossom Enhanced | 2000ms | Magic |
+| | Guide to Afterlife | 2900ms | Ultimate ⭐ |
+| **Nilou** | Dance of Blessing | 2000ms | Magic |
+| | Water Wheel | 2100ms | Magic |
+| | Harmony Preservation | 2200ms | Magic |
+| | Hajra's Hymn | 2900ms | Ultimate ⭐ |
+| **Xiao** | Lancing Strike | 1700ms | Physical |
+| | Yaksha Valor Active | 2000ms | Magic |
+| | Karmic Barrier | 2200ms | Magic |
+| | Mastery of Pain | 2900ms | Ultimate ⭐ |
+
+---
+
+## 2. ACTOR ANIMATIONS (Party Member Sprite)
 
 ### Attack Animation
 - **Class:** `.anim-slash`
@@ -272,9 +332,88 @@ Abilities are defined in `data/classes.json` with animation properties:
 
 ---
 
-## 7. ADDING NEW ANIMATIONS
+## 7. ADDING NEW SVG ANIMATIONS
 
-### To Add a New Ability Animation:
+### To Add a New SVG Animation for a Move:
+
+1. **Create the SVG animation entry in `js/svg-animations.js`:**
+
+```javascript
+your_move_id: {
+  duration: 1900,  // Duration in milliseconds (1700-2900 for most moves)
+  create: (targetIdx, targetType) => {
+    const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    s.setAttribute('viewBox', '0 0 200 200');
+    s.setAttribute('width', '200');
+    s.setAttribute('height', '200');
+    s.classList.add('battle-svg-animation');
+
+    // Define SVG with embedded CSS keyframes
+    s.innerHTML = `<defs><style>
+      @keyframes anim1 {
+        0% { opacity: 0; transform: scale(0.5); }
+        50% { opacity: 1; }
+        100% { opacity: 0; transform: scale(1.5); }
+      }
+      @keyframes anim2 {
+        0% { transform: translateY(-30px); opacity: 1; }
+        100% { transform: translateY(30px); opacity: 0; }
+      }
+    </style></defs>
+    <!-- Main animation element -->
+    <circle cx="100" cy="100" r="20" fill="#color" style="animation: anim1 1900ms ease-out forwards"/>
+    <!-- Secondary elements with delayed starts -->
+    <circle cx="70" cy="70" r="8" fill="#color2" style="animation: anim2 1900ms ease-out forwards 200ms"/>
+    `;
+
+    return s;
+  }
+}
+```
+
+2. **Add the move to `data/classes.json`:**
+```json
+{
+  "id": "your_move_id",
+  "name": "Your Move Name",
+  "type": "magic_damage",  // or physical, heal, buff, etc.
+  "effect": {
+    "element": "ice",  // or fire, water, wind, etc.
+    "dmgMultiplier": 1.5
+  }
+}
+```
+
+3. **SVG Design Tips:**
+   - Keep viewBox at 0 0 200 200 for consistency
+   - Use colors matching element type:
+     - Ice: `#4ecfff` (cyan)
+     - Fire: `#ff7700` (orange)
+     - Water: `#00d4b4` (teal)
+     - Wind: `#7ddc5f` (lime)
+     - Dark: `#660000` (dark red)
+   - Use 2-3 animated elements with staggered delays
+   - Duration typically: 1700-2100ms for regular, 2900ms for ultimates
+   - Use `ease-out` for natural feel
+
+4. **Animation Elements to Use:**
+   - **Expanding rings:** `@keyframes ring { 0% { r: 10px; } 100% { r: 80px; opacity: 0; } }`
+   - **Rotating elements:** `transform: rotate(360deg)`
+   - **Scaling bursts:** `transform: scale(0.3)` → `scale(2)`
+   - **Rising/falling:** `transform: translateY(-50px)` → `translateY(50px)`
+   - **Orbiting:** `transform: translate(100px, 100px) rotate(360deg)`
+
+5. **Test the animation:**
+   - Use the move in battle
+   - Check console for any errors
+   - Adjust duration if animation finishes too early/late
+   - Verify positioning on target sprite (should center on enemy)
+
+---
+
+## 8. ADDING NEW ELEMENT-BASED ANIMATIONS (Legacy CSS)
+
+### To Add a New Element-Based Animation:
 1. Define the ability in `data/classes.json` with `element` and `isUltimate` properties
 2. CSS animation already exists for most elements
 3. If creating a new element, add CSS keyframes to `css/style.css`:
