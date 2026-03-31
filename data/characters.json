@@ -143,5 +143,150 @@
       "description": "Takes 10% reduced damage. ATK +15% from karmic resolve."
     },
     "lore": "He has slain ten thousand demons. He does not speak of it. The shadows in this new world smell the same as the ones he burned long ago — and that is enough to make him stay."
+  },
+  {
+    "id": "rydia",
+    "name": "Rydia",
+    "title": "The Summoner",
+    "gender": "female",
+    "age": 25,
+    "origin": "Final Fantasy IV - The Feymarch",
+    "description": "A powerful summoner blessed with the ability to call forth creatures from the realm of the Eidolons. She channels ancient summons with graceful precision, commanding beasts of fire, ice, and thunder to do her bidding.",
+    "personality": "Wise, compassionate, magically attuned",
+    "icon": "✨",
+    "portrait_color": "#a78bfa",
+    "hair_color": "#8b5cf6",
+    "skin_color": "#fce7f3",
+    "armor_color": "#6d28d9",
+    "base_stats": {
+      "hp": 58,
+      "mp": 48,
+      "atk": 8,
+      "def": 9,
+      "spd": 12,
+      "mag": 24
+    },
+    "stat_bonuses": {
+      "mag": 6,
+      "mp": 6
+    },
+    "class_affinity": [
+      "summoner_eidolon"
+    ],
+    "passive": {
+      "id": "eidolon_bond",
+      "name": "Eidolon Bond",
+      "description": "Summoned creatures gain +20% stats. MP efficiency increased by 15%."
+    },
+    "lore": "In her world, she commanded the mightiest creatures of the Feymarch. When the rift opened, her summoned eidolons followed her through — loyal companions across worlds."
+  },
+  {
+    "id": "lenneth",
+    "name": "Lenneth",
+    "title": "The Valkyrie",
+    "gender": "female",
+    "age": 1000,
+    "origin": "Valkyrie Profile - The Celestial Realm",
+    "description": "A divine Valkyrie warrior who judges souls and claims the worthy. She wields sacred power and divine authority, her blade blessed by the gods themselves. Ageless and formidable in combat.",
+    "personality": "Principled, commanding, divinely righteous",
+    "icon": "👑",
+    "portrait_color": "#e879f9",
+    "hair_color": "#c084fc",
+    "skin_color": "#faf5ff",
+    "armor_color": "#a855f7",
+    "base_stats": {
+      "hp": 88,
+      "mp": 28,
+      "atk": 19,
+      "def": 18,
+      "spd": 15,
+      "mag": 16
+    },
+    "stat_bonuses": {
+      "atk": 4,
+      "def": 4
+    },
+    "class_affinity": [
+      "valkyrie_guardian"
+    ],
+    "passive": {
+      "id": "divine_authority",
+      "name": "Divine Authority",
+      "description": "DEF increased by 20%. Reflects 10% of damage taken back to attacker."
+    },
+    "lore": "For millennia she walked between worlds, judging souls worthy of ascension. Now she stands in this shadowed realm, where even gods fear to tread — and she must decide if darkness itself can be redeemed."
+  },
+  {
+    "id": "kain",
+    "name": "Kain",
+    "title": "The Dragoon",
+    "gender": "male",
+    "age": 28,
+    "origin": "Final Fantasy IV - Baron Kingdom",
+    "description": "A noble Dragoon knight whose lance pierces the sky. He channels the power of dragons to perform devastating aerial attacks, his spear dancing through the air with lethal grace.",
+    "personality": "Honorable, conflicted, steadfastly loyal",
+    "icon": "🐉",
+    "portrait_color": "#0ea5e9",
+    "hair_color": "#0369a1",
+    "skin_color": "#e0f2fe",
+    "armor_color": "#0c4a6e",
+    "base_stats": {
+      "hp": 75,
+      "mp": 20,
+      "atk": 19,
+      "def": 14,
+      "spd": 16,
+      "mag": 10
+    },
+    "stat_bonuses": {
+      "atk": 3,
+      "spd": 3
+    },
+    "class_affinity": [
+      "dragoon_skyward"
+    ],
+    "passive": {
+      "id": "dragon_leap",
+      "name": "Dragon's Leap",
+      "description": "Every 3rd turn, perform a bonus aerial attack. SPD +2 during aerial combat."
+    },
+    "lore": "As a Dragoon of Baron, he swore oaths to his kingdom. But loyalties fracture when worlds collide. He came seeking redemption — instead, he found new purpose."
+  },
+  {
+    "id": "leon",
+    "name": "Leon",
+    "title": "The Lionheart King",
+    "gender": "male",
+    "age": 200,
+    "origin": "The Knight King's Realm - The Lionheart Kingdom",
+    "description": "An immortal warrior-king who ruled for two centuries, blessed by the gods themselves. He commands divine power and can summon gods through sacred rituals. His presence radiates ancient authority.",
+    "personality": "Regal, stoic, divinely resolute",
+    "icon": "⚔️",
+    "portrait_color": "#fbbf24",
+    "hair_color": "#fcd34d",
+    "skin_color": "#fef3c7",
+    "armor_color": "#b45309",
+    "base_stats": {
+      "hp": 92,
+      "mp": 32,
+      "atk": 22,
+      "def": 20,
+      "spd": 14,
+      "mag": 18
+    },
+    "stat_bonuses": {
+      "atk": 5,
+      "def": 5,
+      "hp": 4
+    },
+    "class_affinity": [
+      "knight_king_divine"
+    ],
+    "passive": {
+      "id": "divine_blessing",
+      "name": "Divine Blessing",
+      "description": "As a demi-god, Leon grants allies +15% HP regeneration. Takes 12% reduced damage from all sources."
+    },
+    "lore": "He lived 200 years as a king, commanding gods and demons alike. When he was pulled into this shadowed realm, even he felt the weight of something beyond his ken. Yet his blade still shines with purpose."
   }
 ]

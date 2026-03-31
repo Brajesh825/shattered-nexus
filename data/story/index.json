@@ -8,6 +8,9 @@
     { "id": "arc_2", "file": "data/story/arc_2.json" },
     { "id": "arc_3", "file": "data/story/arc_3.json" },
     { "id": "arc_4", "file": "data/story/arc_4.json" },
-    { "id": "arc_5", "file": "data/story/arc_5.json" }
+    { "id": "arc_5", "file": "data/story/arc_5.json" },
+    { "id": "arc_6", "file": "data/story/arc_6.json" },
+    { "id": "arc_7", "file": "data/story/arc_7.json" },
+    { "id": "arc_8", "file": "data/story/arc_8.json" }
   ]
 }

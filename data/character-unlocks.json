@@ -1,0 +1,33 @@
+{
+  "unlocked_by_default": ["ayaka", "hutao", "nilou", "xiao"],
+  "recruitable": [
+    {
+      "id": "rydia",
+      "arc": 2,
+      "chapter": "boss",
+      "name": "Rydia the Summoner",
+      "description": "A powerful summoner whose eidolons can turn the tide of battle."
+    },
+    {
+      "id": "lenneth",
+      "arc": 2,
+      "chapter": "boss",
+      "name": "Lenneth the Valkyrie",
+      "description": "A divine warrior whose judgment cuts through darkness itself."
+    },
+    {
+      "id": "kain",
+      "arc": 3,
+      "chapter": "boss",
+      "name": "Kain the Dragoon",
+      "description": "A dragoon knight whose aerial attacks rain down from the heavens."
+    },
+    {
+      "id": "leon",
+      "arc": 4,
+      "chapter": "boss",
+      "name": "Leon the Lionheart",
+      "description": "An immortal king blessed by the gods themselves, wielding divine authority."
+    }
+  ]
+}

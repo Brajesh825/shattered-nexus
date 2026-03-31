@@ -41,6 +41,7 @@ const G = {
   selectedChar:  null,
   selectedClass: null,
   selectedChars: [],   // ordered array of up to 4 char IDs
+  unlockedChars: ['ayaka', 'hutao', 'nilou', 'xiao'],  // Characters available for selection
 
   party:           [],   // 4 party members (all player-controlled)
   enemyGroup:      [],   // 1–3 enemies
@@ -64,7 +65,10 @@ const G = {
 /* ============================================================
    UI HELPERS
    ============================================================ */
-const CHAR_COLOR = { ayaka:'#7dd3fc', hutao:'#ef4444', nilou:'#2dd4bf', xiao:'#4ade80' };
+const CHAR_COLOR = {
+  ayaka:'#7dd3fc', hutao:'#ef4444', nilou:'#2dd4bf', xiao:'#4ade80',
+  rydia:'#a78bfa', lenneth:'#e879f9', kain:'#0ea5e9', leon:'#fbbf24'
+};
 const ENEMY_POP_X = [580, 720, 860];
 const PARTY_POP_X = [42, 108, 174, 240];
 
@@ -95,7 +99,31 @@ const moveAnimations = {
   'lancing_strike': { actorDuration: 560, overlayDuration: 600, isUltimate: false },
   'yaksha_valor_active': { actorDuration: 560, overlayDuration: 600, isUltimate: false },
   'karmic_barrier': { actorDuration: 560, overlayDuration: 600, isUltimate: false },
-  'mastery_of_pain': { actorDuration: 800, overlayDuration: 3000, isUltimate: true }
+  'mastery_of_pain': { actorDuration: 800, overlayDuration: 3000, isUltimate: true },
+
+  // Summoner (Rydia)
+  'summon_bahamut': { actorDuration: 700, overlayDuration: 2400, isUltimate: false },
+  'summon_syldra': { actorDuration: 700, overlayDuration: 2200, isUltimate: false },
+  'eidolon_channel': { actorDuration: 700, overlayDuration: 2100, isUltimate: false },
+  'absolute_summon': { actorDuration: 850, overlayDuration: 2700, isUltimate: true },
+
+  // Valkyrie (Lenneth)
+  'valkyrie_strike': { actorDuration: 560, overlayDuration: 1800, isUltimate: false },
+  'judgment_seal': { actorDuration: 560, overlayDuration: 2200, isUltimate: false },
+  'transcendent_power': { actorDuration: 560, overlayDuration: 2300, isUltimate: false },
+  'divine_execution': { actorDuration: 800, overlayDuration: 2600, isUltimate: true },
+
+  // Divine Dragoon (Kain)
+  'dragoon_lance': { actorDuration: 600, overlayDuration: 1900, isUltimate: false },
+  'dragon_jump': { actorDuration: 650, overlayDuration: 2100, isUltimate: false },
+  'divine_flight': { actorDuration: 600, overlayDuration: 2400, isUltimate: false },
+  'heavens_fall': { actorDuration: 850, overlayDuration: 2700, isUltimate: true },
+
+  // Grail Guardian (Leon)
+  'holy_strike': { actorDuration: 560, overlayDuration: 1850, isUltimate: false },
+  'divine_shield': { actorDuration: 560, overlayDuration: 2200, isUltimate: false },
+  'grail_blessing': { actorDuration: 560, overlayDuration: 2300, isUltimate: false },
+  'lionheart_ascendant': { actorDuration: 850, overlayDuration: 2900, isUltimate: true }
 };
 
 const UI = {
@@ -509,16 +537,46 @@ MapEngine.onEncounterStart = (enc, map) => {
 function goCharSelect() {
   G.selectedChars = [];
   G.selectedChar  = null;
+
+  // If not in story mode, this is free battle mode — unlock all characters
+  if (G.mode !== 'story') {
+    G.mode = 'free';
+    G.unlockedChars = G.chars.map(c => c.id);
+  }
+
   UI.show('char-screen');
   _renderCharGrid();
   UI.el('char-detail').innerHTML = 'Click characters to add them to your party.';
   _updateCharConfirmBtn();
 }
 
+function goArcCharSelect() {
+  G.selectedChars = [];
+  G.selectedChar  = null;
+  G.mode = 'story';
+
+  UI.show('char-screen');
+  _renderCharGrid();
+  UI.el('char-detail').innerHTML = 'Select 4 characters for this arc. They will be your party throughout.';
+
+  // Change confirm button text for arc selection
+  const btn = UI.el('char-confirm');
+  const originalText = btn.textContent;
+  btn.textContent = 'LOCK IN PARTY';
+  btn.onclick = () => {
+    // Proceed to story after selection
+    if (typeof Story !== 'undefined' && Story.active) {
+      Story._nextChapter();
+    }
+  };
+  _updateCharConfirmBtn();
+}
+
 function _renderCharGrid() {
   const grid = UI.el('char-grid');
   grid.innerHTML = '';
-  G.chars.forEach(ch => {
+  // Only show characters that are unlocked
+  G.chars.filter(ch => G.unlockedChars.includes(ch.id)).forEach(ch => {
     const selIdx    = G.selectedChars.indexOf(ch.id);
     const isSelected = selIdx !== -1;
     const d = document.createElement('div');
@@ -724,6 +782,21 @@ function buildEnemyGroup(defs, spawnLevel = 1) {
 
 function spawnEnemy(def) { buildEnemyGroup([def]); } // legacy compat
 
+/**
+ * Unlock a character for recruitment
+ * @param {string} charId - Character ID (e.g., 'rydia', 'lenneth', 'kain', 'leon')
+ * @returns {boolean} true if unlocked, false if already unlocked
+ */
+function unlockCharacter(charId) {
+  if (!G.unlockedChars.includes(charId)) {
+    G.unlockedChars.push(charId);
+    // Save the updated unlocked characters state
+    if (typeof save !== 'undefined') save();
+    return true;
+  }
+  return false;
+}
+
 function buildTurnQueue() {
   const q = [];
   G.party.forEach((m, i)      => { if (Battle.alive(m)) q.push({ type:'party', idx:i, spd:m.spd }); });
@@ -746,6 +819,27 @@ function selectTarget(enemyIdx) {
 /* ============================================================
    START BATTLE
    ============================================================ */
+function showPreBattle() {
+  if (G.selectedChars.length < 4) return;
+
+  UI.show('pre-battle-screen');
+  const roster = UI.el('pre-battle-roster');
+  roster.innerHTML = '';
+
+  // Show current party
+  G.selectedChars.slice(0, 4).forEach((charId, idx) => {
+    const ch = G.chars.find(c => c.id === charId);
+    if (!ch) return;
+    const d = document.createElement('div');
+    d.className = 'pre-battle-char';
+    d.innerHTML = `
+      <div style="font-size:28px;margin-bottom:8px">${ch.icon}</div>
+      <div style="font-weight:bold;font-size:14px">${ch.name}</div>
+      <div style="font-size:12px;color:var(--text-dim)">${ch.title}</div>`;
+    roster.appendChild(d);
+  });
+}
+
 function startBattle() {
   if (G.selectedChars.length < 4) return;
 
@@ -756,7 +850,7 @@ function startBattle() {
     return;
   }
 
-  // Free battle: 2–3 random enemies
+  // Free battle: 2–3 random enemies, scaled to party level
   const pool  = G.enemies.slice();
   const count = 2 + Math.floor(Math.random() * 2);
   const picks = [];
@@ -764,7 +858,9 @@ function startBattle() {
     const idx = Math.floor(Math.random() * pool.length);
     picks.push(pool.splice(idx, 1)[0]);
   }
-  buildEnemyGroup(picks);
+  // Scale to hero level (minimum 1)
+  const spawnLevel = Math.max(1, G.hero?.lv || 1);
+  buildEnemyGroup(picks, spawnLevel);
   _initBattle();
   const names = G.enemyGroup.map(e => e.name).join(' & ');
   UI.setLog([`${names} appear!`, `Party to battle stations!`], ['hi','']);

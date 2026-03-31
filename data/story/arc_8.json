@@ -1,0 +1,167 @@
+{
+  "id": "arc_8",
+  "number": 8,
+  "name": "The Shadow Emperor",
+  "subtitle": "The final truth, the last stand",
+  "theme": "Redemption / Unity / The end of eternity",
+  "location": "The Eternal Void - Valdris's True Form",
+  "shard": null,
+  "enemies_pool": ["shadow_wraith", "dark_phoenix", "bone_dragon", "fallen_angel", "necromancer"],
+  "boss_enemy": "shadow_emperor",
+  "chapters": [
+    {
+      "id": "arc8_ch1",
+      "title": "The Void Speaks",
+      "type": "cutscene",
+      "background": "core_chamber",
+      "cast": ["Ayaka", "Hutao", "Nilou", "Xiao", "Rydia", "Lenneth", "Kain", "Leon"],
+      "scenes": [
+        {
+          "narration": "The fortress trembles. The Shadow Titan's defeat has torn something open — a wound in reality itself. Where it stood, something far larger begins to take shape. Not a creature. Not a being. A presence. Infinite. Ancient. Aware."
+        },
+        {
+          "narration": "The eight warriors stand united before the abyss. Around them, the fortress dissolves like ash.",
+          "dialogue": [
+            { "speaker": "Leon", "emotion": "grave", "text": "After two hundred years, I thought I understood what it meant to be alone. But this... this is what true solitude looks like." },
+            { "speaker": "Lenneth", "emotion": "determined", "text": "It is not alone. It simply chose to be. For millennia, it refused connection, refused growth, refused the possibility of change." },
+            { "speaker": "Kain", "emotion": "resolute", "text": "Then we show it that choice is not law. That even infinity can be transformed." },
+            { "speaker": "Rydia", "emotion": "sorrowful", "text": "The eidolons weep for him — not in pity, but in recognition. He was once like us. Curious. Alive. And something broke that." },
+            { "speaker": "Ayaka", "emotion": "compassionate", "text": "Then we fix what is broken. Not by destroying him, but by reminding him what he was." },
+            { "speaker": "Xiao", "emotion": "fierce", "text": "And if he will not remember, we fight. For those he has consumed. For those he would consume." },
+            { "speaker": "Hutao", "emotion": "peaceful", "text": "Either way, his journey ends here. The dead know the weight of eternity. They have taught me: it is a burden meant to be shared, or set down." },
+            { "speaker": "Nilou", "emotion": "strong", "text": "Eight become one. One purpose. Eight voices singing against the darkness." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "arc8_ch2",
+      "title": "The Scholar's Lament",
+      "type": "cutscene",
+      "background": "core_chamber",
+      "cast": ["Ayaka", "Hutao", "Nilou", "Xiao"],
+      "scenes": [
+        {
+          "narration": "A voice cuts through the void — ancient, weary, layered with countless other voices."
+        },
+        {
+          "dialogue": [
+            { "speaker": "narrator", "emotion": "sorrowful", "text": "Valdris: I... remember. Starlight. Books. The smell of paper and ink. I remember wondering about death, about time, about what lies beyond the veil." },
+            { "speaker": "narrator", "emotion": "cold", "text": "Valdris: I remember the moment I realized the answer. There is nothing beyond. Only emptiness. Only the end." },
+            { "speaker": "Ayaka", "emotion": "understanding", "text": "You feared that ending. So you tried to consume everything to prevent it." },
+            { "speaker": "narrator", "emotion": "desperate", "text": "Valdris: I conquered death itself. I became eternal. And yet... the emptiness only grows. The more I consume, the hungrier I become." },
+            { "speaker": "Xiao", "emotion": "solemn", "text": "Because you were never running from death. You were running from living." },
+            { "speaker": "narrator", "emotion": "ancient", "text": "Valdris: I... do not know how to stop." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "arc8_ch3",
+      "title": "Echoes of Choice",
+      "type": "battle",
+      "enemy_id": "dark_phoenix",
+      "background": "void_realm",
+      "cast": ["Ayaka", "Hutao", "Nilou", "Xiao", "Rydia", "Lenneth", "Kain", "Leon"],
+      "pre_dialogue": [
+        { "speaker": "narrator", "emotion": "intense", "text": "From the void, shadows coalesce — the accumulated echoes of Valdris's hunger. Every world he consumed, every being he devoured — they manifest as one final test." },
+        { "speaker": "Leon", "emotion": "resolute", "text": "Then we free them. All of them. In his defeat, they find peace." }
+      ],
+      "post_dialogue": [
+        { "speaker": "Lenneth", "emotion": "firm", "text": "The echoes fade. The souls cry out in gratitude — they sense that their end is near, and with it, true rest." },
+        { "speaker": "Rydia", "emotion": "understanding", "text": "The eidolons say the void thins. His defenses weaken. The path to his core lies open." }
+      ]
+    },
+    {
+      "id": "arc8_ch4",
+      "title": "The Weight of Worlds",
+      "type": "cutscene",
+      "background": "core_chamber",
+      "cast": ["Kain", "Leon", "Rydia", "Lenneth"],
+      "scenes": [
+        {
+          "narration": "As they press deeper into the void, the weight becomes unbearable. Not physical weight — the weight of memory, of time, of countless lives pressing against their consciousness."
+        },
+        {
+          "dialogue": [
+            { "speaker": "Kain", "emotion": "struggling", "text": "I can feel them... all the worlds. All the civilizations. All the stories that ended in his hunger." },
+            { "speaker": "Rydia", "emotion": "awed", "text": "The eidolons carry them. They sing their names so they are not forgotten. We sing them too." },
+            { "speaker": "Leon", "emotion": "determined", "text": "I have ruled, built, conquered. And all of it will end someday. But in that ending, meaning. In that meaning, purpose." },
+            { "speaker": "Lenneth", "emotion": "hopeful", "text": "He does not understand this. That endings are not emptiness — they are transformation. This is what we must teach him." }
+          ]
+        }
+      ]
+    }
+  ],
+  "boss_chapter": {
+    "title": "The Shadow Emperor",
+    "background": "void_throne",
+    "cast": ["Ayaka", "Hutao", "Nilou", "Xiao", "Rydia", "Lenneth", "Kain", "Leon"],
+    "pre_dialogue": [
+      { "speaker": "narrator", "emotion": "apocalyptic", "text": "The void coalesces into a throne of shadow and starlight. Upon it sits a figure of impossible scale — Valdris, the Shadow Emperor, manifest in his true form. Not a titan. Not a demon. Something far older. Something that remembers the world before time began." },
+      { "speaker": "Ayaka", "emotion": "focused", "text": "This is it. All eight of us. All our power. All our purpose. Converging in this moment." },
+      { "speaker": "Hutao", "emotion": "resolute", "text": "For the dead who cannot fight. For the living who come after. For the worlds that might yet exist." },
+      { "speaker": "narrator", "emotion": "defiant", "text": "Valdris: You believe you can rewrite eternity? Foolish. I am the end of all things. And I am... inevitable." }
+    ],
+    "post_dialogue": [
+      { "speaker": "narrator", "emotion": "haunting", "text": "Valdris staggers, his form fracturing into starlight. But he does not fall completely. Instead, something changes. The hunger fades. The anger dissipates. What remains is something almost... human." },
+      { "speaker": "Lenneth", "emotion": "compassionate", "text": "Look. What lies beneath the shadow. A scholar. Still afraid. Still lonely. But capable of choice." },
+      { "speaker": "Nilou", "emotion": "gentle", "text": "The choice is yours, Valdris. To consume, or to release. To end, or to transform." },
+      { "speaker": "Xiao", "emotion": "solemn", "text": "Whatever you choose, we will witness. We will not abandon you to this void." }
+    ]
+  },
+  "final_chapter": {
+    "title": "The Eternal Scholar's Choice",
+    "background": "void_throne",
+    "cast": ["Ayaka", "Hutao", "Nilou", "Xiao", "Rydia", "Lenneth", "Kain", "Leon"],
+    "scenes": [
+      {
+        "narration": "In the fading shadow of the void, the form of Valdris becomes clearer. A man in scholar's robes. Eyes ancient beyond measure. But for the first time, tears fall."
+      },
+      {
+        "dialogue": [
+          { "speaker": "narrator", "emotion": "weary", "text": "Valdris: I have walked in darkness for so long. I forgot what starlight felt like. I forgot that the universe is vast not because it is empty... but because it is full. Full of change. Full of becoming. Full of ending and beginning." },
+          { "speaker": "narrator", "emotion": "resigned", "text": "Valdris: I sought immortality to escape death. But in denying death, I denied life itself. I became a monument to fear, not a scholar of truth." },
+          { "speaker": "Leon", "emotion": "understanding", "text": "Then let it end. Not in destruction, but in return. Release what you have held. Let the consumed worlds be reborn." },
+          { "speaker": "narrator", "emotion": "accepting", "text": "Valdris: I... am afraid. Of what comes after. Of dissolving into nothing." },
+          { "speaker": "Rydia", "emotion": "warm", "text": "You will not dissolve into nothing. You will return to the stars from which you came. And in those stars, you will become part of something greater. The eidolons will sing your name. Not as a monster, but as a scholar who finally understood the universe." },
+          { "speaker": "Ayaka", "emotion": "resolute", "text": "Your journey ends here. But the worlds you consumed — they will be reborn. Your hunger will nourish them, not devour them. In your ending, a thousand new beginnings." },
+          { "speaker": "narrator", "emotion": "transcendent", "text": "Valdris releases his hold on all that he has consumed. Worlds unfold like flowers. Civilizations blossom in new forms. Species rise again from the void. And Valdris... becomes light. Becomes memory. Becomes meaning." },
+          { "speaker": "Hutao", "emotion": "peaceful", "text": "He has crossed the veil at last. No longer hungry. No longer afraid. Just... free." }
+        ]
+      },
+      {
+        "narration": "The void collapses. Reality knits itself back together. And eight warriors stand beneath a sky full of stars — new stars, reborn from the shadow's end. The fortress is gone. Valdris is gone. But the worlds he consumed bloom in the cosmic garden, and the universe breathes once more."
+      }
+    ]
+  },
+  "epilogue": {
+    "title": "Eight Paths Forward",
+    "background": "starfield",
+    "cast": ["Ayaka", "Hutao", "Nilou", "Xiao", "Rydia", "Lenneth", "Kain", "Leon"],
+    "scenes": [
+      {
+        "narration": "In the aftermath of the void's collapse, the eight gather one final time. Not as warriors bound by fate. But as companions who chose to stand together.",
+        "dialogue": [
+          { "speaker": "Ayaka", "emotion": "grateful", "text": "We have journeyed far. From doubt to certainty. From four to eight. From followers to legends." },
+          { "speaker": "Xiao", "emotion": "resolved", "text": "The seals are broken. The darkness is ended. But the world still needs guardians. Let us be that light." },
+          { "speaker": "Leon", "emotion": "humble", "text": "I ruled for two centuries in isolation. I have learned that true immortality is found not in lasting forever, but in those we touch. In the difference we make." },
+          { "speaker": "Lenneth", "emotion": "knowing", "text": "And so the tale becomes legend. Eight heroes who faced the Shadow Emperor and brought him peace. And in that legend, others will find courage." },
+          { "speaker": "Kain", "emotion": "hopeful", "text": "The skies are clear now. The dragoons of Baron will soar once more. But we will soar as a fellowship." },
+          { "speaker": "Rydia", "emotion": "serene", "text": "The eidolons sing a new song — not of sorrow, but of renewal. The worlds reborn from the void will remember this moment. They will know that darkness can be transformed." },
+          { "speaker": "Hutao", "emotion": "peaceful", "text": "And the dead rest at last. No longer trapped in his hunger. They have crossed the veil and found peace. That is worth every sacrifice." },
+          { "speaker": "Nilou", "emotion": "strong", "text": "Then we have won not just a battle, but something greater. A second chance for everything Valdris destroyed. A new beginning written in starlight." }
+        ]
+      },
+      {
+        "narration": "The eight stand together as the sun rises on a new world. Behind them, the void closes. Ahead, infinite possibilities. And in their hearts, the knowledge that they changed not just the fate of one world, but the destiny of all creation."
+      },
+      {
+        "narration": "THE SHADOW EMPEROR IS DEFEATED"
+      },
+      {
+        "narration": "BUT THE STORY OF EIGHT HEROES HAS ONLY BEGUN"
+      }
+    ]
+  }
+}

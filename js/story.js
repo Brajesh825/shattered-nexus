@@ -34,8 +34,11 @@ const MAP_POSITIONS = [
   { x: 398, y: 162 },
   { x: 574, y: 72 },
   { x: 718, y: 148 },
+  { x: 800, y: 100 },  // Arc 6: Fortress Gates
+  { x: 720, y: 40 },   // Arc 7: Inner Sanctum
+  { x: 600, y: 120 },  // Arc 8: Shadow Emperor
 ];
-const MAP_ICONS = ['🌲', '🌿', '⚔', '🌊', '💎'];
+const MAP_ICONS = ['🌲', '🌿', '⚔', '🌊', '💎', '🏰', '🌑', '⭐'];
 
 /* ══════════════════════════════════════════════════════════════════════════
    STORY ENGINE
@@ -177,6 +180,10 @@ const Story = {
         G.hero.exp = s.hero.exp || 0;
         G.hero.gold = s.hero.gold || 0;
       }
+      // Restore unlocked characters from save
+      if (s.unlockedChars) {
+        G.unlockedChars = s.unlockedChars;
+      }
       // Resume at the saved chapter (or arc intro if chapIdx === -1)
       if (this.chapIdx === -1) {
         this._showArcIntro();
@@ -200,6 +207,15 @@ const Story = {
 
     // Show dialogue again after battle
     this._showSection('s-dialogue');
+
+    // Process onVictory events from boss_chapter (character recruitment)
+    if (this.phase === 'boss_in' && this.currentBossChapter && this.currentBossChapter.onVictory) {
+      this.currentBossChapter.onVictory.forEach(event => {
+        if (event.type === 'recruit') {
+          unlockCharacter(event.charId);
+        }
+      });
+    }
 
     if (this.phase === 'boss_in') {
       this.phase = 'boss_post';
@@ -234,7 +250,8 @@ const Story = {
     }
 
     if (this.phase === 'arc_intro') {
-      this._nextChapter(); return;
+      // Show character selection for this arc
+      goArcCharSelect(); return;
     }
 
     if (this.phase === 'arc_end') {
@@ -453,6 +470,7 @@ const Story = {
   _showBossChapter() {
     const boss = this.arc.boss_chapter;
     this.currentChap = boss;
+    this.currentBossChapter = boss;  // Store for onVictory event processing
     this.lineIdx = 0;
     this.phase = 'boss_pre';
     this._charAppeared = {};  // reset character appearances
@@ -473,27 +491,10 @@ const Story = {
   /* ════════════════════════════════════════════════════════════════════════
      BATTLE LAUNCHER
   ════════════════════════════════════════════════════════════════════════ */
-  // Arc difficulty multipliers (index = arcIdx 0–4)
-  ARC_SCALE: [1.0, 1.25, 1.6, 2.0, 2.5],
 
   _scaleEnemy(def) {
-    const m = this.ARC_SCALE[this.arcIdx] || 1.0;
-    if (m === 1.0) return def;
-    const s = def.stats;
-    return {
-      ...def,
-      stats: {
-        hp: Math.round(s.hp * m),
-        atk: Math.round(s.atk * m),
-        def: Math.round(s.def * m),
-        spd: Math.round(s.spd * m),
-        mag: Math.round(s.mag * m),
-      },
-      reward: {
-        exp: Math.round(def.reward.exp * m),
-        gold: Math.round(def.reward.gold * m),
-      },
-    };
+    // Only use leveling for difficulty scaling (no ARC_SCALE multiplier)
+    return def;
   },
 
   _launchStoryBattle(enemyId) {
@@ -517,7 +518,12 @@ const Story = {
       }
     }
 
-    buildEnemyGroup(defs);
+    // Calculate spawn level based on arc and progress
+    // Arc 1: levels 1-3, Arc 2: 3-6, Arc 3: 6-10, Arc 4: 10-14, Arc 5: 14-18, Arc 6: 18-22, Arc 7: 22-26, Arc 8: 26-30
+    const arcProgression = [1, 3, 6, 10, 14, 18, 22, 26];
+    const spawnLevel = arcProgression[this.arcIdx] || 1;
+
+    buildEnemyGroup(defs, spawnLevel);
 
     // Reset per-battle state on party members (keep HP/MP/levels from prior battles)
     G.party.forEach(m => { m.buff = null; m.debuff = null; m.regenTurns = 0; m.stunned = false; });
@@ -769,6 +775,7 @@ const Story = {
       selectedChar: G.hero.charId || G.selectedChar,
       selectedClass: G.hero.classId || G.selectedClass,
       hero: { lv: G.hero.lv, exp: G.hero.exp, gold: G.hero.gold },
+      unlockedChars: G.unlockedChars,
     });
   },
 

@@ -308,6 +308,67 @@
         "Nilou",
         "Xiao"
       ]
+    },
+    {
+      "id": "arc4_ch5",
+      "title": "Six Gather",
+      "type": "cutscene",
+      "background": "fortress_approach",
+      "cast": ["Kain", "Rydia", "Lenneth", "Hutao"],
+      "scenes": [
+        {
+          "narration": "The dragoon, summoner, and valkyrie stand together as Hutao approaches. The weight of what comes next settles on all of them.",
+          "dialogue": [
+            { "speaker": "Kain", "emotion": "formal", "text": "In my kingdom, dragoons were the pride — swift, strong, untouchable in the air. Now I wonder if sky-power means anything against an enemy who breaks the very world." },
+            { "speaker": "Rydia", "emotion": "calm", "text": "The eidolons do not fear him. They sense a wrongness — something that should not exist, wearing a form of power. They are ready to answer." },
+            { "speaker": "Lenneth", "emotion": "resolute", "text": "And I have judged things older and darker than this shadow. My sword knows its work." },
+            { "speaker": "Hutao", "emotion": "light", "text": "A dragoon who doubts himself, a summoner with ancient spirits, and a Valkyrie older than kingdoms. If this does not work, at least we will have failed spectacularly." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "arc4_ch6",
+      "title": "The Weight of Immortality",
+      "type": "cutscene",
+      "background": "fortress_throne",
+      "cast": ["Ayaka", "Xiao", "Kain", "Leon"],
+      "scenes": [
+        {
+          "narration": "Before the final sanctum, the warriors stand in the throne room. Ayaka, Xiao, and Kain are joined by Leon, whose eyes hold the weight of two centuries.",
+          "dialogue": [
+            { "speaker": "Leon", "emotion": "heavy", "text": "I ruled for two hundred years. I commanded gods. And in all that time, I was prisoner to a curse I did not understand. That ends now." },
+            { "speaker": "Xiao", "emotion": "understanding", "text": "Immortality is its own prison. I have carried two thousand years of karma. You are newly awakened to that burden." },
+            { "speaker": "Leon", "emotion": "thoughtful", "text": "Then perhaps that is why I was freed now. To stand with one who understands, and to fight for a world where others do not have to carry it alone." },
+            { "speaker": "Kain", "emotion": "resolute", "text": "A king bound and freed. A yaksha bearing karmic weight. A dragoon seeking redemption. We are all prisoners of something. Here, we become free." },
+            { "speaker": "Ayaka", "emotion": "firm", "text": "Not by running. By facing it. By choosing our path forward, not the one laid for us." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "arc4_ch7",
+      "title": "Six Become One",
+      "type": "cutscene",
+      "background": "fortress_throne",
+      "cast": ["Hutao", "Nilou", "Lenneth", "Rydia"],
+      "scenes": [
+        {
+          "narration": "In the shadow of the inner sanctum, four warriors stand. A funeral director, a dancer, a Valkyrie, and a summoner — each carrying their own reasons for being here.",
+          "dialogue": [
+            { "speaker": "Hutao", "emotion": "sincere", "text": "When I first arrived in this world, I was alone. Confused. Now I stand with warriors from worlds I never knew existed. That feels significant." },
+            { "speaker": "Nilou", "emotion": "hopeful", "text": "We are six. We come from six different paths. But we move as one toward the same purpose. That is how you break a darkness that feeds on isolation." },
+            { "speaker": "Lenneth", "emotion": "solemn", "text": "I have watched civilizations rise and fall. I have seen the best and worst of what eternity has to offer. You six — this moment — this is what I have always judged worthy." },
+            { "speaker": "Rydia", "emotion": "peaceful", "text": "The eidolons sing. Even the ancient ones, who have seen wars that shattered stars, they sing. They know. We are ready." }
+          ]
+        },
+        {
+          "narration": "And as the six stand together — the four who started this journey, and the two who chose to join it — the last Fragment pulses with light.",
+          "dialogue": [
+            { "speaker": "narrator", "emotion": "crescendo", "text": "The Fragment calls. Not in fear. In answer. As if it has been waiting all along for this moment — for those who would break the chains binding it." }
+          ]
+        }
+      ]
     }
   ],
 
@@ -327,6 +388,27 @@
       { "speaker": "Hutao", "emotion": "apprehensive", "text": "...That did not sound good." },
       { "speaker": "Xiao", "emotion": "flat", "text": "No. It did not." },
       { "speaker": "Ayaka", "emotion": "resolute", "text": "One more. One more Fragment, and then we face him directly. We are close." }
+    ],
+    "onVictory": [
+      { "type": "recruit", "charId": "leon" }
+    ]
+  },
+  "recruitment_chapter": {
+    "title": "The Immortal King",
+    "background": "fortress_throne",
+    "cast": ["Ayaka", "Hutao", "Nilou", "Xiao", "Rydia", "Leon"],
+    "scenes": [
+      {
+        "narration": "As Valdris's words hang in the air, the sanctum shifts. The shadows themselves recoil. And from them steps a figure draped in gold and ancient authority — a king whose eyes have seen empires crumble.",
+        "dialogue": [
+          { "speaker": "Leon", "emotion": "commanding", "text": "I am Leon, King of the Lionheart — or was, before this shadow claimed all crowns. I have walked two hundred years, commanded gods and demons alike. I will not let this darkness command me." },
+          { "speaker": "Ayaka", "emotion": "awed", "text": "An immortal king. You have borne witness to ages. Why do you join us now?" },
+          { "speaker": "Leon", "emotion": "resolute", "text": "Because even a god-blessed king knows when the time has come to kneel — not to shadow, but to purpose. You five carry something I thought lost ages ago: hope without denial. Truth without despair. I would stand with that." },
+          { "speaker": "Hutao", "emotion": "respectful", "text": "From summoner to dragoon to immortal king. We gather strength as we move forward. Whatever comes next, we meet it together." },
+          { "speaker": "Xiao", "emotion": "quiet", "text": "Six warriors. The number holds power in its own right." },
+          { "speaker": "Lenneth", "emotion": "solemn", "text": "And now we are complete. The Valkyrie, the Summoner, the Dragoon, the King. Paired with the four who began this journey. Together — we are ready for judgment." }
+        ]
+      }
     ]
   }
 }

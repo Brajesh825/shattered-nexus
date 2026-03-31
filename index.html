@@ -116,8 +116,27 @@
     <div class="char-grid" id="char-grid"></div>
     <div class="detail-panel" id="char-detail">Click characters to add them to your party.</div>
     <div style="padding:10px 12px 12px">
-      <button class="big-btn" id="char-confirm" onclick="startBattle()" disabled style="margin:0;width:100%">
+      <button class="big-btn" id="char-confirm" onclick="showPreBattle()" disabled style="margin:0;width:100%">
         SELECT 4 MORE →
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       PRE-BATTLE SCREEN (Party Confirmation)
+       ═══════════════════════════════════════ -->
+  <div id="pre-battle-screen" class="screen" style="flex-direction:column;justify-content:center;align-items:center;gap:20px;padding:20px">
+    <div style="text-align:center">
+      <div style="font-size:24px;font-weight:bold;margin-bottom:10px">READY FOR BATTLE</div>
+      <div style="font-size:14px;color:var(--text-dim);margin-bottom:20px">Your party stands ready</div>
+    </div>
+    <div id="pre-battle-roster" style="display:grid;grid-template-columns:repeat(4,1fr);gap:15px;padding:20px;background:rgba(0,0,0,0.3);border-radius:8px"></div>
+    <div style="display:flex;gap:15px">
+      <button class="big-btn" onclick="goCharSelect()" style="background:transparent;border-color:#4a4080;color:#8080c0">
+        ⚙ CHANGE PARTY
+      </button>
+      <button class="big-btn" onclick="startBattle()">
+        ▶ BATTLE START
       </button>
     </div>
   </div>

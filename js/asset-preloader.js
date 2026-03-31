@@ -11,11 +11,13 @@ const AssetPreloader = (() => {
   const ASSETS = {
     // Character spirit portraits
     spirits: [
-      'ayaka', 'hutao', 'nilou', 'xiao'
+      'ayaka', 'hutao', 'nilou', 'xiao',
+      'rydia', 'lenneth', 'kain', 'leon'
     ],
     // Character faces
     faces: [
-      'ayaka', 'hutao', 'nilou', 'xiao'
+      'ayaka', 'hutao', 'nilou', 'xiao',
+      'rydia', 'lenneth', 'kain', 'leon'
     ],
     // Enemies (prioritize common/boss enemies)
     enemies: [

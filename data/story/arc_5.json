@@ -19,7 +19,7 @@
     "demon_lord",
     "dark_phoenix"
   ],
-  "boss_enemy": "shadow_emperor",
+  "boss_enemy": "dark_phoenix",
   "chapters": [
     {
       "id": "arc5_ch1",

@@ -121,6 +121,35 @@
       { "speaker": "Xiao", "emotion": "flat", "text": "No." },
       { "speaker": "Hutao", "emotion": "steady", "text": "Good thing we are not doing this to frighten him." },
       { "speaker": "Ayaka", "emotion": "resolute", "text": "Forward. That is all there is now." }
+    ],
+    "onVictory": [
+      { "type": "recruit", "charId": "rydia" },
+      { "type": "recruit", "charId": "lenneth" }
+    ]
+  },
+  "recruitment_chapter": {
+    "title": "Allies in Ash",
+    "background": "throne_room",
+    "cast": ["Ayaka", "Hutao", "Nilou", "Xiao", "Rydia", "Lenneth"],
+    "scenes": [
+      {
+        "narration": "As the presence of Valdris fades, a shimmer of purple light coalesces near the fallen throne. From it steps Rydia, her summoning robes flowing like water, her eyes glowing with eidolon power.",
+        "dialogue": [
+          { "speaker": "Rydia", "emotion": "calm", "text": "I felt it — a shattering of chains. The moment this Fragment was freed, my eidolons sang. They led me here." },
+          { "speaker": "Hutao", "emotion": "surprised", "text": "A new arrival. You have impeccable timing. Or terrible timing. Hard to say in a burning kingdom." },
+          { "speaker": "Rydia", "emotion": "serene", "text": "I am Rydia, Summoner of the Eidolons. In my world, I commanded the creatures of the Feymarch. Here, I sense something wounded — a realm crying out for balance. I will help restore it." },
+          { "speaker": "Ayaka", "emotion": "warm", "text": "Welcome. We move against the darkness itself. If you are willing, we would be honored to have you." }
+        ]
+      },
+      {
+        "narration": "A second light appears — brilliant gold and silver, cutting through the ash like divine judgment. Lenneth descends, her armor gleaming, her sword still coursing with holy power.",
+        "dialogue": [
+          { "speaker": "Lenneth", "emotion": "commanding", "text": "I am Lenneth, Valkyrie of the Celestial Realm. For millennia, I have judged souls and guided the worthy. This shadow — Valdris — he too must be judged." },
+          { "speaker": "Xiao", "emotion": "respectful", "text": "You carry the weight of ages. I have guarded this world for two thousand years. It is... reassuring to stand with one who understands that burden." },
+          { "speaker": "Lenneth", "emotion": "resolute", "text": "Then we are kindred. Let us break his chains and restore what was lost." },
+          { "speaker": "Nilou", "emotion": "hopeful", "text": "Four became six. The balance shifts. Perhaps we were meant to find each other." }
+        ]
+      }
     ]
   }
 }

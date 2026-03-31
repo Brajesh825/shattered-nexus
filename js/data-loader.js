@@ -56,6 +56,54 @@ window.CHARACTERS_DATA = [
     "class_affinity":["yaksha_protector"],
     "passive":{"id":"yakshas_valor","name":"Yaksha's Valor","description":"10% reduced damage. ATK +15% from karmic resolve."},
     "lore":"He has slain ten thousand demons and does not speak of it."
+  },
+  {
+    "id":"rydia","name":"Rydia","title":"The Summoner","icon":"✨",
+    "description":"A powerful summoner blessed with the ability to call forth creatures from the realm of the Eidolons. She channels ancient summons with graceful precision, commanding beasts of fire, ice, and thunder to do her bidding.",
+    "personality":"Wise, compassionate, magically attuned",
+    "portrait_color":"#a78bfa","hair_color":"#8b5cf6",
+    "skin_color":"#fce7f3","armor_color":"#6d28d9",
+    "base_stats":{"hp":58,"mp":48,"atk":8,"def":9,"spd":12,"mag":24},
+    "stat_bonuses":{"mag":6,"mp":6},
+    "class_affinity":["summoner_eidolon"],
+    "passive":{"id":"eidolon_bond","name":"Eidolon Bond","description":"Summoned creatures gain +20% stats. MP efficiency increased by 15%."},
+    "lore":"In her world, she commanded the mightiest creatures of the Feymarch. When the rift opened, her summoned eidolons followed her through — loyal companions across worlds."
+  },
+  {
+    "id":"lenneth","name":"Lenneth","title":"The Valkyrie","icon":"👑",
+    "description":"A divine Valkyrie warrior who judges souls and claims the worthy. She wields sacred power and divine authority, her blade blessed by the gods themselves. Ageless and formidable in combat.",
+    "personality":"Principled, commanding, divinely righteous",
+    "portrait_color":"#e879f9","hair_color":"#c084fc",
+    "skin_color":"#faf5ff","armor_color":"#a855f7",
+    "base_stats":{"hp":88,"mp":28,"atk":19,"def":18,"spd":15,"mag":16},
+    "stat_bonuses":{"atk":4,"def":4},
+    "class_affinity":["valkyrie_guardian"],
+    "passive":{"id":"divine_authority","name":"Divine Authority","description":"DEF increased by 20%. Reflects 10% of damage taken back to attacker."},
+    "lore":"For millennia she walked between worlds, judging souls worthy of ascension. Now she stands in this shadowed realm, where even gods fear to tread — and she must decide if darkness itself can be redeemed."
+  },
+  {
+    "id":"kain","name":"Kain","title":"The Dragoon","icon":"🐉",
+    "description":"A noble Dragoon knight whose lance pierces the sky. He channels the power of dragons to perform devastating aerial attacks, his spear dancing through the air with lethal grace.",
+    "personality":"Honorable, conflicted, steadfastly loyal",
+    "portrait_color":"#0ea5e9","hair_color":"#0369a1",
+    "skin_color":"#e0f2fe","armor_color":"#0c4a6e",
+    "base_stats":{"hp":75,"mp":20,"atk":19,"def":14,"spd":16,"mag":10},
+    "stat_bonuses":{"atk":3,"spd":3},
+    "class_affinity":["dragoon_skyward"],
+    "passive":{"id":"dragon_leap","name":"Dragon's Leap","description":"Every 3rd turn, perform a bonus aerial attack. SPD +2 during aerial combat."},
+    "lore":"As a Dragoon of Baron, he swore oaths to his kingdom. But loyalties fracture when worlds collide. He came seeking redemption — instead, he found new purpose."
+  },
+  {
+    "id":"leon","name":"Leon","title":"The Lionheart King","icon":"⚔️",
+    "description":"An immortal warrior-king who ruled for two centuries, blessed by the gods themselves. He commands divine power and can summon gods through sacred rituals. His presence radiates ancient authority.",
+    "personality":"Regal, stoic, divinely resolute",
+    "portrait_color":"#fbbf24","hair_color":"#fcd34d",
+    "skin_color":"#fef3c7","armor_color":"#b45309",
+    "base_stats":{"hp":92,"mp":32,"atk":22,"def":20,"spd":14,"mag":18},
+    "stat_bonuses":{"atk":5,"def":5,"hp":4},
+    "class_affinity":["knight_king_divine"],
+    "passive":{"id":"divine_blessing","name":"Divine Blessing","description":"As a demi-god, Leon grants allies +15% HP regeneration. Takes 12% reduced damage from all sources."},
+    "lore":"He lived 200 years as a king, commanding gods and demons alike. When he was pulled into this shadowed realm, even he felt the weight of something beyond his ken. Yet his blade still shines with purpose."
   }
 ];
 
@@ -116,6 +164,62 @@ window.CLASSES_DATA = [
       {"id":"mastery_of_pain","name":"Mastery of Pain","icon":"⚡","mp":14,"type":"magic_damage","description":"3.5x magic, scales with DEF","effect":{"dmgMultiplier":3.5,"element":"anemo"}}
     ],
     "growthPerLevel":{"hp":16,"mp":2,"atk":3,"def":5,"spd":0,"mag":1}
+  },
+  {
+    "id":"summoner_eidolon","name":"Summoner","icon":"✨","tag":"Magic / Eidolons",
+    "description":"Rydia's summoning prowess. Command mighty eidolons from the spirit realm to decimate foes and protect allies.",
+    "color":"#6d28d9",
+    "role":"Mage",
+    "stat_multipliers":{"hp":0.95,"mp":1.5,"atk":0.6,"def":0.8,"spd":0.95,"mag":1.6},
+    "abilities":[
+      {"id":"summon_bahamut","name":"Summon Bahamut","icon":"🐉","mp":8,"type":"magic_damage","description":"Call the dragon king — 2.4x magic damage to all enemies, fire element","effect":{"dmgMultiplier":2.4,"element":"fire","aoe":true}},
+      {"id":"summon_syldra","name":"Summon Syldra","icon":"🌊","mp":8,"type":"heal","description":"Invoke the water serpent — restore 40-60 HP to all allies, cure one debuff","effect":{"healBase":40,"healRandom":20,"aoe":true,"cleanse":true}},
+      {"id":"eidolon_channel","name":"Eidolon Channel","icon":"✨","mp":10,"type":"buff","description":"Channel eidolon power — MAG +50%, summons gain +30% damage, 4 turns","effect":{"stat":"mag","multiplier":1.5,"summonBoost":1.3,"duration":4}},
+      {"id":"absolute_summon","name":"Absolute Summon","icon":"🌟","mp":14,"type":"magic_damage","isUltimate":true,"description":"Ultimate eidolon — 3.8x magic damage to all, summon phantom guardian for 2 turns","effect":{"dmgMultiplier":3.8,"element":"summoning","aoe":true,"guardian":true}}
+    ],
+    "growthPerLevel":{"hp":5,"mp":10,"atk":0,"def":1,"spd":1,"mag":7}
+  },
+  {
+    "id":"valkyrie_guardian","name":"Valkyrie","icon":"👑","tag":"Divine / Judgment",
+    "description":"Lenneth's divine valkyrie power. Strike with sacred judgment while protecting allies with celestial authority.",
+    "color":"#a855f7",
+    "role":"Knight",
+    "stat_multipliers":{"hp":1.3,"mp":1.1,"atk":1.3,"def":1.35,"spd":1.0,"mag":1.2},
+    "abilities":[
+      {"id":"valkyrie_strike","name":"Valkyrie Strike","icon":"⚔️","mp":0,"type":"physical","description":"Holy sword slash — 1.6x ATK damage, ignore 15% enemy DEF","effect":{"dmgMultiplier":1.6,"element":"holy","defPen":0.15}},
+      {"id":"judgment_seal","name":"Judgment Seal","icon":"⚡","mp":7,"type":"debuff","description":"Judge the wicked — reduce enemy ATK by 30%, DEF by 20%, lasts 3 turns","effect":{"stat":"atk","multiplier":0.7,"defDebuff":0.8,"duration":3}},
+      {"id":"transcendent_power","name":"Transcendent Power","icon":"✨","mp":9,"type":"buff","description":"Divine blessing — party ATK +25%, DEF +30%, holy aura for 4 turns","effect":{"aoe":true,"stat":"atk","multiplier":1.25,"defBuff":1.3,"duration":4}},
+      {"id":"divine_execution","name":"Divine Execution","icon":"💫","mp":13,"type":"magic_damage","isUltimate":true,"description":"Execute judgment — 3.6x magic damage, scales with DEF, stuns if enemy HP low","effect":{"dmgMultiplier":3.6,"element":"holy","statScale":"def","stunLow":true}}
+    ],
+    "growthPerLevel":{"hp":12,"mp":4,"atk":4,"def":5,"spd":2,"mag":3}
+  },
+  {
+    "id":"dragoon_skyward","name":"Divine Dragoon","icon":"🐉","tag":"Dragon / Sky",
+    "description":"Kain's dragoon legacy elevated by divine power. Soar through the heavens with lance strikes and dragon-channeled attacks.",
+    "color":"#0c4a6e",
+    "role":"Ranger",
+    "stat_multipliers":{"hp":1.15,"mp":0.9,"atk":1.35,"def":1.05,"spd":1.25,"mag":0.95},
+    "abilities":[
+      {"id":"dragoon_lance","name":"Dragoon Lance","icon":"🎯","mp":0,"type":"physical","description":"Soaring lance thrust — 1.8x ATK damage, +1 SPD for 2 turns","effect":{"dmgMultiplier":1.8,"element":"wind","spdBuff":1,"duration":2}},
+      {"id":"dragon_jump","name":"Dragon Jump","icon":"✨","mp":6,"type":"physical","description":"Leap skyward — 2.2x ATK damage, evasion +20% next turn","effect":{"dmgMultiplier":2.2,"element":"wind","evasion":0.2}},
+      {"id":"divine_flight","name":"Divine Flight","icon":"🌬️","mp":8,"type":"buff","description":"Take to the skies — evasion +40%, SPD +30%, party SPD +2 for 3 turns","effect":{"stat":"spd","multiplier":1.3,"evasion":0.4,"aoe":true,"duration":3}},
+      {"id":"heavens_fall","name":"Heaven's Fall","icon":"⚡","mp":12,"type":"magic_damage","isUltimate":true,"description":"Descend with divine fury — 4.0x ATK damage, scales with SPD, area strike","effect":{"dmgMultiplier":4.0,"element":"wind","statScale":"spd","aoe":true}}
+    ],
+    "growthPerLevel":{"hp":9,"mp":2,"atk":5,"def":3,"spd":5,"mag":1}
+  },
+  {
+    "id":"knight_king_divine","name":"Grail Guardian","icon":"⚔️","tag":"Holy / Divinity",
+    "description":"Leon's god-blessed kingship. Wield divine authority and summon the power of gods to protect and annihilate.",
+    "color":"#b45309",
+    "role":"Paladin",
+    "stat_multipliers":{"hp":1.35,"mp":1.15,"atk":1.4,"def":1.4,"spd":0.95,"mag":1.25},
+    "abilities":[
+      {"id":"holy_strike","name":"Holy Strike","icon":"⚔️","mp":0,"type":"physical","description":"Divine sword strike — 1.7x ATK damage, holy element","effect":{"dmgMultiplier":1.7,"element":"holy"}},
+      {"id":"divine_shield","name":"Divine Shield","icon":"🛡️","mp":7,"type":"buff","description":"Summon god's protection — DEF +45%, reduce damage taken by 20%, 3 turns","effect":{"stat":"def","multiplier":1.45,"damageReduction":0.2,"duration":3}},
+      {"id":"grail_blessing","name":"Grail Blessing","icon":"✨","mp":9,"type":"heal","description":"Divine blessing of the grail — restore 50-70 HP to all allies, cleanse debuffs","effect":{"healBase":50,"healRandom":20,"aoe":true,"cleanse":true}},
+      {"id":"lionheart_ascendant","name":"Lionheart Ascendant","icon":"👑","mp":14,"type":"magic_damage","isUltimate":true,"description":"Ascend as king eternal — 4.2x ATK damage, scales with ATK+DEF, blessing all allies","effect":{"dmgMultiplier":4.2,"element":"holy","statScale":"atk","partyBuff":true}}
+    ],
+    "growthPerLevel":{"hp":14,"mp":5,"atk":5,"def":6,"spd":1,"mag":3}
   }
 ];
 

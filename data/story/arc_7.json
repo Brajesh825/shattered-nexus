@@ -1,0 +1,120 @@
+{
+  "id": "arc_7",
+  "number": 7,
+  "name": "The Inner Sanctum",
+  "subtitle": "Deeper into darkness, closer to truth",
+  "theme": "Sacrifice / Revelation / The breaking point",
+  "location": "Valdris's Inner Sanctum and Core Chamber",
+  "shard": null,
+  "enemies_pool": ["bone_dragon", "necromancer", "fallen_angel", "dark_phoenix", "shadow_wraith"],
+  "boss_enemy": "shadow_titan",
+  "chapters": [
+    {
+      "id": "arc7_ch1",
+      "title": "The Inner Path",
+      "type": "cutscene",
+      "background": "sanctum_corridor",
+      "cast": ["Rydia", "Lenneth", "Leon", "Kain"],
+      "scenes": [
+        {
+          "narration": "The deeper passages of the fortress are not halls — they are arteries. The stone pulses with something that might be blood, might be power. The air tastes of fear and ancient memory."
+        },
+        {
+          "narration": "Lenneth walks ahead, her sword blazing with divine light. The darkness recoils from her presence.",
+          "dialogue": [
+            { "speaker": "Lenneth", "emotion": "commanding", "text": "I have walked between worlds for millennia. I have never felt a darkness like this. It is not evil — it is grief. Infinite, absolute, all-consuming grief." },
+            { "speaker": "Leon", "emotion": "somber", "text": "A being that became everything it feared. That is a tragedy I understand all too well." },
+            { "speaker": "Rydia", "emotion": "peaceful", "text": "The eidolons weep. They sense what he was — and what he refused to be." },
+            { "speaker": "Kain", "emotion": "resolute", "text": "Then we show him another path. We show him that what he fears can be faced." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "arc7_ch2",
+      "title": "The Echoing Halls",
+      "type": "battle",
+      "enemy_id": "dark_phoenix",
+      "background": "sanctum_chamber",
+      "cast": ["Hutao", "Nilou", "Rydia", "Lenneth"],
+      "pre_dialogue": [
+        { "speaker": "narrator", "emotion": "eerie", "text": "From the shadows, creatures of pure corruption emerge — things that were once guardians, now twisted beyond recognition." },
+        { "speaker": "Nilou", "emotion": "determined", "text": "They were sentient once. Let us free them from this torment." }
+      ],
+      "post_dialogue": [
+        { "speaker": "Lenneth", "emotion": "solemn", "text": "They are at peace now. Their torment ends." },
+        { "speaker": "Rydia", "emotion": "mourning", "text": "The eidolons sense many such souls trapped in this darkness. We must reach the core." }
+      ]
+    },
+    {
+      "id": "arc7_ch3",
+      "title": "The Truth Revealed",
+      "type": "cutscene",
+      "background": "core_chamber",
+      "cast": ["Ayaka", "Xiao", "Hutao", "Nilou"],
+      "scenes": [
+        {
+          "narration": "In the very heart of the fortress, they find something unexpected: a scholar's chamber. Ancient texts scattered across tables. Constellations mapped on walls. And in the center — a mirror.",
+          "dialogue": [
+            { "speaker": "Ayaka", "emotion": "understanding", "text": "He built this place as a sanctuary. Before." },
+            { "speaker": "Hutao", "emotion": "sad", "text": "The Oracle was right. He was a scholar once. Curious about the stars, the cosmos, the nature of death itself." },
+            { "speaker": "Xiao", "emotion": "grave", "text": "And when he discovered he could not escape death — he tried to escape life instead." },
+            { "speaker": "Nilou", "emotion": "compassionate", "text": "He thought immortality was the answer. Instead, he found it was the question he could never answer." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "arc7_ch4",
+      "title": "The Shadow's Hunger",
+      "type": "cutscene",
+      "background": "core_chamber",
+      "cast": ["Rydia", "Kain", "Leon", "Lenneth"],
+      "scenes": [
+        {
+          "narration": "A voice echoes through the chamber — not Valdris, but something else. Something that speaks through him."
+        },
+        {
+          "dialogue": [
+            { "speaker": "narrator", "emotion": "ancient", "text": "Valdris: You have come far. Broken through gates and destroyed guardians. But you do not understand what you face." },
+            { "speaker": "Leon", "emotion": "defiant", "text": "We understand enough. A man who became afraid of death, who consumed everything to escape it." },
+            { "speaker": "narrator", "emotion": "cold", "text": "Valdris: I consumed worlds. I am vast. I am eternal. And I will devour this one as well — slowly, so that suffering is infinite." },
+            { "speaker": "Kain", "emotion": "determined", "text": "Then we stop you. Not for ourselves — for everyone you have already consumed." }
+          ]
+        }
+      ]
+    }
+  ],
+  "boss_chapter": {
+    "title": "The Shadow Titan",
+    "background": "core_chamber",
+    "cast": ["Ayaka", "Hutao", "Nilou", "Xiao"],
+    "pre_dialogue": [
+      { "speaker": "narrator", "emotion": "intense", "text": "The darkness coalesces into something immense — a titan of shadow and malice, wearing Valdris's form like armor." },
+      { "speaker": "Ayaka", "emotion": "focused", "text": "This is not him. This is what he became when he refused to let go." },
+      { "speaker": "Xiao", "emotion": "resolute", "text": "Then we break it. And we free what remains." }
+    ],
+    "post_dialogue": [
+      { "speaker": "narrator", "emotion": "solemn", "text": "The titan staggers, cracks appearing in its form. But it does not fall. It simply withdraws, pulling back deeper into the fortress." },
+      { "speaker": "Hutao", "emotion": "understanding", "text": "It is weakening. We wounded something that thought itself invulnerable." },
+      { "speaker": "Nilou", "emotion": "hopeful", "text": "We are close. One more push — one final confrontation." },
+      { "speaker": "Ayaka", "emotion": "determined", "text": "Then we finish this. All of us. Together." }
+    ]
+  },
+  "recruitment_chapter": {
+    "title": "The Immortal King's Choice",
+    "background": "core_chamber",
+    "cast": ["Ayaka", "Hutao", "Nilou", "Xiao", "Leon", "Lenneth"],
+    "scenes": [
+      {
+        "narration": "As the Shadow Titan withdraws, a figure steps forward from the gathered light — a king in golden armor, his eyes holding the weight of two hundred years.",
+        "dialogue": [
+          { "speaker": "Leon", "emotion": "solemn", "text": "I have ruled for ages. Commanded armies. Built monuments meant to last forever. I chose immortality, thinking it was strength." },
+          { "speaker": "Leon", "emotion": "resolved", "text": "I see now that true immortality is purpose. And my purpose — here, now — is to stand with you, six warriors against the darkness." },
+          { "speaker": "Ayaka", "emotion": "warm", "text": "You were a king. Now you are something greater — you are free." },
+          { "speaker": "Lenneth", "emotion": "approving", "text": "Seven now. The number of completion. The number of final judgment." }
+        ]
+      }
+    ]
+  }
+}
