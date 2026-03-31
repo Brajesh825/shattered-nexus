@@ -165,8 +165,11 @@ const Story = {
       const firstChar = (G.chars || []).find(c => c.id === defaultChars[0]);
       if (firstChar) G.selectedClass = firstChar.classId || 'swordsman';
 
-      // Start the story directly (this will call Story.onHeroReady())
-      startBattle();
+      // Build the party and set up G.hero
+      buildParty();
+
+      // Call onHeroReady directly to show arc intro
+      this.onHeroReady();
     });
   },
 
