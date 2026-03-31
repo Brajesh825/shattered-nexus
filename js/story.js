@@ -146,6 +146,7 @@ const Story = {
       this.arcIdx = 0;
       this.chapIdx = -1;
       this.phase = null;
+      G.mode = 'story';
       goCharSelect();
     });
   },
