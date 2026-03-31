@@ -544,6 +544,10 @@ function goCharSelect() {
     G.unlockedChars = G.chars.map(c => c.id);
   }
 
+  // Hide story screen if visible
+  const storyScreen = UI.el('story-screen');
+  if (storyScreen) storyScreen.style.display = 'none';
+
   UI.show('char-screen');
   _renderCharGrid();
   UI.el('char-detail').innerHTML = 'Click characters to add them to your party.';
@@ -555,13 +559,16 @@ function goArcCharSelect() {
   G.selectedChar  = null;
   G.mode = 'story';
 
+  // Hide story screen if visible
+  const storyScreen = UI.el('story-screen');
+  if (storyScreen) storyScreen.style.display = 'none';
+
   UI.show('char-screen');
   _renderCharGrid();
   UI.el('char-detail').innerHTML = 'Select 4 characters for this arc. They will be your party throughout.';
 
   // Change confirm button text for arc selection
   const btn = UI.el('char-confirm');
-  const originalText = btn.textContent;
   btn.textContent = 'LOCK IN PARTY';
   btn.onclick = () => {
     // Proceed to story after selection
