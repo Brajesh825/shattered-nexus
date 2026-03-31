@@ -243,6 +243,7 @@ const Story = {
      CONTINUE BUTTON (called from HTML onclick)
   ════════════════════════════════════════════════════════════════════════ */
   advance() {
+    console.log('[Story.advance] Called, phase=', this.phase);
     // Skip typewriter first if still running
     if (!this._tw.done) { this._skipTw(); return; }
 
