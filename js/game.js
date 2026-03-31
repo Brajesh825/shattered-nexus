@@ -134,9 +134,7 @@ const UI = {
       s.classList.remove('active');
       s.style.display = ''; // Clear inline display style
     });
-    const el = this.el(id);
-    el.classList.add('active');
-    el.style.display = ''; // Clear inline display style to let CSS take over
+    this.el(id).classList.add('active');
     const steps = { 'char-screen':1, 'battle-screen':2, 'result-screen':2 };
     const cur = steps[id] || 0;
     document.querySelectorAll('.step').forEach(s => {
@@ -566,10 +564,7 @@ function goArcCharSelect() {
     G.selectedChar  = null;
     G.mode = 'story';
 
-    // Hide story screen if visible
-    const storyScreen = UI.el('story-screen');
-    if (storyScreen) storyScreen.style.display = 'none';
-
+    // Show char-screen (this will hide all other screens via CSS)
     UI.show('char-screen');
     _renderCharGrid();
     console.log('[goArcCharSelect] Grid rendered, available chars:', G.chars.filter(ch => G.unlockedChars.includes(ch.id)).map(c => c.name));
