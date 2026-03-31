@@ -130,8 +130,13 @@ const UI = {
   el: id => document.getElementById(id),
 
   show(id) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    this.el(id).classList.add('active');
+    document.querySelectorAll('.screen').forEach(s => {
+      s.classList.remove('active');
+      s.style.display = ''; // Clear inline display style
+    });
+    const el = this.el(id);
+    el.classList.add('active');
+    el.style.display = ''; // Clear inline display style to let CSS take over
     const steps = { 'char-screen':1, 'battle-screen':2, 'result-screen':2 };
     const cur = steps[id] || 0;
     document.querySelectorAll('.step').forEach(s => {
