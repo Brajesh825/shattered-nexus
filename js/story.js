@@ -273,8 +273,13 @@ const Story = {
     }
 
     if (this.phase === 'arc_intro') {
-      // Show character selection for this arc (for arcs 2+)
-      goArcCharSelect();
+      // For Arc 1, go directly to first chapter (no character selection)
+      // For Arc 2+, show character selection
+      if (this.arcIdx === 0) {
+        this._nextChapter();
+      } else {
+        goArcCharSelect();
+      }
       return;
     }
 
@@ -337,17 +342,23 @@ const Story = {
   get arc() { return this.data.arcs[this.arcIdx]; },
 
   _nextChapter() {
+    console.log('[Story._nextChapter] Called, current arcIdx:', this.arcIdx, 'chapIdx:', this.chapIdx);
     this.chapIdx++;
     const arc = this.arc;
+    console.log('[Story._nextChapter] After increment, chapIdx:', this.chapIdx, 'arc.chapters.length:', arc.chapters.length);
     this._doSave();
     if (this.chapIdx < arc.chapters.length) {
+      console.log('[Story._nextChapter] Loading chapter:', this.chapIdx);
       this._loadChapter(arc.chapters[this.chapIdx]);
     } else {
+      console.log('[Story._nextChapter] Showing boss chapter');
       this._showBossChapter();
     }
+    console.log('[Story._nextChapter] Finished');
   },
 
   _loadChapter(chap) {
+    console.log('[Story._loadChapter] Called with chapter:', chap.id, 'type:', chap.type);
     this.currentChap = chap;
     this.sceneIdx = 0;
     this.lineIdx = 0;
@@ -367,28 +378,39 @@ const Story = {
 
     this._setHeader(`Arc ${this.arc.number}: ${this.arc.name}`, chap.title || '');
     this._setBg(chap.background);
+    console.log('[Story._loadChapter] Processing chapter type:', chap.type);
 
     if (chap.type === 'cutscene') {
+      console.log('[Story._loadChapter] Building scene lines...');
       this.phase = 'cutscene';
       this._buildSceneLines(chap.scenes);
+      console.log('[Story._loadChapter] Setting onLinesDone callback...');
       this._onLinesDone = () => this._nextChapter();
+      console.log('[Story._loadChapter] Rendering active line...');
       this._renderActiveLine();
+      console.log('[Story._loadChapter] Showing dialogue section...');
       this._showSection('s-dialogue');
+      console.log('[Story._loadChapter] Cutscene loaded');
     } else if (chap.type === 'battle') {
       this.phase = 'pre_battle';
       this._showLines(chap.pre_dialogue || [], () => this._launchStoryBattle(chap.enemy_id));
+      console.log('[Story._loadChapter] Battle loaded');
     } else if (chap.type === 'event') {
       this.phase = 'event';
       this._renderEvent(chap);
+      console.log('[Story._loadChapter] Event loaded');
     } else if (chap.type === 'boss_battle') {
       this.phase = 'pre_battle';
       this._showLines(chap.pre_dialogue || [], () => this._launchStoryBattle(chap.enemy_id));
+      console.log('[Story._loadChapter] Boss battle loaded');
     } else if (chap.type === 'explore') {
       this.phase = 'exploring';
       this._showLines(chap.pre_dialogue || [], () => this._launchExplore(chap));
+      console.log('[Story._loadChapter] Explore loaded, returning');
       return; // _launchExplore will switch screens
     }
     UI.show('story-screen');
+    console.log('[Story._loadChapter] Finished');
   },
 
   /* ── Flatten a scenes array into a single lines array ── */
@@ -434,10 +456,13 @@ const Story = {
   },
 
   _renderActiveLine() {
+    console.log('[_renderActiveLine] lineIdx:', this.lineIdx, 'total lines:', this._activeLines.length);
     const l = this._activeLines[this.lineIdx];
-    if (!l) return;
+    if (!l) { console.log('[_renderActiveLine] No line found, returning'); return; }
+    console.log('[_renderActiveLine] Rendering line:', l.text.substring(0, 50));
     this._renderLine(l.speaker || null, l.text || '');
     this._setContinue('▶ CONTINUE');
+    console.log('[_renderActiveLine] Finished');
   },
 
   /* ════════════════════════════════════════════════════════════════════════
@@ -883,18 +908,22 @@ const Story = {
   },
 
   _showSection(id) {
+    console.log('[_showSection] Showing section:', id);
     // Hide all main sections first
     ['s-arc-intro', 's-dialogue', 's-event', 's-arc-end', 's-epilogue'].forEach(sid => {
       const e = this.el(sid);
       if (e) e.style.display = sid === id ? '' : 'none';
     });
+    console.log('[_showSection] Finished');
   },
 
   _setContinue(label) {
+    console.log('[_setContinue] Setting continue button to:', label);
     const btn = this.el('s-continue');
-    if (!btn) return;
+    if (!btn) { console.log('[_setContinue] Button not found'); return; }
     btn.textContent = label;
     btn.style.display = 'inline-block';
+    console.log('[_setContinue] Finished, button display:', btn.style.display);
   },
 
   _hideContinue() {

@@ -556,6 +556,7 @@ function goCharSelect() {
 
 function goArcCharSelect() {
   try {
+    console.log('[goArcCharSelect] Starting arc character selection');
     G.selectedChars = [];
     G.selectedChar  = null;
     G.mode = 'story';
@@ -566,6 +567,7 @@ function goArcCharSelect() {
 
     UI.show('char-screen');
     _renderCharGrid();
+    console.log('[goArcCharSelect] Grid rendered, available chars:', G.chars.filter(ch => G.unlockedChars.includes(ch.id)).map(c => c.name));
 
     const detailEl = UI.el('char-detail');
     if (detailEl) {
@@ -575,13 +577,29 @@ function goArcCharSelect() {
     // Change confirm button text for arc selection
     const btn = UI.el('char-confirm');
     if (btn) {
+      console.log('[goArcCharSelect] Setting up button handler');
       btn.textContent = 'LOCK IN PARTY';
-      btn.onclick = () => {
+
+      // Remove old onclick and add new event listener
+      btn.onclick = null;
+      btn.removeEventListener('click', window._arcCharSelectHandler);
+      window._arcCharSelectHandler = () => {
+        console.log('[goArcCharSelect] Button clicked, selectedChars:', G.selectedChars);
+        if (G.selectedChars.length < 4) {
+          console.log('[goArcCharSelect] Not enough characters selected');
+          return;
+        }
+        // Build party from selected characters
+        buildParty();
+        console.log('[goArcCharSelect] Party built:', G.party.map(m => m.name));
         // Proceed to story after selection
         if (typeof Story !== 'undefined' && Story.active) {
+          console.log('[goArcCharSelect] Calling Story._nextChapter()');
           Story._nextChapter();
+          console.log('[goArcCharSelect] Story._nextChapter() returned');
         }
       };
+      btn.addEventListener('click', window._arcCharSelectHandler);
       _updateCharConfirmBtn();
     }
   } catch (e) {
