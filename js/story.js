@@ -252,7 +252,10 @@ const Story = {
 
     if (this.phase === 'arc_intro') {
       // Show character selection for this arc
-      goArcCharSelect(); return;
+      console.log('[Story.advance] Calling goArcCharSelect from arc_intro');
+      goArcCharSelect();
+      console.log('[Story.advance] goArcCharSelect returned');
+      return;
     }
 
     if (this.phase === 'arc_end') {

@@ -555,28 +555,38 @@ function goCharSelect() {
 }
 
 function goArcCharSelect() {
-  G.selectedChars = [];
-  G.selectedChar  = null;
-  G.mode = 'story';
+  try {
+    G.selectedChars = [];
+    G.selectedChar  = null;
+    G.mode = 'story';
 
-  // Hide story screen if visible
-  const storyScreen = UI.el('story-screen');
-  if (storyScreen) storyScreen.style.display = 'none';
+    // Hide story screen if visible
+    const storyScreen = UI.el('story-screen');
+    if (storyScreen) storyScreen.style.display = 'none';
 
-  UI.show('char-screen');
-  _renderCharGrid();
-  UI.el('char-detail').innerHTML = 'Select 4 characters for this arc. They will be your party throughout.';
+    UI.show('char-screen');
+    _renderCharGrid();
 
-  // Change confirm button text for arc selection
-  const btn = UI.el('char-confirm');
-  btn.textContent = 'LOCK IN PARTY';
-  btn.onclick = () => {
-    // Proceed to story after selection
-    if (typeof Story !== 'undefined' && Story.active) {
-      Story._nextChapter();
+    const detailEl = UI.el('char-detail');
+    if (detailEl) {
+      detailEl.innerHTML = 'Select 4 characters for this arc. They will be your party throughout.';
     }
-  };
-  _updateCharConfirmBtn();
+
+    // Change confirm button text for arc selection
+    const btn = UI.el('char-confirm');
+    if (btn) {
+      btn.textContent = 'LOCK IN PARTY';
+      btn.onclick = () => {
+        // Proceed to story after selection
+        if (typeof Story !== 'undefined' && Story.active) {
+          Story._nextChapter();
+        }
+      };
+      _updateCharConfirmBtn();
+    }
+  } catch (e) {
+    console.error('[goArcCharSelect] Error:', e);
+  }
 }
 
 function _renderCharGrid() {
