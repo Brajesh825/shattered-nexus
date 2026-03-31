@@ -1,248 +1,258 @@
 const SVGAnimations = {
-  // AYAKA - Cryo Bladestorm
-  frostblossom: { duration: 1900, create: () => {
+  // Frostblossom
+  'frostblossom': { duration: 1900, create: () => {
     const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    s.setAttribute('viewBox', '0 0 200 200'); s.setAttribute('width', '200'); s.setAttribute('height', '200');
+    s.setAttribute('viewBox', '0 0 200 200');
+    s.setAttribute('width', '200');
+    s.setAttribute('height', '200');
     s.classList.add('battle-svg-animation');
     s.innerHTML = `<defs><style>
-      @keyframes blade{0%{transform:rotate(0deg)scale(0.3);opacity:0}50%{opacity:1}100%{transform:rotate(720deg)scale(1.5);opacity:0}}
-      @keyframes crystal{0%{opacity:0;transform:translate(0,-20px)}100%{opacity:0;transform:translate(0,40px)}}
-    </style></defs>
-    <g style="animation:blade 1900ms ease-out forwards"><polygon points="100,60 120,100 100,140 80,100" fill="#4ecfff"/><line x1="100" y1="50" x2="100" y2="150" stroke="#7dd3fc" stroke-width="2"/></g>
-    <circle cx="100" cy="100" r="6" fill="#7dd3fc" style="animation:crystal 1900ms ease-out forwards 300ms"/>
-    <circle cx="70" cy="100" r="6" fill="#7dd3fc" style="animation:crystal 1900ms ease-out forwards 500ms"/>
-    <circle cx="130" cy="100" r="6" fill="#7dd3fc" style="animation:crystal 1900ms ease-out forwards 700ms"/>`;
+      @keyframes fb-glow-bloom { 0% { r: 4; opacity: 0; fill-opacity: 0; } 30% { r: 18; opacity: 1; fill-opacity: 0.25; } 60% { r: 32; opacity: 0.6; fill-opacity: 0.1; } 100% { r: 55; opacity: 0; fill-opacity: 0; } }
+      @keyframes fb-slow-ring { 0% { r: 6; stroke-width: 3; opacity: 0.9; stroke-dashoffset: 0; } 100% { r: 55; stroke-width: 0.5; opacity: 0; stroke-dashoffset: 80; } }
+    </style></defs><defs><filter id="fb-glow"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter><linearGradient id="fb-blade-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#b0f0ff" stop-opacity="0"/><stop offset="40%" stop-color="#4ecfff"/><stop offset="100%" stop-color="#ffffff"/></linearGradient></defs><!-- glow bloom at center --><circle cx="100" cy="108" r="4" fill="#4ecfff" filter="url(#fb-glow)" style="animation: fb-glow-bloom 1900ms ease-out forwards 200ms; animation-fill-mode: both;"/><!-- slash 1: top-left to bottom-right --><line x1="45" y1="55" x2="155" y2="165" stroke="url(#fb-blade-grad)" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="200" stroke-dashoffset="200" filter="url(#fb-glow)" style="animation: fb-slash1 1900ms cubic-bezier(0.1,0.6,0.3,1) forwards;"/><!-- slash 2: top-right to bottom-left, staggered --><line x1="155" y1="55" x2="45" y2="165" stroke="url(#fb-blade-grad)" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="200" stroke-dashoffset="200" filter="url(#fb-glow)" style="animation: fb-slash2 1900ms cubic-bezier(0.1,0.6,0.3,1) forwards 150ms;"/><!-- slow indicator dashed ring --><circle cx="100" cy="110" r="6" fill="none" stroke="#7dd3fc" stroke-width="1.5" stroke-dasharray="40 8" style="animation: fb-slow-ring 1900ms ease-out forwards 500ms; animation-fill-mode: both;"/>`;
     return s;
   }},
 
-  glacial_waltz: { duration: 2100, create: () => {
+  // Glacial Waltz
+  'glacial_waltz': { duration: 2100, create: () => {
     const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    s.setAttribute('viewBox', '0 0 200 200'); s.setAttribute('width', '200'); s.setAttribute('height', '200');
+    s.setAttribute('viewBox', '0 0 200 200');
+    s.setAttribute('width', '200');
+    s.setAttribute('height', '200');
     s.classList.add('battle-svg-animation');
     s.innerHTML = `<defs><style>
-      @keyframes orbit{0%{transform:translate(100px,100px)rotate(0deg)}100%{transform:translate(100px,100px)rotate(360deg)}}
-      @keyframes wave{0%{r:5px;opacity:1}100%{r:60px;opacity:0}}
-    </style></defs>
-    <circle cx="100" cy="100" r="5" fill="none" stroke="#4ecfff" stroke-width="1.5" style="animation:wave 2100ms ease-out forwards"/>
-    <circle cx="100" cy="100" r="5" fill="none" stroke="#4ecfff" stroke-width="1.5" style="animation:wave 2100ms ease-out forwards 500ms"/>
-    <g style="animation:orbit 2100ms linear forwards">
-      <rect x="90" y="30" width="20" height="8" fill="#7dd3fc" rx="4"/>
-      <rect x="160" y="90" width="8" height="20" fill="#7dd3fc" rx="4"/>
-      <rect x="90" y="160" width="20" height="8" fill="#7dd3fc" rx="4"/>
-      <rect x="30" y="90" width="8" height="20" fill="#7dd3fc" rx="4"/>
-    </g>`;
+      @keyframes gw-wave-ring { 0% { r: 8; opacity: 1; stroke-width: 3; } 50% { r: 45; opacity: 0.6; } 100% { r: 90; opacity: 0; stroke-width: 0.3; } }
+      @keyframes gw-spin-blade { 0% { transform: rotate(0deg); opacity: 0; } 8% { opacity: 1; } 100% { transform: rotate(720deg); opacity: 0; } }
+      @keyframes gw-spd-arrow { 0% { transform: translateY(40px); opacity: 0; } 30% { opacity: 1; } 70% { transform: translateY(-50px); opacity: 1; } 100% { transform: translateY(-80px); opacity: 0; } }
+    </style></defs><defs><filter id="gw-glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><!-- outer AOE wave ring --><circle cx="100" cy="105" r="8" fill="none" stroke="#4ecfff" stroke-width="3" style="animation: gw-wave-ring 2100ms ease-out forwards 200ms;"/><circle cx="100" cy="105" r="8" fill="none" stroke="#7dd3fc" stroke-width="1.5" style="animation: gw-wave-ring 2100ms ease-out forwards 500ms;"/><!-- spinning core --><g style="transform-origin:100px 105px; animation: gw-spin-blade 2100ms ease-out forwards;"><!-- 6 ice blades --><ellipse cx="100" cy="65" rx="5" ry="14" fill="#4ecfff" opacity="0.9" filter="url(#gw-glow)"/><ellipse cx="100" cy="65" rx="5" ry="14" fill="#4ecfff" opacity="0.9" transform="rotate(60 100 105)" filter="url(#gw-glow)"/><ellipse cx="100" cy="65" rx="5" ry="14" fill="#7dd3fc" opacity="0.8" transform="rotate(120 100 105)"/><ellipse cx="100" cy="65" rx="5" ry="14" fill="#4ecfff" opacity="0.9" transform="rotate(180 100 105)"/><ellipse cx="100" cy="65" rx="5" ry="14" fill="#7dd3fc" opacity="0.8" transform="rotate(240 100 105)"/><ellipse cx="100" cy="65" rx="5" ry="14" fill="#4ecfff" opacity="0.9" transform="rotate(300 100 105)"/></g><!-- speed arrow indicator --><g style="animation: gw-spd-arrow 2100ms ease-out forwards 800ms; transform-origin: 160px 150px;"><line x1="155" y1="155" x2="155" y2="130" stroke="#80ffcc" stroke-width="2"/><polygon points="155,125 151,133 159,133" fill="#80ffcc"/><text x="163" y="145" fill="#80ffcc" font-size="8" font-family="monospace">SPD+</text></g>`;
     return s;
   }},
 
-  permafrost: { duration: 1800, create: () => {
+  // Permafrost
+  'permafrost': { duration: 2100, create: () => {
     const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    s.setAttribute('viewBox', '0 0 200 200'); s.setAttribute('width', '200'); s.setAttribute('height', '200');
+    s.setAttribute('viewBox', '0 0 200 200');
+    s.setAttribute('width', '200');
+    s.setAttribute('height', '200');
     s.classList.add('battle-svg-animation');
     s.innerHTML = `<defs><style>
-      @keyframes grow{0%{r:10px;opacity:0.8}100%{r:70px;opacity:0}}
-      @keyframes crack{0%{opacity:0;transform:scaleY(0)}100%{opacity:0;transform:scaleY(1)}}
-    </style></defs>
-    <circle cx="100" cy="100" r="10" fill="none" stroke="#4ecfff" stroke-width="2.5" style="animation:grow 1800ms ease-out forwards"/>
-    <line x1="100" y1="30" x2="100" y2="170" stroke="#7dd3fc" stroke-width="1.5" style="animation:crack 1800ms ease-out forwards 400ms;transform-origin:100px 100px"/>
-    <line x1="30" y1="100" x2="170" y2="100" stroke="#7dd3fc" stroke-width="1.5" style="animation:crack 1800ms ease-out forwards 600ms;transform-origin:100px 100px"/>`;
+      @keyframes pf-cage-ring { 0% { stroke-dashoffset: 400; opacity: 0; } 20% { opacity: 1; } 60% { stroke-dashoffset: 0; opacity: 1; } 100% { opacity: 0; } }
+      @keyframes pf-spike-grow { 0% { transform: scaleY(0) translateY(50px); opacity: 0; transform-origin: bottom; } 40% { transform: scaleY(1) translateY(0); opacity: 1; transform-origin: bottom; } 75% { opacity: 1; } 100% { opacity: 0; transform: scaleY(1.1) translateY(0); transform-origin: bottom; } }
+      @keyframes pf-def-down { 0% { transform: translateY(0); opacity: 0; } 20% { opacity: 1; } 100% { transform: translateY(30px); opacity: 0; } }
+      @keyframes pf-snow-fall { 0% { transform: translate(0,0); opacity: 0.8; } 100% { transform: translate(var(--sx), 60px); opacity: 0; } }
+    </style></defs><defs><filter id="pf-glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><!-- cage ring --><circle cx="100" cy="110" r="52" fill="none" stroke="#4ecfff" stroke-width="1.5" stroke-dasharray="400" stroke-dashoffset="400" style="animation: pf-cage-ring 2100ms ease-out forwards 200ms;"/><!-- inner lock ring --><circle cx="100" cy="110" r="30" fill="none" stroke="#7dd3fc" stroke-width="1" stroke-dasharray="200" stroke-dashoffset="200" style="animation: pf-cage-ring 2100ms ease-out forwards 500ms;"/><!-- ice spikes rising from bottom --><polygon points="100,160 94,160 97,100" fill="#b0f0ff" fill-opacity="0.9" filter="url(#pf-glow)" style="animation: pf-spike-grow 2100ms cubic-bezier(0.1,0.8,0.2,1) forwards 100ms;"/><polygon points="80,165 74,165 77,115" fill="#4ecfff" fill-opacity="0.8" style="animation: pf-spike-grow 2100ms ease-out forwards 200ms;"/><polygon points="120,165 114,165 117,115" fill="#4ecfff" fill-opacity="0.8" style="animation: pf-spike-grow 2100ms ease-out forwards 250ms;"/><polygon points="62,168 56,168 59,125" fill="#7dd3fc" fill-opacity="0.6" style="animation: pf-spike-grow 2100ms ease-out forwards 350ms;"/><polygon points="138,168 132,168 135,125" fill="#7dd3fc" fill-opacity="0.6" style="animation: pf-spike-grow 2100ms ease-out forwards 380ms;"/><!-- DEF down indicator --><g style="animation: pf-def-down 2100ms ease-out forwards 700ms;"><line x1="100" y1="60" x2="100" y2="75" stroke="#ff6666" stroke-width="1.5"/><polygon points="100,80 96,72 104,72" fill="#ff6666"/><text x="106" y="70" fill="#ff6666" font-size="8" font-family="monospace">DEF-</text></g><!-- snowflakes --><circle cx="100" cy="60" r="2.5" fill="#b0f0ff" style="--sx:-28px; animation: pf-snow-fall 2100ms ease-in forwards 300ms;"/><circle cx="100" cy="50" r="2" fill="#7dd3fc" style="--sx:20px; animation: pf-snow-fall 2100ms ease-in forwards 500ms;"/><circle cx="100" cy="55" r="1.5" fill="#b0f0ff" style="--sx:-10px; animation: pf-snow-fall 2100ms ease-in forwards 700ms;"/><circle cx="100" cy="45" r="2" fill="#4ecfff" style="--sx:35px; animation: pf-snow-fall 2100ms ease-in forwards 900ms;"/>`;
     return s;
   }},
 
-  cryoclasm: { duration: 2900, create: () => {
+  // Cryoclasm
+  'cryoclasm': { duration: 2400, create: () => {
     const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    s.setAttribute('viewBox', '0 0 200 200'); s.setAttribute('width', '200'); s.setAttribute('height', '200');
+    s.setAttribute('viewBox', '0 0 200 200');
+    s.setAttribute('width', '200');
+    s.setAttribute('height', '200');
     s.classList.add('battle-svg-animation');
     s.innerHTML = `<defs><style>
-      @keyframes spin{0%{transform:translate(100px,100px)rotate(0deg)scale(0.4)}50%{transform:translate(100px,100px)rotate(360deg)scale(1)}100%{transform:translate(100px,100px)rotate(720deg)scale(1.8);opacity:0}}
-      @keyframes burst{0%{r:20px;opacity:1}100%{r:100px;opacity:0}}
-    </style></defs>
-    <circle cx="100" cy="100" r="30" fill="none" stroke="#4ecfff" stroke-width="3" style="animation:burst 2900ms ease-out forwards 600ms"/>
-    <g style="animation:spin 2900ms ease-out forwards"><circle cx="100" cy="100" r="25" fill="none" stroke="#7dd3fc" stroke-width="2"/><line x1="75" y1="75" x2="125" y2="125" stroke="#4ecfff" stroke-width="2"/><line x1="125" y1="75" x2="75" y2="125" stroke="#4ecfff" stroke-width="2"/></g>`;
+      @keyframes cc-buildup { 0% { r: 2; fill-opacity: 0.9; opacity: 1; } 40% { r: 22; fill-opacity: 0.3; } 55% { r: 18; fill-opacity: 0.7; } 65% { r: 90; fill-opacity: 0; opacity: 0; } 100% { r: 90; opacity: 0; } }
+      @keyframes cc-shockwave { 0% { r: 5; stroke-width: 8; opacity: 1; } 100% { r: 95; stroke-width: 0.3; opacity: 0; } }
+      @keyframes cc-spark { 0% { transform: translate(0,0) scale(1); opacity: 1; } 100% { transform: translate(var(--cx), var(--cy)) scale(0); opacity: 0; } }
+      @keyframes cc-frozen-flash { 0%, 60% { opacity: 0; } 65% { opacity: 0.7; } 80% { opacity: 0.3; } 100% { opacity: 0; } }
+    </style></defs><defs><radialGradient id="cc-blast-grad" cx="50%" cy="55%" r="50%"><stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/><stop offset="40%" stop-color="#4ecfff" stop-opacity="0.5"/><stop offset="100%" stop-color="#1a5a8a" stop-opacity="0"/></radialGradient><filter id="cc-glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><!-- buildup core --><circle cx="100" cy="108" r="2" fill="url(#cc-blast-grad)" style="animation: cc-buildup 2400ms ease-in-out forwards;"/><!-- shockwave rings --><circle cx="100" cy="108" r="5" fill="none" stroke="#ffffff" stroke-width="8" style="animation: cc-shockwave 2400ms ease-out forwards 700ms;"/><circle cx="100" cy="108" r="5" fill="none" stroke="#4ecfff" stroke-width="5" style="animation: cc-shockwave 2400ms ease-out forwards 900ms;"/><circle cx="100" cy="108" r="5" fill="none" stroke="#7dd3fc" stroke-width="2" style="animation: cc-shockwave 2400ms ease-out forwards 1100ms;"/><!-- ice sparks flying out --><circle cx="100" cy="108" r="3.5" fill="#b0f0ff" filter="url(#cc-glow)" style="--cx:-55px; --cy:-55px; animation: cc-spark 2400ms ease-out forwards 750ms;"/><circle cx="100" cy="108" r="3" fill="#4ecfff" style="--cx:60px; --cy:-45px; animation: cc-spark 2400ms ease-out forwards 800ms;"/><circle cx="100" cy="108" r="2.5" fill="#b0f0ff" style="--cx:-45px; --cy:55px; animation: cc-spark 2400ms ease-out forwards 820ms;"/><circle cx="100" cy="108" r="3" fill="#7dd3fc" style="--cx:50px; --cy:50px; animation: cc-spark 2400ms ease-out forwards 840ms;"/><circle cx="100" cy="108" r="2" fill="#b0f0ff" style="--cx:-65px; --cy:5px; animation: cc-spark 2400ms ease-out forwards 860ms;"/><circle cx="100" cy="108" r="2" fill="#4ecfff" style="--cx:70px; --cy:5px; animation: cc-spark 2400ms ease-out forwards 880ms;"/><!-- screen flash --><rect x="0" y="0" width="200" height="200" fill="#b0f0ff" style="animation: cc-frozen-flash 2400ms ease-out forwards;"/>`;
     return s;
   }},
 
-  // HU TAO - Spirit Incinerator
-  spirit_flame: { duration: 1900, create: () => {
+  // Spirit Flame
+  'spirit_flame': { duration: 1900, create: () => {
     const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    s.setAttribute('viewBox', '0 0 200 200'); s.setAttribute('width', '200'); s.setAttribute('height', '200');
+    s.setAttribute('viewBox', '0 0 200 200');
+    s.setAttribute('width', '200');
+    s.setAttribute('height', '200');
     s.classList.add('battle-svg-animation');
     s.innerHTML = `<defs><style>
-      @keyframes flame1{0%{opacity:0;transform:translateY(40px)}100%{opacity:0;transform:translateY(-80px)}}
-      @keyframes flame2{0%{opacity:0;transform:translateY(40px)rotateX(0deg)}100%{opacity:0;transform:translateY(-80px)rotateX(20deg)}}
-    </style></defs>
-    <polygon points="100,140 80,100 90,80 100,70 110,80 120,100" fill="#ff7700" style="animation:flame1 1900ms ease-out forwards"/>
-    <polygon points="75,120 65,90 72,75 75,65 78,75 85,90" fill="#ff9933" style="animation:flame2 1900ms ease-out forwards 150ms"/>
-    <polygon points="125,120 135,90 128,75 125,65 122,75 115,90" fill="#ff9933" style="animation:flame2 1900ms ease-out forwards 300ms"/>`;
+      @keyframes sf-ghost-flicker { 0%, 100% { opacity: 0.15; } 50% { opacity: 0.55; } }
+      @keyframes sf-thrust { 0% { transform: translateY(-90px) scaleX(0.7); opacity: 0; } 15% { opacity: 1; transform: translateY(-90px) scaleX(1); } 50% { transform: translateY(80px) scaleX(1); opacity: 1; } 70% { transform: translateY(80px) scaleX(1); opacity: 0.7; } 100% { transform: translateY(80px) scaleX(0.5); opacity: 0; } }
+      @keyframes sf-flame-wisp { 0% { transform: translate(0, 0) scale(1); opacity: 0.9; } 100% { transform: translate(var(--wx), -60px) scale(0.1); opacity: 0; } }
+      @keyframes sf-lifesteal-orb { 0% { transform: translate(60px, -60px) scale(0.3); opacity: 0; } 30% { opacity: 1; } 70% { transform: translate(0,0) scale(1); opacity: 1; } 100% { transform: translate(0,0) scale(1.4); opacity: 0; } }
+      @keyframes sf-impact-ring { 0% { r: 4; opacity: 0; } 45% { r: 4; opacity: 0; } 50% { r: 6; opacity: 1; } 100% { r: 50; opacity: 0; stroke-width: 0.5; } }
+    </style></defs><defs><filter id="sf-glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter><linearGradient id="sf-spear" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#ff9900"/><stop offset="50%" stop-color="#ff3300"/><stop offset="100%" stop-color="#ff6600" stop-opacity="0"/></linearGradient></defs><!-- ghost aura --><ellipse cx="100" cy="100" rx="40" ry="55" fill="#440022" fill-opacity="0.3" style="animation: sf-ghost-flicker 1900ms ease-in-out infinite;"/><!-- spear --><rect x="97" y="30" width="6" height="80" fill="url(#sf-spear)" rx="3" filter="url(#sf-glow)" style="animation: sf-thrust 1900ms cubic-bezier(0.1,0.8,0.3,1) forwards;"/><!-- spear tip --><polygon points="100,30 94,48 106,48" fill="#ffcc00" filter="url(#sf-glow)" style="animation: sf-thrust 1900ms cubic-bezier(0.1,0.8,0.3,1) forwards;"/><!-- fire wisps --><circle cx="100" cy="105" r="5" fill="#ff6600" filter="url(#sf-glow)" style="--wx:-30px; animation: sf-flame-wisp 1900ms ease-out forwards 300ms;"/><circle cx="100" cy="110" r="4" fill="#ff3300" style="--wx:25px; animation: sf-flame-wisp 1900ms ease-out forwards 450ms;"/><circle cx="100" cy="108" r="3" fill="#ff9900" style="--wx:-15px; animation: sf-flame-wisp 1900ms ease-out forwards 600ms;"/><!-- lifesteal orb returning to caster --><circle cx="100" cy="110" r="8" fill="#ff4488" fill-opacity="0.8" filter="url(#sf-glow)" style="animation: sf-lifesteal-orb 1900ms ease-in-out forwards 500ms;"/><!-- impact ring --><circle cx="100" cy="110" r="4" fill="none" stroke="#ff6600" stroke-width="3" style="animation: sf-impact-ring 1900ms ease-out forwards;"/>`;
     return s;
   }},
 
-  paramita_papilio: { duration: 2200, create: () => {
+  // Paramita Papilio
+  'paramita_papilio': { duration: 2300, create: () => {
     const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    s.setAttribute('viewBox', '0 0 200 200'); s.setAttribute('width', '200'); s.setAttribute('height', '200');
+    s.setAttribute('viewBox', '0 0 200 200');
+    s.setAttribute('width', '200');
+    s.setAttribute('height', '200');
     s.classList.add('battle-svg-animation');
     s.innerHTML = `<defs><style>
-      @keyframes butterfly{0%{transform:translate(100px,100px)rotate(0deg)}100%{transform:translate(100px,100px)rotate(360deg)}}
-      @keyframes flapL{0%{transform:rotateY(0deg)}50%{transform:rotateY(45deg)}100%{transform:rotateY(0deg)}}
-    </style></defs>
-    <g style="animation:butterfly 2200ms linear forwards">
-      <ellipse cx="60" cy="100" rx="12" ry="18" fill="#ff7700" style="animation:flapL 400ms ease-in-out infinite"/>
-      <ellipse cx="140" cy="100" rx="12" ry="18" fill="#ff7700" style="animation:flapL 400ms ease-in-out infinite;transform-origin:140px 100px"/>
-      <circle cx="100" cy="100" r="6" fill="#ff9933"/>
-    </g>`;
+      @keyframes pp-butterfly-orbit { 0% { transform: rotate(calc(var(--ba) * 1deg)) translateX(52px); opacity: 0; } 10% { opacity: 1; } 90% { transform: rotate(calc((var(--ba) + 400) * 1deg)) translateX(52px); opacity: 1; } 100% { opacity: 0; transform: rotate(calc((var(--ba) + 440) * 1deg)) translateX(80px); } }
+      @keyframes pp-wing-flap { 0%, 100% { transform: scaleX(1); } 50% { transform: scaleX(0.2); } }
+      @keyframes sf-ghost-flicker { 0%, 100% { opacity: 0.15; } 50% { opacity: 0.55; } }
+      @keyframes pp-atk-buff-text { 0% { transform: translateY(0); opacity: 0; } 20% { opacity: 1; } 60% { transform: translateY(-28px); opacity: 1; } 100% { transform: translateY(-50px); opacity: 0; } }
+      @keyframes pp-burst-ring { 0% { r: 5; stroke-width: 5; opacity: 1; } 100% { r: 80; stroke-width: 0.3; opacity: 0; } }
+    </style></defs><defs><filter id="pp-glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><!-- butterfly 1 --><g style="transform-origin:100px 108px; --ba:0; animation: pp-butterfly-orbit 2300ms ease-in-out forwards;"><g style="transform-origin:100px 56px; animation: pp-wing-flap 300ms ease-in-out infinite;"><ellipse cx="91" cy="56" rx="10" ry="7" fill="#ff4488" fill-opacity="0.85" filter="url(#pp-glow)"/><ellipse cx="109" cy="56" rx="10" ry="7" fill="#ff6699" fill-opacity="0.85" filter="url(pp-glow)"/><ellipse cx="91" cy="63" rx="7" ry="5" fill="#cc2266" fill-opacity="0.7"/><ellipse cx="109" cy="63" rx="7" ry="5" fill="#cc2266" fill-opacity="0.7"/></g></g><!-- butterfly 2 --><g style="transform-origin:100px 108px; --ba:120; animation: pp-butterfly-orbit 2300ms ease-in-out forwards 150ms;"><g style="transform-origin:100px 56px; animation: pp-wing-flap 280ms ease-in-out infinite 140ms;"><ellipse cx="91" cy="56" rx="10" ry="7" fill="#ff6600" fill-opacity="0.8" filter="url(#pp-glow)"/><ellipse cx="109" cy="56" rx="10" ry="7" fill="#ff9900" fill-opacity="0.8"/><ellipse cx="91" cy="63" rx="7" ry="5" fill="#cc4400" fill-opacity="0.7"/><ellipse cx="109" cy="63" rx="7" ry="5" fill="#cc4400" fill-opacity="0.7"/></g></g><!-- butterfly 3 --><g style="transform-origin:100px 108px; --ba:240; animation: pp-butterfly-orbit 2300ms ease-in-out forwards 300ms;"><g style="transform-origin:100px 56px; animation: pp-wing-flap 320ms ease-in-out infinite 80ms;"><ellipse cx="91" cy="56" rx="10" ry="7" fill="#ff4488" fill-opacity="0.75" filter="url(#pp-glow)"/><ellipse cx="109" cy="56" rx="10" ry="7" fill="#ff6699" fill-opacity="0.75"/><ellipse cx="91" cy="63" rx="7" ry="5" fill="#cc2266" fill-opacity="0.65"/><ellipse cx="109" cy="63" rx="7" ry="5" fill="#cc2266" fill-opacity="0.65"/></g></g><!-- center ghost flame --><ellipse cx="100" cy="108" rx="8" ry="14" fill="#ff3300" fill-opacity="0.5" style="animation: sf-ghost-flicker 400ms ease-in-out infinite;"/><!-- ATK buff indicator --><g style="animation: pp-atk-buff-text 2300ms ease-out forwards 1200ms;"><text x="132" y="88" fill="#ff9900" font-size="9" font-family="monospace" font-weight="bold">ATK+50%</text><text x="140" y="98" fill="#ff6666" font-size="7" font-family="monospace">if HP&lt;50%</text></g><!-- burst ring --><circle cx="100" cy="108" r="5" fill="none" stroke="#ff4488" stroke-width="4" style="animation: pp-burst-ring 2300ms ease-out forwards 1800ms;"/>`;
     return s;
   }},
 
-  blood_blossom_enhanced: { duration: 2000, create: () => {
+  // Blood Blossom
+  'blood_blossom_enhanced': { duration: 2300, create: () => {
     const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    s.setAttribute('viewBox', '0 0 200 200'); s.setAttribute('width', '200'); s.setAttribute('height', '200');
+    s.setAttribute('viewBox', '0 0 200 200');
+    s.setAttribute('width', '200');
+    s.setAttribute('height', '200');
     s.classList.add('battle-svg-animation');
     s.innerHTML = `<defs><style>
-      @keyframes petal{0%{opacity:0;transform:translate(0,-20px)rotate(0deg)scale(0.3)}100%{opacity:0;transform:translate(0,30px)rotate(180deg)scale(1.2)}}
-      @keyframes core{0%{opacity:1;r:8px}100%{opacity:0;r:40px}}
-    </style></defs>
-    <circle cx="100" cy="100" r="8" fill="#ff3333" style="animation:core 2000ms ease-out forwards"/>
-    <circle cx="100" cy="70" r="8" fill="#ff6666" style="animation:petal 2000ms ease-out forwards"/>
-    <circle cx="130" cy="100" r="8" fill="#ff6666" style="animation:petal 2000ms ease-out forwards 150ms"/>
-    <circle cx="100" cy="130" r="8" fill="#ff6666" style="animation:petal 2000ms ease-out forwards 300ms"/>
-    <circle cx="70" cy="100" r="8" fill="#ff6666" style="animation:petal 2000ms ease-out forwards 450ms"/>`;
+      @keyframes bb-petal-spin { 0% { transform: rotate(calc(var(--pa) * 1deg)) translateX(0); opacity: 0; } 15% { opacity: 1; } 100% { transform: rotate(calc((var(--pa) + 360) * 1deg)) translateX(20px); opacity: 0; } }
+      @keyframes bb-atk-ring { 0% { stroke-dashoffset: 500; opacity: 0; } 20% { opacity: 1; } 70% { stroke-dashoffset: 0; } 100% { opacity: 0; } }
+      @keyframes pp-atk-buff-text { 0% { transform: translateY(0); opacity: 0; } 20% { opacity: 1; } 60% { transform: translateY(-28px); opacity: 1; } 100% { transform: translateY(-50px); opacity: 0; } }
+    </style></defs><defs><filter id="bb-glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><!-- petal 1 --><ellipse cx="100" cy="74" rx="9" ry="22" fill="#cc0033" fill-opacity="0.85" filter="url(#bb-glow)" style="--pa:0; transform-origin:100px 108px; animation: bb-petal-spin 2300ms ease-out forwards;"/><!-- petal 2 --><ellipse cx="100" cy="74" rx="9" ry="22" fill="#ff0044" fill-opacity="0.8" style="--pa:60; transform-origin:100px 108px; animation: bb-petal-spin 2300ms ease-out forwards 80ms;"/><!-- petal 3 --><ellipse cx="100" cy="74" rx="9" ry="22" fill="#990022" fill-opacity="0.75" style="--pa:120; transform-origin:100px 108px; animation: bb-petal-spin 2300ms ease-out forwards 160ms;"/><!-- petal 4 --><ellipse cx="100" cy="74" rx="9" ry="22" fill="#cc0033" fill-opacity="0.7" style="--pa:180; transform-origin:100px 108px; animation: bb-petal-spin 2300ms ease-out forwards 240ms;"/><!-- petal 5 --><ellipse cx="100" cy="74" rx="9" ry="22" fill="#ff0044" fill-opacity="0.75" style="--pa:240; transform-origin:100px 108px; animation: bb-petal-spin 2300ms ease-out forwards 320ms;"/><!-- petal 6 --><ellipse cx="100" cy="74" rx="9" ry="22" fill="#990022" fill-opacity="0.7" style="--pa:300; transform-origin:100px 108px; animation: bb-petal-spin 2300ms ease-out forwards 400ms;"/><!-- ATK buff ring --><circle cx="100" cy="108" r="55" fill="none" stroke="#ff1166" stroke-width="2" stroke-dasharray="500" stroke-dashoffset="500" style="animation: bb-atk-ring 2300ms ease-out forwards 300ms;"/><!-- center ATK label --><text x="78" y="112" fill="#ff9966" font-size="10" font-family="monospace" font-weight="bold" style="animation: pp-atk-buff-text 2300ms ease-out forwards 600ms;">ATK +40%</text>`;
     return s;
   }},
 
-  guide_to_afterlife: { duration: 2900, create: () => {
+  // Guide to Afterlife
+  'guide_to_afterlife': { duration: 2600, create: () => {
     const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    s.setAttribute('viewBox', '0 0 200 200'); s.setAttribute('width', '200'); s.setAttribute('height', '200');
+    s.setAttribute('viewBox', '0 0 200 200');
+    s.setAttribute('width', '200');
+    s.setAttribute('height', '200');
     s.classList.add('battle-svg-animation');
     s.innerHTML = `<defs><style>
-      @keyframes vortex{0%{transform:translate(100px,100px)rotate(0deg)}100%{transform:translate(100px,100px)rotate(720deg)}}
-      @keyframes soul{0%{opacity:0.6;transform:translate(100px,100px)rotate(0deg)translateX(40px)}100%{opacity:0;transform:translate(100px,100px)rotate(-360deg)translateX(80px)}}
-    </style></defs>
-    <circle cx="100" cy="100" r="30" fill="#330000" opacity="0.4"/>
-    <g style="animation:vortex 2900ms ease-out forwards"><circle cx="100" cy="100" r="40" fill="none" stroke="#660000" stroke-width="2" opacity="0.6"/><circle cx="100" cy="100" r="55" fill="none" stroke="#330000" stroke-width="1.5" opacity="0.4"/></g>
-    <circle cx="140" cy="100" r="5" fill="#ff6600" style="animation:soul 2900ms ease-out forwards 600ms"/>
-    <circle cx="100" cy="140" r="5" fill="#ff6600" style="animation:soul 2900ms ease-out forwards 1000ms"/>`;
+      @keyframes gta-skull-rise { 0% { transform: translateY(80px) scale(0.3); opacity: 0; filter: blur(4px); } 25% { transform: translateY(0) scale(1.1); opacity: 1; filter: blur(0); } 60% { transform: translateY(-10px) scale(1); opacity: 1; } 100% { transform: translateY(-60px) scale(0.5); opacity: 0; } }
+      @keyframes gta-drain-beam { 0% { stroke-dashoffset: 200; opacity: 0; stroke-width: 1; } 20% { opacity: 1; } 60% { stroke-dashoffset: 0; stroke-width: 4; opacity: 1; } 100% { stroke-width: 0.5; opacity: 0; stroke-dashoffset: -50; } }
+      @keyframes gta-hp-drain { 0% { transform: translateY(0) scale(1); opacity: 0; } 15% { opacity: 1; } 60% { transform: translateY(-40px) scale(1.3); opacity: 1; } 100% { transform: translateY(-70px) scale(0.5); opacity: 0; } }
+      @keyframes gta-pyro-nova { 0% { r: 3; fill-opacity: 1; opacity: 1; } 30% { r: 12; fill-opacity: 0.6; } 60% { r: 85; fill-opacity: 0; opacity: 0.3; } 100% { r: 95; opacity: 0; } }
+    </style></defs><defs><filter id="gta-glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter><radialGradient id="gta-fire-core" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ffcc00"/><stop offset="50%" stop-color="#ff3300"/><stop offset="100%" stop-color="#660000" stop-opacity="0"/></radialGradient></defs><!-- skull head --><g style="animation: gta-skull-rise 2600ms ease-out forwards;" filter="url(#gta-glow)"><ellipse cx="100" cy="88" rx="24" ry="26" fill="#440011" stroke="#ff3300" stroke-width="1.5"/><circle cx="92" cy="86" r="7" fill="#ff0000" fill-opacity="0.8"/><circle cx="108" cy="86" r="7" fill="#ff0000" fill-opacity="0.8"/><circle cx="92" cy="86" r="4" fill="#ffcc00"/><circle cx="108" cy="86" r="4" fill="#ffcc00"/><rect x="90" y="105" width="4" height="6" fill="#ff3300" rx="1"/><rect x="96" y="105" width="4" height="6" fill="#ff3300" rx="1"/><rect x="102" y="105" width="4" height="6" fill="#ff3300" rx="1"/><!-- nasal --><path d="M97,97 L100,103 L103,97" fill="none" stroke="#ff3300" stroke-width="1"/></g><!-- HP drain beam from enemy to caster --><line x1="100" y1="88" x2="100" y2="155" stroke="#ff4488" stroke-width="2" stroke-dasharray="8 4" style="animation: gta-drain-beam 2600ms ease-out forwards 400ms;"/><!-- drain orbs floating down --><circle cx="100" cy="108" r="6" fill="#ff0044" fill-opacity="0.8" filter="url(#gta-glow)" style="animation: gta-hp-drain 2600ms ease-out forwards 800ms;"/><circle cx="100" cy="108" r="4" fill="#ff4488" fill-opacity="0.7" style="animation: gta-hp-drain 2600ms ease-out forwards 1000ms;"/><!-- pyro nova --><circle cx="100" cy="108" r="3" fill="url(#gta-fire-core)" style="animation: gta-pyro-nova 2600ms ease-out forwards 1400ms;"/>`;
     return s;
   }},
 
-  // NILOU - Hydro Performer
-  dance_of_blessing: { duration: 2000, create: () => {
+  // Dance of Blessing
+  'dance_of_blessing': { duration: 1900, create: () => {
     const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    s.setAttribute('viewBox', '0 0 200 200'); s.setAttribute('width', '200'); s.setAttribute('height', '200');
+    s.setAttribute('viewBox', '0 0 200 200');
+    s.setAttribute('width', '200');
+    s.setAttribute('height', '200');
     s.classList.add('battle-svg-animation');
     s.innerHTML = `<defs><style>
-      @keyframes wave{0%{r:3px;opacity:1}100%{r:70px;opacity:0}}
-      @keyframes sparkle{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(0)translateY(-30px)}}
-    </style></defs>
-    <circle cx="100" cy="100" r="3" fill="none" stroke="#00d4b4" stroke-width="1.5" style="animation:wave 2000ms ease-out forwards"/>
-    <circle cx="100" cy="100" r="3" fill="none" stroke="#00d4b4" stroke-width="1.5" style="animation:wave 2000ms ease-out forwards 400ms"/>
-    <circle cx="100" cy="60" r="4" fill="#00d4b4" style="animation:sparkle 2000ms ease-out forwards 200ms"/>
-    <circle cx="75" cy="75" r="4" fill="#00d4b4" style="animation:sparkle 2000ms ease-out forwards 400ms"/>
-    <circle cx="125" cy="75" r="4" fill="#00d4b4" style="animation:sparkle 2000ms ease-out forwards 600ms"/>`;
+      @keyframes dob-ripple { 0% { r: 4; stroke-width: 3; opacity: 0.9; } 100% { r: 75; stroke-width: 0.3; opacity: 0; } }
+      @keyframes dob-petal-dance { 0% { transform: rotate(calc(var(--dp) * 1deg)) translateX(30px) scale(0.5); opacity: 0; } 20% { transform: rotate(calc((var(--dp)+90) * 1deg)) translateX(42px) scale(1); opacity: 1; } 80% { transform: rotate(calc((var(--dp)+270) * 1deg)) translateX(35px) scale(0.8); opacity: 0.7; } 100% { transform: rotate(calc((var(--dp)+360) * 1deg)) translateX(20px) scale(0.3); opacity: 0; } }
+      @keyframes dob-water-drop { 0% { transform: translate(var(--ddx), -60px); opacity: 0; } 30% { opacity: 1; } 80% { transform: translate(var(--ddx), 0); opacity: 1; } 100% { transform: translate(var(--ddx), 10px); opacity: 0; } }
+      @keyframes dob-sparkle { 0%, 100% { opacity: 0; transform: scale(0.5); } 50% { opacity: 1; transform: scale(1.2); } }
+    </style></defs><defs><filter id="db-glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><!-- ripple rings --><circle cx="100" cy="108" r="4" fill="none" stroke="#00d4b4" stroke-width="3" style="animation: dob-ripple 1900ms ease-out forwards 200ms;"/><circle cx="100" cy="108" r="4" fill="none" stroke="#80ffee" stroke-width="1.5" style="animation: dob-ripple 1900ms ease-out forwards 500ms;"/><!-- water petals --><ellipse cx="100" cy="70" rx="7" ry="18" fill="#00d4b4" fill-opacity="0.8" filter="url(#db-glow)" style="--dp:0; transform-origin:100px 108px; animation: dob-petal-dance 1900ms ease-in-out forwards;"/><ellipse cx="100" cy="70" rx="7" ry="18" fill="#00b8f5" fill-opacity="0.75" style="--dp:60; transform-origin:100px 108px; animation: dob-petal-dance 1900ms ease-in-out forwards 100ms;"/><ellipse cx="100" cy="70" rx="7" ry="18" fill="#80ffee" fill-opacity="0.7" style="--dp:120; transform-origin:100px 108px; animation: dob-petal-dance 1900ms ease-in-out forwards 200ms;"/><ellipse cx="100" cy="70" rx="7" ry="18" fill="#00d4b4" fill-opacity="0.65" style="--dp:180; transform-origin:100px 108px; animation: dob-petal-dance 1900ms ease-in-out forwards 300ms;"/><ellipse cx="100" cy="70" rx="7" ry="18" fill="#00b8f5" fill-opacity="0.7" style="--dp:240; transform-origin:100px 108px; animation: dob-petal-dance 1900ms ease-in-out forwards 400ms;"/><ellipse cx="100" cy="70" rx="7" ry="18" fill="#80ffee" fill-opacity="0.65" style="--dp:300; transform-origin:100px 108px; animation: dob-petal-dance 1900ms ease-in-out forwards 500ms;"/><!-- water drops falling in --><ellipse cx="80" cy="108" rx="3" ry="5" fill="#00d4b4" style="--ddx:-20px; animation: dob-water-drop 1900ms ease-out forwards 200ms;"/><ellipse cx="120" cy="108" rx="3" ry="5" fill="#80ffee" style="--ddx:20px; animation: dob-water-drop 1900ms ease-out forwards 350ms;"/><!-- sparkle --><circle cx="75" cy="80" r="3" fill="#80ffee" filter="url(#db-glow)" style="animation: dob-sparkle 400ms ease-in-out infinite 600ms;"/><circle cx="130" cy="75" r="2.5" fill="#00d4b4" style="animation: dob-sparkle 400ms ease-in-out infinite 800ms;"/><circle cx="100" cy="60" r="2" fill="#80ffee" style="animation: dob-sparkle 400ms ease-in-out infinite 700ms;"/>`;
     return s;
   }},
 
-  water_wheel: { duration: 2100, create: () => {
+  // Water Wheel
+  'water_wheel': { duration: 2300, create: () => {
     const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    s.setAttribute('viewBox', '0 0 200 200'); s.setAttribute('width', '200'); s.setAttribute('height', '200');
+    s.setAttribute('viewBox', '0 0 200 200');
+    s.setAttribute('width', '200');
+    s.setAttribute('height', '200');
     s.classList.add('battle-svg-animation');
     s.innerHTML = `<defs><style>
-      @keyframes wheelspin{0%{transform:translate(100px,100px)rotate(0deg)}100%{transform:translate(100px,100px)rotate(1080deg)}}
-      @keyframes spray{0%{opacity:1;transform:translate(0,0)}100%{opacity:0;transform:var(--spray)}}
-    </style></defs>
-    <g style="animation:wheelspin 2100ms ease-out forwards"><circle cx="100" cy="100" r="35" fill="none" stroke="#00d4b4" stroke-width="2"/><line x1="65" y1="100" x2="135" y2="100" stroke="#00d4b4" stroke-width="1.5"/><line x1="100" y1="65" x2="100" y2="135" stroke="#00d4b4" stroke-width="1.5"/></g>
-    <circle cx="100" cy="100" r="4" fill="#00d4b4" style="--spray:translate(60px,-60px);animation:spray 2100ms ease-out forwards 400ms"/>
-    <circle cx="100" cy="100" r="4" fill="#00d4b4" style="--spray:translate(0,-80px);animation:spray 2100ms ease-out forwards 600ms"/>
-    <circle cx="100" cy="100" r="4" fill="#00d4b4" style="--spray:translate(-60px,-60px);animation:spray 2100ms ease-out forwards 800ms"/>`;
+      @keyframes ww-wheel-spin { 0% { transform: rotate(0deg) scale(0.3); opacity: 0; } 10% { transform: rotate(0deg) scale(1); opacity: 1; } 90% { transform: rotate(1080deg) scale(1); opacity: 0.8; } 100% { transform: rotate(1200deg) scale(1.4); opacity: 0; } }
+      @keyframes ww-spoke { 0% { stroke-dashoffset: 100; opacity: 0; } 20% { opacity: 1; stroke-dashoffset: 0; } 80% { opacity: 1; } 100% { opacity: 0; } }
+      @keyframes ww-aoe-wave { 0% { r: 8; stroke-width: 4; opacity: 1; } 100% { r: 95; stroke-width: 0.3; opacity: 0; } }
+      @keyframes ww-heal-stream { 0% { transform: translate(var(--hx), var(--hy)) scale(1); opacity: 1; } 100% { transform: translate(0, 0) scale(0.3); opacity: 0; } }
+    </style></defs><defs><filter id="ww-glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><!-- spinning water wheel --><g style="transform-origin:100px 108px; animation: ww-wheel-spin 2300ms ease-out forwards;"><!-- rim --><circle cx="100" cy="108" r="42" fill="none" stroke="#00d4b4" stroke-width="2.5" filter="url(#ww-glow)"/><!-- spokes as water blades --><line x1="100" y1="66" x2="100" y2="150" stroke="#80ffee" stroke-width="3" stroke-linecap="round" stroke-dasharray="84" stroke-dashoffset="84" style="animation: ww-spoke 2300ms ease-out forwards;"/><line x1="58" y1="108" x2="142" y2="108" stroke="#00b8f5" stroke-width="3" stroke-linecap="round" stroke-dasharray="84" stroke-dashoffset="84" style="animation: ww-spoke 2300ms ease-out forwards 100ms;"/><line x1="71" y1="71" x2="129" y2="145" stroke="#80ffee" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="84" stroke-dashoffset="84" style="animation: ww-spoke 2300ms ease-out forwards 200ms;"/><line x1="129" y1="71" x2="71" y2="145" stroke="#00d4b4" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="84" stroke-dashoffset="84" style="animation: ww-spoke 2300ms ease-out forwards 300ms;"/></g><!-- AOE wave ring --><circle cx="100" cy="108" r="8" fill="none" stroke="#00d4b4" stroke-width="5" style="animation: ww-aoe-wave 2300ms ease-out forwards 900ms;"/><!-- heal streams to allies --><circle cx="100" cy="108" r="5" fill="#44ffbb" fill-opacity="0.8" filter="url(#ww-glow)" style="--hx:-65px; --hy:-55px; animation: ww-heal-stream 2300ms ease-in-out forwards 1100ms;"/><circle cx="100" cy="108" r="4" fill="#80ffee" style="--hx:65px; --hy:-50px; animation: ww-heal-stream 2300ms ease-in-out forwards 1200ms;"/>`;
     return s;
   }},
 
-  harmony_preservation: { duration: 2200, create: () => {
+  // Harmony Preservation
+  'harmony_preservation': { duration: 2300, create: () => {
     const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    s.setAttribute('viewBox', '0 0 200 200'); s.setAttribute('width', '200'); s.setAttribute('height', '200');
+    s.setAttribute('viewBox', '0 0 200 200');
+    s.setAttribute('width', '200');
+    s.setAttribute('height', '200');
     s.classList.add('battle-svg-animation');
     s.innerHTML = `<defs><style>
-      @keyframes shield{0%{r:20px;opacity:1}100%{r:80px;opacity:0}}
-      @keyframes glyph{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.8)rotate(180deg)}}
-    </style></defs>
-    <circle cx="100" cy="100" r="20" fill="none" stroke="#00d4b4" stroke-width="2" style="animation:shield 2200ms ease-out forwards"/>
-    <polygon points="100,60 120,100 100,140 80,100" fill="none" stroke="#00d4b4" stroke-width="1.5" style="animation:glyph 2200ms ease-out forwards"/>
-    <circle cx="60" cy="100" r="3" fill="#00d4b4" style="animation:glyph 2200ms ease-out forwards 200ms"/>
-    <circle cx="140" cy="100" r="3" fill="#00d4b4" style="animation:glyph 2200ms ease-out forwards 400ms"/>`;
+      @keyframes harm-shield-raise { 0% { transform: translateY(50px) scale(0.8); opacity: 0; } 30% { transform: translateY(0) scale(1); opacity: 1; } 70% { opacity: 1; } 100% { transform: translateY(-20px) scale(1.1); opacity: 0; } }
+      @keyframes harm-rune-spin { 0% { transform: rotate(0deg); opacity: 0; } 15% { opacity: 1; } 100% { transform: rotate(540deg); opacity: 0; } }
+      @keyframes harm-buff-ring { 0% { stroke-dashoffset: 600; opacity: 0; } 25% { opacity: 1; } 75% { stroke-dashoffset: 0; opacity: 1; } 100% { opacity: 0; } }
+      @keyframes harm-regen-drop { 0% { transform: translate(var(--rx), 0) scale(1); opacity: 1; } 100% { transform: translate(var(--rx), 60px) scale(0.3); opacity: 0; } }
+    </style></defs><defs><filter id="harm-glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><!-- shield hexagon --><g style="animation: harm-shield-raise 2300ms ease-out forwards;" filter="url(#harm-glow)"><polygon points="100,62 128,78 128,112 100,128 72,112 72,78" fill="none" stroke="#00d4b4" stroke-width="2.5"/><polygon points="100,72 118,82 118,104 100,114 82,104 82,82" fill="#00d4b4" fill-opacity="0.08"/></g><!-- spinning water runes --><g style="transform-origin:100px 108px; animation: harm-rune-spin 2300ms ease-out forwards 200ms;"><circle cx="100" cy="60" r="4" fill="#80ffee" fill-opacity="0.9"/><circle cx="140" cy="84" r="3.5" fill="#00d4b4" fill-opacity="0.8"/><circle cx="140" cy="132" r="4" fill="#80ffee" fill-opacity="0.9"/><circle cx="100" cy="156" r="3.5" fill="#00d4b4" fill-opacity="0.8"/><circle cx="60" cy="132" r="4" fill="#80ffee" fill-opacity="0.9"/><circle cx="60" cy="84" r="3.5" fill="#00d4b4" fill-opacity="0.8"/></g><!-- ATK+DEF ring --><circle cx="100" cy="108" r="58" fill="none" stroke="#00d4b4" stroke-width="1.5" stroke-dasharray="600" stroke-dashoffset="600" style="animation: harm-buff-ring 2300ms ease-out forwards 300ms;"/><!-- regen drops falling down --><ellipse cx="75" cy="108" rx="3" ry="5" fill="#44ffbb" style="--rx:-25px; animation: harm-regen-drop 2300ms ease-in forwards 800ms;"/><ellipse cx="100" cy="108" rx="3" ry="5" fill="#80ffee" style="--rx:0px; animation: harm-regen-drop 2300ms ease-in forwards 950ms;"/><ellipse cx="125" cy="108" rx="3" ry="5" fill="#44ffbb" style="--rx:25px; animation: harm-regen-drop 2300ms ease-in forwards 1100ms;"/><!-- stat labels --><text x="42" y="54" fill="#00d4b4" font-size="8" font-family="monospace" style="animation: harm-shield-raise 2300ms ease-out forwards 400ms;">ATK+20% DEF+20%</text><text x="60" y="175" fill="#44ffbb" font-size="8" font-family="monospace" style="animation: harm-shield-raise 2300ms ease-out forwards 600ms;">REGEN 5HP/turn</text>`;
     return s;
   }},
 
-  hajras_hymn: { duration: 2900, create: () => {
+  // Hajra's Hymn
+  'hajras_hymn': { duration: 2600, create: () => {
     const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    s.setAttribute('viewBox', '0 0 200 200'); s.setAttribute('width', '200'); s.setAttribute('height', '200');
+    s.setAttribute('viewBox', '0 0 200 200');
+    s.setAttribute('width', '200');
+    s.setAttribute('height', '200');
     s.classList.add('battle-svg-animation');
     s.innerHTML = `<defs><style>
-      @keyframes starburst{0%{opacity:1;transform:scale(0.2)}100%{opacity:0;transform:scale(2)rotate(180deg)}}
-      @keyframes ray{0%{opacity:0.8;stroke-width:1}100%{opacity:0;stroke-width:4}}
-    </style></defs>
-    <polygon points="100,50 110,80 140,80 117,105 127,135 100,110 73,135 83,105 60,80 90,80" fill="#00d4b4" style="animation:starburst 2900ms ease-out forwards"/>
-    <line x1="100" y1="30" x2="100" y2="10" stroke="#00d4b4" stroke-width="1" style="animation:ray 2900ms ease-out forwards 400ms"/>
-    <line x1="140" y1="60" x2="160" y2="40" stroke="#00d4b4" stroke-width="1" style="animation:ray 2900ms ease-out forwards 700ms"/>
-    <line x1="140" y1="140" x2="160" y2="160" stroke="#00d4b4" stroke-width="1" style="animation:ray 2900ms ease-out forwards 1000ms"/>`;
+      @keyframes hh-star-ray { 0% { transform: rotate(calc(var(--ray) * 1deg)) scaleX(0); opacity: 0; } 30% { transform: rotate(calc(var(--ray) * 1deg)) scaleX(1); opacity: 1; } 100% { transform: rotate(calc(var(--ray) * 1deg)) scaleX(1.5); opacity: 0; } }
+      @keyframes hh-star-burst { 0% { transform: scale(0) rotate(0deg); opacity: 0; } 20% { transform: scale(1.2) rotate(30deg); opacity: 1; } 50% { transform: scale(1) rotate(60deg); } 80% { transform: scale(1.05) rotate(90deg); opacity: 0.8; } 100% { transform: scale(1.8) rotate(120deg); opacity: 0; } }
+      @keyframes hh-heal-wave { 0% { r: 5; stroke-width: 5; opacity: 1; } 100% { r: 95; stroke-width: 0.3; opacity: 0; } }
+      @keyframes hh-cleanse-bubble { 0% { transform: translate(var(--cbx), var(--cby)) scale(0.5); opacity: 0; } 30% { opacity: 1; } 70% { transform: translate(var(--cbx), calc(var(--cby) - 30px)) scale(1); opacity: 0.7; } 100% { transform: translate(var(--cbx), calc(var(--cby) - 60px)) scale(1.5); opacity: 0; } }
+      @keyframes hh-spd-streak { 0% { transform: translateX(-80px) skewX(-20deg); opacity: 0; } 20% { opacity: 1; } 100% { transform: translateX(80px) skewX(-20deg); opacity: 0; } }
+    </style></defs><defs><filter id="hh-glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><!-- star rays --><g style="transform-origin:100px 108px;"><line x1="100" y1="108" x2="100" y2="30" stroke="#80ffee" stroke-width="3" stroke-linecap="round" style="--ray:0; transform-origin:100px 108px; animation: hh-star-ray 2600ms ease-out forwards;"/><line x1="100" y1="108" x2="100" y2="30" stroke="#00d4b4" stroke-width="2.5" stroke-linecap="round" style="--ray:45; transform-origin:100px 108px; animation: hh-star-ray 2600ms ease-out forwards 100ms;"/><line x1="100" y1="108" x2="100" y2="30" stroke="#80ffee" stroke-width="3" stroke-linecap="round" style="--ray:90; transform-origin:100px 108px; animation: hh-star-ray 2600ms ease-out forwards 200ms;"/><line x1="100" y1="108" x2="100" y2="30" stroke="#00d4b4" stroke-width="2.5" stroke-linecap="round" style="--ray:135; transform-origin:100px 108px; animation: hh-star-ray 2600ms ease-out forwards 300ms;"/><line x1="100" y1="108" x2="100" y2="30" stroke="#80ffee" stroke-width="3" stroke-linecap="round" style="--ray:180; transform-origin:100px 108px; animation: hh-star-ray 2600ms ease-out forwards 400ms;"/><line x1="100" y1="108" x2="100" y2="30" stroke="#00d4b4" stroke-width="2.5" stroke-linecap="round" style="--ray:225; transform-origin:100px 108px; animation: hh-star-ray 2600ms ease-out forwards 500ms;"/><line x1="100" y1="108" x2="100" y2="30" stroke="#80ffee" stroke-width="3" stroke-linecap="round" style="--ray:270; transform-origin:100px 108px; animation: hh-star-ray 2600ms ease-out forwards 600ms;"/><line x1="100" y1="108" x2="100" y2="30" stroke="#00d4b4" stroke-width="2.5" stroke-linecap="round" style="--ray:315; transform-origin:100px 108px; animation: hh-star-ray 2600ms ease-out forwards 700ms;"/></g><!-- center star bloom --><g style="transform-origin:100px 108px; animation: hh-star-burst 2600ms ease-out forwards 200ms;" filter="url(#hh-glow)"><polygon points="100,82 104,100 122,100 108,112 113,130 100,120 87,130 92,112 78,100 96,100" fill="#80ffee" fill-opacity="0.9"/></g><!-- heal waves --><circle cx="100" cy="108" r="5" fill="none" stroke="#44ffbb" stroke-width="5" style="animation: hh-heal-wave 2600ms ease-out forwards 400ms;"/><circle cx="100" cy="108" r="5" fill="none" stroke="#00d4b4" stroke-width="3" style="animation: hh-heal-wave 2600ms ease-out forwards 700ms;"/><!-- cleanse bubbles --><circle cx="100" cy="108" r="8" fill="#80ffee" fill-opacity="0.3" stroke="#80ffee" stroke-width="1" style="--cbx:-35px; --cby:-30px; animation: hh-cleanse-bubble 2600ms ease-out forwards 600ms;"/><circle cx="100" cy="108" r="6" fill="#00d4b4" fill-opacity="0.25" stroke="#00d4b4" stroke-width="1" style="--cbx:38px; --cby:-25px; animation: hh-cleanse-bubble 2600ms ease-out forwards 750ms;"/><circle cx="100" cy="108" r="7" fill="#80ffee" fill-opacity="0.2" stroke="#80ffee" stroke-width="1" style="--cbx:-10px; --cby:-40px; animation: hh-cleanse-bubble 2600ms ease-out forwards 900ms;"/><!-- speed streaks --><line x1="40" y1="162" x2="80" y2="162" stroke="#80ffee" stroke-width="2" stroke-linecap="round" style="animation: hh-spd-streak 2600ms ease-out forwards 1100ms;"/><line x1="40" y1="168" x2="70" y2="168" stroke="#00d4b4" stroke-width="1.5" style="animation: hh-spd-streak 2600ms ease-out forwards 1200ms;"/><text x="88" y="167" fill="#80ffee" font-size="9" font-family="monospace">SPD+</text>`;
     return s;
   }},
 
-  // XIAO - Yaksha Protector
-  lancing_strike: { duration: 1700, create: () => {
+  // Lancing Strike
+  'lancing_strike': { duration: 1900, create: () => {
     const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    s.setAttribute('viewBox', '0 0 200 200'); s.setAttribute('width', '200'); s.setAttribute('height', '200');
+    s.setAttribute('viewBox', '0 0 200 200');
+    s.setAttribute('width', '200');
+    s.setAttribute('height', '200');
     s.classList.add('battle-svg-animation');
     s.innerHTML = `<defs><style>
-      @keyframes thrust{0%{opacity:1;transform:translateY(-60px)}100%{opacity:0;transform:translateY(60px)}}
-      @keyframes impact{0%{r:5px;opacity:1}100%{r:80px;opacity:0}}
-    </style></defs>
-    <g style="animation:thrust 1700ms ease-out forwards"><line x1="100" y1="40" x2="100" y2="120" stroke="#7ddc5f" stroke-width="3"/><polygon points="100,35 95,50 105,50" fill="#7ddc5f"/></g>
-    <circle cx="100" cy="100" r="5" fill="none" stroke="#7ddc5f" stroke-width="2" style="animation:impact 1700ms ease-out forwards 600ms"/>`;
+      @keyframes ls-lance-charge { 0% { transform: translateY(-110px) scaleY(0.3); opacity: 0; } 18% { transform: translateY(-110px) scaleY(1); opacity: 1; } 45% { transform: translateY(90px) scaleY(1); opacity: 1; } 65% { transform: translateY(90px) scaleY(1); opacity: 0.6; } 100% { transform: translateY(90px) scaleY(0.4); opacity: 0; } }
+      @keyframes ls-anemo-ring { 0% { stroke-dashoffset: 300; opacity: 0; } 40% { opacity: 0; } 45% { stroke-dashoffset: 300; opacity: 0; } 50% { opacity: 1; } 100% { stroke-dashoffset: 0; opacity: 0; } }
+      @keyframes ls-pierce-crack { 0%, 44% { opacity: 0; } 45% { opacity: 1; stroke-dashoffset: 80; } 80% { stroke-dashoffset: 0; opacity: 1; } 100% { opacity: 0; } }
+      @keyframes ls-wind-streak { 0% { transform: translate(var(--wsx), var(--wsy)) scaleX(0); opacity: 0; } 35% { opacity: 0; } 45% { transform: translate(var(--wsx), var(--wsy)) scaleX(0); opacity: 1; } 80% { transform: translate(0, 0) scaleX(1); opacity: 1; } 100% { opacity: 0; } }
+      @keyframes ls-impact-flash { 0%, 43% { opacity: 0; } 46% { opacity: 0.8; } 55% { opacity: 0; } 100% { opacity: 0; } }
+    </style></defs><defs><filter id="ls-glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter><linearGradient id="ls-lance-grad" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#aaffdd"/><stop offset="50%" stop-color="#22bb88"/><stop offset="100%" stop-color="#22bb88" stop-opacity="0"/></linearGradient></defs><!-- lance body --><rect x="97" y="25" width="6" height="90" fill="url(#ls-lance-grad)" rx="3" filter="url(#ls-glow)" style="animation: ls-lance-charge 1900ms cubic-bezier(0.1,0.8,0.3,1) forwards;"/><!-- lance tip diamond --><polygon points="100,22 95,38 100,32 105,38" fill="#aaffdd" filter="url(#ls-glow)" style="animation: ls-lance-charge 1900ms cubic-bezier(0.1,0.8,0.3,1) forwards;"/><!-- anemo ring at bottom --><circle cx="100" cy="120" r="5" fill="none" stroke="#66ffcc" stroke-width="3" stroke-dasharray="300" stroke-dashoffset="300" style="animation: ls-anemo-ring 1900ms ease-out forwards;"/><!-- pierce crack lines --><line x1="100" y1="118" x2="135" y2="145" stroke="#aaffdd" stroke-width="1.5" stroke-dasharray="80" stroke-dashoffset="80" style="animation: ls-pierce-crack 1900ms ease-out forwards;"/><line x1="100" y1="118" x2="65" y2="145" stroke="#66ffcc" stroke-width="1.5" stroke-dasharray="80" stroke-dashoffset="80" style="animation: ls-pierce-crack 1900ms ease-out forwards 100ms;"/><line x1="100" y1="118" x2="140" y2="110" stroke="#aaffdd" stroke-width="1" stroke-dasharray="50" stroke-dashoffset="50" style="animation: ls-pierce-crack 1900ms ease-out forwards 180ms;"/><!-- wind streaks --><line x1="130" y1="80" x2="155" y2="72" stroke="#66ffcc" stroke-width="2" style="--wsx:30px; --wsy:-28px; animation: ls-wind-streak 1900ms ease-out forwards;"/><line x1="145" y1="95" x2="168" y2="90" stroke="#22bb88" stroke-width="1.5" style="--wsx:45px; --wsy:-13px; animation: ls-wind-streak 1900ms ease-out forwards 100ms;"/><line x1="55" y1="80" x2="30" y2="72" stroke="#66ffcc" stroke-width="2" style="--wsx:-30px; --wsy:-28px; animation: ls-wind-streak 1900ms ease-out forwards 50ms;"/><!-- DEF pierce label --><text x="42" y="52" fill="#aaffdd" font-size="8" font-family="monospace" style="animation: ls-impact-flash 1900ms ease-out forwards;">DEF PIERCE 20%</text><!-- impact flash --><circle cx="100" cy="118" r="20" fill="#aaffdd" fill-opacity="0.5" style="animation: ls-impact-flash 1900ms ease-out forwards;"/>`;
     return s;
   }},
 
-  yaksha_valor_active: { duration: 2000, create: () => {
+  // Yaksha Valor
+  'yaksha_valor_active': { duration: 2300, create: () => {
     const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    s.setAttribute('viewBox', '0 0 200 200'); s.setAttribute('width', '200'); s.setAttribute('height', '200');
+    s.setAttribute('viewBox', '0 0 200 200');
+    s.setAttribute('width', '200');
+    s.setAttribute('height', '200');
     s.classList.add('battle-svg-animation');
     s.innerHTML = `<defs><style>
-      @keyframes form{0%{r:15px;opacity:0.3}50%{opacity:1}100%{r:75px;opacity:0}}
-      @keyframes aura{0%{r:25px;opacity:1}100%{r:80px;opacity:0}}
-    </style></defs>
-    <circle cx="100" cy="100" r="15" fill="none" stroke="#7ddc5f" stroke-width="2.5" style="animation:form 2000ms ease-out forwards"/>
-    <circle cx="100" cy="100" r="25" fill="none" stroke="#7ddc5f" stroke-width="1.5" opacity="0.5" style="animation:aura 2000ms ease-out forwards"/>
-    <line x1="100" y1="50" x2="100" y2="150" stroke="#7ddc5f" stroke-width="1" opacity="0.6"/>
-    <line x1="50" y1="100" x2="150" y2="100" stroke="#7ddc5f" stroke-width="1" opacity="0.6"/>`;
+      @keyframes yv-shield-form { 0% { transform: scale(0.2) rotate(-10deg); opacity: 0; } 25% { transform: scale(1.05) rotate(2deg); opacity: 1; } 50% { transform: scale(1) rotate(0deg); opacity: 1; } 80% { opacity: 1; } 100% { transform: scale(1.1) rotate(0deg); opacity: 0; } }
+      @keyframes yv-reflect-pulse { 0%, 100% { opacity: 0.2; r: 50; } 50% { opacity: 0.7; r: 56; } }
+      @keyframes yv-damage-reduce { 0% { r: 3; stroke-width: 6; opacity: 1; fill-opacity: 0.5; } 100% { r: 60; stroke-width: 0.5; opacity: 0; fill-opacity: 0; } }
+      @keyframes yv-reflect-arrow { 0% { transform: translate(var(--rax), var(--ray2)); opacity: 0; } 40% { opacity: 1; } 80% { transform: translate(calc(var(--rax) * -0.6), calc(var(--ray2) * -0.6)); opacity: 1; } 100% { transform: translate(calc(var(--rax) * -1.2), calc(var(--ray2) * -1.2)); opacity: 0; } }
+    </style></defs><defs><filter id="yv-glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><!-- shield shape --><g style="transform-origin:100px 105px; animation: yv-shield-form 2300ms ease-out forwards;" filter="url(#yv-glow)"><path d="M100,62 L132,80 L132,118 C132,135 100,148 100,148 C100,148 68,135 68,118 L68,80 Z" fill="#004422" fill-opacity="0.7" stroke="#66ffcc" stroke-width="2.5"/><!-- yaksha mask design inside shield --><ellipse cx="93" cy="95" rx="5" ry="6" fill="#22bb88" fill-opacity="0.6"/><ellipse cx="107" cy="95" rx="5" ry="6" fill="#22bb88" fill-opacity="0.6"/><path d="M88,108 Q100,116 112,108" fill="none" stroke="#66ffcc" stroke-width="1.5"/></g><!-- reflect pulse ring --><circle cx="100" cy="108" r="50" fill="none" stroke="#66ffcc" stroke-width="1.5" style="animation: yv-reflect-pulse 800ms ease-in-out infinite;"/><!-- damage reduction ring --><circle cx="100" cy="108" r="3" fill="#aaffdd" fill-opacity="0.6" style="animation: yv-damage-reduce 2300ms ease-out forwards 400ms;"/><!-- reflect arrow indicators --><g style="--rax:-50px; --ray2:-30px; animation: yv-reflect-arrow 2300ms ease-out forwards 900ms;"><line x1="140" y1="75" x2="125" y2="88" stroke="#66ffcc" stroke-width="2" marker-end="url(#arrowhead)"/><polygon points="125,88 121,80 130,82" fill="#66ffcc"/></g><!-- damage reduction label --><text x="40" y="52" fill="#aaffdd" font-size="8" font-family="monospace" style="animation: yv-shield-form 2300ms ease-out forwards 500ms;">DMG -25% | REFLECT 15%</text>`;
     return s;
   }},
 
-  karmic_barrier: { duration: 2200, create: () => {
+  // Karmic Barrier
+  'karmic_barrier': { duration: 2600, create: () => {
     const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    s.setAttribute('viewBox', '0 0 200 200'); s.setAttribute('width', '200'); s.setAttribute('height', '200');
+    s.setAttribute('viewBox', '0 0 200 200');
+    s.setAttribute('width', '200');
+    s.setAttribute('height', '200');
     s.classList.add('battle-svg-animation');
     s.innerHTML = `<defs><style>
-      @keyframes dome{0%{r:25px;opacity:0.6}100%{r:90px;opacity:0}}
-      @keyframes runerot{0%{transform:translate(100px,100px)rotate(0deg)}100%{transform:translate(100px,100px)rotate(360deg)}}
-    </style></defs>
-    <circle cx="100" cy="100" r="25" fill="none" stroke="#7ddc5f" stroke-width="2" style="animation:dome 2200ms ease-out forwards"/>
-    <g style="animation:runerot 2200ms linear forwards">
-      <rect x="95" y="40" width="10" height="10" fill="none" stroke="#7ddc5f" stroke-width="1" opacity="0.7"/>
-      <rect x="150" y="95" width="10" height="10" fill="none" stroke="#7ddc5f" stroke-width="1" opacity="0.7"/>
-      <rect x="95" y="150" width="10" height="10" fill="none" stroke="#7ddc5f" stroke-width="1" opacity="0.7"/>
-      <rect x="40" y="95" width="10" height="10" fill="none" stroke="#7ddc5f" stroke-width="1" opacity="0.7"/>
-    </g>`;
+      @keyframes kb-ward-expand { 0% { transform: scale(0.1); opacity: 0; } 20% { transform: scale(1.08); opacity: 1; } 40% { transform: scale(1); opacity: 1; } 75% { opacity: 1; } 100% { transform: scale(1.15); opacity: 0; } }
+      @keyframes kb-barrier-spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+      @keyframes kb-def-ring { 0% { stroke-dashoffset: 700; opacity: 0; } 15% { opacity: 1; } 70% { stroke-dashoffset: 0; opacity: 1; } 100% { opacity: 0; } }
+      @keyframes kb-rune-appear { 0% { opacity: 0; transform: scale(0); } 30% { opacity: 1; transform: scale(1); } 70% { opacity: 1; } 100% { opacity: 0; } }
+    </style></defs><defs><filter id="kb-glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><!-- ward hexagon expanding --><polygon points="100,55 132,72 132,110 100,127 68,110 68,72" fill="#004422" fill-opacity="0.5" stroke="#66ffcc" stroke-width="2.5" filter="url(#kb-glow)" style="transform-origin:100px 108px; animation: kb-ward-expand 2600ms ease-out forwards;"/><!-- inner ward ring --><polygon points="100,68 122,79 122,103 100,114 78,103 78,79" fill="none" stroke="#22bb88" stroke-width="1.5" style="transform-origin:100px 108px; animation: kb-ward-expand 2600ms ease-out forwards 200ms;"/><!-- spinning karmic runes --><g style="transform-origin:100px 108px; animation: kb-barrier-spin 3s linear infinite;"><rect x="96" y="42" width="8" height="8" fill="#66ffcc" fill-opacity="0.8" rx="1" filter="url(#kb-glow)"/><rect x="96" y="42" width="8" height="8" fill="#66ffcc" fill-opacity="0.8" rx="1" transform="rotate(60 100 108)"/><rect x="96" y="42" width="8" height="8" fill="#66ffcc" fill-opacity="0.8" rx="1" transform="rotate(120 100 108)"/><rect x="96" y="42" width="8" height="8" fill="#aaffdd" fill-opacity="0.7" rx="1" transform="rotate(180 100 108)"/><rect x="96" y="42" width="8" height="8" fill="#aaffdd" fill-opacity="0.7" rx="1" transform="rotate(240 100 108)"/><rect x="96" y="42" width="8" height="8" fill="#aaffdd" fill-opacity="0.7" rx="1" transform="rotate(300 100 108)"/></g><!-- DEF ring building --><circle cx="100" cy="108" r="65" fill="none" stroke="#66ffcc" stroke-width="2" stroke-dasharray="700" stroke-dashoffset="700" style="animation: kb-def-ring 2600ms ease-out forwards 200ms;"/><!-- DEF label --><text x="53" y="50" fill="#aaffdd" font-size="9" font-family="monospace" style="animation: kb-rune-appear 2600ms ease-out forwards 500ms;">PARTY DEF +40%</text><text x="62" y="168" fill="#66ffcc" font-size="8" font-family="monospace" style="animation: kb-rune-appear 2600ms ease-out forwards 700ms;">DMG WARD ACTIVE</text>`;
     return s;
   }},
 
-  mastery_of_pain: { duration: 2900, create: () => {
+  // Mastery of Pain
+  'mastery_of_pain': { duration: 2900, create: () => {
     const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    s.setAttribute('viewBox', '0 0 200 200'); s.setAttribute('width', '200'); s.setAttribute('height', '200');
+    s.setAttribute('viewBox', '0 0 200 200');
+    s.setAttribute('width', '200');
+    s.setAttribute('height', '200');
     s.classList.add('battle-svg-animation');
     s.innerHTML = `<defs><style>
-      @keyframes vortexwind{0%{transform:translate(100px,100px)rotate(0deg)}100%{transform:translate(100px,100px)rotate(720deg)}}
-      @keyframes slash{0%{opacity:1;stroke-width:2}50%{opacity:1}100%{opacity:0;stroke-width:4}}
-    </style></defs>
-    <g style="animation:vortexwind 2900ms ease-out forwards"><circle cx="100" cy="100" r="45" fill="none" stroke="#7ddc5f" stroke-width="1.5" opacity="0.5"/><circle cx="100" cy="100" r="60" fill="none" stroke="#7ddc5f" stroke-width="1" opacity="0.3"/></g>
-    <line x1="50" y1="50" x2="150" y2="150" stroke="#7ddc5f" stroke-width="2" style="animation:slash 2900ms ease-out forwards 400ms"/>
-    <line x1="150" y1="50" x2="50" y2="150" stroke="#7ddc5f" stroke-width="2" style="animation:slash 2900ms ease-out forwards 900ms"/>`;
+      @keyframes mp-def-crystal { 0% { transform: translate(0,0) rotate(0deg) scale(1); opacity: 0; } 10% { opacity: 1; } 60% { transform: translate(var(--dcx), var(--dcy)) rotate(180deg) scale(0.9); opacity: 1; } 100% { transform: translate(var(--dcx), var(--dcy)) rotate(360deg) scale(0.2); opacity: 0; } }
+      @keyframes mp-karmic-charge { 0% { transform: scale(0); opacity: 0; filter: blur(6px); } 20% { transform: scale(0.6); opacity: 1; filter: blur(2px); } 45% { transform: scale(1); opacity: 1; filter: blur(0); } 60% { transform: scale(1.05); } 100% { transform: scale(2.5); opacity: 0; } }
+      @keyframes mp-shockwave { 0%, 44% { r: 5; opacity: 0; } 45% { r: 5; opacity: 1; stroke-width: 10; } 100% { r: 95; opacity: 0; stroke-width: 0.5; } }
+      @keyframes mp-guard-mark { 0% { transform: translate(35px, -45px) scale(0); opacity: 0; } 55% { transform: translate(35px, -45px) scale(0); opacity: 0; } 65% { transform: translate(35px, -45px) scale(1.2); opacity: 1; } 80% { transform: translate(35px, -45px) scale(1); opacity: 1; } 100% { opacity: 0; } }
+    </style></defs><defs><filter id="mp-glow"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter><radialGradient id="mp-core-grad" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ffffff" stop-opacity="0.95"/><stop offset="35%" stop-color="#aaffdd"/><stop offset="70%" stop-color="#22bb88"/><stop offset="100%" stop-color="#004422" stop-opacity="0"/></radialGradient></defs><!-- DEF crystal orbs gathering --><polygon points="100,108 96,100 88,98 94,92 92,84 100,88 108,84 106,92 112,98 104,100" fill="#22bb88" style="--dcx:-45px; --dcy:-35px; transform-origin:100px 108px; animation: mp-def-crystal 2900ms ease-in forwards 100ms;"/><polygon points="100,108 96,100 88,98 94,92 92,84 100,88 108,84 106,92 112,98 104,100" fill="#66ffcc" style="--dcx:48px; --dcy:-30px; transform-origin:100px 108px; animation: mp-def-crystal 2900ms ease-in forwards 150ms;"/><polygon points="100,108 96,100 88,98 94,92 92,84 100,88 108,84 106,92 112,98 104,100" fill="#aaffdd" style="--dcx:-38px; --dcy:45px; transform-origin:100px 108px; animation: mp-def-crystal 2900ms ease-in forwards 200ms;"/><polygon points="100,108 96,100 88,98 94,92 92,84 100,88 108,84 106,92 112,98 104,100" fill="#22bb88" style="--dcx:42px; --dcy:40px; transform-origin:100px 108px; animation: mp-def-crystal 2900ms ease-in forwards 250ms;"/><!-- core karmic sphere charging --><circle cx="100" cy="108" r="4" fill="url(#mp-core-grad)" filter="url(#mp-glow)" style="animation: mp-karmic-charge 2900ms ease-in-out forwards 300ms;"/><!-- shockwave --><circle cx="100" cy="108" r="5" fill="none" stroke="#ffffff" stroke-width="10" style="animation: mp-shockwave 2900ms ease-out forwards;"/><circle cx="100" cy="108" r="5" fill="none" stroke="#aaffdd" stroke-width="5" style="animation: mp-shockwave 2900ms ease-out forwards 200ms;"/><!-- guard mark stamp --><g style="animation: mp-guard-mark 2900ms ease-out forwards;"><polygon points="135,55 145,65 145,80 135,88 125,80 125,65" fill="#004422" fill-opacity="0.8" stroke="#66ffcc" stroke-width="2"/><text x="127" y="75" fill="#aaffdd" font-size="7" font-family="monospace" font-weight="bold">GRD</text></g><!-- DEF SCALE text --><text x="42" y="50" fill="#66ffcc" font-size="8" font-family="monospace" style="animation: mp-guard-mark 2900ms ease-out forwards 400ms;">DEF SCALE 3.5×</text>`;
     return s;
-  }}
+  }},
+
 };

@@ -1,0 +1,2028 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RPG+ — All 16 Move Animations (Detailed)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Raleway:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: linear-gradient(135deg, #080b12 0%, #0d1220 100%);
+      color: #e8eef5;
+      font-family: 'Raleway', sans-serif;
+      padding: 30px 20px;
+      min-height: 100vh;
+    }
+    .container { max-width: 2000px; margin: 0 auto; }
+    h1 {
+      text-align: center;
+      font-family: 'Cinzel', serif;
+      font-size: 32px;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #4ecfff, #00d4b4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 3px;
+    }
+    .subtitle {
+      text-align: center;
+      color: #7a90a8;
+      margin-bottom: 50px;
+      font-size: 11px;
+      letter-spacing: 1px;
+    }
+    .character-block {
+      margin-bottom: 80px;
+      border: 2px solid rgba(255,255,255,0.07);
+      border-radius: 14px;
+      padding: 36px;
+      background: rgba(12,18,30,0.95);
+      backdrop-filter: blur(12px);
+    }
+    .char-title {
+      font-family: 'Cinzel', serif;
+      font-size: 22px;
+      margin-bottom: 28px;
+      color: #a0e8ff;
+      letter-spacing: 2px;
+      padding-bottom: 14px;
+      border-bottom: 2px solid rgba(78,207,255,0.2);
+    }
+    .moves-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+      gap: 26px;
+    }
+    .move-card {
+      border: 1px solid rgba(78,207,255,0.18);
+      border-radius: 12px;
+      overflow: hidden;
+      background: rgba(10,16,28,0.97);
+      transition: all 0.3s ease;
+    }
+    .move-card:hover {
+      border-color: rgba(78,207,255,0.45);
+      box-shadow: 0 0 36px rgba(78,207,255,0.14);
+    }
+    .move-name {
+      padding: 14px 18px;
+      background: linear-gradient(135deg, rgba(78,207,255,0.12), rgba(125,211,252,0.04));
+      border-bottom: 2px solid rgba(78,207,255,0.18);
+      font-weight: 600;
+      color: #7dd3fc;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      font-family: 'Cinzel', serif;
+    }
+    .variation-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      padding: 10px;
+      background: rgba(0,0,0,0.4);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .tab-btn {
+      padding: 6px 13px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #888;
+      cursor: pointer;
+      font-size: 10px;
+      border-radius: 4px;
+      transition: all 0.2s;
+      font-family: monospace;
+    }
+    .tab-btn:hover { background: rgba(78,207,255,0.2); color: #4ecfff; }
+    .tab-btn.active { background: #4ecfff; color: #000; border-color: #4ecfff; }
+    .animation-stage {
+      width: 100%;
+      height: 260px;
+      background: radial-gradient(ellipse at 50% 60%, rgba(20,30,55,0.9) 0%, rgba(6,10,20,0.97) 100%);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .animation-variation {
+      display: none;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0; left: 0;
+      align-items: center;
+      justify-content: center;
+    }
+    .animation-variation.active { display: flex; }
+    .animation-variation svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+    .info-footer {
+      font-size: 10px;
+      color: #5a6e88;
+      padding: 9px 14px;
+      text-align: center;
+      background: rgba(0,0,0,0.35);
+      border-top: 1px solid rgba(255,255,255,0.04);
+      letter-spacing: 0.5px;
+    }
+
+    /* ==========================================
+       AYAKA — CRYO / ICE PALETTE: #4ecfff, #7dd3fc, #b0f0ff, #1a5a8a
+    ========================================== */
+
+    /* FROSTBLOSSOM SLASH — swift ice-blade cross slash */
+    @keyframes fb-slash1 {
+      0%   { stroke-dashoffset: 300; opacity: 0; }
+      10%  { opacity: 1; }
+      45%  { stroke-dashoffset: 0; opacity: 1; }
+      80%  { opacity: 0.6; }
+      100% { stroke-dashoffset: -60; opacity: 0; }
+    }
+    @keyframes fb-slash2 {
+      0%   { stroke-dashoffset: 300; opacity: 0; }
+      20%  { opacity: 1; }
+      60%  { stroke-dashoffset: 0; opacity: 1; }
+      90%  { opacity: 0; }
+      100% { opacity: 0; }
+    }
+    @keyframes fb-glow-bloom {
+      0%   { r: 4; opacity: 0; fill-opacity: 0; }
+      30%  { r: 18; opacity: 1; fill-opacity: 0.25; }
+      60%  { r: 32; opacity: 0.6; fill-opacity: 0.1; }
+      100% { r: 55; opacity: 0; fill-opacity: 0; }
+    }
+    @keyframes fb-shard {
+      0%   { transform: translate(0,0) scale(1); opacity: 1; }
+      100% { transform: translate(var(--tx), var(--ty)) scale(0.2); opacity: 0; }
+    }
+    @keyframes fb-slow-ring {
+      0%   { r: 6; stroke-width: 3; opacity: 0.9; stroke-dashoffset: 0; }
+      100% { r: 55; stroke-width: 0.5; opacity: 0; stroke-dashoffset: 80; }
+    }
+
+    /* GLACIAL WALTZ — spinning AOE ice dance */
+    @keyframes gw-spin-blade {
+      0%   { transform: rotate(0deg); opacity: 0; }
+      8%   { opacity: 1; }
+      100% { transform: rotate(720deg); opacity: 0; }
+    }
+    @keyframes gw-petal-orbit {
+      0%   { transform: rotate(calc(var(--start-angle) * 1deg)) translateX(48px) rotate(calc(var(--start-angle) * -1deg)); opacity: 0; }
+      15%  { opacity: 1; }
+      80%  { transform: rotate(calc((var(--start-angle) + 360) * 1deg)) translateX(48px) rotate(calc((var(--start-angle) + 360) * -1deg)); opacity: 0.8; }
+      100% { opacity: 0; }
+    }
+    @keyframes gw-wave-ring {
+      0%   { r: 8; opacity: 1; stroke-width: 3; }
+      50%  { r: 45; opacity: 0.6; }
+      100% { r: 90; opacity: 0; stroke-width: 0.3; }
+    }
+    @keyframes gw-spd-arrow {
+      0%   { transform: translateY(40px); opacity: 0; }
+      30%  { opacity: 1; }
+      70%  { transform: translateY(-50px); opacity: 1; }
+      100% { transform: translateY(-80px); opacity: 0; }
+    }
+
+    /* PERMAFROST — freeze/debuff ice cage */
+    @keyframes pf-spike-grow {
+      0%   { transform: scaleY(0) translateY(50px); opacity: 0; transform-origin: bottom; }
+      40%  { transform: scaleY(1) translateY(0); opacity: 1; transform-origin: bottom; }
+      75%  { opacity: 1; }
+      100% { opacity: 0; transform: scaleY(1.1) translateY(0); transform-origin: bottom; }
+    }
+    @keyframes pf-cage-ring {
+      0%   { stroke-dashoffset: 400; opacity: 0; }
+      20%  { opacity: 1; }
+      60%  { stroke-dashoffset: 0; opacity: 1; }
+      100% { opacity: 0; }
+    }
+    @keyframes pf-crack {
+      0%   { stroke-dashoffset: 100; opacity: 0; }
+      35%  { opacity: 1; stroke-dashoffset: 0; }
+      80%  { opacity: 0.5; }
+      100% { opacity: 0; }
+    }
+    @keyframes pf-def-down {
+      0%   { transform: translateY(0); opacity: 0; }
+      20%  { opacity: 1; }
+      100% { transform: translateY(30px); opacity: 0; }
+    }
+    @keyframes pf-snow-fall {
+      0%   { transform: translate(0,0); opacity: 0.8; }
+      100% { transform: translate(var(--sx), 60px); opacity: 0; }
+    }
+
+    /* CRYOCLASM — massive ice explosion (ultimate) */
+    @keyframes cc-buildup {
+      0%   { r: 2; fill-opacity: 0.9; opacity: 1; }
+      40%  { r: 22; fill-opacity: 0.3; }
+      55%  { r: 18; fill-opacity: 0.7; }
+      65%  { r: 90; fill-opacity: 0; opacity: 0; }
+      100% { r: 90; opacity: 0; }
+    }
+    @keyframes cc-shockwave {
+      0%   { r: 5; stroke-width: 8; opacity: 1; }
+      100% { r: 95; stroke-width: 0.3; opacity: 0; }
+    }
+    @keyframes cc-pillar {
+      0%   { transform: translateY(200px) scaleX(0.2); opacity: 0; }
+      20%  { transform: translateY(0) scaleX(1); opacity: 1; }
+      65%  { opacity: 1; }
+      100% { transform: translateY(-30px) scaleX(1.3); opacity: 0; }
+    }
+    @keyframes cc-spark {
+      0%   { transform: translate(0,0) scale(1); opacity: 1; }
+      100% { transform: translate(var(--cx), var(--cy)) scale(0); opacity: 0; }
+    }
+    @keyframes cc-frozen-flash {
+      0%,60% { opacity: 0; }
+      65%     { opacity: 0.7; }
+      80%     { opacity: 0.3; }
+      100%    { opacity: 0; }
+    }
+
+    /* ==========================================
+       HU TAO — FIRE / GHOST PALETTE: #ff6600, #ff3300, #ff99aa, #660000
+    ========================================== */
+
+    /* SPIRIT FLAME — ghost-fire spear thrust + lifesteal */
+    @keyframes sf-thrust {
+      0%   { transform: translateY(-90px) scaleX(0.7); opacity: 0; }
+      15%  { opacity: 1; transform: translateY(-90px) scaleX(1); }
+      50%  { transform: translateY(80px) scaleX(1); opacity: 1; }
+      70%  { transform: translateY(80px) scaleX(1); opacity: 0.7; }
+      100% { transform: translateY(80px) scaleX(0.5); opacity: 0; }
+    }
+    @keyframes sf-ghost-flicker {
+      0%,100% { opacity: 0.15; }
+      50%      { opacity: 0.55; }
+    }
+    @keyframes sf-flame-wisp {
+      0%   { transform: translate(0, 0) scale(1); opacity: 0.9; }
+      100% { transform: translate(var(--wx), -60px) scale(0.1); opacity: 0; }
+    }
+    @keyframes sf-lifesteal-orb {
+      0%   { transform: translate(60px, -60px) scale(0.3); opacity: 0; }
+      30%  { opacity: 1; }
+      70%  { transform: translate(0,0) scale(1); opacity: 1; }
+      100% { transform: translate(0,0) scale(1.4); opacity: 0; }
+    }
+    @keyframes sf-impact-ring {
+      0%   { r: 4; opacity: 0; }
+      45%  { r: 4; opacity: 0; }
+      50%  { r: 6; opacity: 1; }
+      100% { r: 50; opacity: 0; stroke-width: 0.5; }
+    }
+
+    /* PARAMITA PAPILIO — ghost butterflies orbiting */
+    @keyframes pp-wing-flap {
+      0%,100% { transform: scaleX(1); }
+      50%     { transform: scaleX(0.2); }
+    }
+    @keyframes pp-butterfly-orbit {
+      0%   { transform: rotate(calc(var(--ba) * 1deg)) translateX(52px); opacity: 0; }
+      10%  { opacity: 1; }
+      90%  { transform: rotate(calc((var(--ba) + 400) * 1deg)) translateX(52px); opacity: 1; }
+      100% { opacity: 0; transform: rotate(calc((var(--ba) + 440) * 1deg)) translateX(80px); }
+    }
+    @keyframes pp-fire-trail {
+      0%   { r: 3; opacity: 0.9; }
+      100% { r: 0.5; opacity: 0; }
+    }
+    @keyframes pp-atk-buff-text {
+      0%   { transform: translateY(0); opacity: 0; }
+      20%  { opacity: 1; }
+      60%  { transform: translateY(-28px); opacity: 1; }
+      100% { transform: translateY(-50px); opacity: 0; }
+    }
+    @keyframes pp-burst-ring {
+      0%   { r: 5; stroke-width: 5; opacity: 1; }
+      100% { r: 80; stroke-width: 0.3; opacity: 0; }
+    }
+
+    /* BLOOD BLOSSOM AURA — burning state buff, dark bloom */
+    @keyframes bb-petal-spin {
+      0%   { transform: rotate(calc(var(--pa) * 1deg)) translateX(0); opacity: 0; }
+      15%  { opacity: 1; }
+      100% { transform: rotate(calc((var(--pa) + 360) * 1deg)) translateX(20px); opacity: 0; }
+    }
+    @keyframes bb-bloom-grow {
+      0%   { transform: scale(0.1); opacity: 0; }
+      30%  { transform: scale(1); opacity: 1; }
+      60%  { transform: scale(1.05); }
+      100% { transform: scale(1.2); opacity: 0; }
+    }
+    @keyframes bb-fire-aura {
+      0%   { transform: translate(0,0) scaleY(0.2); opacity: 0; }
+      20%  { transform: translate(0,0) scaleY(1); opacity: 0.8; }
+      60%  { opacity: 0.6; }
+      100% { transform: translate(var(--fx), -70px) scaleY(0.4); opacity: 0; }
+    }
+    @keyframes bb-atk-ring {
+      0%   { stroke-dashoffset: 500; opacity: 0; }
+      20%  { opacity: 1; }
+      70%  { stroke-dashoffset: 0; }
+      100% { opacity: 0; }
+    }
+    @keyframes bb-heartbeat {
+      0%,100% { transform: scale(1); }
+      25%      { transform: scale(1.15); }
+      50%      { transform: scale(0.95); }
+      75%      { transform: scale(1.1); }
+    }
+
+    /* GUIDE TO AFTERLIFE — 4x pyro nuke + massive drain */
+    @keyframes gta-skull-rise {
+      0%   { transform: translateY(80px) scale(0.3); opacity: 0; filter: blur(4px); }
+      25%  { transform: translateY(0) scale(1.1); opacity: 1; filter: blur(0); }
+      60%  { transform: translateY(-10px) scale(1); opacity: 1; }
+      100% { transform: translateY(-60px) scale(0.5); opacity: 0; }
+    }
+    @keyframes gta-drain-beam {
+      0%   { stroke-dashoffset: 200; opacity: 0; stroke-width: 1; }
+      20%  { opacity: 1; }
+      60%  { stroke-dashoffset: 0; stroke-width: 4; opacity: 1; }
+      100% { stroke-width: 0.5; opacity: 0; stroke-dashoffset: -50; }
+    }
+    @keyframes gta-pyro-nova {
+      0%   { r: 3; fill-opacity: 1; opacity: 1; }
+      30%  { r: 12; fill-opacity: 0.6; }
+      60%  { r: 85; fill-opacity: 0; opacity: 0.3; }
+      100% { r: 95; opacity: 0; }
+    }
+    @keyframes gta-ember {
+      0%   { transform: translate(0,0) scale(1); opacity: 1; }
+      100% { transform: translate(var(--ex), var(--ey)) scale(0); opacity: 0; }
+    }
+    @keyframes gta-hp-drain {
+      0%   { transform: translateY(0) scale(1); opacity: 0; }
+      15%  { opacity: 1; }
+      60%  { transform: translateY(-40px) scale(1.3); opacity: 1; }
+      100% { transform: translateY(-70px) scale(0.5); opacity: 0; }
+    }
+
+    /* ==========================================
+       NILOU — HYDRO / WATER PALETTE: #00d4b4, #00b8f5, #80ffee, #005566
+    ========================================== */
+
+    /* DANCE OF BLESSING — graceful water healing ripples */
+    @keyframes dob-petal-dance {
+      0%   { transform: rotate(calc(var(--dp) * 1deg)) translateX(30px) scale(0.5); opacity: 0; }
+      20%  { transform: rotate(calc((var(--dp)+90) * 1deg)) translateX(42px) scale(1); opacity: 1; }
+      80%  { transform: rotate(calc((var(--dp)+270) * 1deg)) translateX(35px) scale(0.8); opacity: 0.7; }
+      100% { transform: rotate(calc((var(--dp)+360) * 1deg)) translateX(20px) scale(0.3); opacity: 0; }
+    }
+    @keyframes dob-heal-cross {
+      0%   { transform: scale(0); opacity: 0; }
+      25%  { transform: scale(1); opacity: 1; }
+      65%  { opacity: 1; }
+      100% { transform: scale(1.3); opacity: 0; }
+    }
+    @keyframes dob-ripple {
+      0%   { r: 4; stroke-width: 3; opacity: 0.9; }
+      100% { r: 75; stroke-width: 0.3; opacity: 0; }
+    }
+    @keyframes dob-sparkle {
+      0%,100% { opacity: 0; transform: scale(0.5); }
+      50%      { opacity: 1; transform: scale(1.2); }
+    }
+    @keyframes dob-water-drop {
+      0%   { transform: translate(var(--ddx), -60px); opacity: 0; }
+      30%  { opacity: 1; }
+      80%  { transform: translate(var(--ddx), 0); opacity: 1; }
+      100% { transform: translate(var(--ddx), 10px); opacity: 0; }
+    }
+
+    /* WATER WHEEL — spinning AOE water slash + lifesteal */
+    @keyframes ww-wheel-spin {
+      0%   { transform: rotate(0deg) scale(0.3); opacity: 0; }
+      10%  { transform: rotate(0deg) scale(1); opacity: 1; }
+      90%  { transform: rotate(1080deg) scale(1); opacity: 0.8; }
+      100% { transform: rotate(1200deg) scale(1.4); opacity: 0; }
+    }
+    @keyframes ww-spoke {
+      0%   { stroke-dashoffset: 100; opacity: 0; }
+      20%  { opacity: 1; stroke-dashoffset: 0; }
+      80%  { opacity: 1; }
+      100% { opacity: 0; }
+    }
+    @keyframes ww-aoe-wave {
+      0%   { r: 8; stroke-width: 4; opacity: 1; }
+      100% { r: 95; stroke-width: 0.3; opacity: 0; }
+    }
+    @keyframes ww-heal-stream {
+      0%   { transform: translate(var(--hx), var(--hy)) scale(1); opacity: 1; }
+      100% { transform: translate(0, 0) scale(0.3); opacity: 0; }
+    }
+
+    /* HARMONY PRESERVATION — party-wide buff aura */
+    @keyframes harm-shield-raise {
+      0%   { transform: translateY(50px) scale(0.8); opacity: 0; }
+      30%  { transform: translateY(0) scale(1); opacity: 1; }
+      70%  { opacity: 1; }
+      100% { transform: translateY(-20px) scale(1.1); opacity: 0; }
+    }
+    @keyframes harm-rune-spin {
+      0%   { transform: rotate(0deg); opacity: 0; }
+      15%  { opacity: 1; }
+      100% { transform: rotate(540deg); opacity: 0; }
+    }
+    @keyframes harm-buff-ring {
+      0%   { stroke-dashoffset: 600; opacity: 0; }
+      25%  { opacity: 1; }
+      75%  { stroke-dashoffset: 0; opacity: 1; }
+      100% { opacity: 0; }
+    }
+    @keyframes harm-regen-drop {
+      0%   { transform: translate(var(--rx), 0) scale(1); opacity: 1; }
+      100% { transform: translate(var(--rx), 60px) scale(0.3); opacity: 0; }
+    }
+    @keyframes harm-atk-glow {
+      0%,100% { opacity: 0.3; }
+      50%      { opacity: 1; }
+    }
+
+    /* HAJRA'S HYMN (ULTIMATE) — ultimate star heal, cleanse, speed buff */
+    @keyframes hh-star-burst {
+      0%   { transform: scale(0) rotate(0deg); opacity: 0; }
+      20%  { transform: scale(1.2) rotate(30deg); opacity: 1; }
+      50%  { transform: scale(1) rotate(60deg); }
+      80%  { transform: scale(1.05) rotate(90deg); opacity: 0.8; }
+      100% { transform: scale(1.8) rotate(120deg); opacity: 0; }
+    }
+    @keyframes hh-heal-wave {
+      0%   { r: 5; stroke-width: 5; opacity: 1; }
+      100% { r: 95; stroke-width: 0.3; opacity: 0; }
+    }
+    @keyframes hh-cleanse-bubble {
+      0%   { transform: translate(var(--cbx), var(--cby)) scale(0.5); opacity: 0; }
+      30%  { opacity: 1; }
+      70%  { transform: translate(var(--cbx), calc(var(--cby) - 30px)) scale(1); opacity: 0.7; }
+      100% { transform: translate(var(--cbx), calc(var(--cby) - 60px)) scale(1.5); opacity: 0; }
+    }
+    @keyframes hh-spd-streak {
+      0%   { transform: translateX(-80px) skewX(-20deg); opacity: 0; }
+      20%  { opacity: 1; }
+      100% { transform: translateX(80px) skewX(-20deg); opacity: 0; }
+    }
+    @keyframes hh-star-ray {
+      0%   { transform: rotate(calc(var(--ray) * 1deg)) scaleX(0); opacity: 0; }
+      30%  { transform: rotate(calc(var(--ray) * 1deg)) scaleX(1); opacity: 1; }
+      100% { transform: rotate(calc(var(--ray) * 1deg)) scaleX(1.5); opacity: 0; }
+    }
+
+    /* ==========================================
+       XIAO — ANEMO / GUARDIAN PALETTE: #66ffcc, #22bb88, #004422, #aaffdd
+    ========================================== */
+
+    /* LANCING STRIKE — polearm thrust, DEF pierce */
+    @keyframes ls-lance-charge {
+      0%   { transform: translateY(-110px) scaleY(0.3); opacity: 0; }
+      18%  { transform: translateY(-110px) scaleY(1); opacity: 1; }
+      45%  { transform: translateY(90px) scaleY(1); opacity: 1; }
+      65%  { transform: translateY(90px) scaleY(1); opacity: 0.6; }
+      100% { transform: translateY(90px) scaleY(0.4); opacity: 0; }
+    }
+    @keyframes ls-anemo-ring {
+      0%   { stroke-dashoffset: 300; opacity: 0; }
+      40%  { opacity: 0; }
+      45%  { stroke-dashoffset: 300; opacity: 0; }
+      50%  { opacity: 1; }
+      100% { stroke-dashoffset: 0; opacity: 0; }
+    }
+    @keyframes ls-pierce-crack {
+      0%,44%  { opacity: 0; }
+      45%     { opacity: 1; stroke-dashoffset: 80; }
+      80%     { stroke-dashoffset: 0; opacity: 1; }
+      100%    { opacity: 0; }
+    }
+    @keyframes ls-wind-streak {
+      0%   { transform: translate(var(--wsx), var(--wsy)) scaleX(0); opacity: 0; }
+      35%  { opacity: 0; }
+      45%  { transform: translate(var(--wsx), var(--wsy)) scaleX(0); opacity: 1; }
+      80%  { transform: translate(0, 0) scaleX(1); opacity: 1; }
+      100% { opacity: 0; }
+    }
+    @keyframes ls-impact-flash {
+      0%,43%  { opacity: 0; }
+      46%     { opacity: 0.8; }
+      55%     { opacity: 0; }
+      100%    { opacity: 0; }
+    }
+
+    /* YAKSHA VALOR — guardian stance, reflect aura */
+    @keyframes yv-shield-form {
+      0%   { transform: scale(0.2) rotate(-10deg); opacity: 0; }
+      25%  { transform: scale(1.05) rotate(2deg); opacity: 1; }
+      50%  { transform: scale(1) rotate(0deg); opacity: 1; }
+      80%  { opacity: 1; }
+      100% { transform: scale(1.1) rotate(0deg); opacity: 0; }
+    }
+    @keyframes yv-reflect-pulse {
+      0%,100% { opacity: 0.2; r: 50; }
+      50%      { opacity: 0.7; r: 56; }
+    }
+    @keyframes yv-damage-reduce {
+      0%   { r: 3; stroke-width: 6; opacity: 1; fill-opacity: 0.5; }
+      100% { r: 60; stroke-width: 0.5; opacity: 0; fill-opacity: 0; }
+    }
+    @keyframes yv-reflect-arrow {
+      0%   { transform: translate(var(--rax), var(--ray2)); opacity: 0; }
+      40%  { opacity: 1; }
+      80%  { transform: translate(calc(var(--rax) * -0.6), calc(var(--ray2) * -0.6)); opacity: 1; }
+      100% { transform: translate(calc(var(--rax) * -1.2), calc(var(--ray2) * -1.2)); opacity: 0; }
+    }
+    @keyframes yv-anemo-swirl {
+      0%   { transform: rotate(0deg) scale(0.3); opacity: 0; }
+      15%  { opacity: 0.6; }
+      100% { transform: rotate(540deg) scale(1.3); opacity: 0; }
+    }
+
+    /* KARMIC BARRIER — party DEF aura, ward */
+    @keyframes kb-ward-expand {
+      0%   { transform: scale(0.1); opacity: 0; }
+      20%  { transform: scale(1.08); opacity: 1; }
+      40%  { transform: scale(1); opacity: 1; }
+      75%  { opacity: 1; }
+      100% { transform: scale(1.15); opacity: 0; }
+    }
+    @keyframes kb-rune-appear {
+      0%   { opacity: 0; transform: scale(0); }
+      30%  { opacity: 1; transform: scale(1); }
+      70%  { opacity: 1; }
+      100% { opacity: 0; }
+    }
+    @keyframes kb-barrier-spin {
+      0%   { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    @keyframes kb-def-ring {
+      0%   { stroke-dashoffset: 700; opacity: 0; }
+      15%  { opacity: 1; }
+      70%  { stroke-dashoffset: 0; opacity: 1; }
+      100% { opacity: 0; }
+    }
+    @keyframes kb-anemo-burst {
+      0%   { r: 6; fill-opacity: 0.8; opacity: 1; }
+      100% { r: 75; fill-opacity: 0; opacity: 0; }
+    }
+
+    /* MASTERY OF PAIN (ULTIMATE) — karmic DEF-scaling nuke, guard mark */
+    @keyframes mp-karmic-charge {
+      0%   { transform: scale(0); opacity: 0; filter: blur(6px); }
+      20%  { transform: scale(0.6); opacity: 1; filter: blur(2px); }
+      45%  { transform: scale(1); opacity: 1; filter: blur(0); }
+      60%  { transform: scale(1.05); }
+      100% { transform: scale(2.5); opacity: 0; }
+    }
+    @keyframes mp-energy-beam {
+      0%   { transform: rotate(calc(var(--mb) * 1deg)) scaleX(0); opacity: 0; }
+      25%  { transform: rotate(calc(var(--mb) * 1deg)) scaleX(0); opacity: 0; }
+      40%  { transform: rotate(calc(var(--mb) * 1deg)) scaleX(1); opacity: 1; }
+      70%  { opacity: 1; }
+      100% { transform: rotate(calc(var(--mb) * 1deg)) scaleX(1.5); opacity: 0; }
+    }
+    @keyframes mp-guard-mark {
+      0%   { transform: translate(35px, -45px) scale(0); opacity: 0; }
+      55%  { transform: translate(35px, -45px) scale(0); opacity: 0; }
+      65%  { transform: translate(35px, -45px) scale(1.2); opacity: 1; }
+      80%  { transform: translate(35px, -45px) scale(1); opacity: 1; }
+      100% { opacity: 0; }
+    }
+    @keyframes mp-shockwave {
+      0%,44% { r: 5; opacity: 0; }
+      45%    { r: 5; opacity: 1; stroke-width: 10; }
+      100%   { r: 95; opacity: 0; stroke-width: 0.5; }
+    }
+    @keyframes mp-def-crystal {
+      0%   { transform: translate(0,0) rotate(0deg) scale(1); opacity: 0; }
+      10%  { opacity: 1; }
+      60%  { transform: translate(var(--dcx), var(--dcy)) rotate(180deg) scale(0.9); opacity: 1; }
+      100% { transform: translate(var(--dcx), var(--dcy)) rotate(360deg) scale(0.2); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>⚔️ ALL 16 MOVE ANIMATIONS ⚔️</h1>
+  <div class="subtitle">Detailed · Move-Accurate · SVG Animations — Per Ability Effect</div>
+
+  <!-- ============================== AYAKA ============================== -->
+  <div class="character-block" style="border-color: rgba(78,207,255,0.25);">
+    <div class="char-title" style="color:#7dd3fc;">❄️ AYAKA — Cryo Bladestorm (4 Moves)</div>
+    <div class="moves-grid">
+
+      <!-- FROSTBLOSSOM SLASH -->
+      <div class="move-card">
+        <div class="move-name" style="color:#7dd3fc;">❄ Frostblossom Slash — 1.5× ATK | 40% Slow</div>
+        <div class="variation-tabs">
+          <button class="tab-btn active" onclick="switchTab(event,'fb1')">Swift Slash</button>
+          <button class="tab-btn" onclick="switchTab(event,'fb2')">Ice Ring Slow</button>
+          <button class="tab-btn" onclick="switchTab(event,'fb3')">Shard Burst</button>
+        </div>
+        <div class="animation-stage">
+
+          <!-- V1: Two swift diagonal ice-blade slashes + bloom glow -->
+          <div class="animation-variation active" id="fb1">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <filter id="fb-glow"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                <linearGradient id="fb-blade-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#b0f0ff" stop-opacity="0"/>
+                  <stop offset="40%" stop-color="#4ecfff"/>
+                  <stop offset="100%" stop-color="#ffffff"/>
+                </linearGradient>
+              </defs>
+              <!-- glow bloom at center -->
+              <circle cx="100" cy="108" r="4" fill="#4ecfff" filter="url(#fb-glow)" style="animation: fb-glow-bloom 1900ms ease-out forwards 200ms; animation-fill-mode: both;"/>
+              <!-- slash 1: top-left to bottom-right -->
+              <line x1="45" y1="55" x2="155" y2="165"
+                stroke="url(#fb-blade-grad)" stroke-width="3.5" stroke-linecap="round"
+                stroke-dasharray="200" stroke-dashoffset="200"
+                filter="url(#fb-glow)"
+                style="animation: fb-slash1 1900ms cubic-bezier(0.1,0.6,0.3,1) forwards;"/>
+              <!-- slash 2: top-right to bottom-left, staggered -->
+              <line x1="155" y1="55" x2="45" y2="165"
+                stroke="url(#fb-blade-grad)" stroke-width="2.5" stroke-linecap="round"
+                stroke-dasharray="200" stroke-dashoffset="200"
+                filter="url(#fb-glow)"
+                style="animation: fb-slash2 1900ms cubic-bezier(0.1,0.6,0.3,1) forwards 150ms;"/>
+              <!-- slow indicator dashed ring -->
+              <circle cx="100" cy="110" r="6" fill="none" stroke="#7dd3fc" stroke-width="1.5"
+                stroke-dasharray="40 8"
+                style="animation: fb-slow-ring 1900ms ease-out forwards 500ms; animation-fill-mode: both;"/>
+            </svg>
+          </div>
+
+          <!-- V2: Ice ring expand slow -->
+          <div class="animation-variation" id="fb2">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <filter id="fb2-glow"><feGaussianBlur stdDeviation="3"/></filter>
+              </defs>
+              <!-- center burst -->
+              <circle cx="100" cy="110" r="4" fill="#b0f0ff"
+                style="animation: fb-glow-bloom 1900ms ease-out forwards;"/>
+              <!-- blade mark -->
+              <line x1="80" y1="70" x2="120" y2="150" stroke="#4ecfff" stroke-width="2.5" stroke-linecap="round"
+                stroke-dasharray="120" stroke-dashoffset="120"
+                style="animation: fb-slash1 1900ms ease-out forwards 80ms;"/>
+              <!-- expanding slow rings -->
+              <circle cx="100" cy="110" r="5" fill="none" stroke="#4ecfff" stroke-width="2"
+                stroke-dasharray="35 6"
+                style="animation: fb-slow-ring 1900ms ease-out forwards 350ms;"/>
+              <circle cx="100" cy="110" r="5" fill="none" stroke="#7dd3fc" stroke-width="1"
+                stroke-dasharray="35 6"
+                style="animation: fb-slow-ring 1900ms ease-out forwards 600ms;"/>
+              <!-- snow particles -->
+              <circle cx="100" cy="110" r="2.5" fill="#b0f0ff" style="--sx:-22px; animation: pf-snow-fall 1900ms ease-in forwards 300ms;"/>
+              <circle cx="100" cy="110" r="2" fill="#7dd3fc" style="--sx:18px; animation: pf-snow-fall 1900ms ease-in forwards 450ms;"/>
+              <circle cx="100" cy="110" r="2" fill="#b0f0ff" style="--sx:-10px; animation: pf-snow-fall 1900ms ease-in forwards 600ms;"/>
+            </svg>
+          </div>
+
+          <!-- V3: Ice shard burst from center -->
+          <div class="animation-variation" id="fb3">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <filter id="fb3-glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              </defs>
+              <circle cx="100" cy="105" r="10" fill="#4ecfff" fill-opacity="0.15"
+                style="animation: fb-glow-bloom 1900ms ease-out forwards;"/>
+              <!-- 8 ice shards flying outward -->
+              <polygon points="100,105 97,90 103,90" fill="#b0f0ff" filter="url(#fb3-glow)"
+                style="--tx:0px; --ty:-60px; animation: fb-shard 1900ms ease-out forwards 100ms;"/>
+              <polygon points="100,105 97,90 103,90" fill="#4ecfff" filter="url(#fb3-glow)"
+                transform="rotate(45 100 105)"
+                style="--tx:40px; --ty:-42px; animation: fb-shard 1900ms ease-out forwards 150ms;"/>
+              <polygon points="100,105 97,90 103,90" fill="#7dd3fc"
+                transform="rotate(90 100 105)"
+                style="--tx:60px; --ty:0px; animation: fb-shard 1900ms ease-out forwards 180ms;"/>
+              <polygon points="100,105 97,90 103,90" fill="#4ecfff"
+                transform="rotate(135 100 105)"
+                style="--tx:42px; --ty:42px; animation: fb-shard 1900ms ease-out forwards 200ms;"/>
+              <polygon points="100,105 97,90 103,90" fill="#b0f0ff"
+                transform="rotate(180 100 105)"
+                style="--tx:0px; --ty:60px; animation: fb-shard 1900ms ease-out forwards 220ms;"/>
+              <polygon points="100,105 97,90 103,90" fill="#4ecfff"
+                transform="rotate(225 100 105)"
+                style="--tx:-42px; --ty:42px; animation: fb-shard 1900ms ease-out forwards 240ms;"/>
+              <polygon points="100,105 97,90 103,90" fill="#7dd3fc"
+                transform="rotate(270 100 105)"
+                style="--tx:-60px; --ty:0px; animation: fb-shard 1900ms ease-out forwards 260ms;"/>
+              <polygon points="100,105 97,90 103,90" fill="#4ecfff"
+                transform="rotate(315 100 105)"
+                style="--tx:-42px; --ty:-42px; animation: fb-shard 1900ms ease-out forwards 280ms;"/>
+              <!-- slash marks -->
+              <line x1="65" y1="65" x2="135" y2="145" stroke="#7dd3fc" stroke-width="1.5"
+                stroke-dasharray="120" stroke-dashoffset="120"
+                style="animation: fb-slash1 1900ms ease-out forwards;"/>
+            </svg>
+          </div>
+        </div>
+        <div class="info-footer">1900ms · 3 Variations · Physical + Ice · 40% Slow on hit</div>
+      </div>
+
+      <!-- GLACIAL WALTZ -->
+      <div class="move-card">
+        <div class="move-name" style="color:#7dd3fc;">❄ Glacial Waltz — 2.2× MAG AOE | SPD +1</div>
+        <div class="variation-tabs">
+          <button class="tab-btn active" onclick="switchTab(event,'gw1')">Spin Petals</button>
+          <button class="tab-btn" onclick="switchTab(event,'gw2')">Wave Burst</button>
+        </div>
+        <div class="animation-stage">
+
+          <!-- V1: Ice petals orbiting + expanding wave rings -->
+          <div class="animation-variation active" id="gw1">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <filter id="gw-glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              </defs>
+              <!-- outer AOE wave ring -->
+              <circle cx="100" cy="105" r="8" fill="none" stroke="#4ecfff" stroke-width="3"
+                style="animation: gw-wave-ring 2100ms ease-out forwards 200ms;"/>
+              <circle cx="100" cy="105" r="8" fill="none" stroke="#7dd3fc" stroke-width="1.5"
+                style="animation: gw-wave-ring 2100ms ease-out forwards 500ms;"/>
+              <!-- spinning core -->
+              <g style="transform-origin:100px 105px; animation: gw-spin-blade 2100ms ease-out forwards;">
+                <!-- 6 ice blades -->
+                <ellipse cx="100" cy="65" rx="5" ry="14" fill="#4ecfff" opacity="0.9" filter="url(#gw-glow)"/>
+                <ellipse cx="100" cy="65" rx="5" ry="14" fill="#4ecfff" opacity="0.9" transform="rotate(60 100 105)" filter="url(#gw-glow)"/>
+                <ellipse cx="100" cy="65" rx="5" ry="14" fill="#7dd3fc" opacity="0.8" transform="rotate(120 100 105)"/>
+                <ellipse cx="100" cy="65" rx="5" ry="14" fill="#4ecfff" opacity="0.9" transform="rotate(180 100 105)"/>
+                <ellipse cx="100" cy="65" rx="5" ry="14" fill="#7dd3fc" opacity="0.8" transform="rotate(240 100 105)"/>
+                <ellipse cx="100" cy="65" rx="5" ry="14" fill="#4ecfff" opacity="0.9" transform="rotate(300 100 105)"/>
+              </g>
+              <!-- speed arrow indicator -->
+              <g style="animation: gw-spd-arrow 2100ms ease-out forwards 800ms; transform-origin: 160px 150px;">
+                <line x1="155" y1="155" x2="155" y2="130" stroke="#80ffcc" stroke-width="2"/>
+                <polygon points="155,125 151,133 159,133" fill="#80ffcc"/>
+                <text x="163" y="145" fill="#80ffcc" font-size="8" font-family="monospace">SPD+</text>
+              </g>
+            </svg>
+          </div>
+
+          <!-- V2: Concentric wave burst + single spin ring -->
+          <div class="animation-variation" id="gw2">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="gw2-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#4ecfff" stop-opacity="0.8"/>
+                  <stop offset="100%" stop-color="#b0f0ff" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <!-- rotating ice ring -->
+              <circle cx="100" cy="105" r="42" fill="none" stroke="#4ecfff" stroke-width="1.5"
+                stroke-dasharray="20 8"
+                style="transform-origin:100px 105px; animation: gw-spin-blade 2100ms ease-out forwards;"/>
+              <!-- AOE waves -->
+              <circle cx="100" cy="105" r="5" fill="none" stroke="#7dd3fc" stroke-width="4"
+                style="animation: gw-wave-ring 2100ms ease-out forwards;"/>
+              <circle cx="100" cy="105" r="5" fill="none" stroke="#4ecfff" stroke-width="2"
+                style="animation: gw-wave-ring 2100ms ease-out forwards 300ms;"/>
+              <circle cx="100" cy="105" r="5" fill="none" stroke="#b0f0ff" stroke-width="1"
+                style="animation: gw-wave-ring 2100ms ease-out forwards 600ms;"/>
+              <!-- center waltz glow -->
+              <circle cx="100" cy="105" r="18" fill="#4ecfff" fill-opacity="0.08"
+                style="animation: gw-wave-ring 2100ms ease-out forwards 100ms;"/>
+              <!-- speed arrow -->
+              <g style="animation: gw-spd-arrow 2100ms ease-out forwards 1000ms;">
+                <line x1="155" y1="155" x2="155" y2="130" stroke="#80ffcc" stroke-width="2"/>
+                <polygon points="155,125 151,133 159,133" fill="#80ffcc"/>
+              </g>
+            </svg>
+          </div>
+        </div>
+        <div class="info-footer">2100ms · 2 Variations · Magic Ice AOE · SPD +1 turn</div>
+      </div>
+
+      <!-- PERMAFROST -->
+      <div class="move-card">
+        <div class="move-name" style="color:#7dd3fc;">🧊 Permafrost — 60% Freeze | DEF −20%</div>
+        <div class="variation-tabs">
+          <button class="tab-btn active" onclick="switchTab(event,'pf1')">Ice Cage</button>
+          <button class="tab-btn" onclick="switchTab(event,'pf2')">Frost Crack</button>
+        </div>
+        <div class="animation-stage">
+
+          <!-- V1: Ice spikes rising + dashed cage ring + snowfall -->
+          <div class="animation-variation active" id="pf1">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <filter id="pf-glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              </defs>
+              <!-- cage ring -->
+              <circle cx="100" cy="110" r="52" fill="none" stroke="#4ecfff" stroke-width="1.5"
+                stroke-dasharray="400" stroke-dashoffset="400"
+                style="animation: pf-cage-ring 2100ms ease-out forwards 200ms;"/>
+              <!-- inner lock ring -->
+              <circle cx="100" cy="110" r="30" fill="none" stroke="#7dd3fc" stroke-width="1"
+                stroke-dasharray="200" stroke-dashoffset="200"
+                style="animation: pf-cage-ring 2100ms ease-out forwards 500ms;"/>
+              <!-- ice spikes rising from bottom -->
+              <polygon points="100,160 94,160 97,100" fill="#b0f0ff" fill-opacity="0.9" filter="url(#pf-glow)"
+                style="animation: pf-spike-grow 2100ms cubic-bezier(0.1,0.8,0.2,1) forwards 100ms;"/>
+              <polygon points="80,165 74,165 77,115" fill="#4ecfff" fill-opacity="0.8"
+                style="animation: pf-spike-grow 2100ms ease-out forwards 200ms;"/>
+              <polygon points="120,165 114,165 117,115" fill="#4ecfff" fill-opacity="0.8"
+                style="animation: pf-spike-grow 2100ms ease-out forwards 250ms;"/>
+              <polygon points="62,168 56,168 59,125" fill="#7dd3fc" fill-opacity="0.6"
+                style="animation: pf-spike-grow 2100ms ease-out forwards 350ms;"/>
+              <polygon points="138,168 132,168 135,125" fill="#7dd3fc" fill-opacity="0.6"
+                style="animation: pf-spike-grow 2100ms ease-out forwards 380ms;"/>
+              <!-- DEF down indicator -->
+              <g style="animation: pf-def-down 2100ms ease-out forwards 700ms;">
+                <line x1="100" y1="60" x2="100" y2="75" stroke="#ff6666" stroke-width="1.5"/>
+                <polygon points="100,80 96,72 104,72" fill="#ff6666"/>
+                <text x="106" y="70" fill="#ff6666" font-size="8" font-family="monospace">DEF-</text>
+              </g>
+              <!-- snowflakes -->
+              <circle cx="100" cy="60" r="2.5" fill="#b0f0ff" style="--sx:-28px; animation: pf-snow-fall 2100ms ease-in forwards 300ms;"/>
+              <circle cx="100" cy="50" r="2" fill="#7dd3fc" style="--sx:20px; animation: pf-snow-fall 2100ms ease-in forwards 500ms;"/>
+              <circle cx="100" cy="55" r="1.5" fill="#b0f0ff" style="--sx:-10px; animation: pf-snow-fall 2100ms ease-in forwards 700ms;"/>
+              <circle cx="100" cy="45" r="2" fill="#4ecfff" style="--sx:35px; animation: pf-snow-fall 2100ms ease-in forwards 900ms;"/>
+            </svg>
+          </div>
+
+          <!-- V2: Frost crack lines spreading from impact -->
+          <div class="animation-variation" id="pf2">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <filter id="pf2-glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              </defs>
+              <!-- freeze flash -->
+              <circle cx="100" cy="110" r="45" fill="#4ecfff" fill-opacity="0"
+                style="animation: fb-glow-bloom 2100ms ease-out forwards 100ms;"/>
+              <!-- crack lines -->
+              <line x1="100" y1="110" x2="138" y2="72" stroke="#b0f0ff" stroke-width="2" stroke-linecap="round"
+                stroke-dasharray="70" stroke-dashoffset="70" filter="url(#pf2-glow)"
+                style="animation: pf-crack 2100ms ease-out forwards 200ms;"/>
+              <line x1="100" y1="110" x2="65" y2="75" stroke="#4ecfff" stroke-width="1.5"
+                stroke-dasharray="55" stroke-dashoffset="55"
+                style="animation: pf-crack 2100ms ease-out forwards 300ms;"/>
+              <line x1="100" y1="110" x2="145" y2="125" stroke="#7dd3fc" stroke-width="1.5"
+                stroke-dasharray="55" stroke-dashoffset="55"
+                style="animation: pf-crack 2100ms ease-out forwards 350ms;"/>
+              <line x1="100" y1="110" x2="58" y2="138" stroke="#4ecfff" stroke-width="1"
+                stroke-dasharray="55" stroke-dashoffset="55"
+                style="animation: pf-crack 2100ms ease-out forwards 420ms;"/>
+              <line x1="100" y1="110" x2="120" y2="155" stroke="#7dd3fc" stroke-width="1"
+                stroke-dasharray="55" stroke-dashoffset="55"
+                style="animation: pf-crack 2100ms ease-out forwards 480ms;"/>
+              <!-- Freeze text indicator -->
+              <text x="68" y="58" fill="#b0f0ff" font-size="9" font-family="monospace" font-weight="bold"
+                style="animation: pf-cage-ring 2100ms ease-out forwards 600ms;">FROZEN</text>
+              <!-- cage ring -->
+              <circle cx="100" cy="110" r="50" fill="none" stroke="#4ecfff" stroke-width="1"
+                stroke-dasharray="15 5"
+                style="animation: pf-cage-ring 2100ms ease-out forwards 400ms;"/>
+            </svg>
+          </div>
+        </div>
+        <div class="info-footer">2100ms · 2 Variations · Debuff · 60% Freeze · DEF −20%</div>
+      </div>
+
+      <!-- CRYOCLASM ULTIMATE -->
+      <div class="move-card">
+        <div class="move-name" style="color:#b0f0ff;">❄ Cryoclasm ⭐ Ultimate — 3.0× MAG | Freeze Reset</div>
+        <div class="variation-tabs">
+          <button class="tab-btn active" onclick="switchTab(event,'cryo1')">Ice Explosion</button>
+          <button class="tab-btn" onclick="switchTab(event,'cryo2')">Pillar Rise</button>
+        </div>
+        <div class="animation-stage">
+
+          <!-- V1: Buildup → shockwave → ice flash -->
+          <div class="animation-variation active" id="cryo1">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <radialGradient id="cc-blast-grad" cx="50%" cy="55%" r="50%">
+                  <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
+                  <stop offset="40%" stop-color="#4ecfff" stop-opacity="0.5"/>
+                  <stop offset="100%" stop-color="#1a5a8a" stop-opacity="0"/>
+                </radialGradient>
+                <filter id="cc-glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              </defs>
+              <!-- buildup core -->
+              <circle cx="100" cy="108" r="2" fill="url(#cc-blast-grad)"
+                style="animation: cc-buildup 2400ms ease-in-out forwards;"/>
+              <!-- shockwave rings -->
+              <circle cx="100" cy="108" r="5" fill="none" stroke="#ffffff" stroke-width="8"
+                style="animation: cc-shockwave 2400ms ease-out forwards 700ms;"/>
+              <circle cx="100" cy="108" r="5" fill="none" stroke="#4ecfff" stroke-width="5"
+                style="animation: cc-shockwave 2400ms ease-out forwards 900ms;"/>
+              <circle cx="100" cy="108" r="5" fill="none" stroke="#7dd3fc" stroke-width="2"
+                style="animation: cc-shockwave 2400ms ease-out forwards 1100ms;"/>
+              <!-- ice sparks flying out -->
+              <circle cx="100" cy="108" r="3.5" fill="#b0f0ff" filter="url(#cc-glow)"
+                style="--cx:-55px; --cy:-55px; animation: cc-spark 2400ms ease-out forwards 750ms;"/>
+              <circle cx="100" cy="108" r="3" fill="#4ecfff"
+                style="--cx:60px; --cy:-45px; animation: cc-spark 2400ms ease-out forwards 800ms;"/>
+              <circle cx="100" cy="108" r="2.5" fill="#b0f0ff"
+                style="--cx:-45px; --cy:55px; animation: cc-spark 2400ms ease-out forwards 820ms;"/>
+              <circle cx="100" cy="108" r="3" fill="#7dd3fc"
+                style="--cx:50px; --cy:50px; animation: cc-spark 2400ms ease-out forwards 840ms;"/>
+              <circle cx="100" cy="108" r="2" fill="#b0f0ff"
+                style="--cx:-65px; --cy:5px; animation: cc-spark 2400ms ease-out forwards 860ms;"/>
+              <circle cx="100" cy="108" r="2" fill="#4ecfff"
+                style="--cx:70px; --cy:5px; animation: cc-spark 2400ms ease-out forwards 880ms;"/>
+              <!-- screen flash -->
+              <rect x="0" y="0" width="200" height="200" fill="#b0f0ff"
+                style="animation: cc-frozen-flash 2400ms ease-out forwards;"/>
+            </svg>
+          </div>
+
+          <!-- V2: Ice pillars shooting up + burst -->
+          <div class="animation-variation" id="cryo2">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <filter id="cc2-glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              </defs>
+              <!-- pillars -->
+              <rect x="96" y="50" width="8" height="80" fill="#b0f0ff" fill-opacity="0.9" rx="3" filter="url(#cc2-glow)"
+                style="animation: cc-pillar 2400ms cubic-bezier(0.1,0.8,0.2,1) forwards 200ms;"/>
+              <rect x="68" y="65" width="6" height="65" fill="#4ecfff" fill-opacity="0.8" rx="3"
+                style="animation: cc-pillar 2400ms ease-out forwards 350ms;"/>
+              <rect x="126" y="65" width="6" height="65" fill="#4ecfff" fill-opacity="0.8" rx="3"
+                style="animation: cc-pillar 2400ms ease-out forwards 400ms;"/>
+              <rect x="48" y="80" width="5" height="55" fill="#7dd3fc" fill-opacity="0.7" rx="2"
+                style="animation: cc-pillar 2400ms ease-out forwards 480ms;"/>
+              <rect x="147" y="80" width="5" height="55" fill="#7dd3fc" fill-opacity="0.7" rx="2"
+                style="animation: cc-pillar 2400ms ease-out forwards 500ms;"/>
+              <!-- blast ring -->
+              <circle cx="100" cy="108" r="5" fill="none" stroke="#4ecfff" stroke-width="7"
+                style="animation: cc-shockwave 2400ms ease-out forwards 800ms;"/>
+              <circle cx="100" cy="108" r="5" fill="none" stroke="#b0f0ff" stroke-width="3"
+                style="animation: cc-shockwave 2400ms ease-out forwards 1050ms;"/>
+            </svg>
+          </div>
+        </div>
+        <div class="info-footer">2400ms · 2 Variations · Ultimate · 3.0× Magic Ice · Freeze reset CD</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================== HU TAO ============================== -->
+  <div class="character-block" style="border-color: rgba(220,80,20,0.3);">
+    <div class="char-title" style="color:#ff9966;">🔥 HU TAO — Spirit Incinerator (4 Moves)</div>
+    <div class="moves-grid">
+
+      <!-- SPIRIT FLAME -->
+      <div class="move-card">
+        <div class="move-name" style="color:#ff9966;">🔥 Spirit Flame — 1.7× ATK | 20% Lifesteal</div>
+        <div class="variation-tabs">
+          <button class="tab-btn active" onclick="switchTab(event,'sf1')">Ghost Thrust</button>
+          <button class="tab-btn" onclick="switchTab(event,'sf2')">Flame Impact</button>
+        </div>
+        <div class="animation-stage" style="background: radial-gradient(ellipse at 50% 60%, rgba(60,15,5,0.9) 0%, rgba(6,10,20,0.97) 100%);">
+
+          <!-- V1: Spear thrusting down + ghost aura + lifesteal orb returning -->
+          <div class="animation-variation active" id="sf1">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <filter id="sf-glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                <linearGradient id="sf-spear" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#ff9900"/>
+                  <stop offset="50%" stop-color="#ff3300"/>
+                  <stop offset="100%" stop-color="#ff6600" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <!-- ghost aura -->
+              <ellipse cx="100" cy="100" rx="40" ry="55" fill="#440022" fill-opacity="0.3"
+                style="animation: sf-ghost-flicker 1900ms ease-in-out infinite;"/>
+              <!-- spear -->
+              <rect x="97" y="30" width="6" height="80" fill="url(#sf-spear)" rx="3" filter="url(#sf-glow)"
+                style="animation: sf-thrust 1900ms cubic-bezier(0.1,0.8,0.3,1) forwards;"/>
+              <!-- spear tip -->
+              <polygon points="100,30 94,48 106,48" fill="#ffcc00" filter="url(#sf-glow)"
+                style="animation: sf-thrust 1900ms cubic-bezier(0.1,0.8,0.3,1) forwards;"/>
+              <!-- fire wisps -->
+              <circle cx="100" cy="105" r="5" fill="#ff6600" filter="url(#sf-glow)"
+                style="--wx:-30px; animation: sf-flame-wisp 1900ms ease-out forwards 300ms;"/>
+              <circle cx="100" cy="110" r="4" fill="#ff3300"
+                style="--wx:25px; animation: sf-flame-wisp 1900ms ease-out forwards 450ms;"/>
+              <circle cx="100" cy="108" r="3" fill="#ff9900"
+                style="--wx:-15px; animation: sf-flame-wisp 1900ms ease-out forwards 600ms;"/>
+              <!-- lifesteal orb returning to caster -->
+              <circle cx="100" cy="110" r="8" fill="#ff4488" fill-opacity="0.8" filter="url(#sf-glow)"
+                style="animation: sf-lifesteal-orb 1900ms ease-in-out forwards 500ms;"/>
+              <!-- impact ring -->
+              <circle cx="100" cy="110" r="4" fill="none" stroke="#ff6600" stroke-width="3"
+                style="animation: sf-impact-ring 1900ms ease-out forwards;"/>
+            </svg>
+          </div>
+
+          <!-- V2: Flame impact burst + lifesteal pulse -->
+          <div class="animation-variation" id="sf2">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <filter id="sf2-glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                <radialGradient id="sf2-fire" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#ffcc00"/>
+                  <stop offset="50%" stop-color="#ff6600"/>
+                  <stop offset="100%" stop-color="#cc0000" stop-opacity="0"/>
+                </radialGradient>
+              </defs>
+              <!-- fire burst -->
+              <circle cx="100" cy="108" r="3" fill="url(#sf2-fire)" filter="url(#sf2-glow)"
+                style="animation: cc-buildup 1900ms ease-out forwards;"/>
+              <!-- flame wisps upward -->
+              <ellipse cx="90" cy="108" rx="8" ry="18" fill="#ff6600" fill-opacity="0.7"
+                style="--fx:-20px; animation: bb-fire-aura 1900ms ease-out forwards 200ms;"/>
+              <ellipse cx="100" cy="108" rx="10" ry="22" fill="#ff3300" fill-opacity="0.8"
+                style="--fx:0px; animation: bb-fire-aura 1900ms ease-out forwards 150ms;"/>
+              <ellipse cx="110" cy="108" rx="7" ry="16" fill="#ff9900" fill-opacity="0.7"
+                style="--fx:18px; animation: bb-fire-aura 1900ms ease-out forwards 250ms;"/>
+              <!-- lifesteal healing circle -->
+              <circle cx="100" cy="108" r="4" fill="none" stroke="#ff4488" stroke-width="2"
+                style="animation: sf-impact-ring 1900ms ease-out forwards 400ms;"/>
+              <!-- green heal trickle -->
+              <circle cx="100" cy="108" r="9" fill="#44ff88" fill-opacity="0.5"
+                style="animation: sf-lifesteal-orb 1900ms ease-in-out forwards 600ms;"/>
+            </svg>
+          </div>
+        </div>
+        <div class="info-footer">1900ms · 2 Variations · Physical Fire · 20% Lifesteal</div>
+      </div>
+
+      <!-- PARAMITA PAPILIO -->
+      <div class="move-card">
+        <div class="move-name" style="color:#ff9966;">🔥 Paramita Papilio — 2.3× MAG | ATK +50% if HP &lt;50%</div>
+        <div class="variation-tabs">
+          <button class="tab-btn active" onclick="switchTab(event,'pp1')">Ghost Butterflies</button>
+          <button class="tab-btn" onclick="switchTab(event,'pp2')">Burst Nova</button>
+        </div>
+        <div class="animation-stage" style="background: radial-gradient(ellipse at 50% 60%, rgba(60,15,5,0.9) 0%, rgba(6,10,20,0.97) 100%);">
+
+          <!-- V1: Pink ghost butterflies orbiting + fire trails -->
+          <div class="animation-variation active" id="pp1">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <filter id="pp-glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              </defs>
+              <!-- butterfly 1 -->
+              <g style="transform-origin:100px 108px; --ba:0; animation: pp-butterfly-orbit 2300ms ease-in-out forwards;">
+                <g style="transform-origin:100px 56px; animation: pp-wing-flap 300ms ease-in-out infinite;">
+                  <ellipse cx="91" cy="56" rx="10" ry="7" fill="#ff4488" fill-opacity="0.85" filter="url(#pp-glow)"/>
+                  <ellipse cx="109" cy="56" rx="10" ry="7" fill="#ff6699" fill-opacity="0.85" filter="url(pp-glow)"/>
+                  <ellipse cx="91" cy="63" rx="7" ry="5" fill="#cc2266" fill-opacity="0.7"/>
+                  <ellipse cx="109" cy="63" rx="7" ry="5" fill="#cc2266" fill-opacity="0.7"/>
+                </g>
+              </g>
+              <!-- butterfly 2 -->
+              <g style="transform-origin:100px 108px; --ba:120; animation: pp-butterfly-orbit 2300ms ease-in-out forwards 150ms;">
+                <g style="transform-origin:100px 56px; animation: pp-wing-flap 280ms ease-in-out infinite 140ms;">
+                  <ellipse cx="91" cy="56" rx="10" ry="7" fill="#ff6600" fill-opacity="0.8" filter="url(#pp-glow)"/>
+                  <ellipse cx="109" cy="56" rx="10" ry="7" fill="#ff9900" fill-opacity="0.8"/>
+                  <ellipse cx="91" cy="63" rx="7" ry="5" fill="#cc4400" fill-opacity="0.7"/>
+                  <ellipse cx="109" cy="63" rx="7" ry="5" fill="#cc4400" fill-opacity="0.7"/>
+                </g>
+              </g>
+              <!-- butterfly 3 -->
+              <g style="transform-origin:100px 108px; --ba:240; animation: pp-butterfly-orbit 2300ms ease-in-out forwards 300ms;">
+                <g style="transform-origin:100px 56px; animation: pp-wing-flap 320ms ease-in-out infinite 80ms;">
+                  <ellipse cx="91" cy="56" rx="10" ry="7" fill="#ff4488" fill-opacity="0.75" filter="url(#pp-glow)"/>
+                  <ellipse cx="109" cy="56" rx="10" ry="7" fill="#ff6699" fill-opacity="0.75"/>
+                  <ellipse cx="91" cy="63" rx="7" ry="5" fill="#cc2266" fill-opacity="0.65"/>
+                  <ellipse cx="109" cy="63" rx="7" ry="5" fill="#cc2266" fill-opacity="0.65"/>
+                </g>
+              </g>
+              <!-- center ghost flame -->
+              <ellipse cx="100" cy="108" rx="8" ry="14" fill="#ff3300" fill-opacity="0.5"
+                style="animation: sf-ghost-flicker 400ms ease-in-out infinite;"/>
+              <!-- ATK buff indicator -->
+              <g style="animation: pp-atk-buff-text 2300ms ease-out forwards 1200ms;">
+                <text x="132" y="88" fill="#ff9900" font-size="9" font-family="monospace" font-weight="bold">ATK+50%</text>
+                <text x="140" y="98" fill="#ff6666" font-size="7" font-family="monospace">if HP&lt;50%</text>
+              </g>
+              <!-- burst ring -->
+              <circle cx="100" cy="108" r="5" fill="none" stroke="#ff4488" stroke-width="4"
+                style="animation: pp-burst-ring 2300ms ease-out forwards 1800ms;"/>
+            </svg>
+          </div>
+
+          <!-- V2: Fire nova burst rings -->
+          <div class="animation-variation" id="pp2">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <radialGradient id="pp2-fire" cx="50%" cy="55%" r="50%">
+                  <stop offset="0%" stop-color="#ffcc00"/>
+                  <stop offset="40%" stop-color="#ff4488"/>
+                  <stop offset="100%" stop-color="#660022" stop-opacity="0"/>
+                </radialGradient>
+                <filter id="pp2-glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              </defs>
+              <!-- nova core -->
+              <circle cx="100" cy="108" r="4" fill="url(#pp2-fire)" filter="url(#pp2-glow)"
+                style="animation: cc-buildup 2300ms ease-out forwards;"/>
+              <!-- fire rings -->
+              <circle cx="100" cy="108" r="5" fill="none" stroke="#ff4488" stroke-width="6"
+                style="animation: pp-burst-ring 2300ms ease-out forwards 400ms;"/>
+              <circle cx="100" cy="108" r="5" fill="none" stroke="#ff9900" stroke-width="4"
+                style="animation: pp-burst-ring 2300ms ease-out forwards 600ms;"/>
+              <circle cx="100" cy="108" r="5" fill="none" stroke="#ffcc00" stroke-width="2"
+                style="animation: pp-burst-ring 2300ms ease-out forwards 800ms;"/>
+              <!-- embers -->
+              <circle cx="100" cy="108" r="3" fill="#ff9900"
+                style="--ex:-50px; --ey:-50px; animation: gta-ember 2300ms ease-out forwards 500ms;"/>
+              <circle cx="100" cy="108" r="2.5" fill="#ff4488"
+                style="--ex:55px; --ey:-40px; animation: gta-ember 2300ms ease-out forwards 550ms;"/>
+              <circle cx="100" cy="108" r="3" fill="#ffcc00"
+                style="--ex:-40px; --ey:55px; animation: gta-ember 2300ms ease-out forwards 580ms;"/>
+              <circle cx="100" cy="108" r="2" fill="#ff6600"
+                style="--ex:60px; --ey:40px; animation: gta-ember 2300ms ease-out forwards 600ms;"/>
+            </svg>
+          </div>
+        </div>
+        <div class="info-footer">2300ms · 2 Variations · Magic Fire · Butterfly Orbit · ATK Buff at low HP</div>
+      </div>
+
+      <!-- BLOOD BLOSSOM AURA -->
+      <div class="move-card">
+        <div class="move-name" style="color:#ff9966;">🌸 Blood Blossom Aura — ATK +40% | Lifesteal | 3 turns</div>
+        <div class="variation-tabs">
+          <button class="tab-btn active" onclick="switchTab(event,'bb1')">Dark Bloom</button>
+          <button class="tab-btn" onclick="switchTab(event,'bb2')">Burning Aura</button>
+        </div>
+        <div class="animation-stage" style="background: radial-gradient(ellipse at 50% 60%, rgba(60,15,5,0.9) 0%, rgba(6,10,20,0.97) 100%);">
+
+          <!-- V1: Dark red petals blooming + ATK ring + pulsing heart -->
+          <div class="animation-variation active" id="bb1">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <filter id="bb-glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              </defs>
+              <!-- petal 1 -->
+              <ellipse cx="100" cy="74" rx="9" ry="22" fill="#cc0033" fill-opacity="0.85" filter="url(#bb-glow)"
+                style="--pa:0; transform-origin:100px 108px; animation: bb-petal-spin 2300ms ease-out forwards;"/>
+              <!-- petal 2 -->
+              <ellipse cx="100" cy="74" rx="9" ry="22" fill="#ff0044" fill-opacity="0.8"
+                style="--pa:60; transform-origin:100px 108px; animation: bb-petal-spin 2300ms ease-out forwards 80ms;"/>
+              <!-- petal 3 -->
+              <ellipse cx="100" cy="74" rx="9" ry="22" fill="#990022" fill-opacity="0.75"
+                style="--pa:120; transform-origin:100px 108px; animation: bb-petal-spin 2300ms ease-out forwards 160ms;"/>
+              <!-- petal 4 -->
+              <ellipse cx="100" cy="74" rx="9" ry="22" fill="#cc0033" fill-opacity="0.7"
+                style="--pa:180; transform-origin:100px 108px; animation: bb-petal-spin 2300ms ease-out forwards 240ms;"/>
+              <!-- petal 5 -->
+              <ellipse cx="100" cy="74" rx="9" ry="22" fill="#ff0044" fill-opacity="0.75"
+                style="--pa:240; transform-origin:100px 108px; animation: bb-petal-spin 2300ms ease-out forwards 320ms;"/>
+              <!-- petal 6 -->
+              <ellipse cx="100" cy="74" rx="9" ry="22" fill="#990022" fill-opacity="0.7"
+                style="--pa:300; transform-origin:100px 108px; animation: bb-petal-spin 2300ms ease-out forwards 400ms;"/>
+              <!-- ATK buff ring -->
+              <circle cx="100" cy="108" r="55" fill="none" stroke="#ff1166" stroke-width="2"
+                stroke-dasharray="500" stroke-dashoffset="500"
+                style="animation: bb-atk-ring 2300ms ease-out forwards 300ms;"/>
+              <!-- center ATK label -->
+              <text x="78" y="112" fill="#ff9966" font-size="10" font-family="monospace" font-weight="bold"
+                style="animation: pp-atk-buff-text 2300ms ease-out forwards 600ms;">ATK +40%</text>
+            </svg>
+          </div>
+
+          <!-- V2: Burning fire aura surrounding caster -->
+          <div class="animation-variation" id="bb2">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <filter id="bb2-glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              </defs>
+              <!-- flame pillars surrounding -->
+              <ellipse cx="80" cy="108" rx="7" ry="20" fill="#ff6600" fill-opacity="0.7" filter="url(#bb2-glow)"
+                style="--fx:-20px; animation: bb-fire-aura 2300ms ease-out forwards 100ms;"/>
+              <ellipse cx="100" cy="108" rx="9" ry="26" fill="#ff3300" fill-opacity="0.85" filter="url(#bb2-glow)"
+                style="--fx:0px; animation: bb-fire-aura 2300ms ease-out forwards 50ms;"/>
+              <ellipse cx="120" cy="108" rx="7" ry="20" fill="#ff9900" fill-opacity="0.7"
+                style="--fx:20px; animation: bb-fire-aura 2300ms ease-out forwards 150ms;"/>
+              <ellipse cx="68" cy="118" rx="5" ry="14" fill="#cc3300" fill-opacity="0.6"
+                style="--fx:-30px; animation: bb-fire-aura 2300ms ease-out forwards 220ms;"/>
+              <ellipse cx="132" cy="118" rx="5" ry="14" fill="#ff6600" fill-opacity="0.6"
+                style="--fx:30px; animation: bb-fire-aura 2300ms ease-out forwards 250ms;"/>
+              <!-- aura ring pulsing -->
+              <circle cx="100" cy="108" r="50" fill="none" stroke="#ff1166" stroke-width="2"
+                style="transform-origin:100px 108px; animation: bb-heartbeat 800ms ease-in-out infinite;"/>
+              <!-- lifesteal label -->
+              <text x="70" y="168" fill="#ff4488" font-size="8" font-family="monospace"
+                style="animation: pp-atk-buff-text 2300ms ease-out forwards 800ms;">LIFESTEAL ON</text>
+            </svg>
+          </div>
+        </div>
+        <div class="info-footer">2300ms · 2 Variations · Buff · ATK +40% · Lifesteal · 3 turns</div>
+      </div>
+
+      <!-- GUIDE TO AFTERLIFE ULTIMATE -->
+      <div class="move-card">
+        <div class="move-name" style="color:#ffaaaa;">💀 Guide to Afterlife ⭐ Ultimate — 4.0× MAG | 30% HP Drain</div>
+        <div class="variation-tabs">
+          <button class="tab-btn active" onclick="switchTab(event,'gta1')">Skull Drain</button>
+          <button class="tab-btn" onclick="switchTab(event,'gta2')">Pyro Nova</button>
+        </div>
+        <div class="animation-stage" style="background: radial-gradient(ellipse at 50% 60%, rgba(80,5,5,0.92) 0%, rgba(6,10,20,0.97) 100%);">
+
+          <!-- V1: Ghost skull rising + drain beam + pyro nova -->
+          <div class="animation-variation active" id="gta1">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <filter id="gta-glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                <radialGradient id="gta-fire-core" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#ffcc00"/>
+                  <stop offset="50%" stop-color="#ff3300"/>
+                  <stop offset="100%" stop-color="#660000" stop-opacity="0"/>
+                </radialGradient>
+              </defs>
+              <!-- skull head -->
+              <g style="animation: gta-skull-rise 2600ms ease-out forwards;" filter="url(#gta-glow)">
+                <ellipse cx="100" cy="88" rx="24" ry="26" fill="#440011" stroke="#ff3300" stroke-width="1.5"/>
+                <circle cx="92" cy="86" r="7" fill="#ff0000" fill-opacity="0.8"/>
+                <circle cx="108" cy="86" r="7" fill="#ff0000" fill-opacity="0.8"/>
+                <circle cx="92" cy="86" r="4" fill="#ffcc00"/>
+                <circle cx="108" cy="86" r="4" fill="#ffcc00"/>
+                <rect x="90" y="105" width="4" height="6" fill="#ff3300" rx="1"/>
+                <rect x="96" y="105" width="4" height="6" fill="#ff3300" rx="1"/>
+                <rect x="102" y="105" width="4" height="6" fill="#ff3300" rx="1"/>
+                <!-- nasal -->
+                <path d="M97,97 L100,103 L103,97" fill="none" stroke="#ff3300" stroke-width="1"/>
+              </g>
+              <!-- HP drain beam from enemy to caster -->
+              <line x1="100" y1="88" x2="100" y2="155"
+                stroke="#ff4488" stroke-width="2" stroke-dasharray="8 4"
+                style="animation: gta-drain-beam 2600ms ease-out forwards 400ms;"/>
+              <!-- drain orbs floating down -->
+              <circle cx="100" cy="108" r="6" fill="#ff0044" fill-opacity="0.8" filter="url(#gta-glow)"
+                style="animation: gta-hp-drain 2600ms ease-out forwards 800ms;"/>
+              <circle cx="100" cy="108" r="4" fill="#ff4488" fill-opacity="0.7"
+                style="animation: gta-hp-drain 2600ms ease-out forwards 1000ms;"/>
+              <!-- pyro nova -->
+              <circle cx="100" cy="108" r="3" fill="url(#gta-fire-core)"
+                style="animation: gta-pyro-nova 2600ms ease-out forwards 1400ms;"/>
+            </svg>
+          </div>
+
+          <!-- V2: Massive pyro explosion + ember shower -->
+          <div class="animation-variation" id="gta2">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <filter id="gta2-glow"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                <radialGradient id="gta2-core" cx="50%" cy="55%" r="50%">
+                  <stop offset="0%" stop-color="#ffffff"/>
+                  <stop offset="30%" stop-color="#ffcc00"/>
+                  <stop offset="60%" stop-color="#ff3300"/>
+                  <stop offset="100%" stop-color="#660000" stop-opacity="0"/>
+                </radialGradient>
+              </defs>
+              <!-- main nova -->
+              <circle cx="100" cy="108" r="3" fill="url(#gta2-core)" filter="url(#gta2-glow)"
+                style="animation: gta-pyro-nova 2600ms ease-out forwards;"/>
+              <!-- shockwave -->
+              <circle cx="100" cy="108" r="5" fill="none" stroke="#ffffff" stroke-width="10"
+                style="animation: cc-shockwave 2600ms ease-out forwards 400ms;"/>
+              <circle cx="100" cy="108" r="5" fill="none" stroke="#ff6600" stroke-width="6"
+                style="animation: cc-shockwave 2600ms ease-out forwards 600ms;"/>
+              <circle cx="100" cy="108" r="5" fill="none" stroke="#ff0000" stroke-width="3"
+                style="animation: cc-shockwave 2600ms ease-out forwards 800ms;"/>
+              <!-- ember sparks -->
+              <circle cx="100" cy="108" r="4" fill="#ffcc00" filter="url(#gta2-glow)"
+                style="--ex:-62px; --ey:-58px; animation: gta-ember 2600ms ease-out forwards 450ms;"/>
+              <circle cx="100" cy="108" r="3.5" fill="#ff6600"
+                style="--ex:65px; --ey:-52px; animation: gta-ember 2600ms ease-out forwards 500ms;"/>
+              <circle cx="100" cy="108" r="3" fill="#ff3300"
+                style="--ex:-55px; --ey:62px; animation: gta-ember 2600ms ease-out forwards 520ms;"/>
+              <circle cx="100" cy="108" r="3.5" fill="#ff9900"
+                style="--ex:60px; --ey:58px; animation: gta-ember 2600ms ease-out forwards 540ms;"/>
+              <circle cx="100" cy="108" r="2.5" fill="#ffcc00"
+                style="--ex:-75px; --ey:5px; animation: gta-ember 2600ms ease-out forwards 560ms;"/>
+              <circle cx="100" cy="108" r="2.5" fill="#ff6600"
+                style="--ex:78px; --ey:8px; animation: gta-ember 2600ms ease-out forwards 580ms;"/>
+              <!-- drain text -->
+              <text x="55" y="55" fill="#ff4488" font-size="11" font-family="monospace" font-weight="bold"
+                style="animation: gta-hp-drain 2600ms ease-out forwards 1000ms;">HP DRAIN 30%</text>
+            </svg>
+          </div>
+        </div>
+        <div class="info-footer">2600ms · 2 Variations · Ultimate · 4.0× Magic Fire · 30% Max HP Drain</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================== NILOU ============================== -->
+  <div class="character-block" style="border-color: rgba(0,180,150,0.25);">
+    <div class="char-title" style="color:#00d4b4;">💧 NILOU — Hydro Performer (4 Moves)</div>
+    <div class="moves-grid">
+
+      <!-- DANCE OF BLESSING -->
+      <div class="move-card">
+        <div class="move-name" style="color:#00d4b4;">💚 Dance of Blessing — Heal 35–55 HP | +30% Heal Boost</div>
+        <div class="variation-tabs">
+          <button class="tab-btn active" onclick="switchTab(event,'db1')">Petal Dance</button>
+          <button class="tab-btn" onclick="switchTab(event,'db2')">Heal Cross</button>
+        </div>
+        <div class="animation-stage" style="background: radial-gradient(ellipse at 50% 60%, rgba(0,30,30,0.9) 0%, rgba(6,10,20,0.97) 100%);">
+
+          <!-- V1: Water petals dancing in orbit + healing ripples + water drops -->
+          <div class="animation-variation active" id="db1">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <filter id="db-glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              </defs>
+              <!-- ripple rings -->
+              <circle cx="100" cy="108" r="4" fill="none" stroke="#00d4b4" stroke-width="3"
+                style="animation: dob-ripple 1900ms ease-out forwards 200ms;"/>
+              <circle cx="100" cy="108" r="4" fill="none" stroke="#80ffee" stroke-width="1.5"
+                style="animation: dob-ripple 1900ms ease-out forwards 500ms;"/>
+              <!-- water petals -->
+              <ellipse cx="100" cy="70" rx="7" ry="18" fill="#00d4b4" fill-opacity="0.8" filter="url(#db-glow)"
+                style="--dp:0; transform-origin:100px 108px; animation: dob-petal-dance 1900ms ease-in-out forwards;"/>
+              <ellipse cx="100" cy="70" rx="7" ry="18" fill="#00b8f5" fill-opacity="0.75"
+                style="--dp:60; transform-origin:100px 108px; animation: dob-petal-dance 1900ms ease-in-out forwards 100ms;"/>
+              <ellipse cx="100" cy="70" rx="7" ry="18" fill="#80ffee" fill-opacity="0.7"
+                style="--dp:120; transform-origin:100px 108px; animation: dob-petal-dance 1900ms ease-in-out forwards 200ms;"/>
+              <ellipse cx="100" cy="70" rx="7" ry="18" fill="#00d4b4" fill-opacity="0.65"
+                style="--dp:180; transform-origin:100px 108px; animation: dob-petal-dance 1900ms ease-in-out forwards 300ms;"/>
+              <ellipse cx="100" cy="70" rx="7" ry="18" fill="#00b8f5" fill-opacity="0.7"
+                style="--dp:240; transform-origin:100px 108px; animation: dob-petal-dance 1900ms ease-in-out forwards 400ms;"/>
+              <ellipse cx="100" cy="70" rx="7" ry="18" fill="#80ffee" fill-opacity="0.65"
+                style="--dp:300; transform-origin:100px 108px; animation: dob-petal-dance 1900ms ease-in-out forwards 500ms;"/>
+              <!-- water drops falling in -->
+              <ellipse cx="80" cy="108" rx="3" ry="5" fill="#00d4b4" style="--ddx:-20px; animation: dob-water-drop 1900ms ease-out forwards 200ms;"/>
+              <ellipse cx="120" cy="108" rx="3" ry="5" fill="#80ffee" style="--ddx:20px; animation: dob-water-drop 1900ms ease-out forwards 350ms;"/>
+              <!-- sparkle -->
+              <circle cx="75" cy="80" r="3" fill="#80ffee" filter="url(#db-glow)"
+                style="animation: dob-sparkle 400ms ease-in-out infinite 600ms;"/>
+              <circle cx="130" cy="75" r="2.5" fill="#00d4b4"
+                style="animation: dob-sparkle 400ms ease-in-out infinite 800ms;"/>
+              <circle cx="100" cy="60" r="2" fill="#80ffee"
+                style="animation: dob-sparkle 400ms ease-in-out infinite 700ms;"/>
+            </svg>
+          </div>
+
+          <!-- V2: Glowing heal cross + radiating water -->
+          <div class="animation-variation" id="db2">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <filter id="db2-glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              </defs>
+              <!-- heal cross -->
+              <g style="animation: dob-heal-cross 1900ms ease-out forwards;" filter="url(#db2-glow)">
+                <rect x="93" y="74" width="14" height="42" fill="#44ffbb" fill-opacity="0.9" rx="4"/>
+                <rect x="79" y="88" width="42" height="14" fill="#44ffbb" fill-opacity="0.9" rx="4"/>
+              </g>
+              <!-- ripple waves -->
+              <circle cx="100" cy="108" r="4" fill="none" stroke="#00d4b4" stroke-width="4"
+                style="animation: dob-ripple 1900ms ease-out forwards 300ms;"/>
+              <circle cx="100" cy="108" r="4" fill="none" stroke="#80ffee" stroke-width="2"
+                style="animation: dob-ripple 1900ms ease-out forwards 600ms;"/>
+              <!-- sparkles around cross -->
+              <circle cx="70" cy="85" r="3.5" fill="#80ffee" filter="url(#db2-glow)"
+                style="animation: dob-sparkle 500ms ease-in-out infinite 400ms;"/>
+              <circle cx="130" cy="85" r="3" fill="#00d4b4"
+                style="animation: dob-sparkle 500ms ease-in-out infinite 600ms;"/>
+              <circle cx="100" cy="62" r="3.5" fill="#80ffee"
+                style="animation: dob-sparkle 500ms ease-in-out infinite 500ms;"/>
+              <circle cx="100" cy="150" r="3" fill="#00d4b4"
+                style="animation: dob-sparkle 500ms ease-in-out infinite 700ms;"/>
+              <!-- heal boost label -->
+              <text x="60" y="55" fill="#44ffbb" font-size="9" font-family="monospace"
+                style="animation: dob-heal-cross 1900ms ease-out forwards 400ms;">HEAL BOOST +30%</text>
+            </svg>
+          </div>
+        </div>
+        <div class="info-footer">1900ms · 2 Variations · Heal · 35–55 HP · +30% Healing Boost</div>
+      </div>
+
+      <!-- WATER WHEEL -->
+      <div class="move-card">
+        <div class="move-name" style="color:#00d4b4;">💧 Water Wheel — 2.0× MAG AOE | Heal Allies 50% DMG</div>
+        <div class="variation-tabs">
+          <button class="tab-btn active" onclick="switchTab(event,'ww1')">Spinning Wheel</button>
+          <button class="tab-btn" onclick="switchTab(event,'ww2')">Wave Crush</button>
+        </div>
+        <div class="animation-stage" style="background: radial-gradient(ellipse at 50% 60%, rgba(0,30,30,0.9) 0%, rgba(6,10,20,0.97) 100%);">
+
+          <!-- V1: Spinning water wheel + AOE wave + heal streams -->
+          <div class="animation-variation active" id="ww1">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <filter id="ww-glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              </defs>
+              <!-- spinning water wheel -->
+              <g style="transform-origin:100px 108px; animation: ww-wheel-spin 2300ms ease-out forwards;">
+                <!-- rim -->
+                <circle cx="100" cy="108" r="42" fill="none" stroke="#00d4b4" stroke-width="2.5" filter="url(#ww-glow)"/>
+                <!-- spokes as water blades -->
+                <line x1="100" y1="66" x2="100" y2="150" stroke="#80ffee" stroke-width="3" stroke-linecap="round"
+                  stroke-dasharray="84" stroke-dashoffset="84"
+                  style="animation: ww-spoke 2300ms ease-out forwards;"/>
+                <line x1="58" y1="108" x2="142" y2="108" stroke="#00b8f5" stroke-width="3" stroke-linecap="round"
+                  stroke-dasharray="84" stroke-dashoffset="84"
+                  style="animation: ww-spoke 2300ms ease-out forwards 100ms;"/>
+                <line x1="71" y1="71" x2="129" y2="145" stroke="#80ffee" stroke-width="2.5" stroke-linecap="round"
+                  stroke-dasharray="84" stroke-dashoffset="84"
+                  style="animation: ww-spoke 2300ms ease-out forwards 200ms;"/>
+                <line x1="129" y1="71" x2="71" y2="145" stroke="#00d4b4" stroke-width="2.5" stroke-linecap="round"
+                  stroke-dasharray="84" stroke-dashoffset="84"
+                  style="animation: ww-spoke 2300ms ease-out forwards 300ms;"/>
+              </g>
+              <!-- AOE wave ring -->
+              <circle cx="100" cy="108" r="8" fill="none" stroke="#00d4b4" stroke-width="5"
+                style="animation: ww-aoe-wave 2300ms ease-out forwards 900ms;"/>
+              <!-- heal streams to allies -->
+              <circle cx="100" cy="108" r="5" fill="#44ffbb" fill-opacity="0.8" filter="url(#ww-glow)"
+                style="--hx:-65px; --hy:-55px; animation: ww-heal-stream 2300ms ease-in-out forwards 1100ms;"/>
+              <circle cx="100" cy="108" r="4" fill="#80ffee"
+                style="--hx:65px; --hy:-50px; animation: ww-heal-stream 2300ms ease-in-out forwards 1200ms;"/>
+            </svg>
+          </div>
+
+          <!-- V2: Crushing wave form + healing mist -->
+          <div class="animation-variation" id="ww2">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <filter id="ww2-glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              </defs>
+              <!-- wave rings (AOE) -->
+              <circle cx="100" cy="108" r="5" fill="none" stroke="#00d4b4" stroke-width="6"
+                style="animation: ww-aoe-wave 2300ms ease-out forwards;"/>
+              <circle cx="100" cy="108" r="5" fill="none" stroke="#80ffee" stroke-width="3"
+                style="animation: ww-aoe-wave 2300ms ease-out forwards 300ms;"/>
+              <circle cx="100" cy="108" r="5" fill="none" stroke="#00b8f5" stroke-width="1.5"
+                style="animation: ww-aoe-wave 2300ms ease-out forwards 600ms;"/>
+              <!-- water wheel ghost ring spinning -->
+              <circle cx="100" cy="108" r="38" fill="none" stroke="#00d4b4" stroke-width="1"
+                stroke-dasharray="15 8"
+                style="transform-origin:100px 108px; animation: ww-wheel-spin 2300ms ease-out forwards;"/>
+              <!-- center water burst -->
+              <circle cx="100" cy="108" r="4" fill="#00d4b4" fill-opacity="0.9" filter="url(#ww2-glow)"
+                style="animation: cc-buildup 2300ms ease-out forwards;"/>
+              <!-- heal label -->
+              <text x="55" y="50" fill="#44ffbb" font-size="9" font-family="monospace"
+                style="animation: dob-heal-cross 2300ms ease-out forwards 800ms;">HEAL ALLIES 50% DMG</text>
+            </svg>
+          </div>
+        </div>
+        <div class="info-footer">2300ms · 2 Variations · Magic Water AOE · Lifesteal 50% to Allies</div>
+      </div>
+
+      <!-- HARMONY PRESERVATION -->
+      <div class="move-card">
+        <div class="move-name" style="color:#00d4b4;">🌊 Harmony Preservation — ATK +20% | DEF +20% | 5HP/turn</div>
+        <div class="variation-tabs">
+          <button class="tab-btn active" onclick="switchTab(event,'harm1')">Rune Shield</button>
+          <button class="tab-btn" onclick="switchTab(event,'harm2')">Party Aura</button>
+        </div>
+        <div class="animation-stage" style="background: radial-gradient(ellipse at 50% 60%, rgba(0,30,30,0.9) 0%, rgba(6,10,20,0.97) 100%);">
+
+          <!-- V1: Rising shield + spinning runes + regen drops -->
+          <div class="animation-variation active" id="harm1">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <filter id="harm-glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              </defs>
+              <!-- shield hexagon -->
+              <g style="animation: harm-shield-raise 2300ms ease-out forwards;" filter="url(#harm-glow)">
+                <polygon points="100,62 128,78 128,112 100,128 72,112 72,78"
+                  fill="none" stroke="#00d4b4" stroke-width="2.5"/>
+                <polygon points="100,72 118,82 118,104 100,114 82,104 82,82"
+                  fill="#00d4b4" fill-opacity="0.08"/>
+              </g>
+              <!-- spinning water runes -->
+              <g style="transform-origin:100px 108px; animation: harm-rune-spin 2300ms ease-out forwards 200ms;">
+                <circle cx="100" cy="60" r="4" fill="#80ffee" fill-opacity="0.9"/>
+                <circle cx="140" cy="84" r="3.5" fill="#00d4b4" fill-opacity="0.8"/>
+                <circle cx="140" cy="132" r="4" fill="#80ffee" fill-opacity="0.9"/>
+                <circle cx="100" cy="156" r="3.5" fill="#00d4b4" fill-opacity="0.8"/>
+                <circle cx="60" cy="132" r="4" fill="#80ffee" fill-opacity="0.9"/>
+                <circle cx="60" cy="84" r="3.5" fill="#00d4b4" fill-opacity="0.8"/>
+              </g>
+              <!-- ATK+DEF ring -->
+              <circle cx="100" cy="108" r="58" fill="none" stroke="#00d4b4" stroke-width="1.5"
+                stroke-dasharray="600" stroke-dashoffset="600"
+                style="animation: harm-buff-ring 2300ms ease-out forwards 300ms;"/>
+              <!-- regen drops falling down -->
+              <ellipse cx="75" cy="108" rx="3" ry="5" fill="#44ffbb"
+                style="--rx:-25px; animation: harm-regen-drop 2300ms ease-in forwards 800ms;"/>
+              <ellipse cx="100" cy="108" rx="3" ry="5" fill="#80ffee"
+                style="--rx:0px; animation: harm-regen-drop 2300ms ease-in forwards 950ms;"/>
+              <ellipse cx="125" cy="108" rx="3" ry="5" fill="#44ffbb"
+                style="--rx:25px; animation: harm-regen-drop 2300ms ease-in forwards 1100ms;"/>
+              <!-- stat labels -->
+              <text x="42" y="54" fill="#00d4b4" font-size="8" font-family="monospace"
+                style="animation: harm-shield-raise 2300ms ease-out forwards 400ms;">ATK+20% DEF+20%</text>
+              <text x="60" y="175" fill="#44ffbb" font-size="8" font-family="monospace"
+                style="animation: harm-shield-raise 2300ms ease-out forwards 600ms;">REGEN 5HP/turn</text>
+            </svg>
+          </div>
+
+          <!-- V2: Party-wide glowing aura -->
+          <div class="animation-variation" id="harm2">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <filter id="harm2-glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                <radialGradient id="harm2-grad" cx="50%" cy="55%" r="50%">
+                  <stop offset="0%" stop-color="#00d4b4" stop-opacity="0.3"/>
+                  <stop offset="100%" stop-color="#00d4b4" stop-opacity="0"/>
+                </radialGradient>
+              </defs>
+              <!-- aura fill -->
+              <circle cx="100" cy="108" r="75" fill="url(#harm2-grad)"
+                style="transform-origin:100px 108px; animation: harm-atk-glow 1000ms ease-in-out infinite;"/>
+              <!-- buff rings spinning -->
+              <circle cx="100" cy="108" r="55" fill="none" stroke="#00d4b4" stroke-width="1.5"
+                stroke-dasharray="12 6"
+                style="transform-origin:100px 108px; animation: harm-rune-spin 2300ms linear forwards;"/>
+              <circle cx="100" cy="108" r="40" fill="none" stroke="#80ffee" stroke-width="1"
+                stroke-dasharray="8 5"
+                style="transform-origin:100px 108px; animation: harm-rune-spin 2300ms linear forwards 200ms;"/>
+              <!-- regen drops -->
+              <ellipse cx="65" cy="90" rx="3" ry="5" fill="#44ffbb" filter="url(#harm2-glow)"
+                style="--rx:-35px; animation: harm-regen-drop 2300ms ease-in forwards 600ms;"/>
+              <ellipse cx="100" cy="80" rx="3" ry="5" fill="#80ffee"
+                style="--rx:0px; animation: harm-regen-drop 2300ms ease-in forwards 750ms;"/>
+              <ellipse cx="135" cy="90" rx="3" ry="5" fill="#44ffbb"
+                style="--rx:35px; animation: harm-regen-drop 2300ms ease-in forwards 900ms;"/>
+              <!-- def ring building -->
+              <circle cx="100" cy="108" r="70" fill="none" stroke="#00d4b4" stroke-width="2"
+                stroke-dasharray="600" stroke-dashoffset="600"
+                style="animation: harm-buff-ring 2300ms ease-out forwards;"/>
+            </svg>
+          </div>
+        </div>
+        <div class="info-footer">2300ms · 2 Variations · Party Buff · ATK/DEF +20% · 5 HP Regen/turn · 4 turns</div>
+      </div>
+
+      <!-- HAJRA'S HYMN ULTIMATE -->
+      <div class="move-card">
+        <div class="move-name" style="color:#80ffee;">✨ Hajra's Hymn ⭐ Ultimate — 50% HP Heal All | Cleanse | SPD+1</div>
+        <div class="variation-tabs">
+          <button class="tab-btn active" onclick="switchTab(event,'hh1')">Star Burst</button>
+          <button class="tab-btn" onclick="switchTab(event,'hh2')">Hymn Wave</button>
+        </div>
+        <div class="animation-stage" style="background: radial-gradient(ellipse at 50% 60%, rgba(0,40,40,0.9) 0%, rgba(6,10,20,0.97) 100%);">
+
+          <!-- V1: Star burst + heal waves + cleanse bubbles + speed streaks -->
+          <div class="animation-variation active" id="hh1">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <filter id="hh-glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              </defs>
+              <!-- star rays -->
+              <g style="transform-origin:100px 108px;">
+                <line x1="100" y1="108" x2="100" y2="30" stroke="#80ffee" stroke-width="3" stroke-linecap="round"
+                  style="--ray:0; transform-origin:100px 108px; animation: hh-star-ray 2600ms ease-out forwards;"/>
+                <line x1="100" y1="108" x2="100" y2="30" stroke="#00d4b4" stroke-width="2.5" stroke-linecap="round"
+                  style="--ray:45; transform-origin:100px 108px; animation: hh-star-ray 2600ms ease-out forwards 100ms;"/>
+                <line x1="100" y1="108" x2="100" y2="30" stroke="#80ffee" stroke-width="3" stroke-linecap="round"
+                  style="--ray:90; transform-origin:100px 108px; animation: hh-star-ray 2600ms ease-out forwards 200ms;"/>
+                <line x1="100" y1="108" x2="100" y2="30" stroke="#00d4b4" stroke-width="2.5" stroke-linecap="round"
+                  style="--ray:135; transform-origin:100px 108px; animation: hh-star-ray 2600ms ease-out forwards 300ms;"/>
+                <line x1="100" y1="108" x2="100" y2="30" stroke="#80ffee" stroke-width="3" stroke-linecap="round"
+                  style="--ray:180; transform-origin:100px 108px; animation: hh-star-ray 2600ms ease-out forwards 400ms;"/>
+                <line x1="100" y1="108" x2="100" y2="30" stroke="#00d4b4" stroke-width="2.5" stroke-linecap="round"
+                  style="--ray:225; transform-origin:100px 108px; animation: hh-star-ray 2600ms ease-out forwards 500ms;"/>
+                <line x1="100" y1="108" x2="100" y2="30" stroke="#80ffee" stroke-width="3" stroke-linecap="round"
+                  style="--ray:270; transform-origin:100px 108px; animation: hh-star-ray 2600ms ease-out forwards 600ms;"/>
+                <line x1="100" y1="108" x2="100" y2="30" stroke="#00d4b4" stroke-width="2.5" stroke-linecap="round"
+                  style="--ray:315; transform-origin:100px 108px; animation: hh-star-ray 2600ms ease-out forwards 700ms;"/>
+              </g>
+              <!-- center star bloom -->
+              <g style="transform-origin:100px 108px; animation: hh-star-burst 2600ms ease-out forwards 200ms;" filter="url(#hh-glow)">
+                <polygon points="100,82 104,100 122,100 108,112 113,130 100,120 87,130 92,112 78,100 96,100"
+                  fill="#80ffee" fill-opacity="0.9"/>
+              </g>
+              <!-- heal waves -->
+              <circle cx="100" cy="108" r="5" fill="none" stroke="#44ffbb" stroke-width="5"
+                style="animation: hh-heal-wave 2600ms ease-out forwards 400ms;"/>
+              <circle cx="100" cy="108" r="5" fill="none" stroke="#00d4b4" stroke-width="3"
+                style="animation: hh-heal-wave 2600ms ease-out forwards 700ms;"/>
+              <!-- cleanse bubbles -->
+              <circle cx="100" cy="108" r="8" fill="#80ffee" fill-opacity="0.3" stroke="#80ffee" stroke-width="1"
+                style="--cbx:-35px; --cby:-30px; animation: hh-cleanse-bubble 2600ms ease-out forwards 600ms;"/>
+              <circle cx="100" cy="108" r="6" fill="#00d4b4" fill-opacity="0.25" stroke="#00d4b4" stroke-width="1"
+                style="--cbx:38px; --cby:-25px; animation: hh-cleanse-bubble 2600ms ease-out forwards 750ms;"/>
+              <circle cx="100" cy="108" r="7" fill="#80ffee" fill-opacity="0.2" stroke="#80ffee" stroke-width="1"
+                style="--cbx:-10px; --cby:-40px; animation: hh-cleanse-bubble 2600ms ease-out forwards 900ms;"/>
+              <!-- speed streaks -->
+              <line x1="40" y1="162" x2="80" y2="162" stroke="#80ffee" stroke-width="2" stroke-linecap="round"
+                style="animation: hh-spd-streak 2600ms ease-out forwards 1100ms;"/>
+              <line x1="40" y1="168" x2="70" y2="168" stroke="#00d4b4" stroke-width="1.5"
+                style="animation: hh-spd-streak 2600ms ease-out forwards 1200ms;"/>
+              <text x="88" y="167" fill="#80ffee" font-size="9" font-family="monospace">SPD+</text>
+            </svg>
+          </div>
+
+          <!-- V2: Massive hymn wave + all-ally heal burst -->
+          <div class="animation-variation" id="hh2">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <filter id="hh2-glow"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                <radialGradient id="hh2-core" cx="50%" cy="54%" r="50%">
+                  <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
+                  <stop offset="30%" stop-color="#80ffee"/>
+                  <stop offset="70%" stop-color="#00d4b4"/>
+                  <stop offset="100%" stop-color="#005566" stop-opacity="0"/>
+                </radialGradient>
+              </defs>
+              <!-- core hymn glow -->
+              <circle cx="100" cy="108" r="4" fill="url(#hh2-core)" filter="url(#hh2-glow)"
+                style="animation: cc-buildup 2600ms ease-out forwards;"/>
+              <!-- massive heal waves -->
+              <circle cx="100" cy="108" r="5" fill="none" stroke="#ffffff" stroke-width="8"
+                style="animation: hh-heal-wave 2600ms ease-out forwards 300ms;"/>
+              <circle cx="100" cy="108" r="5" fill="none" stroke="#80ffee" stroke-width="5"
+                style="animation: hh-heal-wave 2600ms ease-out forwards 550ms;"/>
+              <circle cx="100" cy="108" r="5" fill="none" stroke="#44ffbb" stroke-width="3"
+                style="animation: hh-heal-wave 2600ms ease-out forwards 800ms;"/>
+              <circle cx="100" cy="108" r="5" fill="none" stroke="#00d4b4" stroke-width="1.5"
+                style="animation: hh-heal-wave 2600ms ease-out forwards 1050ms;"/>
+              <!-- cleanse bubbles floating up -->
+              <circle cx="100" cy="108" r="9" fill="#80ffee" fill-opacity="0.2" stroke="#80ffee" stroke-width="1.5"
+                style="--cbx:-45px; --cby:-35px; animation: hh-cleanse-bubble 2600ms ease-out forwards 700ms;"/>
+              <circle cx="100" cy="108" r="7" fill="#00d4b4" fill-opacity="0.2" stroke="#00d4b4" stroke-width="1"
+                style="--cbx:48px; --cby:-30px; animation: hh-cleanse-bubble 2600ms ease-out forwards 900ms;"/>
+              <circle cx="100" cy="108" r="8" fill="#80ffee" fill-opacity="0.15" stroke="#80ffee" stroke-width="1"
+                style="--cbx:5px; --cby:-50px; animation: hh-cleanse-bubble 2600ms ease-out forwards 1100ms;"/>
+              <!-- speed lines -->
+              <line x1="28" y1="158" x2="85" y2="158" stroke="#80ffee" stroke-width="2.5"
+                style="animation: hh-spd-streak 2600ms ease-out forwards 1300ms;"/>
+              <line x1="28" y1="164" x2="72" y2="164" stroke="#44ffbb" stroke-width="1.5"
+                style="animation: hh-spd-streak 2600ms ease-out forwards 1400ms;"/>
+              <text x="88" y="163" fill="#80ffee" font-size="9" font-family="monospace">SPD+1</text>
+              <!-- heal % text -->
+              <text x="60" y="50" fill="#44ffbb" font-size="10" font-family="monospace" font-weight="bold"
+                style="animation: dob-heal-cross 2600ms ease-out forwards 500ms;">HEAL 50% MAX HP</text>
+            </svg>
+          </div>
+        </div>
+        <div class="info-footer">2600ms · 2 Variations · Ultimate · Heal 50% Max HP All · Cleanse · SPD+1</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================== XIAO ============================== -->
+  <div class="character-block" style="border-color: rgba(60,200,120,0.2);">
+    <div class="char-title" style="color:#66ffcc;">🌀 XIAO — Yaksha Protector (4 Moves)</div>
+    <div class="moves-grid">
+
+      <!-- LANCING STRIKE -->
+      <div class="move-card">
+        <div class="move-name" style="color:#66ffcc;">⚡ Lancing Strike — 1.4× ATK | Ignore 20% DEF</div>
+        <div class="variation-tabs">
+          <button class="tab-btn active" onclick="switchTab(event,'ls1')">Polearm Thrust</button>
+          <button class="tab-btn" onclick="switchTab(event,'ls2')">Wind Pierce</button>
+        </div>
+        <div class="animation-stage" style="background: radial-gradient(ellipse at 50% 60%, rgba(0,20,15,0.9) 0%, rgba(6,10,20,0.97) 100%);">
+
+          <!-- V1: Lance charging down + anemo ring + pierce crack + wind streaks -->
+          <div class="animation-variation active" id="ls1">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <filter id="ls-glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                <linearGradient id="ls-lance-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#aaffdd"/>
+                  <stop offset="50%" stop-color="#22bb88"/>
+                  <stop offset="100%" stop-color="#22bb88" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <!-- lance body -->
+              <rect x="97" y="25" width="6" height="90" fill="url(#ls-lance-grad)" rx="3" filter="url(#ls-glow)"
+                style="animation: ls-lance-charge 1900ms cubic-bezier(0.1,0.8,0.3,1) forwards;"/>
+              <!-- lance tip diamond -->
+              <polygon points="100,22 95,38 100,32 105,38" fill="#aaffdd" filter="url(#ls-glow)"
+                style="animation: ls-lance-charge 1900ms cubic-bezier(0.1,0.8,0.3,1) forwards;"/>
+              <!-- anemo ring at bottom -->
+              <circle cx="100" cy="120" r="5" fill="none" stroke="#66ffcc" stroke-width="3"
+                stroke-dasharray="300" stroke-dashoffset="300"
+                style="animation: ls-anemo-ring 1900ms ease-out forwards;"/>
+              <!-- pierce crack lines -->
+              <line x1="100" y1="118" x2="135" y2="145" stroke="#aaffdd" stroke-width="1.5"
+                stroke-dasharray="80" stroke-dashoffset="80"
+                style="animation: ls-pierce-crack 1900ms ease-out forwards;"/>
+              <line x1="100" y1="118" x2="65" y2="145" stroke="#66ffcc" stroke-width="1.5"
+                stroke-dasharray="80" stroke-dashoffset="80"
+                style="animation: ls-pierce-crack 1900ms ease-out forwards 100ms;"/>
+              <line x1="100" y1="118" x2="140" y2="110" stroke="#aaffdd" stroke-width="1"
+                stroke-dasharray="50" stroke-dashoffset="50"
+                style="animation: ls-pierce-crack 1900ms ease-out forwards 180ms;"/>
+              <!-- wind streaks -->
+              <line x1="130" y1="80" x2="155" y2="72" stroke="#66ffcc" stroke-width="2"
+                style="--wsx:30px; --wsy:-28px; animation: ls-wind-streak 1900ms ease-out forwards;"/>
+              <line x1="145" y1="95" x2="168" y2="90" stroke="#22bb88" stroke-width="1.5"
+                style="--wsx:45px; --wsy:-13px; animation: ls-wind-streak 1900ms ease-out forwards 100ms;"/>
+              <line x1="55" y1="80" x2="30" y2="72" stroke="#66ffcc" stroke-width="2"
+                style="--wsx:-30px; --wsy:-28px; animation: ls-wind-streak 1900ms ease-out forwards 50ms;"/>
+              <!-- DEF pierce label -->
+              <text x="42" y="52" fill="#aaffdd" font-size="8" font-family="monospace"
+                style="animation: ls-impact-flash 1900ms ease-out forwards;">DEF PIERCE 20%</text>
+              <!-- impact flash -->
+              <circle cx="100" cy="118" r="20" fill="#aaffdd" fill-opacity="0.5"
+                style="animation: ls-impact-flash 1900ms ease-out forwards;"/>
+            </svg>
+          </div>
+
+          <!-- V2: Wind pierce blast — anemo burst + projectile -->
+          <div class="animation-variation" id="ls2">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <filter id="ls2-glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              </defs>
+              <!-- projectile going down fast -->
+              <polygon points="100,40 94,55 100,48 106,55" fill="#aaffdd" filter="url(#ls2-glow)"
+                style="animation: ls-lance-charge 1900ms cubic-bezier(0.05,0.9,0.2,1) forwards;"/>
+              <!-- anemo swirl at impact -->
+              <g style="transform-origin:100px 118px; animation: yv-anemo-swirl 1900ms ease-out forwards 400ms;">
+                <ellipse cx="100" cy="98" rx="28" ry="10" fill="none" stroke="#66ffcc" stroke-width="1.5"/>
+                <ellipse cx="100" cy="108" rx="20" ry="8" fill="none" stroke="#22bb88" stroke-width="1" transform="rotate(45 100 108)"/>
+              </g>
+              <!-- burst ring -->
+              <circle cx="100" cy="118" r="6" fill="none" stroke="#66ffcc" stroke-width="5"
+                style="animation: ls-anemo-ring 1900ms ease-out forwards 450ms; animation-direction: normal; animation-fill-mode: both;" />
+              <!-- crack lines -->
+              <line x1="100" y1="118" x2="138" y2="148" stroke="#aaffdd" stroke-width="1.5"
+                stroke-dasharray="60" stroke-dashoffset="60"
+                style="animation: ls-pierce-crack 1900ms ease-out forwards 500ms;"/>
+              <line x1="100" y1="118" x2="62" y2="148" stroke="#66ffcc" stroke-width="1.5"
+                stroke-dasharray="60" stroke-dashoffset="60"
+                style="animation: ls-pierce-crack 1900ms ease-out forwards 550ms;"/>
+              <!-- wind streaks -->
+              <line x1="135" y1="88" x2="165" y2="78" stroke="#66ffcc" stroke-width="2"
+                style="--wsx:30px; --wsy:-30px; animation: ls-wind-streak 1900ms ease-out forwards 500ms;"/>
+              <line x1="58" y1="88" x2="28" y2="78" stroke="#22bb88" stroke-width="1.5"
+                style="--wsx:-30px; --wsy:-30px; animation: ls-wind-streak 1900ms ease-out forwards 600ms;"/>
+            </svg>
+          </div>
+        </div>
+        <div class="info-footer">1900ms · 2 Variations · Physical Anemo · 1.4× ATK · DEF Penetration 20%</div>
+      </div>
+
+      <!-- YAKSHA VALOR -->
+      <div class="move-card">
+        <div class="move-name" style="color:#66ffcc;">🛡 Yaksha's Valor — −25% Damage Taken | 15% Reflect | 3 turns</div>
+        <div class="variation-tabs">
+          <button class="tab-btn active" onclick="switchTab(event,'yv1')">Guardian Shield</button>
+          <button class="tab-btn" onclick="switchTab(event,'yv2')">Anemo Reflect</button>
+        </div>
+        <div class="animation-stage" style="background: radial-gradient(ellipse at 50% 60%, rgba(0,20,15,0.9) 0%, rgba(6,10,20,0.97) 100%);">
+
+          <!-- V1: Shield forming + pulsing reflect aura + reflect arrows -->
+          <div class="animation-variation active" id="yv1">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <filter id="yv-glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              </defs>
+              <!-- shield shape -->
+              <g style="transform-origin:100px 105px; animation: yv-shield-form 2300ms ease-out forwards;" filter="url(#yv-glow)">
+                <path d="M100,62 L132,80 L132,118 C132,135 100,148 100,148 C100,148 68,135 68,118 L68,80 Z"
+                  fill="#004422" fill-opacity="0.7" stroke="#66ffcc" stroke-width="2.5"/>
+                <!-- yaksha mask design inside shield -->
+                <ellipse cx="93" cy="95" rx="5" ry="6" fill="#22bb88" fill-opacity="0.6"/>
+                <ellipse cx="107" cy="95" rx="5" ry="6" fill="#22bb88" fill-opacity="0.6"/>
+                <path d="M88,108 Q100,116 112,108" fill="none" stroke="#66ffcc" stroke-width="1.5"/>
+              </g>
+              <!-- reflect pulse ring -->
+              <circle cx="100" cy="108" r="50" fill="none" stroke="#66ffcc" stroke-width="1.5"
+                style="animation: yv-reflect-pulse 800ms ease-in-out infinite;"/>
+              <!-- damage reduction ring -->
+              <circle cx="100" cy="108" r="3" fill="#aaffdd" fill-opacity="0.6"
+                style="animation: yv-damage-reduce 2300ms ease-out forwards 400ms;"/>
+              <!-- reflect arrow indicators -->
+              <g style="--rax:-50px; --ray2:-30px; animation: yv-reflect-arrow 2300ms ease-out forwards 900ms;">
+                <line x1="140" y1="75" x2="125" y2="88" stroke="#66ffcc" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <polygon points="125,88 121,80 130,82" fill="#66ffcc"/>
+              </g>
+              <!-- damage reduction label -->
+              <text x="40" y="52" fill="#aaffdd" font-size="8" font-family="monospace"
+                style="animation: yv-shield-form 2300ms ease-out forwards 500ms;">DMG -25% | REFLECT 15%</text>
+            </svg>
+          </div>
+
+          <!-- V2: Anemo swirl guardian stance -->
+          <div class="animation-variation" id="yv2">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <filter id="yv2-glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              </defs>
+              <!-- anemo swirls -->
+              <g style="transform-origin:100px 108px; animation: yv-anemo-swirl 2300ms ease-out forwards;">
+                <ellipse cx="100" cy="70" rx="35" ry="12" fill="none" stroke="#66ffcc" stroke-width="2"/>
+                <ellipse cx="100" cy="85" rx="28" ry="10" fill="none" stroke="#22bb88" stroke-width="1.5" transform="rotate(20 100 108)"/>
+                <ellipse cx="100" cy="95" rx="22" ry="8" fill="none" stroke="#66ffcc" stroke-width="1" transform="rotate(40 100 108)"/>
+              </g>
+              <!-- shield ghost -->
+              <path d="M100,68 L128,84 L128,118 C128,133 100,144 100,144 C100,144 72,133 72,118 L72,84 Z"
+                fill="none" stroke="#66ffcc" stroke-width="1.5" stroke-dasharray="10 5"
+                filter="url(#yv2-glow)"
+                style="animation: yv-shield-form 2300ms ease-out forwards 200ms;"/>
+              <!-- reflect pulse -->
+              <circle cx="100" cy="108" r="50" fill="none" stroke="#22bb88" stroke-width="1"
+                style="animation: yv-reflect-pulse 700ms ease-in-out infinite 300ms;"/>
+              <circle cx="100" cy="108" r="5" fill="#66ffcc" fill-opacity="0.4"
+                style="animation: yv-damage-reduce 2300ms ease-out forwards 600ms;"/>
+            </svg>
+          </div>
+        </div>
+        <div class="info-footer">2300ms · 2 Variations · Buff · DEF +30% · DMG −25% · Reflect 15% · 3 turns</div>
+      </div>
+
+      <!-- KARMIC BARRIER -->
+      <div class="move-card">
+        <div class="move-name" style="color:#66ffcc;">🌀 Karmic Barrier — Party DEF +40% | −10% DMG | 2 turns</div>
+        <div class="variation-tabs">
+          <button class="tab-btn active" onclick="switchTab(event,'kb1')">Ward Formation</button>
+          <button class="tab-btn" onclick="switchTab(event,'kb2')">Anemo Burst</button>
+        </div>
+        <div class="animation-stage" style="background: radial-gradient(ellipse at 50% 60%, rgba(0,20,15,0.9) 0%, rgba(6,10,20,0.97) 100%);">
+
+          <!-- V1: Expanding ward + spinning runes + karmic symbols -->
+          <div class="animation-variation active" id="kb1">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <filter id="kb-glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              </defs>
+              <!-- ward hexagon expanding -->
+              <polygon points="100,55 132,72 132,110 100,127 68,110 68,72"
+                fill="#004422" fill-opacity="0.5" stroke="#66ffcc" stroke-width="2.5" filter="url(#kb-glow)"
+                style="transform-origin:100px 108px; animation: kb-ward-expand 2600ms ease-out forwards;"/>
+              <!-- inner ward ring -->
+              <polygon points="100,68 122,79 122,103 100,114 78,103 78,79"
+                fill="none" stroke="#22bb88" stroke-width="1.5"
+                style="transform-origin:100px 108px; animation: kb-ward-expand 2600ms ease-out forwards 200ms;"/>
+              <!-- spinning karmic runes -->
+              <g style="transform-origin:100px 108px; animation: kb-barrier-spin 3s linear infinite;">
+                <rect x="96" y="42" width="8" height="8" fill="#66ffcc" fill-opacity="0.8" rx="1" filter="url(#kb-glow)"/>
+                <rect x="96" y="42" width="8" height="8" fill="#66ffcc" fill-opacity="0.8" rx="1" transform="rotate(60 100 108)"/>
+                <rect x="96" y="42" width="8" height="8" fill="#66ffcc" fill-opacity="0.8" rx="1" transform="rotate(120 100 108)"/>
+                <rect x="96" y="42" width="8" height="8" fill="#aaffdd" fill-opacity="0.7" rx="1" transform="rotate(180 100 108)"/>
+                <rect x="96" y="42" width="8" height="8" fill="#aaffdd" fill-opacity="0.7" rx="1" transform="rotate(240 100 108)"/>
+                <rect x="96" y="42" width="8" height="8" fill="#aaffdd" fill-opacity="0.7" rx="1" transform="rotate(300 100 108)"/>
+              </g>
+              <!-- DEF ring building -->
+              <circle cx="100" cy="108" r="65" fill="none" stroke="#66ffcc" stroke-width="2"
+                stroke-dasharray="700" stroke-dashoffset="700"
+                style="animation: kb-def-ring 2600ms ease-out forwards 200ms;"/>
+              <!-- DEF label -->
+              <text x="53" y="50" fill="#aaffdd" font-size="9" font-family="monospace"
+                style="animation: kb-rune-appear 2600ms ease-out forwards 500ms;">PARTY DEF +40%</text>
+              <text x="62" y="168" fill="#66ffcc" font-size="8" font-family="monospace"
+                style="animation: kb-rune-appear 2600ms ease-out forwards 700ms;">DMG WARD ACTIVE</text>
+            </svg>
+          </div>
+
+          <!-- V2: Anemo burst + barrier rings -->
+          <div class="animation-variation" id="kb2">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <filter id="kb2-glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              </defs>
+              <!-- anemo burst -->
+              <circle cx="100" cy="108" r="6" fill="#66ffcc" fill-opacity="0.7"
+                style="animation: kb-anemo-burst 2600ms ease-out forwards;"/>
+              <!-- barrier rings expanding -->
+              <circle cx="100" cy="108" r="6" fill="none" stroke="#66ffcc" stroke-width="5"
+                style="animation: kb-anemo-burst 2600ms ease-out forwards 300ms;"/>
+              <circle cx="100" cy="108" r="6" fill="none" stroke="#22bb88" stroke-width="3"
+                style="animation: kb-anemo-burst 2600ms ease-out forwards 600ms;"/>
+              <circle cx="100" cy="108" r="6" fill="none" stroke="#aaffdd" stroke-width="1.5"
+                style="animation: kb-anemo-burst 2600ms ease-out forwards 900ms;"/>
+              <!-- anemo swirl decorations -->
+              <g style="transform-origin:100px 108px; animation: yv-anemo-swirl 2600ms ease-out forwards 200ms;">
+                <ellipse cx="100" cy="72" rx="30" ry="10" fill="none" stroke="#66ffcc" stroke-width="1.5"/>
+              </g>
+              <!-- ward hex ghost -->
+              <polygon points="100,55 132,72 132,110 100,127 68,110 68,72"
+                fill="none" stroke="#66ffcc" stroke-width="1" stroke-dasharray="8 5"
+                filter="url(#kb2-glow)"
+                style="transform-origin:100px 108px; animation: kb-ward-expand 2600ms ease-out forwards 400ms;"/>
+            </svg>
+          </div>
+        </div>
+        <div class="info-footer">2600ms · 2 Variations · Party Buff · DEF +40% · DMG Reduction · 2 turns</div>
+      </div>
+
+      <!-- MASTERY OF PAIN ULTIMATE -->
+      <div class="move-card">
+        <div class="move-name" style="color:#aaffdd;">⚡ Mastery of Pain ⭐ Ultimate — 3.5× MAG (DEF Scale) | Guard Mark</div>
+        <div class="variation-tabs">
+          <button class="tab-btn active" onclick="switchTab(event,'mp1')">Karmic Nuke</button>
+          <button class="tab-btn" onclick="switchTab(event,'mp2')">Energy Beams</button>
+        </div>
+        <div class="animation-stage" style="background: radial-gradient(ellipse at 50% 60%, rgba(0,25,18,0.9) 0%, rgba(6,10,20,0.97) 100%);">
+
+          <!-- V1: DEF crystal charge → shockwave → guard mark stamp -->
+          <div class="animation-variation active" id="mp1">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <filter id="mp-glow"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                <radialGradient id="mp-core-grad" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95"/>
+                  <stop offset="35%" stop-color="#aaffdd"/>
+                  <stop offset="70%" stop-color="#22bb88"/>
+                  <stop offset="100%" stop-color="#004422" stop-opacity="0"/>
+                </radialGradient>
+              </defs>
+              <!-- DEF crystal orbs gathering -->
+              <polygon points="100,108 96,100 88,98 94,92 92,84 100,88 108,84 106,92 112,98 104,100" fill="#22bb88"
+                style="--dcx:-45px; --dcy:-35px; transform-origin:100px 108px; animation: mp-def-crystal 2900ms ease-in forwards 100ms;"/>
+              <polygon points="100,108 96,100 88,98 94,92 92,84 100,88 108,84 106,92 112,98 104,100" fill="#66ffcc"
+                style="--dcx:48px; --dcy:-30px; transform-origin:100px 108px; animation: mp-def-crystal 2900ms ease-in forwards 150ms;"/>
+              <polygon points="100,108 96,100 88,98 94,92 92,84 100,88 108,84 106,92 112,98 104,100" fill="#aaffdd"
+                style="--dcx:-38px; --dcy:45px; transform-origin:100px 108px; animation: mp-def-crystal 2900ms ease-in forwards 200ms;"/>
+              <polygon points="100,108 96,100 88,98 94,92 92,84 100,88 108,84 106,92 112,98 104,100" fill="#22bb88"
+                style="--dcx:42px; --dcy:40px; transform-origin:100px 108px; animation: mp-def-crystal 2900ms ease-in forwards 250ms;"/>
+              <!-- core karmic sphere charging -->
+              <circle cx="100" cy="108" r="4" fill="url(#mp-core-grad)" filter="url(#mp-glow)"
+                style="animation: mp-karmic-charge 2900ms ease-in-out forwards 300ms;"/>
+              <!-- shockwave -->
+              <circle cx="100" cy="108" r="5" fill="none" stroke="#ffffff" stroke-width="10"
+                style="animation: mp-shockwave 2900ms ease-out forwards;"/>
+              <circle cx="100" cy="108" r="5" fill="none" stroke="#aaffdd" stroke-width="5"
+                style="animation: mp-shockwave 2900ms ease-out forwards 200ms;"/>
+              <!-- guard mark stamp -->
+              <g style="animation: mp-guard-mark 2900ms ease-out forwards;">
+                <polygon points="135,55 145,65 145,80 135,88 125,80 125,65"
+                  fill="#004422" fill-opacity="0.8" stroke="#66ffcc" stroke-width="2"/>
+                <text x="127" y="75" fill="#aaffdd" font-size="7" font-family="monospace" font-weight="bold">GRD</text>
+              </g>
+              <!-- DEF SCALE text -->
+              <text x="42" y="50" fill="#66ffcc" font-size="8" font-family="monospace"
+                style="animation: mp-guard-mark 2900ms ease-out forwards 400ms;">DEF SCALE 3.5×</text>
+            </svg>
+          </div>
+
+          <!-- V2: Energy beams radiating from Xiao + anemo -->
+          <div class="animation-variation" id="mp2">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <filter id="mp2-glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              </defs>
+              <!-- energy beams from center -->
+              <line x1="100" y1="108" x2="100" y2="20" stroke="#aaffdd" stroke-width="4"
+                style="--mb:0; transform-origin:100px 108px; animation: mp-energy-beam 2900ms ease-out forwards;"/>
+              <line x1="100" y1="108" x2="100" y2="20" stroke="#66ffcc" stroke-width="3"
+                style="--mb:45; transform-origin:100px 108px; animation: mp-energy-beam 2900ms ease-out forwards 80ms;"/>
+              <line x1="100" y1="108" x2="100" y2="20" stroke="#aaffdd" stroke-width="4"
+                style="--mb:90; transform-origin:100px 108px; animation: mp-energy-beam 2900ms ease-out forwards 160ms;"/>
+              <line x1="100" y1="108" x2="100" y2="20" stroke="#22bb88" stroke-width="3"
+                style="--mb:135; transform-origin:100px 108px; animation: mp-energy-beam 2900ms ease-out forwards 240ms;"/>
+              <line x1="100" y1="108" x2="100" y2="20" stroke="#aaffdd" stroke-width="4"
+                style="--mb:180; transform-origin:100px 108px; animation: mp-energy-beam 2900ms ease-out forwards 320ms;"/>
+              <line x1="100" y1="108" x2="100" y2="20" stroke="#66ffcc" stroke-width="3"
+                style="--mb:225; transform-origin:100px 108px; animation: mp-energy-beam 2900ms ease-out forwards 400ms;"/>
+              <line x1="100" y1="108" x2="100" y2="20" stroke="#aaffdd" stroke-width="4"
+                style="--mb:270; transform-origin:100px 108px; animation: mp-energy-beam 2900ms ease-out forwards 480ms;"/>
+              <line x1="100" y1="108" x2="100" y2="20" stroke="#22bb88" stroke-width="3"
+                style="--mb:315; transform-origin:100px 108px; animation: mp-energy-beam 2900ms ease-out forwards 560ms;"/>
+              <!-- center core -->
+              <circle cx="100" cy="108" r="5" fill="#aaffdd" filter="url(#mp2-glow)"
+                style="transform-origin:100px 108px; animation: mp-karmic-charge 2900ms ease-in-out forwards;"/>
+              <!-- shockwave -->
+              <circle cx="100" cy="108" r="5" fill="none" stroke="#66ffcc" stroke-width="8"
+                style="animation: mp-shockwave 2900ms ease-out forwards 600ms;"/>
+              <!-- guard mark -->
+              <g style="animation: mp-guard-mark 2900ms ease-out forwards;">
+                <polygon points="135,55 145,65 145,80 135,88 125,80 125,65"
+                  fill="#004422" fill-opacity="0.8" stroke="#aaffdd" stroke-width="2" filter="url(#mp2-glow)"/>
+                <text x="127" y="75" fill="#66ffcc" font-size="7" font-family="monospace" font-weight="bold">GRD</text>
+              </g>
+            </svg>
+          </div>
+        </div>
+        <div class="info-footer">2900ms · 2 Variations · Ultimate · 3.5× Magic Anemo · DEF Scale · Guard Mark</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div style="background:rgba(78,207,255,0.07); border:1px solid rgba(78,207,255,0.18); padding:18px; margin-top:40px; border-radius:8px; text-align:center; font-size:11px; color:#5a7a94;">
+    ✅ <strong style="color:#7dd3fc;">ALL 16 Moves — Detailed & Move-Accurate SVG Animations</strong><br><br>
+    Each animation is tailored to its ability: slash trails, ice spikes, ghost skulls, butterfly orbits, heal crosses, spinning water wheels, lance thrusts, karmic shields, and guard marks.<br>
+    Click tabs to compare animation styles per move.
+  </div>
+
+</div>
+
+<script>
+  function switchTab(event, varId) {
+    const btn = event.target;
+    const card = btn.closest('.move-card');
+    Array.from(btn.parentElement.querySelectorAll('.tab-btn')).forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    Array.from(card.querySelectorAll('.animation-variation')).forEach(v => v.classList.remove('active'));
+    document.getElementById(varId).classList.add('active');
+
+    // Re-trigger animations by cloning
+    const target = document.getElementById(varId);
+    const clone = target.cloneNode(true);
+    clone.classList.add('active');
+    target.parentNode.replaceChild(clone, target);
+  }
+</script>
+</body>
+</html>
