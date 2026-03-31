@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RPG+ Move Animation Demos</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #0a0a1a;
+      color: #fff;
+      font-family: 'Courier New', monospace;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 40px;
+      color: #4ecfff;
+      font-size: 28px;
+    }
+    .character-section {
+      margin-bottom: 60px;
+      border: 2px solid #333;
+      padding: 20px;
+      border-radius: 8px;
+      background: #111;
+    }
+    .character-title {
+      color: #ffaa00;
+      font-size: 20px;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #333;
+    }
+    .moves-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+      gap: 30px;
+    }
+    .move-demo {
+      border: 1px solid #444;
+      padding: 15px;
+      border-radius: 6px;
+      background: #0f0f1f;
+    }
+    .move-title {
+      color: #7dd3fc;
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .variation-tabs {
+      display: flex;
+      gap: 5px;
+      margin-bottom: 15px;
+    }
+    .tab-btn {
+      padding: 6px 12px;
+      background: #222;
+      border: 1px solid #444;
+      color: #999;
+      cursor: pointer;
+      font-size: 11px;
+      border-radius: 3px;
+      transition: all 0.2s;
+    }
+    .tab-btn.active {
+      background: #4ecfff;
+      color: #000;
+      border-color: #4ecfff;
+    }
+    .tab-btn:hover {
+      border-color: #4ecfff;
+      color: #4ecfff;
+    }
+    .animation-container {
+      width: 100%;
+      height: 200px;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+      border: 1px solid #333;
+    }
+    .animation-variation {
+      display: none;
+    }
+    .animation-variation.active {
+      display: block;
+    }
+    svg {
+      width: 150px;
+      height: 150px;
+    }
+
+    /* ==================== AYAKA - FROSTBLOSSOM VARIATIONS ==================== */
+    @keyframes frost-simple-rotate {
+      0% { transform: rotate(0deg) scale(0.5); opacity: 0; }
+      20% { opacity: 1; }
+      100% { transform: rotate(720deg) scale(1.2); opacity: 0; }
+    }
+    @keyframes frost-crystal-fall {
+      0% { transform: translateY(-30px); opacity: 1; }
+      100% { transform: translateY(50px); opacity: 0; }
+    }
+    @keyframes frost-complex-blade {
+      0% { transform: translateX(-80px) rotate(0deg) scaleX(0.3); opacity: 0; }
+      15% { opacity: 1; }
+      50% { transform: translateX(0px) rotate(180deg) scaleX(1); opacity: 1; }
+      85% { opacity: 1; }
+      100% { transform: translateX(80px) rotate(360deg) scaleX(0.5); opacity: 0; }
+    }
+    @keyframes frost-pulse-glow {
+      0% { filter: drop-shadow(0 0 2px #4ecfff); }
+      50% { filter: drop-shadow(0 0 20px #4ecfff); }
+      100% { filter: drop-shadow(0 0 2px #4ecfff); }
+    }
+    .frost-blade { animation: frost-complex-blade 1900ms ease-out forwards; }
+    .frost-pulse { animation: frost-pulse-glow 1900ms ease-in-out forwards; }
+    .frost-crystal { animation: frost-crystal-fall 1900ms ease-out forwards; }
+
+    /* ==================== AYAKA - GLACIAL WALTZ VARIATIONS ==================== */
+    @keyframes glacial-ripple {
+      0% { r: 10px; stroke-width: 3; opacity: 1; }
+      100% { r: 80px; stroke-width: 0.5; opacity: 0; }
+    }
+    @keyframes glacial-orbit {
+      0% { transform: rotate(0deg) translateX(40px) rotate(0deg); opacity: 1; }
+      100% { transform: rotate(360deg) translateX(40px) rotate(-360deg); opacity: 0.3; }
+    }
+    @keyframes glacial-expand {
+      0% { transform: scale(0.2) rotate(0deg); opacity: 0; }
+      20% { opacity: 1; }
+      80% { opacity: 1; }
+      100% { transform: scale(2) rotate(720deg); opacity: 0; }
+    }
+
+    /* ==================== PERMAFROST VARIATIONS ==================== */
+    @keyframes permafrost-grow {
+      0% { r: 20px; opacity: 0.8; }
+      100% { r: 90px; opacity: 0; }
+    }
+    @keyframes permafrost-crack {
+      0% { stroke-dashoffset: 80; opacity: 0; }
+      40% { opacity: 1; }
+      100% { stroke-dashoffset: 0; opacity: 0; }
+    }
+    @keyframes permafrost-shard {
+      0% { transform: translate(0, -40px) rotate(0deg); opacity: 1; }
+      100% { transform: translate(0, 60px) rotate(180deg); opacity: 0; }
+    }
+
+    /* ==================== CRYOCLASM VARIATIONS ==================== */
+    @keyframes cryo-spin {
+      0% { transform: rotate(0deg) scale(0.4); opacity: 1; }
+      50% { transform: rotate(360deg) scale(1.1); opacity: 1; }
+      100% { transform: rotate(720deg) scale(1.5); opacity: 0; }
+    }
+    @keyframes cryo-burst {
+      0% { r: 10px; opacity: 1; }
+      100% { r: 100px; opacity: 0; }
+    }
+    @keyframes cryo-cross {
+      0% { stroke-width: 4; opacity: 1; }
+      100% { stroke-width: 1; opacity: 0; }
+    }
+
+    /* ==================== HU TAO - SPIRIT FLAME VARIATIONS ==================== */
+    @keyframes flame-rise {
+      0% { transform: translateY(40px) scaleY(0.5); opacity: 0; }
+      20% { opacity: 1; }
+      100% { transform: translateY(-60px) scaleY(1.5); opacity: 0; }
+    }
+    @keyframes flame-glow {
+      0% { filter: brightness(1) drop-shadow(0 0 5px #ff7700); }
+      50% { filter: brightness(1.5) drop-shadow(0 0 25px #ff7700); }
+      100% { filter: brightness(0.8) drop-shadow(0 0 10px #ff7700); }
+    }
+    @keyframes flame-spin {
+      0% { transform: translateY(30px) rotate(0deg) scale(0.6); opacity: 0; }
+      20% { opacity: 1; }
+      100% { transform: translateY(-50px) rotate(360deg) scale(1); opacity: 0; }
+    }
+
+    /* ==================== PARAMITA PAPILIO VARIATIONS ==================== */
+    @keyframes butterfly-orbit {
+      0% { transform: rotate(0deg) translateX(50px) rotate(0deg); opacity: 1; }
+      100% { transform: rotate(360deg) translateX(50px) rotate(-360deg); opacity: 0; }
+    }
+    @keyframes butterfly-wing {
+      0% { transform: scaleX(1); }
+      25% { transform: scaleX(0.6); }
+      50% { transform: scaleX(1); }
+      75% { transform: scaleX(0.6); }
+      100% { transform: scaleX(1); }
+    }
+    @keyframes butterfly-dance {
+      0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+      25% { transform: translate(40px, -30px) rotate(45deg); opacity: 1; }
+      50% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+      75% { transform: translate(-40px, 30px) rotate(-45deg); opacity: 1; }
+      100% { transform: translate(0, 0) rotate(0deg); opacity: 0; }
+    }
+
+    /* ==================== BLOOD BLOSSOM VARIATIONS ==================== */
+    @keyframes blossom-pulse {
+      0% { r: 15px; opacity: 1; }
+      50% { r: 25px; opacity: 0.8; }
+      100% { r: 15px; opacity: 0; }
+    }
+    @keyframes petal-bloom {
+      0% { transform: translate(0, 0) scale(0.5); opacity: 0; }
+      20% { opacity: 1; }
+      80% { opacity: 1; }
+      100% { transform: translate(var(--tx), var(--ty)) scale(1.5); opacity: 0; }
+    }
+    @keyframes blossom-burst {
+      0% { r: 20px; opacity: 1; }
+      100% { r: 80px; opacity: 0; }
+    }
+
+    /* ==================== GUIDE TO AFTERLIFE VARIATIONS ==================== */
+    @keyframes vortex-spin {
+      0% { transform: rotate(0deg); opacity: 1; }
+      100% { transform: rotate(720deg); opacity: 0; }
+    }
+    @keyframes soul-orbit {
+      0% { transform: rotate(0deg) translateX(35px) rotate(0deg); opacity: 1; }
+      100% { transform: rotate(360deg) translateX(55px) rotate(-360deg); opacity: 0; }
+    }
+    @keyframes vortex-expand {
+      0% { r: 15px; opacity: 0.5; }
+      50% { r: 45px; opacity: 1; }
+      100% { r: 90px; opacity: 0; }
+    }
+
+    /* ==================== NILOU - DANCE OF BLESSING VARIATIONS ==================== */
+    @keyframes ripple-wave {
+      0% { r: 5px; opacity: 1; }
+      100% { r: 70px; opacity: 0; }
+    }
+    @keyframes sparkle-pop {
+      0% { r: 4px; opacity: 1; }
+      100% { r: 1px; opacity: 0; transform: scale(0) translateY(-30px); }
+    }
+    @keyframes wave-spiral {
+      0% { transform: rotate(0deg) scale(0.5); opacity: 0; }
+      20% { opacity: 1; }
+      100% { transform: rotate(360deg) scale(2); opacity: 0; }
+    }
+
+    /* ==================== WATER WHEEL VARIATIONS ==================== */
+    @keyframes wheel-spin {
+      0% { transform: rotate(0deg); opacity: 1; }
+      100% { transform: rotate(1080deg); opacity: 0; }
+    }
+    @keyframes water-spray {
+      0% { transform: translate(0, 0); opacity: 1; }
+      100% { transform: translate(var(--spx), var(--spy)); opacity: 0; }
+    }
+    @keyframes wheel-complex {
+      0% { transform: scale(0.5) rotate(0deg); opacity: 0; }
+      20% { opacity: 1; }
+      100% { transform: scale(1.5) rotate(720deg); opacity: 0; }
+    }
+
+    /* ==================== HARMONY PRESERVATION VARIATIONS ==================== */
+    @keyframes shield-expand {
+      0% { r: 25px; opacity: 1; }
+      100% { r: 85px; opacity: 0; }
+    }
+    @keyframes glyph-rotate {
+      0% { transform: rotate(0deg) translateX(40px); opacity: 1; }
+      100% { transform: rotate(360deg) translateX(40px); opacity: 0; }
+    }
+    @keyframes shield-pulse {
+      0% { r: 20px; opacity: 0.3; }
+      50% { r: 40px; opacity: 1; }
+      100% { r: 80px; opacity: 0; }
+    }
+
+    /* ==================== HAJRA'S HYMN VARIATIONS ==================== */
+    @keyframes star-burst {
+      0% { transform: scale(0.2) rotate(0deg); opacity: 1; }
+      100% { transform: scale(2) rotate(360deg); opacity: 0; }
+    }
+    @keyframes ray-expand {
+      0% { stroke-dashoffset: 100; opacity: 0.8; }
+      100% { stroke-dashoffset: 0; opacity: 0; }
+    }
+    @keyframes star-pulse {
+      0% { opacity: 1; filter: drop-shadow(0 0 5px #00d4b4); }
+      50% { opacity: 1; filter: drop-shadow(0 0 20px #00d4b4); }
+      100% { opacity: 0; filter: drop-shadow(0 0 0px #00d4b4); }
+    }
+
+    /* ==================== XIAO - LANCING STRIKE VARIATIONS ==================== */
+    @keyframes spear-thrust {
+      0% { transform: translateY(-60px); opacity: 1; }
+      50% { transform: translateY(0px); opacity: 1; }
+      100% { transform: translateY(60px); opacity: 0; }
+    }
+    @keyframes impact-wave {
+      0% { r: 5px; opacity: 1; }
+      100% { r: 80px; opacity: 0; }
+    }
+    @keyframes spear-complex {
+      0% { transform: translateY(-80px) rotate(-45deg) scaleY(0.5); opacity: 0; }
+      20% { opacity: 1; }
+      80% { opacity: 1; }
+      100% { transform: translateY(80px) rotate(45deg) scaleY(1.5); opacity: 0; }
+    }
+
+    /* ==================== YAKSHA VALOR VARIATIONS ==================== */
+    @keyframes yaksha-form {
+      0% { r: 15px; opacity: 0.3; }
+      50% { r: 40px; opacity: 1; }
+      100% { r: 75px; opacity: 0; }
+    }
+    @keyframes yaksha-aura {
+      0% { r: 30px; opacity: 1; }
+      100% { r: 85px; opacity: 0; }
+    }
+    @keyframes yaksha-protect {
+      0% { transform: scale(0.5); opacity: 0; }
+      20% { opacity: 1; }
+      100% { transform: scale(1.8); opacity: 0; }
+    }
+
+    /* ==================== KARMIC BARRIER VARIATIONS ==================== */
+    @keyframes barrier-dome {
+      0% { r: 25px; opacity: 0.6; }
+      100% { r: 90px; opacity: 0; }
+    }
+    @keyframes rune-rotate {
+      0% { transform: rotate(0deg) translateX(40px); opacity: 1; }
+      100% { transform: rotate(360deg) translateX(40px); opacity: 0.5; }
+    }
+    @keyframes barrier-double {
+      0% { r: 20px; opacity: 1; }
+      50% { r: 50px; opacity: 0.6; }
+      100% { r: 90px; opacity: 0; }
+    }
+
+    /* ==================== MASTERY OF PAIN VARIATIONS ==================== */
+    @keyframes vortex-wind {
+      0% { transform: rotate(0deg) scale(0.6); opacity: 1; }
+      100% { transform: rotate(720deg) scale(1.4); opacity: 0; }
+    }
+    @keyframes slash-cross {
+      0% { stroke-width: 3; opacity: 1; }
+      100% { stroke-width: 1; opacity: 0; }
+    }
+    @keyframes pain-burst {
+      0% { transform: scale(0.3) rotate(0deg); opacity: 0; }
+      20% { opacity: 1; }
+      100% { transform: scale(2) rotate(360deg); opacity: 0; }
+    }
+
+    .style-1 { color: #4ecfff; }
+    .style-2 { color: #7dd3fc; }
+    .style-3 { color: #0ff; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>⚔️ RPG+ Battle Animation Demos</h1>
+
+    <!-- ====================== AYAKA ====================== -->
+    <div class="character-section">
+      <div class="character-title">❄️ AYAKA - Cryo Bladestorm</div>
+      <div class="moves-grid">
+
+        <!-- FROSTBLOSSOM -->
+        <div class="move-demo">
+          <div class="move-title">Frostblossom Slash</div>
+          <div class="variation-tabs">
+            <button class="tab-btn active" onclick="switchTab(this, 'frost1')">Simple</button>
+            <button class="tab-btn" onclick="switchTab(this, 'frost2')">Complex</button>
+            <button class="tab-btn" onclick="switchTab(this, 'frost3')">Glowy</button>
+          </div>
+          <div class="animation-container">
+            <svg class="animation-variation active" id="frost1" viewBox="0 0 200 200">
+              <defs><style>@keyframes simple-rotate { 0% { transform: rotate(0deg) scale(0.5); opacity: 0; } 50% { opacity: 1; } 100% { transform: rotate(720deg) scale(1.2); opacity: 0; } }</style></defs>
+              <polygon points="100,60 120,100 100,140 80,100" fill="#4ecfff" style="animation: simple-rotate 1900ms ease-out forwards"/>
+              <circle cx="100" cy="70" r="5" fill="#7dd3fc" style="animation: frost-crystal-fall 1900ms ease-out forwards 200ms; opacity: 0;"/>
+              <circle cx="130" cy="100" r="5" fill="#7dd3fc" style="animation: frost-crystal-fall 1900ms ease-out forwards 400ms; opacity: 0;"/>
+              <circle cx="70" cy="100" r="5" fill="#7dd3fc" style="animation: frost-crystal-fall 1900ms ease-out forwards 600ms; opacity: 0;"/>
+            </svg>
+            <svg class="animation-variation" id="frost2" viewBox="0 0 200 200">
+              <defs><style>@keyframes complex-blade { 0% { transform: translateX(-80px) rotate(0deg) scaleX(0.3); opacity: 0; } 15% { opacity: 1; } 50% { transform: translateX(0px) rotate(180deg) scaleX(1); opacity: 1; } 85% { opacity: 1; } 100% { transform: translateX(80px) rotate(360deg) scaleX(0.5); opacity: 0; } }</style></defs>
+              <path d="M 100,50 L 130,100 L 100,150 L 70,100 Z" fill="none" stroke="#4ecfff" stroke-width="2" style="animation: complex-blade 1900ms ease-out forwards"/>
+              <path d="M 100,60 L 120,100 L 100,140 L 80,100 Z" fill="none" stroke="#4ecfff" stroke-width="1.5" style="animation: complex-blade 1900ms ease-out forwards 150ms; opacity: 0.6;"/>
+              <circle cx="100" cy="100" r="3" fill="#4ecfff" style="animation: complex-blade 1900ms ease-out forwards 300ms; opacity: 0.4;"/>
+            </svg>
+            <svg class="animation-variation" id="frost3" viewBox="0 0 200 200">
+              <defs><style>@keyframes glow-pulse { 0% { filter: drop-shadow(0 0 2px #4ecfff); } 50% { filter: drop-shadow(0 0 25px #4ecfff); } 100% { filter: drop-shadow(0 0 2px #4ecfff); } }</style></defs>
+              <polygon points="100,60 120,100 100,140 80,100" fill="#4ecfff" style="animation: glow-pulse 1900ms ease-in-out forwards; opacity: 0.8;"/>
+              <circle cx="100" cy="100" r="20" fill="none" stroke="#7dd3fc" stroke-width="1" opacity="0.4" style="animation: simple-rotate 1900ms ease-out forwards"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- GLACIAL WALTZ -->
+        <div class="move-demo">
+          <div class="move-title">Glacial Waltz</div>
+          <div class="variation-tabs">
+            <button class="tab-btn active" onclick="switchTab(this, 'glac1')">Simple</button>
+            <button class="tab-btn" onclick="switchTab(this, 'glac2')">Orbit</button>
+            <button class="tab-btn" onclick="switchTab(this, 'glac3')">Expand</button>
+          </div>
+          <div class="animation-container">
+            <svg class="animation-variation active" id="glac1" viewBox="0 0 200 200">
+              <circle cx="100" cy="100" r="5" fill="none" stroke="#4ecfff" stroke-width="2" style="animation: glacial-ripple 2100ms ease-out forwards"/>
+              <circle cx="100" cy="100" r="5" fill="none" stroke="#4ecfff" stroke-width="2" style="animation: glacial-ripple 2100ms ease-out forwards 400ms"/>
+              <circle cx="100" cy="100" r="5" fill="none" stroke="#4ecfff" stroke-width="2" style="animation: glacial-ripple 2100ms ease-out forwards 800ms"/>
+            </svg>
+            <svg class="animation-variation" id="glac2" viewBox="0 0 200 200">
+              <g style="animation: glacial-orbit 2100ms linear forwards">
+                <rect x="95" y="60" width="10" height="10" fill="#4ecfff" opacity="0.8"/>
+                <rect x="140" y="95" width="10" height="10" fill="#4ecfff" opacity="0.6"/>
+                <rect x="95" y="140" width="10" height="10" fill="#4ecfff" opacity="0.4"/>
+                <rect x="50" y="95" width="10" height="10" fill="#4ecfff" opacity="0.6"/>
+              </g>
+              <circle cx="100" cy="100" r="2" fill="#7dd3fc"/>
+            </svg>
+            <svg class="animation-variation" id="glac3" viewBox="0 0 200 200">
+              <circle cx="100" cy="100" r="20" fill="none" stroke="#4ecfff" stroke-width="2" style="animation: glacial-expand 2100ms ease-out forwards"/>
+              <circle cx="100" cy="100" r="20" fill="none" stroke="#7dd3fc" stroke-width="1" style="animation: glacial-expand 2100ms ease-out forwards 300ms; opacity: 0.6;"/>
+            </svg>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ====================== HU TAO ====================== -->
+    <div class="character-section">
+      <div class="character-title">🔥 HU TAO - Spirit Incinerator</div>
+      <div class="moves-grid">
+
+        <!-- SPIRIT FLAME -->
+        <div class="move-demo">
+          <div class="move-title">Spirit Flame</div>
+          <div class="variation-tabs">
+            <button class="tab-btn active" onclick="switchTab(this, 'flame1')">Simple Rise</button>
+            <button class="tab-btn" onclick="switchTab(this, 'flame2')">Spin</button>
+            <button class="tab-btn" onclick="switchTab(this, 'flame3')">Pulse</button>
+          </div>
+          <div class="animation-container">
+            <svg class="animation-variation active" id="flame1" viewBox="0 0 200 200">
+              <polygon points="100,140 80,100 90,80 100,70 110,80 120,100" fill="#ff7700" style="animation: flame-rise 1900ms ease-out forwards"/>
+              <polygon points="75,120 65,90 72,75 75,65 78,75 85,90" fill="#ff9933" style="animation: flame-rise 1900ms ease-out forwards 150ms; opacity: 0.7;"/>
+            </svg>
+            <svg class="animation-variation" id="flame2" viewBox="0 0 200 200">
+              <polygon points="100,140 80,100 90,80 100,70 110,80 120,100" fill="#ff7700" style="animation: flame-spin 1900ms ease-out forwards"/>
+              <polygon points="125,120 135,90 128,75 125,65 122,75 115,90" fill="#ff9933" style="animation: flame-spin 1900ms ease-out forwards 300ms; opacity: 0.7;"/>
+            </svg>
+            <svg class="animation-variation" id="flame3" viewBox="0 0 200 200">
+              <circle cx="100" cy="100" r="15" fill="#ff7700" style="animation: flame-glow 1900ms ease-in-out forwards"/>
+              <circle cx="100" cy="100" r="8" fill="#ffaa44" style="animation: flame-glow 1900ms ease-in-out forwards 200ms"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- PARAMITA PAPILIO -->
+        <div class="move-demo">
+          <div class="move-title">Paramita Papilio</div>
+          <div class="variation-tabs">
+            <button class="tab-btn active" onclick="switchTab(this, 'butt1')">Orbit</button>
+            <button class="tab-btn" onclick="switchTab(this, 'butt2')">Dance</button>
+            <button class="tab-btn" onclick="switchTab(this, 'butt3')">Trail</button>
+          </div>
+          <div class="animation-container">
+            <svg class="animation-variation active" id="butt1" viewBox="0 0 200 200">
+              <g style="animation: butterfly-orbit 2200ms ease-out forwards">
+                <ellipse cx="90" cy="100" rx="8" ry="12" fill="#ff4488" style="animation: butterfly-wing 400ms ease-in-out infinite"/>
+                <ellipse cx="110" cy="100" rx="8" ry="12" fill="#ff4488" style="animation: butterfly-wing 400ms ease-in-out infinite"/>
+                <circle cx="100" cy="100" r="4" fill="#ffaa00"/>
+              </g>
+            </svg>
+            <svg class="animation-variation" id="butt2" viewBox="0 0 200 200">
+              <ellipse cx="100" cy="100" rx="8" ry="12" fill="#ff4488" style="animation: butterfly-dance 2200ms ease-in-out forwards; opacity: 0.8;"/>
+              <ellipse cx="100" cy="100" rx="8" ry="12" fill="#ff4488" style="animation: butterfly-dance 2200ms ease-in-out forwards 100ms; opacity: 0.5;"/>
+              <circle cx="100" cy="100" r="3" fill="#ffaa00" style="animation: butterfly-dance 2200ms ease-in-out forwards 200ms"/>
+            </svg>
+            <svg class="animation-variation" id="butt3" viewBox="0 0 200 200">
+              <g style="animation: butterfly-orbit 2200ms ease-out forwards">
+                <ellipse cx="90" cy="100" rx="8" ry="12" fill="#ff4488"/>
+                <ellipse cx="110" cy="100" rx="8" ry="12" fill="#ff4488"/>
+              </g>
+              <path d="M 100,100 Q 110,90 120,80" fill="none" stroke="#ff4488" stroke-width="1" opacity="0.3" style="animation: butterfly-orbit 2200ms ease-out forwards 200ms"/>
+            </svg>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ====================== NILOU ====================== -->
+    <div class="character-section">
+      <div class="character-title">💧 NILOU - Hydro Performer</div>
+      <div class="moves-grid">
+
+        <!-- DANCE OF BLESSING -->
+        <div class="move-demo">
+          <div class="move-title">Dance of Blessing</div>
+          <div class="variation-tabs">
+            <button class="tab-btn active" onclick="switchTab(this, 'dance1')">Ripple</button>
+            <button class="tab-btn" onclick="switchTab(this, 'dance2')">Spiral</button>
+            <button class="tab-btn" onclick="switchTab(this, 'dance3')">Sparkle</button>
+          </div>
+          <div class="animation-container">
+            <svg class="animation-variation active" id="dance1" viewBox="0 0 200 200">
+              <circle cx="100" cy="100" r="3" fill="none" stroke="#00d4b4" stroke-width="2" style="animation: ripple-wave 2000ms ease-out forwards"/>
+              <circle cx="100" cy="100" r="3" fill="none" stroke="#00d4b4" stroke-width="2" style="animation: ripple-wave 2000ms ease-out forwards 400ms"/>
+              <circle cx="100" cy="100" r="3" fill="none" stroke="#00d4b4" stroke-width="2" style="animation: ripple-wave 2000ms ease-out forwards 800ms"/>
+            </svg>
+            <svg class="animation-variation" id="dance2" viewBox="0 0 200 200">
+              <g style="animation: wave-spiral 2000ms ease-out forwards">
+                <circle cx="100" cy="100" r="20" fill="none" stroke="#00d4b4" stroke-width="1.5" opacity="0.7"/>
+                <circle cx="100" cy="100" r="35" fill="none" stroke="#00d4b4" stroke-width="1" opacity="0.4"/>
+              </g>
+            </svg>
+            <svg class="animation-variation" id="dance3" viewBox="0 0 200 200">
+              <circle cx="100" cy="100" r="3" fill="none" stroke="#00d4b4" stroke-width="2" style="animation: ripple-wave 2000ms ease-out forwards"/>
+              <circle cx="100" cy="60" r="3" fill="#00d4b4" style="animation: sparkle-pop 2000ms ease-out forwards 300ms"/>
+              <circle cx="75" cy="75" r="3" fill="#00d4b4" style="animation: sparkle-pop 2000ms ease-out forwards 600ms"/>
+              <circle cx="125" cy="75" r="3" fill="#00d4b4" style="animation: sparkle-pop 2000ms ease-out forwards 900ms"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- WATER WHEEL -->
+        <div class="move-demo">
+          <div class="move-title">Water Wheel</div>
+          <div class="variation-tabs">
+            <button class="tab-btn active" onclick="switchTab(this, 'water1')">Simple Spin</button>
+            <button class="tab-btn" onclick="switchTab(this, 'water2')">Complex</button>
+            <button class="tab-btn" onclick="switchTab(this, 'water3')">Splash</button>
+          </div>
+          <div class="animation-container">
+            <svg class="animation-variation active" id="water1" viewBox="0 0 200 200">
+              <g style="animation: wheel-spin 2100ms ease-out forwards">
+                <circle cx="100" cy="100" r="30" fill="none" stroke="#00d4b4" stroke-width="2"/>
+                <line x1="70" y1="100" x2="130" y2="100" stroke="#00d4b4" stroke-width="1.5"/>
+                <line x1="100" y1="70" x2="100" y2="130" stroke="#00d4b4" stroke-width="1.5"/>
+              </g>
+            </svg>
+            <svg class="animation-variation" id="water2" viewBox="0 0 200 200">
+              <g style="animation: wheel-complex 2100ms ease-out forwards">
+                <circle cx="100" cy="100" r="30" fill="none" stroke="#00d4b4" stroke-width="2" opacity="0.8"/>
+                <line x1="70" y1="100" x2="130" y2="100" stroke="#00d4b4" stroke-width="2"/>
+                <line x1="100" y1="70" x2="100" y2="130" stroke="#00d4b4" stroke-width="2"/>
+                <circle cx="85" cy="85" r="3" fill="#00d4b4"/>
+                <circle cx="115" cy="115" r="3" fill="#00d4b4"/>
+              </g>
+            </svg>
+            <svg class="animation-variation" id="water3" viewBox="0 0 200 200">
+              <g style="animation: wheel-spin 2100ms ease-out forwards">
+                <circle cx="100" cy="100" r="30" fill="none" stroke="#00d4b4" stroke-width="2"/>
+              </g>
+              <circle cx="100" cy="100" r="3" fill="#00d4b4" style="--spx: 60px; --spy: -60px; animation: water-spray 2100ms ease-out forwards 400ms" opacity="0.7"/>
+              <circle cx="100" cy="100" r="3" fill="#00d4b4" style="--spx: 0px; --spy: -80px; animation: water-spray 2100ms ease-out forwards 600ms" opacity="0.7"/>
+            </svg>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ====================== XIAO ====================== -->
+    <div class="character-section">
+      <div class="character-title">⚡ XIAO - Yaksha Protector</div>
+      <div class="moves-grid">
+
+        <!-- LANCING STRIKE -->
+        <div class="move-demo">
+          <div class="move-title">Lancing Strike</div>
+          <div class="variation-tabs">
+            <button class="tab-btn active" onclick="switchTab(this, 'lance1')">Simple</button>
+            <button class="tab-btn" onclick="switchTab(this, 'lance2')">Complex</button>
+            <button class="tab-btn" onclick="switchTab(this, 'lance3')">Impact</button>
+          </div>
+          <div class="animation-container">
+            <svg class="animation-variation active" id="lance1" viewBox="0 0 200 200">
+              <line x1="100" y1="140" x2="100" y2="60" stroke="#7ddc5f" stroke-width="3" style="animation: spear-thrust 1700ms ease-out forwards"/>
+              <polygon points="100,55 95,70 105,70" fill="#7ddc5f" style="animation: spear-thrust 1700ms ease-out forwards"/>
+            </svg>
+            <svg class="animation-variation" id="lance2" viewBox="0 0 200 200">
+              <g style="animation: spear-complex 1700ms ease-out forwards">
+                <line x1="100" y1="140" x2="100" y2="60" stroke="#7ddc5f" stroke-width="3"/>
+                <polygon points="100,55 95,70 105,70" fill="#7ddc5f"/>
+              </g>
+            </svg>
+            <svg class="animation-variation" id="lance3" viewBox="0 0 200 200">
+              <line x1="100" y1="140" x2="100" y2="60" stroke="#7ddc5f" stroke-width="3" style="animation: spear-thrust 1700ms ease-out forwards"/>
+              <circle cx="100" cy="100" r="5" fill="none" stroke="#7ddc5f" stroke-width="2" style="animation: impact-wave 1700ms ease-out forwards 500ms"/>
+              <circle cx="100" cy="100" r="5" fill="none" stroke="#7ddc5f" stroke-width="2" style="animation: impact-wave 1700ms ease-out forwards 800ms; opacity: 0.6;"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- YAKSHA VALOR -->
+        <div class="move-demo">
+          <div class="move-title">Yaksha Valor</div>
+          <div class="variation-tabs">
+            <button class="tab-btn active" onclick="switchTab(this, 'yaksha1')">Simple</button>
+            <button class="tab-btn" onclick="switchTab(this, 'yaksha2')">Aura</button>
+            <button class="tab-btn" onclick="switchTab(this, 'yaksha3')">Protect</button>
+          </div>
+          <div class="animation-container">
+            <svg class="animation-variation active" id="yaksha1" viewBox="0 0 200 200">
+              <circle cx="100" cy="100" r="20" fill="none" stroke="#7ddc5f" stroke-width="2" style="animation: yaksha-form 2000ms ease-out forwards"/>
+              <line x1="100" y1="70" x2="100" y2="130" stroke="#7ddc5f" stroke-width="1" opacity="0.6"/>
+              <line x1="70" y1="100" x2="130" y2="100" stroke="#7ddc5f" stroke-width="1" opacity="0.6"/>
+            </svg>
+            <svg class="animation-variation" id="yaksha2" viewBox="0 0 200 200">
+              <circle cx="100" cy="100" r="20" fill="none" stroke="#7ddc5f" stroke-width="2.5" style="animation: yaksha-form 2000ms ease-out forwards"/>
+              <circle cx="100" cy="100" r="30" fill="none" stroke="#7ddc5f" stroke-width="1.5" opacity="0.5" style="animation: yaksha-aura 2000ms ease-out forwards"/>
+            </svg>
+            <svg class="animation-variation" id="yaksha3" viewBox="0 0 200 200">
+              <circle cx="100" cy="100" r="25" fill="none" stroke="#7ddc5f" stroke-width="2" style="animation: yaksha-protect 2000ms ease-out forwards"/>
+              <circle cx="100" cy="100" r="25" fill="none" stroke="#7ddc5f" stroke-width="1.5" opacity="0.5" style="animation: yaksha-protect 2000ms ease-out forwards 200ms"/>
+            </svg>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function switchTab(btn, animId) {
+      // Remove active class from all tabs in this group
+      const parent = btn.parentElement;
+      Array.from(parent.querySelectorAll('.tab-btn')).forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      // Hide all variations in this container
+      const container = btn.closest('.move-demo').querySelector('.animation-container');
+      Array.from(container.querySelectorAll('.animation-variation')).forEach(el => el.classList.remove('active'));
+
+      // Show selected variation
+      document.getElementById(animId).classList.add('active');
+    }
+  </script>
+</body>
+</html>

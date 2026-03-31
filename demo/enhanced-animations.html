@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RPG+ Enhanced Animation Demos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Raleway:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: linear-gradient(135deg, #0a0c14 0%, #0f1420 100%);
+      color: #e8eef5;
+      font-family: 'Raleway', sans-serif;
+      padding: 30px 20px;
+      min-height: 100vh;
+    }
+    .container { max-width: 1600px; margin: 0 auto; }
+    h1 {
+      text-align: center;
+      font-family: 'Cinzel', serif;
+      font-size: 32px;
+      margin-bottom: 50px;
+      background: linear-gradient(135deg, #4ecfff, #00d4b4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 3px;
+    }
+    .character-block {
+      margin-bottom: 80px;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 30px;
+      background: rgba(15,20,32,0.8);
+      backdrop-filter: blur(10px);
+    }
+    .char-title {
+      font-family: 'Cinzel', serif;
+      font-size: 24px;
+      margin-bottom: 30px;
+      color: #a0e8ff;
+      letter-spacing: 2px;
+    }
+    .moves-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+      gap: 40px;
+    }
+    .move-card {
+      border: 1px solid rgba(78,207,255,0.2);
+      border-radius: 12px;
+      overflow: hidden;
+      background: rgba(14,20,32,0.9);
+      transition: all 0.3s ease;
+    }
+    .move-card:hover {
+      border-color: rgba(78,207,255,0.5);
+      box-shadow: 0 0 30px rgba(78,207,255,0.2);
+    }
+    .move-name {
+      padding: 15px 20px;
+      background: rgba(78,207,255,0.1);
+      border-bottom: 1px solid rgba(78,207,255,0.2);
+      font-weight: 600;
+      color: #7dd3fc;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .variation-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      padding: 10px;
+      background: rgba(0,0,0,0.3);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .tab-btn {
+      padding: 6px 12px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #999;
+      cursor: pointer;
+      font-size: 11px;
+      border-radius: 4px;
+      transition: all 0.2s;
+      font-family: monospace;
+    }
+    .tab-btn:hover, .tab-btn.active {
+      background: #4ecfff;
+      color: #000;
+      border-color: #4ecfff;
+    }
+    .animation-stage {
+      width: 100%;
+      height: 250px;
+      background: linear-gradient(135deg, rgba(10,20,40,0.8) 0%, rgba(15,25,50,0.8) 100%);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .animation-variation {
+      display: none;
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+    .animation-variation.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ════════════════════ FROSTBLOSSOM VARIATIONS ════════════════════ */
+
+    /* VARIATION 1: Blade Storm */
+    @keyframes fb-blade-spin { 0% { transform: rotate(0deg) scale(0.3) translateX(0); opacity: 0; } 20% { opacity: 1; } 100% { transform: rotate(720deg) scale(1.2) translateX(15px); opacity: 0; } }
+    @keyframes fb-crystal-fall { 0% { transform: translateY(-60px) scale(0.8); opacity: 0; } 20% { opacity: 1; } 80% { opacity: 1; } 100% { transform: translateY(80px) scale(0.3); opacity: 0; } }
+    @keyframes fb-center-pulse { 0% { transform: scale(0.5); opacity: 0.3; } 50% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.5); opacity: 0; } }
+
+    .fb-var1-blade { position: absolute; width: 120px; height: 8px; background: linear-gradient(90deg, transparent, #4ecfff, transparent); left: 50%; top: 50%; transform-origin: left center; }
+    .fb-var1-blade:nth-child(1) { animation: fb-blade-spin 1900ms ease-out forwards; }
+    .fb-var1-blade:nth-child(2) { animation: fb-blade-spin 1900ms ease-out forwards 150ms; }
+    .fb-var1-blade:nth-child(3) { animation: fb-blade-spin 1900ms ease-out forwards 300ms; }
+    .fb-var1-blade:nth-child(4) { animation: fb-blade-spin 1900ms ease-out forwards 450ms; }
+
+    .fb-var1-crystal { position: absolute; width: 12px; height: 12px; background: #7dd3fc; border-radius: 2px; left: 50%; top: 50%; margin: -6px 0 0 -6px; box-shadow: 0 0 10px rgba(125,211,252,0.8); }
+    .fb-var1-crystal:nth-child(5) { animation: fb-crystal-fall 1900ms ease-out forwards; }
+    .fb-var1-crystal:nth-child(6) { animation: fb-crystal-fall 1900ms ease-out forwards 200ms; }
+    .fb-var1-crystal:nth-child(7) { animation: fb-crystal-fall 1900ms ease-out forwards 400ms; }
+    .fb-var1-crystal:nth-child(8) { animation: fb-crystal-fall 1900ms ease-out forwards 600ms; }
+
+    .fb-var1-center { position: absolute; width: 80px; height: 80px; left: 50%; top: 50%; margin: -40px 0 0 -40px; border: 3px solid #4ecfff; border-radius: 50%; animation: fb-center-pulse 1900ms ease-out forwards; box-shadow: 0 0 30px rgba(78,207,255,0.6); }
+
+    /* VARIATION 2: Crystal Burst */
+    @keyframes fb-burst-wave { 0% { r: 10px; stroke-width: 3; opacity: 1; } 100% { r: 100px; stroke-width: 0.5; opacity: 0; } }
+    @keyframes fb-crystal-float { 0% { transform: translate(0, 0) scale(1); opacity: 1; } 100% { transform: translate(var(--tx), var(--ty)) scale(0.5); opacity: 0; } }
+
+    .fb-var2-ring { position: absolute; left: 50%; top: 50%; width: 20px; height: 20px; margin: -10px 0 0 -10px; }
+    .fb-var2-ring:nth-child(1) { animation: fb-burst-wave 1900ms ease-out forwards; border: 2px solid #4ecfff; border-radius: 50%; }
+    .fb-var2-ring:nth-child(2) { animation: fb-burst-wave 1900ms ease-out forwards 200ms; border: 2px solid #7dd3fc; border-radius: 50%; }
+    .fb-var2-ring:nth-child(3) { animation: fb-burst-wave 1900ms ease-out forwards 400ms; border: 2px solid #a0e8ff; border-radius: 50%; }
+
+    .fb-var2-crystal { position: absolute; width: 10px; height: 10px; background: #4ecfff; left: 50%; top: 50%; margin: -5px 0 0 -5px; clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%); }
+    .fb-var2-crystal:nth-child(4) { --tx: 80px; --ty: -50px; animation: fb-crystal-float 1900ms ease-out forwards 300ms; }
+    .fb-var2-crystal:nth-child(5) { --tx: 80px; --ty: 50px; animation: fb-crystal-float 1900ms ease-out forwards 400ms; }
+    .fb-var2-crystal:nth-child(6) { --tx: -80px; --ty: 50px; animation: fb-crystal-float 1900ms ease-out forwards 500ms; }
+    .fb-var2-crystal:nth-child(7) { --tx: -80px; --ty: -50px; animation: fb-crystal-float 1900ms ease-out forwards 600ms; }
+
+    /* VARIATION 3: Ethereal Dance */
+    @keyframes fb-ethereal-spin { 0% { transform: rotate(0deg) scaleY(0.3); opacity: 0; filter: blur(10px); } 20% { opacity: 1; } 100% { transform: rotate(720deg) scaleY(1.5); opacity: 0; filter: blur(0); } }
+    @keyframes fb-particle-rise { 0% { transform: translateY(60px) scale(1.2); opacity: 0; } 20% { opacity: 1; } 80% { opacity: 0.8; } 100% { transform: translateY(-80px) scale(0.3); opacity: 0; } }
+
+    .fb-var3-shape { position: absolute; width: 100px; height: 100px; left: 50%; top: 50%; margin: -50px 0 0 -50px; border: 2px solid #4ecfff; border-radius: 50%; }
+    .fb-var3-shape:nth-child(1) { animation: fb-ethereal-spin 1900ms ease-out forwards; }
+    .fb-var3-shape:nth-child(2) { animation: fb-ethereal-spin 1900ms ease-out forwards 150ms; opacity: 0.6; }
+
+    .fb-var3-particle { position: absolute; width: 6px; height: 6px; background: radial-gradient(circle, #4ecfff, #7dd3fc); left: 50%; top: 50%; margin: -3px 0 0 -3px; border-radius: 50%; box-shadow: 0 0 8px #4ecfff; }
+    .fb-var3-particle:nth-child(3) { animation: fb-particle-rise 1900ms ease-out forwards; }
+    .fb-var3-particle:nth-child(4) { animation: fb-particle-rise 1900ms ease-out forwards 100ms; }
+    .fb-var3-particle:nth-child(5) { animation: fb-particle-rise 1900ms ease-out forwards 200ms; }
+    .fb-var3-particle:nth-child(6) { animation: fb-particle-rise 1900ms ease-out forwards 300ms; }
+    .fb-var3-particle:nth-child(7) { animation: fb-particle-rise 1900ms ease-out forwards 400ms; }
+
+    /* VARIATION 4: Triple Slash */
+    @keyframes fb-slash { 0% { transform: rotateZ(-45deg) scaleX(0); opacity: 1; filter: brightness(0.5); } 50% { filter: brightness(1); } 100% { transform: rotateZ(-45deg) scaleX(2); opacity: 0; } }
+
+    .fb-var4-slash { position: absolute; left: 50%; top: 50%; width: 120px; height: 8px; background: linear-gradient(90deg, transparent, #4ecfff 50%, transparent); transform-origin: left center; margin: -4px 0 0 -40px; }
+    .fb-var4-slash:nth-child(1) { animation: fb-slash 1900ms ease-out forwards 200ms; }
+    .fb-var4-slash:nth-child(2) { animation: fb-slash 1900ms ease-out forwards 600ms; }
+    .fb-var4-slash:nth-child(3) { animation: fb-slash 1900ms ease-out forwards 1000ms; }
+
+    .fb-var4-trail { position: absolute; left: 50%; top: 50%; width: 20px; height: 20px; margin: -10px 0 0 -10px; border: 2px solid #7dd3fc; border-radius: 50%; }
+    .fb-var4-trail:nth-child(4) { animation: fb-center-pulse 1900ms ease-out forwards; }
+
+    /* ════════════════════ GLACIAL WALTZ VARIATIONS ════════════════════ */
+
+    /* VARIATION 1: Ripple Spin */
+    @keyframes gw-ripple { 0% { r: 5px; stroke-width: 2; opacity: 1; } 100% { r: 95px; stroke-width: 0.5; opacity: 0; } }
+    @keyframes gw-shard-orbit { 0% { transform: rotate(0deg) translateX(60px) rotate(0deg); opacity: 1; } 100% { transform: rotate(360deg) translateX(60px) rotate(-360deg); opacity: 0.3; } }
+
+    .gw-var1-ripple { position: absolute; left: 50%; top: 50%; margin: -50px 0 0 -50px; width: 100px; height: 100px; }
+    .gw-var1-ripple:nth-child(1) { animation: gw-ripple 2100ms ease-out forwards; stroke: #4ecfff; stroke-width: 2; }
+    .gw-var1-ripple:nth-child(2) { animation: gw-ripple 2100ms ease-out forwards 300ms; stroke: #7dd3fc; }
+    .gw-var1-ripple:nth-child(3) { animation: gw-ripple 2100ms ease-out forwards 600ms; stroke: #a0e8ff; }
+
+    .gw-var1-shard { position: absolute; left: 50%; top: 50%; width: 12px; height: 12px; background: #4ecfff; clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%); margin: -6px 0 0 -6px; }
+    .gw-var1-shard:nth-child(4) { animation: gw-shard-orbit 2100ms linear forwards; }
+    .gw-var1-shard:nth-child(5) { animation: gw-shard-orbit 2100ms linear forwards 350ms; }
+    .gw-var1-shard:nth-child(6) { animation: gw-shard-orbit 2100ms linear forwards 700ms; }
+
+    /* VARIATION 2: Snowflake Vortex */
+    @keyframes gw-snowflake-spin { 0% { transform: rotate(0deg) translateX(0) rotate(0deg); opacity: 0; } 20% { opacity: 1; } 100% { transform: rotate(720deg) translateX(-80px) rotate(-720deg); opacity: 0; } }
+
+    .gw-var2-snow { position: absolute; left: 50%; top: 50%; width: 20px; height: 20px; margin: -10px 0 0 -10px; }
+    .gw-var2-snow:nth-child(1) { animation: gw-snowflake-spin 2100ms ease-out forwards; font-size: 20px; }
+    .gw-var2-snow:nth-child(2) { animation: gw-snowflake-spin 2100ms ease-out forwards 150ms; }
+    .gw-var2-snow:nth-child(3) { animation: gw-snowflake-spin 2100ms ease-out forwards 300ms; }
+    .gw-var2-snow:nth-child(4) { animation: gw-snowflake-spin 2100ms ease-out forwards 450ms; }
+
+    /* VARIATION 3: Double Helix */
+    @keyframes gw-helix-a { 0% { transform: translateX(-40px) rotateY(0deg) scale(0.5); opacity: 0; } 20% { opacity: 1; } 100% { transform: translateX(60px) rotateY(360deg) scale(1.2); opacity: 0; } }
+    @keyframes gw-helix-b { 0% { transform: translateX(40px) rotateY(0deg) scale(0.5); opacity: 0; } 20% { opacity: 1; } 100% { transform: translateX(-60px) rotateY(-360deg) scale(1.2); opacity: 0; } }
+
+    .gw-var3-strand { position: absolute; left: 50%; top: 50%; width: 80px; height: 6px; background: linear-gradient(90deg, transparent, #4ecfff, transparent); margin: -3px 0 0 -40px; }
+    .gw-var3-strand:nth-child(1) { animation: gw-helix-a 2100ms ease-out forwards; }
+    .gw-var3-strand:nth-child(2) { animation: gw-helix-b 2100ms ease-out forwards; }
+    .gw-var3-strand:nth-child(3) { animation: gw-helix-a 2100ms ease-out forwards 300ms; }
+    .gw-var3-strand:nth-child(4) { animation: gw-helix-b 2100ms ease-out forwards 300ms; }
+
+    /* ════════════════════ SPIRIT FLAME VARIATIONS ════════════════════ */
+
+    /* VARIATION 1: Rising Inferno */
+    @keyframes sf-flame-rise { 0% { transform: translateY(60px) scaleY(0.4) rotateX(20deg); opacity: 0; filter: blur(5px); } 15% { opacity: 1; filter: blur(0); } 85% { opacity: 0.8; } 100% { transform: translateY(-80px) scaleY(2) rotateX(0deg); opacity: 0; } }
+    @keyframes sf-glow { 0% { filter: drop-shadow(0 0 5px #ff7700); } 50% { filter: drop-shadow(0 0 30px #ff7700) brightness(1.3); } 100% { filter: drop-shadow(0 0 10px #ff7700) brightness(1); } }
+
+    .sf-var1-flame { position: absolute; left: 50%; bottom: 0; width: 60px; height: 80px; background: linear-gradient(to top, #ff7700, #ffaa00, transparent); clip-path: polygon(50% 0%, 85% 50%, 80% 100%, 20% 100%, 15% 50%); margin: 0 0 0 -30px; }
+    .sf-var1-flame:nth-child(1) { animation: sf-flame-rise 1900ms ease-out forwards, sf-glow 1900ms ease-in-out forwards; }
+    .sf-var1-flame:nth-child(2) { animation: sf-flame-rise 1900ms ease-out forwards 150ms, sf-glow 1900ms ease-in-out forwards 150ms; }
+    .sf-var1-flame:nth-child(3) { animation: sf-flame-rise 1900ms ease-out forwards 300ms, sf-glow 1900ms ease-in-out forwards 300ms; }
+
+    /* VARIATION 2: Spiral Vortex */
+    @keyframes sf-spiral { 0% { transform: rotate(0deg) scale(0.4) translateY(0); opacity: 0; } 20% { opacity: 1; } 100% { transform: rotate(720deg) scale(1.5) translateY(-100px); opacity: 0; } }
+
+    .sf-var2-spiral { position: absolute; left: 50%; top: 50%; width: 70px; height: 70px; margin: -35px 0 0 -35px; }
+    .sf-var2-spiral:nth-child(1) { animation: sf-spiral 1900ms ease-out forwards; border: 3px solid #ff7700; border-radius: 50%; }
+    .sf-var2-spiral:nth-child(2) { animation: sf-spiral 1900ms ease-out forwards 200ms; border: 2px solid #ffaa00; border-radius: 50%; }
+
+    /* VARIATION 3: Ember Cascade */
+    @keyframes sf-ember { 0% { transform: translate(0, -60px) scale(1.2); opacity: 1; } 100% { transform: translate(var(--ex), var(--ey)) scale(0.3); opacity: 0; } }
+
+    .sf-var3-ember { position: absolute; left: 50%; top: 50%; width: 8px; height: 8px; background: #ff7700; border-radius: 50%; margin: -4px 0 0 -4px; box-shadow: 0 0 12px #ff7700; }
+    .sf-var3-ember:nth-child(1) { --ex: -60px; --ey: 80px; animation: sf-ember 1900ms ease-out forwards 200ms; }
+    .sf-var3-ember:nth-child(2) { --ex: 0px; --ey: 100px; animation: sf-ember 1900ms ease-out forwards 300ms; }
+    .sf-var3-ember:nth-child(3) { --ex: 60px; --ey: 80px; animation: sf-ember 1900ms ease-out forwards 400ms; }
+    .sf-var3-ember:nth-child(4) { --ex: -80px; --ey: 40px; animation: sf-ember 1900ms ease-out forwards 500ms; }
+    .sf-var3-ember:nth-child(5) { --ex: 80px; --ey: 40px; animation: sf-ember 1900ms ease-out forwards 600ms; }
+
+    .info-text {
+      font-size: 11px;
+      color: #7a90a8;
+      padding: 10px 20px;
+      text-align: center;
+      background: rgba(0,0,0,0.2);
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>✦ ENHANCED ANIMATION VARIATIONS ✦</h1>
+
+    <!-- AYAKA -->
+    <div class="character-block">
+      <div class="char-title">❄️ AYAKA - Cryo Bladestorm</div>
+      <div class="moves-grid">
+
+        <!-- Frostblossom Variations -->
+        <div class="move-card">
+          <div class="move-name">Frostblossom Slash</div>
+          <div class="variation-tabs">
+            <button class="tab-btn active" onclick="switchTab(event, 'fb-var1')">Blade Storm</button>
+            <button class="tab-btn" onclick="switchTab(event, 'fb-var2')">Crystal Burst</button>
+            <button class="tab-btn" onclick="switchTab(event, 'fb-var3')">Ethereal Dance</button>
+            <button class="tab-btn" onclick="switchTab(event, 'fb-var4')">Triple Slash</button>
+          </div>
+          <div class="animation-stage">
+            <div class="animation-variation active" id="fb-var1">
+              <div class="fb-var1-blade"></div>
+              <div class="fb-var1-blade"></div>
+              <div class="fb-var1-blade"></div>
+              <div class="fb-var1-blade"></div>
+              <div class="fb-var1-crystal"></div>
+              <div class="fb-var1-crystal"></div>
+              <div class="fb-var1-crystal"></div>
+              <div class="fb-var1-crystal"></div>
+              <div class="fb-var1-center"></div>
+            </div>
+            <div class="animation-variation" id="fb-var2">
+              <svg style="position: absolute; width: 200px; height: 200px;" viewBox="0 0 200 200">
+                <circle cx="100" cy="100" r="10" fill="none" stroke="#4ecfff" stroke-width="2" style="animation: fb-burst-wave 1900ms ease-out forwards;"/>
+                <circle cx="100" cy="100" r="10" fill="none" stroke="#7dd3fc" stroke-width="2" style="animation: fb-burst-wave 1900ms ease-out forwards 200ms;"/>
+                <circle cx="100" cy="100" r="10" fill="none" stroke="#a0e8ff" stroke-width="2" style="animation: fb-burst-wave 1900ms ease-out forwards 400ms;"/>
+              </svg>
+              <div class="fb-var2-crystal"></div>
+              <div class="fb-var2-crystal"></div>
+              <div class="fb-var2-crystal"></div>
+              <div class="fb-var2-crystal"></div>
+            </div>
+            <div class="animation-variation" id="fb-var3">
+              <div class="fb-var3-shape"></div>
+              <div class="fb-var3-shape"></div>
+              <div class="fb-var3-particle"></div>
+              <div class="fb-var3-particle"></div>
+              <div class="fb-var3-particle"></div>
+              <div class="fb-var3-particle"></div>
+              <div class="fb-var3-particle"></div>
+            </div>
+            <div class="animation-variation" id="fb-var4">
+              <div class="fb-var4-slash"></div>
+              <div class="fb-var4-slash"></div>
+              <div class="fb-var4-slash"></div>
+              <div class="fb-var4-trail"></div>
+            </div>
+          </div>
+          <div class="info-text">Click tabs to preview | 4 Animation Styles Available</div>
+        </div>
+
+        <!-- Glacial Waltz Variations -->
+        <div class="move-card">
+          <div class="move-name">Glacial Waltz</div>
+          <div class="variation-tabs">
+            <button class="tab-btn active" onclick="switchTab(event, 'gw-var1')">Ripple Spin</button>
+            <button class="tab-btn" onclick="switchTab(event, 'gw-var2')">Snowflake Vortex</button>
+            <button class="tab-btn" onclick="switchTab(event, 'gw-var3')">Double Helix</button>
+          </div>
+          <div class="animation-stage">
+            <div class="animation-variation active" id="gw-var1">
+              <svg style="position: absolute; width: 200px; height: 200px;" viewBox="0 0 200 200">
+                <circle cx="100" cy="100" r="5" fill="none" stroke="#4ecfff" stroke-width="2" style="animation: gw-ripple 2100ms ease-out forwards;"/>
+                <circle cx="100" cy="100" r="5" fill="none" stroke="#7dd3fc" stroke-width="2" style="animation: gw-ripple 2100ms ease-out forwards 300ms;"/>
+                <circle cx="100" cy="100" r="5" fill="none" stroke="#a0e8ff" stroke-width="2" style="animation: gw-ripple 2100ms ease-out forwards 600ms;"/>
+              </svg>
+              <div class="gw-var1-shard"></div>
+              <div class="gw-var1-shard"></div>
+              <div class="gw-var1-shard"></div>
+            </div>
+            <div class="animation-variation" id="gw-var2">
+              <div class="gw-var2-snow">❄</div>
+              <div class="gw-var2-snow">❄</div>
+              <div class="gw-var2-snow">❄</div>
+              <div class="gw-var2-snow">❄</div>
+            </div>
+            <div class="animation-variation" id="gw-var3">
+              <div class="gw-var3-strand"></div>
+              <div class="gw-var3-strand"></div>
+              <div class="gw-var3-strand"></div>
+              <div class="gw-var3-strand"></div>
+            </div>
+          </div>
+          <div class="info-text">Click tabs to preview | 3 Animation Styles Available</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- HU TAO -->
+    <div class="character-block">
+      <div class="char-title">🔥 HU TAO - Spirit Incinerator</div>
+      <div class="moves-grid">
+
+        <!-- Spirit Flame Variations -->
+        <div class="move-card">
+          <div class="move-name">Spirit Flame</div>
+          <div class="variation-tabs">
+            <button class="tab-btn active" onclick="switchTab(event, 'sf-var1')">Rising Inferno</button>
+            <button class="tab-btn" onclick="switchTab(event, 'sf-var2')">Spiral Vortex</button>
+            <button class="tab-btn" onclick="switchTab(event, 'sf-var3')">Ember Cascade</button>
+          </div>
+          <div class="animation-stage">
+            <div class="animation-variation active" id="sf-var1">
+              <div class="sf-var1-flame"></div>
+              <div class="sf-var1-flame"></div>
+              <div class="sf-var1-flame"></div>
+            </div>
+            <div class="animation-variation" id="sf-var2">
+              <div class="sf-var2-spiral"></div>
+              <div class="sf-var2-spiral"></div>
+            </div>
+            <div class="animation-variation" id="sf-var3">
+              <div class="sf-var3-ember"></div>
+              <div class="sf-var3-ember"></div>
+              <div class="sf-var3-ember"></div>
+              <div class="sf-var3-ember"></div>
+              <div class="sf-var3-ember"></div>
+            </div>
+          </div>
+          <div class="info-text">Click tabs to preview | 3 Animation Styles Available</div>
+        </div>
+
+      </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 60px; color: #7a90a8; font-size: 13px;">
+      <p>📊 These are example variations showing different animation complexity levels and styles</p>
+      <p>Choose your preferred style and I'll apply it to the game! 🎮</p>
+    </div>
+
+  </div>
+
+  <script>
+    function switchTab(event, varId) {
+      const btn = event.target;
+      const parent = btn.parentElement;
+      const card = btn.closest('.move-card');
+
+      // Remove active from all buttons
+      Array.from(parent.querySelectorAll('.tab-btn')).forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      // Hide all variations
+      Array.from(card.querySelectorAll('.animation-variation')).forEach(v => v.classList.remove('active'));
+
+      // Show selected variation
+      document.getElementById(varId).classList.add('active');
+    }
+  </script>
+</body>
+</html>
