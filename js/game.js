@@ -761,7 +761,7 @@ function buildParty() {
       hp: s.hp, maxHp: s.hp,
       mp: s.mp, maxMp: s.mp,
       atk: s.atk, def: s.def, spd: s.spd, mag: s.mag,
-      lv: 1, exp: 0, gold: 0,
+      lv: ch.lv || 1, exp: ch.exp || 0, gold: ch.gold || 0,
       char: ch, cls: cls,
       passive: ch.passive,
       abilities: cls.abilities,
@@ -1401,6 +1401,13 @@ function checkBattleEnd() {
       m.exp  += totalExp;
       m.gold += totalGold;
       if (checkMemberLevel(m)) leveledNames.push(m.displayName);
+      // Sync stats back to character data for persistence across arcs
+      const ch = G.chars.find(c => c.id === m.charId);
+      if (ch) {
+        ch.lv = m.lv;
+        ch.exp = m.exp;
+        ch.gold = m.gold;
+      }
     });
 
     UI.setLog([`Enemies defeated! +${totalExp} EXP +${totalGold} Gold`], ['hi']);
