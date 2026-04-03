@@ -5,13 +5,49 @@
     "negative": "cropped, cut off, bad anatomy, extra limbs, watermark, text, logo, blurry, low quality, realistic photo, 3d render"
   },
   "heroes": [
+     {
+      "id": "rydia",
+      "name": "Rydia the Summoner",
+      "category": "heroes",
+      "filename": "rydia.png",
+      "target_path": "images/heroes/rydia.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (full body:1.4), (standing:1.2), side view, facing right, (full color),(rydia) ,(final fantasy)",
+      "prompt_face": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (portrait:1.4), (head and shoulders and upper body:1.2), facing viewer, (full color), (bold outlines:1.2), (rydia) ,(final fantasy), (amethyst eyes, wise magical gaze), (mystical aura), (ethereal expression), close-up character portrait, RPG icon style"
+    },
+    {
+      "id": "lenneth",
+      "name": "Lenneth the Valkyrie",
+      "category": "heroes",
+      "filename": "lenneth.png",
+      "target_path": "images/heroes/lenneth.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (full body:1.4), (standing:1.2), side view, facing right, (full color), (bold outlines:1.2), (valkyrie goddess), (long pink white hair), (rose gold eyes), (divine silver and pink armor), (large feathered wings), (holding divine spear), (celestial glow), (majestic warrior stance), RPG character art",
+      "prompt_face": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (portrait:1.4), (head and shoulders and upper body:1.2), facing viewer, (full color), (bold outlines:1.2), (valkyrie goddess), (long flowing pink white hair), (rose gold eyes, commanding divine expression), (celestial silver armor), (feathered pauldrons), (serene yet fierce), close-up character portrait, RPG icon style"
+    },
+    {
+      "id": "kain",
+      "name": "Kain the Dragoon",
+      "category": "heroes",
+      "filename": "kain.png",
+      "target_path": "images/heroes/kain.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1boy, solo, simple background, (full body:1.4), (standing:1.2), facing right, (full color), (bold outlines:1.2), (male dragoon knight), (brown hair), (blue eyes), (silver and blue dragoon armor with dragon motifs), (holding long spear), (dragon wing cloak), (powerful stance), (heroic expression), (dragon scale pauldrons), RPG character art",
+      "prompt_face": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1boy, solo, simple background, (portrait:1.4), (head and shoulders and upper body:1.2), facing viewer, (full color), (bold outlines:1.2), (dragoon knight), (brown hair), (blue eyes, determined brave expression), (silver dragoon helmet with horns), (blue armor with dragon scales), (honorable warrior), close-up character portrait, RPG icon style"
+    },
+    {
+      "id": "leon",
+      "name": "Leon the Lionheart King",
+      "category": "heroes",
+      "filename": "leon.png",
+      "target_path": "images/heroes/leon.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1boy, solo, simple background, (full body:1.4), (standing:1.2), facing forward, (full color), (bold outlines:1.2), (mature king warrior), (dark hair with silver streaks), (wise golden eyes), (ornate golden armor with lion crest), (royal cape with red inner lining), (holding legendary sword), (regal dignified stance), (lion motif throughout), (glowing divine aura), RPG character art",
+      "prompt_face": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1boy, solo, simple background, (portrait:1.4), (head and shoulders and upper body:1.2), facing viewer, (full color), (bold outlines:1.2), (noble lionheart king), (dark hair with silver streaks, mature), (golden eyes, wise and compassionate expression), (golden royal armor with lion emblem), (royal cape), (dignified bearing, leader presence), close-up character portrait, RPG icon style"
+    },
     {
     "id": "ayaka",
     "name": "Kamisato Ayaka",
     "category": "heroes",
     "filename": "ayaka.png",
     "target_path": "images/heroes/ayaka.png",
-    "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (full body:1.4), (standing:1.2), side view, facing right, (full color), (bold outlines:1.2), (Kamisato Ayaka from Genshin Impact), (long light blue white hair), (tied ponytail with ornate blue kanzashi), (pale blue eyes), (slender katana at side)",
+    "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (full color),(rydia) ,(final fantasy)",
     "prompt_face": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, 1girl, solo, simple background, (portrait:1.4), (head and shoulders and upper body:1.2), facing viewer, (full color), (bold outlines:1.2), (Kamisato Ayaka), (long light blue white hair with ornate blue kanzashi), (pale blue eyes, serene gentle expression), (slender katana at side), (Kamisato Clan outfit), (blue and white noble attire), close-up character portrait, RPG icon style"
   },
   {

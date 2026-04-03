@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "mcp__Claude_Preview__preview_start",
-      "Bash(grep -n \"anim\\\\|keyframes\" C:/Users/ASUS/VVI/rpg+/*.css)"
+      "Bash(grep -n \"anim\\\\|keyframes\" C:/Users/ASUS/VVI/rpg+/*.css)",
+      "Bash(node -e \"JSON.parse\\(require\\(''fs''\\).readFileSync\\(''C:/Users/ASUS/VVI/rpg+/data/character-unlocks.json'', ''utf8''\\)\\)\")",
+      "Bash(node -c js/story.js)"
     ]
   }
 }
