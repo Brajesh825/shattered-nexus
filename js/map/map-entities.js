@@ -48,6 +48,9 @@ const MapPlayer = (() => {
   let _queuedDir = null;
   let _stepDir   = null; // {dx,dy} of current step
 
+  // Last known facing direction (persists when idle)
+  let _facing = { dx: 0, dy: 1 }; // default: facing down
+
   // Sprite frame for walk cycle
   let _frame = 0;
   let _frameTimer = 0;
@@ -108,6 +111,7 @@ const MapPlayer = (() => {
     const nx = tx + dx, ny = ty + dy;
     if (_canMove(nx, ny, map)) {
       _stepDir = {dx, dy};
+      _facing  = {dx, dy}; // update facing when actually moving
       tx = nx; ty = ny;
       moving = true; moveTimer = 0;
     }
@@ -121,18 +125,57 @@ const MapPlayer = (() => {
     _tryMove(dx, dy, map);
   }
 
-  // Cached hero sprite canvas — rebuilt when hero changes
-  let _heroCanvas = null;
-  let _heroKey    = '';
+  // Cache: charId → { front, back, frontLoaded, backLoaded }
+  const _heroImgCache = {};
 
-  function _getHeroCanvas() {
-    const hero = G && G.hero;
-    if (!hero) return null;
-    const key = `${hero.charId}_${hero.cls?.id}`;
-    if (_heroCanvas && _heroKey === key) return _heroCanvas;
-    _heroKey   = key;
-    _heroCanvas = SpriteRenderer.drawHeroToCanvas(hero.charId, hero.char, hero.cls);
-    return _heroCanvas;
+  function _loadHeroImgs(charId, hero) {
+    if (_heroImgCache[charId]) return _heroImgCache[charId];
+
+    const entry = {
+      front: null, back: null, side: null,
+      frontLoaded: false, backLoaded: false, sideLoaded: false,
+    };
+    _heroImgCache[charId] = entry;
+
+    // Front sprite (down)
+    const front = new Image();
+    front.onload  = () => { entry.front = front; entry.frontLoaded = true; };
+    front.onerror = () => {
+      entry.front = SpriteRenderer.drawHeroToCanvas(charId, hero.char, hero.cls);
+      entry.frontLoaded = true;
+    };
+    front.src = `images/characters/map/${charId}.png`;
+
+    // Back sprite (up) — falls back to front if missing
+    const back = new Image();
+    back.onload  = () => { entry.back = back; entry.backLoaded = true; };
+    back.onerror = () => { entry.back = entry.front; entry.backLoaded = true; };
+    back.src = `images/characters/map/${charId}_back.png`;
+
+    // Side sprite (left/right) — falls back to front if missing
+    const side = new Image();
+    side.onload  = () => { entry.side = side; entry.sideLoaded = true; };
+    side.onerror = () => { entry.side = entry.front; entry.sideLoaded = true; };
+    side.src = `images/characters/map/${charId}_side.png`;
+
+    return entry;
+  }
+
+  // Returns { img, flipX } based on current facing direction
+  function _getSpriteInfo(charId, hero) {
+    const c = _loadHeroImgs(charId, hero);
+    const fallback = c.frontLoaded ? c.front : null;
+
+    // Up → back sprite
+    if (_facing.dy < 0) {
+      return { img: c.backLoaded ? c.back : fallback, flipX: false };
+    }
+    // Left / Right → side sprite (flip for left)
+    if (_facing.dx !== 0) {
+      return { img: c.sideLoaded ? c.side : fallback, flipX: _facing.dx < 0 };
+    }
+    // Down (default) → front sprite
+    return { img: fallback, flipX: false };
   }
 
   function render(ctx, cam, TILE) {
@@ -146,15 +189,27 @@ const MapPlayer = (() => {
     ctx.ellipse(sx + TILE / 2, sy + TILE - 3, TILE * 0.25, 5, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    const spr = _getHeroCanvas();
+    const hero = G && G.hero;
+    const { img: spr, flipX } = hero ? _getSpriteInfo(hero.charId, hero) : { img: null, flipX: false };
+
+    const dw = Math.round(TILE * 0.80);
+    const dh = Math.round(TILE * 0.90);
+    const ox = Math.round((TILE - dw) / 2);
+    const oy = Math.round((TILE - dh) / 2);
+
     if (spr) {
-      // Draw sprite scaled to fit tile (48x57 → ~28x33)
-      const dw = Math.round(TILE * 0.72);
-      const dh = Math.round(TILE * 0.85);
-      const ox = Math.round((TILE - dw) / 2);
-      const oy = Math.round((TILE - dh) / 2);
-      ctx.imageSmoothingEnabled = false;
-      ctx.drawImage(spr, sx + ox, sy + oy + bounce, dw, dh);
+      ctx.save();
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      if (flipX) {
+        // Mirror horizontally around the sprite's center
+        ctx.translate(sx + TILE / 2, sy);
+        ctx.scale(-1, 1);
+        ctx.drawImage(spr, -dw / 2, oy + bounce, dw, dh);
+      } else {
+        ctx.drawImage(spr, sx + ox, sy + oy + bounce, dw, dh);
+      }
+      ctx.restore();
     } else {
       // Fallback: simple colored square
       ctx.fillStyle = '#a080ff';
@@ -163,7 +218,6 @@ const MapPlayer = (() => {
 
     // Name tag
     if (!moving) {
-      const hero = G && G.hero;
       if (hero) {
         ctx.fillStyle = 'rgba(0,0,0,0.5)';
         ctx.fillRect(sx + 1, sy - 12, TILE - 2, 10);

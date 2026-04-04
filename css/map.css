@@ -10,12 +10,12 @@
   --cinzel:  'Cinzel', serif;
   --crimson: 'Crimson Pro', Georgia, serif;
 
-  /* Explore-screen palette */
-  --ex-gold:       #c8a45a;
-  --ex-gold2:      #e8c87a;
-  --ex-ui-bg:      rgba(6, 4, 14, 0.84);
-  --ex-ui-border:  rgba(200, 164, 90, 0.32);
-  --ex-parchment:  #f2e8c8;
+  /* Explore-screen palette — matches main game's purple/dark theme */
+  --ex-accent:     #6050b8;
+  --ex-accent2:    #9080e0;
+  --ex-ui-bg:      rgba(5, 4, 22, 0.90);
+  --ex-ui-border:  rgba(58, 40, 128, 0.45);
+  --ex-text:       #d0c8f0;
 }
 
 /* ══════════════════════════════════════════════════════
@@ -44,7 +44,7 @@
   font-size: 10px;
   color: var(--gold);
   letter-spacing: 4px;
-  text-shadow: 0 0 20px var(--gold-glow);
+  text-shadow: 0 0 20px var(--gold-glow), 0 0 40px #6040c040;
 }
 
 .map-arc-label {
@@ -211,11 +211,10 @@
   justify-content: space-between;
   padding: 0 18px;
   height: 48px;
-  background: linear-gradient(180deg, rgba(6,4,14,0.98) 0%, rgba(6,4,14,0) 100%);
-  /* Sits above canvas via z-index but is part of flex flow */
+  background: linear-gradient(180deg, rgba(5,4,22,0.98) 0%, rgba(5,4,22,0) 100%);
   position: relative;
   z-index: 20;
-  border-bottom: 1px solid rgba(200,164,90,0.12);
+  border-bottom: 1px solid #1a0d40;
 }
 
 .explore-header-left {
@@ -224,45 +223,41 @@
   gap: 14px;
 }
 
-/* Map name — Cinzel serif gold */
+/* Map name — matches game's VT323 style */
 .explore-map-name {
-  font-family: var(--cinzel);
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--ex-gold2);
-  letter-spacing: 0.12em;
-  text-shadow: 0 0 18px rgba(232,200,122,0.45);
+  font-family: var(--vt);
+  font-size: 22px;
+  color: var(--ex-text);
+  letter-spacing: 3px;
+  text-shadow: 0 0 14px rgba(144,128,224,0.5);
 }
 
 /* Subtle movement hint beside the name */
 .explore-map-hint {
-  font-family: var(--crimson);
-  font-size: 13px;
-  font-style: italic;
-  font-weight: 300;
-  color: rgba(242,232,200,0.35);
-  letter-spacing: 0.06em;
+  font-family: var(--vt);
+  font-size: 16px;
+  color: rgba(90, 82, 122, 0.75);
+  letter-spacing: 1px;
 }
 
-/* Exit button — gold border, Cinzel */
+/* Exit button — matches game's button style */
 .explore-back-btn {
-  font-family: var(--cinzel);
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  padding: 7px 14px;
+  font-family: var(--px);
+  font-size: 7px;
+  letter-spacing: 1px;
+  padding: 8px 14px;
   background: var(--ex-ui-bg);
   border: 1px solid var(--ex-ui-border);
-  color: rgba(200,164,90,0.7);
+  color: var(--ex-text);
   cursor: pointer;
-  backdrop-filter: blur(4px);
   transition: color .18s, border-color .18s, background .18s;
   white-space: nowrap;
 }
 .explore-back-btn:hover {
-  background: rgba(200,164,90,0.1);
-  border-color: rgba(200,164,90,0.65);
-  color: var(--ex-gold2);
+  background: rgba(96,80,184,0.15);
+  border-color: var(--ex-accent2);
+  color: #fff;
+  text-shadow: 0 0 10px rgba(144,128,224,0.6);
 }
 
 /* ── Canvas wrap ─────────────────────────────────────── */
@@ -278,8 +273,7 @@
   display: block;
   width: 100% !important;
   height: 100% !important;
-  image-rendering: pixelated;
-  image-rendering: crisp-edges;
+  image-rendering: auto;
 }
 
 /* ── Map select overlay — cinematic ──────────────────── */
@@ -311,51 +305,47 @@
   animation: float 3s ease-in-out infinite;
 }
 
-/* Main heading — Cinzel gold */
+/* Main heading — matches game title style */
 .map-sel-title {
-  font-family: var(--cinzel);
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--ex-gold2);
-  letter-spacing: 0.16em;
-  text-shadow: 0 0 28px rgba(232,200,122,0.4);
+  font-family: var(--px);
+  font-size: 12px;
+  color: var(--gold);
+  letter-spacing: 4px;
+  text-shadow: 0 0 20px var(--gold-glow);
   text-align: center;
   margin-bottom: 6px;
 }
 
-/* Italic subheading */
+/* Subheading */
 .map-sel-sub {
-  font-family: var(--crimson);
-  font-size: 16px;
-  font-style: italic;
-  font-weight: 300;
-  color: rgba(242,232,200,0.4);
-  letter-spacing: 0.06em;
+  font-family: var(--vt);
+  font-size: 20px;
+  color: rgba(160, 148, 220, 0.55);
+  letter-spacing: 2px;
   margin-bottom: 28px;
 }
 
-/* Horizontal gold rule between subtitle and buttons */
+/* Divider between subtitle and buttons */
 .map-sel-inner::after {
   content: '';
   display: block;
   width: 180px;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(200,164,90,0.4), transparent);
+  background: linear-gradient(90deg, transparent, rgba(96,80,184,0.5), transparent);
   margin: -20px 0 20px;
 }
 
-/* Region buttons — Cinzel, gold border, shimmer sweep */
+/* Region buttons — matches game's big-btn style */
 .map-sel-btn {
-  font-family: var(--cinzel);
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  color: var(--ex-gold2);
-  background: rgba(200,164,90,0.05);
-  border: 1px solid rgba(200,164,90,0.28);
-  padding: 13px 40px;
+  font-family: var(--px);
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--ex-text);
+  background: rgba(5, 4, 22, 0.88);
+  border: 1px solid var(--ex-ui-border);
+  padding: 14px 40px;
   cursor: pointer;
-  transition: all 0.22s ease;
+  transition: all 0.2s ease;
   min-width: 260px;
   text-align: center;
   margin-bottom: 10px;
@@ -368,17 +358,17 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, transparent, rgba(200,164,90,0.09), transparent);
+  background: linear-gradient(90deg, transparent, rgba(96,80,184,0.12), transparent);
   transform: translateX(-100%);
   transition: transform 0.4s ease;
 }
 .map-sel-btn:hover::before { transform: translateX(100%); }
 
 .map-sel-btn:hover {
-  border-color: rgba(200,164,90,0.7);
-  background: rgba(200,164,90,0.11);
+  border-color: var(--ex-accent2);
+  background: rgba(96, 80, 184, 0.15);
   color: #fff;
-  text-shadow: 0 0 12px rgba(232,200,122,0.55);
+  text-shadow: 0 0 12px rgba(144,128,224,0.6);
 }
 
 /* ── Encounter flash (ember vignette) ────────────────── */
@@ -402,20 +392,20 @@
   left: 50%;
   transform: translateX(-50%);
   z-index: 40;
-  background: var(--ex-ui-bg);
-  border: 1px solid var(--ex-ui-border);
+  background: rgba(5, 4, 22, 0.92);
+  border: 1px solid rgba(96, 80, 184, 0.5);
+  border-top: 2px solid var(--ex-accent2);
   padding: 9px 26px;
-  font-family: var(--cinzel);
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  color: var(--ex-gold2);
+  font-family: var(--px);
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: var(--ex-text);
   text-align: center;
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.28s ease;
   white-space: nowrap;
-  backdrop-filter: blur(6px);
-  text-shadow: 0 0 10px rgba(232,200,122,0.38);
+  text-shadow: 0 0 10px rgba(144,128,224,0.5);
 }
 #explore-notif.show { opacity: 1; }
 
@@ -435,12 +425,11 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background: var(--ex-ui-bg);
-  border: 1px solid var(--ex-ui-border);
-  border-left: 2px solid var(--ex-gold);
+  background: rgba(5, 4, 26, 0.88);
+  border: 1px solid rgba(42, 29, 96, 0.7);
+  border-left: 2px solid var(--ex-accent);
   padding: 5px 9px 5px 7px;
   min-width: 162px;
-  backdrop-filter: blur(4px);
   position: relative;
   overflow: hidden;
 }
@@ -448,8 +437,8 @@
 .ex-hud-avatar {
   width: 26px; height: 26px;
   border-radius: 50%;
-  background: rgba(200,164,90,0.12);
-  border: 1px solid rgba(200,164,90,0.28);
+  background: rgba(96, 80, 184, 0.15);
+  border: 1px solid rgba(96, 80, 184, 0.35);
   display: flex; align-items: center; justify-content: center;
   font-size: 13px; flex-shrink: 0;
 }
@@ -457,11 +446,10 @@
 .ex-hud-info { flex: 1; min-width: 0; }
 
 .ex-hud-name {
-  font-family: var(--cinzel);
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 0.07em;
-  color: var(--ex-gold2);
+  font-family: var(--px);
+  font-size: 6px;
+  letter-spacing: 1px;
+  color: var(--ex-text);
   margin-bottom: 3px;
   white-space: nowrap;
   overflow: hidden;
@@ -487,11 +475,10 @@
 }
 
 .ex-hud-hp {
-  font-size: 9px;
-  color: rgba(242,232,200,0.4);
+  font-family: var(--vt);
+  font-size: 13px;
+  color: rgba(160, 148, 220, 0.6);
   margin-top: 2px;
-  font-style: italic;
-  font-family: var(--crimson);
 }
 
 /* ── Minimap (bottom-right of canvas wrap) ───────────── */
@@ -500,18 +487,18 @@
   bottom: 44px;
   right: 14px;
   z-index: 20;
-  background: var(--ex-ui-bg);
-  border: 1px solid var(--ex-ui-border);
+  background: rgba(5, 4, 26, 0.88);
+  border: 1px solid rgba(42, 29, 96, 0.7);
+  border-top: 2px solid var(--ex-accent);
   padding: 9px;
-  backdrop-filter: blur(4px);
   pointer-events: none;
 }
 
 .ex-minimap-label {
-  font-family: var(--cinzel);
-  font-size: 7px;
-  letter-spacing: 0.12em;
-  color: rgba(200,164,90,0.55);
+  font-family: var(--px);
+  font-size: 5px;
+  letter-spacing: 2px;
+  color: rgba(144, 128, 224, 0.6);
   text-align: center;
   margin-bottom: 5px;
   text-transform: uppercase;
@@ -523,18 +510,16 @@
 .explore-loc-bar {
   flex-shrink: 0;
   padding: 5px 16px;
-  background: rgba(4,2,12,0.94);
-  border-top: 1px solid rgba(200,164,90,0.08);
+  background: rgba(4, 3, 18, 0.96);
+  border-top: 1px solid #1a0d40;
   height: 28px;
   display: flex;
   align-items: center;
 }
 
 #explore-loc {
-  font-family: var(--crimson);
-  font-size: 14px;
-  font-style: italic;
-  font-weight: 300;
-  color: rgba(200,164,90,0.35);
-  letter-spacing: 0.05em;
+  font-family: var(--vt);
+  font-size: 15px;
+  color: rgba(90, 82, 122, 0.8);
+  letter-spacing: 1px;
 }
