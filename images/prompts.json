@@ -680,9 +680,11 @@
       "name": "Hu Tao",
       "files": { "front": "hutao.png", "back": "hutao_back.png", "side": "hutao_side.png" },
       "target_dir": "images/characters/map/",
-      "prompt":      "pixel art, chibi, full body, simple white background, hu tao \(genshin impact\), 1girl, facing viewer, dark red funeral dress, paper talisman hat, twin braids, polearm, ghost fire, RPG overworld sprite style, bold outlines",
-      "prompt_back": "pixel art, chibi, full body, simple white background, hu tao \(genshin impact\), 1girl, from behind, dark red funeral dress, twin braids, paper talisman hat, polearm held, RPG overworld sprite style, bold outlines",
-      "prompt_side": "pixel art, chibi, full body, simple white background, hu tao \(genshin impact\), 1girl, side view, facing right, profile, dark red funeral dress, twin braids, paper talisman hat, polearm carried, walking pose, ghost fire, RPG overworld sprite style, bold outlines"
+      "controlnet_ref": "images/characters/map/ayaka_sheet.png",
+      "prompt_sheet":   "character sheet, turnaround, multiple views, 3 views, front view, side view facing right, back view, white background, pixel art, chibi, full body, hu tao \(genshin impact\), 1girl, dark red brown chinese funeral dress, paper talisman hat, twin braids crimson tips, polearm spear, ghost fire wisps, pyro glow, same character, consistent design, uniform scale, evenly spaced, RPG overworld sprite style, bold clean outlines",
+      "prompt":         "pixel art, chibi, full body, simple white background, hu tao \(genshin impact\), 1girl, facing viewer, dark red funeral dress, paper talisman hat, twin braids crimson tips, polearm, ghost fire, pyro glow, RPG overworld sprite style, bold outlines",
+      "prompt_back":    "pixel art, chibi, full body, simple white background, hu tao \(genshin impact\), 1girl, from behind, dark red funeral dress, twin braids crimson tips, paper talisman hat, polearm held, RPG overworld sprite style, bold outlines",
+      "prompt_side":    "pixel art, chibi, full body, simple white background, hu tao \(genshin impact\), 1girl, side view, facing right, profile, dark red funeral dress, twin braids crimson tips, paper talisman hat, polearm carried, walking pose, ghost fire, RPG overworld sprite style, bold outlines"
     },
     {
       "id": "nilou",
