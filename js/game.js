@@ -4,6 +4,32 @@
  * selectable enemy targets, individual levelling, party menu.
  */
 
+/* ── Mobile viewport scaler ─────────────────────────────────
+   Scales #game via CSS transform so it fits any screen size
+   without touching pixel values elsewhere in the codebase.
+   Called on load, resize, orientation change, and screen switch.
+   ──────────────────────────────────────────────────────────── */
+function scaleGame() {
+  const el = document.getElementById('game');
+  if (!el) return;
+  el.style.transform       = '';
+  el.style.height          = '';
+  el.style.transformOrigin = '';
+
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  if (vw >= 1000) return; // desktop — no scaling needed
+
+  // Always scale to fill full width — no gaps on left/right
+  const scale = vw / 1000;
+  el.style.transform       = `scale(${scale})`;
+  el.style.transformOrigin = 'top center';
+  // Stretch height to fill full viewport height
+  el.style.height          = `${vh / scale}px`;
+}
+window.addEventListener('resize', scaleGame);
+window.addEventListener('orientationchange', () => setTimeout(scaleGame, 150));
+
 /* ============================================================
    BATTLE ENGINE (math helpers)
    ============================================================ */
@@ -135,6 +161,7 @@ const UI = {
       s.style.display = ''; // Clear inline display style
     });
     this.el(id).classList.add('active');
+    requestAnimationFrame(scaleGame); // re-measure after new screen content renders
     const steps = { 'char-screen':1, 'battle-screen':2, 'result-screen':2 };
     const cur = steps[id] || 0;
     document.querySelectorAll('.step').forEach(s => {
@@ -826,7 +853,7 @@ function unlockCharacter(charId) {
   if (!G.unlockedChars.includes(charId)) {
     G.unlockedChars.push(charId);
     // Save the updated unlocked characters state
-    if (typeof save !== 'undefined') save();
+    if (typeof Story !== 'undefined' && Story.active) Story._saveProgress();
     return true;
   }
   return false;
@@ -1008,8 +1035,13 @@ function createEffectOverlay(targetIdx, element, targetType = 'enemy', abilityId
   if (spr) {
     const rect = spr.getBoundingClientRect();
     const sceneRect = document.getElementById('battle-scene').getBoundingClientRect();
-    overlay.style.left = (rect.left - sceneRect.left + 8) + 'px';
-    overlay.style.top = (rect.top - sceneRect.top - 10) + 'px';
+    // getBoundingClientRect() returns screen pixels; divide by game scale so the
+    // overlay lands correctly inside the scaled #game coordinate space.
+    const gameEl = document.getElementById('game');
+    const scaleMatch = gameEl?.style.transform.match(/scale\(([\d.]+)\)/);
+    const gameScale = scaleMatch ? parseFloat(scaleMatch[1]) : 1;
+    overlay.style.left = ((rect.left - sceneRect.left + 8) / gameScale) + 'px';
+    overlay.style.top  = ((rect.top  - sceneRect.top  - 10) / gameScale) + 'px';
   }
 
   document.getElementById('battle-scene').appendChild(overlay);

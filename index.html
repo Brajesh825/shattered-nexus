@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Crystal Chronicles RPG</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
@@ -417,6 +417,44 @@
   };
 
   TTS.init();
+
+  // ── Fullscreen prompt for mobile ─────────────────────────
+  (function() {
+    const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+                  || (navigator.maxTouchPoints > 1 && window.innerWidth < 1024);
+    if (!isMobile) return;
+
+    // Don't show if already fullscreen or iOS (no API support)
+    const fsSupported = document.documentElement.requestFullscreen
+                     || document.documentElement.webkitRequestFullscreen;
+    if (!fsSupported) return;
+
+    const banner = document.createElement('div');
+    banner.id = 'fs-banner';
+    banner.innerHTML = '⛶ Tap for fullscreen';
+    banner.style.cssText = `
+      position:fixed; bottom:16px; left:50%; transform:translateX(-50%);
+      background:#1a1040ee; border:1px solid #6050b8; color:#d0c8f0;
+      font-family:'VT323',monospace; font-size:18px;
+      padding:8px 20px; border-radius:6px; z-index:9999;
+      cursor:pointer; pointer-events:all;
+      box-shadow:0 0 16px #6050b840;
+    `;
+    document.body.appendChild(banner);
+
+    function requestFS() {
+      const el = document.documentElement;
+      (el.requestFullscreen || el.webkitRequestFullscreen).call(el);
+      banner.remove();
+    }
+
+    banner.addEventListener('click', requestFS);
+
+    // Auto-dismiss if they go fullscreen another way
+    document.addEventListener('fullscreenchange', () => {
+      if (document.fullscreenElement) banner.remove();
+    });
+  })();
   if (!TTS.supported) {
     const b = document.getElementById('tts-btn');
     if (b) b.style.display = 'none';

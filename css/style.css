@@ -37,14 +37,20 @@ canvas { image-rendering:pixelated; }
   --c-xiao:  #4ade80;
 }
 
-html,body {
+html {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
   background: var(--bg-deep);
   color: var(--text);
   font-family: var(--vt);
   font-size: 20px;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
 }
 
@@ -195,6 +201,8 @@ html,body {
   grid-template-columns:repeat(2,1fr);
   gap:10px;
   padding:12px;
+  overflow-y:auto;
+  max-height:380px;
 }
 
 .char-card {
@@ -1389,6 +1397,57 @@ html,body {
   .char-grid,.class-grid{ grid-template-columns:1fr; }
   .ecrd-spr { width:56px; height:66px; }
   .pmb-spr  { width:40px; height:48px; }
+}
+
+/* ── MOBILE LANDSCAPE ────────────────────────────────── */
+/* Scale handled by JS scaleGame(); these rules reduce visual
+   clutter so content fits after scaling. */
+@media (orientation:landscape) and (max-height:500px) {
+  body { align-items: flex-start; }
+  /* Remove artificial min-heights so scaleGame() measures real content */
+  #game         { min-height: 0; }
+  #title-screen { min-height: 0; }
+  #char-screen, #class-screen { min-height: 0; }
+  #battle-screen .pm-wrap { min-height: 0; }
+
+  /* Tighten spacing on title screen */
+  #title-screen { padding: 16px 14px; gap: 8px; }
+  .crystals     { gap: 14px; margin-bottom: 0; }
+  .crystal      { font-size: 24px; }
+  .game-title   { font-size: 14px; line-height: 1.4; }
+
+  /* Tighten battle screen — fit everything in viewport height */
+  #battle-scene        { height: 240px; }
+  .bg-mts              { height: 55px; }
+  .bg-gnd              { height: 32px; }
+  .turn-bar            { padding: 2px 8px; }
+  .active-member-bar   { min-height: 24px; padding: 3px 10px; }
+  #menu-area           { padding: 6px 10px; }
+  .battle-log          { min-height: 44px; padding: 4px 10px; }
+  .party-status-bar    { padding: 3px 6px; }
+  .psc                 { padding: 2px 5px; }
+  .stats-bar           { padding: 2px 10px; font-size: 13px; }
+
+  /* Scale down battle sprites */
+  .party-sprite        { width: 72px;  height: 72px; }
+  .enemy-sprite        { width: 80px;  height: 96px; }
+
+  /* Scale down enemy cards */
+  .ecrd                { min-width: 54px; padding: 2px; }
+  .ecrd-spr            { width: 44px; height: 52px; }
+  .ecrd-hp-bg          { width: 44px; }
+  .ecrd-name           { max-width: 54px; font-size: 9px; }
+
+  /* Scale down party bottom portraits */
+  .pmb-spr             { width: 32px; height: 38px; }
+  .party-row           { bottom: 32px; gap: 3px; }
+
+  /* Compact char/class select */
+  #char-screen, #class-screen { min-height: 360px; }
+  .char-grid, .class-grid     { grid-template-columns: 1fr 1fr; }
+
+  /* Story screen: hide portrait column on very small heights */
+  .s-dialogue-portrait { display: none; }
 }
 
 /* ══════════════════════════════════════════════════════
@@ -2798,4 +2857,54 @@ html,body {
   100% {
     filter: brightness(1);
   }
+}
+
+/* ── MOBILE LANDSCAPE: sprite + layout overrides (must be after sprite rules) ── */
+@media (orientation:landscape) and (max-height:500px) {
+
+  /* Sprite sizes */
+  .party-sprite { width: 72px !important;  height: 72px !important; }
+  .enemy-sprite { width: 80px !important;  height: 96px !important; }
+
+  /* Party container — narrower, vertically centered within 240px scene */
+  .party-container {
+    width: 300px;
+  }
+
+  /* Party member cards */
+  .party-member {
+    width: 110px;
+    height: 130px;
+    padding: 3px;
+  }
+  .party-hp-bar-bg { width: 80px; }
+
+  /* Party pyramid positions (scaled ~57% from original 420px layout) */
+  .party-member:nth-child(1) { left: 100px; top:   0px; }
+  .party-member:nth-child(2) { left:  43px; top:  54px; }
+  .party-member:nth-child(3) { left: 163px; top:  54px; }
+  .party-member:nth-child(4) { left: 100px; top: 103px; }
+
+  /* Enemy container */
+  .enemy-container {
+    width: 300px;
+    height: 280px;
+  }
+
+  /* Enemy cards */
+  .enemy {
+    width: 130px;
+    height: 150px;
+    padding: 4px;
+  }
+
+  /* Enemy pyramid positions */
+  .enemy:nth-child(1) { right:  88px; top:   0px; }
+  .enemy:nth-child(2) { right:  23px; top:  63px; }
+  .enemy:nth-child(3) { right: 177px; top:  63px; }
+  .enemy:nth-child(4) { right:  88px; top: 120px; }
+
+  /* Enemy HP bar */
+  .enemy-hp-bar-bg { width: 80px; }
+  .enemy-name      { font-size: 9px; }
 }
