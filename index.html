@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Crystal Chronicles RPG</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
@@ -81,12 +81,10 @@
     </div>
 
     <button class="big-btn title-continue-btn blink" id="title-continue-btn"
-            onclick="Story.loadSave()" style="z-index:1;margin-top:8px;display:none">
+            onclick="openSlotOverlay('load')" style="z-index:1;margin-top:10px;display:none">
       ▶ CONTINUE
     </button>
-    <div id="title-save-info" class="title-save-info" style="display:none"></div>
-
-    <button class="big-btn" onclick="startStoryMode()" style="z-index:1;margin-top:8px">
+    <button class="big-btn" onclick="openSlotOverlay('new')" style="z-index:1;margin-top:6px">
       📖 NEW STORY
     </button>
     <button class="big-btn" onclick="goCharSelect()" style="z-index:1;margin-top:4px;background:transparent;border-color:#4a4080;color:#8080c0">
@@ -97,6 +95,22 @@
     </button>
     <div class="ver-tag">v3.0</div>
   </div>
+
+  <!-- ═══════════════════════════════════════
+       SAVE SLOT OVERLAY
+       ═══════════════════════════════════════ -->
+  <div id="slot-overlay" class="slot-overlay" style="display:none">
+    <div class="slot-overlay-bg" onclick="closeSlotOverlay()"></div>
+    <div class="slot-overlay-panel">
+      <div class="slot-overlay-header">
+        <div class="slot-overlay-title" id="slot-overlay-title">LOAD GAME</div>
+        <div class="slot-overlay-sub" id="slot-overlay-sub">Choose a save file</div>
+      </div>
+      <div class="slot-overlay-cards" id="slot-overlay-cards"></div>
+      <button class="slot-overlay-back" onclick="closeSlotOverlay()">← BACK</button>
+    </div>
+  </div>
+  <input type="file" id="save-import-input" accept=".json" style="display:none">
 
   <!-- ═══════════════════════════════════════
        STEP BAR
@@ -157,6 +171,9 @@
     <button class="big-btn" id="map-proceed-btn" onclick="Story.proceedFromMap()" style="margin:0 12px 14px;align-self:flex-end">
       ▶ TRAVEL THERE
     </button>
+
+    <!-- Region revisit panel (slides up when a completed node is clicked) -->
+    <div id="map-region-panel" class="map-region-panel"></div>
   </div>
 
   <!-- ═══════════════════════════════════════
@@ -400,6 +417,44 @@
   };
 
   TTS.init();
+
+  // ── Fullscreen prompt for mobile ─────────────────────────
+  (function() {
+    const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+                  || (navigator.maxTouchPoints > 1 && window.innerWidth < 1024);
+    if (!isMobile) return;
+
+    // Don't show if already fullscreen or iOS (no API support)
+    const fsSupported = document.documentElement.requestFullscreen
+                     || document.documentElement.webkitRequestFullscreen;
+    if (!fsSupported) return;
+
+    const banner = document.createElement('div');
+    banner.id = 'fs-banner';
+    banner.innerHTML = '⛶ Tap for fullscreen';
+    banner.style.cssText = `
+      position:fixed; bottom:16px; left:50%; transform:translateX(-50%);
+      background:#1a1040ee; border:1px solid #6050b8; color:#d0c8f0;
+      font-family:'VT323',monospace; font-size:18px;
+      padding:8px 20px; border-radius:6px; z-index:9999;
+      cursor:pointer; pointer-events:all;
+      box-shadow:0 0 16px #6050b840;
+    `;
+    document.body.appendChild(banner);
+
+    function requestFS() {
+      const el = document.documentElement;
+      (el.requestFullscreen || el.webkitRequestFullscreen).call(el);
+      banner.remove();
+    }
+
+    banner.addEventListener('click', requestFS);
+
+    // Auto-dismiss if they go fullscreen another way
+    document.addEventListener('fullscreenchange', () => {
+      if (document.fullscreenElement) banner.remove();
+    });
+  })();
   if (!TTS.supported) {
     const b = document.getElementById('tts-btn');
     if (b) b.style.display = 'none';
@@ -414,21 +469,115 @@
     BGM.play('title');
   });
 
-  // Fallback DOMContentLoaded for save state check
-  window.addEventListener('DOMContentLoaded', () => {
-    if (Save.exists()) {
-      const s = Save.read();
-      const btn  = document.getElementById('title-continue-btn');
-      const info = document.getElementById('title-save-info');
-      if (btn)  btn.style.display  = 'inline-block';
-      if (info && s) {
-        const arcName = s.arcName || `Arc ${(s.arcIdx || 0) + 1}`;
-        info.textContent = `${arcName}  ·  LV ${s.hero?.lv || 1}  ·  ${Save.dateStr(s.timestamp)}`;
-        info.style.display = 'block';
+  /* ── Save Slot Overlay ───────────────────────────────────────── */
+
+  let _slotMode = 'load'; // 'load' | 'new'
+
+  function openSlotOverlay(mode) {
+    _slotMode = mode;
+    const overlay = document.getElementById('slot-overlay');
+    const title   = document.getElementById('slot-overlay-title');
+    const sub     = document.getElementById('slot-overlay-sub');
+    title.textContent = mode === 'load' ? 'LOAD GAME' : 'NEW STORY';
+    sub.textContent   = mode === 'load' ? 'Choose a save file to continue' : 'Choose a slot for your new adventure';
+    _renderSlotCards(mode);
+    overlay.style.display = 'flex';
+    requestAnimationFrame(() => overlay.classList.add('open'));
+  }
+
+  function closeSlotOverlay() {
+    const overlay = document.getElementById('slot-overlay');
+    overlay.classList.remove('open');
+    setTimeout(() => { overlay.style.display = 'none'; }, 280);
+  }
+
+  function _renderSlotCards(mode) {
+    const container = document.getElementById('slot-overlay-cards');
+    const slots = Save.listAll();
+    container.innerHTML = slots.map(s => {
+      const num = s.slot + 1;
+
+      if (s.empty) {
+        const canLoad = mode === 'load';
+        return `
+          <div class="sc sc-empty">
+            <div class="sc-num">0${num}</div>
+            <div class="sc-body">
+              <div class="sc-empty-label">— Empty Slot —</div>
+            </div>
+            <div class="sc-footer">
+              ${canLoad
+                ? `<span class="sc-hint">No save data</span>`
+                : `<button class="sc-action primary" onclick="closeSlotOverlay();Story.begin(${s.slot})">START HERE</button>`
+              }
+              <button class="sc-icon-btn" title="Import save file" onclick="triggerImport(${s.slot})">📂</button>
+            </div>
+          </div>`;
       }
-    }
-  });
+
+      const arc  = s.arcName  || `Arc ${(s.arcIdx || 0) + 1}`;
+      const lv   = s.partyStats ? `Party LV ${Math.max(...s.partyStats.map(p => p.lv || 1))}` : `LV ${s.hero?.lv || 1}`;
+      const date = Save.dateStr(s.timestamp);
+      const chars = (s.selectedChars || [s.selectedChar]).filter(Boolean).join(' · ');
+
+      return `
+        <div class="sc sc-filled">
+          <div class="sc-num">0${num}</div>
+          <div class="sc-body">
+            <div class="sc-arc">${arc}</div>
+            ${chars ? `<div class="sc-chars">${chars}</div>` : ''}
+            <div class="sc-meta">${lv} &nbsp;·&nbsp; ${date}</div>
+          </div>
+          <div class="sc-footer">
+            ${mode === 'load'
+              ? `<button class="sc-action primary" onclick="closeSlotOverlay();Story.loadSave(${s.slot})">▶ CONTINUE</button>`
+              : `<button class="sc-action warn" onclick="_confirmOverwrite(${s.slot})">⚠ OVERWRITE</button>`
+            }
+            <button class="sc-icon-btn" title="Export save" onclick="Save.exportSlot(${s.slot})">⬇</button>
+            <button class="sc-icon-btn" title="Import save" onclick="triggerImport(${s.slot})">📂</button>
+            <button class="sc-icon-btn danger" title="Delete save" onclick="deleteSlot(${s.slot})">✕</button>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  function _confirmOverwrite(slot) {
+    if (!confirm(`Overwrite Slot ${slot + 1}? Your existing save will be lost.`)) return;
+    closeSlotOverlay();
+    Story.begin(slot);
+  }
+
+  function deleteSlot(slot) {
+    if (!confirm(`Delete Slot ${slot + 1}? This cannot be undone.`)) return;
+    Save.clear(slot);
+    _renderSlotCards(_slotMode);
+    _updateContinueBtn();
+  }
+
+  function triggerImport(slot) {
+    const input = document.getElementById('save-import-input');
+    input.onchange = (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      Save.importSlot(file, slot, () => {
+        _renderSlotCards(_slotMode);
+        _updateContinueBtn();
+      });
+      input.value = '';
+    };
+    input.click();
+  }
+
+  function _updateContinueBtn() {
+    const btn = document.getElementById('title-continue-btn');
+    if (btn) btn.style.display = Save.listAll().some(s => !s.empty) ? 'inline-block' : 'none';
+  }
+
+  window.addEventListener('DOMContentLoaded', _updateContinueBtn);
 </script>
+
+<!-- Save toast notification -->
+<div id="save-toast"></div>
 
 </body>
 </html>
