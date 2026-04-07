@@ -80,9 +80,13 @@
       5 Arcs · One truth at the end
     </div>
 
-    <!-- ── Save Slots Panel ── -->
-    <div id="save-slots-panel" class="save-slots-panel"></div>
-    <input type="file" id="save-import-input" accept=".json" style="display:none">
+    <button class="big-btn title-continue-btn blink" id="title-continue-btn"
+            onclick="openSlotOverlay('load')" style="z-index:1;margin-top:10px;display:none">
+      ▶ CONTINUE
+    </button>
+    <button class="big-btn" onclick="openSlotOverlay('new')" style="z-index:1;margin-top:6px">
+      📖 NEW STORY
+    </button>
     <button class="big-btn" onclick="goCharSelect()" style="z-index:1;margin-top:4px;background:transparent;border-color:#4a4080;color:#8080c0">
       ⚔ FREE BATTLE
     </button>
@@ -91,6 +95,22 @@
     </button>
     <div class="ver-tag">v3.0</div>
   </div>
+
+  <!-- ═══════════════════════════════════════
+       SAVE SLOT OVERLAY
+       ═══════════════════════════════════════ -->
+  <div id="slot-overlay" class="slot-overlay" style="display:none">
+    <div class="slot-overlay-bg" onclick="closeSlotOverlay()"></div>
+    <div class="slot-overlay-panel">
+      <div class="slot-overlay-header">
+        <div class="slot-overlay-title" id="slot-overlay-title">LOAD GAME</div>
+        <div class="slot-overlay-sub" id="slot-overlay-sub">Choose a save file</div>
+      </div>
+      <div class="slot-overlay-cards" id="slot-overlay-cards"></div>
+      <button class="slot-overlay-back" onclick="closeSlotOverlay()">← BACK</button>
+    </div>
+  </div>
+  <input type="file" id="save-import-input" accept=".json" style="display:none">
 
   <!-- ═══════════════════════════════════════
        STEP BAR
@@ -408,55 +428,89 @@
     BGM.play('title');
   });
 
-  /* ── Save Slot UI ─────────────────────────────────────────────── */
+  /* ── Save Slot Overlay ───────────────────────────────────────── */
 
-  function refreshSaveSlots() {
-    const panel = document.getElementById('save-slots-panel');
-    if (!panel) return;
+  let _slotMode = 'load'; // 'load' | 'new'
+
+  function openSlotOverlay(mode) {
+    _slotMode = mode;
+    const overlay = document.getElementById('slot-overlay');
+    const title   = document.getElementById('slot-overlay-title');
+    const sub     = document.getElementById('slot-overlay-sub');
+    title.textContent = mode === 'load' ? 'LOAD GAME' : 'NEW STORY';
+    sub.textContent   = mode === 'load' ? 'Choose a save file to continue' : 'Choose a slot for your new adventure';
+    _renderSlotCards(mode);
+    overlay.style.display = 'flex';
+    requestAnimationFrame(() => overlay.classList.add('open'));
+  }
+
+  function closeSlotOverlay() {
+    const overlay = document.getElementById('slot-overlay');
+    overlay.classList.remove('open');
+    setTimeout(() => { overlay.style.display = 'none'; }, 280);
+  }
+
+  function _renderSlotCards(mode) {
+    const container = document.getElementById('slot-overlay-cards');
     const slots = Save.listAll();
-    panel.innerHTML = slots.map(s => {
+    container.innerHTML = slots.map(s => {
+      const num = s.slot + 1;
+
       if (s.empty) {
+        const canLoad = mode === 'load';
         return `
-          <div class="save-slot-card empty">
-            <span class="save-slot-label">SLOT ${s.slot + 1}</span>
-            <div class="save-slot-info">
-              <button class="save-slot-empty-btn" onclick="beginNewStory(${s.slot})">
-                📖 NEW STORY
-              </button>
+          <div class="sc sc-empty">
+            <div class="sc-num">0${num}</div>
+            <div class="sc-body">
+              <div class="sc-empty-label">— Empty Slot —</div>
             </div>
-            <div class="save-slot-actions">
-              <button class="save-slot-btn" title="Import save" onclick="triggerImport(${s.slot})">📂</button>
+            <div class="sc-footer">
+              ${canLoad
+                ? `<span class="sc-hint">No save data</span>`
+                : `<button class="sc-action primary" onclick="closeSlotOverlay();Story.begin(${s.slot})">START HERE</button>`
+              }
+              <button class="sc-icon-btn" title="Import save file" onclick="triggerImport(${s.slot})">📂</button>
             </div>
           </div>`;
       }
-      const arc  = s.arcName || `Arc ${(s.arcIdx || 0) + 1}`;
-      const lv   = s.partyStats ? `LV ${Math.max(...s.partyStats.map(p => p.lv || 1))}` : `LV ${s.hero?.lv || 1}`;
+
+      const arc  = s.arcName  || `Arc ${(s.arcIdx || 0) + 1}`;
+      const lv   = s.partyStats ? `Party LV ${Math.max(...s.partyStats.map(p => p.lv || 1))}` : `LV ${s.hero?.lv || 1}`;
       const date = Save.dateStr(s.timestamp);
+      const chars = (s.selectedChars || [s.selectedChar]).filter(Boolean).join(' · ');
+
       return `
-        <div class="save-slot-card filled">
-          <span class="save-slot-label">SLOT ${s.slot + 1}</span>
-          <div class="save-slot-info">
-            <div class="save-slot-arc">${arc}</div>
-            <div class="save-slot-meta">${lv} · ${date}</div>
+        <div class="sc sc-filled">
+          <div class="sc-num">0${num}</div>
+          <div class="sc-body">
+            <div class="sc-arc">${arc}</div>
+            ${chars ? `<div class="sc-chars">${chars}</div>` : ''}
+            <div class="sc-meta">${lv} &nbsp;·&nbsp; ${date}</div>
           </div>
-          <div class="save-slot-actions">
-            <button class="save-slot-btn primary" onclick="Story.loadSave(${s.slot})">▶</button>
-            <button class="save-slot-btn" title="Export save" onclick="Save.exportSlot(${s.slot})">⬇</button>
-            <button class="save-slot-btn" title="Import save" onclick="triggerImport(${s.slot})">📂</button>
-            <button class="save-slot-btn danger" title="Delete save" onclick="deleteSlot(${s.slot})">✕</button>
+          <div class="sc-footer">
+            ${mode === 'load'
+              ? `<button class="sc-action primary" onclick="closeSlotOverlay();Story.loadSave(${s.slot})">▶ CONTINUE</button>`
+              : `<button class="sc-action warn" onclick="_confirmOverwrite(${s.slot})">⚠ OVERWRITE</button>`
+            }
+            <button class="sc-icon-btn" title="Export save" onclick="Save.exportSlot(${s.slot})">⬇</button>
+            <button class="sc-icon-btn" title="Import save" onclick="triggerImport(${s.slot})">📂</button>
+            <button class="sc-icon-btn danger" title="Delete save" onclick="deleteSlot(${s.slot})">✕</button>
           </div>
         </div>`;
     }).join('');
   }
 
-  function beginNewStory(slot) {
+  function _confirmOverwrite(slot) {
+    if (!confirm(`Overwrite Slot ${slot + 1}? Your existing save will be lost.`)) return;
+    closeSlotOverlay();
     Story.begin(slot);
   }
 
   function deleteSlot(slot) {
     if (!confirm(`Delete Slot ${slot + 1}? This cannot be undone.`)) return;
     Save.clear(slot);
-    refreshSaveSlots();
+    _renderSlotCards(_slotMode);
+    _updateContinueBtn();
   }
 
   function triggerImport(slot) {
@@ -464,16 +518,21 @@
     input.onchange = (e) => {
       const file = e.target.files[0];
       if (!file) return;
-      Save.importSlot(file, slot, refreshSaveSlots);
+      Save.importSlot(file, slot, () => {
+        _renderSlotCards(_slotMode);
+        _updateContinueBtn();
+      });
       input.value = '';
     };
     input.click();
   }
 
-  // Populate slots on load
-  window.addEventListener('DOMContentLoaded', () => {
-    refreshSaveSlots();
-  });
+  function _updateContinueBtn() {
+    const btn = document.getElementById('title-continue-btn');
+    if (btn) btn.style.display = Save.listAll().some(s => !s.empty) ? 'inline-block' : 'none';
+  }
+
+  window.addEventListener('DOMContentLoaded', _updateContinueBtn);
 </script>
 
 <!-- Save toast notification -->
