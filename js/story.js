@@ -1041,13 +1041,12 @@ const Story = {
 
     this._skirmishArcIdx = arcIdx;
     this._closeRegionPanel();
-    G.busy            = false;
-    G.turnIdx         = 0;
-    G.activeMemberIdx = 0;
-    G.targetEnemyIdx  = 0;
-    Battle.buildTurnQueue();
-    UI.show('battle-screen');
-    Battle.renderAll();
+
+    /* _initBattle() is a global in game.js — wires up turn queue, menu, screen */
+    _initBattle();
+    const names = G.enemyGroup.map(e => e.name).join(' & ');
+    UI.setLog([`${names} appear!`, `Skirmish — no retreat!`], ['hi', '']);
+    processCurrentTurn();
   },
 
   /* ════════════════════════════════════════════════════════════════════════
