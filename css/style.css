@@ -2077,6 +2077,114 @@ html,body {
 }
 
 /* ══════════════════════════════════════════════════════
+   SAVE SLOTS PANEL
+   ══════════════════════════════════════════════════════ */
+.save-slots-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 280px;
+  z-index: 1;
+  margin-top: 12px;
+  margin-bottom: 4px;
+}
+.save-slot-card {
+  background: linear-gradient(135deg, #080e1c, #0b1220);
+  border: 1px solid #161f30;
+  border-radius: 8px;
+  padding: 9px 11px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  transition: border-color 0.2s;
+}
+.save-slot-card.filled { border-color: #1e3050; }
+.save-slot-card.filled:hover { border-color: #3a5878; }
+.save-slot-label {
+  font-size: 9px;
+  color: #243040;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  min-width: 40px;
+  flex-shrink: 0;
+}
+.save-slot-info { flex: 1; min-width: 0; }
+.save-slot-arc {
+  font-size: 12px;
+  color: #5888b8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.save-slot-meta {
+  font-size: 10px;
+  color: #2a3a4e;
+  margin-top: 2px;
+  letter-spacing: 0.5px;
+}
+.save-slot-actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.save-slot-btn {
+  background: none;
+  border: 1px solid #182535;
+  color: #3a6080;
+  font-size: 11px;
+  padding: 4px 7px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s;
+  line-height: 1;
+}
+.save-slot-btn:hover       { background: #0a1525; border-color: #305070; color: #70a8d8; }
+.save-slot-btn.primary     { border-color: #2a5080; color: #60a0e0; font-size: 13px; padding: 3px 9px; }
+.save-slot-btn.primary:hover { background: #0a1e38; border-color: #4a80c0; color: #90c8ff; }
+.save-slot-btn.danger:hover  { border-color: #702820; color: #b05848; }
+.save-slot-empty-btn {
+  background: none;
+  border: 1px dashed #182535;
+  color: #2a3e55;
+  font-size: 11px;
+  padding: 6px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+  text-align: left;
+  letter-spacing: 0.5px;
+}
+.save-slot-empty-btn:hover {
+  border-color: #2a4870;
+  color: #4a80b8;
+  background: #050c18;
+}
+
+/* ── Save Toast ──────────────────────────────────────── */
+#save-toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  background: #08121eee;
+  border: 1px solid #1e3850;
+  color: #5898d0;
+  font-size: 12px;
+  padding: 7px 20px;
+  border-radius: 20px;
+  letter-spacing: 1px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.3s;
+  z-index: 9999;
+}
+#save-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ══════════════════════════════════════════════════════
    WORLD MAP SCREEN
    ══════════════════════════════════════════════════════ */
 #map-screen {

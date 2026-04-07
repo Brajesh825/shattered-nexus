@@ -80,15 +80,9 @@
       5 Arcs · One truth at the end
     </div>
 
-    <button class="big-btn title-continue-btn blink" id="title-continue-btn"
-            onclick="Story.loadSave()" style="z-index:1;margin-top:8px;display:none">
-      ▶ CONTINUE
-    </button>
-    <div id="title-save-info" class="title-save-info" style="display:none"></div>
-
-    <button class="big-btn" onclick="startStoryMode()" style="z-index:1;margin-top:8px">
-      📖 NEW STORY
-    </button>
+    <!-- ── Save Slots Panel ── -->
+    <div id="save-slots-panel" class="save-slots-panel"></div>
+    <input type="file" id="save-import-input" accept=".json" style="display:none">
     <button class="big-btn" onclick="goCharSelect()" style="z-index:1;margin-top:4px;background:transparent;border-color:#4a4080;color:#8080c0">
       ⚔ FREE BATTLE
     </button>
@@ -414,21 +408,76 @@
     BGM.play('title');
   });
 
-  // Fallback DOMContentLoaded for save state check
-  window.addEventListener('DOMContentLoaded', () => {
-    if (Save.exists()) {
-      const s = Save.read();
-      const btn  = document.getElementById('title-continue-btn');
-      const info = document.getElementById('title-save-info');
-      if (btn)  btn.style.display  = 'inline-block';
-      if (info && s) {
-        const arcName = s.arcName || `Arc ${(s.arcIdx || 0) + 1}`;
-        info.textContent = `${arcName}  ·  LV ${s.hero?.lv || 1}  ·  ${Save.dateStr(s.timestamp)}`;
-        info.style.display = 'block';
+  /* ── Save Slot UI ─────────────────────────────────────────────── */
+
+  function refreshSaveSlots() {
+    const panel = document.getElementById('save-slots-panel');
+    if (!panel) return;
+    const slots = Save.listAll();
+    panel.innerHTML = slots.map(s => {
+      if (s.empty) {
+        return `
+          <div class="save-slot-card empty">
+            <span class="save-slot-label">SLOT ${s.slot + 1}</span>
+            <div class="save-slot-info">
+              <button class="save-slot-empty-btn" onclick="beginNewStory(${s.slot})">
+                📖 NEW STORY
+              </button>
+            </div>
+            <div class="save-slot-actions">
+              <button class="save-slot-btn" title="Import save" onclick="triggerImport(${s.slot})">📂</button>
+            </div>
+          </div>`;
       }
-    }
+      const arc  = s.arcName || `Arc ${(s.arcIdx || 0) + 1}`;
+      const lv   = s.partyStats ? `LV ${Math.max(...s.partyStats.map(p => p.lv || 1))}` : `LV ${s.hero?.lv || 1}`;
+      const date = Save.dateStr(s.timestamp);
+      return `
+        <div class="save-slot-card filled">
+          <span class="save-slot-label">SLOT ${s.slot + 1}</span>
+          <div class="save-slot-info">
+            <div class="save-slot-arc">${arc}</div>
+            <div class="save-slot-meta">${lv} · ${date}</div>
+          </div>
+          <div class="save-slot-actions">
+            <button class="save-slot-btn primary" onclick="Story.loadSave(${s.slot})">▶</button>
+            <button class="save-slot-btn" title="Export save" onclick="Save.exportSlot(${s.slot})">⬇</button>
+            <button class="save-slot-btn" title="Import save" onclick="triggerImport(${s.slot})">📂</button>
+            <button class="save-slot-btn danger" title="Delete save" onclick="deleteSlot(${s.slot})">✕</button>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  function beginNewStory(slot) {
+    Story.begin(slot);
+  }
+
+  function deleteSlot(slot) {
+    if (!confirm(`Delete Slot ${slot + 1}? This cannot be undone.`)) return;
+    Save.clear(slot);
+    refreshSaveSlots();
+  }
+
+  function triggerImport(slot) {
+    const input = document.getElementById('save-import-input');
+    input.onchange = (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      Save.importSlot(file, slot, refreshSaveSlots);
+      input.value = '';
+    };
+    input.click();
+  }
+
+  // Populate slots on load
+  window.addEventListener('DOMContentLoaded', () => {
+    refreshSaveSlots();
   });
 </script>
+
+<!-- Save toast notification -->
+<div id="save-toast"></div>
 
 </body>
 </html>

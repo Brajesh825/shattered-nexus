@@ -137,9 +137,10 @@ const Story = {
      PUBLIC ENTRY POINTS
   ════════════════════════════════════════════════════════════════════════ */
 
-  /** Called by the NEW STORY title button */
-  begin() {
-    Save.clear();
+  /** Called by the NEW STORY title button — slot defaults to first empty */
+  begin(slot = 0) {
+    this._activeSlot = slot;
+    Save.clear(slot);
     this.init(() => {
       if (!this.data) { alert('Story data not found.'); return; }
       this.active = true;
@@ -173,18 +174,24 @@ const Story = {
     });
   },
 
-  /** Called by the CONTINUE title button */
-  loadSave() {
-    const s = Save.read();
+  /** Called by the CONTINUE title button — slot selects which save to load */
+  loadSave(slot = 0) {
+    const s = Save.read(slot);
     if (!s) { startStoryMode(); return; }
+    this._activeSlot  = slot;
     this._pendingSave = s;
     this.init(() => {
       if (!this.data) { alert('Story data not found.'); return; }
       this.active = true;
       G.selectedChar  = s.selectedChar  || (G.chars[0] && G.chars[0].id);
       G.selectedClass = s.selectedClass || (G.classes[0] && G.classes[0].id);
-      const heroId_ = G.selectedChar;
-      G.selectedChars = [heroId_, ...G.chars.map(c=>c.id).filter(id=>id!==heroId_)].slice(0,4);
+      // Restore full party selection if saved, otherwise rebuild from hero
+      if (s.selectedChars && s.selectedChars.length) {
+        G.selectedChars = s.selectedChars;
+      } else {
+        const heroId_ = G.selectedChar;
+        G.selectedChars = [heroId_, ...G.chars.map(c=>c.id).filter(id=>id!==heroId_)].slice(0,4);
+      }
       startBattle();   // sets up G.hero then calls onHeroReady
     });
   },
@@ -198,9 +205,20 @@ const Story = {
       this._pendingSave = null;
       this.arcIdx = s.arcIdx || 0;
       this.chapIdx = s.chapIdx !== undefined ? s.chapIdx : -1;
-      if (s.hero && G.hero) {
-        G.hero.lv = s.hero.lv || 1;
-        G.hero.exp = s.hero.exp || 0;
+      // Restore all party member stats (new format) or fall back to hero-only (legacy)
+      if (s.partyStats && s.partyStats.length && G.party.length) {
+        G.party.forEach(m => {
+          const saved = s.partyStats.find(p => p.charId === m.charId);
+          if (saved) {
+            m.lv   = saved.lv   || 1;
+            m.exp  = saved.exp  || 0;
+            m.gold = saved.gold || 0;
+          }
+        });
+      } else if (s.hero && G.hero) {
+        // Legacy save: only hero stats were persisted
+        G.hero.lv   = s.hero.lv   || 1;
+        G.hero.exp  = s.hero.exp  || 0;
         G.hero.gold = s.hero.gold || 0;
       }
       // Restore unlocked characters from save
@@ -801,15 +819,11 @@ const Story = {
   _endStory() {
     this.active = false;
     if (typeof TTS !== 'undefined') TTS.stop();
-    Save.clear();
+    Save.clear(this._activeSlot !== undefined ? this._activeSlot : 0);
     G.enemies = this._allEnemies.slice();
     G.selectedChar = null; G.selectedClass = null;
     UI.show('title-screen');
-    // Hide continue button since save is cleared
-    const btn = document.getElementById('title-continue-btn');
-    if (btn) btn.style.display = 'none';
-    const info = document.getElementById('title-save-info');
-    if (info) info.style.display = 'none';
+    if (typeof refreshSaveSlots === 'function') refreshSaveSlots();
   },
 
   /* ════════════════════════════════════════════════════════════════════════
@@ -817,15 +831,26 @@ const Story = {
   ════════════════════════════════════════════════════════════════════════ */
   _doSave() {
     if (!this.data || !G.hero) return;
+    // Capture all 4 party members' current stats
+    const partyStats = G.party.map(m => ({
+      charId: m.charId,
+      classId: m.classId,
+      lv:   m.lv   || 1,
+      exp:  m.exp  || 0,
+      gold: m.gold || 0,
+    }));
     Save.write({
-      arcIdx: this.arcIdx,
-      chapIdx: this.chapIdx,
-      arcName: `Arc ${this.arc.number}: ${this.arc.name}`,
-      selectedChar: G.hero.charId || G.selectedChar,
+      arcIdx:        this.arcIdx,
+      chapIdx:       this.chapIdx,
+      arcName:       `Arc ${this.arc.number}: ${this.arc.name}`,
+      selectedChar:  G.hero.charId  || G.selectedChar,
       selectedClass: G.hero.classId || G.selectedClass,
-      hero: { lv: G.hero.lv, exp: G.hero.exp, gold: G.hero.gold },
+      selectedChars: G.selectedChars || [],
+      partyStats,
+      // Keep legacy hero field for backward compat
+      hero: { lv: G.hero.lv, exp: G.hero.exp, gold: G.hero.gold || 0 },
       unlockedChars: G.unlockedChars,
-    });
+    }, this._activeSlot !== undefined ? this._activeSlot : 0);
   },
 
   /* ════════════════════════════════════════════════════════════════════════
