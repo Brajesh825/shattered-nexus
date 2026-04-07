@@ -1,0 +1,9 @@
+# Utility/dev tools - not part of the game
+_utils/
+
+# Claude worktrees
+.claude/worktrees/
+
+# OS
+.DS_Store
+Thumbs.db
