@@ -1001,11 +1001,16 @@ const Story = {
   },
 
   _exploreRegion(mapId) {
-    if (typeof MapEngine !== 'undefined' && typeof MAP_DEFS !== 'undefined' && MAP_DEFS[mapId]) {
-      G.mode = 'explore';
-      UI.show('explore-screen');
-      MapEngine.start(mapId);
-    }
+    if (typeof startExplore === 'undefined' || typeof MAP_DEFS === 'undefined' || !MAP_DEFS[mapId]) return;
+    this._closeRegionPanel();
+    // startExplore() inits the canvas and shows the explore screen
+    startExplore();
+    // Hide the map-select overlay (we're going to a specific map directly)
+    const overlay = document.getElementById('map-select-overlay');
+    if (overlay) overlay.style.display = 'none';
+    // Start the target map
+    MapEngine.start(mapId);
+    if (typeof MapUI !== 'undefined') MapUI.showMsg(`Entering ${MAP_DEFS[mapId].name}…`, 1500);
   },
 
   /* ── Skirmish: battle using an arc's enemy pool at current party LV ─── */
@@ -1015,18 +1020,20 @@ const Story = {
     const pool = arc.enemies_pool || [];
     if (!pool.length || !G.party.length) return;
 
-    /* Pick 1-2 random enemies from that arc's pool */
+    /* Pick 1-2 random enemy templates from that arc's pool */
     const count   = 1 + (Math.random() < 0.45 ? 1 : 0);
     const partyLv = Math.max(...G.party.map(m => m.lv || 1));
-    G.enemyGroup  = [];
+    const picks   = [];
 
     for (let i = 0; i < count; i++) {
       const id       = pool[Math.floor(Math.random() * pool.length)];
       const template = (G.enemies || []).find(e => e.id === id);
-      if (!template) continue;
-      const enemy = Battle.buildEnemy(template, partyLv);
-      if (enemy) G.enemyGroup.push(enemy);
+      if (template) picks.push(template);
     }
+    if (!picks.length) return;
+
+    /* buildEnemyGroup is a global function in game.js — sets G.enemyGroup */
+    buildEnemyGroup(picks, partyLv);
     if (!G.enemyGroup.length) return;
 
     /* Restore party HP/MP before skirmish */
@@ -1118,8 +1125,12 @@ const Story = {
       const speakerLower = speaker.toLowerCase();
       const faceImgSrc = `images/characters/faces/${speakerLower}_face.png`;
 
-      // Face image (left, small)
+      // Face image (left, small) — hide gracefully if file missing
       if (imgEl) {
+        imgEl.onerror = () => {
+          imgEl.style.display = 'none';
+          if (emojiEl) { emojiEl.style.display = 'block'; emojiEl.textContent = '💬'; }
+        };
         imgEl.src = faceImgSrc;
         imgEl.alt = speaker;
         imgEl.style.display = 'block';
