@@ -37,14 +37,20 @@ canvas { image-rendering:pixelated; }
   --c-xiao:  #4ade80;
 }
 
-html,body {
+html {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
   background: var(--bg-deep);
   color: var(--text);
   font-family: var(--vt);
   font-size: 20px;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
 }
 
@@ -195,6 +201,8 @@ html,body {
   grid-template-columns:repeat(2,1fr);
   gap:10px;
   padding:12px;
+  overflow-y:auto;
+  max-height:380px;
 }
 
 .char-card {
@@ -1391,6 +1399,57 @@ html,body {
   .pmb-spr  { width:40px; height:48px; }
 }
 
+/* ── MOBILE LANDSCAPE ────────────────────────────────── */
+/* Scale handled by JS scaleGame(); these rules reduce visual
+   clutter so content fits after scaling. */
+@media (orientation:landscape) and (max-height:500px) {
+  body { align-items: flex-start; }
+  /* Remove artificial min-heights so scaleGame() measures real content */
+  #game         { min-height: 0; }
+  #title-screen { min-height: 0; }
+  #char-screen, #class-screen { min-height: 0; }
+  #battle-screen .pm-wrap { min-height: 0; }
+
+  /* Tighten spacing on title screen */
+  #title-screen { padding: 16px 14px; gap: 8px; }
+  .crystals     { gap: 14px; margin-bottom: 0; }
+  .crystal      { font-size: 24px; }
+  .game-title   { font-size: 14px; line-height: 1.4; }
+
+  /* Tighten battle screen — fit everything in viewport height */
+  #battle-scene        { height: 240px; }
+  .bg-mts              { height: 55px; }
+  .bg-gnd              { height: 32px; }
+  .turn-bar            { padding: 2px 8px; }
+  .active-member-bar   { min-height: 24px; padding: 3px 10px; }
+  #menu-area           { padding: 6px 10px; }
+  .battle-log          { min-height: 44px; padding: 4px 10px; }
+  .party-status-bar    { padding: 3px 6px; }
+  .psc                 { padding: 2px 5px; }
+  .stats-bar           { padding: 2px 10px; font-size: 13px; }
+
+  /* Scale down battle sprites */
+  .party-sprite        { width: 72px;  height: 72px; }
+  .enemy-sprite        { width: 80px;  height: 96px; }
+
+  /* Scale down enemy cards */
+  .ecrd                { min-width: 54px; padding: 2px; }
+  .ecrd-spr            { width: 44px; height: 52px; }
+  .ecrd-hp-bg          { width: 44px; }
+  .ecrd-name           { max-width: 54px; font-size: 9px; }
+
+  /* Scale down party bottom portraits */
+  .pmb-spr             { width: 32px; height: 38px; }
+  .party-row           { bottom: 32px; gap: 3px; }
+
+  /* Compact char/class select */
+  #char-screen, #class-screen { min-height: 360px; }
+  .char-grid, .class-grid     { grid-template-columns: 1fr 1fr; }
+
+  /* Story screen: hide portrait column on very small heights */
+  .s-dialogue-portrait { display: none; }
+}
+
 /* ══════════════════════════════════════════════════════
    STORY SCREEN
    ══════════════════════════════════════════════════════ */
@@ -2077,6 +2136,184 @@ html,body {
 }
 
 /* ══════════════════════════════════════════════════════
+   SAVE SLOT OVERLAY
+   ══════════════════════════════════════════════════════ */
+.slot-overlay {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 800;
+  opacity: 0;
+  transition: opacity 0.28s;
+}
+.slot-overlay.open { opacity: 1; }
+
+.slot-overlay-bg {
+  position: absolute;
+  inset: 0;
+  background: rgba(2, 5, 12, 0.88);
+  backdrop-filter: blur(4px);
+}
+.slot-overlay-panel {
+  position: relative;
+  z-index: 1;
+  width: min(480px, 92vw);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transform: translateY(16px);
+  transition: transform 0.28s;
+}
+.slot-overlay.open .slot-overlay-panel { transform: translateY(0); }
+
+.slot-overlay-header { text-align: center; }
+.slot-overlay-title {
+  font-size: 22px;
+  letter-spacing: 6px;
+  color: #c0d8f8;
+  font-family: inherit;
+}
+.slot-overlay-sub {
+  font-size: 11px;
+  color: #2a4060;
+  letter-spacing: 2px;
+  margin-top: 4px;
+}
+
+/* ── Slot Cards ── */
+.slot-overlay-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.sc {
+  background: linear-gradient(135deg, #070d1a, #0c1424);
+  border: 1px solid #182840;
+  border-radius: 10px;
+  padding: 16px 18px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: border-color 0.2s, background 0.2s;
+}
+.sc.sc-filled { border-color: #1e3558; }
+.sc.sc-filled:hover { border-color: #2e5080; background: linear-gradient(135deg, #080f1e, #0e1830); }
+
+.sc-num {
+  font-size: 11px;
+  color: #1e3050;
+  letter-spacing: 3px;
+}
+.sc-body { flex: 1; }
+.sc-arc {
+  font-size: 15px;
+  color: #7ab0e0;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+.sc-chars {
+  font-size: 11px;
+  color: #4a6a90;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+  text-transform: capitalize;
+}
+.sc-meta {
+  font-size: 11px;
+  color: #2a4060;
+  letter-spacing: 0.5px;
+}
+.sc-empty-label {
+  font-size: 13px;
+  color: #1e2e40;
+  letter-spacing: 2px;
+  padding: 6px 0;
+}
+.sc-hint {
+  font-size: 11px;
+  color: #1a2a38;
+  letter-spacing: 1px;
+}
+
+/* ── Slot Footer ── */
+.sc-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-top: 1px solid #101e30;
+  padding-top: 10px;
+}
+.sc-action {
+  flex: 1;
+  background: none;
+  border: 1px solid #1e3858;
+  color: #4a80b8;
+  font-size: 12px;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  letter-spacing: 1.5px;
+  transition: all 0.18s;
+}
+.sc-action.primary { border-color: #2a5898; color: #70b0f0; }
+.sc-action.primary:hover { background: #0a1e3a; border-color: #4a80d0; color: #a0d0ff; }
+.sc-action.warn { border-color: #5a3820; color: #c08040; }
+.sc-action.warn:hover { background: #1a0e04; border-color: #906030; color: #e0a860; }
+.sc-icon-btn {
+  background: none;
+  border: 1px solid #101e30;
+  color: #2a4060;
+  font-size: 13px;
+  width: 32px; height: 32px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+.sc-icon-btn:hover { background: #0a1525; border-color: #2a4868; color: #5080a8; }
+.sc-icon-btn.danger:hover { border-color: #602020; color: #a04040; }
+
+/* ── Back Button ── */
+.slot-overlay-back {
+  background: none;
+  border: none;
+  color: #243848;
+  font-size: 12px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  align-self: center;
+  padding: 6px 16px;
+  transition: color 0.15s;
+}
+.slot-overlay-back:hover { color: #4a6888; }
+
+/* ── Save Toast ──────────────────────────────────────── */
+#save-toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  background: #08121eee;
+  border: 1px solid #1e3850;
+  color: #5898d0;
+  font-size: 12px;
+  padding: 7px 20px;
+  border-radius: 20px;
+  letter-spacing: 1px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.3s;
+  z-index: 9999;
+}
+#save-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ══════════════════════════════════════════════════════
    WORLD MAP SCREEN
    ══════════════════════════════════════════════════════ */
 #map-screen {
@@ -2620,4 +2857,54 @@ html,body {
   100% {
     filter: brightness(1);
   }
+}
+
+/* ── MOBILE LANDSCAPE: sprite + layout overrides (must be after sprite rules) ── */
+@media (orientation:landscape) and (max-height:500px) {
+
+  /* Sprite sizes */
+  .party-sprite { width: 72px !important;  height: 72px !important; }
+  .enemy-sprite { width: 80px !important;  height: 96px !important; }
+
+  /* Party container — narrower, vertically centered within 240px scene */
+  .party-container {
+    width: 300px;
+  }
+
+  /* Party member cards */
+  .party-member {
+    width: 110px;
+    height: 130px;
+    padding: 3px;
+  }
+  .party-hp-bar-bg { width: 80px; }
+
+  /* Party pyramid positions (scaled ~57% from original 420px layout) */
+  .party-member:nth-child(1) { left: 100px; top:   0px; }
+  .party-member:nth-child(2) { left:  43px; top:  54px; }
+  .party-member:nth-child(3) { left: 163px; top:  54px; }
+  .party-member:nth-child(4) { left: 100px; top: 103px; }
+
+  /* Enemy container */
+  .enemy-container {
+    width: 300px;
+    height: 280px;
+  }
+
+  /* Enemy cards */
+  .enemy {
+    width: 130px;
+    height: 150px;
+    padding: 4px;
+  }
+
+  /* Enemy pyramid positions */
+  .enemy:nth-child(1) { right:  88px; top:   0px; }
+  .enemy:nth-child(2) { right:  23px; top:  63px; }
+  .enemy:nth-child(3) { right: 177px; top:  63px; }
+  .enemy:nth-child(4) { right:  88px; top: 120px; }
+
+  /* Enemy HP bar */
+  .enemy-hp-bar-bg { width: 80px; }
+  .enemy-name      { font-size: 9px; }
 }

@@ -27,18 +27,43 @@ const SPEAKER_PORTRAIT = {
 /* ══════════════════════════════════════════════════════════════════════════
    STORY ENGINE
 ══════════════════════════════════════════════════════════════════════════ */
-/* ── World map node positions (820×240 SVG space) ───────────────────────── */
+/* ── World map node positions (820×300 SVG space, 2D geography) ─────────── */
 const MAP_POSITIONS = [
-  { x: 88, y: 185 },
-  { x: 222, y: 95 },
-  { x: 398, y: 162 },
-  { x: 574, y: 72 },
-  { x: 718, y: 148 },
-  { x: 800, y: 100 },  // Arc 6: Fortress Gates
-  { x: 720, y: 40 },   // Arc 7: Inner Sanctum
-  { x: 600, y: 120 },  // Arc 8: Shadow Emperor
+  { x: 110, y: 245 },  // Arc 1: Summoning Grounds  (south-west, forest)
+  { x: 270, y: 220 },  // Arc 2: Ember Wastes        (south-centre, desert)
+  { x: 150, y: 155 },  // Arc 3: Sunken Temple        (west, coastal)
+  { x: 370, y: 175 },  // Arc 4: Shadow Reach         (centre)
+  { x: 500, y: 135 },  // Arc 5: Inner Sanctum        (centre-east)
+  { x: 600, y:  95 },  // Arc 6: Fortress Gates       (north-east)
+  { x: 680, y:  60 },  // Arc 7: Fortress Inner       (north)
+  { x: 750, y:  30 },  // Arc 8: Eternal Void         (apex)
 ];
-const MAP_ICONS = ['🌲', '🌿', '⚔', '🌊', '💎', '🏰', '🌑', '⭐'];
+const MAP_ICONS   = ['🌲','🔥','🌊','👁','💎','🏰','🌑','⭐'];
+const MAP_COLORS  = ['#1a4010','#7a2808','#083868','#300860','#481068','#201838','#100820','#060008'];
+
+/* Explore map linked to each arc (index = arcIdx 0-based) */
+const ARC_MAP_ID  = [
+  'verdant_vale',      // Arc 1
+  'ember_wastes',      // Arc 2
+  'sunken_temple',     // Arc 3
+  'shadow_reach',      // Arc 4
+  'void_citadel',      // Arc 5
+  'void_citadel',      // Arc 6 (same fortress, higher tier)
+  'fortress_ramparts', // Arc 7
+  'eternal_void',      // Arc 8
+];
+
+/* Short lore shown in the region revisit panel */
+const ARC_LORE = [
+  'The ruins still echo with the shouts of confusion — four strangers, summoned against their will, finding purpose in chaos.',
+  'Ashveil burned for three days. The sands swallowed what the flames didn\'t claim. The survivors remember a sky made of embers.',
+  'The Sunken Temple holds its breath. Water fills every crack, every corridor — and still the guardians patrol, loyal to a god already drowned.',
+  'The Shadow Reach was the first place they felt truly afraid. Not of the monsters — but of the silence between them.',
+  'Beyond the Gates, the darkness spoke. It offered rest, oblivion, an end to the weight of a world that wasn\'t theirs to save.',
+  'The outer walls were not built to keep invaders out. They were built to keep something in.',
+  'The inner sanctum smells of ozone and old grief. Every torch is cold. Every door opens inward.',
+  'Here, the void does not press against you. It waits inside you, patient as the end of all things.',
+];
 
 /* ══════════════════════════════════════════════════════════════════════════
    STORY ENGINE
@@ -137,9 +162,10 @@ const Story = {
      PUBLIC ENTRY POINTS
   ════════════════════════════════════════════════════════════════════════ */
 
-  /** Called by the NEW STORY title button */
-  begin() {
-    Save.clear();
+  /** Called by the NEW STORY title button — slot defaults to first empty */
+  begin(slot = 0) {
+    this._activeSlot = slot;
+    Save.clear(slot);
     this.init(() => {
       if (!this.data) { alert('Story data not found.'); return; }
       this.active = true;
@@ -173,18 +199,24 @@ const Story = {
     });
   },
 
-  /** Called by the CONTINUE title button */
-  loadSave() {
-    const s = Save.read();
+  /** Called by the CONTINUE title button — slot selects which save to load */
+  loadSave(slot = 0) {
+    const s = Save.read(slot);
     if (!s) { startStoryMode(); return; }
+    this._activeSlot  = slot;
     this._pendingSave = s;
     this.init(() => {
       if (!this.data) { alert('Story data not found.'); return; }
       this.active = true;
       G.selectedChar  = s.selectedChar  || (G.chars[0] && G.chars[0].id);
       G.selectedClass = s.selectedClass || (G.classes[0] && G.classes[0].id);
-      const heroId_ = G.selectedChar;
-      G.selectedChars = [heroId_, ...G.chars.map(c=>c.id).filter(id=>id!==heroId_)].slice(0,4);
+      // Restore full party selection if saved, otherwise rebuild from hero
+      if (s.selectedChars && s.selectedChars.length) {
+        G.selectedChars = s.selectedChars;
+      } else {
+        const heroId_ = G.selectedChar;
+        G.selectedChars = [heroId_, ...G.chars.map(c=>c.id).filter(id=>id!==heroId_)].slice(0,4);
+      }
       startBattle();   // sets up G.hero then calls onHeroReady
     });
   },
@@ -198,9 +230,20 @@ const Story = {
       this._pendingSave = null;
       this.arcIdx = s.arcIdx || 0;
       this.chapIdx = s.chapIdx !== undefined ? s.chapIdx : -1;
-      if (s.hero && G.hero) {
-        G.hero.lv = s.hero.lv || 1;
-        G.hero.exp = s.hero.exp || 0;
+      // Restore all party member stats (new format) or fall back to hero-only (legacy)
+      if (s.partyStats && s.partyStats.length && G.party.length) {
+        G.party.forEach(m => {
+          const saved = s.partyStats.find(p => p.charId === m.charId);
+          if (saved) {
+            m.lv   = saved.lv   || 1;
+            m.exp  = saved.exp  || 0;
+            m.gold = saved.gold || 0;
+          }
+        });
+      } else if (s.hero && G.hero) {
+        // Legacy save: only hero stats were persisted
+        G.hero.lv   = s.hero.lv   || 1;
+        G.hero.exp  = s.hero.exp  || 0;
         G.hero.gold = s.hero.gold || 0;
       }
       // Restore unlocked characters from save
@@ -225,6 +268,13 @@ const Story = {
 
   /** Called by game.js checkEnd() when enemy defeated in a story battle */
   onBattleWon() {
+    /* Skirmish: just return to world map after win */
+    if (this._skirmishArcIdx !== undefined) {
+      this._skirmishArcIdx = undefined;
+      this._showWorldMap();
+      return;
+    }
+
     const chap = this.currentChap;
     this.lineIdx = 0;
 
@@ -252,6 +302,12 @@ const Story = {
 
   /** Called by game.js checkEnd() when hero dies in a story battle */
   onBattleLost() {
+    /* Skirmish defeat: just go back to map, no penalty */
+    if (this._skirmishArcIdx !== undefined) {
+      this._skirmishArcIdx = undefined;
+      this._showWorldMap();
+      return;
+    }
     this.phase = 'retry';
     this._renderLine(null, 'The party falls... but fate is not done with them yet.');
     this._showSection('s-dialogue');
@@ -801,15 +857,11 @@ const Story = {
   _endStory() {
     this.active = false;
     if (typeof TTS !== 'undefined') TTS.stop();
-    Save.clear();
+    Save.clear(this._activeSlot !== undefined ? this._activeSlot : 0);
     G.enemies = this._allEnemies.slice();
     G.selectedChar = null; G.selectedClass = null;
     UI.show('title-screen');
-    // Hide continue button since save is cleared
-    const btn = document.getElementById('title-continue-btn');
-    if (btn) btn.style.display = 'none';
-    const info = document.getElementById('title-save-info');
-    if (info) info.style.display = 'none';
+    if (typeof refreshSaveSlots === 'function') refreshSaveSlots();
   },
 
   /* ════════════════════════════════════════════════════════════════════════
@@ -817,71 +869,184 @@ const Story = {
   ════════════════════════════════════════════════════════════════════════ */
   _doSave() {
     if (!this.data || !G.hero) return;
+    // Capture all 4 party members' current stats
+    const partyStats = G.party.map(m => ({
+      charId: m.charId,
+      classId: m.classId,
+      lv:   m.lv   || 1,
+      exp:  m.exp  || 0,
+      gold: m.gold || 0,
+    }));
     Save.write({
-      arcIdx: this.arcIdx,
-      chapIdx: this.chapIdx,
-      arcName: `Arc ${this.arc.number}: ${this.arc.name}`,
-      selectedChar: G.hero.charId || G.selectedChar,
+      arcIdx:        this.arcIdx,
+      chapIdx:       this.chapIdx,
+      arcName:       `Arc ${this.arc.number}: ${this.arc.name}`,
+      selectedChar:  G.hero.charId  || G.selectedChar,
       selectedClass: G.hero.classId || G.selectedClass,
-      hero: { lv: G.hero.lv, exp: G.hero.exp, gold: G.hero.gold },
+      selectedChars: G.selectedChars || [],
+      partyStats,
+      // Keep legacy hero field for backward compat
+      hero: { lv: G.hero.lv, exp: G.hero.exp, gold: G.hero.gold || 0 },
       unlockedChars: G.unlockedChars,
-    });
+    }, this._activeSlot !== undefined ? this._activeSlot : 0);
   },
 
   /* ════════════════════════════════════════════════════════════════════════
      WORLD MAP
   ════════════════════════════════════════════════════════════════════════ */
   _showWorldMap() {
-    // Hide all story sections
     this._showSection(null);
+    this._closeRegionPanel();
 
-    const arcs = this.data.arcs;
+    const arcs    = this.data.arcs;
     const nextIdx = this.arcIdx + 1;
-    const area = this.el('map-area');
+    const area    = this.el('map-area');
     if (!area) { this._startNextArc(); return; }
 
-    // Build SVG path
-    const pts = MAP_POSITIONS.map(p => `${p.x},${p.y}`).join(' ');
-    const done = MAP_POSITIONS.slice(0, this.arcIdx + 1).map(p => `${p.x},${p.y}`).join(' ');
+    /* ── SVG path layer (820×300 viewBox) ── */
+    let svgLines = '';
+    for (let i = 0; i < MAP_POSITIONS.length - 1; i++) {
+      const a = MAP_POSITIONS[i], b = MAP_POSITIONS[i + 1];
+      const done  = i < this.arcIdx;
+      const color = done ? '#4a3898' : '#1a1060';
+      const dash  = done ? '' : 'stroke-dasharray="8,5"';
+      svgLines += `<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}"
+        stroke="${color}" stroke-width="2.5" ${dash}/>`;
+    }
     area.innerHTML = `
-      <svg class="map-svg" viewBox="0 0 820 240" preserveAspectRatio="xMidYMid meet">
-        <polyline points="${pts}" fill="none" stroke="#1a1060" stroke-width="3" stroke-dasharray="8,5"/>
-        ${this.arcIdx > 0 ? `<polyline points="${done}" fill="none" stroke="#4a3898" stroke-width="3"/>` : ''}
+      <svg class="map-svg" viewBox="0 0 820 300" preserveAspectRatio="xMidYMid meet">
+        ${svgLines}
       </svg>`;
 
-    // Build nodes
+    /* ── Node elements ── */
     arcs.forEach((arc, i) => {
-      const pos = MAP_POSITIONS[i];
+      const pos    = MAP_POSITIONS[i];
       const isDone = i < this.arcIdx;
-      const isCur = i === this.arcIdx;
+      const isCur  = i === this.arcIdx;
       const isNext = i === nextIdx;
       const isLock = i > nextIdx;
-      const cls = [isDone ? 'done' : '', isCur ? 'current' : '', isNext ? 'next' : '', isLock ? 'locked' : ''].filter(Boolean).join(' ');
+      const cls    = [isDone?'done':'', isCur?'current':'', isNext?'next':'', isLock?'locked':''].filter(Boolean).join(' ');
 
       const node = document.createElement('div');
       node.className = `map-node ${cls}`;
-      node.style.left = (pos.x - 28) + 'px';
-      node.style.top = (pos.y - 40) + 'px';
+      node.style.left = (pos.x - 30) + 'px';
+      node.style.top  = (pos.y - 44) + 'px';
+      if (MAP_COLORS[i]) node.style.setProperty('--node-color', MAP_COLORS[i]);
+
       node.innerHTML =
+        `<div class="mn-status">${isDone ? '✓ CLEARED' : isCur ? '▶ ACTIVE' : isNext ? '◈ NEXT' : ''}</div>` +
         `<div class="mn-icon">${MAP_ICONS[i]}</div>` +
-        `<div class="mn-num">ARC ${arc.number}</div>`;
+        `<div class="mn-num">ARC ${arc.number}</div>` +
+        `<div class="mn-name">${arc.name}</div>`;
+
+      /* Interaction */
+      if (isDone) {
+        node.title = 'Click to revisit';
+        node.addEventListener('click', () => this._openRegionPanel(i));
+      } else if (isNext) {
+        node.addEventListener('click', () => this._startNextArc());
+      } else if (isCur) {
+        node.addEventListener('click', () => this._openRegionPanel(i));
+      }
+
       area.appendChild(node);
     });
 
-    // Info bar
+    /* ── Bottom info bar ── */
     const next = arcs[nextIdx];
-    this.el('map-arc-label').textContent = next ? `NEXT: ${next.name.toUpperCase()}` : 'JOURNEY COMPLETE';
-    this.el('map-info-name').textContent = next ? next.name : '';
-    this.el('map-info-loc').textContent = next ? (next.location || '') : '';
+    this.el('map-arc-label').textContent = next
+      ? `NEXT: ${next.name.toUpperCase()}`
+      : 'JOURNEY COMPLETE';
+    this.el('map-info-name').textContent = next ? next.name        : '';
+    this.el('map-info-loc').textContent  = next ? (next.location || '') : '';
 
     UI.show('map-screen');
     if (typeof SFX !== 'undefined') SFX.mapMove();
   },
 
-  /** Called by map screen PROCEED button */
+  /** Called by the TRAVEL THERE button */
   proceedFromMap() {
     if (typeof SFX !== 'undefined') SFX.mapMove();
     this._startNextArc();
+  },
+
+  /* ── Region panel (revisit done/current nodes) ───────────────────────── */
+  _openRegionPanel(arcIdx) {
+    const arc     = this.data.arcs[arcIdx];
+    const panel   = document.getElementById('map-region-panel');
+    const mapId   = ARC_MAP_ID[arcIdx] || '';
+    const lore    = ARC_LORE[arcIdx]   || '';
+    const shard   = arc.shard;
+    const isDone  = arcIdx < this.arcIdx;
+    const isCur   = arcIdx === this.arcIdx;
+
+    panel.innerHTML = `
+      <div class="mrp-num">ARC ${arc.number}</div>
+      <div class="mrp-name">${arc.name}</div>
+      <div class="mrp-loc">${arc.location || ''}</div>
+      ${shard ? `<div class="mrp-shard" style="color:${shard.color||'#fff'}">🔮 ${shard.name}</div>` : ''}
+      <div class="mrp-lore">${lore}</div>
+      <div class="mrp-actions">
+        ${(isDone || isCur) && mapId ? `<button class="mrp-btn primary" onclick="Story.startRegionSkirmish(${arcIdx})">⚔ SKIRMISH</button>` : ''}
+        ${mapId ? `<button class="mrp-btn" onclick="Story._exploreRegion('${mapId}')">🗺 EXPLORE</button>` : ''}
+        <button class="mrp-btn" onclick="Story._closeRegionPanel()">← BACK</button>
+      </div>`;
+
+    panel.classList.add('open');
+  },
+
+  _closeRegionPanel() {
+    const panel = document.getElementById('map-region-panel');
+    if (panel) panel.classList.remove('open');
+  },
+
+  _exploreRegion(mapId) {
+    if (typeof startExplore === 'undefined' || typeof MAP_DEFS === 'undefined' || !MAP_DEFS[mapId]) return;
+    this._closeRegionPanel();
+    // startExplore() inits the canvas and shows the explore screen
+    startExplore();
+    // Hide the map-select overlay (we're going to a specific map directly)
+    const overlay = document.getElementById('map-select-overlay');
+    if (overlay) overlay.style.display = 'none';
+    // Start the target map
+    MapEngine.start(mapId);
+    if (typeof MapUI !== 'undefined') MapUI.showMsg(`Entering ${MAP_DEFS[mapId].name}…`, 1500);
+  },
+
+  /* ── Skirmish: battle using an arc's enemy pool at current party LV ─── */
+  startRegionSkirmish(arcIdx) {
+    const arc  = this.data.arcs[arcIdx];
+    if (!arc)  return;
+    const pool = arc.enemies_pool || [];
+    if (!pool.length || !G.party.length) return;
+
+    /* Pick 1-2 random enemy templates from that arc's pool */
+    const count   = 1 + (Math.random() < 0.45 ? 1 : 0);
+    const partyLv = Math.max(...G.party.map(m => m.lv || 1));
+    const picks   = [];
+
+    for (let i = 0; i < count; i++) {
+      const id       = pool[Math.floor(Math.random() * pool.length)];
+      const template = (G.enemies || []).find(e => e.id === id);
+      if (template) picks.push(template);
+    }
+    if (!picks.length) return;
+
+    /* buildEnemyGroup is a global function in game.js — sets G.enemyGroup */
+    buildEnemyGroup(picks, partyLv);
+    if (!G.enemyGroup.length) return;
+
+    /* Restore party HP/MP before skirmish */
+    G.party.forEach(m => { m.hp = m.maxHp; m.mp = m.maxMp; });
+
+    this._skirmishArcIdx = arcIdx;
+    this._closeRegionPanel();
+
+    /* _initBattle() is a global in game.js — wires up turn queue, menu, screen */
+    _initBattle();
+    const names = G.enemyGroup.map(e => e.name).join(' & ');
+    UI.setLog([`${names} appear!`, `Skirmish — no retreat!`], ['hi', '']);
+    processCurrentTurn();
   },
 
   /* ════════════════════════════════════════════════════════════════════════
@@ -959,8 +1124,12 @@ const Story = {
       const speakerLower = speaker.toLowerCase();
       const faceImgSrc = `images/characters/faces/${speakerLower}_face.png`;
 
-      // Face image (left, small)
+      // Face image (left, small) — hide gracefully if file missing
       if (imgEl) {
+        imgEl.onerror = () => {
+          imgEl.style.display = 'none';
+          if (emojiEl) { emojiEl.style.display = 'block'; emojiEl.textContent = '💬'; }
+        };
         imgEl.src = faceImgSrc;
         imgEl.alt = speaker;
         imgEl.style.display = 'block';

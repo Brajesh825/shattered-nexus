@@ -4,7 +4,7 @@
     {
       "name": "rpg-server",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["http-server"],
+      "runtimeArgs": ["http-server", "C:/Users/ASUS/VVI/rpg+", "-c-1"],
       "port": 8000,
       "autoPort": true
     }
