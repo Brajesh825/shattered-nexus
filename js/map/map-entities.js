@@ -54,7 +54,7 @@ const MapPlayer = (() => {
   // Sprite frame for walk cycle
   let _frame = 0;
   let _frameTimer = 0;
-  const FRAME_COUNT = 4;
+  const FRAME_COUNT = 3;
   const FRAME_DUR   = 0.12;
 
   function reset(startX, startY) {
@@ -125,57 +125,67 @@ const MapPlayer = (() => {
     _tryMove(dx, dy, map);
   }
 
-  // Cache: charId → { front, back, frontLoaded, backLoaded }
+  // Single spritesheet layout — 4096×2048, 2×2 grid of directions, 3 frames each
+  // Each directional strip: 2048 wide × 1024 tall, 3 frames side by side
+  const SHEET_FRAME_W = 2048 / 3;   // ≈ 682.67
+  const SHEET_FRAME_H = 1024;
+  // Spritesheet quadrant offsets (4096×2048, 2×2 grid, 3 frames each).
+  // Frame order per strip:
+  //   front  cx:0,    cy:0    → [idle, walk1, walk2]   animate 0→1→2
+  //   left   cx:2048, cy:0    → [walk2, walk1, idle]   animate REVERSED: use 2-frame
+  //   right  cx:0,    cy:1024 → [idle, walk1, walk2]   animate 0→1→2
+  //   back   cx:2048, cy:1024 → [idle, walk1, walk2]   animate 0→1→2
+  const SHEET_DIR = {
+    front: { cx: 0,    cy: 0,    rev: false },
+    left:  { cx: 2048, cy: 0,    rev: true  },
+    right: { cx: 0,    cy: 1024, rev: false },
+    back:  { cx: 2048, cy: 1024, rev: false },
+  };
+
+  // Cache: charId → { sheet, loaded, staticFallback }
   const _heroImgCache = {};
 
   function _loadHeroImgs(charId, hero) {
     if (_heroImgCache[charId]) return _heroImgCache[charId];
 
-    const entry = {
-      front: null, back: null, side: null,
-      frontLoaded: false, backLoaded: false, sideLoaded: false,
-    };
+    const entry = { sheet: null, loaded: false, staticFallback: null };
     _heroImgCache[charId] = entry;
 
-    // Front sprite (down)
-    const front = new Image();
-    front.onload  = () => { entry.front = front; entry.frontLoaded = true; };
-    front.onerror = () => {
-      entry.front = SpriteRenderer.drawHeroToCanvas(charId, hero.char, hero.cls);
-      entry.frontLoaded = true;
+    // Try single combined sheet first: images/characters/map/sheets/{charId}_sheet.png
+    const img = new Image();
+    img.onload  = () => { entry.sheet = img; entry.loaded = true; };
+    img.onerror = () => {
+      // Fall back to static 128×128 front image
+      entry.loaded = true;
+      const fb = new Image();
+      fb.onload  = () => { entry.staticFallback = fb; };
+      fb.onerror = () => {
+        entry.staticFallback = SpriteRenderer.drawHeroToCanvas(charId, hero.char, hero.cls);
+      };
+      fb.src = `images/characters/map/${charId}.png`;
     };
-    front.src = `images/characters/map/${charId}.png`;
-
-    // Back sprite (up) — falls back to front if missing
-    const back = new Image();
-    back.onload  = () => { entry.back = back; entry.backLoaded = true; };
-    back.onerror = () => { entry.back = entry.front; entry.backLoaded = true; };
-    back.src = `images/characters/map/${charId}_back.png`;
-
-    // Side sprite (left/right) — falls back to front if missing
-    const side = new Image();
-    side.onload  = () => { entry.side = side; entry.sideLoaded = true; };
-    side.onerror = () => { entry.side = entry.front; entry.sideLoaded = true; };
-    side.src = `images/characters/map/${charId}_side.png`;
+    img.src = `images/characters/map/sheets/${charId}_sheet.png`;
 
     return entry;
   }
 
-  // Returns { img, flipX } based on current facing direction
+  // Returns { sheet, cx, cy, flipX } — cx/cy are the top-left of the direction strip
   function _getSpriteInfo(charId, hero) {
     const c = _loadHeroImgs(charId, hero);
-    const fallback = c.frontLoaded ? c.front : null;
 
-    // Up → back sprite
-    if (_facing.dy < 0) {
-      return { img: c.backLoaded ? c.back : fallback, flipX: false };
+    if (c.sheet) {
+      // Up → back strip
+      if (_facing.dy < 0) return { sheet: c.sheet, ...SHEET_DIR.back,  flipX: false };
+      // Left → left strip
+      if (_facing.dx < 0) return { sheet: c.sheet, ...SHEET_DIR.left,  flipX: false };
+      // Right → right strip
+      if (_facing.dx > 0) return { sheet: c.sheet, ...SHEET_DIR.right, flipX: false };
+      // Down (default) → front strip
+      return               { sheet: c.sheet, ...SHEET_DIR.front, flipX: false };
     }
-    // Left / Right → side sprite (flip for left)
-    if (_facing.dx !== 0) {
-      return { img: c.sideLoaded ? c.side : fallback, flipX: _facing.dx < 0 };
-    }
-    // Down (default) → front sprite
-    return { img: fallback, flipX: false };
+
+    // Static fallback
+    return { sheet: null, staticImg: c.staticFallback, flipX: false };
   }
 
   function render(ctx, cam, TILE) {
@@ -190,25 +200,35 @@ const MapPlayer = (() => {
     ctx.fill();
 
     const hero = G && G.hero;
-    const { img: spr, flipX } = hero ? _getSpriteInfo(hero.charId, hero) : { img: null, flipX: false };
+    const info = hero ? _getSpriteInfo(hero.charId, hero) : null;
 
     const dw = Math.round(TILE * 0.80);
     const dh = Math.round(TILE * 0.90);
     const ox = Math.round((TILE - dw) / 2);
     const oy = Math.round((TILE - dh) / 2);
 
-    if (spr) {
+    if (info && info.sheet) {
+      // Left strip is stored reversed (walk2,walk1,idle), so mirror the index
+      const frameIdx = info.rev ? (FRAME_COUNT - 1 - _frame) : _frame;
+      const srcX = info.cx + frameIdx * SHEET_FRAME_W;
+      const srcY = info.cy;
+
       ctx.save();
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = 'high';
-      if (flipX) {
-        // Mirror horizontally around the sprite's center
+      if (info.flipX) {
         ctx.translate(sx + TILE / 2, sy);
         ctx.scale(-1, 1);
-        ctx.drawImage(spr, -dw / 2, oy + bounce, dw, dh);
+        ctx.drawImage(info.sheet, srcX, srcY, SHEET_FRAME_W, SHEET_FRAME_H, -dw / 2, oy + bounce, dw, dh);
       } else {
-        ctx.drawImage(spr, sx + ox, sy + oy + bounce, dw, dh);
+        ctx.drawImage(info.sheet, srcX, srcY, SHEET_FRAME_W, SHEET_FRAME_H, sx + ox, sy + oy + bounce, dw, dh);
       }
+      ctx.restore();
+    } else if (info && info.staticImg) {
+      ctx.save();
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      ctx.drawImage(info.staticImg, sx + ox, sy + oy + bounce, dw, dh);
       ctx.restore();
     } else {
       // Fallback: simple colored square
