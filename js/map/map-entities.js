@@ -196,16 +196,16 @@ const MapPlayer = (() => {
     // shadow
     ctx.fillStyle = 'rgba(0,0,0,0.35)';
     ctx.beginPath();
-    ctx.ellipse(sx + TILE / 2, sy + TILE - 3, TILE * 0.25, 5, 0, 0, Math.PI * 2);
+    ctx.ellipse(sx + TILE / 2, sy + TILE - 3, TILE * 0.38, 7, 0, 0, Math.PI * 2);
     ctx.fill();
 
     const hero = G && G.hero;
     const info = hero ? _getSpriteInfo(hero.charId, hero) : null;
 
-    const dw = Math.round(TILE * 0.80);
-    const dh = Math.round(TILE * 0.90);
+    const dw = Math.round(TILE * 1.2);
+    const dh = Math.round(TILE * 2.0);
     const ox = Math.round((TILE - dw) / 2);
-    const oy = Math.round((TILE - dh) / 2);
+    const oy = Math.round(TILE - dh);       // anchor bottom of sprite to tile bottom
 
     if (info && info.sheet) {
       // Left strip is stored reversed (walk2,walk1,idle), so mirror the index
@@ -274,6 +274,7 @@ const MapEntities = (() => {
     _enemies = (map.enemies || []).map((e, i) => ({
       id:      e.id,
       idx:     i,
+      name:    (() => { const d = G && G.enemies && G.enemies.find(r => r.id === e.id); return d ? d.name.slice(0, 8) : e.id; })(),
       tx:      e.x,  ty:    e.y,   // current tile
       ox:      e.x,  oy:    e.y,   // origin tile
       px:      e.x * MapEngine.getTile(),
@@ -422,50 +423,44 @@ const MapEntities = (() => {
   }
 
   function renderEnemies(ctx, cam, TILE, map) {
+    const _edw = Math.round(TILE * 1.1);
+    const _edh = Math.round(TILE * 1.6);
+    const _eox = Math.round((TILE - _edw) / 2);
+    const _eoy = TILE - _edh;   // anchor bottom to tile bottom
     _enemies.forEach(en => {
       if (!en.alive) return;
       const sx = en.px - cam.x;
       const sy = en.py - cam.y;
       if (sx < -TILE || sy < -TILE || sx > ctx.canvas.width + TILE || sy > ctx.canvas.height + TILE) return;
 
-      const bounce = en.moving ? Math.sin(en.frame / 4 * Math.PI * 2) * 2 : 0;
+      const bounce = en.moving ? Math.sin(en.frame / 4 * Math.PI * 2) * 3 : 0;
 
-      // shadow
       ctx.fillStyle = 'rgba(0,0,0,0.28)';
       ctx.beginPath();
-      ctx.ellipse(sx + TILE / 2, sy + TILE - 3, TILE * 0.22, 4, 0, 0, Math.PI * 2);
+      ctx.ellipse(sx + TILE / 2, sy + TILE - 3, TILE * 0.35, 6, 0, 0, Math.PI * 2);
       ctx.fill();
 
-      // sprite (72x84 → scaled to ~26x30 in tile)
       const spr = _getEnemySprite(en.id);
       if (spr) {
-        const dw = Math.round(TILE * 0.68);
-        const dh = Math.round(TILE * 0.78);
-        const ox = Math.round((TILE - dw) / 2);
-        const oy = Math.round((TILE - dh) / 2);
         ctx.imageSmoothingEnabled = false;
-        ctx.drawImage(spr, sx + ox, sy + oy + bounce, dw, dh);
+        ctx.drawImage(spr, sx + _eox, sy + _eoy + bounce, _edw, _edh);
       }
 
-      // aggro indicator (!) if within chase range
       const dist = Math.abs(en.tx - MapPlayer.tx) + Math.abs(en.ty - MapPlayer.ty);
-      if (dist <= 3) {
+      if (dist <= AGGRO_RANGE) {
         ctx.fillStyle = '#ffff40';
-        ctx.font = 'bold 11px monospace';
+        ctx.font = 'bold 14px monospace';
         ctx.textAlign = 'center';
-        ctx.fillText('!', sx + TILE / 2, sy + bounce - 2);
+        ctx.fillText('!', sx + TILE / 2, sy + _eoy + bounce - 4);
         ctx.textAlign = 'left';
       }
 
-      // Enemy name tag (always visible, small)
-      const raw = G && G.enemies && G.enemies.find(e => e.id === en.id);
-      const label = raw ? raw.name.slice(0, 8) : en.id;
-      ctx.fillStyle = 'rgba(0,0,0,0.5)';
-      ctx.fillRect(sx, sy + TILE + 1, TILE, 9);
+      ctx.fillStyle = 'rgba(0,0,0,0.55)';
+      ctx.fillRect(sx + _eox, sy + TILE + 2, _edw, 11);
       ctx.fillStyle = '#ff8080';
-      ctx.font = '6px monospace';
+      ctx.font = '8px monospace';
       ctx.textAlign = 'center';
-      ctx.fillText(label, sx + TILE / 2, sy + TILE + 8);
+      ctx.fillText(en.name, sx + TILE / 2, sy + TILE + 11);
       ctx.textAlign = 'left';
     });
   }

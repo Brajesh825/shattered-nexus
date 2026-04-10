@@ -15,17 +15,21 @@ function scaleGame() {
   el.style.transform       = '';
   el.style.height          = '';
   el.style.transformOrigin = '';
+  document.body.style.justifyContent = '';
 
   const vw = window.innerWidth;
   const vh = window.innerHeight;
-  if (vw >= 1000) return; // desktop — no scaling needed
+  if (vw >= 1000) {
+    el.style.height = `${vh}px`;
+    return;
+  }
 
-  // Always scale to fill full width — no gaps on left/right
   const scale = vw / 1000;
+  // Anchor to top-left so body overflow:hidden doesn't clip the right side
   el.style.transform       = `scale(${scale})`;
-  el.style.transformOrigin = 'top center';
-  // Stretch height to fill full viewport height
+  el.style.transformOrigin = 'top left';
   el.style.height          = `${vh / scale}px`;
+  document.body.style.justifyContent = 'flex-start';
 }
 window.addEventListener('resize', scaleGame);
 window.addEventListener('orientationchange', () => setTimeout(scaleGame, 150));
@@ -853,7 +857,7 @@ function unlockCharacter(charId) {
   if (!G.unlockedChars.includes(charId)) {
     G.unlockedChars.push(charId);
     // Save the updated unlocked characters state
-    if (typeof Story !== 'undefined' && Story.active) Story._saveProgress();
+    if (typeof Story !== 'undefined' && Story.active) Story._doSave();
     return true;
   }
   return false;

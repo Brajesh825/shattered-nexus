@@ -5,7 +5,19 @@
       "Bash(grep -n \"anim\\\\|keyframes\" C:/Users/ASUS/VVI/rpg+/*.css)",
       "Bash(node -e \"JSON.parse\\(require\\(''fs''\\).readFileSync\\(''C:/Users/ASUS/VVI/rpg+/data/character-unlocks.json'', ''utf8''\\)\\)\")",
       "Bash(node -c js/story.js)",
-      "Bash(gh api:*)"
+      "Bash(gh api:*)",
+      "Bash(grep -E \"\\\\.js$|\\\\.html$|\\\\.css$\")",
+      "Bash(wc -l /c/Users/ASUS/VVI/rpg+/js/*.js /c/Users/ASUS/VVI/rpg+/js/map/*.js)",
+      "Bash(identify images/characters/map/ayaka.png)",
+      "Bash(python3 -c \"from PIL import Image; img=Image.open\\('images/characters/map/ayaka.png'\\); print\\('current front:', img.size\\)\")",
+      "Bash(python3 -c \"from PIL import Image; img=Image.open\\('_utils/raw/ayaka/chibi/front.png'\\); print\\('chibi front:', img.size\\); img=Image.open\\('_utils/raw/ayaka/chibi/back.png'\\); print\\('chibi back:', img.size\\); img=Image.open\\('_utils/raw/ayaka/chibi/left.png'\\); print\\('chibi left:', img.size\\)\")",
+      "Bash(python3 -c ':*)",
+      "Bash(gh pr create --title 'feat: Ayaka chibi spritesheet for map player' --body ':*)",
+      "Bash(node -e \"const fs=require\\('fs'\\); eval\\(fs.readFileSync\\('js/map/map-data.js','utf8'\\)\\); console.log\\(Object.keys\\(MAP_DEFS\\).map\\(k => k+':'+MAP_DEFS[k].width+'x'+MAP_DEFS[k].height\\).join\\(', '\\)\\)\")",
+      "Bash(rm expand_maps.py gen_map_data.py map_expansion_output.txt)",
+      "Bash(node -e ':*)",
+      "Bash(python3 gen_map_data.py)",
+      "Bash(rm gen_map_data.py)"
     ]
   }
 }

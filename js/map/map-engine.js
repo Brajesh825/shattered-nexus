@@ -9,7 +9,7 @@
  */
 
 const MapEngine = (() => {
-  const TILE = 40;
+  const TILE = 64;
 
   let _canvas = null, _ctx = null;
   let _map    = null;

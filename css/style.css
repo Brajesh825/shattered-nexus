@@ -57,7 +57,7 @@ body {
 /* ── CONTAINER ──────────────────────────────────────── */
 #game {
   width: 1000px;
-  max-width: 100vw;
+  flex-shrink: 0;
   background: var(--bg-dark);
   border: 2px solid #3a2880;
   box-shadow:
@@ -1392,7 +1392,6 @@ body {
 
 /* ── RESPONSIVE ──────────────────────────────────────── */
 @media(max-width:920px){
-  #game{ width:100vw; border-left:none; border-right:none; }
   .game-title{ font-size:16px; }
   .char-grid,.class-grid{ grid-template-columns:1fr; }
   .ecrd-spr { width:56px; height:66px; }
@@ -1416,17 +1415,17 @@ body {
   .crystal      { font-size: 24px; }
   .game-title   { font-size: 14px; line-height: 1.4; }
 
-  /* Tighten battle screen — fit everything in viewport height */
-  #battle-scene        { height: 240px; }
-  .bg-mts              { height: 55px; }
-  .bg-gnd              { height: 32px; }
-  .turn-bar            { padding: 2px 8px; }
-  .active-member-bar   { min-height: 24px; padding: 3px 10px; }
-  #menu-area           { padding: 6px 10px; }
-  .battle-log          { min-height: 44px; padding: 4px 10px; }
-  .party-status-bar    { padding: 3px 6px; }
-  .psc                 { padding: 2px 5px; }
-  .stats-bar           { padding: 2px 10px; font-size: 13px; }
+  /* Tighten battle screen — target ≤450px total to fit ~360-412px viewports */
+  #battle-scene        { height: 210px; }
+  .bg-mts              { height: 48px; }
+  .bg-gnd              { height: 28px; }
+  .turn-bar            { height: 28px; min-height: 0; padding: 2px 8px; overflow: hidden; }
+  .active-member-bar   { min-height: 0; height: 22px; padding: 2px 10px; }
+  #menu-area           { padding: 4px 10px; }
+  .battle-log          { min-height: 0; max-height: 52px; overflow-y: auto; padding: 3px 10px; }
+  .party-status-bar    { padding: 1px 6px; }
+  .psc                 { padding: 1px 4px; }
+  .stats-bar           { padding: 1px 10px; font-size: 12px; }
 
   /* Scale down battle sprites */
   .party-sprite        { width: 72px;  height: 72px; }
@@ -1440,7 +1439,7 @@ body {
 
   /* Scale down party bottom portraits */
   .pmb-spr             { width: 32px; height: 38px; }
-  .party-row           { bottom: 32px; gap: 3px; }
+  .party-row           { bottom: 28px; gap: 3px; }
 
   /* Compact char/class select */
   #char-screen, #class-screen { min-height: 360px; }
