@@ -14,7 +14,6 @@ const MapEngine = (() => {
   let _canvas = null, _ctx = null;
   let _map    = null;
   let _rafId  = null, _lastTs = 0, _running = false;
-  let _wFrame = 0,    _wTimer = 0;
   let _time   = 0;
 
   /* ── Camera ─────────────────────────────────────────── */
@@ -46,197 +45,21 @@ const MapEngine = (() => {
   }
 
   /* ── Tile pixel-art painter ─────────────────────────── */
-  function _paintTile(ctx, def, sx, sy, tw, th, wF) {
+  // Each tile defines its own render(ctx, sx, sy, tw, th, t) in TILE_DEFS.
+  // t = elapsed seconds (for animations). Falls back to _defaultRender.
+  function _defaultRender(ctx, def, sx, sy, tw, th) {
+    ctx.fillStyle = def.color; ctx.fillRect(sx, sy, tw, th);
+    ctx.fillStyle = def.hi;
+    ctx.fillRect(sx, sy, tw, 2); ctx.fillRect(sx, sy, 2, th);
+    ctx.fillStyle = def.shadow;
+    ctx.fillRect(sx, sy + th - 2, tw, 2); ctx.fillRect(sx + tw - 2, sy, 2, th);
+  }
+
+  function _paintTile(ctx, def, sx, sy, tw, th, t) {
     if (!def) return;
-
-    ctx.fillStyle = def.color;
-    ctx.fillRect(sx, sy, tw, th);
-
-    if (def.name === 'grass') {
-      ctx.fillStyle = def.hi;
-      ctx.fillRect(sx, sy, tw, 2);
-      ctx.fillRect(sx, sy, 2, th);
-      // Blade texture
-      ctx.fillStyle = 'rgba(40,100,20,0.3)';
-      const seed = (sx / tw) | 0;
-      for (let i = 0; i < 4; i++) {
-        const bx = sx + ((seed * 7 + i * 13) % tw);
-        ctx.fillRect(bx, sy + th - 8, 2, 8);
-        ctx.fillRect(bx + 1, sy + th - 12, 1, 6);
-      }
-      ctx.fillStyle = def.shadow;
-      ctx.fillRect(sx, sy + th - 2, tw, 2);
-      ctx.fillRect(sx + tw - 2, sy, 2, th);
-
-    } else if (def.name === 'forest') {
-      ctx.fillStyle = '#061404';
-      ctx.fillRect(sx, sy, tw, th);
-      // Trunk
-      ctx.fillStyle = '#2a1606';
-      ctx.fillRect(sx + tw / 2 - 3, sy + th - 14, 6, 14);
-      // Layered canopy blobs
-      const blobs = [
-        { bx: tw / 2 - 8, by: 0,  r: 9,  c: '#0a2006' },
-        { bx: tw / 2 + 1, by: -2, r: 8,  c: '#0d2808' },
-        { bx: tw / 2 - 4, by: 6,  r: 10, c: '#122e0a' },
-        { bx: tw / 2,     by: 2,  r: 7,  c: '#183808' },
-      ];
-      blobs.forEach(b => {
-        ctx.fillStyle = b.c;
-        ctx.beginPath();
-        ctx.arc(sx + b.bx + 8, sy + b.by + 8, b.r, 0, Math.PI * 2);
-        ctx.fill();
-      });
-      // Canopy top-light
-      ctx.fillStyle = 'rgba(60,120,20,0.15)';
-      ctx.beginPath();
-      ctx.arc(sx + tw / 2 - 2, sy + 6, 6, 0, Math.PI * 2);
-      ctx.fill();
-
-    } else if (def.name === 'mountain') {
-      ctx.fillStyle = '#383048';
-      ctx.fillRect(sx, sy, tw, th);
-      // Main face
-      ctx.fillStyle = def.hi;
-      ctx.beginPath();
-      ctx.moveTo(sx + tw / 2, sy + 3);
-      ctx.lineTo(sx + tw - 3, sy + th - 3);
-      ctx.lineTo(sx + 3, sy + th - 3);
-      ctx.closePath();
-      ctx.fill();
-      // Snow cap
-      ctx.fillStyle = '#e8e0f8';
-      ctx.beginPath();
-      ctx.moveTo(sx + tw / 2, sy + 3);
-      ctx.lineTo(sx + tw / 2 + 8, sy + 15);
-      ctx.lineTo(sx + tw / 2 - 8, sy + 15);
-      ctx.closePath();
-      ctx.fill();
-      // Shadow face
-      ctx.fillStyle = 'rgba(0,0,0,0.25)';
-      ctx.beginPath();
-      ctx.moveTo(sx + tw / 2, sy + 3);
-      ctx.lineTo(sx + tw - 3, sy + th - 3);
-      ctx.lineTo(sx + tw / 2, sy + th - 3);
-      ctx.closePath();
-      ctx.fill();
-
-    } else if (def.name === 'water') {
-      // Animated — always painted directly, never cached
-      ctx.fillStyle = '#081828';
-      ctx.fillRect(sx, sy, tw, th);
-      const shimmer = (Math.sin(wF * 0.5 + sx * 0.03) + 1) * 0.5;
-      const r = (8  + shimmer * 6)  | 0;
-      const g = (40 + shimmer * 30) | 0;
-      ctx.fillStyle = `rgba(${r},${g},160,0.35)`;
-      ctx.fillRect(sx, sy, tw, th);
-      for (let i = 0; i < 3; i++) {
-        const wy = sy + th * 0.2 + i * (th * 0.25) + Math.sin(wF * 0.3 + sx * 0.08 + i) * 3;
-        ctx.fillStyle = `rgba(60,120,220,${0.15 + shimmer * 0.2})`;
-        ctx.fillRect(sx + 3, wy, tw - 6, 2);
-      }
-      // Specular glint
-      ctx.fillStyle = `rgba(180,220,255,${0.3 * shimmer})`;
-      ctx.beginPath();
-      ctx.arc(sx + tw * 0.3, sy + th * 0.3, 2, 0, Math.PI * 2);
-      ctx.fill();
-
-    } else if (def.name === 'bridge') {
-      ctx.fillStyle = def.shadow;
-      for (let bx = sx + 4; bx < sx + tw - 4; bx += 9) {
-        ctx.fillRect(bx, sy + 2, 7, th - 4);
-      }
-      ctx.fillStyle = def.hi;
-      ctx.fillRect(sx, sy + 3, tw, 5);
-      ctx.fillRect(sx, sy + th - 8, tw, 5);
-      // Railing studs
-      ctx.fillStyle = '#9a7a48';
-      for (let bx = sx + 4; bx < sx + tw; bx += 8) {
-        ctx.fillRect(bx, sy + 1, 3, 4);
-        ctx.fillRect(bx, sy + th - 5, 3, 4);
-      }
-
-    } else if (def.name === 'cave-floor' || def.name === 'dungeon') {
-      ctx.strokeStyle = def.shadow;
-      ctx.lineWidth = 1;
-      ctx.strokeRect(sx + 2, sy + 2, tw - 4, th - 4);
-      ctx.strokeRect(sx + 5, sy + 5, tw - 10, th - 10);
-      if (def.name === 'dungeon') {
-        ctx.fillStyle = 'rgba(160,80,220,0.2)';
-        [[6, 8], [20, 6], [tw - 8, th - 7]].forEach(([fx, fy]) => {
-          ctx.beginPath(); ctx.arc(sx + fx, sy + fy, 1.5, 0, Math.PI * 2); ctx.fill();
-        });
-      }
-
-    } else if (def.name === 'cave-wall') {
-      ctx.fillStyle = '#0c0818';
-      ctx.fillRect(sx, sy, tw, th);
-      ctx.fillStyle = def.hi;
-      ctx.fillRect(sx + 4, sy + 4, 10, 10);
-      ctx.fillRect(sx + tw - 14, sy + th - 14, 10, 10);
-      ctx.strokeStyle = 'rgba(0,0,0,0.4)'; ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(sx + 4, sy + 4); ctx.lineTo(sx + tw - 4, sy + th - 4);
-      ctx.stroke();
-
-    } else if (def.detail === 'cobble') {
-      const cw2 = tw / 4, ch2 = th / 4;
-      for (let row = 0; row < 4; row++) {
-        for (let col = 0; col < 4; col++) {
-          ctx.fillStyle = (row + col) % 2 === 0 ? def.shadow : def.hi;
-          ctx.fillRect(sx + col * cw2 + 1, sy + row * ch2 + 1, cw2 - 2, ch2 - 2);
-        }
-      }
-      // Mortar lines
-      ctx.fillStyle = '#281006';
-      for (let i = 1; i < 4; i++) {
-        ctx.fillRect(sx + i * cw2, sy, 1, th);
-        ctx.fillRect(sx, sy + i * ch2, tw, 1);
-      }
-
-    } else if (def.detail === 'flower') {
-      ctx.fillStyle = def.hi;
-      ctx.fillRect(sx, sy, tw, th);
-      ctx.fillStyle = 'rgba(40,90,20,0.15)';
-      ctx.fillRect(sx, sy, tw, 2); ctx.fillRect(sx, sy, 2, th);
-      const petals = ['#ff7070', '#ff90ff', '#ffff80', '#70c0ff'];
-      const fx = sx + 8 + ((sx / TILE | 0) * 7) % (tw - 16);
-      const fy = sy + 8 + ((sy / TILE | 0) * 5) % (th - 16);
-      const pc = petals[((sx / TILE | 0) + (sy / TILE | 0)) % 4];
-      for (let a = 0; a < 4; a++) {
-        ctx.fillStyle = pc;
-        ctx.beginPath();
-        ctx.arc(fx + Math.cos(a * Math.PI / 2) * 4, fy + Math.sin(a * Math.PI / 2) * 4, 2.5, 0, Math.PI * 2);
-        ctx.fill();
-      }
-      ctx.fillStyle = '#ffffa0';
-      ctx.beginPath(); ctx.arc(fx, fy, 2, 0, Math.PI * 2); ctx.fill();
-
-    } else if (def.name === 'path') {
-      ctx.fillStyle = def.hi;  ctx.fillRect(sx, sy, tw, 2);
-      ctx.fillStyle = def.shadow; ctx.fillRect(sx, sy + th - 2, tw, 2);
-      const pebbles = [[6,8,2],[18,14,1.5],[28,6,2],[10,22,1.5],[24,20,2]];
-      pebbles.forEach(([px2, py2, r]) => {
-        ctx.fillStyle = 'rgba(90,66,30,0.5)';
-        ctx.beginPath(); ctx.arc(sx + px2, sy + py2, r + 0.5, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = def.shadow;
-        ctx.beginPath(); ctx.arc(sx + px2, sy + py2, r, 0, Math.PI * 2); ctx.fill();
-      });
-
-    } else if (def.name === 'sand') {
-      ctx.fillStyle = def.hi;  ctx.fillRect(sx, sy, tw, 2); ctx.fillRect(sx, sy, 2, th);
-      ctx.fillStyle = 'rgba(180,160,80,0.15)';
-      for (let i = 0; i < 8; i++) {
-        ctx.fillRect(sx + ((i * 17) % tw), sy + ((i * 11) % th), 3, 1);
-      }
-
-    } else {
-      // Generic fallback: bevel
-      ctx.fillStyle = def.hi;
-      ctx.fillRect(sx, sy, tw, 2); ctx.fillRect(sx, sy, 2, th);
-      ctx.fillStyle = def.shadow;
-      ctx.fillRect(sx, sy + th - 2, tw, 2); ctx.fillRect(sx + tw - 2, sy, 2, th);
-    }
+    const fn = typeof TILE_RENDERS !== 'undefined' && TILE_RENDERS[def.name];
+    if (fn) fn(ctx, def, sx, sy, tw, th, t);
+    else _defaultRender(ctx, def, sx, sy, tw, th);
   }
 
   /* ── Tile rendering ─────────────────────────────────── */
@@ -252,9 +75,9 @@ const MapEngine = (() => {
         const def    = TILE_DEFS[tileId] || TILE_DEFS[0];
         const sx     = c * TILE - cam.x;
         const sy     = r * TILE - cam.y;
-        if (tileId === 3) {
-          // Water is animated — paint directly each frame
-          _paintTile(_ctx, def, sx, sy, TILE, TILE, _wFrame);
+        if (def.anim) {
+          // Animated tiles painted directly each frame with current time
+          _paintTile(_ctx, def, sx, sy, TILE, TILE, _time);
         } else {
           _ctx.drawImage(_getTileCanvas(tileId), sx, sy);
         }
@@ -348,9 +171,6 @@ const MapEngine = (() => {
     MapEntities.updateEnemies(dt, _map);
     _updateCamera();
 
-    // Water animation ticker
-    _wTimer += dt;
-    if (_wTimer > 0.1) { _wTimer = 0; _wFrame = (_wFrame + 1) % 60; }
 
     // Encounter check
     const enc = MapEntities.checkEncounter(_map);
