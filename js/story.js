@@ -263,21 +263,21 @@ const Story = {
         return;
       }
 
-      // Resume at the saved chapter (or arc intro if chapIdx === -1)
+      // Resume at the saved chapter — skip arc intro/char-select on load
+      const arc = this.arc;
+      const chapters = arc.chapters || [];
       if (this.chapIdx === -1) {
-        this._showArcIntro();
+        // Saved at arc start: jump directly to chapter 0 (no intro or char-select)
+        this.chapIdx = 0;
+      }
+      if (this.chapIdx < chapters.length) {
+        const chap = chapters[this.chapIdx];
+        this._setHeader(`Arc ${arc.number}: ${arc.name}`, chap ? chap.title : '');
+        this._setBg(chap ? chap.background : `arc${arc.number}_intro`);
+        if (chap) this._loadChapter(chap);
+        else this._showBossChapter();
       } else {
-        const arc = this.arc;
-        // Validate chapIdx is in bounds
-        if (this.chapIdx < (arc.chapters ? arc.chapters.length : 0)) {
-          const chap = arc.chapters[this.chapIdx];
-          this._setHeader(`Arc ${arc.number}: ${arc.name}`, chap ? chap.title : '');
-          this._setBg(chap ? chap.background : `arc${arc.number}_intro`);
-          if (chap) this._loadChapter(chap);
-          else this._showBossChapter();
-        } else {
-          this._showBossChapter();
-        }
+        this._showBossChapter();
       }
       return;
     }
