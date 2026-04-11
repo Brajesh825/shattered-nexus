@@ -317,12 +317,19 @@
   letter-spacing: 1px;
 }
 
-/* Exit button — matches game's button style */
-.explore-back-btn {
+/* Header right group */
+.explore-header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Shared header button style */
+.explore-back-btn, .explore-menu-btn {
   font-family: var(--px);
-  font-size: 7px;
+  font-size: 10px;
   letter-spacing: 1px;
-  padding: 8px 14px;
+  padding: 6px 12px;
   background: var(--ex-ui-bg);
   border: 1px solid var(--ex-ui-border);
   color: var(--ex-text);
@@ -330,12 +337,149 @@
   transition: color .18s, border-color .18s, background .18s;
   white-space: nowrap;
 }
-.explore-back-btn:hover {
+.explore-back-btn:hover, .explore-menu-btn:hover {
   background: rgba(96,80,184,0.15);
   border-color: var(--ex-accent2);
   color: #fff;
   text-shadow: 0 0 10px rgba(144,128,224,0.6);
 }
+
+/* ── PAUSE MENU OVERLAY ──────────────────────────────── */
+#map-pause-menu {
+  position: absolute;
+  inset: 0;
+  z-index: 80;
+  background: rgba(2,1,14,0.88);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pause-panel {
+  background: linear-gradient(160deg, #0a0620 0%, #06030f 100%);
+  border: 1px solid #2a1860;
+  border-radius: 10px;
+  padding: 22px 24px;
+  width: min(540px, 94vw);
+  max-height: 92vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 0 40px #3010a040;
+}
+
+.pause-title {
+  font-family: var(--px);
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--ex-accent2);
+  text-align: center;
+  border-bottom: 1px solid #1a0d40;
+  padding-bottom: 10px;
+}
+
+/* Party cards grid */
+.pause-party {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.pause-member {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid #1a1040;
+  border-radius: 6px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.pause-member.ko-member { opacity: 0.4; filter: grayscale(0.8); }
+.pause-member.active-member { border-color: #6040c0; box-shadow: 0 0 8px #6040c040; }
+
+.pm-header { display: flex; justify-content: space-between; align-items: baseline; }
+.pm-name   { font-family: var(--px); font-size: 9px; }
+.pm-lv     { font-size: 9px; color: #d8c860; }
+
+.pm-hp-bar-bg  { height: 4px; background: #1a1030; border-radius: 2px; }
+.pm-hp-bar-fill { height: 100%; border-radius: 2px; transition: width .3s; }
+.pm-mp-bar-bg  { height: 3px; background: #0a0820; border-radius: 2px; margin-top: 2px; }
+.pm-mp-bar-fill { height: 100%; background: #4080e0; border-radius: 2px; }
+
+.pm-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px 6px;
+  font-size: 9px;
+  color: #8888aa;
+  margin-top: 2px;
+}
+.pm-stats span { color: #c0b8e0; }
+
+.pm-passive {
+  font-size: 8px;
+  color: #7060a8;
+  border-top: 1px solid #1a1040;
+  padding-top: 4px;
+  margin-top: 2px;
+  line-height: 1.4;
+}
+
+/* Inventory section */
+.pause-section-label {
+  font-family: var(--px);
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: #6050a0;
+  margin-bottom: 6px;
+}
+
+.pause-inv-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.pause-inv-slot {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid #1a1040;
+  border-radius: 4px;
+  padding: 5px 10px;
+  font-size: 10px;
+  color: #c0b8e0;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.pause-inv-slot .pi-qty { color: #d8c860; font-size: 9px; }
+.pause-inv-empty { font-size: 10px; color: #403860; font-style: italic; }
+
+/* Action buttons */
+.pause-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  border-top: 1px solid #1a0d40;
+  padding-top: 12px;
+}
+
+.pause-btn {
+  font-family: var(--px);
+  font-size: 8px;
+  letter-spacing: 1px;
+  padding: 10px 20px;
+  background: rgba(40,20,80,0.6);
+  border: 1px solid #2a1860;
+  color: #c0b0e8;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all .18s;
+}
+.pause-btn:hover { background: rgba(80,50,160,0.4); border-color: #6040c0; color: #fff; }
+.pause-btn.save-btn { border-color: #2060a0; color: #80c0ff; }
+.pause-btn.save-btn:hover { background: rgba(20,60,120,0.5); border-color: #4090d0; }
 
 /* ── Canvas wrap ─────────────────────────────────────── */
 #explore-canvas-wrap {

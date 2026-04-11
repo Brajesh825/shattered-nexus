@@ -327,15 +327,10 @@
         <span id="explore-map-name" class="explore-map-name">✦ EXPLORE ✦</span>
         <span class="explore-map-hint">↑↓←→ · WASD to move</span>
       </div>
-      <button class="explore-back-btn" id="explore-back-btn" onclick="
-        MapEngine.stop();
-        if (typeof Story !== 'undefined' && Story.active && G.mode === 'story_explore') {
-          Story.onExploreComplete();
-        } else {
-          G.mode = 'free';
-          UI.show('title-screen');
-        }
-      ">← EXIT MAP</button>
+      <div class="explore-header-right">
+        <button class="explore-menu-btn" onclick="MapUI.openPauseMenu()">☰ MENU</button>
+        <button class="explore-back-btn" id="explore-back-btn" onclick="leaveExplore()">← EXIT</button>
+      </div>
     </div>
 
     <!-- Canvas fills all remaining height -->
@@ -347,6 +342,22 @@
           <div class="map-sel-crest">⚔</div>
           <div class="map-sel-title">REALM OF ECHOES</div>
           <div class="map-sel-sub">Choose your destination</div>
+        </div>
+      </div>
+
+      <!-- Pause menu overlay -->
+      <div id="map-pause-menu" style="display:none">
+        <div class="pause-panel">
+          <div class="pause-title">⚔ PARTY STATUS</div>
+          <div class="pause-party" id="pause-party-cards"></div>
+          <div class="pause-inventory" id="pause-inventory-section">
+            <div class="pause-section-label">INVENTORY</div>
+            <div class="pause-inv-grid" id="pause-inv-grid"></div>
+          </div>
+          <div class="pause-actions">
+            <button class="pause-btn save-btn" onclick="MapUI.pauseSave()">💾 SAVE</button>
+            <button class="pause-btn" onclick="MapUI.closePauseMenu()">▶ RESUME</button>
+          </div>
         </div>
       </div>
 

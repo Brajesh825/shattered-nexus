@@ -203,6 +203,123 @@ const MapUI = (() => {
     });
   }
 
+  /* ── Pause Menu ─────────────────────────────────────── */
+  const CHAR_COLOR_MAP = {
+    ayaka:'#7dd3fc', hutao:'#ef4444', nilou:'#2dd4bf', xiao:'#4ade80',
+    rydia:'#a78bfa', lenneth:'#e879f9', kain:'#0ea5e9', leon:'#fbbf24'
+  };
+
+  function openPauseMenu() {
+    if (MapEngine.isRunning()) MapEngine.stop();
+    _renderPauseCards();
+    _renderPauseInventory();
+    const el = document.getElementById('map-pause-menu');
+    if (el) el.style.display = 'flex';
+    // Only show save button in story mode
+    const saveBtn = document.querySelector('#map-pause-menu .save-btn');
+    if (saveBtn) saveBtn.style.display = (typeof Story !== 'undefined' && Story.active) ? '' : 'none';
+  }
+
+  function closePauseMenu() {
+    const el = document.getElementById('map-pause-menu');
+    if (el) el.style.display = 'none';
+    MapEngine.resume();
+  }
+
+  function pauseSave() {
+    if (typeof Story !== 'undefined' && Story.active) {
+      Story._doSave();
+      showMsg('💾 Progress saved!', 1800);
+    } else {
+      // Free explore — save minimal state to slot 0
+      if (typeof Save !== 'undefined' && G.party.length) {
+        const partyStats = G.party.map(m => ({
+          charId: m.charId, classId: m.classId,
+          lv: m.lv || 1, exp: m.exp || 0, gold: m.gold || 0,
+        }));
+        Save.write({
+          arcIdx: 0, chapIdx: -1,
+          arcName: 'Free Explore',
+          selectedChars: G.selectedChars || [],
+          partyStats,
+          hero: { lv: G.hero?.lv || 1, exp: G.hero?.exp || 0, gold: G.hero?.gold || 0 },
+          unlockedChars: G.unlockedChars || [],
+          inventory: G.inventory || [],
+        }, 0);
+        showMsg('💾 Progress saved!', 1800);
+      }
+    }
+  }
+
+  function _renderPauseCards() {
+    const container = document.getElementById('pause-party-cards');
+    if (!container || !G || !G.party.length) return;
+    container.innerHTML = '';
+
+    G.party.forEach((m, i) => {
+      if (!m) return;
+      const col     = CHAR_COLOR_MAP[m.charId] || '#a090d0';
+      const isKO    = !m.hp || m.isKO;
+      const isActive = i === G.activePartyIdx;
+      const hpPct   = Math.max(0, m.hp / m.maxHp * 100);
+      const mpPct   = Math.max(0, m.mp / m.maxMp * 100);
+      const hpCol   = hpPct > 50 ? '#4ade80' : hpPct > 25 ? '#eab308' : '#ef4444';
+      const expNext = 30 * m.lv;
+
+      const card = document.createElement('div');
+      card.className = `pause-member${isKO ? ' ko-member' : ''}${isActive ? ' active-member' : ''}`;
+      card.style.borderColor = isActive ? col : '';
+      card.innerHTML = `
+        <div class="pm-header">
+          <span class="pm-name" style="color:${col}">${m.displayName}</span>
+          <span class="pm-lv">LV ${m.lv}</span>
+        </div>
+        <div style="font-size:8px;color:#6060a0;margin-bottom:2px">
+          ${m.cls?.name || ''} · EXP ${m.exp}/${expNext}
+        </div>
+        <div class="pm-hp-bar-bg">
+          <div class="pm-hp-bar-fill" style="width:${hpPct}%;background:${hpCol}"></div>
+        </div>
+        <div style="font-size:8px;color:#a0a0c0;text-align:right">${m.hp}/${m.maxHp} HP</div>
+        <div class="pm-mp-bar-bg">
+          <div class="pm-mp-bar-fill" style="width:${mpPct}%"></div>
+        </div>
+        <div style="font-size:8px;color:#6080c0;text-align:right">${m.mp}/${m.maxMp} MP</div>
+        <div class="pm-stats">
+          <div>ATK <span>${m.atk}</span></div>
+          <div>DEF <span>${m.def}</span></div>
+          <div>MAG <span>${m.mag}</span></div>
+          <div>SPD <span>${m.spd}</span></div>
+          <div>Gold <span>${m.gold || 0}</span></div>
+          ${isKO ? '<div style="color:#ef4444">FALLEN</div>' : '<div style="color:#4ade80">OK</div>'}
+        </div>
+        ${m.passive ? `<div class="pm-passive">★ ${m.passive.name}: ${m.passive.description}</div>` : ''}
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  function _renderPauseInventory() {
+    const grid = document.getElementById('pause-inv-grid');
+    if (!grid) return;
+    grid.innerHTML = '';
+
+    if (!G.inventory || !G.inventory.length) {
+      grid.innerHTML = '<div class="pause-inv-empty">No items in bag.</div>';
+      return;
+    }
+
+    G.inventory.forEach(stack => {
+      const def = G.items?.find(i => i.id === stack.itemId);
+      if (!def) return;
+      const slot = document.createElement('div');
+      slot.className = 'pause-inv-slot';
+      slot.title = def.description;
+      slot.innerHTML = `${def.icon} ${def.name} <span class="pi-qty">×${stack.qty}</span>`;
+      grid.appendChild(slot);
+    });
+  }
+
   /* ── Periodic HUD / minimap refresh (called by engine each frame) ── */
   let _hudTick = 0;
   function update(dt) {
@@ -217,6 +334,14 @@ const MapUI = (() => {
   // Kept so any existing code calling MapUI.render() won't break.
   function render(ctx, cw, ch) { /* DOM HUD renders instead */ }
 
+  // Escape key closes pause menu
+  window.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      const el = document.getElementById('map-pause-menu');
+      if (el && el.style.display !== 'none') { closePauseMenu(); e.preventDefault(); }
+    }
+  });
+
   return {
     showMsg,
     showMapBanner,
@@ -226,5 +351,8 @@ const MapUI = (() => {
     cycleCharacter,
     update,
     render,
+    openPauseMenu,
+    closePauseMenu,
+    pauseSave,
   };
 })();

@@ -46,25 +46,6 @@
       ]
     },
     {
-      "id": "arc2_ch2",
-      "title": "Through the Ember Wastes",
-      "type": "battle",
-      "enemy_id": "zombie",
-      "background": "scorched_wastes",
-      "cast": ["Ayaka", "Hutao", "Nilou", "Xiao"],
-      "pre_dialogue": [
-        { "speaker": "narrator", "emotion": "tense", "text": "The path to the throne room cuts through ruins patrolled by shadow-corrupted beasts and undead soldiers." },
-        { "speaker": "Xiao", "emotion": "cold", "text": "They were soldiers once. Now they are instruments. Do not hesitate." },
-        { "speaker": "Hutao", "emotion": "focused", "text": "No sentimentality until after the fight. Then we can be sad properly." }
-      ],
-      "post_dialogue": [
-        { "speaker": "Nilou", "emotion": "steady", "text": "I keep thinking about those people who lived here. That is why we cannot stop." },
-        { "speaker": "Ayaka", "emotion": "warm", "text": "Hold onto that. It is a better reason to fight than duty alone." },
-        { "speaker": "Hutao", "emotion": "sincere", "text": "People who lose everything make the best companions. You stop taking things for granted." },
-        { "speaker": "Xiao", "emotion": "quiet", "text": "Move. The demon lord will not wait." }
-      ]
-    },
-    {
       "id": "arc2_ch3",
       "title": "The Cinder Passage",
       "type": "explore",
@@ -125,31 +106,21 @@
     "onVictory": [
       { "type": "recruit", "charId": "rydia" },
       { "type": "recruit", "charId": "lenneth" }
-    ]
-  },
-  "recruitment_chapter": {
-    "title": "Allies in Ash",
-    "background": "throne_room",
-    "cast": ["Ayaka", "Hutao", "Nilou", "Xiao", "Rydia", "Lenneth"],
-    "scenes": [
-      {
-        "narration": "As the presence of Valdris fades, a shimmer of purple light coalesces near the fallen throne. From it steps Rydia, her summoning robes flowing like water, her eyes glowing with eidolon power.",
-        "dialogue": [
-          { "speaker": "Rydia", "emotion": "calm", "text": "I felt it — a shattering of chains. The moment this Fragment was freed, my eidolons sang. They led me here." },
-          { "speaker": "Hutao", "emotion": "surprised", "text": "A new arrival. You have impeccable timing. Or terrible timing. Hard to say in a burning kingdom." },
-          { "speaker": "Rydia", "emotion": "serene", "text": "I am Rydia, Summoner of the Eidolons. In my world, I commanded the creatures of the Feymarch. Here, I sense something wounded — a realm crying out for balance. I will help restore it." },
-          { "speaker": "Ayaka", "emotion": "warm", "text": "Welcome. We move against the darkness itself. If you are willing, we would be honored to have you." }
-        ]
-      },
-      {
-        "narration": "A second light appears — brilliant gold and silver, cutting through the ash like divine judgment. Lenneth descends, her armor gleaming, her sword still coursing with holy power.",
-        "dialogue": [
-          { "speaker": "Lenneth", "emotion": "commanding", "text": "I am Lenneth, Valkyrie of the Celestial Realm. For millennia, I have judged souls and guided the worthy. This shadow — Valdris — he too must be judged." },
-          { "speaker": "Xiao", "emotion": "respectful", "text": "You carry the weight of ages. I have guarded this world for two thousand years. It is... reassuring to stand with one who understands that burden." },
-          { "speaker": "Lenneth", "emotion": "resolute", "text": "Then we are kindred. Let us break his chains and restore what was lost." },
-          { "speaker": "Nilou", "emotion": "hopeful", "text": "Four became six. The balance shifts. Perhaps we were meant to find each other." }
-        ]
-      }
-    ]
+    ],
+    "character_moment": {
+      "background": "throne_room",
+      "dialogue": [
+        { "speaker": null, "text": "As the presence of Valdris fades, a shimmer of purple light coalesces near the fallen throne. From it steps Rydia, her summoning robes flowing like water, her eyes glowing with eidolon power." },
+        { "speaker": "Rydia", "emotion": "calm", "text": "I felt it — a shattering of chains. The moment this Fragment was freed, my eidolons sang. They led me here." },
+        { "speaker": "Hutao", "emotion": "surprised", "text": "A new arrival. You have impeccable timing. Or terrible timing. Hard to say in a burning kingdom." },
+        { "speaker": "Rydia", "emotion": "serene", "text": "I am Rydia, Summoner of the Eidolons. In my world, I commanded the creatures of the Feymarch. Here, I sense something wounded — a realm crying out for balance. I will help restore it." },
+        { "speaker": "Ayaka", "emotion": "warm", "text": "Welcome. We move against the darkness itself. If you are willing, we would be honored to have you." },
+        { "speaker": null, "text": "A second light appears — brilliant gold and silver, cutting through the ash like divine judgment. Lenneth descends, her armor gleaming, her sword still coursing with holy power." },
+        { "speaker": "Lenneth", "emotion": "commanding", "text": "I am Lenneth, Valkyrie of the Celestial Realm. For millennia, I have judged souls and guided the worthy. This shadow — Valdris — he too must be judged." },
+        { "speaker": "Xiao", "emotion": "respectful", "text": "You carry the weight of ages. I have guarded this world for two thousand years. It is... reassuring to stand with one who understands that burden." },
+        { "speaker": "Lenneth", "emotion": "resolute", "text": "Then we are kindred. Let us break his chains and restore what was lost." },
+        { "speaker": "Nilou", "emotion": "hopeful", "text": "Four became six. The balance shifts. Perhaps we were meant to find each other." }
+      ]
+    }
   }
 }

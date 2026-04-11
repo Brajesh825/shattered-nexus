@@ -1772,6 +1772,53 @@ function retryBattle() {
 /* ============================================================
    EXPLORE MODE
    ============================================================ */
+/* Move mute/TTS/zoom into the explore header so they don't clash */
+function _dockPersistentBtns(dock) {
+  const hdrRight   = document.querySelector('.explore-header-right');
+  const muteBtn    = document.getElementById('mute-btn');
+  const ttsBtn     = document.getElementById('tts-btn');
+  const zoomBtn    = document.getElementById('zoom-btn');
+  const resetBtn   = document.getElementById('reset-zoom-btn');
+  const gameEl     = document.getElementById('game');
+
+  if (dock && hdrRight) {
+    // Make them inline in the header
+    [muteBtn, ttsBtn].forEach(b => {
+      if (!b) return;
+      b.style.position = 'static';
+      b.style.width    = '28px';
+      b.style.height   = '28px';
+      b.style.fontSize = '13px';
+      hdrRight.insertBefore(b, hdrRight.firstChild);
+    });
+    if (zoomBtn)  zoomBtn.style.display  = 'none';
+    if (resetBtn) resetBtn.style.display = 'none';
+  } else {
+    // Restore to absolute positioning
+    [muteBtn, ttsBtn].forEach(b => {
+      if (!b) return;
+      b.style.position = 'absolute';
+      b.style.width    = '';
+      b.style.height   = '';
+      b.style.fontSize = '';
+      if (gameEl) gameEl.appendChild(b);
+    });
+    if (zoomBtn)  zoomBtn.style.display  = '';
+    if (resetBtn) resetBtn.style.display = '';
+  }
+}
+
+function leaveExplore() {
+  MapEngine.stop();
+  _dockPersistentBtns(false);
+  if (typeof Story !== 'undefined' && Story.active && G.mode === 'story_explore') {
+    Story.onExploreComplete();
+  } else {
+    G.mode = 'free';
+    UI.show('title-screen');
+  }
+}
+
 function startExplore() {
   // Need a party first — if none, do a quick auto-build
   if (!G.party || G.party.length === 0) {
@@ -1787,6 +1834,7 @@ function startExplore() {
   }
   G.mode = 'explore';
   UI.show('explore-screen');
+  _dockPersistentBtns(true);
 
   // Size canvas to its container
   const wrap   = document.getElementById('explore-canvas-wrap');

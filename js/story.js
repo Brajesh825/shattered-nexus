@@ -249,6 +249,26 @@ const Story = {
       // Restore unlocked characters and inventory from save
       if (s.unlockedChars) G.unlockedChars = s.unlockedChars;
       if (s.inventory)     G.inventory     = s.inventory;
+
+      // If saved from explore map, drop player back on that map
+      if (s.mapId) {
+        G.mode = 'story_explore';
+        startExplore();
+        setTimeout(() => {
+          MapEngine.start(s.mapId);
+          setTimeout(() => {
+            if (s.mapX !== null && s.mapY !== null && typeof MapPlayer !== 'undefined') {
+              MapPlayer.tx = s.mapX;
+              MapPlayer.ty = s.mapY;
+              const TILE = MapEngine.getTile();
+              MapPlayer.px = s.mapX * TILE;
+              MapPlayer.py = s.mapY * TILE;
+            }
+          }, 400);
+        }, 200);
+        return;
+      }
+
       // Resume at the saved chapter (or arc intro if chapIdx === -1)
       if (this.chapIdx === -1) {
         this._showArcIntro();
@@ -876,6 +896,12 @@ const Story = {
       exp:  m.exp  || 0,
       gold: m.gold || 0,
     }));
+    // Capture current map location if saving from explore screen
+    const curMap = (typeof MapEngine !== 'undefined') ? MapEngine.getMap() : null;
+    const mapId  = curMap?.id || null;
+    const mapX   = (mapId && typeof MapPlayer !== 'undefined') ? MapPlayer.tx : null;
+    const mapY   = (mapId && typeof MapPlayer !== 'undefined') ? MapPlayer.ty : null;
+
     Save.write({
       arcIdx:        this.arcIdx,
       chapIdx:       this.chapIdx,
@@ -888,6 +914,9 @@ const Story = {
       hero: { lv: G.hero.lv, exp: G.hero.exp, gold: G.hero.gold || 0 },
       unlockedChars: G.unlockedChars,
       inventory:     G.inventory || [],
+      mapId,
+      mapX,
+      mapY,
     }, this._activeSlot !== undefined ? this._activeSlot : 0);
   },
 

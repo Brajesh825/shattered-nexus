@@ -45,124 +45,21 @@
     },
     {
       "id": "arc3_ch2",
-      "title": "The Drowned Path",
-      "type": "battle",
-      "enemy_id": "skeleton",
-      "background": "underwater_ruins",
-      "cast": ["Ayaka", "Hutao", "Nilou", "Xiao"],
+      "title": "Into the Scorched Spiral",
+      "type": "explore",
+      "map": "ember_wastes",
+      "map_hint": "Cross the Ember Wastes — the drowned coast and the Kraken lie beyond the scorched spiral.",
       "pre_dialogue": [
-        { "speaker": "narrator", "emotion": "eerie", "text": "The descent into the Drowned Citadel takes them through corridors held up by nothing but old magic and shadow-power." },
-        { "speaker": "Nilou", "emotion": "steady", "text": "Shadow creatures ahead. They are between us and the Fragment." },
-        { "speaker": "Ayaka", "emotion": "focused", "text": "Then we go through them. Together." }
+        { "speaker": "narrator", "emotion": "tense", "text": "The path to the sunken coast cuts through the Ember Wastes — a scarred landscape where even the rock burns. Shadow-corrupted creatures stalk between the cinders." },
+        { "speaker": "Xiao", "emotion": "alert", "text": "The Kraken's karmic weight grows stronger ahead. We are close." },
+        { "speaker": "Hutao", "emotion": "focused", "text": "Hot, dangerous, and full of things that want us dead. Perfectly normal Tuesday. Move." },
+        { "speaker": "Nilou", "emotion": "steady", "text": "Together. We go together." }
       ],
       "post_dialogue": [
-        { "speaker": "Hutao", "emotion": "impressed", "text": "Nilou — those water strikes hit harder than they look. Deceptively powerful for someone who mostly dances." },
-        { "speaker": "Nilou", "emotion": "light", "text": "Dancing requires great strength and precision. It just looks like something else." },
-        { "speaker": "Xiao", "emotion": "quiet", "text": "The Kraken is close. I can feel its karmic weight. Be ready." }
-      ]
-    },
-    {
-      "id": "arc3_ch3",
-      "title": "The Deep",
-      "type": "cutscene",
-      "background": "deep_citadel",
-      "cast": ["Ayaka", "Hutao", "Nilou", "Xiao"],
-      "scenes": [
-        {
-          "narration": "In the deepest chamber of the Drowned Citadel, the Sea Kraken awaits — a creature of immense age and corrupted sorrow, the Seal Fragment fused to its ancient body.",
-          "dialogue": [
-            { "speaker": "Xiao", "emotion": "solemn", "text": "It does not want to fight. The shadow compels it. Remember that." },
-            { "speaker": "Hutao", "emotion": "focused", "text": "We will make it quick, then. It deserves that much." },
-            { "speaker": "Nilou", "emotion": "resolute", "text": "And we will free it from the corruption. Whatever it costs." }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "arc3_ch4",
-      "title": "The Reflection",
-      "type": "cutscene",
-      "background": "sunken_surface",
-      "cast": ["Ayaka", "Hutao", "Nilou", "Xiao"],
-      "scenes": [
-        {
-          "narration": "As they ascend from the Drowned Citadel, Nilou pauses at the water's surface — now clearing as the shadow corruption retreats. She looks down at her reflection.",
-          "dialogue": [
-            { "speaker": "narrator", "emotion": "quiet_menace", "text": "Valdris: The dancer who speaks to water." },
-            { "speaker": "Nilou", "emotion": "startled", "text": "...You are in the water?" },
-            { "speaker": "narrator", "emotion": "almost_gentle", "text": "Valdris: The water carries everything that has ever been drowned in it. Memory. Grief. The weight of every world I have taken. It is honest, in its way. More honest than the living." },
-            { "speaker": "Nilou", "emotion": "careful", "text": "What do you want from me?" },
-            { "speaker": "narrator", "emotion": "soft_menace", "text": "Valdris: You are a creature of beauty in a world that constantly destroys beautiful things. You felt this water's grief the moment you touched it. Does it not tire you — all that feeling, all that care — when the ending is always the same?" },
-            { "speaker": "Nilou", "emotion": "steady", "text": "The ending being the same is exactly why the moments before it matter. You had that understanding once. The Oracle told us. You chose to discard it." },
-            { "speaker": "narrator", "emotion": "cold_pause", "text": "Valdris: I chose to survive it. There is a difference." },
-            { "speaker": "Nilou", "emotion": "resolute", "text": "No. There is not. Not when survival costs everything else." },
-            { "speaker": "narrator", "emotion": "long_pause", "text": "Valdris: ...Interesting." }
-          ]
-        },
-        {
-          "narration": "The reflection stills. The others have gathered close — Xiao with his hand near his weapon, Hutao watching the water surface, Ayaka standing beside Nilou.",
-          "dialogue": [
-            { "speaker": "Ayaka", "emotion": "concerned", "text": "Are you all right?" },
-            { "speaker": "Nilou", "emotion": "honest", "text": "He tried to make me feel hopeless. He almost had an argument." },
-            { "speaker": "Hutao", "emotion": "impressed", "text": "Almost?" },
-            { "speaker": "Nilou", "emotion": "quiet_strength", "text": "I have danced in front of thousands of people and felt every single one of them. That is not a weakness. That is why I am still here." },
-            { "speaker": "Xiao", "emotion": "quiet", "text": "Ancient things are persuasive. They have had long enough to find the exact words that fit each person." },
-            { "speaker": "Ayaka", "emotion": "firm", "text": "Then we keep moving. Together. That is what he cannot replicate — and that is exactly what will undo him." }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "arc3_ch5",
-      "title": "Allies Converge",
-      "type": "cutscene",
-      "background": "sunken_surface",
-      "cast": ["Ayaka", "Nilou", "Rydia", "Lenneth"],
-      "scenes": [
-        {
-          "narration": "At the edge of the sunken coast, Rydia approaches the group with Lenneth at her side. The summoner's eyes glow softly with eidolon power, and the Valkyrie's presence commands respect.",
-          "dialogue": [
-            { "speaker": "Rydia", "emotion": "respectful", "text": "The others told us your burden. Four Fragments freed, and one final darkness stands before you. We did not journey here by chance." },
-            { "speaker": "Lenneth", "emotion": "commanding", "text": "I have judged countless souls across ages. This darkness — Valdris — he rejects judgment itself. That is a heresy I cannot ignore." },
-            { "speaker": "Nilou", "emotion": "warm", "text": "You both carry power that echoes across worlds. What you have endured, what you have lost — it matters to this fight." },
-            { "speaker": "Ayaka", "emotion": "thoughtful", "text": "The Oracle spoke of resonances. Perhaps we were always meant to find each other. Not by fate, but by recognition of the same truth." }
-          ]
-        },
-        {
-          "narration": "Rydia walks to the water's edge and closes her eyes. Her eidolons stir in the depths — shapes moving through shadow, ancient and patient.",
-          "dialogue": [
-            { "speaker": "Rydia", "emotion": "serene", "text": "In my world, summoners commanded spirits as servants. Here, I understand them as allies. Partners. The Feymarch teaches patience. Everything in time." },
-            { "speaker": "Nilou", "emotion": "curious", "text": "How many eidolons answer to you?" },
-            { "speaker": "Rydia", "emotion": "peaceful", "text": "Enough. Bahamut, Syldra, and others older still. They sense what I sense — that the cage Valdris built can be broken if we are willing to strike together." }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "arc3_ch6",
-      "title": "Burdens Carried",
-      "type": "cutscene",
-      "background": "sunken_surface",
-      "cast": ["Hutao", "Xiao", "Lenneth", "Rydia"],
-      "scenes": [
-        {
-          "narration": "Hutao and Xiao sit with Lenneth and Rydia on the ruined stone of what was once a harbor.",
-          "dialogue": [
-            { "speaker": "Hutao", "emotion": "curious", "text": "Lenneth. Valkyrie. That means you judge the souls of the dead, yes? Does that ever become... heavy?" },
-            { "speaker": "Lenneth", "emotion": "heavy", "text": "I have carried the weight of a thousand judgments. And I will carry a thousand more. That is what being eternal means — the accumulation of every choice you ever made." },
-            { "speaker": "Xiao", "emotion": "understanding", "text": "Two thousand years of karma. I know that weight." },
-            { "speaker": "Lenneth", "emotion": "approving", "text": "Then you understand. We who live beyond the span of mortals do not merely suffer loss — we multiply it across centuries. Yet here you stand. Still fighting." }
-          ]
-        },
-        {
-          "narration": "Rydia listens, her expression thoughtful, and speaks softly.",
-          "dialogue": [
-            { "speaker": "Rydia", "emotion": "introspective", "text": "In my world, I was young. I had only just begun to understand the eidolons. Now, pulled into this reality, I wonder if I ever truly had time to choose my own path." },
-            { "speaker": "Hutao", "emotion": "gentle", "text": "You are choosing it now. That is all any of us have." },
-            { "speaker": "Xiao", "emotion": "quiet", "text": "The past shapes us. But it does not decide what we do next. That is still ours." },
-            { "speaker": "Rydia", "emotion": "resolved", "text": "Then I choose this. I choose all of you. I choose to break the chains Valdris has woven." }
-          ]
-        }
+        { "speaker": "narrator", "emotion": "melancholy", "text": "The Ember Wastes give way to the sunken coast — a shoreline drowned in grief-soaked water. And beneath the surface, something immense circles." },
+        { "speaker": "Nilou", "emotion": "wistful", "text": "This water feels different. Grief-soaked, like it remembers what it lost." },
+        { "speaker": "Xiao", "emotion": "solemn", "text": "The Kraken does not want to fight. The shadow compels it. Remember that — and make it quick." },
+        { "speaker": "Hutao", "emotion": "focused", "text": "It deserves that much. Let us do what we came to do." }
       ]
     }
   ],
@@ -186,24 +83,18 @@
     ],
     "onVictory": [
       { "type": "recruit", "charId": "kain" }
-    ]
-  },
-  "recruitment_chapter": {
-    "title": "The Dragoon's Oath",
-    "background": "deep_citadel",
-    "cast": ["Ayaka", "Hutao", "Nilou", "Xiao", "Rydia", "Kain"],
-    "scenes": [
-      {
-        "narration": "As the water settles, a figure descends from above — a dragoon knight, his armor marked with the sigil of Baron. His lance glows with aerial energy as he lands beside them.",
-        "dialogue": [
-          { "speaker": "Kain", "emotion": "formal", "text": "I am Kain, Dragoon of Baron. I felt the Fragment's freedom from above — the sky itself sang with it. A barrier I did not know existed has lifted." },
-          { "speaker": "Rydia", "emotion": "surprised", "text": "Kain? From Baron? That kingdom fell ages ago in my world. How is it you stand here?" },
-          { "speaker": "Kain", "emotion": "conflicted", "text": "I do not know. But I was bound by a curse I could not break. Now, feeling that curse shatter — I followed the sensation here. To help." },
-          { "speaker": "Xiao", "emotion": "knowing", "text": "A warrior chained by his own oaths, freed by the breaking of chains elsewhere. I understand that more than most." },
-          { "speaker": "Ayaka", "emotion": "welcoming", "text": "Then let us bind ourselves together — not by curse, but by choice. Will you stand with us?" },
-          { "speaker": "Kain", "emotion": "resolved", "text": "I will. My lance answers to a new oath now: the oath to see darkness broken." }
-        ]
-      }
-    ]
+    ],
+    "character_moment": {
+      "background": "deep_citadel",
+      "dialogue": [
+        { "speaker": null, "text": "As the water settles, a figure descends from above — a dragoon knight, his armor marked with the sigil of Baron. His lance glows with aerial energy as he lands beside them." },
+        { "speaker": "Kain", "emotion": "formal", "text": "I am Kain, Dragoon of Baron. I felt the Fragment's freedom from above — the sky itself sang with it. A barrier I did not know existed has lifted." },
+        { "speaker": "Rydia", "emotion": "surprised", "text": "Kain? From Baron? That kingdom fell ages ago in my world. How is it you stand here?" },
+        { "speaker": "Kain", "emotion": "conflicted", "text": "I do not know. But I was bound by a curse I could not break. Now, feeling that curse shatter — I followed the sensation here. To help." },
+        { "speaker": "Xiao", "emotion": "knowing", "text": "A warrior chained by his own oaths, freed by the breaking of chains elsewhere. I understand that more than most." },
+        { "speaker": "Ayaka", "emotion": "welcoming", "text": "Then let us bind ourselves together — not by curse, but by choice. Will you stand with us?" },
+        { "speaker": "Kain", "emotion": "resolved", "text": "I will. My lance answers to a new oath now: the oath to see darkness broken." }
+      ]
+    }
   }
 }
