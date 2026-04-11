@@ -744,16 +744,10 @@ const Story = {
 
       MapEngine.start(chap.map);
 
-      // Restore tile position one frame after map starts (tiles are ready)
-      requestAnimationFrame(() => {
-        if (restoreX != null && restoreY != null && typeof MapPlayer !== 'undefined') {
-          MapPlayer.tx = restoreX;
-          MapPlayer.ty = restoreY;
-          const TILE = (typeof MapEngine.getTile === 'function') ? MapEngine.getTile() : 32;
-          MapPlayer.px = restoreX * TILE;
-          MapPlayer.py = restoreY * TILE;
-        }
-      });
+      // Restore tile position — must use MapPlayer.reset() as tx/ty are read-only getters
+      if (restoreX != null && restoreY != null && typeof MapPlayer !== 'undefined') {
+        MapPlayer.reset(restoreX, restoreY);
+      }
 
       MapUI.showMsg(chap.map_hint || 'Welcome back — continue your journey.', 2000);
       const lbl = document.getElementById('explore-map-name');
