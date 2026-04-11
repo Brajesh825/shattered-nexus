@@ -19,7 +19,12 @@
       "Bash(python3 gen_map_data.py)",
       "Bash(rm gen_map_data.py)",
       "Bash(python3 -)",
-      "Bash(node --check \"/c/Users/ASUS/VVI/rpg+/js/map/data/map-ember-wastes.js\")"
+      "Bash(node --check \"/c/Users/ASUS/VVI/rpg+/js/map/data/map-ember-wastes.js\")",
+      "Bash(cp images/characters/map/sheets/ayaka_sheet.png images/characters/map/sheets/nilou_sheet.png)",
+      "Bash(cp images/characters/map/sheets/ayaka_sheet.png images/characters/map/sheets/xiao_sheet.png)",
+      "Bash(cp images/characters/map/sheets/ayaka_sheet.png images/characters/map/sheets/kain_sheet.png)",
+      "Bash(cp images/characters/map/sheets/ayaka_sheet.png images/characters/map/sheets/leon_sheet.png)",
+      "Bash(cp images/characters/map/sheets/ayaka_sheet.png images/characters/map/sheets/lenneth_sheet.png)"
     ]
   }
 }
