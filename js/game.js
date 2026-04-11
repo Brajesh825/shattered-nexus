@@ -82,8 +82,12 @@ const G = {
   busy:            false,
   mode:            'free', // 'free' | 'story' | 'explore'
 
+  activePartyIdx: 0,   // which party member walks the map
+
   // Backward-compat accessors for story.js
-  get hero()  { return this.party.find(m => m.isPlayer) || this.party[0] || null; },
+  get hero() {
+    return this.party[this.activePartyIdx] || this.party.find(m => m.isPlayer) || this.party[0] || null;
+  },
   get enemy() {
     const e = this.enemyGroup[this.targetEnemyIdx];
     if (e && Battle.alive(e)) return e;

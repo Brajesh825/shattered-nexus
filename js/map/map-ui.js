@@ -47,9 +47,7 @@ const MapUI = (() => {
   /* ── Active character cycling ────────────────────────── */
   function cycleCharacter() {
     if (!G || !G.party || G.party.length < 2) return;
-    if (typeof G.activePartyIdx !== 'number') G.activePartyIdx = 0;
     G.activePartyIdx = (G.activePartyIdx + 1) % G.party.length;
-    G.hero = G.party[G.activePartyIdx];
     showMsg(`▶ ${G.hero?.displayName || G.hero?.charId || '?'}`, 900);
     _updatePartyHUD();
   }
@@ -61,11 +59,6 @@ const MapUI = (() => {
     const hud = document.getElementById('explore-party-hud');
     if (!hud || !G || !G.party || !G.party.length) return;
     hud.innerHTML = '';
-
-    // Sync activePartyIdx to G.hero on first build
-    if (typeof G.activePartyIdx !== 'number') {
-      G.activePartyIdx = Math.max(0, G.party.indexOf(G.hero));
-    }
 
     G.party.forEach((m, i) => {
       if (!m) return;
@@ -87,7 +80,6 @@ const MapUI = (() => {
         </div>`;
       el.addEventListener('click', () => {
         G.activePartyIdx = i;
-        G.hero = G.party[i];
         showMsg(`▶ ${m.displayName || m.charId || '?'}`, 900);
         _updatePartyHUD();
       });
