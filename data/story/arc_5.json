@@ -183,7 +183,7 @@
         { "speaker": "Xiao", "emotion": "ferocious", "text": "There is nothing after you. Because you end here." },
         { "speaker": "Hutao", "emotion": "fierce", "text": "I am terrified. And I am going to fight you anyway. That is the difference between you and us." }
       ]
-    },
+    }
   ],
 
   "boss_chapter": {
