@@ -16,6 +16,11 @@ const MapInput = (() => {
           MapEngine && MapEngine.isRunning && MapEngine.isRunning()) {
         e.preventDefault();
       }
+      // Tab — cycle active party member
+      if (e.key === 'Tab' && MapEngine && MapEngine.isRunning && MapEngine.isRunning()) {
+        e.preventDefault();
+        if (typeof MapUI !== 'undefined') MapUI.cycleCharacter();
+      }
     });
     window.addEventListener('keyup', e => { keys[e.key] = false; });
   }

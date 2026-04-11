@@ -44,6 +44,16 @@ const MapUI = (() => {
     setTimeout(() => fl.classList.remove('show'), 280);
   }
 
+  /* ── Active character cycling ────────────────────────── */
+  function cycleCharacter() {
+    if (!G || !G.party || G.party.length < 2) return;
+    if (typeof G.activePartyIdx !== 'number') G.activePartyIdx = 0;
+    G.activePartyIdx = (G.activePartyIdx + 1) % G.party.length;
+    G.hero = G.party[G.activePartyIdx];
+    showMsg(`▶ ${G.hero?.displayName || G.hero?.charId || '?'}`, 900);
+    _updatePartyHUD();
+  }
+
   /* ── Party HUD ───────────────────────────────────────── */
   const _avatarMap = { Mage:'🧙', Knight:'🛡', Ranger:'🏹', Warrior:'⚔', Healer:'💚' };
 
@@ -51,26 +61,36 @@ const MapUI = (() => {
     const hud = document.getElementById('explore-party-hud');
     if (!hud || !G || !G.party || !G.party.length) return;
     hud.innerHTML = '';
-    G.party.forEach(m => {
+
+    // Sync activePartyIdx to G.hero on first build
+    if (typeof G.activePartyIdx !== 'number') {
+      G.activePartyIdx = Math.max(0, G.party.indexOf(G.hero));
+    }
+
+    G.party.forEach((m, i) => {
       if (!m) return;
-      const ratio = Math.max(0, m.hp / m.maxHp);
-      const col   = ratio > 0.5
-        ? '#40d870'
-        : ratio > 0.25
-          ? '#e8b030'
-          : '#e04040';
-      const role  = m.cls?.role || m.role || '';
-      const el    = document.createElement('div');
-      el.className = 'ex-hud-member';
-      el.innerHTML = `
+      const isActive = i === G.activePartyIdx;
+      const ratio    = Math.max(0, m.hp / m.maxHp);
+      const col      = ratio > 0.5 ? '#40d870' : ratio > 0.25 ? '#e8b030' : '#e04040';
+      const role     = m.cls?.role || m.role || '';
+      const el       = document.createElement('div');
+      el.className   = 'ex-hud-member' + (isActive ? ' ex-hud-active' : '');
+      el.title       = 'Switch character (Tab)';
+      el.innerHTML   = `
         <div class="ex-hud-avatar">${_avatarMap[role] || '⚔'}</div>
         <div class="ex-hud-info">
-          <div class="ex-hud-name">${(m.displayName || m.charId || '?').slice(0,8)}</div>
+          <div class="ex-hud-name">${(m.displayName || m.charId || '?').slice(0,8)}${isActive ? ' ◀' : ''}</div>
           <div class="ex-hud-bar-wrap">
             <div class="ex-hud-bar-fill" style="width:${ratio*100}%;background:${col}"></div>
           </div>
           <div class="ex-hud-hp">${m.hp} / ${m.maxHp} HP</div>
         </div>`;
+      el.addEventListener('click', () => {
+        G.activePartyIdx = i;
+        G.hero = G.party[i];
+        showMsg(`▶ ${m.displayName || m.charId || '?'}`, 900);
+        _updatePartyHUD();
+      });
       hud.appendChild(el);
     });
   }
@@ -211,6 +231,7 @@ const MapUI = (() => {
     triggerDanger,
     handleTouch,
     buildMapSelectOverlay,
+    cycleCharacter,
     update,
     render,
   };

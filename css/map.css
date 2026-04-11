@@ -509,6 +509,16 @@
   min-width: 162px;
   position: relative;
   overflow: hidden;
+  cursor: pointer;
+  transition: background 0.15s, border-left-color 0.15s;
+}
+.ex-hud-member:hover {
+  background: rgba(12, 8, 40, 0.95);
+}
+.ex-hud-member.ex-hud-active {
+  background: rgba(18, 10, 50, 0.95);
+  border-left: 2px solid #c8a4ff;
+  box-shadow: inset 0 0 12px rgba(180, 140, 255, 0.08);
 }
 
 .ex-hud-avatar {
