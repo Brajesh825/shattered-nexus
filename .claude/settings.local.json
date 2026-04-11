@@ -24,7 +24,8 @@
       "Bash(cp images/characters/map/sheets/ayaka_sheet.png images/characters/map/sheets/xiao_sheet.png)",
       "Bash(cp images/characters/map/sheets/ayaka_sheet.png images/characters/map/sheets/kain_sheet.png)",
       "Bash(cp images/characters/map/sheets/ayaka_sheet.png images/characters/map/sheets/leon_sheet.png)",
-      "Bash(cp images/characters/map/sheets/ayaka_sheet.png images/characters/map/sheets/lenneth_sheet.png)"
+      "Bash(cp images/characters/map/sheets/ayaka_sheet.png images/characters/map/sheets/lenneth_sheet.png)",
+      "Bash(gh pr create --title 'feat: tile rendering refactor, map data split, character toggle' --body ':*)"
     ]
   }
 }
