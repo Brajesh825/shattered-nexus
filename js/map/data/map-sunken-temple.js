@@ -136,6 +136,29 @@ MAP_DEFS.sunken_temple = (function() {
             { id: 'zombie',   x: 80,  y: 130, patrol: 'random', range: 10, speed: 1.0 },
             { id: 'harpy',    x: 30,  y: 130, patrol: 'vertical', range: 15, speed: 1.8 },
             { id: 'werewolf', x: 80,  y: 80,  patrol: 'random', range: 12, speed: 1.6 }
-        ]
+        ],
+
+        fog: { delay: 8, peak: 80, max: 0.86, vision: 2.5 },
+
+        voiceLines: {
+          ambient: [
+            { char:'Nilou',  color:'#2dd4bf', text:'Water drips somewhere. This place is ancient.' },
+            { char:'Ayaka',  color:'#7dd3fc', text:'The temple has been sealed for centuries. Something kept it that way.' },
+            { char:'Hutao',  color:'#ef4444', text:'Lots of old death here. I can tell.' },
+            { char:'Xiao',   color:'#4ade80', text:'Careful. The floor is not always what it appears.' },
+          ],
+          fogRising: [
+            { char:'Nilou',  color:'#2dd4bf', text:'The mist is rising from the water. I can\'t see ahead.' },
+            { char:'Ayaka',  color:'#7dd3fc', text:'The temple fog is thickening. Weapons ready.' },
+            { char:'Hutao',  color:'#ef4444', text:'Ideal ambush conditions. Wonderful.' },
+            { char:'Xiao',   color:'#4ade80', text:'Something moves in the murk. Not us.' },
+          ],
+          encounter: [
+            { char:'Nilou',  color:'#2dd4bf', text:'Out of the water — look out!' },
+            { char:'Xiao',   color:'#4ade80', text:'From the mist — now!' },
+            { char:'Hutao',  color:'#ef4444', text:'Used the fog. I respect it.' },
+            { char:'Ayaka',  color:'#7dd3fc', text:'Ambush from the temple dark!' },
+          ],
+        },
     };
 })();

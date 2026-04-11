@@ -176,19 +176,20 @@
     <!-- Region revisit panel (slides up when a completed node is clicked) -->
     <div id="map-region-panel" class="map-region-panel"></div>
 
-    <!-- Party swap overlay (slides up from bottom) -->
-    <div id="party-swap-overlay" class="party-swap-overlay" onclick="if(event.target===this)closePartySwap()">
-      <div class="party-swap-panel">
-        <div class="party-swap-header">
-          <span class="party-swap-title">⚔ ACTIVE PARTY</span>
-          <span class="party-swap-counter" id="party-swap-counter">0 / 4 selected</span>
-          <button class="party-swap-close" onclick="closePartySwap()">✕</button>
-        </div>
-        <div class="party-swap-hint">Select exactly 4 characters. Tap again to deselect.</div>
-        <div class="party-swap-grid" id="party-swap-grid"></div>
-        <div class="party-swap-footer">
-          <button class="big-btn" id="party-swap-confirm" onclick="confirmPartySwap()" disabled>CONFIRM PARTY</button>
-        </div>
+  </div>
+
+  <!-- Party swap overlay — global, works from any screen -->
+  <div id="party-swap-overlay" class="party-swap-overlay" onclick="if(event.target===this)closePartySwap()">
+    <div class="party-swap-panel">
+      <div class="party-swap-header">
+        <span class="party-swap-title">⚔ ACTIVE PARTY</span>
+        <span class="party-swap-counter" id="party-swap-counter">0 / 4 selected</span>
+        <button class="party-swap-close" onclick="closePartySwap()">✕</button>
+      </div>
+      <div class="party-swap-hint">Select exactly 4 characters. Tap again to deselect.</div>
+      <div class="party-swap-grid" id="party-swap-grid"></div>
+      <div class="party-swap-footer">
+        <button class="big-btn" id="party-swap-confirm" onclick="confirmPartySwap()" disabled>CONFIRM PARTY</button>
       </div>
     </div>
   </div>
@@ -346,7 +347,6 @@
       </div>
       <div class="explore-header-right">
         <button class="explore-menu-btn" onclick="MapUI.openPauseMenu()">☰ MENU</button>
-        <button class="explore-back-btn" id="explore-back-btn" onclick="leaveExplore()">← EXIT</button>
       </div>
     </div>
 
@@ -374,6 +374,20 @@
           <div class="pause-actions">
             <button class="pause-btn save-btn" onclick="MapUI.pauseSave()">💾 SAVE</button>
             <button class="pause-btn" onclick="MapUI.closePauseMenu()">▶ RESUME</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Camp menu overlay (triggered when player returns to start tile) -->
+      <div id="camp-menu" style="display:none">
+        <div class="camp-panel">
+          <div class="camp-title">⛺ CAMP</div>
+          <div class="camp-subtitle">Rest, regroup, or move on.</div>
+          <div class="camp-actions">
+            <button class="camp-btn camp-btn-worldmap" onclick="MapUI.campWorldMap()">🗺 WORLD MAP</button>
+            <button class="camp-btn" onclick="MapUI.campChangeParty()">👥 CHANGE PARTY</button>
+            <button class="camp-btn" onclick="MapUI.campHeal()">💊 HEAL PARTY</button>
+            <button class="camp-btn camp-btn-minor" onclick="MapUI.closeCampMenu()">▶ CONTINUE</button>
           </div>
         </div>
       </div>

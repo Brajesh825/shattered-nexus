@@ -93,6 +93,29 @@ MAP_DEFS.ember_wastes = (function() {
             // Central Guardians
             { id: 'werewolf', x: 50, y: 45, patrol: 'random',     range: 3, speed: 1.8 },
             { id: 'imp',      x: 55, y: 40, patrol: 'random',     range: 3, speed: 1.7 }
-        ]
+        ],
+
+        fog: { delay: 15, peak: 100, max: 0.82, vision: 3.0 },
+
+        voiceLines: {
+          ambient: [
+            { char:'Ayaka',  color:'#7dd3fc', text:'The ash makes it hard to breathe.' },
+            { char:'Hutao',  color:'#ef4444', text:'Smells like the inside of a cremation urn. Lovely.' },
+            { char:'Nilou',  color:'#2dd4bf', text:'The heat here is suffocating.' },
+            { char:'Xiao',   color:'#4ade80', text:'The wastes distort sound. Something could be anywhere.' },
+          ],
+          fogRising: [
+            { char:'Hutao',  color:'#ef4444', text:'Ash cloud rising. Classic bad omen.' },
+            { char:'Xiao',   color:'#4ade80', text:'Smoke and ash — perfect cover for ambush.' },
+            { char:'Ayaka',  color:'#7dd3fc', text:'I can\'t see the path. Stay close.' },
+            { char:'Nilou',  color:'#2dd4bf', text:'The smoke is getting into everything.' },
+          ],
+          encounter: [
+            { char:'Hutao',  color:'#ef4444', text:'Out of the smoke — of course!' },
+            { char:'Xiao',   color:'#4ade80', text:'They used the ash as cover. Smart.' },
+            { char:'Ayaka',  color:'#7dd3fc', text:'Incoming — from the smoke!' },
+            { char:'Nilou',  color:'#2dd4bf', text:'I couldn\'t see them at all!' },
+          ],
+        },
     };
 })();

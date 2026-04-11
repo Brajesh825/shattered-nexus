@@ -130,6 +130,29 @@ MAP_DEFS.shadow_reach = (function() {
             { id: 'witch',    x: 42, y: 90, patrol: 'random',     range: 4,  speed: 1.2 },
             { id: 'witch',    x: 58, y: 90, patrol: 'random',     range: 4,  speed: 1.2 },
             { id: 'orc',      x: 50, y: 95, patrol: 'horizontal', range: 5,  speed: 1.0 }
-        ]
+        ],
+
+        fog: { delay: 5, peak: 60, max: 0.92, vision: 2.2 },
+
+        voiceLines: {
+          ambient: [
+            { char:'Xiao',   color:'#4ade80', text:'Even I cannot sense the edges of this dark.' },
+            { char:'Hutao',  color:'#ef4444', text:'The shadow here thinks. I can feel it.' },
+            { char:'Ayaka',  color:'#7dd3fc', text:'Valdris\'s power saturates this place.' },
+            { char:'Nilou',  color:'#2dd4bf', text:'Something watches from the black. Don\'t stop moving.' },
+          ],
+          fogRising: [
+            { char:'Xiao',   color:'#4ade80', text:'The shadow closes in. Do not separate.' },
+            { char:'Ayaka',  color:'#7dd3fc', text:'I can barely see my own hands.' },
+            { char:'Hutao',  color:'#ef4444', text:'This is a very committed darkness.' },
+            { char:'Nilou',  color:'#2dd4bf', text:'It\'s not just dark — it\'s alive.' },
+          ],
+          encounter: [
+            { char:'Xiao',   color:'#4ade80', text:'The shadow moves — they\'re here!' },
+            { char:'Hutao',  color:'#ef4444', text:'Came from the dark itself!' },
+            { char:'Ayaka',  color:'#7dd3fc', text:'They were part of the shadow—' },
+            { char:'Nilou',  color:'#2dd4bf', text:'We couldn\'t see them at all!' },
+          ],
+        },
     };
 })();

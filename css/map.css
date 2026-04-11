@@ -481,6 +481,75 @@
 .pause-btn.save-btn { border-color: #2060a0; color: #80c0ff; }
 .pause-btn.save-btn:hover { background: rgba(20,60,120,0.5); border-color: #4090d0; }
 
+/* ── Camp Menu ───────────────────────────────────────── */
+#camp-menu {
+  position: absolute;
+  inset: 0;
+  background: rgba(4,2,12,0.82);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 60;
+  backdrop-filter: blur(4px);
+}
+
+.camp-panel {
+  background: linear-gradient(160deg, #0a0620 0%, #06030f 100%);
+  border: 1px solid #2a1860;
+  border-radius: 10px;
+  padding: 24px 28px;
+  width: min(340px, 90vw);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: 0 0 40px #30108040;
+}
+
+.camp-title {
+  font-family: var(--px);
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: var(--ex-accent2);
+  text-align: center;
+}
+
+.camp-subtitle {
+  font-size: 10px;
+  color: #6050a0;
+  text-align: center;
+  margin-top: -8px;
+}
+
+.camp-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-top: 1px solid #1a0d40;
+  padding-top: 12px;
+}
+
+.camp-btn {
+  font-family: var(--px);
+  font-size: 9px;
+  letter-spacing: 1px;
+  padding: 11px 16px;
+  background: rgba(40,20,80,0.6);
+  border: 1px solid #2a1860;
+  color: #c0b0e8;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: all .18s;
+  text-align: left;
+}
+.camp-btn:hover { background: rgba(80,50,160,0.4); border-color: #6040c0; color: #fff; }
+
+.camp-btn-minor {
+  border-color: #1a1040;
+  color: #6050a0;
+  font-size: 8px;
+}
+.camp-btn-minor:hover { color: #9080c0; border-color: #3a2060; }
+
 /* ── Canvas wrap ─────────────────────────────────────── */
 #explore-canvas-wrap {
   flex: 1 1 0;

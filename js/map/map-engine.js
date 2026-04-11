@@ -15,6 +15,13 @@ const MapEngine = (() => {
   let _map    = null;
   let _rafId  = null, _lastTs = 0, _running = false;
   let _time   = 0;
+  let _campUnlocked = false, _atCamp = false;
+  let _fogTime = 0;
+  let _fogCanvas = null, _fogCtx = null;
+  let _fogMilestone = 0; // 0=none, 1=30%, 2=60%, 3=90%
+  let _ambientTimer = 0, _ambientInterval = 60; // seconds between ambient lines
+  // Speech bubble queue: [{char, color, text, life, maxLife}]
+  const _bubbles = [];
 
   /* ── Camera ─────────────────────────────────────────── */
   const cam = { x: 0, y: 0 };
@@ -85,6 +92,27 @@ const MapEngine = (() => {
     }
   }
 
+  /* ── Camp marker ────────────────────────────────────── */
+  function _renderCampMarker() {
+    if (!_map || !_map.playerStart) return;
+    const sx = _map.playerStart.x * TILE - cam.x;
+    const sy = _map.playerStart.y * TILE - cam.y;
+    // Pulsing glow
+    const pulse = 0.5 + 0.5 * Math.sin(_time * 2.5);
+    _ctx.save();
+    _ctx.globalAlpha = 0.25 + 0.15 * pulse;
+    _ctx.fillStyle = '#f0a020';
+    _ctx.beginPath();
+    _ctx.arc(sx + TILE / 2, sy + TILE / 2, TILE * 0.42, 0, Math.PI * 2);
+    _ctx.fill();
+    _ctx.globalAlpha = 1;
+    _ctx.font = `${Math.round(TILE * 0.45)}px serif`;
+    _ctx.textAlign = 'center';
+    _ctx.textBaseline = 'middle';
+    _ctx.fillText('⛺', sx + TILE / 2, sy + TILE / 2 + 2);
+    _ctx.restore();
+  }
+
   /* ── Atmosphere (vignette + ambient tint) ────────────── */
   function _renderAtmosphere() {
     const vg = _ctx.createRadialGradient(
@@ -146,6 +174,159 @@ const MapEngine = (() => {
     );
   }
 
+  /* ── Fog of Darkness ────────────────────────────────── */
+  const FOG_COLOR = '4,2,12';
+
+  function _fogCfg() {
+    return (_map && _map.fog) || { delay: 20, peak: 180, max: 0.80, vision: 3.8 };
+  }
+
+  // Returns 0..1 progress through fog ramp
+  function _fogProgress() {
+    const cfg = _fogCfg();
+    if (_fogTime <= cfg.delay) return 0;
+    return Math.min((_fogTime - cfg.delay) / (cfg.peak - cfg.delay), 1);
+  }
+
+  function _fogAlpha() { return _fogProgress() * _fogCfg().max; }
+
+  // Pixel radius of clear vision circle around player
+  function _visionRadius() {
+    const cfg = _fogCfg();
+    const t   = _fogProgress();
+    // Shrinks from vision+1.5 down to vision-0.5 as fog maxes
+    return TILE * (cfg.vision + 1.5 - t * 2.0);
+  }
+
+  // Is the given tile position inside the player vision circle?
+  function _inVision(tx, ty) {
+    const dx = (tx - MapPlayer.tx) * TILE;
+    const dy = (ty - MapPlayer.ty) * TILE;
+    return Math.sqrt(dx * dx + dy * dy) <= _visionRadius();
+  }
+
+  function _ensureFogCanvas() {
+    const w = _canvas.width, h = _canvas.height;
+    if (!_fogCanvas || _fogCanvas.width !== w || _fogCanvas.height !== h) {
+      _fogCanvas = document.createElement('canvas');
+      _fogCanvas.width = w; _fogCanvas.height = h;
+      _fogCtx = _fogCanvas.getContext('2d');
+    }
+  }
+
+  function _renderFog() {
+    const alpha = _fogAlpha();
+    if (alpha < 0.01) return;
+
+    _ensureFogCanvas();
+    const w = _canvas.width, h = _canvas.height;
+    const fc = _fogCtx;
+    const px = MapPlayer.px - cam.x + TILE / 2;
+    const py = MapPlayer.py - cam.y + TILE / 2;
+    const visionR = _visionRadius();
+
+    fc.clearRect(0, 0, w, h);
+    fc.fillStyle = `rgba(${FOG_COLOR},${alpha})`;
+    fc.fillRect(0, 0, w, h);
+
+    fc.globalCompositeOperation = 'destination-out';
+    const grad = fc.createRadialGradient(px, py, 0, px, py, visionR);
+    grad.addColorStop(0,    'rgba(0,0,0,1)');
+    grad.addColorStop(0.5,  'rgba(0,0,0,0.95)');
+    grad.addColorStop(0.80, 'rgba(0,0,0,0.35)');
+    grad.addColorStop(1,    'rgba(0,0,0,0)');
+    fc.fillStyle = grad;
+    fc.fillRect(0, 0, w, h);
+    fc.globalCompositeOperation = 'source-over';
+
+    _ctx.drawImage(_fogCanvas, 0, 0);
+  }
+
+  /* ── Speech bubbles (canvas) ─────────────────────────── */
+  const BUBBLE_LIFE = 3.2; // seconds each bubble lives
+
+  function _sayLine(line) {
+    if (!line) return;
+    // Dismiss old bubble from same char if still showing
+    const existing = _bubbles.findIndex(b => b.char === line.char);
+    if (existing >= 0) _bubbles.splice(existing, 1);
+    _bubbles.push({ char: line.char, color: line.color, text: line.text,
+                    life: BUBBLE_LIFE, maxLife: BUBBLE_LIFE });
+  }
+
+  function _randomLine(arr) {
+    if (!arr || !arr.length) return null;
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
+  function _renderBubbles() {
+    if (!_bubbles.length) return;
+    const w = _canvas.width;
+    let y = 52; // start below the header
+
+    _bubbles.forEach((b, idx) => {
+      const fadeIn  = Math.min(b.maxLife - b.life, 0.4) / 0.4;
+      const fadeOut = Math.min(b.life, 0.5) / 0.5;
+      const alpha   = fadeIn * fadeOut;
+
+      const bx = 16, bw = Math.min(420, w - 32);
+      const by = y;
+      const bh = 38;
+
+      // Background pill
+      _ctx.save();
+      _ctx.globalAlpha = alpha * 0.88;
+      _ctx.fillStyle = '#080412';
+      _ctx.beginPath();
+      if (_ctx.roundRect) _ctx.roundRect(bx, by, bw, bh, 6);
+      else _ctx.rect(bx, by, bw, bh);
+      _ctx.fill();
+      _ctx.strokeStyle = b.color;
+      _ctx.lineWidth   = 1;
+      _ctx.stroke();
+      _ctx.globalAlpha = alpha;
+
+      // Character name
+      _ctx.font = 'bold 9px monospace';
+      _ctx.fillStyle = b.color;
+      _ctx.fillText(b.char.toUpperCase(), bx + 10, by + 14);
+
+      // Text
+      _ctx.font = 'italic 10px serif';
+      _ctx.fillStyle = '#e8e0f8';
+      _ctx.fillText(`"${b.text}"`, bx + 10, by + 28);
+
+      _ctx.restore();
+      y += bh + 6;
+    });
+  }
+
+  /* ── Fog milestone + ambient dialogue ───────────────── */
+  function _updateFogDialogue(dt) {
+    if (!_map || !_map.voiceLines) return;
+    const vl = _map.voiceLines;
+    const p  = _fogProgress();
+
+    // Milestone triggers at 30 / 60 / 90 %
+    if (_fogMilestone < 1 && p >= 0.30) {
+      _fogMilestone = 1;
+      _sayLine(_randomLine(vl.fogRising));
+    } else if (_fogMilestone < 2 && p >= 0.60) {
+      _fogMilestone = 2;
+      _sayLine(_randomLine(vl.fogRising));
+    } else if (_fogMilestone < 3 && p >= 0.90) {
+      _fogMilestone = 3;
+      _sayLine(_randomLine(vl.fogRising));
+    }
+
+    // Ambient idle lines
+    _ambientTimer -= dt;
+    if (_ambientTimer <= 0) {
+      _ambientTimer = 45 + Math.random() * 45;
+      if (vl.ambient && vl.ambient.length) _sayLine(_randomLine(vl.ambient));
+    }
+  }
+
   /* ── Party HUD — delegated to MapUI ─────────────────── */
   // MapUI.update(dt) handles party HUD rebuilds to avoid
   // duplicating DOM logic here.
@@ -156,16 +337,20 @@ const MapEngine = (() => {
     _ctx.fillStyle = _map.bgColor || '#080606';
     _ctx.fillRect(0, 0, _canvas.width, _canvas.height);
     _renderTiles();
+    _renderCampMarker();
     _renderAtmosphere();
-    MapEntities.renderEnemies(_ctx, cam, TILE, _map);
+    MapEntities.renderEnemies(_ctx, cam, TILE, _map, _inVision.bind(null));
     MapPlayer.render(_ctx, cam, TILE);
+    _renderFog();
+    _renderBubbles();
     _renderMinimap();
   }
 
   /* ── Update ──────────────────────────────────────────── */
   function _update(dt) {
     if (!_map) return;
-    _time += dt;
+    _time    += dt;
+    _fogTime += dt;
     MapInput.poll();
     MapPlayer.update(dt, _map);
     MapEntities.updateEnemies(dt, _map);
@@ -176,6 +361,26 @@ const MapEngine = (() => {
     const enc = MapEntities.checkEncounter(_map);
     if (enc) {
       _triggerEncounter(enc);
+    }
+
+    // Camp node check — player returns to playerStart tile
+    if (_map.playerStart && !MapPlayer.moving) {
+      const atStart = MapPlayer.tx === _map.playerStart.x && MapPlayer.ty === _map.playerStart.y;
+      if (!_campUnlocked && !atStart) _campUnlocked = true;
+      if (_campUnlocked && atStart && !_atCamp) {
+        _atCamp = true;
+        if (typeof MapUI !== 'undefined') MapUI.openCampMenu();
+      }
+      if (!atStart) _atCamp = false;
+    }
+
+    // Fog dialogue + ambient voice lines
+    _updateFogDialogue(dt);
+
+    // Tick speech bubbles
+    for (let i = _bubbles.length - 1; i >= 0; i--) {
+      _bubbles[i].life -= dt;
+      if (_bubbles[i].life <= 0) _bubbles.splice(i, 1);
     }
 
     // Delegate HUD + minimap refresh to MapUI
@@ -196,9 +401,18 @@ const MapEngine = (() => {
     const raw  = G && G.enemies && enemyId && G.enemies.find(e => e.id === enemyId);
     const name = raw ? raw.name : (enemyId || '?');
 
-    // Use MapUI.showMsg so the banner uses the correct #explore-notif element
+    // Ambush? If fog is active and encounter triggered outside clear vision
+    const isAmbush = _fogAlpha() > 0.15;
+    enc.ambush = isAmbush;
+
+    // Dramatic encounter dialogue on canvas
+    if (_map && _map.voiceLines && _map.voiceLines.encounter) {
+      _sayLine(_randomLine(_map.voiceLines.encounter));
+    }
+
+    // Banner message — ambush gets a different tone
     if (typeof MapUI !== 'undefined') {
-      MapUI.showMsg(`⚔ ${name} appeared!`, 2200);
+      MapUI.showMsg(isAmbush ? `💀 AMBUSH — ${name}!` : `⚔ ${name} appeared!`, 2200);
     }
 
     // Delegate to host game if wired up
@@ -263,6 +477,11 @@ const MapEngine = (() => {
     _invalidateCache();
     MapPlayer.pickVariants(); // pick random sprite variant for each party member
     MapPlayer.reset(_map.playerStart.x, _map.playerStart.y);
+    _campUnlocked = false; _atCamp = false;
+    _fogTime = 0; _fogCanvas = null;
+    _fogMilestone = 0;
+    _bubbles.length = 0;
+    _ambientTimer = 20 + Math.random() * 30; // first ambient line after 20-50s
     MapEntities.init(_map);
     cam.x = 0; cam.y = 0;
     _updateCamera();
@@ -293,9 +512,14 @@ const MapEngine = (() => {
   function getTile()   { return TILE; }
   function isRunning() { return _running; }
 
+  function resetFog() { _fogTime = 0; _fogCanvas = null; _fogMilestone = 0; _bubbles.length = 0; }
+
+  // 0..1 — how far fog has progressed (used by entities to scale aggro/speed)
+  function fogProgress() { return _fogProgress(); }
+
   return {
     init, loadMap, start, stop, resume, onBattleComplete,
-    getMap, getCam, getTile, isRunning,
+    getMap, getCam, getTile, isRunning, resetFog, fogProgress,
     // Optional callback — wire this up after init to handle encounter transitions:
     // MapEngine.onEncounterStart = function(enc) { ... }
     onEncounterStart: null,

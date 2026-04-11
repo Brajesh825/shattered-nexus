@@ -657,6 +657,10 @@ function openPartySwap() {
 function closePartySwap() {
   const overlay = document.getElementById('party-swap-overlay');
   if (overlay) overlay.classList.remove('open');
+  // Resume map engine if we're in explore mode
+  if (G.mode === 'story_explore' && typeof MapEngine !== 'undefined' && !MapEngine.isRunning()) {
+    MapEngine.resume();
+  }
 }
 
 function confirmPartySwap() {
@@ -1693,11 +1697,21 @@ function checkBattleEnd() {
       if (rawDef) _awardDrops(rawDef).forEach(id => allDrops.push(id));
     });
 
+    // Average enemy level for the encounter
+    const avgEnemyLv = G.enemyGroup.length
+      ? G.enemyGroup.reduce((s, e) => s + (e.level || 1), 0) / G.enemyGroup.length
+      : 1;
+
     // Award EXP and gold to all alive members; loop level-ups until threshold not met
     const leveledNames = [];
     G.party.forEach(m => {
       if (!Battle.alive(m)) return;
-      m.exp  += totalExp;
+      // Level-gap penalty: scale exp down as member outlevels enemies.
+      // At +3 levels above enemy: 0 exp. Linear ramp from gap 0 → gap 3.
+      const gap       = (m.lv || 1) - avgEnemyLv;
+      const expScale  = gap >= 3 ? 0 : gap <= 0 ? 1 : 1 - (gap / 3);
+      const earnedExp = Math.floor(totalExp * expScale);
+      m.exp  += earnedExp;
       m.gold += totalGold;
       while (checkMemberLevel(m)) {
         if (!leveledNames.includes(m.displayName)) leveledNames.push(m.displayName);

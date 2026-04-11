@@ -330,6 +330,57 @@ const MapUI = (() => {
     }
   }
 
+  /* ── Camp Menu ──────────────────────────────────────── */
+  function openCampMenu() {
+    if (MapEngine.isRunning()) MapEngine.stop();
+    const el = document.getElementById('camp-menu');
+    if (!el) return;
+    // World Map locked until arc 1 boss is defeated (arcIdx > 0)
+    const worldMapBtn = el.querySelector('.camp-btn-worldmap');
+    if (worldMapBtn) {
+      const unlocked = typeof Story !== 'undefined' && Story.arcIdx > 0;
+      worldMapBtn.disabled = !unlocked;
+      worldMapBtn.title = unlocked ? '' : 'Defeat the first boss to unlock the World Map';
+      worldMapBtn.style.opacity = unlocked ? '' : '0.35';
+      worldMapBtn.style.cursor = unlocked ? '' : 'not-allowed';
+    }
+    el.style.display = 'flex';
+  }
+
+  function closeCampMenu() {
+    const el = document.getElementById('camp-menu');
+    if (el) el.style.display = 'none';
+    MapEngine.resume();
+  }
+
+  function campWorldMap() {
+    if (typeof Story !== 'undefined' && Story.arcIdx === 0) return; // locked until arc 1 complete
+    const el = document.getElementById('camp-menu');
+    if (el) el.style.display = 'none';
+    if (typeof leaveExplore === 'function') leaveExplore();
+  }
+
+  function campChangeParty() {
+    // Hide camp menu without resuming the engine — party swap takes over
+    const el = document.getElementById('camp-menu');
+    if (el) el.style.display = 'none';
+    if (typeof openPartySwap === 'function') openPartySwap();
+  }
+
+  function campHeal() {
+    if (!G || !G.party) return;
+    G.party.forEach(m => {
+      if (!m) return;
+      m.hp = m.maxHp;
+      m.mp = m.maxMp;
+      m.isKO = false;
+    });
+    _updatePartyHUD();
+    MapEngine.resetFog(); // resting clears the darkness
+    showMsg('💊 Party healed — darkness lifted!', 1800);
+    closeCampMenu();
+  }
+
   /* ── Legacy canvas overlay (no-op — DOM HUD is used) ─── */
   // Kept so any existing code calling MapUI.render() won't break.
   function render(ctx, cw, ch) { /* DOM HUD renders instead */ }
@@ -354,5 +405,10 @@ const MapUI = (() => {
     openPauseMenu,
     closePauseMenu,
     pauseSave,
+    openCampMenu,
+    closeCampMenu,
+    campWorldMap,
+    campChangeParty,
+    campHeal,
   };
 })();

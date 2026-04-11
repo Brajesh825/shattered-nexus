@@ -106,6 +106,29 @@ MAP_DEFS.eternal_void = (function() {
             { id: 'shadow_wraith', x: 42, y: 85, patrol: 'random',     range: 4,  speed: 1.6 },
             { id: 'shadow_wraith', x: 58, y: 85, patrol: 'random',     range: 4,  speed: 1.6 },
             { id: 'necromancer',   x: 50, y: 90, patrol: 'horizontal', range: 8,  speed: 1.0 }
-        ]
+        ],
+
+        fog: { delay: 3, peak: 40, max: 0.96, vision: 1.8 },
+
+        voiceLines: {
+          ambient: [
+            { char:'Xiao',   color:'#4ade80', text:'There is no ground beneath us. Only intent.' },
+            { char:'Hutao',  color:'#ef4444', text:'The void is looking back. Rude.' },
+            { char:'Ayaka',  color:'#7dd3fc', text:'We are at the end of everything. Move quickly.' },
+            { char:'Nilou',  color:'#2dd4bf', text:'I can\'t tell where I end and the dark begins.' },
+          ],
+          fogRising: [
+            { char:'Xiao',   color:'#4ade80', text:'The void consumes. Don\'t stop.' },
+            { char:'Hutao',  color:'#ef4444', text:'Even darkness has an end. This does not.' },
+            { char:'Ayaka',  color:'#7dd3fc', text:'I cannot see. But I know forward.' },
+            { char:'Nilou',  color:'#2dd4bf', text:'Something is in the void with us.' },
+          ],
+          encounter: [
+            { char:'Xiao',   color:'#4ade80', text:'They exist between the dark — fight!' },
+            { char:'Hutao',  color:'#ef4444', text:'Born from nothing. Back to nothing.' },
+            { char:'Ayaka',  color:'#7dd3fc', text:'Void creatures — they were invisible!' },
+            { char:'Nilou',  color:'#2dd4bf', text:'I couldn\'t see them, I couldn\'t sense them—' },
+          ],
+        },
     };
 })();

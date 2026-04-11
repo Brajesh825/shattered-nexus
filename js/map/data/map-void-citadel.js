@@ -121,6 +121,29 @@ MAP_DEFS.void_citadel = (function() {
             { id: 'bone_dragon', x: 60, y: 90, patrol: 'horizontal', range: 15, speed: 0.9 },
             { id: 'necromancer', x: 50, y: 105, patrol: 'random', range: 5, speed: 0.8 },
             { id: 'necromancer', x: 70, y: 105, patrol: 'random', range: 5, speed: 0.8 }
-        ]
+        ],
+
+        fog: { delay: 5, peak: 50, max: 0.94, vision: 2.0 },
+
+        voiceLines: {
+          ambient: [
+            { char:'Xiao',   color:'#4ade80', text:'This place exists between worlds. Tread carefully.' },
+            { char:'Hutao',  color:'#ef4444', text:'Void magic everywhere. My lantern barely works.' },
+            { char:'Ayaka',  color:'#7dd3fc', text:'The citadel shifts. The walls are not fixed.' },
+            { char:'Nilou',  color:'#2dd4bf', text:'I feel like we\'re being watched from all sides.' },
+          ],
+          fogRising: [
+            { char:'Xiao',   color:'#4ade80', text:'The void closes. Do not stop moving.' },
+            { char:'Hutao',  color:'#ef4444', text:'Void-dark is different. It has intent.' },
+            { char:'Ayaka',  color:'#7dd3fc', text:'I can\'t see where the corridor ends.' },
+            { char:'Nilou',  color:'#2dd4bf', text:'The dark is getting inside my head.' },
+          ],
+          encounter: [
+            { char:'Xiao',   color:'#4ade80', text:'Void spawn — they were invisible!' },
+            { char:'Hutao',  color:'#ef4444', text:'Born from the dark itself. Predictably.' },
+            { char:'Ayaka',  color:'#7dd3fc', text:'They materialized from nothing—' },
+            { char:'Nilou',  color:'#2dd4bf', text:'I couldn\'t sense them at all!' },
+          ],
+        },
     };
 })();

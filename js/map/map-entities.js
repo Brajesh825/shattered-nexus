@@ -316,7 +316,20 @@ const MapEntities = (() => {
   const PATROL_SPEED = {
     horizontal: 1.5, vertical: 1.5, random: 1.2, chase: 2.0,
   };
-  const AGGRO_RANGE = 4; // tiles — chase aggro distance
+  const AGGRO_RANGE_BASE = 4; // tiles at fog=0
+  const AGGRO_RANGE_MAX  = 10; // tiles at fog=1
+
+  // Returns current aggro range scaled by fog
+  function _aggroRange() {
+    const fp = (typeof MapEngine !== 'undefined' && MapEngine.fogProgress) ? MapEngine.fogProgress() : 0;
+    return AGGRO_RANGE_BASE + (AGGRO_RANGE_MAX - AGGRO_RANGE_BASE) * fp;
+  }
+
+  // Returns speed multiplier scaled by fog (1x → 1.8x)
+  function _fogSpeedMult() {
+    const fp = (typeof MapEngine !== 'undefined' && MapEngine.fogProgress) ? MapEngine.fogProgress() : 0;
+    return 1.0 + 0.8 * fp;
+  }
 
   function init(map) {
     _enemies = (map.enemies || []).map((e, i) => ({
@@ -363,7 +376,7 @@ const MapEntities = (() => {
     const px = MapPlayer.tx, py2 = MapPlayer.ty;
     const dist = Math.abs(enemy.tx - px) + Math.abs(enemy.ty - py2);
 
-    if (enemy.patrol === 'chase' || dist <= AGGRO_RANGE) {
+    if (enemy.patrol === 'chase' || dist <= _aggroRange()) {
       // Chase player
       const dx = Math.sign(px - enemy.tx);
       const dy = Math.sign(py2 - enemy.ty);
@@ -409,6 +422,8 @@ const MapEntities = (() => {
     const TILE = MapEngine.getTile();
     _enemies.forEach(en => {
       if (!en.alive) return;
+      // Fog scales movement speed — recalc moveDur each frame
+      en.moveDur = (1 / en.speed) / _fogSpeedMult();
       if (en.moving) {
         en.moveTimer += dt;
         const t = Math.min(en.moveTimer / en.moveDur, 1);
@@ -494,13 +509,15 @@ const MapEntities = (() => {
     return _spriteCache[id];
   }
 
-  function renderEnemies(ctx, cam, TILE, map) {
+  function renderEnemies(ctx, cam, TILE, map, inVision) {
     const _edw = Math.round(TILE * 1.1);
     const _edh = Math.round(TILE * 1.6);
     const _eox = Math.round((TILE - _edw) / 2);
     const _eoy = TILE - _edh;   // anchor bottom to tile bottom
     _enemies.forEach(en => {
       if (!en.alive) return;
+      // Hidden by fog — only render if within player vision radius
+      if (typeof inVision === 'function' && !inVision(en.tx, en.ty)) return;
       const sx = en.px - cam.x;
       const sy = en.py - cam.y;
       if (sx < -TILE || sy < -TILE || sx > ctx.canvas.width + TILE || sy > ctx.canvas.height + TILE) return;
@@ -519,7 +536,7 @@ const MapEntities = (() => {
       }
 
       const dist = Math.abs(en.tx - MapPlayer.tx) + Math.abs(en.ty - MapPlayer.ty);
-      if (dist <= AGGRO_RANGE) {
+      if (dist <= _aggroRange()) {
         ctx.fillStyle = '#ffff40';
         ctx.font = 'bold 14px monospace';
         ctx.textAlign = 'center';
