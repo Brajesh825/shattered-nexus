@@ -1,5 +1,5 @@
 /**
- * sfx.js — Crystal Chronicles Sound Effects
+ * sfx.js — Shattered Nexus Sound Effects
  * Pure Web Audio API synthesis — no audio files needed.
  */
 const SFX = {

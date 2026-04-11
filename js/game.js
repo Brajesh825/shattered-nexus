@@ -1,5 +1,5 @@
 /**
- * game.js — Crystal Chronicles
+ * game.js — Shattered Nexus
  * Full party battle engine: player controls all 4 members,
  * selectable enemy targets, individual levelling, party menu.
  */

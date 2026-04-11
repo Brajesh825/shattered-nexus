@@ -1,5 +1,5 @@
 /**
- * sprites.js — Crystal Chronicles
+ * sprites.js — Shattered Nexus
  * Hand-crafted pixel art renderer for all characters and enemies.
  * Uses canvas 2D API with a 3px-per-pixel grid system.
  */

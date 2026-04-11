@@ -1,5 +1,5 @@
 /**
- * story.js — Crystal Chronicles Story Engine
+ * story.js — Shattered Nexus Story Engine
  * Drives cutscenes, battles, events and arc progression from story.json
  */
 
