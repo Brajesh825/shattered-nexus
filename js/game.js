@@ -68,6 +68,8 @@ const G = {
   chars:   [],
   classes: [],
   enemies: [],
+  items:     [],          // item definitions from ITEMS_DATA
+  inventory: [],          // [{ itemId, qty }] — party's bag (max 20 stacks)
   selectedChar:  null,
   selectedClass: null,
   selectedChars: [],   // ordered array of up to 4 char IDs
@@ -103,7 +105,7 @@ const CHAR_COLOR = {
   ayaka:'#7dd3fc', hutao:'#ef4444', nilou:'#2dd4bf', xiao:'#4ade80',
   rydia:'#a78bfa', lenneth:'#e879f9', kain:'#0ea5e9', leon:'#fbbf24'
 };
-const ENEMY_POP_X = [580, 720, 860];
+const ENEMY_POP_X = [580, 720, 860, 650]; // 4th is between 1st and 2nd for diamond layout
 const PARTY_POP_X = [42, 108, 174, 240];
 
 /* ============================================================
@@ -506,6 +508,7 @@ window.addEventListener('DOMContentLoaded', () => {
   G.chars   = window.CHARACTERS_DATA || [];
   G.classes = window.CLASSES_DATA    || [];
   G.enemies = window.ENEMIES_DATA    || [];
+  G.items   = window.ITEMS_DATA      || [];
   window._origEnemies = G.enemies.slice();
   initStars();
   UI.show('title-screen');
@@ -581,10 +584,6 @@ function goCharSelect() {
     G.mode = 'free';
     G.unlockedChars = G.chars.map(c => c.id);
   }
-
-  // Hide story screen if visible
-  const storyScreen = UI.el('story-screen');
-  if (storyScreen) storyScreen.style.display = 'none';
 
   UI.show('char-screen');
   _renderCharGrid();
@@ -815,24 +814,28 @@ function buildEnemyGroup(defs, spawnLevel = 1) {
     3: { hp: 8, atk: 1.0, def: 0.7, spd: 0.7, mag: 0.6, statMult: 1.7, expMult: 2.5 },
   };
 
-  G.enemyGroup = defs.map(def => {
-    const tier = def.tier || 1;
+  // Horde scaling: 3+ enemies get reduced individual stats so they're dangerous
+  // but not overwhelming. Scales down as group grows.
+  const hordeScale = defs.length >= 4 ? 0.65 : defs.length === 3 ? 0.78 : 1.0;
+
+  G.enemyGroup = defs.slice(0, 4).map(def => {
+    const tier   = def.tier || 1;
     const growth = tierGrowth[tier] || tierGrowth[1];
 
-    // Calculate stats: (base × tier_multiplier) + (growth_per_level × (level - 1))
     const calcStat = (baseStat, statKey) => {
-      const base = baseStat * growth.statMult;
-      const levelBonus = growth[statKey] * (spawnLevel - 1);
-      return Math.floor(base + levelBonus);
+      const base       = baseStat * growth.statMult * hordeScale;
+      const levelBonus = growth[statKey] * (spawnLevel - 1) * hordeScale;
+      return Math.max(1, Math.floor(base + levelBonus));
     };
 
-    const finalHp = calcStat(def.stats.hp, 'hp');
-    const finalAtk = calcStat(def.stats.atk, 'atk');
-    const finalDef = calcStat(def.stats.def, 'def');
-    const finalSpd = calcStat(def.stats.spd, 'spd');
-    const finalMag = calcStat(def.stats.mag, 'mag');
-    const finalExp = Math.floor(def.reward.exp * growth.expMult);
-    const finalGold = Math.floor(def.reward.gold * growth.expMult);
+    const finalHp   = calcStat(def.stats.hp,  'hp');
+    const finalAtk  = calcStat(def.stats.atk, 'atk');
+    const finalDef  = calcStat(def.stats.def, 'def');
+    const finalSpd  = calcStat(def.stats.spd, 'spd');
+    const finalMag  = calcStat(def.stats.mag, 'mag');
+    // EXP/gold scale by count so total reward is fair
+    const finalExp  = Math.floor(def.reward.exp  * growth.expMult * hordeScale);
+    const finalGold = Math.floor(def.reward.gold * growth.expMult * hordeScale);
 
     return {
       id: def.id, name: def.name,
@@ -1276,17 +1279,191 @@ function heroAbility(ab) {
   }, animDuration);
 }
 
+/* ============================================================
+   INVENTORY SYSTEM
+   ============================================================ */
+const MAX_INVENTORY_STACKS = 20;
+const MAX_STACK_QTY        = 99;
+
+function addToInventory(itemId, qty = 1) {
+  const def = G.items.find(i => i.id === itemId);
+  if (!def) return false;
+  const existing = G.inventory.find(s => s.itemId === itemId);
+  if (existing) {
+    existing.qty = Math.min(MAX_STACK_QTY, existing.qty + qty);
+  } else {
+    if (G.inventory.length >= MAX_INVENTORY_STACKS) return false; // bag full
+    G.inventory.push({ itemId, qty: Math.min(MAX_STACK_QTY, qty) });
+  }
+  return true;
+}
+
+function removeFromInventory(itemId, qty = 1) {
+  const idx = G.inventory.findIndex(s => s.itemId === itemId);
+  if (idx < 0) return false;
+  G.inventory[idx].qty -= qty;
+  if (G.inventory[idx].qty <= 0) G.inventory.splice(idx, 1);
+  return true;
+}
+
+// Open the item submenu in battle
 function heroItem() {
+  if (G.busy) return;
+  UI.openSub(null);
+  _buildItemMenu();
+}
+
+function _buildItemMenu() {
+  const menu = UI.el('item-sub');
+  if (!menu) return;
+  menu.innerHTML = '';
+
+  const battleItems = G.inventory.filter(s => {
+    const def = G.items.find(i => i.id === s.itemId);
+    return def && def.usable_in.includes('battle');
+  });
+
+  if (!battleItems.length) {
+    const empty = document.createElement('div');
+    empty.className = 'item-empty';
+    empty.textContent = 'No items available.';
+    menu.appendChild(empty);
+    const back = document.createElement('button');
+    back.className = 'cmd-btn dim';
+    back.textContent = '← BACK';
+    back.onclick = () => UI.openSub(null);
+    menu.appendChild(back);
+    UI.openSub('item-sub');
+    return;
+  }
+
+  battleItems.forEach(stack => {
+    const def = G.items.find(i => i.id === stack.itemId);
+    if (!def) return;
+    const needsTarget = def.effect.target === 'single';
+    const btn = document.createElement('button');
+    btn.className = 'cmd-btn item-btn';
+    btn.innerHTML = `<span class="item-icon">${def.icon}</span> ${def.name} <span class="item-qty">×${stack.qty}</span>`;
+    btn.title = def.description;
+    btn.onclick = () => {
+      if (needsTarget) {
+        _buildItemTargetMenu(def);
+      } else {
+        _useItem(def, -1);
+      }
+    };
+    menu.appendChild(btn);
+  });
+
+  const back = document.createElement('button');
+  back.className = 'cmd-btn dim';
+  back.textContent = '← BACK';
+  back.onclick = () => UI.openSub(null);
+  menu.appendChild(back);
+  UI.openSub('item-sub');
+}
+
+function _buildItemTargetMenu(def) {
+  const menu = UI.el('item-sub');
+  menu.innerHTML = '';
+
+  // Filter valid targets based on item subtype
+  const isRevive = def.subtype === 'revive';
+  const targets  = G.party.filter((m, i) => isRevive ? m.isKO : Battle.alive(m));
+
+  targets.forEach(m => {
+    const idx = G.party.indexOf(m);
+    const col = CHAR_COLOR[m.charId] || '#aaa';
+    const btn = document.createElement('button');
+    btn.className = 'cmd-btn';
+    btn.style.borderLeftColor = col;
+    btn.innerHTML = `<span style="color:${col}">${m.displayName}</span> <span class="item-qty">${m.hp}/${m.maxHp} HP</span>`;
+    btn.onclick = () => _useItem(def, idx);
+    menu.appendChild(btn);
+  });
+
+  const back = document.createElement('button');
+  back.className = 'cmd-btn dim';
+  back.textContent = '← BACK';
+  back.onclick = () => _buildItemMenu();
+  menu.appendChild(back);
+}
+
+function _useItem(def, targetIdx) {
   if (G.busy) return;
   G.busy = true; UI.btns(false);
   UI.openSub(null);
-  const actor = G.party[G.activeMemberIdx];
-  const heal  = 25 + Math.floor(Math.random() * 15);
-  actor.hp    = Math.min(actor.maxHp, actor.hp + heal);
-  UI.setLog([`${actor.displayName} uses a Potion!`, `+${heal} HP restored!`], ['', 'heal']);
-  UI.popParty(G.activeMemberIdx, heal, 'heal');
+
+  const e = def.effect;
+
+  // Escape item
+  if (def.subtype === 'escape') {
+    removeFromInventory(def.id);
+    UI.setLog(['The party vanishes in a cloud of smoke!'], ['hi']);
+    setTimeout(() => showResult('escaped'), 900);
+    return;
+  }
+
+  const targets = e.target === 'all'
+    ? G.party.filter(m => def.subtype === 'revive' ? m.isKO : Battle.alive(m))
+    : [G.party[targetIdx]];
+
+  targets.forEach((m, i) => {
+    const pIdx = G.party.indexOf(m);
+
+    if (e.stat === 'hp') {
+      const amt = e.percent ? Math.floor(m.maxHp * e.amount / 100) : e.amount;
+      m.hp = Math.min(m.maxHp, m.hp + amt);
+      UI.popParty(pIdx, amt, 'heal');
+
+    } else if (e.stat === 'mp') {
+      const amt = e.percent ? Math.floor(m.maxMp * e.amount / 100) : e.amount;
+      m.mp = Math.min(m.maxMp, m.mp + amt);
+      UI.popParty(pIdx, amt, 'regen');
+
+    } else if (e.stat === 'both') {
+      m.hp = m.maxHp; m.mp = m.maxMp;
+      UI.popParty(pIdx, 0, 'heal');
+
+    } else if (e.stat === 'revive') {
+      m.isKO = false;
+      m.hp   = Math.max(1, Math.floor(m.maxHp * e.amount / 100));
+      UI.popParty(pIdx, m.hp, 'heal');
+
+    } else if (e.stat === 'debuff') {
+      if (m.debuff) { m[m.debuff.stat] = m.debuff.origVal; m.debuff = null; }
+      UI.popParty(pIdx, 0, 'regen');
+
+    } else if (e.stat === 'atk' || e.stat === 'def') {
+      const origVal = m[e.stat];
+      const boost   = Math.floor(origVal * e.amount / 100);
+      m[e.stat]     = origVal + boost;
+      m.buff        = { stat: e.stat, origVal, turns: e.turns || 3 };
+      UI.popParty(pIdx, boost, 'hi');
+    }
+  });
+
+  removeFromInventory(def.id);
+
+  const tName = e.target === 'all' ? 'the party' : targets[0]?.displayName || '?';
+  UI.setLog([`Used ${def.icon} ${def.name} on ${tName}!`], ['hi']);
   UI.renderPartyStatus();
+
   setTimeout(advanceTurn, 800);
+}
+
+// Award drops from a defeated enemy def
+function _awardDrops(enemyDef) {
+  if (!enemyDef.drops || !enemyDef.drops.length) return [];
+  const awarded = [];
+  enemyDef.drops.forEach(drop => {
+    const roll = Math.random() * 100;
+    if (roll <= (drop.chance || 20)) {
+      addToInventory(drop.itemId, drop.qty || 1);
+      awarded.push(drop.itemId);
+    }
+  });
+  return awarded;
 }
 
 function heroRun() {
@@ -1432,15 +1609,23 @@ function checkBattleEnd() {
 
   if (allEnemiesDead) {
     let totalExp = 0, totalGold = 0;
-    G.enemyGroup.forEach(e => { totalExp += e.exp; totalGold += e.gold; });
+    const allDrops = [];
+    G.enemyGroup.forEach(e => {
+      totalExp  += e.exp;
+      totalGold += e.gold;
+      const rawDef = G.enemies.find(r => r.id === e.id);
+      if (rawDef) _awardDrops(rawDef).forEach(id => allDrops.push(id));
+    });
 
-    // Award EXP and gold to all alive members; level up each
+    // Award EXP and gold to all alive members; loop level-ups until threshold not met
     const leveledNames = [];
     G.party.forEach(m => {
       if (!Battle.alive(m)) return;
       m.exp  += totalExp;
       m.gold += totalGold;
-      if (checkMemberLevel(m)) leveledNames.push(m.displayName);
+      while (checkMemberLevel(m)) {
+        if (!leveledNames.includes(m.displayName)) leveledNames.push(m.displayName);
+      }
       // Sync stats back to character data for persistence across arcs
       const ch = G.chars.find(c => c.id === m.charId);
       if (ch) {
@@ -1450,7 +1635,13 @@ function checkBattleEnd() {
       }
     });
 
-    UI.setLog([`Enemies defeated! +${totalExp} EXP +${totalGold} Gold`], ['hi']);
+    const dropMsg = allDrops.length
+      ? allDrops.map(id => { const d = G.items.find(i => i.id === id); return d ? `${d.icon}${d.name}` : id; }).join(', ')
+      : null;
+    UI.setLog([
+      `Enemies defeated! +${totalExp} EXP +${totalGold} Gold`,
+      dropMsg ? `Drops: ${dropMsg}` : ''
+    ].filter(Boolean), ['hi', 'hi']);
     UI.renderPartyStatus();
     UI.updateStats();
 
@@ -1506,26 +1697,51 @@ function checkMemberLevel(m) {
    ============================================================ */
 function showResult(type) {
   closePartyMenu();
-  const t  = UI.el('result-title');
-  const st = UI.el('result-stats');
-  const hero = G.hero;
+  const t       = UI.el('result-title');
+  const st      = UI.el('result-stats');
+  const party   = UI.el('result-party');
+  const retryBtn = UI.el('result-retry-btn');
+  const againBtn = UI.el('result-again-btn');
+
+  // Party member cards — shown on all result types
+  if (party && G.party.length) {
+    party.innerHTML = G.party.map(m => {
+      const col    = CHAR_COLOR[m.charId] || '#aaa';
+      const isKO   = !Battle.alive(m);
+      const hpTxt  = isKO ? '0' : m.hp;
+      return `<div class="result-member${isKO ? ' ko' : ''}" style="border-color:${col}40">
+        <div class="rm-name" style="color:${col}">${m.displayName}</div>
+        <div class="rm-lv">LV ${m.lv}</div>
+        <div class="rm-hp${isKO ? ' zero' : ''}">HP ${hpTxt}/${m.maxHp}</div>
+        <div class="rm-exp" style="color:#8888bb">EXP ${m.exp}</div>
+        ${isKO ? '<div style="color:var(--red);font-size:9px">FALLEN</div>' : ''}
+      </div>`;
+    }).join('');
+  } else if (party) {
+    party.innerHTML = '';
+  }
+
   if (type === 'victory') {
     if (typeof SFX !== 'undefined') SFX.victory();
     t.textContent = '✨ VICTORY! ✨';
     t.className   = 'result-title victory';
-    const memberStats = G.party.map(m =>
-      `<div style="font-size:16px;color:${CHAR_COLOR[m.charId]||'#aaa'}">${m.displayName} LV <span class="val">${m.lv}</span>  EXP <span class="val">${m.exp}</span>  Gold <span class="val">${m.gold}</span></div>`
-    ).join('');
-    st.innerHTML = `All enemies defeated!<br>${memberStats}`;
+    const totalGold = G.party.reduce((s, m) => s + (m.gold || 0), 0);
+    st.innerHTML  = `All enemies defeated!<br><span class="val">+Gold collected this run: ${totalGold}</span>`;
+    if (retryBtn) retryBtn.style.display = 'none';
+    if (againBtn) againBtn.textContent   = '▶ PLAY AGAIN';
   } else if (type === 'defeat') {
     if (typeof SFX !== 'undefined') SFX.defeat();
     t.textContent = '💀 GAME OVER 💀';
     t.className   = 'result-title defeat';
-    st.innerHTML  = `The party has fallen...<br>Leader Level: <span class="val">${hero?.lv || 1}</span>`;
+    st.innerHTML  = `The party has fallen...`;
+    if (retryBtn) retryBtn.style.display = '';
+    if (againBtn) againBtn.textContent   = '⬅ MENU';
   } else {
     t.textContent = '💨 ESCAPED!';
     t.className   = 'result-title escaped';
     st.innerHTML  = `The party fled from battle!`;
+    if (retryBtn) retryBtn.style.display = 'none';
+    if (againBtn) againBtn.textContent   = '▶ PLAY AGAIN';
   }
   UI.show('result-screen');
 }
@@ -1533,6 +1749,24 @@ function showResult(type) {
 function playAgain() {
   G.selectedChar = null; G.selectedClass = null; G.selectedChars = [];
   goCharSelect();
+}
+
+// Retry the same battle: restore party and rebuild the same enemy group at the same level
+function retryBattle() {
+  G.party.forEach(m => {
+    m.hp = m.maxHp; m.mp = m.maxMp;
+    m.isKO = false;
+    m.buff = null; m.debuff = null; m.regenTurns = 0; m.stunned = false;
+  });
+  const level = G.enemyGroup[0]?.level || 1;
+  const defs  = G.enemyGroup.map(e => G.enemies.find(r => r.id === e.id)).filter(Boolean);
+  buildEnemyGroup(defs, level);
+  G.turnQueue = buildTurnQueue();
+  G.turnIdx   = 0;
+  G.busy      = false;
+  UI.show('battle-screen');
+  UI.renderBattleUI();
+  processCurrentTurn();
 }
 
 /* ============================================================

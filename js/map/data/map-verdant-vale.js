@@ -17,6 +17,18 @@ MAP_DEFS.verdant_vale = {
     ambientLight:'rgba(60,180,60,0.04)',
     enemyLevelRange: [1, 3],
 
+    encounterTemplates: [
+      { weight: 3, enemies: ['goblin'] },
+      { weight: 3, enemies: ['wolf'] },
+      { weight: 2, enemies: ['goblin', 'goblin'] },
+      { weight: 2, enemies: ['bat', 'bat'] },
+      { weight: 2, enemies: ['goblin', 'wolf'] },
+      { weight: 2, enemies: ['spider', 'spider'] },
+      { weight: 1, enemies: ['goblin', 'goblin', 'bat'] },
+      { weight: 1, enemies: ['wolf', 'spider', 'bat'] },
+      { weight: 1, enemies: ['goblin', 'goblin', 'wolf', 'spider'] },
+    ],
+
     enemies: [
         // --- WEST SIDE (Lower Level) ---
         { id:'goblin', x:8,  y:15, patrol:'horizontal', range:3, speed:1.0 },

@@ -76,6 +76,15 @@ MAP_DEFS.eternal_void = (function() {
         bgColor: '#000000',
         ambientLight: 'rgba(40,10,80,0.12)',
         enemyLevelRange: [26, 30],
+        encounterTemplates: [
+          { weight: 2, enemies: ['shadow_wraith'] },
+          { weight: 2, enemies: ['necromancer'] },
+          { weight: 2, enemies: ['shadow_wraith', 'shadow_wraith'] },
+          { weight: 2, enemies: ['necromancer', 'shadow_wraith'] },
+          { weight: 1, enemies: ['dark_phoenix'] },
+          { weight: 1, enemies: ['necromancer', 'shadow_wraith', 'shadow_wraith'] },
+          { weight: 1, enemies: ['dark_phoenix', 'necromancer', 'shadow_wraith', 'shadow_wraith'] },
+        ],
         tiles: tiles,
         enemies: [
             // NEXUS DEFENDERS (Central)

@@ -92,6 +92,16 @@ MAP_DEFS.shadow_reach = (function() {
         bgColor: '#05020c',
         ambientLight: 'rgba(80,20,140,0.08)',
         enemyLevelRange: [14, 18],
+        encounterTemplates: [
+          { weight: 3, enemies: ['ghost'] },
+          { weight: 2, enemies: ['vampire'] },
+          { weight: 2, enemies: ['ghost', 'ghost'] },
+          { weight: 2, enemies: ['orc', 'orc'] },
+          { weight: 2, enemies: ['vampire', 'ghost'] },
+          { weight: 1, enemies: ['orc', 'witch', 'ghost'] },
+          { weight: 1, enemies: ['gargoyle', 'ghost', 'vampire'] },
+          { weight: 1, enemies: ['vampire', 'orc', 'ghost', 'witch'] },
+        ],
         tiles: tiles,
         enemies: [
             // SPINE STALKERS

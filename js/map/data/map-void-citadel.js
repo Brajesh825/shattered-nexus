@@ -93,6 +93,15 @@ MAP_DEFS.void_citadel = (function() {
         bgColor: '#040210',
         ambientLight: 'rgba(60,20,160,0.1)',
         enemyLevelRange: [18, 22],
+        encounterTemplates: [
+          { weight: 3, enemies: ['void_knight'] },
+          { weight: 2, enemies: ['void_knight', 'void_knight'] },
+          { weight: 2, enemies: ['necromancer'] },
+          { weight: 2, enemies: ['void_knight', 'necromancer'] },
+          { weight: 1, enemies: ['void_knight', 'void_knight', 'necromancer'] },
+          { weight: 1, enemies: ['bone_dragon'] },
+          { weight: 1, enemies: ['necromancer', 'void_knight', 'void_knight', 'void_knight'] },
+        ],
         tiles: tiles,
         enemies: [
             // HUB DEFENDERS

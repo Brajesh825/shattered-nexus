@@ -91,6 +91,15 @@ MAP_DEFS.fortress_ramparts = (function() {
         bgColor: '#080610',
         ambientLight: 'rgba(40,30,80,0.08)',
         enemyLevelRange: [22, 26],
+        encounterTemplates: [
+          { weight: 3, enemies: ['fallen_angel'] },
+          { weight: 2, enemies: ['shadow_wraith', 'shadow_wraith'] },
+          { weight: 2, enemies: ['fallen_angel', 'shadow_wraith'] },
+          { weight: 2, enemies: ['dark_phoenix'] },
+          { weight: 1, enemies: ['fallen_angel', 'fallen_angel', 'shadow_wraith'] },
+          { weight: 1, enemies: ['dark_phoenix', 'shadow_wraith', 'shadow_wraith'] },
+          { weight: 1, enemies: ['fallen_angel', 'dark_phoenix', 'shadow_wraith', 'shadow_wraith'] },
+        ],
         tiles: tiles,
         enemies: [
             // TIER 1 PATROLS

@@ -281,6 +281,7 @@
         <button class="cmd-btn cmd-party-btn" onclick="openPartyMenu()">👥 PARTY</button>
       </div>
       <div class="sub-menu" id="ability-sub"></div>
+      <div class="sub-menu" id="item-sub"></div>
     </div>
     <div class="party-status-bar" id="party-status-bar"></div>
     <div class="stats-bar">
@@ -308,7 +309,11 @@
   <div id="result-screen" class="screen">
     <div class="result-title" id="result-title">VICTORY!</div>
     <div class="result-stats" id="result-stats"></div>
-    <button class="big-btn" onclick="playAgain()">▶ PLAY AGAIN</button>
+    <div class="result-party" id="result-party"></div>
+    <div class="result-btns">
+      <button class="big-btn" id="result-retry-btn" onclick="retryBattle()" style="display:none">↺ RETRY</button>
+      <button class="big-btn" id="result-again-btn" onclick="playAgain()">▶ PLAY AGAIN</button>
+    </div>
   </div>
 
   <!-- ═══════════════════════════════════════

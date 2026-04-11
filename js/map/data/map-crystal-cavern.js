@@ -85,6 +85,18 @@ MAP_DEFS.crystal_cavern = {
     ambientLight:'rgba(140,80,255,0.07)',
     enemyLevelRange: [5, 12],
 
+    encounterTemplates: [
+      { weight: 3, enemies: ['bat', 'bat'] },
+      { weight: 3, enemies: ['spider', 'spider'] },
+      { weight: 2, enemies: ['skeleton'] },
+      { weight: 2, enemies: ['goblin', 'bat'] },
+      { weight: 2, enemies: ['imp', 'imp'] },
+      { weight: 1, enemies: ['skeleton', 'bat', 'spider'] },
+      { weight: 1, enemies: ['imp', 'goblin', 'bat'] },
+      { weight: 1, enemies: ['skeleton', 'imp', 'spider', 'bat'] },
+    ],
+
+
     enemies: [
         // Entrance & Arteries (Always Walkable)
         { id:'skeleton', x:30, y:50, patrol:'horizontal', range:10, speed:1.2 },

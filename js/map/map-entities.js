@@ -130,22 +130,51 @@ const MapPlayer = (() => {
     _tryMove(dx, dy, map);
   }
 
-  // Single spritesheet layout — 4096×2048, 2×2 grid of directions, 3 frames each
-  // Each directional strip: 2048 wide × 1024 tall, 3 frames side by side
-  const SHEET_FRAME_W = 2048 / 3;   // ≈ 682.67
-  const SHEET_FRAME_H = 1024;
-  // Spritesheet quadrant offsets (4096×2048, 2×2 grid, 3 frames each).
-  // Frame order per strip:
-  //   front  cx:0,    cy:0    → [idle, walk1, walk2]   animate 0→1→2
-  //   left   cx:2048, cy:0    → [walk2, walk1, idle]   animate REVERSED: use 2-frame
-  //   right  cx:0,    cy:1024 → [idle, walk1, walk2]   animate 0→1→2
-  //   back   cx:2048, cy:1024 → [idle, walk1, walk2]   animate 0→1→2
-  const SHEET_DIR = {
-    front: { cx: 0,    cy: 0,    rev: false },
-    left:  { cx: 2048, cy: 0,    rev: true  },
-    right: { cx: 0,    cy: 1024, rev: false },
-    back:  { cx: 2048, cy: 1024, rev: false },
-  };
+  // Spritesheet layout — 2×2 grid of directions, 3 frames each.
+  // Supports any resolution (4K=4096×2048, 2K=2048×1024, 1K=1024×512, etc.)
+  // Dimensions are derived from the loaded image at runtime.
+  //
+  // Grid layout (column × row):
+  //   front  col:0, row:0 → [idle, walk1, walk2]   animate 0→1→2
+  //   left   col:1, row:0 → [walk2, walk1, idle]   animate REVERSED
+  //   right  col:0, row:1 → [idle, walk1, walk2]   animate 0→1→2
+  //   back   col:1, row:1 → [idle, walk1, walk2]   animate 0→1→2
+  //
+  // Computed per-sheet: frameW = imgW/6, frameH = imgH/2
+  // Strip offsets:  front=(0,0), left=(imgW/2,0), right=(0,imgH/2), back=(imgW/2,imgH/2)
+
+  function _getSheetDims(img) {
+    const w = img.naturalWidth;
+    const h = img.naturalHeight;
+    const frameW = w / 6;        // 3 frames across half the sheet width
+    const frameH = h / 2;        // strip height = half the sheet height
+    return {
+      frameW, frameH,
+      dirs: {
+        front: { cx: 0,      cy: 0,      rev: false },
+        left:  { cx: w / 2,  cy: 0,      rev: true  },
+        right: { cx: 0,      cy: h / 2,  rev: false },
+        back:  { cx: w / 2,  cy: h / 2,  rev: false },
+      },
+    };
+  }
+
+  // charId → chosen variant suffix for this map session e.g. '_3' or ''
+  const _variantMap = {};
+  const MAX_VARIANTS = 20;
+
+  // Called once per map load — picks a random variant for every party member
+  function pickVariants() {
+    Object.keys(_variantMap).forEach(k => delete _variantMap[k]);
+    // Clear cache so new variants are loaded fresh
+    Object.keys(_heroImgCache).forEach(k => delete _heroImgCache[k]);
+    if (!G || !G.party) return;
+    G.party.forEach(m => {
+      if (!m || !m.charId) return;
+      const n = Math.floor(Math.random() * MAX_VARIANTS) + 1; // 1–20
+      _variantMap[m.charId] = `_${n}`;
+    });
+  }
 
   // Cache: charId → { sheet, loaded, staticFallback }
   const _heroImgCache = {};
@@ -156,11 +185,18 @@ const MapPlayer = (() => {
     const entry = { sheet: null, loaded: false, staticFallback: null };
     _heroImgCache[charId] = entry;
 
-    // Try single combined sheet first: images/characters/map/sheets/{charId}_sheet.png
-    const img = new Image();
-    img.onload  = () => { entry.sheet = img; entry.loaded = true; };
-    img.onerror = () => {
-      // Fall back to static 128×128 front image
+    const suffix  = _variantMap[charId] || '';
+    const base    = `images/characters/map/sheets/${charId}_sheet`;
+
+    // Attempt load order: variant → base sheet → static png → pixel fallback
+    function tryLoad(src, onFail) {
+      const img = new Image();
+      img.onload  = () => { entry.sheet = img; entry.loaded = true; };
+      img.onerror = onFail;
+      img.src = src;
+    }
+
+    function loadStaticFallback() {
       entry.loaded = true;
       const fb = new Image();
       fb.onload  = () => { entry.staticFallback = fb; };
@@ -168,25 +204,32 @@ const MapPlayer = (() => {
         entry.staticFallback = SpriteRenderer.drawHeroToCanvas(charId, hero.char, hero.cls);
       };
       fb.src = `images/characters/map/${charId}.png`;
-    };
-    img.src = `images/characters/map/sheets/${charId}_sheet.png`;
+    }
+
+    if (suffix) {
+      // Try variant first, fall back to base sheet, then static
+      tryLoad(`${base}${suffix}.png`, () =>
+        tryLoad(`${base}.png`, loadStaticFallback)
+      );
+    } else {
+      tryLoad(`${base}.png`, loadStaticFallback);
+    }
 
     return entry;
   }
 
-  // Returns { sheet, cx, cy, flipX } — cx/cy are the top-left of the direction strip
+  // Returns { sheet, dims, cx, cy, rev, flipX } — cx/cy are the top-left of the direction strip
   function _getSpriteInfo(charId, hero) {
     const c = _loadHeroImgs(charId, hero);
 
     if (c.sheet) {
-      // Up → back strip
-      if (_facing.dy < 0) return { sheet: c.sheet, ...SHEET_DIR.back,  flipX: false };
-      // Left → left strip
-      if (_facing.dx < 0) return { sheet: c.sheet, ...SHEET_DIR.left,  flipX: false };
-      // Right → right strip
-      if (_facing.dx > 0) return { sheet: c.sheet, ...SHEET_DIR.right, flipX: false };
-      // Down (default) → front strip
-      return               { sheet: c.sheet, ...SHEET_DIR.front, flipX: false };
+      const dims = _getSheetDims(c.sheet);
+      let dir;
+      if      (_facing.dy < 0) dir = dims.dirs.back;
+      else if (_facing.dx < 0) dir = dims.dirs.left;
+      else if (_facing.dx > 0) dir = dims.dirs.right;
+      else                      dir = dims.dirs.front;
+      return { sheet: c.sheet, dims, ...dir, flipX: false };
     }
 
     // Static fallback
@@ -215,7 +258,7 @@ const MapPlayer = (() => {
     if (info && info.sheet) {
       // Left strip is stored reversed (walk2,walk1,idle), so mirror the index
       const frameIdx = info.rev ? (FRAME_COUNT - 1 - _frame) : _frame;
-      const srcX = info.cx + frameIdx * SHEET_FRAME_W;
+      const srcX = info.cx + frameIdx * info.dims.frameW;
       const srcY = info.cy;
 
       ctx.save();
@@ -224,9 +267,9 @@ const MapPlayer = (() => {
       if (info.flipX) {
         ctx.translate(sx + TILE / 2, sy);
         ctx.scale(-1, 1);
-        ctx.drawImage(info.sheet, srcX, srcY, SHEET_FRAME_W, SHEET_FRAME_H, -dw / 2, oy + bounce, dw, dh);
+        ctx.drawImage(info.sheet, srcX, srcY, info.dims.frameW, info.dims.frameH, -dw / 2, oy + bounce, dw, dh);
       } else {
-        ctx.drawImage(info.sheet, srcX, srcY, SHEET_FRAME_W, SHEET_FRAME_H, sx + ox, sy + oy + bounce, dw, dh);
+        ctx.drawImage(info.sheet, srcX, srcY, info.dims.frameW, info.dims.frameH, sx + ox, sy + oy + bounce, dw, dh);
       }
       ctx.restore();
     } else if (info && info.staticImg) {
@@ -261,7 +304,7 @@ const MapPlayer = (() => {
     get px() { return px; },
     get py() { return py; },
     get moving() { return moving; },
-    reset, update, render, dpad,
+    reset, update, render, dpad, pickVariants,
   };
 })();
 
@@ -399,18 +442,42 @@ const MapEntities = (() => {
       if (!en.alive) continue;
       if (en.tx === ptx && en.ty === pty) {
         _encounteredIdx = i;
-        // Build encounter enemy list: the patrol enemy + maybe one extra
-        const rawEnemy = G.enemies.find(e => e.id === en.id);
-        const ids = rawEnemy ? [en.id] : [en.id];
-        // Optionally add a second enemy from same map
-        const mapEnemyIds = (map.enemies || []).map(e => e.id).filter(id => id !== en.id);
-        if (mapEnemyIds.length && Math.random() < 0.4) {
-          ids.push(mapEnemyIds[Math.floor(Math.random() * mapEnemyIds.length)]);
-        }
+        const ids = _buildEncounterGroup(en.id, map);
         return { enemies: ids };
       }
     }
     return null;
+  }
+
+  // Build a 1–4 enemy encounter group from the triggered enemy + map pool
+  function _buildEncounterGroup(triggerId, map) {
+    const mapEnemyIds = (map.encounters || map.enemies || []).map(e => e.id);
+    const pool        = mapEnemyIds.length ? mapEnemyIds : [triggerId];
+
+    // Use encounter templates if defined on the map, else roll random group size
+    if (map.encounterTemplates && map.encounterTemplates.length) {
+      // Weighted random pick of a template
+      const total  = map.encounterTemplates.reduce((s, t) => s + (t.weight || 1), 0);
+      let roll     = Math.random() * total;
+      for (const tmpl of map.encounterTemplates) {
+        roll -= (tmpl.weight || 1);
+        if (roll <= 0) return tmpl.enemies.slice(0, 4);
+      }
+    }
+
+    // Fallback: triggered enemy is always first; roll group size 1–4
+    const r = Math.random();
+    let groupSize;
+    if      (r < 0.25) groupSize = 1;   // 25% solo
+    else if (r < 0.60) groupSize = 2;   // 35% pair
+    else if (r < 0.85) groupSize = 3;   // 25% trio
+    else               groupSize = 4;   // 15% quad (horde)
+
+    const ids = [triggerId];
+    while (ids.length < groupSize) {
+      ids.push(pool[Math.floor(Math.random() * pool.length)]);
+    }
+    return ids;
   }
 
   // Sprite cache: enemyId → offscreen canvas

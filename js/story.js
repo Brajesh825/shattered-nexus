@@ -246,10 +246,9 @@ const Story = {
         G.hero.exp  = s.hero.exp  || 0;
         G.hero.gold = s.hero.gold || 0;
       }
-      // Restore unlocked characters from save
-      if (s.unlockedChars) {
-        G.unlockedChars = s.unlockedChars;
-      }
+      // Restore unlocked characters and inventory from save
+      if (s.unlockedChars) G.unlockedChars = s.unlockedChars;
+      if (s.inventory)     G.inventory     = s.inventory;
       // Resume at the saved chapter (or arc intro if chapIdx === -1)
       if (this.chapIdx === -1) {
         this._showArcIntro();
@@ -888,6 +887,7 @@ const Story = {
       // Keep legacy hero field for backward compat
       hero: { lv: G.hero.lv, exp: G.hero.exp, gold: G.hero.gold || 0 },
       unlockedChars: G.unlockedChars,
+      inventory:     G.inventory || [],
     }, this._activeSlot !== undefined ? this._activeSlot : 0);
   },
 

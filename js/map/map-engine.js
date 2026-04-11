@@ -261,6 +261,7 @@ const MapEngine = (() => {
     const titleEl = document.getElementById('explore-map-name');
     if (titleEl) titleEl.textContent = `✦ ${_map.name.toUpperCase()} ✦`;
     _invalidateCache();
+    MapPlayer.pickVariants(); // pick random sprite variant for each party member
     MapPlayer.reset(_map.playerStart.x, _map.playerStart.y);
     MapEntities.init(_map);
     cam.x = 0; cam.y = 0;

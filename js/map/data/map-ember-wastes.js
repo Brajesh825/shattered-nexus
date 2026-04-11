@@ -71,6 +71,16 @@ MAP_DEFS.ember_wastes = (function() {
         bgColor: '#150500',
         ambientLight: 'rgba(255,80,0,0.12)',
         enemyLevelRange: [10, 15],
+        encounterTemplates: [
+          { weight: 3, enemies: ['harpy'] },
+          { weight: 3, enemies: ['imp', 'imp'] },
+          { weight: 2, enemies: ['zombie', 'zombie'] },
+          { weight: 2, enemies: ['harpy', 'imp'] },
+          { weight: 2, enemies: ['werewolf'] },
+          { weight: 1, enemies: ['zombie', 'imp', 'imp'] },
+          { weight: 1, enemies: ['harpy', 'harpy', 'ghost'] },
+          { weight: 1, enemies: ['imp', 'imp', 'zombie', 'harpy'] },
+        ],
         tiles: tiles,
         enemies: [
             // Enemies placed specifically on the spiral arc

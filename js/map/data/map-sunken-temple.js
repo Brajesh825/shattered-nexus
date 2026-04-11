@@ -118,6 +118,16 @@ MAP_DEFS.sunken_temple = (function() {
         bgColor: '#020c14',
         ambientLight: 'rgba(0,100,255,0.1)',
         enemyLevelRange: [15, 25],
+        encounterTemplates: [
+          { weight: 3, enemies: ['skeleton'] },
+          { weight: 2, enemies: ['skeleton', 'skeleton'] },
+          { weight: 2, enemies: ['ghost', 'zombie'] },
+          { weight: 2, enemies: ['spider', 'spider', 'bat'] },
+          { weight: 2, enemies: ['harpy', 'skeleton'] },
+          { weight: 1, enemies: ['skeleton', 'ghost', 'zombie'] },
+          { weight: 1, enemies: ['werewolf', 'harpy', 'spider'] },
+          { weight: 1, enemies: ['skeleton', 'skeleton', 'ghost', 'zombie'] },
+        ],
         tiles: tiles,
         enemies: [
             { id: 'skeleton', x: 80,  y: 30,  patrol: 'random', range: 10, speed: 1.1 },
