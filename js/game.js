@@ -641,6 +641,82 @@ function goArcCharSelect() {
   }
 }
 
+/* ============================================================
+   PARTY SWAP (World Map overlay)
+   ============================================================ */
+let _partySwapSelection = [];
+
+function openPartySwap() {
+  // Start selection from current active party
+  _partySwapSelection = [...(G.selectedChars.length ? G.selectedChars : G.unlockedChars.slice(0, 4))];
+  _renderPartySwapGrid();
+  const overlay = document.getElementById('party-swap-overlay');
+  if (overlay) overlay.classList.add('open');
+}
+
+function closePartySwap() {
+  const overlay = document.getElementById('party-swap-overlay');
+  if (overlay) overlay.classList.remove('open');
+}
+
+function confirmPartySwap() {
+  if (_partySwapSelection.length !== 4) return;
+  G.selectedChars = [..._partySwapSelection];
+  G.selectedChar  = G.selectedChars[0];
+  buildParty();
+  // Auto-save the new party composition
+  if (typeof Story !== 'undefined' && Story.active) Story._doSave();
+  closePartySwap();
+  // Show brief confirmation toast
+  if (typeof Save !== 'undefined') Save._showToast('Party updated');
+}
+
+function _renderPartySwapGrid() {
+  const grid    = document.getElementById('party-swap-grid');
+  const counter = document.getElementById('party-swap-counter');
+  const confirm = document.getElementById('party-swap-confirm');
+  if (!grid) return;
+
+  grid.innerHTML = '';
+  const unlocked = G.chars.filter(ch => G.unlockedChars.includes(ch.id));
+
+  unlocked.forEach(ch => {
+    const slotIdx  = _partySwapSelection.indexOf(ch.id);
+    const isActive = slotIdx !== -1;
+
+    const card = document.createElement('div');
+    card.className = 'swap-card' + (isActive ? ' active' : '');
+    card.dataset.charid = ch.id;
+
+    card.innerHTML =
+      (isActive ? `<div class="swap-card-badge">${slotIdx + 1}</div>` : '') +
+      `<div class="swap-icon" style="background:${ch.portrait_color}20;border-color:${ch.portrait_color}50">${ch.icon}</div>` +
+      `<div class="swap-info">` +
+        `<div class="swap-name">${ch.name}</div>` +
+        `<div class="swap-title">${ch.title}</div>` +
+        `<div class="swap-stats">ATK ${ch.base_stats.atk + (ch.stat_bonuses.atk||0)} · SPD ${ch.base_stats.spd + (ch.stat_bonuses.spd||0)}</div>` +
+      `</div>`;
+
+    card.addEventListener('click', () => {
+      const idx = _partySwapSelection.indexOf(ch.id);
+      if (idx !== -1) {
+        // Deselect
+        _partySwapSelection.splice(idx, 1);
+      } else {
+        if (_partySwapSelection.length >= 4) return; // already full
+        _partySwapSelection.push(ch.id);
+      }
+      _renderPartySwapGrid();
+    });
+
+    grid.appendChild(card);
+  });
+
+  const count = _partySwapSelection.length;
+  if (counter) counter.textContent = `${count} / 4 selected`;
+  if (confirm) confirm.disabled = count !== 4;
+}
+
 function _renderCharGrid() {
   const grid = UI.el('char-grid');
   grid.innerHTML = '';
