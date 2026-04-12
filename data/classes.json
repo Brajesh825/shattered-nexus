@@ -89,8 +89,8 @@
         "icon": "🩸",
         "mp": 4,
         "type": "buff",
-        "description": "Passive empowerment — Fire damage +33% whenever HP is below 50%, lasts 5 turns",
-        "effect": { "fireAmp": 1.33, "duration": 5 }
+        "description": "Passive empowerment — Fire damage +33% and absorb fire damage as healing, lasts 5 turns",
+        "effect": { "fireAmp": 1.33, "absorb": "fire", "duration": 5 }
       },
       {
         "id": "spirit_soother",

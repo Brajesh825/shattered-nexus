@@ -1327,8 +1327,8 @@ function heroAttack() {
   const enemy = G.enemy;
   if (!actor || !enemy) { G.busy = false; return; }
 
-  // Basic attack carries the character's class element OR infusion
-  const _atkElem = actor.infusion || actor.cls?.element || 'physical';
+  // Basic attack carries the character's class element
+  const _atkElem = actor.cls?.element || 'physical';
   const actorSpr = document.getElementById('pspr-' + G.activeMemberIdx);
   if (actorSpr) {
     actorSpr.classList.add('anim-slash');
@@ -1638,10 +1638,9 @@ function heroAbility(ab) {
         // Special status effects
         if (e.damageReduction) m.dmgReduction = (1 - e.damageReduction);
         if (e.evasion) m.evasion = e.evasion;
-        if (e.hpRegen) { m.regenTurns = e.duration || 3; m.hpRegenAmt = e.hpRegen; }
         if (e.reflect) m.reflect = e.reflect;
-        if (e.infusion) m.infusion = e.infusion;
         if (e.fireAmp) m.fireAmp = e.fireAmp;
+        if (e.absorb) m.absorbElement = e.absorb;
 
         createEffectOverlay(idx, element, 'party', ab.id);
       };
@@ -2050,6 +2049,17 @@ function enemyAct(enemy, enemyIdx) {
       const _pm  = Battle.playerElemMult(element, target);
       let dmg    = Math.floor(Battle.physDmg(enemy.atk, target.def, ab?.dmgMultiplier || 1, enemy.level || 1, target.lv || 1) * _pm);
       
+      // Absorption Check
+      if (target.absorbElement && target.absorbElement === element) {
+        target.hp = Math.min(target.maxHp, target.hp + dmg);
+        UI.popParty(targetIdx, dmg, 'heal');
+        UI.addLog(`⭐ ${target.displayName} ABSORBED the attack!`, 'heal');
+        createEffectOverlay(targetIdx, element, 'party');
+        UI.renderPartyStatus();
+        setTimeout(advanceTurn, 700);
+        return;
+      }
+
       // Apply passive & buff damage reductions
       if (target.passive?.id === 'yakshas_valor')    dmg = Math.floor(dmg * 0.9);
       if (target.passive?.id === 'divine_authority') dmg = Math.floor(dmg * 0.85);
@@ -2088,6 +2098,17 @@ function enemyAct(enemy, enemyIdx) {
       const _pm = Battle.playerElemMult(element, target);
       let dmg   = Math.floor(Battle.magicDmg(enemy.mag, ab.dmgMultiplier || 1.3, 1.0, enemy.level || 1, target.mag || 0, target.lv || 1) * _pm);
       
+      // Absorption Check
+      if (target.absorbElement && target.absorbElement === element) {
+        target.hp = Math.min(target.maxHp, target.hp + dmg);
+        UI.popParty(targetIdx, dmg, 'heal');
+        UI.addLog(`⭐ ${target.displayName} ABSORBED the spell!`, 'heal');
+        createEffectOverlay(targetIdx, element, 'party');
+        UI.renderPartyStatus();
+        setTimeout(advanceTurn, 700);
+        return;
+      }
+
       if (target.passive?.id === 'yakshas_valor')    dmg = Math.floor(dmg * 0.9);
       if (target.passive?.id === 'divine_authority') dmg = Math.floor(dmg * 0.85);
       if (target.passive?.id === 'divine_blessing')  dmg = Math.floor(dmg * 0.88);
@@ -2160,8 +2181,8 @@ function enemyAct(enemy, enemyIdx) {
           m.evasion = null;
           m.hpRegenAmt = null;
           m.reflect = null;
-          m.infusion = null;
           m.fireAmp = null;
+          m.absorbElement = null;
         } 
       }
     });
