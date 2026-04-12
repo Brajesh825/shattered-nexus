@@ -91,6 +91,13 @@ MAP_DEFS.fortress_ramparts = (function() {
         bgColor: '#080610',
         ambientLight: 'rgba(40,30,80,0.08)',
         enemyLevelRange: [22, 26],
+        // Arc 7 — corrupted fortress, every creature is already half-gone.
+        mutationConfig: {
+          corruptThreshold: 26,
+          mutantThreshold:  52,
+          corruptChance:    0.060,
+          mutantChance:     0.034,
+        },
         encounterTemplates: [
           { weight: 3, enemies: ['fallen_angel'] },
           { weight: 2, enemies: ['shadow_wraith', 'shadow_wraith'] },
@@ -131,26 +138,33 @@ MAP_DEFS.fortress_ramparts = (function() {
           { id: 'essabella', x: 70, y: 55, dialogueKey: 'fortress_ramparts' },
         ],
 
+        objective: {
+          type: 'reach',
+          target: { x: 90, y: 60 },
+          label: 'Storm the Fortress Bastion',
+          completeMsg: '✦ The bastion doors give way — the Emperor\'s inner sanctum awaits.',
+        },
+
         fog: { delay: 10, peak: 70, max: 0.88, vision: 2.4 },
 
         voiceLines: {
           ambient: [
-            { char:'Ayaka',  color:'#7dd3fc', text:'The ramparts stretch further than I can see.' },
-            { char:'Hutao',  color:'#ef4444', text:'Fortress of the dead. Architecture checks out.' },
-            { char:'Xiao',   color:'#4ade80', text:'They built this to last. Unfortunately.' },
-            { char:'Nilou',  color:'#2dd4bf', text:'The wind here sounds like voices.' },
+            { char:'Aya',  color:'#7dd3fc', text:'The ramparts stretch further than I can see.' },
+            { char:'Tao',  color:'#ef4444', text:'Fortress of the dead. Architecture checks out.' },
+            { char:'Rei',   color:'#4ade80', text:'They built this to last. Unfortunately.' },
+            { char:'Lulu',  color:'#2dd4bf', text:'The wind here sounds like voices.' },
           ],
           fogRising: [
-            { char:'Ayaka',  color:'#7dd3fc', text:'A shroud over the battlements. We\'re exposed.' },
-            { char:'Xiao',   color:'#4ade80', text:'The fortress uses the fog. Expect contact.' },
-            { char:'Hutao',  color:'#ef4444', text:'Dark fortresses get darker. Makes sense.' },
-            { char:'Nilou',  color:'#2dd4bf', text:'I can\'t tell where the walls end.' },
+            { char:'Aya',  color:'#7dd3fc', text:'A shroud over the battlements. We\'re exposed.' },
+            { char:'Rei',   color:'#4ade80', text:'The fortress uses the fog. Expect contact.' },
+            { char:'Tao',  color:'#ef4444', text:'Dark fortresses get darker. Makes sense.' },
+            { char:'Lulu',  color:'#2dd4bf', text:'I can\'t tell where the walls end.' },
           ],
           encounter: [
-            { char:'Xiao',   color:'#4ade80', text:'From the rampart shadows — move!' },
-            { char:'Hutao',  color:'#ef4444', text:'Dropped on us from above!' },
-            { char:'Ayaka',  color:'#7dd3fc', text:'They waited in the dark!' },
-            { char:'Nilou',  color:'#2dd4bf', text:'Didn\'t see them at all—' },
+            { char:'Rei',   color:'#4ade80', text:'From the rampart shadows — move!' },
+            { char:'Tao',  color:'#ef4444', text:'Dropped on us from above!' },
+            { char:'Aya',  color:'#7dd3fc', text:'They waited in the dark!' },
+            { char:'Lulu',  color:'#2dd4bf', text:'Didn\'t see them at all—' },
           ],
         },
     };

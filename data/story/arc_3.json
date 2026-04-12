@@ -1,18 +1,18 @@
 {
   "id": "arc_3",
   "number": 3,
-  "name": "The Weeping Depths",
-  "subtitle": "The sea remembers everything it swallows",
-  "theme": "Perseverance / Hidden truths / The cost of power",
-  "location": "Sunken Temple to Drowned Citadel",
+  "name": "The Scorched Spiral",
+  "subtitle": "What the fire left behind is still burning",
+  "theme": "Endurance / Buried truths / What survives destruction",
+  "location": "Ember Wastes",
   "shard": {
-    "id": "seal_water",
-    "name": "Seal Fragment of Water",
-    "description": "A deep blue crystal that weeps light continuously. It hums with the memory of countless tides.",
-    "color": "#38bdf8"
+    "id": "seal_earth",
+    "name": "Seal Fragment of Earth",
+    "description": "A cracked amber crystal threaded with heat. It smells of ash and something older — the memory of solid ground before it broke.",
+    "color": "#f97316"
   },
-  "enemies_pool": ["zombie", "skeleton", "harpy", "spider", "imp", "slime"],
-  "boss_enemy": "kraken",
+  "enemies_pool": ["imp", "fire_elemental", "gargoyle", "lesser_demon", "chimera", "golem"],
+  "boss_enemy": "dark_phoenix",
   "chapters": [
     {
       "id": "arc3_ch1",
@@ -22,23 +22,23 @@
       "cast": ["Aya", "Tao", "Lulu", "Rei"],
       "scenes": [
         {
-          "narration": "The Oracle's third marker leads to the coast of Aethoria's sunken west — a region that drowned when Valdris first shattered the Water Seal.",
+          "narration": "The Oracle's third marker leads into the Ember Wastes — a scorched basin where Valdris's influence burned everything that once grew. The air shimmers with unnatural heat.",
           "dialogue": []
         },
         {
-          "narration": "Nilou stands at the shoreline, watching the water with a strange expression — recognition, almost.",
+          "narration": "Tao pauses at the edge of the wastes, looking out over the blackened expanse with something close to professional interest.",
           "dialogue": [
-            { "speaker": "Lulu", "emotion": "wistful", "text": "In my homeland, the sacred pools respond to dance. This water feels different. Grief-soaked." },
-            { "speaker": "Tao", "emotion": "curious", "text": "Grief-soaked water. That is poetic. I might use that in a poem, if you do not mind." },
-            { "speaker": "Lulu", "emotion": "gentle", "text": "It is yours. Though I hope you give it a more cheerful ending than the sea did." }
+            { "speaker": "Tao", "emotion": "curious", "text": "Everything here is already dead. Thoroughly. I would be impressed if I were not also concerned." },
+            { "speaker": "Lulu", "emotion": "wistful", "text": "Something lives here still. I can feel it — like a heartbeat made of heat. Restless. Old." },
+            { "speaker": "Tao", "emotion": "quiet", "text": "...A living thing in a dead place. That is either inspiring or a warning. Possibly both." }
           ]
         },
         {
-          "narration": "Xiao crouches at the edge, scanning beneath the surface. Shadow-forms move in the depths — slow, circling.",
+          "narration": "Rei stands still at the centre of the path, head tilted — reading the air the way others read a map.",
           "dialogue": [
-            { "speaker": "Rei", "emotion": "alert", "text": "The Kraken. Ancient. Pre-dates Valdris. He corrupted it when he broke the Seal — turned a guardian into a warden." },
-            { "speaker": "Aya", "emotion": "calm", "text": "A creature once protector of these waters, now their jailer. There is a particular sadness in that." },
-            { "speaker": "Tao", "emotion": "focused", "text": "A sad fate. But also very large tentacles. Let us have a plan." }
+            { "speaker": "Rei", "emotion": "alert", "text": "The Dark Phoenix. Ancient. It was a creature of renewal once — fire that destroys so that something new can grow. Valdris twisted that. Turned rebirth into an endless loop of burning." },
+            { "speaker": "Aya", "emotion": "calm", "text": "A creature whose purpose was corrupted into its opposite. That has a particular kind of cruelty to it." },
+            { "speaker": "Tao", "emotion": "focused", "text": "Yes. And it is very much on fire. Let us have a plan." }
           ]
         }
       ]
@@ -50,50 +50,49 @@
       "map": "ember_wastes",
       "map_hint": "Cross the Ember Wastes — the drowned coast and the Kraken lie beyond the scorched spiral.",
       "pre_dialogue": [
-        { "speaker": "narrator", "emotion": "tense", "text": "The path to the sunken coast cuts through the Ember Wastes — a scarred landscape where even the rock burns. Shadow-corrupted creatures stalk between the cinders." },
-        { "speaker": "Rei", "emotion": "alert", "text": "The Kraken's karmic weight grows stronger ahead. We are close." },
+        { "speaker": "narrator", "emotion": "tense", "text": "The Ember Wastes stretch ahead — a scarred landscape where even the rock burns. Shadow-corrupted creatures stalk between the cinders, drawn inward by something vast and restless at the centre." },
+        { "speaker": "Rei", "emotion": "alert", "text": "The Dark Phoenix's karmic weight grows stronger ahead. We are close. Do not let the heat slow you." },
         { "speaker": "Tao", "emotion": "focused", "text": "Hot, dangerous, and full of things that want us dead. Perfectly normal Tuesday. Move." },
         { "speaker": "Lulu", "emotion": "steady", "text": "Together. We go together." }
       ],
       "post_dialogue": [
-        { "speaker": "narrator", "emotion": "melancholy", "text": "The Ember Wastes give way to the sunken coast — a shoreline drowned in grief-soaked water. And beneath the surface, something immense circles." },
-        { "speaker": "Lulu", "emotion": "wistful", "text": "This water feels different. Grief-soaked, like it remembers what it lost." },
-        { "speaker": "Rei", "emotion": "solemn", "text": "The Kraken does not want to fight. The shadow compels it. Remember that — and make it quick." },
-        { "speaker": "Tao", "emotion": "focused", "text": "It deserves that much. Let us do what we came to do." }
+        { "speaker": "narrator", "emotion": "melancholy", "text": "The spiral path opens into a crater of black stone and dying flame. At its center, something vast circles — wings of shadow and fire, a shape that was once a creature of rebirth." },
+        { "speaker": "Rei", "emotion": "solemn", "text": "The Dark Phoenix. It burned here long before the shadow found it. The corruption only fed what was already restless." },
+        { "speaker": "Tao", "emotion": "focused", "text": "A creature that cannot stop burning. I understand that feeling more than I would like." },
+        { "speaker": "Aya", "emotion": "resolved", "text": "Then we give it rest. That is what we came to do." }
       ]
     }
   ],
 
   "boss_chapter": {
-    "title": "The Guardian Unbound",
-    "background": "deep_citadel",
+    "title": "The Ashborn",
+    "background": "ember_wastes",
     "cast": ["Aya", "Tao", "Lulu", "Rei"],
     "pre_dialogue": [
-      { "speaker": "narrator", "emotion": "intense", "text": "The Kraken rises from the depths. Ancient. Immense. Its corruption pulses with the captured Seal Fragment, and it comes for them with blind fury." },
-      { "speaker": "Rei", "emotion": "grave", "text": "It does not want this fight. But it has no choice. That makes it more dangerous." },
-      { "speaker": "Lulu", "emotion": "determined", "text": "Then we end this quickly. For its sake." },
-      { "speaker": "Tao", "emotion": "ready", "text": "For its sake, and for ours. Let us do what we came here to do." }
+      { "speaker": "narrator", "emotion": "intense", "text": "At the heart of the Ember Wastes, the Dark Phoenix circles — a creature of impossible fire, its wings trailing shadow and ash. The Seal Fragment pulses at its core like a second heartbeat." },
+      { "speaker": "Rei", "emotion": "grave", "text": "It was not always like this. Something sacred was twisted here. The shadow took a creature of renewal and made it a creature of ending." },
+      { "speaker": "Tao", "emotion": "focused", "text": "The fire does not scare me. The sorrow behind it does. Let us end this." },
+      { "speaker": "Aya", "emotion": "resolved", "text": "Together. We bring it peace the only way left to us." }
     ],
     "post_dialogue": [
-      { "speaker": "narrator", "emotion": "melancholy", "text": "The Kraken falls. As its shadow-form dissolves, the water Seal Fragment rises from the depths — clear and cold and weeping light." },
-      { "speaker": "Rei", "emotion": "quiet", "text": "It is gone now. The karma is lifting. It can finally rest." },
-      { "speaker": "Lulu", "emotion": "bittersweet", "text": "I am glad it is free. I just wish we could have done it without the fighting." },
-      { "speaker": "Aya", "emotion": "gentle", "text": "Sometimes the only kindness left is the one that ends suffering. Not comfortable — but true." },
-      { "speaker": "Tao", "emotion": "solemn", "text": "...I have seen enough to know she is right. Three Fragments down. One more before we truly face him." }
+      { "speaker": "narrator", "emotion": "melancholy", "text": "The Dark Phoenix falls. As its flames gutter and go quiet, the Earth Seal Fragment rises from the ash — amber-warm, cracked through with old heat." },
+      { "speaker": "Rei", "emotion": "quiet", "text": "The karma lifts. It burned so long it forgot what it was. Now it can stop." },
+      { "speaker": "Tao", "emotion": "solemn", "text": "Three down. One more before we reach the depths. I find myself grateful for this team." },
+      { "speaker": "Aya", "emotion": "gentle", "text": "So do I. Whatever waits in the sunken temple — we face it the same way we faced this. Together." }
     ],
     "onVictory": [
       { "type": "recruit", "charId": "kain" }
     ],
     "character_moment": {
-      "background": "deep_citadel",
+      "background": "ember_wastes",
       "dialogue": [
-        { "speaker": null, "text": "As the water settles, a figure descends from above — a dragoon knight, his armor marked with the sigil of a fallen kingdom. His lance glows with aerial energy as he lands beside them." },
-        { "speaker": "Drake", "emotion": "formal", "text": "I am Drake, Dragoon of the Sky. I felt the Fragment's freedom from above — the sky itself sang with it. A barrier I did not know existed has lifted." },
-        { "speaker": "Ria", "emotion": "surprised", "text": "Drake? From that fallen kingdom? That kingdom fell ages ago in my world. How is it you stand here?" },
-        { "speaker": "Drake", "emotion": "conflicted", "text": "I do not know. But I was bound by a curse I could not break. Now, feeling that curse shatter — I followed the sensation here. To help." },
-        { "speaker": "Rei", "emotion": "knowing", "text": "A warrior chained by his own oaths, freed by the breaking of chains elsewhere. I understand that more than most." },
-        { "speaker": "Aya", "emotion": "welcoming", "text": "Then let us bind ourselves together — not by curse, but by choice. Will you stand with us?" },
-        { "speaker": "Drake", "emotion": "resolved", "text": "I will. My lance answers to a new oath now: the oath to see darkness broken." }
+        { "speaker": null, "text": "As the ash settles, a figure descends from above — a dragoon knight, his armor scorched at the edges but his lance glowing bright with aerial energy. He lands before them without a sound." },
+        { "speaker": "Drake", "emotion": "formal", "text": "I am Drake, Dragoon of the Sky. I have been circling this wasteland for longer than I can account for. The moment the Phoenix fell — something in me unclenched. A chain I had forgotten was there." },
+        { "speaker": "Ria", "emotion": "surprised", "text": "A dragoon. I have heard of them — warriors who fight between earth and sky. What bound you here?" },
+        { "speaker": "Drake", "emotion": "conflicted", "text": "A curse I could not name. I only knew I could not leave. Now, feeling it shatter — I can move again. I would move with you, if you will have me." },
+        { "speaker": "Rei", "emotion": "knowing", "text": "A warrior chained by oaths not of their choosing, freed by the breaking of chains elsewhere. I understand that more than most." },
+        { "speaker": "Aya", "emotion": "welcoming", "text": "Then stand with us. Not by curse — by choice." },
+        { "speaker": "Drake", "emotion": "resolved", "text": "My lance answers to a new oath now. The oath to see this darkness end." }
       ]
     }
   }

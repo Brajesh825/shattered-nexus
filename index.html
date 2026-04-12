@@ -67,32 +67,41 @@
        ═══════════════════════════════════════ -->
   <div id="title-screen" class="screen active">
     <div class="stars" id="stars"></div>
-    <div class="crystals">
-      <span class="crystal">💎</span>
-      <span class="crystal">💠</span>
-      <span class="crystal">🔷</span>
-      <span class="crystal">💎</span>
-    </div>
-    <div class="game-title">SHATTERED<br>NEXUS</div>
-    <div class="subtitle">~ REBORN ~</div>
-    <div style="font-size:15px;color:#4a4080;text-align:center;z-index:1;line-height:2">
-      4 Characters · 4 Classes · 50 Enemies<br>
-      5 Arcs · One truth at the end
+
+    <!-- Cinematic top border accent -->
+    <div class="title-top-bar"></div>
+
+    <!-- Title block -->
+    <div class="title-hero">
+      <div class="title-eyebrow">✦ &nbsp; A N   E P I C   S A G A &nbsp; ✦</div>
+      <div class="game-title">SHATTERED<br>NEXUS</div>
+      <div class="title-ornament"><span></span><span class="orn-gem">✦</span><span></span></div>
+      <div class="subtitle">R E B O R N</div>
+      <div class="title-tagline">4 Characters &nbsp;·&nbsp; 4 Classes &nbsp;·&nbsp; 50 Enemies &nbsp;·&nbsp; 5 Arcs</div>
     </div>
 
+    <!-- CONTINUE sits above the grid — full width, hidden until save exists -->
     <button class="big-btn title-continue-btn blink" id="title-continue-btn"
-            onclick="openSlotOverlay('load')" style="z-index:1;margin-top:10px;display:none">
-      ▶ CONTINUE
+            onclick="openSlotOverlay('load')" style="display:none">
+      ▶ &nbsp; CONTINUE
     </button>
-    <button class="big-btn" onclick="openSlotOverlay('new')" style="z-index:1;margin-top:6px">
-      📖 NEW STORY
-    </button>
-    <button class="big-btn" onclick="goCharSelect()" style="z-index:1;margin-top:4px;background:transparent;border-color:#4a4080;color:#8080c0">
-      ⚔ FREE BATTLE
-    </button>
-    <button class="big-btn" onclick="startExplore()" style="z-index:1;margin-top:4px;background:transparent;border-color:#2a5040;color:#60c090">
-      🗺 EXPLORE
-    </button>
+
+    <!-- Menu button grid -->
+    <div class="menu-btns">
+      <button class="title-btn title-btn-primary" onclick="openSlotOverlay('new')">
+        <span class="tbtn-icon">📖</span>
+        <span class="tbtn-label">NEW STORY</span>
+      </button>
+      <button class="title-btn title-btn-secondary" onclick="goCharSelect()">
+        <span class="tbtn-icon">⚔</span>
+        <span class="tbtn-label">FREE BATTLE</span>
+      </button>
+      <button class="title-btn title-btn-tertiary" onclick="startExplore()">
+        <span class="tbtn-icon">🗺</span>
+        <span class="tbtn-label">EXPLORE</span>
+      </button>
+    </div>
+
     <div class="ver-tag">v3.0</div>
   </div>
 
@@ -387,8 +396,21 @@
             <button class="camp-btn camp-btn-worldmap" onclick="MapUI.campWorldMap()">🗺 WORLD MAP</button>
             <button class="camp-btn" onclick="MapUI.campChangeParty()">👥 CHANGE PARTY</button>
             <button class="camp-btn" onclick="MapUI.campHeal()">💊 HEAL PARTY</button>
+            <button class="camp-btn" onclick="MapUI.campRelics()">✦ RELICS</button>
             <button class="camp-btn camp-btn-minor" onclick="MapUI.closeCampMenu()">▶ CONTINUE</button>
           </div>
+        </div>
+      </div>
+
+      <!-- Relic management panel -->
+      <div id="relic-panel" style="display:none">
+        <div class="relic-panel-inner">
+          <div class="relic-panel-title">✦ RELICS</div>
+          <div class="relic-panel-subtitle">Equip up to 3 relics. Bonuses apply to all party members.</div>
+          <div class="relic-slots-row" id="relic-slots"></div>
+          <div class="relic-panel-label">OWNED RELICS</div>
+          <div class="relic-list" id="relic-list"></div>
+          <button class="camp-btn camp-btn-minor" onclick="MapUI.closeRelics()" style="margin-top:12px">◀ BACK TO CAMP</button>
         </div>
       </div>
 

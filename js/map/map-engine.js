@@ -9,7 +9,14 @@
  */
 
 const MapEngine = (() => {
-  const TILE = 64;
+  let TILE = 64;
+
+  function _calcTileSize() {
+    const w = _canvas.width, h = _canvas.height;
+    // Landscape phones or narrow portrait: use 48px tiles so more map is visible
+    if (h <= 420 || w <= 600) return 48;
+    return 64;
+  }
 
   let _canvas = null, _ctx = null;
   let _map    = null;
@@ -586,21 +593,30 @@ const MapEngine = (() => {
   function _triggerEncounter(enc) {
     const enemyId  = enc.enemies && enc.enemies[0];
     const raw      = G && G.enemies && enemyId && G.enemies.find(e => e.id === enemyId);
-    const name     = raw ? raw.name : (enemyId || '?');
+    const baseName = raw ? raw.name : (enemyId || '?');
+    const mut      = enc.mutation;
+    const name     = mut === 'mutant'    ? `Mutant ${baseName}`
+                   : mut === 'corrupted' ? `Corrupted ${baseName}`
+                   : baseName;
     const isAmbush = _fogAlpha() > 0.15;
     enc.ambush = isAmbush;
 
     // 1. Stop movement immediately
     stop();
 
-    // 2. Screen shake
-    _shakeTime = isAmbush ? 0.55 : 0.35;
+    // 2. Screen shake — stronger for mutated enemies
+    _shakeTime = mut ? (isAmbush ? 0.85 : 0.60) : (isAmbush ? 0.55 : 0.35);
 
-    // 3. Red edge flash — longer and more intense than before
+    // 3. Edge flash — purple for corrupted, green for mutant
     const flashEl = document.getElementById('explore-flash');
     if (flashEl) {
+      flashEl.classList.remove('corrupted-flash', 'mutant-flash');
+      if (mut === 'corrupted') flashEl.classList.add('corrupted-flash');
+      else if (mut === 'mutant') flashEl.classList.add('mutant-flash');
       flashEl.classList.add('show');
-      setTimeout(() => flashEl.classList.remove('show'), isAmbush ? 600 : 380);
+      setTimeout(() => {
+        flashEl.classList.remove('show', 'corrupted-flash', 'mutant-flash');
+      }, mut ? 750 : isAmbush ? 600 : 380);
     }
 
     // 4. Dramatic canvas voice line
@@ -610,12 +626,17 @@ const MapEngine = (() => {
 
     // 5. Banner message
     if (typeof MapUI !== 'undefined') {
-      MapUI.showMsg(isAmbush ? `💀 AMBUSH — ${name}!` : `⚔ ${name} appeared!`, 2200);
+      const prefix = mut === 'mutant'    ? '☣ MUTANT — '
+                   : mut === 'corrupted' ? '✦ CORRUPTED — '
+                   : isAmbush           ? '💀 AMBUSH — '
+                   : '⚔ ';
+      const suffix = mut || isAmbush ? '!' : ' appeared!';
+      MapUI.showMsg(`${prefix}${name}${suffix}`, 2200);
     }
 
     // 6. Brief dramatic pause, then transition
     MapEntities.removeEncountered();
-    const delay = isAmbush ? 700 : 480;
+    const delay = (mut || isAmbush) ? 750 : 480;
     if (typeof MapEngine !== 'undefined' && typeof MapEngine.onEncounterStart === 'function') {
       setTimeout(() => MapEngine.onEncounterStart(enc, _map), delay);
     }
@@ -652,10 +673,16 @@ const MapEngine = (() => {
     _ctx    = canvasEl.getContext('2d');
     _canvas.width  = canvasEl.offsetWidth  || window.innerWidth;
     _canvas.height = canvasEl.offsetHeight || window.innerHeight;
+    TILE = _calcTileSize();
     MapInput.init(canvasEl);
     window.addEventListener('resize', () => {
       _canvas.width  = _canvas.offsetWidth  || window.innerWidth;
       _canvas.height = _canvas.offsetHeight || window.innerHeight;
+      const newTile = _calcTileSize();
+      if (newTile !== TILE) {
+        TILE = newTile;
+        if (typeof MapPlayer !== 'undefined') MapPlayer.rescale();
+      }
       _invalidateCache();
     });
   }

@@ -1,0 +1,167 @@
+[
+  {
+    "id": "echo_of_the_unmade",
+    "name": "Echo of the Unmade",
+    "icon": "🌑",
+    "rarity": "boss",
+    "arcDrop": 1,
+    "description": "A hollow fragment of the Void Knight's armor. It still hums with the ghost of an order it could not disobey.",
+    "flavour": "Something in it recognizes those who carry burdens they did not choose.",
+    "bonus": { "spd": 0.12, "firstStrike": true },
+    "bonusText": "SPD +12% · First strike chance in battle"
+  },
+  {
+    "id": "cinder_of_ashveil",
+    "name": "Cinder of Ashveil",
+    "icon": "🔥",
+    "rarity": "boss",
+    "arcDrop": 2,
+    "description": "A coal-black shard from the Demon Lord's chest, where the Fire Fragment burned. It is warm to the touch and will never cool.",
+    "flavour": "Fire that remembers what it destroyed does not stop burning.",
+    "bonus": { "atk": 0.10, "fireResist": 0.20 },
+    "bonusText": "ATK +10% · Fire damage taken –20%"
+  },
+  {
+    "id": "scorched_core",
+    "name": "Scorched Core",
+    "icon": "🌋",
+    "rarity": "boss",
+    "arcDrop": 3,
+    "description": "A fused knot of stone and heat pulled from the Ember Wastes boss. It has never stopped being warm.",
+    "flavour": "Some things burn so long they forget they were ever anything else.",
+    "bonus": { "atk": 0.12, "def": 0.06 },
+    "bonusText": "ATK +12% · DEF +6%"
+  },
+  {
+    "id": "drowned_sigil",
+    "name": "Drowned Sigil",
+    "icon": "🌊",
+    "rarity": "boss",
+    "arcDrop": 4,
+    "description": "A barnacled crest torn from the Kraken's hide. It holds the memory of a tide that swallowed an entire coast.",
+    "flavour": "The sea does not mourn what it takes. It simply keeps it.",
+    "bonus": { "hp": 0.15, "statusResist": 0.25 },
+    "bonusText": "Max HP +15% · Status resistance +25%"
+  },
+  {
+    "id": "tarnished_wing",
+    "name": "Tarnished Wing",
+    "icon": "🪶",
+    "rarity": "boss",
+    "arcDrop": 5,
+    "description": "A single feather from the Fallen Angel Commander — scorched at the edges, still bearing a seal that does not belong to them.",
+    "flavour": "The seal is not the commander's. Someone gave the order. Someone wanted them there.",
+    "bonus": { "def": 0.12, "eliteResist": 0.15 },
+    "bonusText": "DEF +12% · Damage from elites –15%"
+  },
+  {
+    "id": "void_crown_shard",
+    "name": "Void Crown Shard",
+    "icon": "👁️",
+    "rarity": "boss",
+    "arcDrop": 6,
+    "description": "A fragment of Valdris's crown, cracked in the first moment he doubted himself. It predates the war by centuries.",
+    "flavour": "Even emperors are afraid of something.",
+    "bonus": { "mag": 0.12, "mpRegen": 0.10 },
+    "bonusText": "MAG +12% · MP regenerates 10% each turn"
+  },
+  {
+    "id": "shattered_horizon",
+    "name": "Shattered Horizon",
+    "icon": "🌌",
+    "rarity": "uncommon",
+    "arcDrop": null,
+    "description": "Glass from the edge of the Void Citadel where sky and nothing meet. Weightless. Colder than it should be.",
+    "flavour": "There are places where the world simply stops. This came from one of them.",
+    "bonus": { "spd": 0.08, "atk": 0.08, "def": 0.08 },
+    "bonusText": "SPD +8% · ATK +8% · DEF +8%"
+  },
+  {
+    "id": "rampart_oath",
+    "name": "Rampart Oath",
+    "icon": "🛡️",
+    "rarity": "boss",
+    "arcDrop": 7,
+    "description": "A stone oath-tablet from the fortress ramparts, carved by soldiers who knew they would not hold the line.",
+    "flavour": "They held it anyway. That is what the tablet is for.",
+    "bonus": { "def": 0.18, "reviveOnce": true },
+    "bonusText": "DEF +18% · Once per battle: one fallen ally revives at 1 HP"
+  },
+  {
+    "id": "last_light_of_aethoria",
+    "name": "Last Light of Aethoria",
+    "icon": "✨",
+    "rarity": "boss",
+    "arcDrop": 8,
+    "description": "The final pulse of a world that refused to die quietly. It weighs nothing and everything at once.",
+    "flavour": "Carry it. That is all it asks.",
+    "bonus": { "hp": 0.10, "atk": 0.10, "mag": 0.10, "spd": 0.10 },
+    "bonusText": "HP +10% · ATK +10% · MAG +10% · SPD +10%"
+  },
+  {
+    "id": "ashen_shard",
+    "name": "Ashen Shard",
+    "icon": "🪨",
+    "rarity": "common",
+    "arcDrop": null,
+    "description": "A piece of scorched stone from the ruins. Faintly warm. Someone carved a name into it that is no longer readable.",
+    "flavour": "Even rubble remembers.",
+    "bonus": { "def": 0.06 },
+    "bonusText": "DEF +6%"
+  },
+  {
+    "id": "cracked_talisman",
+    "name": "Cracked Talisman",
+    "icon": "🧿",
+    "rarity": "common",
+    "arcDrop": null,
+    "description": "A protective charm split down the middle. Half the ward still holds.",
+    "flavour": "Half a protection is better than none. Probably.",
+    "bonus": { "hp": 0.08 },
+    "bonusText": "Max HP +8%"
+  },
+  {
+    "id": "ember_token",
+    "name": "Ember Token",
+    "icon": "🔆",
+    "rarity": "common",
+    "arcDrop": null,
+    "description": "A coin-sized disc that never goes cold. Soldiers used to carry them in winter campaigns.",
+    "flavour": "Warmth kept people alive long before weapons did.",
+    "bonus": { "atk": 0.07 },
+    "bonusText": "ATK +7%"
+  },
+  {
+    "id": "tide_remembrance",
+    "name": "Tide Remembrance",
+    "icon": "💧",
+    "rarity": "uncommon",
+    "arcDrop": null,
+    "description": "A vial of water from a spring that no longer exists. Sealed with wax. No one has opened it.",
+    "flavour": "Some things are worth preserving even when the world that made them is gone.",
+    "bonus": { "healAmp": 0.20 },
+    "bonusText": "All healing +20%"
+  },
+  {
+    "id": "warden_chain",
+    "name": "Warden's Chain",
+    "icon": "⛓️",
+    "rarity": "uncommon",
+    "arcDrop": null,
+    "description": "A length of chain worn smooth by two thousand years of use. Too heavy for most. The warden carries it like it weighs nothing.",
+    "flavour": "Some burdens become so familiar they stop feeling like weight.",
+    "bonus": { "def": 0.10, "atk": 0.05 },
+    "bonusText": "DEF +10% · ATK +5%"
+  },
+  {
+    "id": "summoner_thread",
+    "name": "Summoner's Thread",
+    "icon": "🪢",
+    "rarity": "uncommon",
+    "arcDrop": null,
+    "description": "A cord woven from eidolon hair, given freely. It hums faintly when held near anyone with magical ability.",
+    "flavour": "The creatures gave what they could. That is what loyalty looks like.",
+    "bonus": { "mag": 0.10, "mp": 0.08 },
+    "bonusText": "MAG +10% · Max MP +8%"
+  }
+]

@@ -15,11 +15,11 @@
     "void_knight",
     "bone_dragon",
     "necromancer",
-    "fallen_angel",
     "demon_lord",
-    "dark_phoenix"
+    "dark_phoenix",
+    "void_knight"
   ],
-  "boss_enemy": "dark_phoenix",
+  "boss_enemy": "fallen_angel",
   "chapters": [
     {
       "id": "arc5_ch1",

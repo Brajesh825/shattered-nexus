@@ -80,30 +80,28 @@ const NPC_DEFS = {
         { speaker: 'Lulu',          text: 'That sounds reasonable. Why does the Oracle not work with them?' },
         { speaker: 'Lady Essabella', text: 'Because the Oracle\'s plan requires destruction. And this faction does not trust that anything destroyed can be trusted not to take something else with it.' },
         { speaker: 'Rei',           text: 'You speak about them as though you know them well.' },
-        { speaker: 'Lady Essabella', text: 'I have studied many factions. The Kraken waits ahead of you — ancient, corrupted, compelled. It is not your enemy. What compels it is. Try to remember the difference when you are in the water.' },
+        { speaker: 'Lady Essabella', text: 'I have studied many factions. The Dark Phoenix waits at the heart of these wastes — a creature of renewal, twisted into a creature of endless burning. It is not your enemy. What trapped it here is. Try to remember the difference when the fire finds you.' },
         { speaker: 'Lady Essabella', text: 'I will be watching. As I always am.' },
       ],
 
       // ── ARC 4 — Sunken Temple ─────────────────────────────────────
       // The last appearance before the reveal. Essabella gives the party
-      // precise, almost suspicious intelligence on the Fallen Angel
-      // commander — her own lieutenant. She knows exactly where to find
-      // her, exactly what she will do. Because she sent her there.
-      // After the boss fight, the party finds Essabella's seal on the
-      // commander's body. This dialogue becomes the last piece that makes
-      // everything retroactively clear.
+      // precise, almost suspicious intelligence on the Kraken — she knows
+      // exactly where it patrols and why. She plants the seed: something
+      // bound the Kraken here beyond Valdris's corruption. She does not
+      // explain who. After the fight, her seal is found on the binding
+      // chain — the first piece that makes everything retroactively clear.
       sunken_temple: [
         { speaker: 'Rei',           text: 'I felt you before I saw you. You have been in these ruins before.' },
         { speaker: 'Lady Essabella', text: 'Many times. I know every corridor.' },
-        { speaker: 'Aya',          text: 'The Fallen Angel commander — do you know where she is?' },
-        { speaker: 'Lady Essabella', text: 'The deepest chamber. Third level, beyond the collapsed bridge. She will not move from it — she is ordered to hold that position absolutely.' },
+        { speaker: 'Aya',          text: 'The Kraken — do you know where it holds?' },
+        { speaker: 'Lady Essabella', text: 'The central hub. Flooded chamber, three levels down. It will not leave — it cannot. The binding goes deeper than Valdris\'s corruption.' },
         { speaker: 'Tao',          text: 'You sound very certain of that.' },
-        { speaker: 'Lady Essabella', text: 'I have spent years tracking Valdris\'s commanders. Their patterns are consistent.' },
-        { speaker: 'Lady Essabella', text: 'She was not always what she is now. Before Valdris took her, she was something close to sacred. Whatever is left of that — it will make her faster, and it will make her precise. Do not let her isolate one of you.' },
-        { speaker: 'Lulu',          text: 'You said she was something sacred. Can she be freed? Like the Kraken?' },
+        { speaker: 'Lady Essabella', text: 'I have spent years studying what anchors things to places against their will. The Kraken\'s corruption is layered — Valdris is the outer layer. Beneath that, something else holds it.' },
+        { speaker: 'Lady Essabella', text: 'It was a guardian once. These depths were its charge. Whatever bound it here originally believed that was worth preserving — even at cost.' },
+        { speaker: 'Lulu',          text: 'That sounds like whoever did it had a reason. Even if the Kraken did not choose it.' },
         { speaker: 'Lady Essabella', text: '...' },
-        { speaker: 'Lady Essabella', text: 'The Kraken was corrupted against its will. The commander made choices. They are not the same.' },
-        { speaker: 'Lady Essabella', text: 'When it is over — look at what she carries. There is something there the Oracle has not told you about. Something worth understanding.' },
+        { speaker: 'Lady Essabella', text: 'When it is over — look at what remains in the chamber. There is something there the Oracle has not told you about. Something worth understanding.' },
         { speaker: 'Rei',           text: 'What do you mean?' },
         { speaker: 'Lady Essabella', text: 'Go. You will see.' },
       ],
@@ -137,7 +135,7 @@ const NPC_DEFS = {
       // gone. What remains is the question she has always carried:
       // what happens to the world after Valdris falls?
       void_citadel: [
-        { speaker: 'Rei',           text: 'The fallen_angel in the enemy pools — those were yours.' },
+        { speaker: 'Rei',           text: 'The Fallen Angels in the enemy pools — those were yours.' },
         { speaker: 'Lady Essabella', text: 'Were. He found them faster than I anticipated. I underestimated how far his reach extended into the citadel.' },
         { speaker: 'Tao',          text: 'You watched them become what we fought.' },
         { speaker: 'Lady Essabella', text: 'I could not get to them in time. I could not —' },

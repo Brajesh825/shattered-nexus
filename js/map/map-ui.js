@@ -395,6 +395,88 @@ const MapUI = (() => {
     closeCampMenu();
   }
 
+  function campRelics() {
+    const campEl = document.getElementById('camp-menu');
+    if (campEl) campEl.style.display = 'none';
+    _renderRelicPanel();
+    const panel = document.getElementById('relic-panel');
+    if (panel) panel.style.display = 'flex';
+  }
+
+  function closeRelics() {
+    const panel = document.getElementById('relic-panel');
+    if (panel) panel.style.display = 'none';
+    const campEl = document.getElementById('camp-menu');
+    if (campEl) campEl.style.display = 'flex';
+  }
+
+  function _renderRelicPanel() {
+    const owned   = G.ownedRelics  || [];
+    const active  = G.activeRelics || [];
+    const defs    = G.relics       || [];
+
+    // ── Slots row ──
+    const slotsEl = document.getElementById('relic-slots');
+    if (slotsEl) {
+      slotsEl.innerHTML = '';
+      for (let i = 0; i < 3; i++) {
+        const slotId = active[i];
+        const def    = slotId ? defs.find(r => r.id === slotId) : null;
+        const slot   = document.createElement('div');
+        slot.className = def ? 'relic-slot filled' : 'relic-slot';
+        if (def) {
+          slot.innerHTML = `<div class="relic-slot-icon">${def.icon}</div><div class="relic-slot-name">${def.name}</div>`;
+          slot.title = `Unequip ${def.name}`;
+          slot.addEventListener('click', () => { _unequipRelic(slotId); _renderRelicPanel(); });
+        } else {
+          slot.innerHTML = `<div style="font-size:18px;opacity:.3">○</div><div>empty</div>`;
+        }
+        slotsEl.appendChild(slot);
+      }
+    }
+
+    // ── Owned list ──
+    const listEl = document.getElementById('relic-list');
+    if (!listEl) return;
+    listEl.innerHTML = '';
+    if (!owned.length) {
+      listEl.innerHTML = '<div style="font-size:9px;color:#3a2860;text-align:center;padding:12px">No relics found yet — defeat bosses and explore.</div>';
+      return;
+    }
+    owned.forEach(id => {
+      const def = defs.find(r => r.id === id);
+      if (!def) return;
+      const isEquipped = active.includes(id);
+      const card = document.createElement('div');
+      card.className = `relic-card${isEquipped ? ' equipped' : ''}${def.rarity === 'boss' ? ' boss-relic' : ''}`;
+      card.innerHTML = `
+        <div class="relic-card-icon">${def.icon}</div>
+        <div class="relic-card-info">
+          <div class="relic-card-name">${def.name}</div>
+          <div class="relic-card-bonus">${def.bonusText}</div>
+          <div class="relic-card-desc">${def.flavour}</div>
+        </div>
+        ${isEquipped
+          ? '<div class="relic-card-badge">ON</div>'
+          : active.length < 3
+            ? '<div class="relic-card-badge" style="background:#3a2870;color:#c0b0e8">+</div>'
+            : '<div class="relic-card-badge" style="background:#1a0d30;color:#4a3880">FULL</div>'
+        }
+      `;
+      card.addEventListener('click', () => {
+        if (isEquipped) _unequipRelic(id);
+        else if (active.length < 3) G.activeRelics.push(id);
+        _renderRelicPanel();
+        if (typeof Story !== 'undefined' && Story._doSave) Story._doSave();
+      });
+      listEl.appendChild(card);
+    });
+  }
+
+  function _unequipRelic(id) {
+    G.activeRelics = (G.activeRelics || []).filter(r => r !== id);
+  }
+
   /* ── Legacy canvas overlay (no-op — DOM HUD is used) ─── */
   // Kept so any existing code calling MapUI.render() won't break.
   function render(ctx, cw, ch) { /* DOM HUD renders instead */ }
@@ -424,5 +506,7 @@ const MapUI = (() => {
     campWorldMap,
     campChangeParty,
     campHeal,
+    campRelics,
+    closeRelics,
   };
 })();
