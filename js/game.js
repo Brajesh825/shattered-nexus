@@ -589,6 +589,7 @@ MapEngine.onEncounterStart = (enc, map) => {
   const enemyIds   = enc.enemies      || [];
   const mutation   = enc.mutation     || null; // null | 'corrupted' | 'mutant'
   const mutantTraits = enc.mutantTraits || null; // array of trait objects, mutant only
+  G.battleZone = map?.id || null; // store zone for battle background
 
   const enemyDefs = enemyIds
     .map(id => G.enemies.find(e => e.id === id))
@@ -643,10 +644,18 @@ MapEngine.onEncounterStart = (enc, map) => {
 
   _initBattle();
 
-  // ── Apply mutation atmosphere to the whole battle scene ──────
+  // ── Apply zone + mutation atmosphere to the battle scene ────
   const scene = document.getElementById('battle-scene');
   if (scene) {
+    // Remove all zone and mutation classes first
     scene.classList.remove('battle-corrupted', 'battle-mutant');
+    scene.className = scene.className
+      .split(' ')
+      .filter(c => !c.startsWith('battle-zone-'))
+      .join(' ');
+    // Apply zone background
+    if (G.battleZone) scene.classList.add(`battle-zone-${G.battleZone}`);
+    // Apply mutation overlay on top
     if (mutation === 'corrupted') scene.classList.add('battle-corrupted');
     if (mutation === 'mutant')    scene.classList.add('battle-mutant');
   }
@@ -1165,7 +1174,13 @@ function startBattle() {
 // Removes mutation scene classes so the next battle starts clean.
 function _clearBattleAtmosphere() {
   const scene = document.getElementById('battle-scene');
-  if (scene) scene.classList.remove('battle-corrupted', 'battle-mutant');
+  if (!scene) return;
+  scene.classList.remove('battle-corrupted', 'battle-mutant');
+  scene.className = scene.className
+    .split(' ')
+    .filter(c => !c.startsWith('battle-zone-'))
+    .join(' ');
+  G.battleZone = null;
 }
 
 // ── Mutant trait: Vampiric ─────────────────────────────────────────────────

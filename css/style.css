@@ -816,6 +816,208 @@ body {
   border-top: 2px solid #10a030;
 }
 
+/* ═══════════════════════════════════════════════════════════════════
+   BATTLE ZONE BACKGROUNDS
+   Each map zone gets its own sky/mountains/ground palette.
+   Mutation classes (battle-corrupted / battle-mutant) override
+   the background when active — zone still sets mountains + ground
+   unless mutation also overrides those.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── 1. VERDANT VALE — forest dusk, emerald horizon ──────────────── */
+#battle-scene.battle-zone-verdant_vale {
+  background:
+    radial-gradient(ellipse 65% 45% at 50% 0%, #0a2818 0%, transparent 65%),
+    radial-gradient(ellipse 40% 30% at 20% 65%, #051408 0%, transparent 55%),
+    linear-gradient(180deg, #040c06 0%, #081808 35%, #0e2210 42%, #050e07 100%);
+}
+#battle-scene.battle-zone-verdant_vale::before {
+  background: linear-gradient(90deg, transparent, #1a5030, #40c870, #1a5030, transparent);
+  opacity: 0.45;
+}
+#battle-scene.battle-zone-verdant_vale .bg-mts polygon:nth-child(1) { fill: #0a1e0f; }
+#battle-scene.battle-zone-verdant_vale .bg-mts polygon:nth-child(2) { fill: #132810; }
+#battle-scene.battle-zone-verdant_vale .bg-mts {
+  filter: drop-shadow(0 0 10px rgba(30,160,60,0.35));
+}
+#battle-scene.battle-zone-verdant_vale .bg-gnd {
+  background: linear-gradient(180deg, #0c1e0e, #060e07);
+  border-top: 2px solid #1a5030;
+}
+
+/* ── 2. CRYSTAL CAVERN — deep indigo, ice-blue crystal peaks ─────── */
+#battle-scene.battle-zone-crystal_cavern {
+  background:
+    radial-gradient(ellipse 60% 40% at 50% 0%, #0a1840 0%, transparent 65%),
+    radial-gradient(ellipse 50% 35% at 80% 40%, #060e28 0%, transparent 55%),
+    linear-gradient(180deg, #040814 0%, #080e28 35%, #0c1438 42%, #040810 100%);
+}
+#battle-scene.battle-zone-crystal_cavern::before {
+  background: linear-gradient(90deg, transparent, #1840a0, #70c0ff, #1840a0, transparent);
+  opacity: 0.6;
+  animation: crystalShimmer 3s ease-in-out infinite alternate;
+}
+#battle-scene.battle-zone-crystal_cavern .bg-mts polygon:nth-child(1) { fill: #0a1030; }
+#battle-scene.battle-zone-crystal_cavern .bg-mts polygon:nth-child(2) { fill: #101840; }
+#battle-scene.battle-zone-crystal_cavern .bg-mts {
+  filter: drop-shadow(0 0 12px rgba(60,140,255,0.5));
+}
+#battle-scene.battle-zone-crystal_cavern .bg-gnd {
+  background: linear-gradient(180deg, #0c1430, #060a1c);
+  border-top: 2px solid #2050c0;
+}
+@keyframes crystalShimmer {
+  from { opacity: 0.45; transform: scaleX(0.99); }
+  to   { opacity: 0.70; transform: scaleX(1.01); }
+}
+
+/* ── 3. EMBER WASTES — volcanic red-black, lava horizon ──────────── */
+#battle-scene.battle-zone-ember_wastes {
+  background:
+    radial-gradient(ellipse 65% 45% at 50% 0%, #3a0c00 0%, transparent 65%),
+    radial-gradient(ellipse 40% 30% at 30% 70%, #200800 0%, transparent 55%),
+    linear-gradient(180deg, #100400 0%, #1e0800 35%, #2c0c00 42%, #130500 100%);
+}
+#battle-scene.battle-zone-ember_wastes::before {
+  background: linear-gradient(90deg, transparent, #a01808, #ff4010, #a01808, transparent);
+  opacity: 0.65;
+  animation: lavaGlow 1.8s ease-in-out infinite alternate;
+}
+#battle-scene.battle-zone-ember_wastes .bg-mts polygon:nth-child(1) { fill: #1a0600; }
+#battle-scene.battle-zone-ember_wastes .bg-mts polygon:nth-child(2) { fill: #240a00; }
+#battle-scene.battle-zone-ember_wastes .bg-mts {
+  filter: drop-shadow(0 0 14px rgba(255,50,10,0.55));
+}
+#battle-scene.battle-zone-ember_wastes .bg-gnd {
+  background: linear-gradient(180deg, #260c00, #130500);
+  border-top: 2px solid #c02808;
+}
+@keyframes lavaGlow {
+  from { opacity: 0.50; }
+  to   { opacity: 0.80; }
+}
+
+/* ── 4. SHADOW REACH — near-black void, dim violet veins ─────────── */
+#battle-scene.battle-zone-shadow_reach {
+  background:
+    radial-gradient(ellipse 55% 40% at 50% 0%, #0e0620 0%, transparent 65%),
+    radial-gradient(ellipse 40% 30% at 70% 50%, #070310 0%, transparent 55%),
+    linear-gradient(180deg, #030108 0%, #07030e 35%, #0a0516 42%, #030108 100%);
+}
+#battle-scene.battle-zone-shadow_reach::before {
+  background: linear-gradient(90deg, transparent, #280660, #5808b0, #280660, transparent);
+  opacity: 0.38;
+  animation: shadowPulse 4s ease-in-out infinite alternate;
+}
+#battle-scene.battle-zone-shadow_reach .bg-mts polygon:nth-child(1) { fill: #060210; }
+#battle-scene.battle-zone-shadow_reach .bg-mts polygon:nth-child(2) { fill: #090418; }
+#battle-scene.battle-zone-shadow_reach .bg-gnd {
+  background: linear-gradient(180deg, #0a0320, #04010e);
+  border-top: 2px solid #30086060;
+}
+@keyframes shadowPulse {
+  from { opacity: 0.28; }
+  to   { opacity: 0.50; }
+}
+
+/* ── 5. SUNKEN TEMPLE — deep ocean blue, caustic light ───────────── */
+#battle-scene.battle-zone-sunken_temple {
+  background:
+    radial-gradient(ellipse 60% 45% at 50% 0%, #002838 0%, transparent 65%),
+    radial-gradient(ellipse 45% 35% at 25% 60%, #001220 0%, transparent 55%),
+    linear-gradient(180deg, #000c14 0%, #001528 35%, #001c32 42%, #000b12 100%);
+}
+#battle-scene.battle-zone-sunken_temple::before {
+  background: linear-gradient(90deg, transparent, #0058a0, #00b0d8, #0058a0, transparent);
+  opacity: 0.50;
+  animation: causticRipple 2.4s ease-in-out infinite alternate;
+}
+#battle-scene.battle-zone-sunken_temple .bg-mts polygon:nth-child(1) { fill: #001525; }
+#battle-scene.battle-zone-sunken_temple .bg-mts polygon:nth-child(2) { fill: #001c32; }
+#battle-scene.battle-zone-sunken_temple .bg-mts {
+  filter: drop-shadow(0 0 10px rgba(0,130,200,0.45));
+}
+#battle-scene.battle-zone-sunken_temple .bg-gnd {
+  background: linear-gradient(180deg, #001e30, #000e1c);
+  border-top: 2px solid #007ab0;
+}
+@keyframes causticRipple {
+  from { opacity: 0.38; transform: scaleX(0.97); }
+  to   { opacity: 0.62; transform: scaleX(1.03); }
+}
+
+/* ── 6. VOID CITADEL — electric blue-black, arc flicker ──────────── */
+#battle-scene.battle-zone-void_citadel {
+  background:
+    radial-gradient(ellipse 60% 40% at 50% 0%, #001228 0%, transparent 65%),
+    radial-gradient(ellipse 35% 25% at 80% 30%, #00081a 0%, transparent 55%),
+    linear-gradient(180deg, #000408 0%, #000a1c 35%, #000e28 42%, #000408 100%);
+}
+#battle-scene.battle-zone-void_citadel::before {
+  background: linear-gradient(90deg, transparent, #0028a0, #0070ff, #0028a0, transparent);
+  opacity: 0.55;
+  animation: arcFlicker 0.75s ease-in-out infinite alternate;
+}
+#battle-scene.battle-zone-void_citadel .bg-mts polygon:nth-child(1) { fill: #000a1c; }
+#battle-scene.battle-zone-void_citadel .bg-mts polygon:nth-child(2) { fill: #000e28; }
+#battle-scene.battle-zone-void_citadel .bg-mts {
+  filter: drop-shadow(0 0 10px rgba(0,90,255,0.55));
+}
+#battle-scene.battle-zone-void_citadel .bg-gnd {
+  background: linear-gradient(180deg, #000e28, #000618);
+  border-top: 2px solid #0038c0;
+}
+@keyframes arcFlicker {
+  from { opacity: 0.38; }
+  to   { opacity: 0.72; }
+}
+
+/* ── 7. FORTRESS RAMPARTS — stormy grey-slate, wind streaks ──────── */
+#battle-scene.battle-zone-fortress_ramparts {
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 0%, #181828 0%, transparent 65%),
+    radial-gradient(ellipse 40% 30% at 30% 55%, #0e0e18 0%, transparent 55%),
+    linear-gradient(180deg, #0a0a12 0%, #121220 35%, #181828 42%, #0a0a12 100%);
+}
+#battle-scene.battle-zone-fortress_ramparts::before {
+  background: linear-gradient(90deg, transparent, #282840, #585880, #282840, transparent);
+  opacity: 0.48;
+  animation: stormWind 2.2s ease-in-out infinite alternate;
+}
+#battle-scene.battle-zone-fortress_ramparts .bg-mts polygon:nth-child(1) { fill: #121218; }
+#battle-scene.battle-zone-fortress_ramparts .bg-mts polygon:nth-child(2) { fill: #1a1a24; }
+#battle-scene.battle-zone-fortress_ramparts .bg-gnd {
+  background: linear-gradient(180deg, #181828, #0a0a14);
+  border-top: 2px solid #383858;
+}
+@keyframes stormWind {
+  from { opacity: 0.34; transform: scaleX(0.96); }
+  to   { opacity: 0.58; transform: scaleX(1.04); }
+}
+
+/* ── 8. ETERNAL VOID — pure black fractal, violet light-bridges ──── */
+#battle-scene.battle-zone-eternal_void {
+  background:
+    radial-gradient(ellipse 30% 30% at 20% 30%, #100040 0%, transparent 50%),
+    radial-gradient(ellipse 25% 25% at 80% 20%, #002040 0%, transparent 45%),
+    radial-gradient(ellipse 40% 40% at 50% 85%, #280010 0%, transparent 50%),
+    linear-gradient(180deg, #000000 0%, #020008 35%, #040012 42%, #000000 100%);
+}
+#battle-scene.battle-zone-eternal_void::before {
+  background: linear-gradient(90deg, transparent, #3800c0, #b000ff, #3800c0, transparent);
+  opacity: 0.42;
+  animation: voidPulse 5s ease-in-out infinite alternate;
+}
+#battle-scene.battle-zone-eternal_void .bg-mts { display: none; }
+#battle-scene.battle-zone-eternal_void .bg-gnd {
+  background: linear-gradient(180deg, #1c0040, #080010);
+  border-top: 2px solid #5800c0;
+}
+@keyframes voidPulse {
+  from { opacity: 0.28; }
+  to   { opacity: 0.55; }
+}
+
 /* ── Normal mountains/ground (unchanged) ─────────────────── */
 .bg-mts {
   position:absolute;
