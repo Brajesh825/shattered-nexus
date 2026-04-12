@@ -3,9 +3,26 @@
     "id": "goblin",
     "name": "Goblin Scout",
     "subtitle": "A sneaky little menace with a rusty blade",
+    "element": "physical",
+    "weakTo": [
+      "fire",
+      "wind"
+    ],
+    "resistTo": [
+      "physical"
+    ],
     "tier": 1,
-    "stats": { "hp": 32, "atk": 8, "def": 4, "spd": 13, "mag": 3 },
-    "reward": { "exp": 12, "gold": 8 },
+    "stats": {
+      "hp": 32,
+      "atk": 8,
+      "def": 4,
+      "spd": 13,
+      "mag": 3
+    },
+    "reward": {
+      "exp": 12,
+      "gold": 8
+    },
     "palette": {
       "body": "#60a030",
       "dark": "#3a6010",
@@ -36,18 +53,40 @@
       }
     ],
     "drops": [
-      { "item": "Goblin Ear", "chance": 0.5 },
-      { "item": "Potion", "chance": 0.15 }
+      {
+        "item": "Goblin Ear",
+        "chance": 0.5
+      },
+      {
+        "item": "Potion",
+        "chance": 0.15
+      }
     ]
   },
-
   {
     "id": "bat",
     "name": "Giant Bat",
     "subtitle": "A shrieking beast that hunts in total darkness",
+    "element": "wind",
+    "weakTo": [
+      "earth",
+      "fire"
+    ],
+    "resistTo": [
+      "wind"
+    ],
     "tier": 1,
-    "stats": { "hp": 28, "atk": 7, "def": 3, "spd": 16, "mag": 5 },
-    "reward": { "exp": 11, "gold": 6 },
+    "stats": {
+      "hp": 28,
+      "atk": 7,
+      "def": 3,
+      "spd": 16,
+      "mag": 5
+    },
+    "reward": {
+      "exp": 11,
+      "gold": 6
+    },
     "palette": {
       "body": "#2a1040",
       "dark": "#100820",
@@ -56,8 +95,18 @@
       "pupil": "#800010"
     },
     "abilities": [
-      { "id": "bite", "name": "Bite", "type": "physical", "weight": 60 },
-      { "id": "screech", "name": "Screech", "type": "debuff", "weight": 25 },
+      {
+        "id": "bite",
+        "name": "Bite",
+        "type": "physical",
+        "weight": 60
+      },
+      {
+        "id": "screech",
+        "name": "Screech",
+        "type": "debuff",
+        "weight": 25
+      },
       {
         "id": "wing_slash",
         "name": "Wing Slash",
@@ -67,18 +116,39 @@
       }
     ],
     "drops": [
-      { "item": "Bat Fang", "chance": 0.45 },
-      { "item": "Antidote", "chance": 0.2 }
+      {
+        "item": "Bat Fang",
+        "chance": 0.45
+      },
+      {
+        "item": "Antidote",
+        "chance": 0.2
+      }
     ]
   },
-
   {
     "id": "rat",
     "name": "Giant Rat",
     "subtitle": "A bloated sewer dweller with plague-ridden teeth",
+    "element": "physical",
+    "weakTo": [
+      "fire"
+    ],
+    "resistTo": [
+      "physical"
+    ],
     "tier": 1,
-    "stats": { "hp": 22, "atk": 6, "def": 2, "spd": 15, "mag": 2 },
-    "reward": { "exp": 8, "gold": 5 },
+    "stats": {
+      "hp": 22,
+      "atk": 6,
+      "def": 2,
+      "spd": 15,
+      "mag": 2
+    },
+    "reward": {
+      "exp": 8,
+      "gold": 5
+    },
     "palette": {
       "body": "#907060",
       "dark": "#503020",
@@ -87,22 +157,54 @@
       "pupil": "#200000"
     },
     "abilities": [
-      { "id": "gnaw", "name": "Gnaw", "type": "physical", "weight": 65 },
-      { "id": "swarm", "name": "Swarm", "type": "debuff", "weight": 35 }
+      {
+        "id": "gnaw",
+        "name": "Gnaw",
+        "type": "physical",
+        "weight": 65
+      },
+      {
+        "id": "swarm",
+        "name": "Swarm",
+        "type": "debuff",
+        "weight": 35
+      }
     ],
     "drops": [
-      { "item": "Rat Tail", "chance": 0.4 },
-      { "item": "Potion", "chance": 0.1 }
+      {
+        "item": "Rat Tail",
+        "chance": 0.4
+      },
+      {
+        "item": "Potion",
+        "chance": 0.1
+      }
     ]
   },
-
   {
     "id": "mushroom",
     "name": "Spore Mushroom",
     "subtitle": "A toxic fungus that releases blinding clouds",
+    "element": "earth",
+    "weakTo": [
+      "fire"
+    ],
+    "resistTo": [
+      "earth",
+      "poison"
+    ],
     "tier": 1,
-    "stats": { "hp": 38, "atk": 5, "def": 7, "spd": 2, "mag": 9 },
-    "reward": { "exp": 15, "gold": 9 },
+    "stats": {
+      "hp": 38,
+      "atk": 5,
+      "def": 7,
+      "spd": 2,
+      "mag": 9
+    },
+    "reward": {
+      "exp": 15,
+      "gold": 9
+    },
     "palette": {
       "body": "#c03040",
       "dark": "#801020",
@@ -118,22 +220,54 @@
         "weight": 40,
         "dmgMultiplier": 1.3
       },
-      { "id": "root", "name": "Root", "type": "debuff", "weight": 35 },
-      { "id": "headbutt", "name": "Headbutt", "type": "physical", "weight": 25 }
+      {
+        "id": "root",
+        "name": "Root",
+        "type": "debuff",
+        "weight": 35
+      },
+      {
+        "id": "headbutt",
+        "name": "Headbutt",
+        "type": "physical",
+        "weight": 25
+      }
     ],
     "drops": [
-      { "item": "Toxic Spore", "chance": 0.55 },
-      { "item": "Antidote", "chance": 0.25 }
+      {
+        "item": "Toxic Spore",
+        "chance": 0.55
+      },
+      {
+        "item": "Antidote",
+        "chance": 0.25
+      }
     ]
   },
-
   {
     "id": "imp",
     "name": "Fire Imp",
     "subtitle": "A mischievous little devil with scorching hands",
+    "element": "fire",
+    "weakTo": [
+      "water",
+      "ice"
+    ],
+    "resistTo": [
+      "fire"
+    ],
     "tier": 1,
-    "stats": { "hp": 30, "atk": 9, "def": 4, "spd": 12, "mag": 9 },
-    "reward": { "exp": 13, "gold": 9 },
+    "stats": {
+      "hp": 30,
+      "atk": 9,
+      "def": 4,
+      "spd": 12,
+      "mag": 9
+    },
+    "reward": {
+      "exp": 13,
+      "gold": 9
+    },
     "palette": {
       "body": "#cc3020",
       "dark": "#801010",
@@ -142,7 +276,12 @@
       "pupil": "#804000"
     },
     "abilities": [
-      { "id": "scratch", "name": "Scratch", "type": "physical", "weight": 45 },
+      {
+        "id": "scratch",
+        "name": "Scratch",
+        "type": "physical",
+        "weight": 45
+      },
       {
         "id": "fire_bolt",
         "name": "Fire Bolt",
@@ -150,21 +289,48 @@
         "weight": 35,
         "dmgMultiplier": 1.4
       },
-      { "id": "cackle", "name": "Cackle", "type": "debuff", "weight": 20 }
+      {
+        "id": "cackle",
+        "name": "Cackle",
+        "type": "debuff",
+        "weight": 20
+      }
     ],
     "drops": [
-      { "item": "Ember Shard", "chance": 0.5 },
-      { "item": "Potion", "chance": 0.15 }
+      {
+        "item": "Ember Shard",
+        "chance": 0.5
+      },
+      {
+        "item": "Potion",
+        "chance": 0.15
+      }
     ]
   },
-
   {
     "id": "crab",
     "name": "Armored Crab",
     "subtitle": "A coastal beast with nearly impenetrable shell",
+    "element": "water",
+    "weakTo": [
+      "earth"
+    ],
+    "resistTo": [
+      "water",
+      "physical"
+    ],
     "tier": 1,
-    "stats": { "hp": 46, "atk": 10, "def": 12, "spd": 3, "mag": 2 },
-    "reward": { "exp": 18, "gold": 12 },
+    "stats": {
+      "hp": 46,
+      "atk": 10,
+      "def": 12,
+      "spd": 3,
+      "mag": 2
+    },
+    "reward": {
+      "exp": 18,
+      "gold": 12
+    },
     "palette": {
       "body": "#d06020",
       "dark": "#803010",
@@ -195,18 +361,39 @@
       }
     ],
     "drops": [
-      { "item": "Crab Shell", "chance": 0.6 },
-      { "item": "Hi-Potion", "chance": 0.1 }
+      {
+        "item": "Crab Shell",
+        "chance": 0.6
+      },
+      {
+        "item": "Hi-Potion",
+        "chance": 0.1
+      }
     ]
   },
-
   {
     "id": "wolf",
     "name": "Dire Wolf",
     "subtitle": "A massive black wolf that hunts in the shadow",
+    "element": "physical",
+    "weakTo": [
+      "fire"
+    ],
+    "resistTo": [
+      "wind"
+    ],
     "tier": 1,
-    "stats": { "hp": 38, "atk": 12, "def": 5, "spd": 15, "mag": 3 },
-    "reward": { "exp": 16, "gold": 10 },
+    "stats": {
+      "hp": 38,
+      "atk": 12,
+      "def": 5,
+      "spd": 15,
+      "mag": 3
+    },
+    "reward": {
+      "exp": 16,
+      "gold": 10
+    },
     "palette": {
       "body": "#303040",
       "dark": "#101020",
@@ -222,7 +409,12 @@
         "weight": 50,
         "dmgMultiplier": 1.1
       },
-      { "id": "howl", "name": "Howl", "type": "buff_self", "weight": 25 },
+      {
+        "id": "howl",
+        "name": "Howl",
+        "type": "buff_self",
+        "weight": 25
+      },
       {
         "id": "tackle",
         "name": "Tackle",
@@ -232,18 +424,40 @@
       }
     ],
     "drops": [
-      { "item": "Wolf Pelt", "chance": 0.5 },
-      { "item": "Potion", "chance": 0.2 }
+      {
+        "item": "Wolf Pelt",
+        "chance": 0.5
+      },
+      {
+        "item": "Potion",
+        "chance": 0.2
+      }
     ]
   },
-
   {
     "id": "spider",
     "name": "Poison Spider",
     "subtitle": "A web-spinning predator coated in venom",
+    "element": "poison",
+    "weakTo": [
+      "fire"
+    ],
+    "resistTo": [
+      "poison",
+      "earth"
+    ],
     "tier": 1,
-    "stats": { "hp": 32, "atk": 8, "def": 5, "spd": 11, "mag": 6 },
-    "reward": { "exp": 14, "gold": 9 },
+    "stats": {
+      "hp": 32,
+      "atk": 8,
+      "def": 5,
+      "spd": 11,
+      "mag": 6
+    },
+    "reward": {
+      "exp": 14,
+      "gold": 9
+    },
     "palette": {
       "body": "#201828",
       "dark": "#100c18",
@@ -252,8 +466,18 @@
       "pupil": "#600000"
     },
     "abilities": [
-      { "id": "spider_bite", "name": "Bite", "type": "physical", "weight": 45 },
-      { "id": "web", "name": "Web", "type": "debuff", "weight": 35 },
+      {
+        "id": "spider_bite",
+        "name": "Bite",
+        "type": "physical",
+        "weight": 45
+      },
+      {
+        "id": "web",
+        "name": "Web",
+        "type": "debuff",
+        "weight": 35
+      },
       {
         "id": "venom_strike",
         "name": "Venom Strike",
@@ -263,18 +487,41 @@
       }
     ],
     "drops": [
-      { "item": "Spider Silk", "chance": 0.5 },
-      { "item": "Antidote", "chance": 0.3 }
+      {
+        "item": "Spider Silk",
+        "chance": 0.5
+      },
+      {
+        "item": "Antidote",
+        "chance": 0.3
+      }
     ]
   },
-
   {
     "id": "zombie",
     "name": "Rotting Zombie",
     "subtitle": "A shambling undead spreading plague and misery",
+    "element": "shadow",
+    "weakTo": [
+      "fire",
+      "light"
+    ],
+    "resistTo": [
+      "shadow",
+      "physical"
+    ],
     "tier": 1,
-    "stats": { "hp": 50, "atk": 11, "def": 7, "spd": 3, "mag": 4 },
-    "reward": { "exp": 19, "gold": 12 },
+    "stats": {
+      "hp": 50,
+      "atk": 11,
+      "def": 7,
+      "spd": 3,
+      "mag": 4
+    },
+    "reward": {
+      "exp": 19,
+      "gold": 12
+    },
     "palette": {
       "body": "#608040",
       "dark": "#304020",
@@ -283,7 +530,12 @@
       "pupil": "#808000"
     },
     "abilities": [
-      { "id": "zombie_slam", "name": "Slam", "type": "physical", "weight": 50 },
+      {
+        "id": "zombie_slam",
+        "name": "Slam",
+        "type": "physical",
+        "weight": 50
+      },
       {
         "id": "plague",
         "name": "Plague",
@@ -299,18 +551,40 @@
       }
     ],
     "drops": [
-      { "item": "Rotten Flesh", "chance": 0.4 },
-      { "item": "Potion", "chance": 0.15 }
+      {
+        "item": "Rotten Flesh",
+        "chance": 0.4
+      },
+      {
+        "item": "Potion",
+        "chance": 0.15
+      }
     ]
   },
-
   {
     "id": "wisp",
     "name": "Lost Wisp",
     "subtitle": "A wayward soul radiating corrosive spectral light",
+    "element": "shadow",
+    "weakTo": [
+      "light",
+      "holy"
+    ],
+    "resistTo": [
+      "shadow"
+    ],
     "tier": 1,
-    "stats": { "hp": 25, "atk": 6, "def": 3, "spd": 14, "mag": 11 },
-    "reward": { "exp": 16, "gold": 10 },
+    "stats": {
+      "hp": 25,
+      "atk": 6,
+      "def": 3,
+      "spd": 14,
+      "mag": 11
+    },
+    "reward": {
+      "exp": 16,
+      "gold": 10
+    },
     "palette": {
       "body": "#60a0ff",
       "dark": "#2040c0",
@@ -326,7 +600,12 @@
         "weight": 50,
         "dmgMultiplier": 1.4
       },
-      { "id": "flash", "name": "Flash", "type": "debuff", "weight": 30 },
+      {
+        "id": "flash",
+        "name": "Flash",
+        "type": "debuff",
+        "weight": 30
+      },
       {
         "id": "haunt",
         "name": "Haunt",
@@ -336,18 +615,41 @@
       }
     ],
     "drops": [
-      { "item": "Spirit Essence", "chance": 0.45 },
-      { "item": "Ether", "chance": 0.2 }
+      {
+        "item": "Spirit Essence",
+        "chance": 0.45
+      },
+      {
+        "item": "Ether",
+        "chance": 0.2
+      }
     ]
   },
-
   {
     "id": "lizardman",
     "name": "Lizardman Scout",
     "subtitle": "A scaled warrior from the swamp tribes",
+    "element": "earth",
+    "weakTo": [
+      "wind",
+      "water"
+    ],
+    "resistTo": [
+      "earth",
+      "physical"
+    ],
     "tier": 1,
-    "stats": { "hp": 42, "atk": 12, "def": 7, "spd": 10, "mag": 4 },
-    "reward": { "exp": 20, "gold": 13 },
+    "stats": {
+      "hp": 42,
+      "atk": 12,
+      "def": 7,
+      "spd": 10,
+      "mag": 4
+    },
+    "reward": {
+      "exp": 20,
+      "gold": 13
+    },
     "palette": {
       "body": "#406030",
       "dark": "#203010",
@@ -377,18 +679,39 @@
       }
     ],
     "drops": [
-      { "item": "Lizard Scale", "chance": 0.5 },
-      { "item": "Potion", "chance": 0.15 }
+      {
+        "item": "Lizard Scale",
+        "chance": 0.5
+      },
+      {
+        "item": "Potion",
+        "chance": 0.15
+      }
     ]
   },
-
   {
     "id": "bandit",
     "name": "Road Bandit",
     "subtitle": "A ruthless highwayman who fights dirty",
+    "element": "physical",
+    "weakTo": [
+      "fire"
+    ],
+    "resistTo": [
+      "physical"
+    ],
     "tier": 1,
-    "stats": { "hp": 40, "atk": 11, "def": 6, "spd": 9, "mag": 3 },
-    "reward": { "exp": 18, "gold": 14 },
+    "stats": {
+      "hp": 40,
+      "atk": 11,
+      "def": 6,
+      "spd": 9,
+      "mag": 3
+    },
+    "reward": {
+      "exp": 18,
+      "gold": 14
+    },
     "palette": {
       "body": "#8a6040",
       "dark": "#503020",
@@ -418,18 +741,40 @@
       }
     ],
     "drops": [
-      { "item": "Stolen Gold", "chance": 0.6 },
-      { "item": "Potion", "chance": 0.2 }
+      {
+        "item": "Stolen Gold",
+        "chance": 0.6
+      },
+      {
+        "item": "Potion",
+        "chance": 0.2
+      }
     ]
   },
-
   {
     "id": "scarecrow",
     "name": "Cursed Scarecrow",
     "subtitle": "An animated effigy imbued with harvest magic",
+    "element": "shadow",
+    "weakTo": [
+      "fire"
+    ],
+    "resistTo": [
+      "shadow",
+      "earth"
+    ],
     "tier": 1,
-    "stats": { "hp": 36, "atk": 9, "def": 8, "spd": 4, "mag": 7 },
-    "reward": { "exp": 17, "gold": 11 },
+    "stats": {
+      "hp": 36,
+      "atk": 9,
+      "def": 8,
+      "spd": 4,
+      "mag": 7
+    },
+    "reward": {
+      "exp": 17,
+      "gold": 11
+    },
     "palette": {
       "body": "#c0a040",
       "dark": "#806020",
@@ -444,7 +789,12 @@
         "type": "physical",
         "weight": 45
       },
-      { "id": "curse", "name": "Curse", "type": "debuff", "weight": 35 },
+      {
+        "id": "curse",
+        "name": "Curse",
+        "type": "debuff",
+        "weight": 35
+      },
       {
         "id": "evil_eye",
         "name": "Evil Eye",
@@ -454,18 +804,41 @@
       }
     ],
     "drops": [
-      { "item": "Cursed Straw", "chance": 0.45 },
-      { "item": "Ether", "chance": 0.15 }
+      {
+        "item": "Cursed Straw",
+        "chance": 0.45
+      },
+      {
+        "item": "Ether",
+        "chance": 0.15
+      }
     ]
   },
-
   {
     "id": "slime",
     "name": "Toxic Slime",
     "subtitle": "A bubbling mass of corrosive ooze",
+    "element": "water",
+    "weakTo": [
+      "earth",
+      "fire"
+    ],
+    "resistTo": [
+      "water",
+      "poison"
+    ],
     "tier": 1,
-    "stats": { "hp": 40, "atk": 7, "def": 3, "spd": 5, "mag": 4 },
-    "reward": { "exp": 14, "gold": 10 },
+    "stats": {
+      "hp": 40,
+      "atk": 7,
+      "def": 3,
+      "spd": 5,
+      "mag": 4
+    },
+    "reward": {
+      "exp": 14,
+      "gold": 10
+    },
     "palette": {
       "body": "#50cc40",
       "dark": "#289018",
@@ -474,7 +847,12 @@
       "pupil": "#102008"
     },
     "abilities": [
-      { "id": "ooze", "name": "Ooze", "type": "physical", "weight": 50 },
+      {
+        "id": "ooze",
+        "name": "Ooze",
+        "type": "physical",
+        "weight": 50
+      },
       {
         "id": "acid",
         "name": "Acid",
@@ -482,21 +860,50 @@
         "weight": 30,
         "dmgMultiplier": 1.4
       },
-      { "id": "split", "name": "Split", "type": "buff_self", "weight": 20 }
+      {
+        "id": "split",
+        "name": "Split",
+        "type": "buff_self",
+        "weight": 20
+      }
     ],
     "drops": [
-      { "item": "Slime Gel", "chance": 0.5 },
-      { "item": "Potion", "chance": 0.2 }
+      {
+        "item": "Slime Gel",
+        "chance": 0.5
+      },
+      {
+        "item": "Potion",
+        "chance": 0.2
+      }
     ]
   },
-
   {
     "id": "skeleton",
     "name": "Bone Knight",
     "subtitle": "An undead warrior animated by dark magic",
+    "element": "shadow",
+    "weakTo": [
+      "fire",
+      "light",
+      "holy"
+    ],
+    "resistTo": [
+      "shadow",
+      "physical"
+    ],
     "tier": 1,
-    "stats": { "hp": 52, "atk": 13, "def": 8, "spd": 8, "mag": 5 },
-    "reward": { "exp": 22, "gold": 15 },
+    "stats": {
+      "hp": 52,
+      "atk": 13,
+      "def": 8,
+      "spd": 8,
+      "mag": 5
+    },
+    "reward": {
+      "exp": 22,
+      "gold": 15
+    },
     "palette": {
       "bone": "#e8dfc0",
       "shadow": "#a09060",
@@ -527,18 +934,39 @@
       }
     ],
     "drops": [
-      { "item": "Bone Shard", "chance": 0.45 },
-      { "item": "Iron Helm", "chance": 0.1 }
+      {
+        "item": "Bone Shard",
+        "chance": 0.45
+      },
+      {
+        "item": "Iron Helm",
+        "chance": 0.1
+      }
     ]
   },
-
   {
     "id": "harpy",
     "name": "Storm Harpy",
     "subtitle": "A winged predator that rides lightning",
+    "element": "wind",
+    "weakTo": [
+      "earth"
+    ],
+    "resistTo": [
+      "wind"
+    ],
     "tier": 2,
-    "stats": { "hp": 68, "atk": 15, "def": 8, "spd": 15, "mag": 11 },
-    "reward": { "exp": 30, "gold": 20 },
+    "stats": {
+      "hp": 68,
+      "atk": 15,
+      "def": 8,
+      "spd": 15,
+      "mag": 11
+    },
+    "reward": {
+      "exp": 30,
+      "gold": 20
+    },
     "palette": {
       "body": "#c8a040",
       "dark": "#806010",
@@ -561,21 +989,49 @@
         "weight": 35,
         "dmgMultiplier": 1.4
       },
-      { "id": "shriek", "name": "Shriek", "type": "debuff", "weight": 20 }
+      {
+        "id": "shriek",
+        "name": "Shriek",
+        "type": "debuff",
+        "weight": 20
+      }
     ],
     "drops": [
-      { "item": "Harpy Feather", "chance": 0.55 },
-      { "item": "Wind Crystal", "chance": 0.15 }
+      {
+        "item": "Harpy Feather",
+        "chance": 0.55
+      },
+      {
+        "item": "Wind Crystal",
+        "chance": 0.15
+      }
     ]
   },
-
   {
     "id": "ghost",
     "name": "Phantom Ghost",
     "subtitle": "A wailing spirit that chills the soul",
+    "element": "shadow",
+    "weakTo": [
+      "light",
+      "holy"
+    ],
+    "resistTo": [
+      "shadow",
+      "physical"
+    ],
     "tier": 2,
-    "stats": { "hp": 58, "atk": 12, "def": 6, "spd": 14, "mag": 17 },
-    "reward": { "exp": 29, "gold": 18 },
+    "stats": {
+      "hp": 58,
+      "atk": 12,
+      "def": 6,
+      "spd": 14,
+      "mag": 17
+    },
+    "reward": {
+      "exp": 29,
+      "gold": 18
+    },
     "palette": {
       "body": "#80a0ff",
       "dark": "#4060c0",
@@ -598,21 +1054,47 @@
         "weight": 30,
         "dmgMultiplier": 1.5
       },
-      { "id": "wail", "name": "Wail", "type": "debuff", "weight": 20 }
+      {
+        "id": "wail",
+        "name": "Wail",
+        "type": "debuff",
+        "weight": 20
+      }
     ],
     "drops": [
-      { "item": "Phantom Dust", "chance": 0.5 },
-      { "item": "Ether", "chance": 0.2 }
+      {
+        "item": "Phantom Dust",
+        "chance": 0.5
+      },
+      {
+        "item": "Ether",
+        "chance": 0.2
+      }
     ]
   },
-
   {
     "id": "merman",
     "name": "Deep Merman",
     "subtitle": "A corrupted sea dweller from the abyss",
+    "element": "water",
+    "weakTo": [
+      "earth"
+    ],
+    "resistTo": [
+      "water"
+    ],
     "tier": 2,
-    "stats": { "hp": 70, "atk": 14, "def": 9, "spd": 12, "mag": 13 },
-    "reward": { "exp": 31, "gold": 20 },
+    "stats": {
+      "hp": 70,
+      "atk": 14,
+      "def": 9,
+      "spd": 12,
+      "mag": 13
+    },
+    "reward": {
+      "exp": 31,
+      "gold": 20
+    },
     "palette": {
       "body": "#208090",
       "dark": "#104050",
@@ -635,21 +1117,48 @@
         "weight": 35,
         "dmgMultiplier": 1.4
       },
-      { "id": "sea_curse", "name": "Sea Curse", "type": "debuff", "weight": 20 }
+      {
+        "id": "sea_curse",
+        "name": "Sea Curse",
+        "type": "debuff",
+        "weight": 20
+      }
     ],
     "drops": [
-      { "item": "Sea Pearl", "chance": 0.5 },
-      { "item": "Hi-Potion", "chance": 0.15 }
+      {
+        "item": "Sea Pearl",
+        "chance": 0.5
+      },
+      {
+        "item": "Hi-Potion",
+        "chance": 0.15
+      }
     ]
   },
-
   {
     "id": "witch",
     "name": "Swamp Witch",
     "subtitle": "A cackling crone who traffics in dark hexes",
+    "element": "shadow",
+    "weakTo": [
+      "light",
+      "holy"
+    ],
+    "resistTo": [
+      "shadow"
+    ],
     "tier": 2,
-    "stats": { "hp": 65, "atk": 11, "def": 8, "spd": 10, "mag": 20 },
-    "reward": { "exp": 32, "gold": 21 },
+    "stats": {
+      "hp": 65,
+      "atk": 11,
+      "def": 8,
+      "spd": 10,
+      "mag": 20
+    },
+    "reward": {
+      "exp": 32,
+      "gold": 21
+    },
     "palette": {
       "body": "#3a5020",
       "dark": "#1a2810",
@@ -665,7 +1174,12 @@
         "weight": 40,
         "dmgMultiplier": 1.5
       },
-      { "id": "witch_curse", "name": "Curse", "type": "debuff", "weight": 35 },
+      {
+        "id": "witch_curse",
+        "name": "Curse",
+        "type": "debuff",
+        "weight": 35
+      },
       {
         "id": "dark_brew",
         "name": "Dark Brew",
@@ -675,18 +1189,40 @@
       }
     ],
     "drops": [
-      { "item": "Witch Brew", "chance": 0.5 },
-      { "item": "Ether", "chance": 0.2 }
+      {
+        "item": "Witch Brew",
+        "chance": 0.5
+      },
+      {
+        "item": "Ether",
+        "chance": 0.2
+      }
     ]
   },
-
   {
     "id": "werewolf",
     "name": "Werewolf",
     "subtitle": "A cursed warrior who transforms under moonlight",
+    "element": "physical",
+    "weakTo": [
+      "fire"
+    ],
+    "resistTo": [
+      "physical",
+      "wind"
+    ],
     "tier": 2,
-    "stats": { "hp": 80, "atk": 18, "def": 9, "spd": 16, "mag": 7 },
-    "reward": { "exp": 36, "gold": 23 },
+    "stats": {
+      "hp": 80,
+      "atk": 18,
+      "def": 9,
+      "spd": 16,
+      "mag": 7
+    },
+    "reward": {
+      "exp": 36,
+      "gold": 23
+    },
     "palette": {
       "body": "#504038",
       "dark": "#201810",
@@ -702,7 +1238,12 @@
         "weight": 45,
         "dmgMultiplier": 1.3
       },
-      { "id": "wolf_howl", "name": "Howl", "type": "buff_self", "weight": 25 },
+      {
+        "id": "wolf_howl",
+        "name": "Howl",
+        "type": "buff_self",
+        "weight": 25
+      },
       {
         "id": "feral_bite",
         "name": "Feral Bite",
@@ -712,18 +1253,42 @@
       }
     ],
     "drops": [
-      { "item": "Silver Lock", "chance": 0.45 },
-      { "item": "Hi-Potion", "chance": 0.15 }
+      {
+        "item": "Silver Lock",
+        "chance": 0.45
+      },
+      {
+        "item": "Hi-Potion",
+        "chance": 0.15
+      }
     ]
   },
-
   {
     "id": "vampire",
     "name": "Crimson Vampire",
     "subtitle": "An ancient noble who feeds on life force",
+    "element": "shadow",
+    "weakTo": [
+      "light",
+      "holy",
+      "fire"
+    ],
+    "resistTo": [
+      "shadow",
+      "physical"
+    ],
     "tier": 2,
-    "stats": { "hp": 78, "atk": 17, "def": 10, "spd": 11, "mag": 14 },
-    "reward": { "exp": 35, "gold": 22 },
+    "stats": {
+      "hp": 78,
+      "atk": 17,
+      "def": 10,
+      "spd": 11,
+      "mag": 14
+    },
+    "reward": {
+      "exp": 35,
+      "gold": 22
+    },
     "palette": {
       "body": "#f0d8e8",
       "dark": "#4010a0",
@@ -754,18 +1319,41 @@
       }
     ],
     "drops": [
-      { "item": "Vampire Fang", "chance": 0.5 },
-      { "item": "Dark Cape", "chance": 0.12 }
+      {
+        "item": "Vampire Fang",
+        "chance": 0.5
+      },
+      {
+        "item": "Dark Cape",
+        "chance": 0.12
+      }
     ]
   },
-
   {
     "id": "medusa",
     "name": "Medusa",
     "subtitle": "A serpentine gorgon whose gaze turns flesh to stone",
+    "element": "earth",
+    "weakTo": [
+      "fire",
+      "ice"
+    ],
+    "resistTo": [
+      "earth",
+      "poison"
+    ],
     "tier": 2,
-    "stats": { "hp": 72, "atk": 13, "def": 10, "spd": 10, "mag": 18 },
-    "reward": { "exp": 33, "gold": 21 },
+    "stats": {
+      "hp": 72,
+      "atk": 13,
+      "def": 10,
+      "spd": 10,
+      "mag": 18
+    },
+    "reward": {
+      "exp": 33,
+      "gold": 21
+    },
     "palette": {
       "body": "#508040",
       "dark": "#284020",
@@ -796,18 +1384,41 @@
       }
     ],
     "drops": [
-      { "item": "Stone Eye", "chance": 0.45 },
-      { "item": "Hi-Potion", "chance": 0.15 }
+      {
+        "item": "Stone Eye",
+        "chance": 0.45
+      },
+      {
+        "item": "Hi-Potion",
+        "chance": 0.15
+      }
     ]
   },
-
   {
     "id": "orc",
     "name": "Orc Berserker",
     "subtitle": "A raging brute who lives for the thrill of battle",
+    "element": "earth",
+    "weakTo": [
+      "fire",
+      "wind"
+    ],
+    "resistTo": [
+      "earth",
+      "physical"
+    ],
     "tier": 2,
-    "stats": { "hp": 82, "atk": 18, "def": 11, "spd": 9, "mag": 4 },
-    "reward": { "exp": 34, "gold": 22 },
+    "stats": {
+      "hp": 82,
+      "atk": 18,
+      "def": 11,
+      "spd": 9,
+      "mag": 4
+    },
+    "reward": {
+      "exp": 34,
+      "gold": 22
+    },
     "palette": {
       "body": "#508030",
       "dark": "#283810",
@@ -823,7 +1434,12 @@
         "weight": 50,
         "dmgMultiplier": 1.3
       },
-      { "id": "orc_rage", "name": "Rage", "type": "buff_self", "weight": 25 },
+      {
+        "id": "orc_rage",
+        "name": "Rage",
+        "type": "buff_self",
+        "weight": 25
+      },
       {
         "id": "headbutt",
         "name": "Headbutt",
@@ -833,18 +1449,40 @@
       }
     ],
     "drops": [
-      { "item": "Orcish Tusk", "chance": 0.5 },
-      { "item": "Hi-Potion", "chance": 0.12 }
+      {
+        "item": "Orcish Tusk",
+        "chance": 0.5
+      },
+      {
+        "item": "Hi-Potion",
+        "chance": 0.12
+      }
     ]
   },
-
   {
     "id": "naga",
     "name": "Naga Warrior",
     "subtitle": "A serpent-warrior who commands dark water magic",
+    "element": "poison",
+    "weakTo": [
+      "fire"
+    ],
+    "resistTo": [
+      "poison",
+      "earth"
+    ],
     "tier": 2,
-    "stats": { "hp": 76, "atk": 15, "def": 11, "spd": 12, "mag": 14 },
-    "reward": { "exp": 34, "gold": 22 },
+    "stats": {
+      "hp": 76,
+      "atk": 15,
+      "def": 11,
+      "spd": 12,
+      "mag": 14
+    },
+    "reward": {
+      "exp": 34,
+      "gold": 22
+    },
     "palette": {
       "body": "#306080",
       "dark": "#183040",
@@ -875,18 +1513,40 @@
       }
     ],
     "drops": [
-      { "item": "Naga Scale", "chance": 0.5 },
-      { "item": "Ether", "chance": 0.15 }
+      {
+        "item": "Naga Scale",
+        "chance": 0.5
+      },
+      {
+        "item": "Ether",
+        "chance": 0.15
+      }
     ]
   },
-
   {
     "id": "centaur",
     "name": "Centaur Archer",
     "subtitle": "A half-human warrior with deadly aim and iron hooves",
+    "element": "wind",
+    "weakTo": [
+      "earth"
+    ],
+    "resistTo": [
+      "wind",
+      "physical"
+    ],
     "tier": 2,
-    "stats": { "hp": 78, "atk": 17, "def": 10, "spd": 14, "mag": 10 },
-    "reward": { "exp": 35, "gold": 23 },
+    "stats": {
+      "hp": 78,
+      "atk": 17,
+      "def": 10,
+      "spd": 14,
+      "mag": 10
+    },
+    "reward": {
+      "exp": 35,
+      "gold": 23
+    },
     "palette": {
       "body": "#c09060",
       "dark": "#806030",
@@ -909,21 +1569,49 @@
         "weight": 30,
         "dmgMultiplier": 1.5
       },
-      { "id": "war_cry", "name": "War Cry", "type": "buff_self", "weight": 25 }
+      {
+        "id": "war_cry",
+        "name": "War Cry",
+        "type": "buff_self",
+        "weight": 25
+      }
     ],
     "drops": [
-      { "item": "Iron Arrow", "chance": 0.55 },
-      { "item": "Hi-Potion", "chance": 0.12 }
+      {
+        "item": "Iron Arrow",
+        "chance": 0.55
+      },
+      {
+        "item": "Hi-Potion",
+        "chance": 0.12
+      }
     ]
   },
-
   {
     "id": "gargoyle",
     "name": "Stone Gargoyle",
     "subtitle": "A demonic sentinel carved from living rock",
+    "element": "earth",
+    "weakTo": [
+      "water",
+      "ice"
+    ],
+    "resistTo": [
+      "earth",
+      "physical"
+    ],
     "tier": 2,
-    "stats": { "hp": 85, "atk": 16, "def": 17, "spd": 7, "mag": 8 },
-    "reward": { "exp": 36, "gold": 24 },
+    "stats": {
+      "hp": 85,
+      "atk": 16,
+      "def": 17,
+      "spd": 7,
+      "mag": 8
+    },
+    "reward": {
+      "exp": 36,
+      "gold": 24
+    },
     "palette": {
       "body": "#707080",
       "dark": "#404050",
@@ -954,18 +1642,41 @@
       }
     ],
     "drops": [
-      { "item": "Gargoyle Stone", "chance": 0.55 },
-      { "item": "Hi-Potion", "chance": 0.12 }
+      {
+        "item": "Gargoyle Stone",
+        "chance": 0.55
+      },
+      {
+        "item": "Hi-Potion",
+        "chance": 0.12
+      }
     ]
   },
-
   {
     "id": "cyclops",
     "name": "Cave Cyclops",
     "subtitle": "A one-eyed giant with devastating crushing power",
+    "element": "earth",
+    "weakTo": [
+      "wind",
+      "water"
+    ],
+    "resistTo": [
+      "earth",
+      "physical"
+    ],
     "tier": 2,
-    "stats": { "hp": 95, "atk": 19, "def": 14, "spd": 5, "mag": 5 },
-    "reward": { "exp": 39, "gold": 26 },
+    "stats": {
+      "hp": 95,
+      "atk": 19,
+      "def": 14,
+      "spd": 5,
+      "mag": 5
+    },
+    "reward": {
+      "exp": 39,
+      "gold": 26
+    },
     "palette": {
       "body": "#b08060",
       "dark": "#604020",
@@ -988,21 +1699,49 @@
         "weight": 30,
         "dmgMultiplier": 1.2
       },
-      { "id": "stomp", "name": "Stomp", "type": "debuff", "weight": 20 }
+      {
+        "id": "stomp",
+        "name": "Stomp",
+        "type": "debuff",
+        "weight": 20
+      }
     ],
     "drops": [
-      { "item": "Giant Eye", "chance": 0.5 },
-      { "item": "Hi-Potion", "chance": 0.15 }
+      {
+        "item": "Giant Eye",
+        "chance": 0.5
+      },
+      {
+        "item": "Hi-Potion",
+        "chance": 0.15
+      }
     ]
   },
-
   {
     "id": "minotaur",
     "name": "Iron Minotaur",
     "subtitle": "A bull-headed juggernaut clad in forged iron",
+    "element": "earth",
+    "weakTo": [
+      "fire",
+      "wind"
+    ],
+    "resistTo": [
+      "earth",
+      "physical"
+    ],
     "tier": 2,
-    "stats": { "hp": 88, "atk": 20, "def": 15, "spd": 7, "mag": 4 },
-    "reward": { "exp": 37, "gold": 24 },
+    "stats": {
+      "hp": 88,
+      "atk": 20,
+      "def": 15,
+      "spd": 7,
+      "mag": 4
+    },
+    "reward": {
+      "exp": 37,
+      "gold": 24
+    },
     "palette": {
       "body": "#705040",
       "dark": "#402820",
@@ -1033,18 +1772,41 @@
       }
     ],
     "drops": [
-      { "item": "Iron Horn", "chance": 0.5 },
-      { "item": "Hi-Potion", "chance": 0.15 }
+      {
+        "item": "Iron Horn",
+        "chance": 0.5
+      },
+      {
+        "item": "Hi-Potion",
+        "chance": 0.15
+      }
     ]
   },
-
   {
     "id": "basilisk",
     "name": "Stone Basilisk",
     "subtitle": "A petrifying lizard of immense power",
+    "element": "poison",
+    "weakTo": [
+      "ice",
+      "fire"
+    ],
+    "resistTo": [
+      "poison",
+      "earth"
+    ],
     "tier": 2,
-    "stats": { "hp": 74, "atk": 16, "def": 12, "spd": 8, "mag": 12 },
-    "reward": { "exp": 33, "gold": 21 },
+    "stats": {
+      "hp": 74,
+      "atk": 16,
+      "def": 12,
+      "spd": 8,
+      "mag": 12
+    },
+    "reward": {
+      "exp": 33,
+      "gold": 21
+    },
     "palette": {
       "body": "#608050",
       "dark": "#304028",
@@ -1075,18 +1837,40 @@
       }
     ],
     "drops": [
-      { "item": "Basilisk Claw", "chance": 0.5 },
-      { "item": "Hi-Potion", "chance": 0.15 }
+      {
+        "item": "Basilisk Claw",
+        "chance": 0.5
+      },
+      {
+        "item": "Hi-Potion",
+        "chance": 0.15
+      }
     ]
   },
-
   {
     "id": "ogre",
     "name": "Armored Ogre",
     "subtitle": "A mountain of muscle draped in stolen plate mail",
+    "element": "earth",
+    "weakTo": [
+      "fire"
+    ],
+    "resistTo": [
+      "earth",
+      "physical"
+    ],
     "tier": 2,
-    "stats": { "hp": 96, "atk": 21, "def": 13, "spd": 5, "mag": 3 },
-    "reward": { "exp": 40, "gold": 27 },
+    "stats": {
+      "hp": 96,
+      "atk": 21,
+      "def": 13,
+      "spd": 5,
+      "mag": 3
+    },
+    "reward": {
+      "exp": 40,
+      "gold": 27
+    },
     "palette": {
       "body": "#908070",
       "dark": "#504030",
@@ -1117,18 +1901,40 @@
       }
     ],
     "drops": [
-      { "item": "Ogre Club", "chance": 0.45 },
-      { "item": "Hi-Potion", "chance": 0.2 }
+      {
+        "item": "Ogre Club",
+        "chance": 0.45
+      },
+      {
+        "item": "Hi-Potion",
+        "chance": 0.2
+      }
     ]
   },
-
   {
     "id": "troll",
     "name": "Swamp Troll",
     "subtitle": "A regenerating horror dredged from the bog",
+    "element": "earth",
+    "weakTo": [
+      "fire"
+    ],
+    "resistTo": [
+      "earth",
+      "physical"
+    ],
     "tier": 2,
-    "stats": { "hp": 88, "atk": 15, "def": 11, "spd": 6, "mag": 5 },
-    "reward": { "exp": 37, "gold": 24 },
+    "stats": {
+      "hp": 88,
+      "atk": 15,
+      "def": 11,
+      "spd": 6,
+      "mag": 5
+    },
+    "reward": {
+      "exp": 37,
+      "gold": 24
+    },
     "palette": {
       "body": "#406030",
       "dark": "#203010",
@@ -1150,21 +1956,50 @@
         "type": "buff_self",
         "weight": 30
       },
-      { "id": "mud_throw", "name": "Mud Throw", "type": "debuff", "weight": 25 }
+      {
+        "id": "mud_throw",
+        "name": "Mud Throw",
+        "type": "debuff",
+        "weight": 25
+      }
     ],
     "drops": [
-      { "item": "Troll Moss", "chance": 0.55 },
-      { "item": "Hi-Potion", "chance": 0.15 }
+      {
+        "item": "Troll Moss",
+        "chance": 0.55
+      },
+      {
+        "item": "Hi-Potion",
+        "chance": 0.15
+      }
     ]
   },
-
   {
     "id": "lesser_demon",
     "name": "Lesser Demon",
     "subtitle": "A fragment of hell given grotesque form",
+    "element": "fire",
+    "weakTo": [
+      "water",
+      "light",
+      "holy"
+    ],
+    "resistTo": [
+      "fire",
+      "shadow"
+    ],
     "tier": 2,
-    "stats": { "hp": 72, "atk": 16, "def": 9, "spd": 13, "mag": 15 },
-    "reward": { "exp": 32, "gold": 21 },
+    "stats": {
+      "hp": 72,
+      "atk": 16,
+      "def": 9,
+      "spd": 13,
+      "mag": 15
+    },
+    "reward": {
+      "exp": 32,
+      "gold": 21
+    },
     "palette": {
       "body": "#a02020",
       "dark": "#600010",
@@ -1187,21 +2022,49 @@
         "weight": 40,
         "dmgMultiplier": 1.5
       },
-      { "id": "terror", "name": "Terror", "type": "debuff", "weight": 20 }
+      {
+        "id": "terror",
+        "name": "Terror",
+        "type": "debuff",
+        "weight": 20
+      }
     ],
     "drops": [
-      { "item": "Demon Core", "chance": 0.45 },
-      { "item": "Hi-Potion", "chance": 0.15 }
+      {
+        "item": "Demon Core",
+        "chance": 0.45
+      },
+      {
+        "item": "Hi-Potion",
+        "chance": 0.15
+      }
     ]
   },
-
   {
     "id": "golem",
     "name": "Stone Golem",
     "subtitle": "An ancient construct of living rock",
+    "element": "earth",
+    "weakTo": [
+      "water",
+      "wind"
+    ],
+    "resistTo": [
+      "earth",
+      "physical"
+    ],
     "tier": 2,
-    "stats": { "hp": 90, "atk": 16, "def": 18, "spd": 4, "mag": 3 },
-    "reward": { "exp": 38, "gold": 25 },
+    "stats": {
+      "hp": 90,
+      "atk": 16,
+      "def": 18,
+      "spd": 4,
+      "mag": 3
+    },
+    "reward": {
+      "exp": 38,
+      "gold": 25
+    },
     "palette": {
       "stone": "#8a8a9a",
       "dark": "#555565",
@@ -1232,18 +2095,41 @@
       }
     ],
     "drops": [
-      { "item": "Stone Core", "chance": 0.55 },
-      { "item": "Hi-Potion", "chance": 0.15 }
+      {
+        "item": "Stone Core",
+        "chance": 0.55
+      },
+      {
+        "item": "Hi-Potion",
+        "chance": 0.15
+      }
     ]
   },
-
   {
     "id": "fire_elemental",
     "name": "Fire Elemental",
     "subtitle": "A living inferno with no mercy and no form",
+    "element": "fire",
+    "weakTo": [
+      "water",
+      "ice"
+    ],
+    "resistTo": [
+      "fire",
+      "earth"
+    ],
     "tier": 2,
-    "stats": { "hp": 68, "atk": 14, "def": 7, "spd": 11, "mag": 21 },
-    "reward": { "exp": 31, "gold": 20 },
+    "stats": {
+      "hp": 68,
+      "atk": 14,
+      "def": 7,
+      "spd": 11,
+      "mag": 21
+    },
+    "reward": {
+      "exp": 31,
+      "gold": 20
+    },
     "palette": {
       "body": "#ff6020",
       "dark": "#c02000",
@@ -1275,18 +2161,40 @@
       }
     ],
     "drops": [
-      { "item": "Flame Core", "chance": 0.5 },
-      { "item": "Ether", "chance": 0.2 }
+      {
+        "item": "Flame Core",
+        "chance": 0.5
+      },
+      {
+        "item": "Ether",
+        "chance": 0.2
+      }
     ]
   },
-
   {
     "id": "iron_golem",
     "name": "Iron Golem",
     "subtitle": "A construct of cold iron and ancient runes",
+    "element": "earth",
+    "weakTo": [
+      "water"
+    ],
+    "resistTo": [
+      "earth",
+      "physical"
+    ],
     "tier": 2,
-    "stats": { "hp": 100, "atk": 17, "def": 22, "spd": 3, "mag": 4 },
-    "reward": { "exp": 42, "gold": 28 },
+    "stats": {
+      "hp": 100,
+      "atk": 17,
+      "def": 22,
+      "spd": 3,
+      "mag": 4
+    },
+    "reward": {
+      "exp": 42,
+      "gold": 28
+    },
     "palette": {
       "body": "#708090",
       "dark": "#405060",
@@ -1317,18 +2225,41 @@
       }
     ],
     "drops": [
-      { "item": "Iron Core", "chance": 0.6 },
-      { "item": "Hi-Potion", "chance": 0.15 }
+      {
+        "item": "Iron Core",
+        "chance": 0.6
+      },
+      {
+        "item": "Hi-Potion",
+        "chance": 0.15
+      }
     ]
   },
-
   {
     "id": "dark_knight",
     "name": "Dark Knight",
     "subtitle": "A fallen warrior consumed by shadow",
+    "element": "shadow",
+    "weakTo": [
+      "light",
+      "holy"
+    ],
+    "resistTo": [
+      "shadow",
+      "physical"
+    ],
     "tier": 3,
-    "stats": { "hp": 118, "atk": 23, "def": 16, "spd": 10, "mag": 13 },
-    "reward": { "exp": 58, "gold": 40 },
+    "stats": {
+      "hp": 118,
+      "atk": 23,
+      "def": 16,
+      "spd": 10,
+      "mag": 13
+    },
+    "reward": {
+      "exp": 58,
+      "gold": 40
+    },
     "palette": {
       "body": "#1a1a2a",
       "dark": "#0a0a15",
@@ -1359,18 +2290,41 @@
       }
     ],
     "drops": [
-      { "item": "Shadow Shard", "chance": 0.6 },
-      { "item": "Dark Blade", "chance": 0.08 }
+      {
+        "item": "Shadow Shard",
+        "chance": 0.6
+      },
+      {
+        "item": "Dark Blade",
+        "chance": 0.08
+      }
     ]
   },
-
   {
     "id": "wyvern",
     "name": "Venom Wyvern",
     "subtitle": "A serpentine dragon dripping with acid",
+    "element": "wind",
+    "weakTo": [
+      "ice",
+      "earth"
+    ],
+    "resistTo": [
+      "wind",
+      "physical"
+    ],
     "tier": 3,
-    "stats": { "hp": 112, "atk": 21, "def": 10, "spd": 14, "mag": 16 },
-    "reward": { "exp": 62, "gold": 45 },
+    "stats": {
+      "hp": 112,
+      "atk": 21,
+      "def": 10,
+      "spd": 14,
+      "mag": 16
+    },
+    "reward": {
+      "exp": 62,
+      "gold": 45
+    },
     "palette": {
       "body": "#2a6020",
       "dark": "#153010",
@@ -1402,18 +2356,42 @@
       }
     ],
     "drops": [
-      { "item": "Wyvern Scale", "chance": 0.65 },
-      { "item": "Venom Sac", "chance": 0.2 }
+      {
+        "item": "Wyvern Scale",
+        "chance": 0.65
+      },
+      {
+        "item": "Venom Sac",
+        "chance": 0.2
+      }
     ]
   },
-
   {
     "id": "lich",
     "name": "Ancient Lich",
     "subtitle": "An immortal sorcerer who cheated death itself",
+    "element": "shadow",
+    "weakTo": [
+      "fire",
+      "light",
+      "holy"
+    ],
+    "resistTo": [
+      "shadow",
+      "physical"
+    ],
     "tier": 3,
-    "stats": { "hp": 105, "atk": 18, "def": 11, "spd": 9, "mag": 26 },
-    "reward": { "exp": 60, "gold": 42 },
+    "stats": {
+      "hp": 105,
+      "atk": 18,
+      "def": 11,
+      "spd": 9,
+      "mag": 26
+    },
+    "reward": {
+      "exp": 60,
+      "gold": 42
+    },
     "palette": {
       "body": "#e0d8c0",
       "dark": "#807050",
@@ -1444,18 +2422,42 @@
       }
     ],
     "drops": [
-      { "item": "Phylactery Shard", "chance": 0.6 },
-      { "item": "Dark Crystal", "chance": 0.2 }
+      {
+        "item": "Phylactery Shard",
+        "chance": 0.6
+      },
+      {
+        "item": "Dark Crystal",
+        "chance": 0.2
+      }
     ]
   },
-
   {
     "id": "chimera",
     "name": "Chimera Beast",
     "subtitle": "A three-headed nightmare of lion, goat and dragon",
+    "element": "fire",
+    "weakTo": [
+      "water",
+      "ice",
+      "earth"
+    ],
+    "resistTo": [
+      "fire",
+      "wind"
+    ],
     "tier": 3,
-    "stats": { "hp": 125, "atk": 22, "def": 13, "spd": 12, "mag": 15 },
-    "reward": { "exp": 64, "gold": 46 },
+    "stats": {
+      "hp": 125,
+      "atk": 22,
+      "def": 13,
+      "spd": 12,
+      "mag": 15
+    },
+    "reward": {
+      "exp": 64,
+      "gold": 46
+    },
     "palette": {
       "body": "#c08040",
       "dark": "#804010",
@@ -1487,18 +2489,42 @@
       }
     ],
     "drops": [
-      { "item": "Chimera Mane", "chance": 0.6 },
-      { "item": "Hi-Potion", "chance": 0.2 }
+      {
+        "item": "Chimera Mane",
+        "chance": 0.6
+      },
+      {
+        "item": "Hi-Potion",
+        "chance": 0.2
+      }
     ]
   },
-
   {
     "id": "necromancer",
     "name": "Death Necromancer",
     "subtitle": "A master of death magic who raises the fallen",
+    "element": "shadow",
+    "weakTo": [
+      "fire",
+      "light",
+      "holy"
+    ],
+    "resistTo": [
+      "shadow",
+      "physical"
+    ],
     "tier": 3,
-    "stats": { "hp": 98, "atk": 16, "def": 10, "spd": 9, "mag": 25 },
-    "reward": { "exp": 61, "gold": 43 },
+    "stats": {
+      "hp": 98,
+      "atk": 16,
+      "def": 10,
+      "spd": 9,
+      "mag": 25
+    },
+    "reward": {
+      "exp": 61,
+      "gold": 43
+    },
     "palette": {
       "body": "#e0d0c0",
       "dark": "#706050",
@@ -1529,18 +2555,41 @@
       }
     ],
     "drops": [
-      { "item": "Death Tome", "chance": 0.5 },
-      { "item": "Dark Crystal", "chance": 0.2 }
+      {
+        "item": "Death Tome",
+        "chance": 0.5
+      },
+      {
+        "item": "Dark Crystal",
+        "chance": 0.2
+      }
     ]
   },
-
   {
     "id": "dark_phoenix",
     "name": "Dark Phoenix",
     "subtitle": "A reborn firebird twisted by shadow corruption",
+    "element": "fire",
+    "weakTo": [
+      "water",
+      "ice"
+    ],
+    "resistTo": [
+      "fire",
+      "shadow"
+    ],
     "tier": 3,
-    "stats": { "hp": 100, "atk": 20, "def": 10, "spd": 17, "mag": 22 },
-    "reward": { "exp": 63, "gold": 45 },
+    "stats": {
+      "hp": 100,
+      "atk": 20,
+      "def": 10,
+      "spd": 17,
+      "mag": 22
+    },
+    "reward": {
+      "exp": 63,
+      "gold": 45
+    },
     "palette": {
       "body": "#400060",
       "dark": "#200030",
@@ -1571,18 +2620,40 @@
       }
     ],
     "drops": [
-      { "item": "Shadow Feather", "chance": 0.6 },
-      { "item": "Dark Crystal", "chance": 0.2 }
+      {
+        "item": "Shadow Feather",
+        "chance": 0.6
+      },
+      {
+        "item": "Dark Crystal",
+        "chance": 0.2
+      }
     ]
   },
-
   {
     "id": "kraken",
     "name": "Sea Kraken",
     "subtitle": "A colossal deep-sea terror with crushing tentacles",
+    "element": "water",
+    "weakTo": [
+      "earth"
+    ],
+    "resistTo": [
+      "water",
+      "physical"
+    ],
     "tier": 3,
-    "stats": { "hp": 140, "atk": 23, "def": 15, "spd": 7, "mag": 16 },
-    "reward": { "exp": 66, "gold": 48 },
+    "stats": {
+      "hp": 140,
+      "atk": 23,
+      "def": 15,
+      "spd": 7,
+      "mag": 16
+    },
+    "reward": {
+      "exp": 66,
+      "gold": 48
+    },
     "palette": {
       "body": "#203060",
       "dark": "#101830",
@@ -1613,18 +2684,41 @@
       }
     ],
     "drops": [
-      { "item": "Kraken Ink", "chance": 0.6 },
-      { "item": "Sea Crystal", "chance": 0.2 }
+      {
+        "item": "Kraken Ink",
+        "chance": 0.6
+      },
+      {
+        "item": "Sea Crystal",
+        "chance": 0.2
+      }
     ]
   },
-
   {
     "id": "titan",
     "name": "Stone Titan",
     "subtitle": "A primordial giant who shakes the earth with each step",
+    "element": "earth",
+    "weakTo": [
+      "wind",
+      "water"
+    ],
+    "resistTo": [
+      "earth",
+      "physical"
+    ],
     "tier": 3,
-    "stats": { "hp": 150, "atk": 26, "def": 20, "spd": 5, "mag": 8 },
-    "reward": { "exp": 68, "gold": 50 },
+    "stats": {
+      "hp": 150,
+      "atk": 26,
+      "def": 20,
+      "spd": 5,
+      "mag": 8
+    },
+    "reward": {
+      "exp": 68,
+      "gold": 50
+    },
     "palette": {
       "body": "#a09080",
       "dark": "#605040",
@@ -1655,18 +2749,42 @@
       }
     ],
     "drops": [
-      { "item": "Titan Fragment", "chance": 0.65 },
-      { "item": "Elixir", "chance": 0.1 }
+      {
+        "item": "Titan Fragment",
+        "chance": 0.65
+      },
+      {
+        "item": "Elixir",
+        "chance": 0.1
+      }
     ]
   },
-
   {
     "id": "demon_lord",
     "name": "Demon Lord",
     "subtitle": "A prince of the underworld bathed in hellfire",
+    "element": "fire",
+    "weakTo": [
+      "water",
+      "holy",
+      "light"
+    ],
+    "resistTo": [
+      "fire",
+      "shadow"
+    ],
     "tier": 3,
-    "stats": { "hp": 135, "atk": 25, "def": 15, "spd": 12, "mag": 20 },
-    "reward": { "exp": 67, "gold": 49 },
+    "stats": {
+      "hp": 135,
+      "atk": 25,
+      "def": 15,
+      "spd": 12,
+      "mag": 20
+    },
+    "reward": {
+      "exp": 67,
+      "gold": 49
+    },
     "palette": {
       "body": "#800010",
       "dark": "#400008",
@@ -1689,21 +2807,50 @@
         "weight": 40,
         "dmgMultiplier": 1.8
       },
-      { "id": "demon_eye", "name": "Demon Eye", "type": "debuff", "weight": 20 }
+      {
+        "id": "demon_eye",
+        "name": "Demon Eye",
+        "type": "debuff",
+        "weight": 20
+      }
     ],
     "drops": [
-      { "item": "Demon Horn", "chance": 0.65 },
-      { "item": "Elixir", "chance": 0.1 }
+      {
+        "item": "Demon Horn",
+        "chance": 0.65
+      },
+      {
+        "item": "Elixir",
+        "chance": 0.1
+      }
     ]
   },
-
   {
     "id": "bone_dragon",
     "name": "Bone Dragon",
     "subtitle": "An undead leviathan whose breath reaps life",
+    "element": "shadow",
+    "weakTo": [
+      "fire",
+      "light",
+      "holy"
+    ],
+    "resistTo": [
+      "shadow",
+      "physical"
+    ],
     "tier": 3,
-    "stats": { "hp": 128, "atk": 23, "def": 14, "spd": 10, "mag": 17 },
-    "reward": { "exp": 65, "gold": 47 },
+    "stats": {
+      "hp": 128,
+      "atk": 23,
+      "def": 14,
+      "spd": 10,
+      "mag": 17
+    },
+    "reward": {
+      "exp": 65,
+      "gold": 47
+    },
     "palette": {
       "body": "#e0d8c0",
       "dark": "#a09060",
@@ -1734,18 +2881,40 @@
       }
     ],
     "drops": [
-      { "item": "Dragon Bone", "chance": 0.65 },
-      { "item": "Dark Crystal", "chance": 0.2 }
+      {
+        "item": "Dragon Bone",
+        "chance": 0.65
+      },
+      {
+        "item": "Dark Crystal",
+        "chance": 0.2
+      }
     ]
   },
-
   {
     "id": "abomination",
     "name": "Flesh Abomination",
     "subtitle": "A horrific mass of stitched bodies and madness",
+    "element": "poison",
+    "weakTo": [
+      "fire"
+    ],
+    "resistTo": [
+      "poison",
+      "shadow"
+    ],
     "tier": 3,
-    "stats": { "hp": 145, "atk": 24, "def": 16, "spd": 6, "mag": 12 },
-    "reward": { "exp": 66, "gold": 48 },
+    "stats": {
+      "hp": 145,
+      "atk": 24,
+      "def": 16,
+      "spd": 6,
+      "mag": 12
+    },
+    "reward": {
+      "exp": 66,
+      "gold": 48
+    },
     "palette": {
       "body": "#a06050",
       "dark": "#603020",
@@ -1768,21 +2937,50 @@
         "weight": 35,
         "dmgMultiplier": 1.6
       },
-      { "id": "mutate", "name": "Mutate", "type": "buff_self", "weight": 25 }
+      {
+        "id": "mutate",
+        "name": "Mutate",
+        "type": "buff_self",
+        "weight": 25
+      }
     ],
     "drops": [
-      { "item": "Abomination Core", "chance": 0.6 },
-      { "item": "Elixir", "chance": 0.1 }
+      {
+        "item": "Abomination Core",
+        "chance": 0.6
+      },
+      {
+        "item": "Elixir",
+        "chance": 0.1
+      }
     ]
   },
-
   {
     "id": "void_knight",
     "name": "Void Knight",
     "subtitle": "A warrior erased from existence and reborn in darkness",
+    "element": "void",
+    "weakTo": [
+      "light",
+      "holy"
+    ],
+    "resistTo": [
+      "void",
+      "shadow",
+      "physical"
+    ],
     "tier": 3,
-    "stats": { "hp": 120, "atk": 24, "def": 17, "spd": 11, "mag": 16 },
-    "reward": { "exp": 63, "gold": 45 },
+    "stats": {
+      "hp": 120,
+      "atk": 24,
+      "def": 17,
+      "spd": 11,
+      "mag": 16
+    },
+    "reward": {
+      "exp": 63,
+      "gold": 45
+    },
     "palette": {
       "body": "#0a0a20",
       "dark": "#050510",
@@ -1805,21 +3003,48 @@
         "weight": 35,
         "dmgMultiplier": 1.5
       },
-      { "id": "dark_edge", "name": "Dark Edge", "type": "debuff", "weight": 25 }
+      {
+        "id": "dark_edge",
+        "name": "Dark Edge",
+        "type": "debuff",
+        "weight": 25
+      }
     ],
     "drops": [
-      { "item": "Void Shard", "chance": 0.6 },
-      { "item": "Elixir", "chance": 0.1 }
+      {
+        "item": "Void Shard",
+        "chance": 0.6
+      },
+      {
+        "item": "Elixir",
+        "chance": 0.1
+      }
     ]
   },
-
   {
     "id": "fallen_angel",
     "name": "Fallen Angel",
     "subtitle": "A divine being cast down and corrupted beyond salvation",
+    "element": "light",
+    "weakTo": [
+      "shadow"
+    ],
+    "resistTo": [
+      "light",
+      "holy"
+    ],
     "tier": 3,
-    "stats": { "hp": 115, "atk": 22, "def": 13, "spd": 15, "mag": 20 },
-    "reward": { "exp": 65, "gold": 47 },
+    "stats": {
+      "hp": 115,
+      "atk": 22,
+      "def": 13,
+      "spd": 15,
+      "mag": 20
+    },
+    "reward": {
+      "exp": 65,
+      "gold": 47
+    },
     "palette": {
       "body": "#f0e8ff",
       "dark": "#301840",
@@ -1850,18 +3075,43 @@
       }
     ],
     "drops": [
-      { "item": "Broken Halo", "chance": 0.6 },
-      { "item": "Elixir", "chance": 0.12 }
+      {
+        "item": "Broken Halo",
+        "chance": 0.6
+      },
+      {
+        "item": "Elixir",
+        "chance": 0.12
+      }
     ]
   },
-
   {
     "id": "shadow_emperor",
     "name": "Shadow Emperor",
     "subtitle": "The supreme ruler of all darkness — the final reckoning",
+    "element": "void",
+    "weakTo": [
+      "light",
+      "holy",
+      "fire"
+    ],
+    "resistTo": [
+      "void",
+      "shadow",
+      "physical"
+    ],
     "tier": 3,
-    "stats": { "hp": 155, "atk": 27, "def": 18, "spd": 13, "mag": 22 },
-    "reward": { "exp": 80, "gold": 60 },
+    "stats": {
+      "hp": 155,
+      "atk": 27,
+      "def": 18,
+      "spd": 13,
+      "mag": 22
+    },
+    "reward": {
+      "exp": 80,
+      "gold": 60
+    },
     "palette": {
       "body": "#100820",
       "dark": "#080410",
@@ -1882,7 +3132,7 @@
         "name": "Void Consume",
         "type": "magic_damage",
         "weight": 45,
-        "dmgMultiplier": 2.0
+        "dmgMultiplier": 2
       },
       {
         "id": "shadow_realm",
@@ -1892,18 +3142,41 @@
       }
     ],
     "drops": [
-      { "item": "Emperor's Crown", "chance": 0.7 },
-      { "item": "Void Sword", "chance": 0.15 }
+      {
+        "item": "Emperor's Crown",
+        "chance": 0.7
+      },
+      {
+        "item": "Void Sword",
+        "chance": 0.15
+      }
     ]
   },
-
   {
     "id": "dragon",
     "name": "Shadow Dragon",
     "subtitle": "A legendary beast of flame and darkness",
+    "element": "fire",
+    "weakTo": [
+      "ice",
+      "water"
+    ],
+    "resistTo": [
+      "fire",
+      "wind"
+    ],
     "tier": 3,
-    "stats": { "hp": 130, "atk": 24, "def": 12, "spd": 12, "mag": 18 },
-    "reward": { "exp": 70, "gold": 55 },
+    "stats": {
+      "hp": 130,
+      "atk": 24,
+      "def": 12,
+      "spd": 12,
+      "mag": 18
+    },
+    "reward": {
+      "exp": 70,
+      "gold": 55
+    },
     "palette": {
       "body": "#2a1840",
       "scale": "#4a2870",
@@ -1913,13 +3186,18 @@
       "shine": "#8040d0"
     },
     "abilities": [
-      { "id": "claw", "name": "Shadow Claw", "type": "physical", "weight": 35 },
+      {
+        "id": "claw",
+        "name": "Shadow Claw",
+        "type": "physical",
+        "weight": 35
+      },
       {
         "id": "dark_fire",
         "name": "Dark Flame",
         "type": "magic_damage",
         "weight": 40,
-        "dmgMultiplier": 2.0
+        "dmgMultiplier": 2
       },
       {
         "id": "wing_blast",
@@ -1930,9 +3208,18 @@
       }
     ],
     "drops": [
-      { "item": "Dragon Scale", "chance": 0.7 },
-      { "item": "Dark Crystal", "chance": 0.25 },
-      { "item": "Void Sword", "chance": 0.05 }
+      {
+        "item": "Dragon Scale",
+        "chance": 0.7
+      },
+      {
+        "item": "Dark Crystal",
+        "chance": 0.25
+      },
+      {
+        "item": "Void Sword",
+        "chance": 0.05
+      }
     ]
   }
 ]

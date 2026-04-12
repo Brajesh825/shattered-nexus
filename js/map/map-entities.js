@@ -303,13 +303,19 @@ const MapPlayer = (() => {
     }
   }
 
+  function rescale() {
+    const T = MapEngine.getTile();
+    px = tx * T;
+    py = ty * T;
+  }
+
   return {
     get tx() { return tx; },
     get ty() { return ty; },
     get px() { return px; },
     get py() { return py; },
     get moving() { return moving; },
-    reset, update, render, dpad, pickVariants,
+    reset, update, render, dpad, pickVariants, rescale,
   };
 })();
 
@@ -353,11 +359,16 @@ const MapEntities = (() => {
       moving:    false,
       stepDir:   { dx: 0, dy: 0 },
       tickTimer: 0,
-      tickRate:  0.8 + Math.random() * 0.6, // seconds between decision
+      tickRate:  0.8 + Math.random() * 0.6,
       dir:       { dx: 1, dy: 0 },
       alive:     true,
       frameTimer: 0,
       frame:     0,
+      // Mutation state
+      mapTime:        0,           // seconds alive on this map
+      mutationTick:   0,           // accumulator for per-second roll
+      mutation:       null,        // null | 'corrupted' | 'mutant'
+      mutationPhase:  0,           // animation phase for glow pulse
     }));
     _encounteredIdx = -1;
   }
@@ -423,11 +434,77 @@ const MapEntities = (() => {
     }
   }
 
+  // Mutation defaults — overridden per-map via map.mutationConfig
+  const MUTATION_DEFAULTS = {
+    corruptThreshold: 45,
+    mutantThreshold:  90,
+    corruptChance:    0.040,
+    mutantChance:     0.025,
+  };
+
+  // ── Mutant Trait Pool ─────────────────────────────────────────
+  // Each mutant rolls 1–3 random traits from this pool.
+  // Stat buff traits: applied at encounter start via stat multipliers.
+  // Special traits: applied at runtime during battle (vampiric/regen/enraged/immune/shatter).
+  const MUTANT_TRAITS = [
+    { id: 'berserker',   label: '⚔ Berserker',  type: 'stat',    stat: 'atk',  mult: 1.40 },
+    { id: 'ironhide',    label: '🛡 Ironhide',    type: 'stat',    stat: 'def',  mult: 1.50 },
+    { id: 'quickened',   label: '⚡ Quickened',   type: 'stat',    stat: 'spd',  mult: 1.35 },
+    { id: 'vampiric',    label: '🩸 Vampiric',    type: 'special'  },
+    { id: 'regenerating',label: '💚 Regenerating',type: 'special'  },
+    { id: 'enraged',     label: '🔥 Enraged',     type: 'special'  },
+    // Elemental immunities — grant 0 damage from that element
+    { id: 'immune_fire', label: '🔴 Fire Immune',  type: 'immune', element: 'fire'    },
+    { id: 'immune_ice',  label: '🔵 Ice Immune',   type: 'immune', element: 'ice'     },
+    { id: 'immune_lightning',label:'⚡ Volt Immune',type:'immune',  element: 'lightning'},
+    { id: 'immune_dark', label: '🟣 Dark Immune',  type: 'immune', element: 'dark'    },
+    // Elemental shatter — takes 2.0× from that element (overrides existing weakness)
+    { id: 'shatter_water',label:'💧 Water Shatter',type:'shatter', element: 'water'   },
+    { id: 'shatter_holy', label:'✨ Holy Shatter', type:'shatter', element: 'holy'    },
+    { id: 'shatter_earth',label:'🌿 Earth Shatter',type:'shatter', element: 'earth'   },
+    { id: 'shatter_wind', label:'🌀 Wind Shatter', type:'shatter', element: 'wind'    },
+  ];
+
+  function _rollMutantTraits() {
+    const pool = [...MUTANT_TRAITS];
+    const count = 1 + Math.floor(Math.random() * 3); // 1–3 traits
+    const picked = [];
+    while (picked.length < count && pool.length > 0) {
+      const idx = Math.floor(Math.random() * pool.length);
+      picked.push(pool.splice(idx, 1)[0]);
+    }
+    return picked;
+  }
+
   function updateEnemies(dt, map) {
     MapNPCs.update(dt, map, _enemies);
     const TILE = MapEngine.getTile();
     _enemies.forEach(en => {
       if (!en.alive) return;
+
+      // ── Mutation timer ────────────────────────────────
+      en.mapTime       += dt;
+      en.mutationPhase += dt;
+      en.mutationTick  += dt;
+      if (en.mutationTick >= 1.0) {
+        en.mutationTick -= 1.0;
+        // Read per-map config, fall back to defaults
+        const mc = map.mutationConfig || MUTATION_DEFAULTS;
+        const corruptThreshold = mc.corruptThreshold ?? MUTATION_DEFAULTS.corruptThreshold;
+        const mutantThreshold  = mc.mutantThreshold  ?? MUTATION_DEFAULTS.mutantThreshold;
+        const corruptChance    = mc.corruptChance    ?? MUTATION_DEFAULTS.corruptChance;
+        const mutantChance     = mc.mutantChance     ?? MUTATION_DEFAULTS.mutantChance;
+
+        if (en.mutation === null && en.mapTime >= corruptThreshold) {
+          if (Math.random() < corruptChance) en.mutation = 'corrupted';
+        } else if (en.mutation === 'corrupted' && en.mapTime >= mutantThreshold) {
+          if (Math.random() < mutantChance) {
+            en.mutation = 'mutant';
+            en.mutantTraits = _rollMutantTraits();
+          }
+        }
+      }
+
       // Fog scales movement speed — recalc moveDur each frame
       en.moveDur = (1 / en.speed) / _fogSpeedMult();
       if (en.moving) {
@@ -464,7 +541,7 @@ const MapEntities = (() => {
       if (en.tx === ptx && en.ty === pty) {
         _encounteredIdx = i;
         const ids = _buildEncounterGroup(en.id, map);
-        return { enemies: ids };
+        return { enemies: ids, mutation: en.mutation || null, mutantTraits: en.mutantTraits || null };
       }
     }
     return null;
@@ -519,43 +596,85 @@ const MapEntities = (() => {
     const _edw = Math.round(TILE * 1.1);
     const _edh = Math.round(TILE * 1.6);
     const _eox = Math.round((TILE - _edw) / 2);
-    const _eoy = TILE - _edh;   // anchor bottom to tile bottom
+    const _eoy = TILE - _edh;
+
     _enemies.forEach(en => {
       if (!en.alive) return;
-      // Hidden by fog — only render if within player vision radius
       if (typeof inVision === 'function' && !inVision(en.tx, en.ty)) return;
       const sx = en.px - cam.x;
       const sy = en.py - cam.y;
       if (sx < -TILE || sy < -TILE || sx > ctx.canvas.width + TILE || sy > ctx.canvas.height + TILE) return;
 
       const bounce = en.moving ? Math.sin(en.frame / 4 * Math.PI * 2) * 3 : 0;
+      const mut    = en.mutation; // null | 'corrupted' | 'mutant'
 
-      ctx.fillStyle = 'rgba(0,0,0,0.28)';
-      ctx.beginPath();
-      ctx.ellipse(sx + TILE / 2, sy + TILE - 3, TILE * 0.35, 6, 0, 0, Math.PI * 2);
-      ctx.fill();
+      // ── Mutation scale ───────────────────────────────
+      const scale  = mut === 'mutant' ? 1.65 : mut === 'corrupted' ? 1.32 : 1.0;
+      const edw    = Math.round(_edw * scale);
+      const edh    = Math.round(_edh * scale);
+      const eox    = Math.round((TILE - edw) / 2);
+      const eoy    = TILE - edh;
 
-      const spr = _getEnemySprite(en.id);
-      if (spr) {
-        ctx.imageSmoothingEnabled = false;
-        ctx.drawImage(spr, sx + _eox, sy + _eoy + bounce, _edw, _edh);
+      // ── Glow ring for mutated enemies ────────────────
+      if (mut) {
+        const pulse  = 0.5 + 0.5 * Math.sin(en.mutationPhase * (mut === 'mutant' ? 4.0 : 2.5));
+        const glowR  = mut === 'mutant' ? Math.round(TILE * 0.85) : Math.round(TILE * 0.60);
+        const glowC  = mut === 'mutant' ? `rgba(80,255,60,${0.25 + 0.20 * pulse})`
+                                        : `rgba(160,40,255,${0.22 + 0.18 * pulse})`;
+        ctx.save();
+        ctx.shadowColor = mut === 'mutant' ? '#50ff3c' : '#a028ff';
+        ctx.shadowBlur  = 12 + 8 * pulse;
+        ctx.fillStyle   = glowC;
+        ctx.beginPath();
+        ctx.ellipse(sx + TILE / 2, sy + TILE - 4, glowR, glowR * 0.38, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
       }
 
+      // ── Shadow ───────────────────────────────────────
+      ctx.fillStyle = mut ? 'rgba(0,0,0,0.45)' : 'rgba(0,0,0,0.28)';
+      ctx.beginPath();
+      ctx.ellipse(sx + TILE / 2, sy + TILE - 3, TILE * 0.35 * scale, 6 * scale * 0.6, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // ── Sprite (with optional canvas filter for mutations) ──
+      const spr = _getEnemySprite(en.id);
+      if (spr) {
+        ctx.save();
+        ctx.imageSmoothingEnabled = false;
+        if (mut === 'corrupted') {
+          ctx.filter = 'hue-rotate(220deg) saturate(2.2) brightness(0.85)';
+        } else if (mut === 'mutant') {
+          // Slight wobble distortion via skew on canvas transform
+          const wobble = Math.sin(en.mutationPhase * 7.0) * 0.04;
+          ctx.transform(1, wobble, 0, 1, 0, 0);
+          ctx.filter = 'hue-rotate(100deg) saturate(3.0) brightness(1.15) contrast(1.3)';
+        }
+        ctx.drawImage(spr, sx + eox, sy + eoy + bounce, edw, edh);
+        ctx.restore();
+      }
+
+      // ── Aggro indicator ──────────────────────────────
       const dist = Math.abs(en.tx - MapPlayer.tx) + Math.abs(en.ty - MapPlayer.ty);
       if (dist <= _aggroRange()) {
-        ctx.fillStyle = '#ffff40';
+        ctx.fillStyle = mut === 'mutant' ? '#60ff40' : mut === 'corrupted' ? '#c060ff' : '#ffff40';
         ctx.font = 'bold 14px monospace';
         ctx.textAlign = 'center';
-        ctx.fillText('!', sx + TILE / 2, sy + _eoy + bounce - 4);
+        ctx.fillText(mut ? '!!' : '!', sx + TILE / 2, sy + eoy + bounce - 4);
         ctx.textAlign = 'left';
       }
 
+      // ── Name tag ─────────────────────────────────────
+      const label = mut === 'mutant'    ? `⚠ ${en.name}`
+                  : mut === 'corrupted' ? `✦ ${en.name}`
+                  : en.name;
+      const tagCol = mut === 'mutant' ? '#80ff60' : mut === 'corrupted' ? '#cc80ff' : '#ff8080';
       ctx.fillStyle = 'rgba(0,0,0,0.55)';
-      ctx.fillRect(sx + _eox, sy + TILE + 2, _edw, 11);
-      ctx.fillStyle = '#ff8080';
-      ctx.font = '8px monospace';
+      ctx.fillRect(sx + eox, sy + TILE + 2, edw, 11);
+      ctx.fillStyle = tagCol;
+      ctx.font = mut ? 'bold 8px monospace' : '8px monospace';
       ctx.textAlign = 'center';
-      ctx.fillText(en.name, sx + TILE / 2, sy + TILE + 11);
+      ctx.fillText(label, sx + TILE / 2, sy + TILE + 11);
       ctx.textAlign = 'left';
     });
   }

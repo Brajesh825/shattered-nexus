@@ -4,32 +4,23 @@
  * selectable enemy targets, individual levelling, party menu.
  */
 
-/* ── Mobile viewport scaler ─────────────────────────────────
-   Scales #game via CSS transform so it fits any screen size
-   without touching pixel values elsewhere in the codebase.
-   Called on load, resize, orientation change, and screen switch.
+/* ── Viewport height setter ──────────────────────────────────
+   Sets #game height to the real viewport height on every resize
+   or orientation change. CSS media queries handle all layout
+   and sizing — no transform/scale is applied here, which was
+   previously causing double-shrink on mobile (CSS already made
+   #game responsive, then scale() squished it further to ~37%).
    ──────────────────────────────────────────────────────────── */
 function scaleGame() {
   const el = document.getElementById('game');
   if (!el) return;
+  // Clear any stale transform from older code
   el.style.transform       = '';
-  el.style.height          = '';
   el.style.transformOrigin = '';
+  el.style.marginLeft      = '';
   document.body.style.justifyContent = '';
-
-  const vw = window.innerWidth;
-  const vh = window.innerHeight;
-  if (vw >= 1000) {
-    el.style.height = `${vh}px`;
-    return;
-  }
-
-  const scale = vw / 1000;
-  // Anchor to top-left so body overflow:hidden doesn't clip the right side
-  el.style.transform       = `scale(${scale})`;
-  el.style.transformOrigin = 'top left';
-  el.style.height          = `${vh / scale}px`;
-  document.body.style.justifyContent = 'flex-start';
+  // Fill the real viewport height — CSS handles width and layout
+  el.style.height = `${window.innerHeight}px`;
 }
 window.addEventListener('resize', scaleGame);
 window.addEventListener('orientationchange', () => setTimeout(scaleGame, 150));
@@ -38,15 +29,43 @@ window.addEventListener('orientationchange', () => setTimeout(scaleGame, 150));
    BATTLE ENGINE (math helpers)
    ============================================================ */
 const Battle = {
+  // Returns 1.5 (weak), 0.5 (resist), or 1.0 (neutral) based on ability element vs target's arrays
+  elemMult(abilityElement, target) {
+    if (!abilityElement || abilityElement === 'physical') return 1.0;
+    // Mutant trait overrides — check immune (0×) and shatter (2.0×) first
+    const traits = target?.mutantTraits || [];
+    for (const t of traits) {
+      if (t.type === 'immune'  && t.element === abilityElement) return 0;
+      if (t.type === 'shatter' && t.element === abilityElement) return 2.0;
+    }
+    const weak   = target?.weakTo   || [];
+    const resist = target?.resistTo || [];
+    if (weak.includes(abilityElement))   return 1.5;
+    if (resist.includes(abilityElement)) return 0.5;
+    return 1.0;
+  },
+  // Returns 'weak'|'resist'|'immune'|'shatter'|null for UI display
+  elemResult(abilityElement, target) {
+    if (!abilityElement || abilityElement === 'physical') return null;
+    const traits = target?.mutantTraits || [];
+    for (const t of traits) {
+      if (t.type === 'immune'  && t.element === abilityElement) return 'immune';
+      if (t.type === 'shatter' && t.element === abilityElement) return 'shatter';
+    }
+    const weak   = target?.weakTo   || [];
+    const resist = target?.resistTo || [];
+    if (weak.includes(abilityElement))   return 'weak';
+    if (resist.includes(abilityElement)) return 'resist';
+    return null;
+  },
   physDmg(atk, def, mult = 1, atkLevel = 1, defLevel = 1) {
-    // Level scales damage: +0.5 damage per level
     const scaledAtk = atk + (atkLevel * 0.5);
     const scaledDef = def + (defLevel * 0.3);
-    const base = Math.max(1, scaledAtk - scaledDef * 0.4);
+    // Defense now cancels 60% of itself — more meaningful damage mitigation
+    const base = Math.max(1, scaledAtk - scaledDef * 0.6);
     return Math.max(1, Math.floor(base * (0.85 + Math.random() * 0.3) * mult));
   },
   magicDmg(mag, mult = 1, passiveBonus = 1, magLevel = 1) {
-    // Level scales magic: +0.3 damage per level (less than physical)
     const scaledMag = mag + (magLevel * 0.3);
     const base = Math.max(1, scaledMag * 0.9);
     return Math.max(1, Math.floor(base * (0.9 + Math.random() * 0.2) * mult * passiveBonus));
@@ -70,6 +89,9 @@ const G = {
   enemies: [],
   items:     [],          // item definitions from ITEMS_DATA
   inventory: [],          // [{ itemId, qty }] — party's bag (max 20 stacks)
+  relics:       [],       // relic definitions from RELICS_DATA
+  ownedRelics:  [],       // relic IDs the party has collected
+  activeRelics: [],       // relic IDs currently equipped (max 3)
   selectedChar:  null,
   selectedClass: null,
   selectedChars: [],   // ordered array of up to 4 char IDs
@@ -271,9 +293,28 @@ const UI = {
     if (!container) return;
     container.innerHTML = '';
 
+    const count = G.enemyGroup.length; // 1–4
+    container.dataset.count = count;
+
+    // ── Per-enemy sprite size: tier base × count scale × mutation bonus ──────
+    // Tier sets the "class" of the creature (goblin vs demon).
+    // Count scale keeps sprites from crushing each other in crowded groups.
+    // Mutation bonus makes corrupted/mutant visually bulkier.
+    const TIER_BASE_W   = { 1: 130, 2: 180, 3: 240 };   // px width per tier
+    const COUNT_SCALE   = { 1: 1.00, 2: 0.87, 3: 0.75, 4: 0.64 };
+    const MUTATION_MULT = { normal: 1.00, corrupted: 1.12, mutant: 1.28 };
+    const ASPECT        = 1.23; // height = width × aspect
+
     G.enemyGroup.forEach((e, i) => {
       const alive = Battle.alive(e);
       const pct   = Math.max(0, e.hp / e.maxHp * 100);
+
+      // Compute this enemy's individual sprite size
+      const tierW  = TIER_BASE_W[e.tier || 1] || TIER_BASE_W[1];
+      const cScale = COUNT_SCALE[count] || COUNT_SCALE[4];
+      const mMult  = MUTATION_MULT[e.mutation || 'normal'] || 1.0;
+      const sprW   = Math.round(tierW * cScale * mMult);
+      const sprH   = Math.round(sprW * ASPECT);
 
       // Enemy wrapper
       const enemy = document.createElement('div');
@@ -282,10 +323,12 @@ const UI = {
       enemy.dataset.target = i === G.targetEnemyIdx ? 'true' : 'false';
       enemy.onclick = () => selectTarget(i);
 
-      // Sprite
+      // Sprite — sized by tier + count + mutation
       const spr = document.createElement('img');
       spr.className = 'enemy-sprite';
       spr.id = 'espr-' + i;
+      spr.style.width  = sprW + 'px';
+      spr.style.height = sprH + 'px';
       SpriteRenderer.drawEnemy(spr, e.id, e.palette);
       enemy.appendChild(spr);
 
@@ -301,10 +344,16 @@ const UI = {
       hpBar.style.background = pct > 50 ? '#4ade80' : pct > 25 ? '#eab308' : '#ef4444';
       hpBg.appendChild(hpBar);
 
-      // Enemy info (name + level)
+      // Enemy info (name + level + mutation traits)
       const info = document.createElement('div');
       info.className = 'enemy-info';
-      info.innerHTML = `<div class="enemy-name">${e.name}</div><div class="enemy-level">Lv ${e.level}</div>`;
+      let traitHtml = '';
+      if (e.mutantTraits?.length) {
+        traitHtml = `<div class="enemy-traits">${e.mutantTraits.map(t =>
+          `<span class="trait-pill">${t.label}</span>`
+        ).join('')}</div>`;
+      }
+      info.innerHTML = `<div class="enemy-name">${e.name}</div><div class="enemy-level">Lv ${e.level}</div>${traitHtml}`;
       enemy.appendChild(info);
 
       // Target indicator
@@ -511,8 +560,10 @@ window.addEventListener('DOMContentLoaded', () => {
   G.classes = window.CLASSES_DATA    || [];
   G.enemies = window.ENEMIES_DATA    || [];
   G.items   = window.ITEMS_DATA      || [];
+  G.relics  = window.RELICS_DATA     || [];
   window._origEnemies = G.enemies.slice();
   initStars();
+  scaleGame();           // initial scale on load (resize fires on changes after)
   UI.show('title-screen');
 });
 
@@ -530,47 +581,86 @@ function initStars() {
    MAP ENCOUNTER HANDLER (global setup)
    ============================================================ */
 MapEngine.onEncounterStart = (enc, map) => {
-  console.log('[Encounter] Starting battle:', { enc, mode: G.mode, storyActive: typeof Story !== 'undefined' });
-
-  const enemyIds = enc.enemies || [];
-  console.log('[Encounter] Enemy IDs:', enemyIds);
+  const enemyIds   = enc.enemies      || [];
+  const mutation   = enc.mutation     || null; // null | 'corrupted' | 'mutant'
+  const mutantTraits = enc.mutantTraits || null; // array of trait objects, mutant only
 
   const enemyDefs = enemyIds
-    .map(id => {
-      const def = G.enemies.find(e => e.id === id);
-      console.log(`[Encounter] Looking for enemy "${id}":`, def ? 'FOUND' : 'NOT FOUND');
-      return def;
-    })
+    .map(id => G.enemies.find(e => e.id === id))
     .filter(Boolean);
 
-  console.log('[Encounter] Enemy defs count:', enemyDefs.length);
-  if (enemyDefs.length === 0) {
-    console.warn('[Encounter] No enemy definitions found, aborting');
-    return;
-  }
+  if (enemyDefs.length === 0) return;
 
-  // Get enemy level range from map
+  // Get enemy level range from map; mutated enemies spawn at higher end
   const [minLevel, maxLevel] = map?.enemyLevelRange || [1, 1];
-  const spawnLevel = minLevel + Math.floor(Math.random() * (maxLevel - minLevel + 1));
-  console.log('[Encounter] Spawn level:', spawnLevel, 'range:', [minLevel, maxLevel]);
+  const baseLevel  = minLevel + Math.floor(Math.random() * (maxLevel - minLevel + 1));
+  const spawnLevel = mutation === 'mutant'    ? maxLevel + 3
+                   : mutation === 'corrupted' ? maxLevel + 1
+                   : baseLevel;
 
-  // Story mode: build battle but route back to story
-  if (G.mode === 'story_explore' && typeof Story !== 'undefined') {
-    console.log('[Encounter] Story mode detected, launching battle');
-    buildEnemyGroup(enemyDefs, spawnLevel);
-    _initBattle();
-    const names = G.enemyGroup.map(e => e.name).join(' & ');
-    UI.setLog([`⚔ ${names} appeared!`, `Party to battle stations!`], ['hi','']);
-    processCurrentTurn();
-    return;
+  // Apply mutation: rename enemies and tag for stat boost in buildEnemyGroup
+  const mutatedDefs = mutation ? enemyDefs.map(def => ({
+    ...def,
+    name:     mutation === 'mutant' ? `Mutant ${def.name}` : `Corrupted ${def.name}`,
+    mutation, // carried into the built enemy object
+  })) : enemyDefs;
+
+  buildEnemyGroup(mutatedDefs, spawnLevel, false, mutation);
+
+  // Apply mutation stat multipliers on top of built group
+  if (mutation) {
+    const mult = mutation === 'mutant' ? 1.55 : 1.28;
+    G.enemyGroup.forEach(e => {
+      e.hp    = Math.floor(e.hp    * mult); e.maxHp = e.hp;
+      e.atk   = Math.floor(e.atk   * mult);
+      e.def   = Math.floor(e.def   * mult);
+      e.mag   = Math.floor(e.mag   * mult);
+      e.exp   = Math.floor(e.exp   * (mutation === 'mutant' ? 2.2 : 1.5));
+      e.gold  = Math.floor(e.gold  * (mutation === 'mutant' ? 2.0 : 1.4));
+      e.mutation = mutation;
+
+      // ── Apply mutant traits ──────────────────────────────
+      if (mutation === 'mutant' && mutantTraits?.length) {
+        e.mutantTraits = mutantTraits; // attach for elemMult immune/shatter checks
+        e._enragedTurns = 0;          // counter for Enraged trait
+
+        for (const t of mutantTraits) {
+          if (t.type === 'stat') {
+            if      (t.stat === 'atk') e.atk = Math.floor(e.atk * t.mult);
+            else if (t.stat === 'def') e.def = Math.floor(e.def * t.mult);
+            // spd: tag on object, affects AI tickRate in engine (not modelled here, just flavor)
+          }
+          // vampiric / regenerating / enraged flags are checked at runtime in battle resolution
+        }
+      }
+    });
   }
 
-  // Free explore mode: direct battle
-  console.log('[Encounter] Free explore mode, launching battle');
-  buildEnemyGroup(enemyDefs, spawnLevel);
   _initBattle();
+
+  // ── Apply mutation atmosphere to the whole battle scene ──────
+  const scene = document.getElementById('battle-scene');
+  if (scene) {
+    scene.classList.remove('battle-corrupted', 'battle-mutant');
+    if (mutation === 'corrupted') scene.classList.add('battle-corrupted');
+    if (mutation === 'mutant')    scene.classList.add('battle-mutant');
+  }
+
+  // Apply mutation CSS to battle enemy sprites
+  if (mutation) {
+    setTimeout(() => {
+      G.enemyGroup.forEach((_, i) => {
+        const spr = document.getElementById('espr-' + i);
+        if (spr) spr.classList.add(mutation === 'mutant' ? 'enemy-mutant' : 'enemy-corrupted');
+      });
+    }, 80);
+  }
+
+  const prefix = mutation === 'mutant'    ? '☣ MUTANT '
+               : mutation === 'corrupted' ? '✦ CORRUPTED '
+               : '';
   const names = G.enemyGroup.map(e => e.name).join(' & ');
-  UI.setLog([`⚔ ${names} appeared!`, `Party to battle stations!`], ['hi','']);
+  UI.setLog([`${prefix}⚔ ${names} appeared!`, `Party to battle stations!`], ['hi','']);
   processCurrentTurn();
 };
 
@@ -875,7 +965,8 @@ function buildParty() {
       name: `${ch.name} / ${cls.name}`,
       displayName: ch.alias || ch.name,
       hp: s.hp, maxHp: s.hp,
-      mp: s.mp, maxMp: s.mp,
+      // Restore saved MP if available so it carries between battles; cap to max
+      mp: (ch.mp !== undefined ? Math.min(ch.mp, s.mp) : s.mp), maxMp: s.mp,
       atk: s.atk, def: s.def, spd: s.spd, mag: s.mag,
       lv: ch.lv || 1, exp: ch.exp || 0, gold: ch.gold || 0,
       char: ch, cls: cls,
@@ -886,15 +977,54 @@ function buildParty() {
       buff: null, debuff: null, regenTurns: 0, stunned: false,
     });
   });
+  applyRelicBonuses();
 }
 
-function buildEnemyGroup(defs, spawnLevel = 1) {
+// Apply active relic bonuses as multipliers on top of base party stats
+function applyRelicBonuses() {
+  const active = G.activeRelics || [];
+  if (!active.length) return;
+  const defs = G.relics || [];
+
+  // Aggregate bonuses from all active relics
+  const bonus = { hp: 1, mp: 1, atk: 1, def: 1, spd: 1, mag: 1, healAmp: 1, mpRegen: 0 };
+  active.forEach(id => {
+    const r = defs.find(d => d.id === id);
+    if (!r || !r.bonus) return;
+    if (r.bonus.hp)       bonus.hp       += r.bonus.hp;
+    if (r.bonus.mp)       bonus.mp       += r.bonus.mp;
+    if (r.bonus.atk)      bonus.atk      += r.bonus.atk;
+    if (r.bonus.def)      bonus.def      += r.bonus.def;
+    if (r.bonus.spd)      bonus.spd      += r.bonus.spd;
+    if (r.bonus.mag)      bonus.mag      += r.bonus.mag;
+    if (r.bonus.healAmp)  bonus.healAmp  += r.bonus.healAmp;
+    if (r.bonus.mpRegen)  bonus.mpRegen  += r.bonus.mpRegen;
+  });
+
+  G.party.forEach(m => {
+    m.maxHp  = Math.floor(m.maxHp  * bonus.hp);
+    m.hp     = Math.min(m.hp, m.maxHp);
+    m.maxMp  = Math.floor(m.maxMp  * bonus.mp);
+    m.mp     = Math.min(m.mp, m.maxMp);
+    m.atk    = Math.floor(m.atk    * bonus.atk);
+    m.def    = Math.floor(m.def    * bonus.def);
+    m.spd    = Math.floor(m.spd    * bonus.spd);
+    m.mag    = Math.floor(m.mag    * bonus.mag);
+    m._healAmpRelic  = bonus.healAmp;  // used by healing logic
+    m._mpRegenBonus  = bonus.mpRegen;  // extra % of maxMp per turn
+  });
+}
+
+function buildEnemyGroup(defs, spawnLevel = 1, isBoss = false) {
   // Tier-based growth rates
   const tierGrowth = {
     1: { hp: 3, atk: 0.4, def: 0.2, spd: 0.3, mag: 0.2, statMult: 1.0, expMult: 1.0 },
     2: { hp: 5, atk: 0.7, def: 0.4, spd: 0.5, mag: 0.4, statMult: 1.3, expMult: 1.5 },
     3: { hp: 8, atk: 1.0, def: 0.7, spd: 0.7, mag: 0.6, statMult: 1.7, expMult: 2.5 },
   };
+
+  // Boss multiplier: solo boss gets beefed-up base stats on top of higher level
+  const bossMult = isBoss ? 1.6 : 1.0;
 
   // Horde scaling: 3+ enemies get reduced individual stats so they're dangerous
   // but not overwhelming. Scales down as group grows.
@@ -905,8 +1035,8 @@ function buildEnemyGroup(defs, spawnLevel = 1) {
     const growth = tierGrowth[tier] || tierGrowth[1];
 
     const calcStat = (baseStat, statKey) => {
-      const base       = baseStat * growth.statMult * hordeScale;
-      const levelBonus = growth[statKey] * (spawnLevel - 1) * hordeScale;
+      const base       = baseStat * growth.statMult * hordeScale * bossMult;
+      const levelBonus = growth[statKey] * (spawnLevel - 1) * hordeScale * bossMult;
       return Math.max(1, Math.floor(base + levelBonus));
     };
 
@@ -929,6 +1059,10 @@ function buildEnemyGroup(defs, spawnLevel = 1) {
       abilityDefs: def.abilities || [],
       palette: def.palette,
       subtitle: def.subtitle || '',
+      element:  def.element  || 'physical',
+      weakTo:   def.weakTo   || [],
+      resistTo: def.resistTo || [],
+      tier:     tier,
       isKO: false, stunned: false, debuff: null,
     };
   });
@@ -1020,6 +1154,25 @@ function startBattle() {
   const names = G.enemyGroup.map(e => e.name).join(' & ');
   UI.setLog([`${names} appear!`, `Party to battle stations!`], ['hi','']);
   processCurrentTurn();
+}
+
+// ── Battle atmosphere cleanup ──────────────────────────────────────────────
+// Removes mutation scene classes so the next battle starts clean.
+function _clearBattleAtmosphere() {
+  const scene = document.getElementById('battle-scene');
+  if (scene) scene.classList.remove('battle-corrupted', 'battle-mutant');
+}
+
+// ── Mutant trait: Vampiric ─────────────────────────────────────────────────
+// Call after any damage lands on an enemy that has the Vampiric trait.
+// Heals the enemy for 25% of the damage dealt (visual pop shown).
+function _applyVampiric(enemy, dmg, enemyIdx) {
+  if (!enemy.mutantTraits) return;
+  const isVampiric = enemy.mutantTraits.some(t => t.id === 'vampiric');
+  if (!isVampiric || dmg <= 0) return;
+  const heal = Math.max(1, Math.floor(dmg * 0.25));
+  enemy.hp = Math.min(enemy.maxHp, enemy.hp + heal);
+  UI.popEnemy(enemyIdx, heal, 'regen');
 }
 
 function _initBattle() {
@@ -1168,9 +1321,15 @@ function heroAttack() {
 
   setTimeout(() => {
     if (typeof SFX !== 'undefined') { SFX.attack(); setTimeout(() => SFX.enemyHit(), 80); }
-    const dmg = Battle.physDmg(actor.atk, enemy.def, 1, actor.lv || 1, enemy.level || 1);
+    const _em  = Battle.elemMult('physical', enemy);
+    const dmg  = Math.floor(Battle.physDmg(actor.atk, enemy.def, 1, actor.lv || 1, enemy.level || 1) * _em);
     enemy.hp  = Math.max(0, enemy.hp - dmg);
     if (enemy.hp <= 0) enemy.isKO = true;
+    const _er = Battle.elemResult('physical', enemy);
+    if (_er === 'shatter') UI.addLog('⚡ SHATTER!', 'magic');
+    else if (_er === 'weak')   UI.addLog('✦ WEAK!', 'magic');
+    else if (_er === 'resist') UI.addLog('▸ Resist', 'regen');
+    else if (_er === 'immune') UI.addLog('■ IMMUNE — no effect!', 'regen');
 
     // Damage number popup
     UI.popEnemy(G.targetEnemyIdx, dmg, 'dmg', 'physical');
@@ -1186,6 +1345,7 @@ function heroAttack() {
     }
 
     shakeEnemy(G.targetEnemyIdx);
+    _applyVampiric(enemy, dmg, G.targetEnemyIdx);
     UI.addLog(`Dealt ${dmg} damage!`, 'dmg');
     UI.renderEnemyRow();
     setTimeout(advanceTurn, 700);
@@ -1224,9 +1384,15 @@ function heroAbility(ab) {
 
     if (ab.type === 'physical') {
       if (typeof SFX !== 'undefined') { SFX.attack(); setTimeout(() => SFX.enemyHit(), 80); }
-      const dmg = Battle.physDmg(actor.atk, enemy.def, e.dmgMultiplier || 1, actor.lv || 1, enemy.level || 1);
+      const _em  = Battle.elemMult(element, enemy);
+      const dmg  = Math.floor(Battle.physDmg(actor.atk, enemy.def, e.dmgMultiplier || 1, actor.lv || 1, enemy.level || 1) * _em);
       enemy.hp  = Math.max(0, enemy.hp - dmg);
       if (enemy.hp <= 0) enemy.isKO = true;
+      const _er = Battle.elemResult(element, enemy);
+      if (_er === 'shatter') UI.addLog('⚡ SHATTER!', 'magic');
+      else if (_er === 'weak')   UI.addLog('✦ WEAK!', 'magic');
+      else if (_er === 'resist') UI.addLog('▸ Resist', 'regen');
+      else if (_er === 'immune') UI.addLog('■ IMMUNE — no effect!', 'regen');
       UI.popEnemy(G.targetEnemyIdx, dmg, 'dmg', element);
       createEffectOverlay(G.targetEnemyIdx, element, 'enemy', ab.id);
       const enemySpr = document.getElementById('espr-' + G.targetEnemyIdx);
@@ -1235,10 +1401,13 @@ function heroAbility(ab) {
         setTimeout(() => enemySpr.classList.remove('sprite-damage-flash'), 200);
       }
       shakeEnemy(G.targetEnemyIdx);
+      _applyVampiric(enemy, dmg, G.targetEnemyIdx);
       UI.addLog(`${enemy.name} took ${dmg} damage!`, 'dmg');
 
     } else if (ab.type === 'magic_damage') {
       if (typeof SFX !== 'undefined') SFX.magic();
+      const _em = Battle.elemMult(element, enemy);
+      const _er = Battle.elemResult(element, enemy);
 
       // Map of ultimate abilities to their channel messages
       const ultimateMessages = {
@@ -1259,9 +1428,13 @@ function heroAbility(ab) {
         // Wait for 3000ms (animation duration) then apply damage
         setTimeout(() => {
           const passiveBonus = actor.passive?.id === 'arcane_surge' ? 1.15 : 1.0;
-          const dmg = Battle.magicDmg(actor.mag, e.dmgMultiplier || 1.5, passiveBonus, actor.lv || 1);
+          const dmg = Math.floor(Battle.magicDmg(actor.mag, e.dmgMultiplier || 1.5, passiveBonus, actor.lv || 1) * _em);
           enemy.hp  = Math.max(0, enemy.hp - dmg);
           if (enemy.hp <= 0) enemy.isKO = true;
+          if (_er === 'shatter') UI.addLog('⚡ SHATTER!', 'magic');
+          else if (_er === 'weak')   UI.addLog('✦ WEAK!', 'magic');
+          else if (_er === 'resist') UI.addLog('▸ Resist', 'regen');
+          else if (_er === 'immune') UI.addLog('■ IMMUNE — no effect!', 'regen');
           UI.popEnemy(G.targetEnemyIdx, dmg, 'magic', element);
           const enemySpr = document.getElementById('espr-' + G.targetEnemyIdx);
           if (enemySpr) {
@@ -1269,6 +1442,7 @@ function heroAbility(ab) {
             setTimeout(() => enemySpr.classList.remove('sprite-damage-flash'), 200);
           }
           shakeEnemy(G.targetEnemyIdx);
+          _applyVampiric(enemy, dmg, G.targetEnemyIdx);
           UI.addLog(`${enemy.name} took ${dmg} magic damage!`, 'magic');
           UI.renderEnemyRow(); UI.renderPartyStatus();
           setTimeout(advanceTurn, 750);
@@ -1276,9 +1450,13 @@ function heroAbility(ab) {
       } else {
         // Normal magic damage: calculate immediately
         const passiveBonus = actor.passive?.id === 'arcane_surge' ? 1.15 : 1.0;
-        const dmg = Battle.magicDmg(actor.mag, e.dmgMultiplier || 1.5, passiveBonus, actor.lv || 1);
+        const dmg = Math.floor(Battle.magicDmg(actor.mag, e.dmgMultiplier || 1.5, passiveBonus, actor.lv || 1) * _em);
         enemy.hp  = Math.max(0, enemy.hp - dmg);
         if (enemy.hp <= 0) enemy.isKO = true;
+        if (_er === 'shatter') UI.addLog('⚡ SHATTER!', 'magic');
+        else if (_er === 'weak')   UI.addLog('✦ WEAK!', 'magic');
+        else if (_er === 'resist') UI.addLog('▸ Resist', 'regen');
+        else if (_er === 'immune') UI.addLog('■ IMMUNE — no effect!', 'regen');
         UI.popEnemy(G.targetEnemyIdx, dmg, 'magic', element);
         createEffectOverlay(G.targetEnemyIdx, element, 'enemy', ab.id);
         const enemySpr = document.getElementById('espr-' + G.targetEnemyIdx);
@@ -1287,6 +1465,7 @@ function heroAbility(ab) {
           setTimeout(() => enemySpr.classList.remove('sprite-damage-flash'), 200);
         }
         shakeEnemy(G.targetEnemyIdx);
+        _applyVampiric(enemy, dmg, G.targetEnemyIdx);
         UI.addLog(`${enemy.name} took ${dmg} magic damage!`, 'magic');
       }
 
@@ -1548,6 +1727,33 @@ function _awardDrops(enemyDef) {
   return awarded;
 }
 
+// Attempt to drop a random common/uncommon relic from enemies
+// elite flag raises the chance
+function _tryRelicDrop(isElite) {
+  const chance = isElite ? 25 : 8;
+  if (Math.random() * 100 > chance) return null;
+  const pool = (G.relics || []).filter(r =>
+    (r.rarity === 'common' || r.rarity === 'uncommon') &&
+    !G.ownedRelics.includes(r.id)
+  );
+  if (!pool.length) return null;
+  const relic = pool[Math.floor(Math.random() * pool.length)];
+  G.ownedRelics.push(relic.id);
+  // Auto-equip if a slot is free
+  if (G.activeRelics.length < 3) G.activeRelics.push(relic.id);
+  return relic;
+}
+
+// Award a specific boss relic by ID (called after arc boss victory)
+function awardBossRelic(relicId) {
+  if (!relicId || G.ownedRelics.includes(relicId)) return null;
+  const relic = (G.relics || []).find(r => r.id === relicId);
+  if (!relic) return null;
+  G.ownedRelics.push(relicId);
+  if (G.activeRelics.length < 3) G.activeRelics.push(relicId);
+  return relic;
+}
+
 function heroRun() {
   if (G.busy) return;
   G.busy = true; UI.btns(false);
@@ -1643,7 +1849,8 @@ function enemyAct(enemy, enemyIdx) {
 
     } else if (ab.type === 'magic_damage') {
       if (typeof SFX !== 'undefined') SFX.magic();
-      const dmg = Battle.magicDmg(enemy.atk * 0.8, ab.dmgMultiplier || 1.3, 1.0, enemy.level || 1);
+      // Use enemy.mag (not atk) for magic damage
+      const dmg = Battle.magicDmg(enemy.mag, ab.dmgMultiplier || 1.3, 1.0, enemy.level || 1);
       target.hp = Math.max(0, target.hp - dmg);
       UI.popParty(targetIdx, dmg, 'magic', element);
       createEffectOverlay(targetIdx, element, 'party');
@@ -1662,6 +1869,9 @@ function enemyAct(enemy, enemyIdx) {
     // Regen ticks for all party members after each enemy action
     G.party.forEach((m, i) => {
       if (!Battle.alive(m)) return;
+      // Passive MP regen: 3 MP per turn (mpRegen relic gives bonus)
+      const mpRegenAmt = 3 + Math.floor((m._mpRegenBonus || 0) * m.maxMp);
+      m.mp = Math.min(m.maxMp, m.mp + mpRegenAmt);
       if (m.passive?.id === 'natures_grace' && m.hp < m.maxHp) {
         m.hp = Math.min(m.maxHp, m.hp + 5); UI.popParty(i, 5, 'regen');
       }
@@ -1669,6 +1879,29 @@ function enemyAct(enemy, enemyIdx) {
         m.regenTurns--; m.hp = Math.min(m.maxHp, m.hp + 8); UI.popParty(i, 8, 'regen');
       }
       if (m.buff) { m.buff.turns--; if (m.buff.turns <= 0) { m[m.buff.stat] = m.buff.origVal; m.buff = null; } }
+    });
+
+    // ── Mutant trait ticks after enemy action ─────────────────
+    G.enemyGroup.forEach((e, i) => {
+      if (!Battle.alive(e) || !e.mutantTraits) return;
+      const traits = e.mutantTraits;
+
+      // Regenerating: recover 5% max HP per turn end
+      if (traits.some(t => t.id === 'regenerating')) {
+        const healAmt = Math.max(1, Math.floor(e.maxHp * 0.05));
+        e.hp = Math.min(e.maxHp, e.hp + healAmt);
+        UI.popEnemy(i, healAmt, 'regen');
+      }
+
+      // Enraged: ATK grows +8% per turn survived (up to +50% bonus max)
+      if (traits.some(t => t.id === 'enraged')) {
+        e._enragedTurns = (e._enragedTurns || 0) + 1;
+        if (e._enragedTurns <= 6) { // cap at 6 turns (~+48%)
+          const gain = Math.max(1, Math.floor(e.atk * 0.08));
+          e.atk += gain;
+          if (e._enragedTurns === 1) UI.addLog(`⚠ ${e.name} is Enraged! ATK rising!`, 'dmg');
+        }
+      }
     });
 
     if (target.hp <= 0) {
@@ -1692,11 +1925,14 @@ function checkBattleEnd() {
   if (allEnemiesDead) {
     let totalExp = 0, totalGold = 0;
     const allDrops = [];
+    let relicDrop = null;
     G.enemyGroup.forEach(e => {
       totalExp  += e.exp;
       totalGold += e.gold;
       const rawDef = G.enemies.find(r => r.id === e.id);
       if (rawDef) _awardDrops(rawDef).forEach(id => allDrops.push(id));
+      // One relic drop attempt per encounter (elite enemies have higher chance)
+      if (!relicDrop) relicDrop = _tryRelicDrop(rawDef?.elite || false);
     });
 
     // Average enemy level for the encounter
@@ -1718,22 +1954,25 @@ function checkBattleEnd() {
       while (checkMemberLevel(m)) {
         if (!leveledNames.includes(m.displayName)) leveledNames.push(m.displayName);
       }
-      // Sync stats back to character data for persistence across arcs
+      // Sync stats back to character data for persistence across battles
       const ch = G.chars.find(c => c.id === m.charId);
       if (ch) {
-        ch.lv = m.lv;
-        ch.exp = m.exp;
+        ch.lv   = m.lv;
+        ch.exp  = m.exp;
         ch.gold = m.gold;
+        ch.mp   = m.mp;   // persist MP so it carries between battles
       }
     });
 
     const dropMsg = allDrops.length
       ? allDrops.map(id => { const d = G.items.find(i => i.id === id); return d ? `${d.icon}${d.name}` : id; }).join(', ')
       : null;
+    const relicMsg = relicDrop ? `✦ Relic found: ${relicDrop.icon} ${relicDrop.name}!` : null;
     UI.setLog([
       `Enemies defeated! +${totalExp} EXP +${totalGold} Gold`,
-      dropMsg ? `Drops: ${dropMsg}` : ''
-    ].filter(Boolean), ['hi', 'hi']);
+      dropMsg  ? `Drops: ${dropMsg}` : '',
+      relicMsg || ''
+    ].filter(Boolean), ['hi', 'hi', 'hi']);
     UI.renderPartyStatus();
     UI.updateStats();
 
@@ -1744,6 +1983,7 @@ function checkBattleEnd() {
         UI.renderPartyStatus();
       }
       setTimeout(() => {
+        _clearBattleAtmosphere();
         if (G.mode === 'explore' || G.mode === 'story_explore') { MapEngine.onBattleComplete(true); }
         else if (typeof Story !== 'undefined' && Story.active) Story.onBattleWon();
         else showResult('victory');
@@ -1755,6 +1995,7 @@ function checkBattleEnd() {
   if (allPartyDown) {
     UI.setLog(['The party has fallen...'], ['dmg']);
     setTimeout(() => {
+      _clearBattleAtmosphere();
       if (G.mode === 'explore' || G.mode === 'story_explore') { MapEngine.onBattleComplete(false); }
       else if (typeof Story !== 'undefined' && Story.active) Story.onBattleLost();
       else showResult('defeat');
@@ -1788,6 +2029,7 @@ function checkMemberLevel(m) {
    RESULT SCREEN
    ============================================================ */
 function showResult(type) {
+  _clearBattleAtmosphere();
   closePartyMenu();
   const t       = UI.el('result-title');
   const st      = UI.el('result-stats');

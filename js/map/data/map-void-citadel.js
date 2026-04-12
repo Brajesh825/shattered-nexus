@@ -86,13 +86,20 @@ MAP_DEFS.void_citadel = (function() {
     return {
         id: 'void_citadel',
         name: 'Void Citadel',
-        arcId: 5,
+        arcId: 6,
         width: width,
         height: height,
         playerStart: { x: 60, y: 15 },
         bgColor: '#040210',
         ambientLight: 'rgba(60,20,160,0.1)',
         enemyLevelRange: [18, 22],
+        // Arc 6 — void energy tears at reality. Mutation is near-constant.
+        mutationConfig: {
+          corruptThreshold: 32,
+          mutantThreshold:  64,
+          corruptChance:    0.054,
+          mutantChance:     0.030,
+        },
         encounterTemplates: [
           { weight: 3, enemies: ['void_knight'] },
           { weight: 2, enemies: ['void_knight', 'void_knight'] },
@@ -127,26 +134,33 @@ MAP_DEFS.void_citadel = (function() {
           { id: 'essabella', x: 60, y: 70, dialogueKey: 'void_citadel' },
         ],
 
+        objective: {
+          type: 'reach',
+          target: { x: 60, y: 105 },
+          label: 'Open the Void Portal',
+          completeMsg: '✦ The portal tears open — Valdris\'s sanctum lies beyond.',
+        },
+
         fog: { delay: 5, peak: 50, max: 0.94, vision: 2.0 },
 
         voiceLines: {
           ambient: [
-            { char:'Xiao',   color:'#4ade80', text:'This place exists between worlds. Tread carefully.' },
-            { char:'Hutao',  color:'#ef4444', text:'Void magic everywhere. My lantern barely works.' },
-            { char:'Ayaka',  color:'#7dd3fc', text:'The citadel shifts. The walls are not fixed.' },
-            { char:'Nilou',  color:'#2dd4bf', text:'I feel like we\'re being watched from all sides.' },
+            { char:'Rei',   color:'#4ade80', text:'This place exists between worlds. Tread carefully.' },
+            { char:'Tao',  color:'#ef4444', text:'Void magic everywhere. My lantern barely works.' },
+            { char:'Aya',  color:'#7dd3fc', text:'The citadel shifts. The walls are not fixed.' },
+            { char:'Lulu',  color:'#2dd4bf', text:'I feel like we\'re being watched from all sides.' },
           ],
           fogRising: [
-            { char:'Xiao',   color:'#4ade80', text:'The void closes. Do not stop moving.' },
-            { char:'Hutao',  color:'#ef4444', text:'Void-dark is different. It has intent.' },
-            { char:'Ayaka',  color:'#7dd3fc', text:'I can\'t see where the corridor ends.' },
-            { char:'Nilou',  color:'#2dd4bf', text:'The dark is getting inside my head.' },
+            { char:'Rei',   color:'#4ade80', text:'The void closes. Do not stop moving.' },
+            { char:'Tao',  color:'#ef4444', text:'Void-dark is different. It has intent.' },
+            { char:'Aya',  color:'#7dd3fc', text:'I can\'t see where the corridor ends.' },
+            { char:'Lulu',  color:'#2dd4bf', text:'The dark is getting inside my head.' },
           ],
           encounter: [
-            { char:'Xiao',   color:'#4ade80', text:'Void spawn — they were invisible!' },
-            { char:'Hutao',  color:'#ef4444', text:'Born from the dark itself. Predictably.' },
-            { char:'Ayaka',  color:'#7dd3fc', text:'They materialized from nothing—' },
-            { char:'Nilou',  color:'#2dd4bf', text:'I couldn\'t sense them at all!' },
+            { char:'Rei',   color:'#4ade80', text:'Void spawn — they were invisible!' },
+            { char:'Tao',  color:'#ef4444', text:'Born from the dark itself. Predictably.' },
+            { char:'Aya',  color:'#7dd3fc', text:'They materialized from nothing—' },
+            { char:'Lulu',  color:'#2dd4bf', text:'I couldn\'t sense them at all!' },
           ],
         },
     };
