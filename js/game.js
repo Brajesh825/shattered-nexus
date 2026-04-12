@@ -1410,19 +1410,39 @@ function heroAbility(ab) {
     UI.addLog(`${actor.displayName} sacrifices vitality for power!`, 'dmg');
   }
 
+  // Ultimates with 3-second channel animation before damage lands
+  const ultimateChannels = {
+    'cryoclasm':         'channels ice blades...',
+    'spirit_soother':    'channels soul fire...',
+    'hajras_hymn':       'channels star blessing...',
+    'mastery_of_pain':   'channels karmic winds...'
+  };
+  const isUltimate = ultimateChannels.hasOwnProperty(ab.id);
+
   setTimeout(() => {
     const enemy = G.enemy;
+
+    if (isUltimate) {
+      UI.addLog(`${actor.displayName} ${ultimateChannels[ab.id]}`, 'magic');
+      createEffectOverlay(G.targetEnemyIdx, element, 'enemy', ab.id);
+    }
 
     if (ab.type === 'physical') {
       const isOnCD = actor.cooldowns && actor.cooldowns[ab.id] > 0;
       if (isOnCD) { UI.addLog(`${ab.name} is on cooldown for ${actor.cooldowns[ab.id]} turns!`, 'dmg'); G.busy = false; UI.btns(true); return; }
 
       if (typeof SFX !== 'undefined') SFX.attack();
-      const _stab = actor.passive?.id === 'eidolon_bond' ? 1.25 : element === actor.cls?.element ? 1.25 : 1.0;
+      const _stab = actor.passive?.id === 'eidolon_bond' ? 1.25 : (element === actor.cls?.element || (element === 'wind' && actor.cls?.element === 'anemo') || (element === 'anemo' && actor.cls?.element === 'wind')) ? 1.25 : 1.0;
       const _bb   = actor.passive?.id === 'blood_blossom' && actor.hp / actor.maxHp < 0.5 ? 1.35 : 1.0;
       
-      const _scaleStat = e.statScale ? Math.floor((actor[e.statScale] || 0) * 0.5) : 0;
+      // Balanced HP Scaling (10%) vs Standard Stat Scaling (50%)
+      const _scaleCoeff = (e.statScale === 'hp' || e.statScale === 'maxHp') ? 0.1 : 0.5;
+      const _scaleStat = e.statScale ? Math.floor((actor[e.statScale] || 0) * _scaleCoeff) : 0;
       const _effectiveAtk = actor.atk + _scaleStat;
+
+      // Desperation Bonus: Hits harder with lower health
+      const _hpPercent = actor.hp / actor.maxHp;
+      const _lowHpMult = 1 + (1 - _hpPercent) * (e.lowHpDmgBonus || 0);
 
       const targets = e.aoe
         ? G.enemyGroup.map((en, i) => ({ en, i })).filter(({ en }) => Battle.alive(en))
@@ -1431,9 +1451,9 @@ function heroAbility(ab) {
       let totalDmg = 0;
       targets.forEach(({ en: tgt, i: tIdx }) => {
         const _em = Battle.elemMult(element, tgt);
-        // Elemental Amps (Hu Tao's Fire boost)
+        // Elemental Amps
         const _amp = (element === 'fire' ? actor.fireAmp || 1.0 : 1.0);
-        const dmg = Math.floor(Battle.physDmg(_effectiveAtk, tgt.def, e.dmgMultiplier || 1, actor.lv || 1, tgt.level || 1, e.defPen || 0) * _em * _stab * _bb * _amp);
+        const dmg = Math.floor(Battle.physDmg(_effectiveAtk, tgt.def, e.dmgMultiplier || 1, actor.lv || 1, tgt.level || 1, e.defPen || 0) * _em * _stab * _bb * _amp * _lowHpMult);
         tgt.hp = Math.max(0, tgt.hp - dmg);
         if (tgt.hp <= 0) tgt.isKO = true;
         totalDmg += dmg;
@@ -1505,23 +1525,16 @@ function heroAbility(ab) {
 
     } else if (ab.type === 'magic_damage') {
       if (typeof SFX !== 'undefined') SFX.magic();
-      const _stab = actor.passive?.id === 'eidolon_bond' ? 1.25 : element === actor.cls?.element ? 1.25 : 1.0;
+      const _stab = actor.passive?.id === 'eidolon_bond' ? 1.25 : (element === actor.cls?.element || (element === 'wind' && actor.cls?.element === 'anemo') || (element === 'anemo' && actor.cls?.element === 'wind')) ? 1.25 : 1.0;
       const passiveBonus = actor.passive?.id === 'arcane_surge' ? 1.15
                          : actor.passive?.id === 'eidolon_bond'  ? 1.2 : 1.0;
 
-      // Ultimates with 3-second channel animation before damage lands
-      const ultimateChannels = {
-        'cryoclasm':         'channels ice blades...',
-        'guide_to_afterlife':'channels soul fire...',
-        'hajras_hymn':       'channels star blessing...',
-        'mastery_of_pain':   'channels karmic winds...'
-      };
-      const isUltimate = ultimateChannels.hasOwnProperty(ab.id);
-
-      // statScale: some abilities (e.g. Mastery of Pain) add 50% of another stat to effective MAG
-      // This lets tank/defenders deal meaningful magic damage despite low MAG base
-      const _scaleStat = e.statScale ? Math.floor((actor[e.statScale] || 0) * 0.5) : 0;
+      const _scaleCoeff = (e.statScale === 'hp' || e.statScale === 'maxHp') ? 0.1 : 0.5;
+      const _scaleStat = e.statScale ? Math.floor((actor[e.statScale] || 0) * _scaleCoeff) : 0;
       const _effectiveMag = actor.mag + _scaleStat;
+
+      const _hpPercent = actor.hp / actor.maxHp;
+      const _lowHpMult = 1 + (1 - _hpPercent) * (e.lowHpDmgBonus || 0);
 
       if (isUltimate) {
         const _em = Battle.elemMult(element, enemy);
@@ -1530,7 +1543,7 @@ function heroAbility(ab) {
         UI.addLog(`${actor.displayName} ${ultimateChannels[ab.id]}`, 'magic');
         setTimeout(() => {
           const dmg = Math.floor(Battle.magicDmg(_effectiveMag, e.dmgMultiplier || 1.5, passiveBonus, actor.lv || 1) * _em * _stab);
-          if (_scaleStat > 0) UI.addLog(`💠 Karmic scales +${_scaleStat} MAG from DEF!`, 'magic');
+          if (_scaleStat > 0) UI.addLog(`💠 Karmic scales +${_scaleStat} from ${e.statScale.toUpperCase()}!`, 'magic');
           enemy.hp  = Math.max(0, enemy.hp - dmg);
           if (enemy.hp <= 0) enemy.isKO = true;
           if (_er === 'shatter') UI.addLog('⚡ SHATTER!', 'magic');
@@ -1557,7 +1570,7 @@ function heroAbility(ab) {
           const _em = Battle.elemMult(element, tgt);
           // Amps
           const _amp = (element === 'fire' ? actor.fireAmp || 1.0 : 1.0);
-          const dmg = Math.floor(Battle.magicDmg(_effectiveMag, e.dmgMultiplier || 1.5, passiveBonus, actor.lv || 1, tgt.mag, tgt.lv || 1) * _em * _stab * _amp);
+          const dmg = Math.floor(Battle.magicDmg(_effectiveMag, e.dmgMultiplier || 1.5, passiveBonus, actor.lv || 1, tgt.mag, tgt.lv || 1) * _em * _stab * _amp * _lowHpMult);
           tgt.hp = Math.max(0, tgt.hp - dmg);
           if (tgt.hp <= 0) tgt.isKO = true;
           totalDmg += dmg;
@@ -1593,29 +1606,44 @@ function heroAbility(ab) {
 
     } else if (ab.type === 'heal') {
       if (typeof SFX !== 'undefined') SFX.heal();
-      const _healAmp = actor.passive?.id === 'dance_of_haftkarsvar' ? 1.3 : 1.0;
+      const _healAmp = (actor.passive?.id === 'dance_of_haftkarsvar' ? 1.3 : 1.0) * (actor.healBoost || 1.0);
       const getHealAmt = (m) => {
         if (e.healPercent) return Math.floor(m.maxHp * e.healPercent);
-        return Math.floor(((e.healBase || 20) + Math.floor(Math.random() * (e.healRandom || 15))) * _healAmp);
+        const base = e.healBase || 20;
+        const rand = e.healRandom || 15;
+        const magBonus = Math.floor(actor.mag * 1.5);
+        return Math.floor((base + Math.random() * rand + magBonus) * _healAmp);
       };
 
-      if (e.aoe) {
-        G.party.forEach((m, i) => {
-          if (!Battle.alive(m)) return;
-          const amt = getHealAmt(m);
-          m.hp = Math.min(m.maxHp, m.hp + amt);
-          UI.popParty(i, amt, 'heal', 'light');
-          if (e.cleanse && m.buff) { m[m.buff.stat] = m.buff.origVal; m.buff = null; }
-        });
-        createEffectOverlay(G.activeMemberIdx, element, 'party', ab.id);
-        UI.addLog(`${actor.displayName} healed the entire party!`, 'heal');
-      } else {
-        const amt = getHealAmt(actor);
-        actor.hp  = Math.min(actor.maxHp, actor.hp + amt);
-        UI.popParty(G.activeMemberIdx, amt, 'heal', 'light');
-        createEffectOverlay(G.activeMemberIdx, element, 'party', ab.id);
-        UI.addLog(`${actor.displayName} restored ${amt} HP!`, 'heal');
+      const targets = e.aoe ? G.party.filter(m => Battle.alive(m)) : [G.party[G.activeMemberIdx]];
+      targets.forEach(m => {
+        const amt = getHealAmt(m);
+        m.hp = Math.min(m.maxHp, m.hp + amt);
+        const pIdx = G.party.indexOf(m);
+        UI.popParty(pIdx, amt, 'heal', 'light');
+        
+        if (e.cleanse) {
+          m.debuff = null;
+          m.stunned = false;
+          m.frozen = 0;
+          UI.addLog(`✨ ${m.displayName} Cleansed!`, 'heal');
+        }
+      });
+      createEffectOverlay(G.activeMemberIdx, element, 'party', ab.id);
+      
+      if (e.healBoost) {
+        actor.healBoost = e.healBoost;
+        actor.healBoostTurns = e.duration || 3;
+        UI.addLog(`🌿 ${actor.displayName}'s healing power surged!`, 'heal');
       }
+      if (e.spdBuff) {
+        actor.spd = Math.floor(actor.spd * e.spdBuff);
+        actor._spdBuffVal = e.spdBuff;
+        UI.addLog(`💨 ${actor.displayName}'s SPD raised!`, 'heal');
+      }
+
+      UI.renderPartyStatus();
+      setTimeout(advanceTurn, 800);
 
     } else if (ab.type === 'regen') {
       actor.regenTurns = e.duration || 3;
@@ -1631,14 +1659,18 @@ function heroAbility(ab) {
           m.buff = { stat: e.stat, origVal: m[e.stat], turns: e.duration || 2 };
           m[e.stat] = Math.floor(m[e.stat] * (e.multiplier || 1.3));
         }
-        // Secondary stat buffs (Valkyrie/Lulu moves)
-        if (e.defBuff) { m.def = Math.floor(m.def * e.defBuff); }
-        if (e.spdBuff) { m.spd += e.spdBuff; }
+        
+        // Multi-stat secondary boosters
+        if (e.atkBuff) { m.atk = Math.floor(m.atk * e.atkBuff); m._atkBuffVal = e.atkBuff; }
+        if (e.defBuff) { m.def = Math.floor(m.def * e.defBuff); m._defBuffVal = e.defBuff; }
+        if (e.spdBuff && !m._spdBuffVal) { m.spd = Math.floor(m.spd * e.spdBuff); m._spdBuffVal = e.spdBuff; }
+        if (e.magBuff) { m.mag = Math.floor(m.mag * e.magBuff); m._magBuffVal = e.magBuff; }
         
         // Special status effects
         if (e.damageReduction) m.dmgReduction = (1 - e.damageReduction);
         if (e.evasion) m.evasion = e.evasion;
         if (e.reflect) m.reflect = e.reflect;
+        if (e.guardMark) { m.guardMark = true; m.guardMarkTurns = e.duration || 3; }
         if (e.fireAmp) m.fireAmp = e.fireAmp;
         if (e.absorb) m.absorbElement = e.absorb;
 
@@ -2002,9 +2034,17 @@ function enemyAct(enemy, enemyIdx) {
   const alive = G.party.filter(m => Battle.alive(m));
   if (!alive.length) { advanceTurn(); return; }
 
-  // Pick target — bias toward lower HP ratio
-  alive.sort((a, b) => (a.hp / a.maxHp) - (b.hp / b.maxHp));
-  const target    = Math.random() < 0.6 ? alive[0] : alive[Math.floor(Math.random() * alive.length)];
+  // Taunt Check: If anyone has guardMark, they are the mandatory target
+  const taunterIdx = G.party.findIndex(m => Battle.alive(m) && m.guardMark);
+  let target;
+  if (taunterIdx !== -1) {
+    target = G.party[taunterIdx];
+    UI.addLog(`🛡️ Enemies focused on ${target.displayName}'s Guard Mark!`, 'regen');
+  } else {
+    // Pick target — bias toward lower HP ratio
+    alive.sort((a, b) => (a.hp / a.maxHp) - (b.hp / b.maxHp));
+    target = Math.random() < 0.6 ? alive[0] : alive[Math.floor(Math.random() * alive.length)];
+  }
   const targetIdx = G.party.indexOf(target);
 
   const ab = Battle.pickAbility(enemy.abilityDefs);
@@ -2160,6 +2200,15 @@ function enemyAct(enemy, enemyIdx) {
       
       // Cooldown & Status decrement
       if (m.frozen > 0) m.frozen--;
+      if (m.healBoostTurns > 0) {
+        m.healBoostTurns--;
+        if (m.healBoostTurns <= 0) m.healBoost = null;
+      }
+      if (m.guardMarkTurns > 0) {
+        m.guardMarkTurns--;
+        if (m.guardMarkTurns <= 0) m.guardMark = null;
+      }
+
       if (m.cooldowns) {
         for (let cid in m.cooldowns) {
           if (m.cooldowns[cid] > 0) m.cooldowns[cid]--;
@@ -2176,6 +2225,13 @@ function enemyAct(enemy, enemyIdx) {
         if (m.buff.turns <= 0) { 
           m[m.buff.stat] = m.buff.origVal; 
           m.buff = null; 
+          
+          // Multi-stat cleanup
+          if (m._atkBuffVal) { m.atk = Math.ceil(m.atk / m._atkBuffVal); delete m._atkBuffVal; }
+          if (m._defBuffVal) { m.def = Math.ceil(m.def / m._defBuffVal); delete m._defBuffVal; }
+          if (m._spdBuffVal) { m.spd = Math.ceil(m.spd / m._spdBuffVal); delete m._spdBuffVal; }
+          if (m._magBuffVal) { m.mag = Math.ceil(m.mag / m._magBuffVal); delete m._magBuffVal; }
+
           // Reset special buff flags: Hu Tao cleanup
           m.dmgReduction = null;
           m.evasion = null;

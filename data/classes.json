@@ -80,8 +80,8 @@
         "icon": "🦋",
         "mp": 6,
         "type": "buff",
-        "description": "Enter the butterfly state — Costs 30% current HP, ATK +60%, attacks become FIRE, 3 turns",
-        "effect": { "stat": "atk", "multiplier": 1.6, "hpCostPercent": 0.3, "infusion": "fire", "duration": 3 }
+        "description": "Enter the butterfly state — Costs 30% current HP, ATK +60% for 3 turns",
+        "effect": { "stat": "atk", "multiplier": 1.6, "hpCostPercent": 0.3, "duration": 3 }
       },
       {
         "id": "sanguine_rouge",
@@ -97,10 +97,10 @@
         "name": "Spirit Soother",
         "icon": "💀",
         "mp": 12,
-        "type": "magic_damage",
+        "type": "physical",
         "isUltimate": true,
-        "description": "Ultimate ghost strike — 4.0x magic damage (scales with ATK), massive self-heal (boosted if HP < 50%)",
-        "effect": { "dmgMultiplier": 4.0, "element": "fire", "statScale": "atk", "lifeSteal": 0.35, "healLowMult": 1.6 }
+        "description": "Ultimate ghost strike — 4.0x dynamic damage (scales with Max HP & Loss), massive self-heal",
+        "effect": { "dmgMultiplier": 4.0, "element": "fire", "statScale": "maxHp", "lowHpDmgBonus": 1.0, "lifeSteal": 0.35, "healLowMult": 1.6 }
       }
     ],
     "growthPerLevel": { "hp": 7, "mp": 4, "atk": 5, "def": 1, "spd": 3, "mag": 4 }
@@ -124,8 +124,8 @@
         "icon": "💚",
         "mp": 5,
         "type": "heal",
-        "description": "Graceful healing dance — restore 35-55 HP to one ally, buff healing by 30%",
-        "effect": { "healBase": 35, "healRandom": 20, "healBoost": 0.3 }
+        "description": "Graceful healing dance — restore 35-55 HP, buff own healing output by 30%",
+        "effect": { "healBase": 35, "healRandom": 20, "healBoost": 1.3, "duration": 3 }
       },
       {
         "id": "water_wheel",
@@ -134,7 +134,7 @@
         "mp": 8,
         "type": "magic_damage",
         "description": "Spinning water attack — 2.0x magic damage, heal all allies for 50% damage",
-        "effect": { "dmgMultiplier": 2.0, "element": "water", "lifeSteal": 0.5, "aoe": true }
+        "effect": { "dmgMultiplier": 2.2, "element": "water", "lifeSteal": 0.5, "aoe": true }
       },
       {
         "id": "harmony_preservation",
@@ -142,8 +142,8 @@
         "icon": "🌊",
         "mp": 10,
         "type": "buff",
-        "description": "Party-wide blessing — ATK +20%, DEF +20%, regen 5 HP/turn for 4 turns",
-        "effect": { "aoe": true, "stat": "atk", "multiplier": 1.2, "defBuff": 1.2, "hpRegen": 5, "duration": 4 }
+        "description": "Party blessing — ATK +20%, DEF +20%, regen 5 HP/turn, lasts 4 turns",
+        "effect": { "aoe": true, "atkBuff": 1.2, "defBuff": 1.2, "hpRegen": 5, "duration": 4 }
       },
       {
         "id": "hajras_hymn",
@@ -152,8 +152,8 @@
         "mp": 12,
         "type": "heal",
         "isUltimate": true,
-        "description": "Ultimate star dance — restore 50% max HP to all allies, cleanse all debuffs, +1 SPD",
-        "effect": { "healPercent": 0.5, "aoe": true, "cleanse": true, "spdBuff": 1 }
+        "description": "Ultimate star dance — restore 50% max HP, cleanse all debuffs, +1 SPD",
+        "effect": { "healPercent": 0.5, "aoe": true, "cleanse": true, "spdBuff": 1.2 }
       }
     ],
     "growthPerLevel": { "hp": 10, "mp": 8, "atk": 1, "def": 2, "spd": 1, "mag": 5 }
@@ -205,8 +205,8 @@
         "mp": 14,
         "type": "magic_damage",
         "isUltimate": true,
-        "description": "Channel karmic energy — 3.5x magic damage, scales with DEF, applies guard mark",
-        "effect": { "dmgMultiplier": 3.5, "statScale": "def", "element": "anemo", "guardMark": true }
+        "description": "Channel karmic energy — 3.7x magic damage, scales with DEF, forces all enemies to attack Rei",
+        "effect": { "dmgMultiplier": 3.7, "statScale": "def", "element": "wind", "guardMark": true, "duration": 3 }
       }
     ],
     "growthPerLevel": { "hp": 16, "mp": 2, "atk": 3, "def": 5, "spd": 0, "mag": 1 }
