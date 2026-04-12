@@ -3729,16 +3729,30 @@ body {
   .pm-bar-bg { height: 4px; }
   .pm-stat-row { font-size: 9px; gap: 6px; }
 
-  /* ── Story screen ── */
-  .s-header { padding: 8px 12px; }
-  .s-header-chap { font-size: 12px; }
-  .s-cast-row { gap: 8px; padding: 6px 10px; }
-  .s-cast-face { width: 36px; height: 36px; }
-  .s-dialogue { padding: 10px 14px; }
-  .s-dialogue-speaker { font-size: 12px; }
-  .s-dialogue-text { font-size: 15px; line-height: 1.5; }
-  .s-continue-hint { font-size: 10px; }
-  .s-choice-btn { font-size: 12px; padding: 10px 14px; }
+  /* ── Story / cutscene screen ── */
+  .s-header              { padding: 6px 10px; }
+  .s-header-chap         { font-size: 11px; }
+  /* Scene standing chars — smaller on mobile */
+  .s-scene-char img      { height: 100px; }
+  .s-scene-char.active img { filter: drop-shadow(0 0 10px rgba(160,144,208,.5)) drop-shadow(0 3px 6px rgba(0,0,0,.4)); }
+  .s-scene-char-name     { font-size: 8px; }
+  /* Spirits row — compact */
+  .s-dialogue-spirits-row { min-height: 70px; padding: 6px 10px; gap: 8px; }
+  .s-spirit-item img     { height: 52px; }
+  .s-spirit-item.active img { height: 64px; }
+  .s-spirit-name         { font-size: 6px; max-width: 46px; }
+  /* Portrait sidebar — hide on small screens */
+  .s-dialogue-portrait   { display: none; }
+  /* Dialogue text */
+  .s-dialogue            { min-height: 90px; }
+  .s-dialogue-body       { padding: 10px 14px 10px 12px; gap: 4px; }
+  .s-speaker             { font-size: 8px; letter-spacing: 1px; }
+  .s-text                { font-size: 16px; line-height: 1.45; min-height: 48px; }
+  .s-continue-hint       { font-size: 9px; }
+  /* Choices */
+  .s-choice-btn          { font-size: 11px; padding: 8px 12px; }
+  .s-cast-row            { gap: 6px; padding: 4px 10px; }
+  .s-cast-face           { width: 30px; height: 30px; }
 
   /* ── Result screen ── */
   #result-screen { padding: 20px 12px; gap: 14px; }
