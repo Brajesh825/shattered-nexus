@@ -434,6 +434,40 @@ const MapEntities = (() => {
   const CORRUPT_CHANCE    = 0.04; // 4% per second once threshold met
   const MUTANT_CHANCE     = 0.025;// 2.5% per second once threshold met
 
+  // ── Mutant Trait Pool ─────────────────────────────────────────
+  // Each mutant rolls 1–3 random traits from this pool.
+  // Stat buff traits: applied at encounter start via stat multipliers.
+  // Special traits: applied at runtime during battle (vampiric/regen/enraged/immune/shatter).
+  const MUTANT_TRAITS = [
+    { id: 'berserker',   label: '⚔ Berserker',  type: 'stat',    stat: 'atk',  mult: 1.40 },
+    { id: 'ironhide',    label: '🛡 Ironhide',    type: 'stat',    stat: 'def',  mult: 1.50 },
+    { id: 'quickened',   label: '⚡ Quickened',   type: 'stat',    stat: 'spd',  mult: 1.35 },
+    { id: 'vampiric',    label: '🩸 Vampiric',    type: 'special'  },
+    { id: 'regenerating',label: '💚 Regenerating',type: 'special'  },
+    { id: 'enraged',     label: '🔥 Enraged',     type: 'special'  },
+    // Elemental immunities — grant 0 damage from that element
+    { id: 'immune_fire', label: '🔴 Fire Immune',  type: 'immune', element: 'fire'    },
+    { id: 'immune_ice',  label: '🔵 Ice Immune',   type: 'immune', element: 'ice'     },
+    { id: 'immune_lightning',label:'⚡ Volt Immune',type:'immune',  element: 'lightning'},
+    { id: 'immune_dark', label: '🟣 Dark Immune',  type: 'immune', element: 'dark'    },
+    // Elemental shatter — takes 2.0× from that element (overrides existing weakness)
+    { id: 'shatter_water',label:'💧 Water Shatter',type:'shatter', element: 'water'   },
+    { id: 'shatter_holy', label:'✨ Holy Shatter', type:'shatter', element: 'holy'    },
+    { id: 'shatter_earth',label:'🌿 Earth Shatter',type:'shatter', element: 'earth'   },
+    { id: 'shatter_wind', label:'🌀 Wind Shatter', type:'shatter', element: 'wind'    },
+  ];
+
+  function _rollMutantTraits() {
+    const pool = [...MUTANT_TRAITS];
+    const count = 1 + Math.floor(Math.random() * 3); // 1–3 traits
+    const picked = [];
+    while (picked.length < count && pool.length > 0) {
+      const idx = Math.floor(Math.random() * pool.length);
+      picked.push(pool.splice(idx, 1)[0]);
+    }
+    return picked;
+  }
+
   function updateEnemies(dt, map) {
     MapNPCs.update(dt, map, _enemies);
     const TILE = MapEngine.getTile();
@@ -449,7 +483,10 @@ const MapEntities = (() => {
         if (en.mutation === null && en.mapTime >= CORRUPT_THRESHOLD) {
           if (Math.random() < CORRUPT_CHANCE) en.mutation = 'corrupted';
         } else if (en.mutation === 'corrupted' && en.mapTime >= MUTANT_THRESHOLD) {
-          if (Math.random() < MUTANT_CHANCE) en.mutation = 'mutant';
+          if (Math.random() < MUTANT_CHANCE) {
+            en.mutation = 'mutant';
+            en.mutantTraits = _rollMutantTraits(); // roll 1–3 random traits
+          }
         }
       }
 
@@ -489,7 +526,7 @@ const MapEntities = (() => {
       if (en.tx === ptx && en.ty === pty) {
         _encounteredIdx = i;
         const ids = _buildEncounterGroup(en.id, map);
-        return { enemies: ids, mutation: en.mutation || null };
+        return { enemies: ids, mutation: en.mutation || null, mutantTraits: en.mutantTraits || null };
       }
     }
     return null;

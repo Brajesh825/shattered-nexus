@@ -41,15 +41,26 @@ const Battle = {
   // Returns 1.5 (weak), 0.5 (resist), or 1.0 (neutral) based on ability element vs target's arrays
   elemMult(abilityElement, target) {
     if (!abilityElement || abilityElement === 'physical') return 1.0;
+    // Mutant trait overrides — check immune (0×) and shatter (2.0×) first
+    const traits = target?.mutantTraits || [];
+    for (const t of traits) {
+      if (t.type === 'immune'  && t.element === abilityElement) return 0;
+      if (t.type === 'shatter' && t.element === abilityElement) return 2.0;
+    }
     const weak   = target?.weakTo   || [];
     const resist = target?.resistTo || [];
     if (weak.includes(abilityElement))   return 1.5;
     if (resist.includes(abilityElement)) return 0.5;
     return 1.0;
   },
-  // Returns 'weak', 'resist', or null for UI display
+  // Returns 'weak'|'resist'|'immune'|'shatter'|null for UI display
   elemResult(abilityElement, target) {
     if (!abilityElement || abilityElement === 'physical') return null;
+    const traits = target?.mutantTraits || [];
+    for (const t of traits) {
+      if (t.type === 'immune'  && t.element === abilityElement) return 'immune';
+      if (t.type === 'shatter' && t.element === abilityElement) return 'shatter';
+    }
     const weak   = target?.weakTo   || [];
     const resist = target?.resistTo || [];
     if (weak.includes(abilityElement))   return 'weak';
@@ -321,10 +332,16 @@ const UI = {
       hpBar.style.background = pct > 50 ? '#4ade80' : pct > 25 ? '#eab308' : '#ef4444';
       hpBg.appendChild(hpBar);
 
-      // Enemy info (name + level)
+      // Enemy info (name + level + mutation traits)
       const info = document.createElement('div');
       info.className = 'enemy-info';
-      info.innerHTML = `<div class="enemy-name">${e.name}</div><div class="enemy-level">Lv ${e.level}</div>`;
+      let traitHtml = '';
+      if (e.mutantTraits?.length) {
+        traitHtml = `<div class="enemy-traits">${e.mutantTraits.map(t =>
+          `<span class="trait-pill">${t.label}</span>`
+        ).join('')}</div>`;
+      }
+      info.innerHTML = `<div class="enemy-name">${e.name}</div><div class="enemy-level">Lv ${e.level}</div>${traitHtml}`;
       enemy.appendChild(info);
 
       // Target indicator
@@ -551,8 +568,9 @@ function initStars() {
    MAP ENCOUNTER HANDLER (global setup)
    ============================================================ */
 MapEngine.onEncounterStart = (enc, map) => {
-  const enemyIds = enc.enemies || [];
-  const mutation = enc.mutation || null; // null | 'corrupted' | 'mutant'
+  const enemyIds   = enc.enemies      || [];
+  const mutation   = enc.mutation     || null; // null | 'corrupted' | 'mutant'
+  const mutantTraits = enc.mutantTraits || null; // array of trait objects, mutant only
 
   const enemyDefs = enemyIds
     .map(id => G.enemies.find(e => e.id === id))
@@ -587,6 +605,21 @@ MapEngine.onEncounterStart = (enc, map) => {
       e.exp   = Math.floor(e.exp   * (mutation === 'mutant' ? 2.2 : 1.5));
       e.gold  = Math.floor(e.gold  * (mutation === 'mutant' ? 2.0 : 1.4));
       e.mutation = mutation;
+
+      // ── Apply mutant traits ──────────────────────────────
+      if (mutation === 'mutant' && mutantTraits?.length) {
+        e.mutantTraits = mutantTraits; // attach for elemMult immune/shatter checks
+        e._enragedTurns = 0;          // counter for Enraged trait
+
+        for (const t of mutantTraits) {
+          if (t.type === 'stat') {
+            if      (t.stat === 'atk') e.atk = Math.floor(e.atk * t.mult);
+            else if (t.stat === 'def') e.def = Math.floor(e.def * t.mult);
+            // spd: tag on object, affects AI tickRate in engine (not modelled here, just flavor)
+          }
+          // vampiric / regenerating / enraged flags are checked at runtime in battle resolution
+        }
+      }
     });
   }
 
@@ -1101,6 +1134,18 @@ function startBattle() {
   processCurrentTurn();
 }
 
+// ── Mutant trait: Vampiric ─────────────────────────────────────────────────
+// Call after any damage lands on an enemy that has the Vampiric trait.
+// Heals the enemy for 25% of the damage dealt (visual pop shown).
+function _applyVampiric(enemy, dmg, enemyIdx) {
+  if (!enemy.mutantTraits) return;
+  const isVampiric = enemy.mutantTraits.some(t => t.id === 'vampiric');
+  if (!isVampiric || dmg <= 0) return;
+  const heal = Math.max(1, Math.floor(dmg * 0.25));
+  enemy.hp = Math.min(enemy.maxHp, enemy.hp + heal);
+  UI.popEnemy(enemyIdx, heal, 'regen');
+}
+
 function _initBattle() {
   G.turnQueue      = buildTurnQueue();
   G.turnIdx        = 0;
@@ -1252,8 +1297,10 @@ function heroAttack() {
     enemy.hp  = Math.max(0, enemy.hp - dmg);
     if (enemy.hp <= 0) enemy.isKO = true;
     const _er = Battle.elemResult('physical', enemy);
-    if (_er === 'weak')   UI.addLog('✦ WEAK!', 'magic');
-    if (_er === 'resist') UI.addLog('▸ Resist', 'regen');
+    if (_er === 'shatter') UI.addLog('⚡ SHATTER!', 'magic');
+    else if (_er === 'weak')   UI.addLog('✦ WEAK!', 'magic');
+    else if (_er === 'resist') UI.addLog('▸ Resist', 'regen');
+    else if (_er === 'immune') UI.addLog('■ IMMUNE — no effect!', 'regen');
 
     // Damage number popup
     UI.popEnemy(G.targetEnemyIdx, dmg, 'dmg', 'physical');
@@ -1269,6 +1316,7 @@ function heroAttack() {
     }
 
     shakeEnemy(G.targetEnemyIdx);
+    _applyVampiric(enemy, dmg, G.targetEnemyIdx);
     UI.addLog(`Dealt ${dmg} damage!`, 'dmg');
     UI.renderEnemyRow();
     setTimeout(advanceTurn, 700);
@@ -1312,8 +1360,10 @@ function heroAbility(ab) {
       enemy.hp  = Math.max(0, enemy.hp - dmg);
       if (enemy.hp <= 0) enemy.isKO = true;
       const _er = Battle.elemResult(element, enemy);
-      if (_er === 'weak')   UI.addLog('✦ WEAK!', 'magic');
-      if (_er === 'resist') UI.addLog('▸ Resist', 'regen');
+      if (_er === 'shatter') UI.addLog('⚡ SHATTER!', 'magic');
+      else if (_er === 'weak')   UI.addLog('✦ WEAK!', 'magic');
+      else if (_er === 'resist') UI.addLog('▸ Resist', 'regen');
+      else if (_er === 'immune') UI.addLog('■ IMMUNE — no effect!', 'regen');
       UI.popEnemy(G.targetEnemyIdx, dmg, 'dmg', element);
       createEffectOverlay(G.targetEnemyIdx, element, 'enemy', ab.id);
       const enemySpr = document.getElementById('espr-' + G.targetEnemyIdx);
@@ -1322,6 +1372,7 @@ function heroAbility(ab) {
         setTimeout(() => enemySpr.classList.remove('sprite-damage-flash'), 200);
       }
       shakeEnemy(G.targetEnemyIdx);
+      _applyVampiric(enemy, dmg, G.targetEnemyIdx);
       UI.addLog(`${enemy.name} took ${dmg} damage!`, 'dmg');
 
     } else if (ab.type === 'magic_damage') {
@@ -1351,8 +1402,10 @@ function heroAbility(ab) {
           const dmg = Math.floor(Battle.magicDmg(actor.mag, e.dmgMultiplier || 1.5, passiveBonus, actor.lv || 1) * _em);
           enemy.hp  = Math.max(0, enemy.hp - dmg);
           if (enemy.hp <= 0) enemy.isKO = true;
-          if (_er === 'weak')   UI.addLog('✦ WEAK!', 'magic');
-          if (_er === 'resist') UI.addLog('▸ Resist', 'regen');
+          if (_er === 'shatter') UI.addLog('⚡ SHATTER!', 'magic');
+          else if (_er === 'weak')   UI.addLog('✦ WEAK!', 'magic');
+          else if (_er === 'resist') UI.addLog('▸ Resist', 'regen');
+          else if (_er === 'immune') UI.addLog('■ IMMUNE — no effect!', 'regen');
           UI.popEnemy(G.targetEnemyIdx, dmg, 'magic', element);
           const enemySpr = document.getElementById('espr-' + G.targetEnemyIdx);
           if (enemySpr) {
@@ -1360,6 +1413,7 @@ function heroAbility(ab) {
             setTimeout(() => enemySpr.classList.remove('sprite-damage-flash'), 200);
           }
           shakeEnemy(G.targetEnemyIdx);
+          _applyVampiric(enemy, dmg, G.targetEnemyIdx);
           UI.addLog(`${enemy.name} took ${dmg} magic damage!`, 'magic');
           UI.renderEnemyRow(); UI.renderPartyStatus();
           setTimeout(advanceTurn, 750);
@@ -1370,8 +1424,10 @@ function heroAbility(ab) {
         const dmg = Math.floor(Battle.magicDmg(actor.mag, e.dmgMultiplier || 1.5, passiveBonus, actor.lv || 1) * _em);
         enemy.hp  = Math.max(0, enemy.hp - dmg);
         if (enemy.hp <= 0) enemy.isKO = true;
-        if (_er === 'weak')   UI.addLog('✦ WEAK!', 'magic');
-        if (_er === 'resist') UI.addLog('▸ Resist', 'regen');
+        if (_er === 'shatter') UI.addLog('⚡ SHATTER!', 'magic');
+        else if (_er === 'weak')   UI.addLog('✦ WEAK!', 'magic');
+        else if (_er === 'resist') UI.addLog('▸ Resist', 'regen');
+        else if (_er === 'immune') UI.addLog('■ IMMUNE — no effect!', 'regen');
         UI.popEnemy(G.targetEnemyIdx, dmg, 'magic', element);
         createEffectOverlay(G.targetEnemyIdx, element, 'enemy', ab.id);
         const enemySpr = document.getElementById('espr-' + G.targetEnemyIdx);
@@ -1380,6 +1436,7 @@ function heroAbility(ab) {
           setTimeout(() => enemySpr.classList.remove('sprite-damage-flash'), 200);
         }
         shakeEnemy(G.targetEnemyIdx);
+        _applyVampiric(enemy, dmg, G.targetEnemyIdx);
         UI.addLog(`${enemy.name} took ${dmg} magic damage!`, 'magic');
       }
 
@@ -1793,6 +1850,29 @@ function enemyAct(enemy, enemyIdx) {
         m.regenTurns--; m.hp = Math.min(m.maxHp, m.hp + 8); UI.popParty(i, 8, 'regen');
       }
       if (m.buff) { m.buff.turns--; if (m.buff.turns <= 0) { m[m.buff.stat] = m.buff.origVal; m.buff = null; } }
+    });
+
+    // ── Mutant trait ticks after enemy action ─────────────────
+    G.enemyGroup.forEach((e, i) => {
+      if (!Battle.alive(e) || !e.mutantTraits) return;
+      const traits = e.mutantTraits;
+
+      // Regenerating: recover 5% max HP per turn end
+      if (traits.some(t => t.id === 'regenerating')) {
+        const healAmt = Math.max(1, Math.floor(e.maxHp * 0.05));
+        e.hp = Math.min(e.maxHp, e.hp + healAmt);
+        UI.popEnemy(i, healAmt, 'regen');
+      }
+
+      // Enraged: ATK grows +8% per turn survived (up to +50% bonus max)
+      if (traits.some(t => t.id === 'enraged')) {
+        e._enragedTurns = (e._enragedTurns || 0) + 1;
+        if (e._enragedTurns <= 6) { // cap at 6 turns (~+48%)
+          const gain = Math.max(1, Math.floor(e.atk * 0.08));
+          e.atk += gain;
+          if (e._enragedTurns === 1) UI.addLog(`⚠ ${e.name} is Enraged! ATK rising!`, 'dmg');
+        }
+      }
     });
 
     if (target.hp <= 0) {
