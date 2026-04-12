@@ -132,6 +132,10 @@ MAP_DEFS.shadow_reach = (function() {
             { id: 'orc',      x: 50, y: 95, patrol: 'horizontal', range: 5,  speed: 1.0 }
         ],
 
+        npcs: [
+          { id: 'essabella', x: 50, y: 60, dialogueKey: 'shadow_reach' },
+        ],
+
         fog: { delay: 5, peak: 60, max: 0.92, vision: 2.2 },
 
         voiceLines: {

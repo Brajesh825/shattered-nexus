@@ -424,6 +424,7 @@ const MapEntities = (() => {
   }
 
   function updateEnemies(dt, map) {
+    MapNPCs.update(dt, map, _enemies);
     const TILE = MapEngine.getTile();
     _enemies.forEach(en => {
       if (!en.alive) return;
@@ -562,7 +563,93 @@ const MapEntities = (() => {
   /* ── NPC system ─────────────────────────────────────── */
   const MapNPCs = (() => {
     let _npcs = [];
+    let _mapId = null;
     const _imgCache = {};
+
+    // 8 waypoints clockwise around origin — each adjacent via a single cardinal step:
+    // right → down → left → left → up → up → right → right (back to start)
+    function _buildCircle(ox, oy) {
+      return [
+        { x: ox+1, y: oy   },  // right
+        { x: ox+1, y: oy+1 },  // down
+        { x: ox,   y: oy+1 },  // left
+        { x: ox-1, y: oy+1 },  // left
+        { x: ox-1, y: oy   },  // up
+        { x: ox-1, y: oy-1 },  // up
+        { x: ox,   y: oy-1 },  // right
+        { x: ox+1, y: oy-1 },  // right
+      ];
+    }
+
+    const NPC_MOVE_DUR  = 0.38; // seconds to slide one tile (long enough for 3-frame cycle)
+    const NPC_IDLE_WAIT = 0.5;  // seconds to pause between steps
+
+    function _initWander(n) {
+      const TILE = MapEngine.getTile();
+      n._wanderInited = true;
+      n._ox     = n.x; n._oy = n.y;
+      n._circle = _buildCircle(n.x, n.y);
+      n._px     = n.x * TILE; n._py = n.y * TILE;
+      n._tx     = n.x; n._ty = n.y;
+      n._prevTx = n.x; n._prevTy = n.y;
+      n._moveTimer  = NPC_MOVE_DUR;
+      n._idleTimer  = 0;
+      n._moving     = false;
+      n._stepIdx    = 0;
+      n._frame      = 0;
+      n._frameTimer = 0;
+      n._facingDx   = 0; n._facingDy = 1;
+    }
+
+    function update(dt, map, enemies) {
+      const TILE = MapEngine.getTile();
+      _npcs.forEach(n => {
+        if (!n._wanderInited) _initWander(n);
+
+        if (n._moving) {
+          n._moveTimer += dt;
+          const t = Math.min(n._moveTimer / NPC_MOVE_DUR, 1);
+          n._px = n._prevTx * TILE + (n._tx * TILE - n._prevTx * TILE) * t;
+          n._py = n._prevTy * TILE + (n._ty * TILE - n._prevTy * TILE) * t;
+
+          n._frameTimer += dt;
+          if (n._frameTimer >= NPC_FRAME_DUR) {
+            n._frameTimer = 0;
+            n._frame = (n._frame + 1) % NPC_FRAME_COUNT;
+          }
+
+          if (t >= 1) {
+            n._px = n._tx * TILE; n._py = n._ty * TILE;
+            n.x   = n._tx;        n.y   = n._ty;
+            n._moving    = false;
+            n._idleTimer = 0;
+            n._frame     = 0;
+          }
+        } else {
+          n._idleTimer += dt;
+          if (n._idleTimer >= NPC_IDLE_WAIT) {
+            n._idleTimer = 0;
+            const wp  = n._circle[n._stepIdx % n._circle.length];
+            n._stepIdx++;
+            const tid = map.tiles[wp.y]?.[wp.x] ?? 0;
+            if ((TILE_DEFS[tid] || TILE_DEFS[0]).walkable) {
+              const dx = wp.x - n.x, dy = wp.y - n.y;
+              n._prevTx = n.x; n._prevTy = n.y;
+              n._tx = wp.x;    n._ty = wp.y;
+              n._moveTimer = 0;
+              n._moving    = true;
+              n._facingDx  = dx; n._facingDy = dy;
+            }
+          }
+        }
+
+        if (enemies) {
+          enemies.forEach(en => {
+            if (en.alive && en.tx === n.x && en.ty === n.y) en.alive = false;
+          });
+        }
+      });
+    }
 
     function _loadImg(src) {
       if (_imgCache[src]) return _imgCache[src];
@@ -573,10 +660,13 @@ const MapEntities = (() => {
     }
 
     function init(map) {
+      _mapId = map.id;
+      const talkedSet = (typeof G !== 'undefined' && G.npcTalked && G.npcTalked[map.id]) || [];
       _npcs = (map.npcs || []).map(ref => {
         const def = (typeof NPC_DEFS !== 'undefined' && NPC_DEFS[ref.id]) || {};
         const dialogue = (def.dialogues && ref.dialogueKey && def.dialogues[ref.dialogueKey]) || [];
-        return { ...def, ...ref, dialogue, talked: false };
+        const talked = talkedSet.includes(ref.id);
+        return { ...def, ...ref, dialogue, talked };
       });
     }
 
@@ -591,10 +681,34 @@ const MapEntities = (() => {
 
     function markTalked(id) {
       const n = _npcs.find(n => n.id === id);
-      if (n) n.talked = true;
+      if (n) {
+        n.talked = true;
+        if (typeof G !== 'undefined' && _mapId) {
+          if (!G.npcTalked[_mapId]) G.npcTalked[_mapId] = [];
+          if (!G.npcTalked[_mapId].includes(id)) G.npcTalked[_mapId].push(id);
+        }
+      }
     }
 
-    // Same sheet layout as party sprites: 6 cols × 2 rows, front strip at top-left
+    // Sheet layout matches party exactly (see _getSheetDims):
+    //   front: cx=0,   cy=0,   rev=false
+    //   left:  cx=w/2, cy=0,   rev=true
+    //   right: cx=0,   cy=h/2, rev=false
+    //   back:  cx=w/2, cy=h/2, rev=false
+    // Each strip has 3 frames (frameW = imgW/6)
+    const NPC_FRAME_DUR   = 0.14;
+    const NPC_FRAME_COUNT = 3;
+
+    function _getNPCDir(n, img) {
+      const w = img.naturalWidth, h = img.naturalHeight;
+      const dx = n._facingDx !== undefined ? n._facingDx : 0;
+      const dy = n._facingDy !== undefined ? n._facingDy : 1;
+      if      (dy > 0)  return { cx: 0,      cy: 0,      rev: false }; // front
+      else if (dy < 0)  return { cx: w / 2,  cy: h / 2,  rev: false }; // back
+      else if (dx < 0)  return { cx: w / 2,  cy: 0,      rev: true  }; // left
+      else              return { cx: 0,       cy: h / 2,  rev: false }; // right
+    }
+
     function _getNPCSheetDims(img) {
       const w = img.naturalWidth, h = img.naturalHeight;
       return { frameW: w / 6, frameH: h / 2 };
@@ -602,15 +716,21 @@ const MapEntities = (() => {
 
     function render(ctx, cam, TILE, time) {
       _npcs.forEach(n => {
-        const sx = n.x * TILE - cam.x;
-        const sy = n.y * TILE - cam.y;
+        const px  = n._px !== undefined ? n._px : n.x * TILE;
+        const py  = n._py !== undefined ? n._py : n.y * TILE;
+        const sx  = px - cam.x;
+        const sy  = py - cam.y;
         if (sx < -TILE || sy < -TILE || sx > ctx.canvas.width + TILE || sy > ctx.canvas.height + TILE) return;
 
         const dw  = Math.round(TILE * 1.1);
         const dh  = Math.round(TILE * 1.6);
         const ox  = Math.round((TILE - dw) / 2);
         const oy  = TILE - dh;
-        const bob = Math.sin(time * 1.6) * 2; // gentle idle bob
+
+        const isMoving = !!n._moving;
+        const bounce   = isMoving
+          ? Math.sin((n._frame / NPC_FRAME_COUNT) * Math.PI * 2) * 3
+          : Math.sin(time * 1.6) * 1.5;
 
         // Shadow
         ctx.fillStyle = 'rgba(0,0,0,0.25)';
@@ -618,19 +738,21 @@ const MapEntities = (() => {
         ctx.ellipse(sx + TILE / 2, sy + TILE - 3, TILE * 0.32, 5, 0, 0, Math.PI * 2);
         ctx.fill();
 
-        // Sprite — same sheet format as party, always front idle (frame 0)
+        // Sprite — directional walk cycle matching party sheet layout
         const img = _loadImg(n.sprite);
         if (img.complete && img.naturalWidth) {
           const { frameW, frameH } = _getNPCSheetDims(img);
+          const dir = _getNPCDir(n, img);
+          const frameIdx = dir.rev ? (NPC_FRAME_COUNT - 1 - n._frame) : n._frame;
+          const srcX = dir.cx + frameIdx * frameW;
           ctx.imageSmoothingEnabled = true;
           ctx.imageSmoothingQuality = 'high';
-          // Front strip: cx=0, cy=0; frame 0 = idle (leftmost)
-          ctx.drawImage(img, 0, 0, frameW, frameH, sx + ox, sy + oy + bob, dw, dh);
+          ctx.drawImage(img, srcX, dir.cy, frameW, frameH, sx + ox, sy + oy + bounce, dw, dh);
         } else {
           // Loading placeholder
           ctx.fillStyle = n.color || '#a78bfa';
           ctx.beginPath();
-          ctx.arc(sx + TILE / 2, sy + TILE * 0.4 + bob, TILE * 0.28, 0, Math.PI * 2);
+          ctx.arc(sx + TILE / 2, sy + TILE * 0.4 + bounce, TILE * 0.28, 0, Math.PI * 2);
           ctx.fill();
         }
 
@@ -642,7 +764,7 @@ const MapEntities = (() => {
           ctx.font = `${Math.round(TILE * 0.32)}px serif`;
           ctx.textAlign = 'center';
           ctx.textBaseline = 'bottom';
-          ctx.fillText('💬', sx + TILE / 2, sy + oy + bob - 2);
+          ctx.fillText('💬', sx + TILE / 2, sy + oy + bounce - 2);
           ctx.restore();
         }
 
@@ -659,7 +781,7 @@ const MapEntities = (() => {
       });
     }
 
-    return { init, checkInteract, checkAt, markTalked, render };
+    return { init, update, checkInteract, checkAt, markTalked, render };
   })();
 
   function allCleared() {

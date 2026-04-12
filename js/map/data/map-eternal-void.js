@@ -108,6 +108,10 @@ MAP_DEFS.eternal_void = (function() {
             { id: 'necromancer',   x: 50, y: 90, patrol: 'horizontal', range: 8,  speed: 1.0 }
         ],
 
+        npcs: [
+          { id: 'essabella', x: 50, y: 50, dialogueKey: 'eternal_void' },
+        ],
+
         fog: { delay: 3, peak: 40, max: 0.96, vision: 1.8 },
 
         voiceLines: {

@@ -75,6 +75,7 @@ const G = {
   selectedChars: [],   // ordered array of up to 4 char IDs
   unlockedChars: ['ayaka', 'hutao', 'nilou', 'xiao'],  // Characters available for selection
   clearedMaps:   [],   // map IDs whose objective has been completed
+  npcTalked:     {},   // { mapId: [npcId, ...] } — persisted across sessions
 
   party:           [],   // 4 party members (all player-controlled)
   enemyGroup:      [],   // 1–3 enemies

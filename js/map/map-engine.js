@@ -35,13 +35,21 @@ const MapEngine = (() => {
   /* ── Camera ─────────────────────────────────────────── */
   const cam = { x: 0, y: 0 };
 
-  function _updateCamera() {
+  function _updateCamera(dt) {
     if (!_map) return;
     const cw = _canvas.width, ch = _canvas.height;
     const maxX = _map.width  * TILE - cw;
     const maxY = _map.height * TILE - ch;
     cam.x = Math.max(0, Math.min(maxX || 0, MapPlayer.px - cw / 2 + TILE / 2));
     cam.y = Math.max(0, Math.min(maxY || 0, MapPlayer.py - ch / 2 + TILE / 2));
+
+    // Screen shake
+    if (_shakeTime > 0) {
+      if (dt) _shakeTime -= dt;
+      const mag = Math.round(_shakeTime * 10);
+      cam.x += (Math.random() - 0.5) * mag;
+      cam.y += (Math.random() - 0.5) * mag;
+    }
   }
 
   /* ── Tile offscreen cache ───────────────────────────── */
@@ -514,7 +522,7 @@ const MapEngine = (() => {
     MapInput.poll();
     MapPlayer.update(dt, _map);
     MapEntities.updateEnemies(dt, _map);
-    _updateCamera();
+    _updateCamera(dt);
 
 
     // Encounter check
@@ -547,7 +555,7 @@ const MapEngine = (() => {
       ];
       for (const pos of checks) {
         const npc = MapEntities.checkNPCAt(pos.x, pos.y);
-        if (npc && !npc._dialogueOpen) {
+        if (npc && !npc._dialogueOpen && !npc.talked) {
           npc._dialogueOpen = true;
           stop();
           _openNPCDialogue(npc);
@@ -573,37 +581,43 @@ const MapEngine = (() => {
   }
 
   /* ── Encounter ───────────────────────────────────────── */
+  let _shakeTime = 0; // seconds remaining for camera shake
+
   function _triggerEncounter(enc) {
-    // Ember-red edge flash
-    const flashEl = document.getElementById('explore-flash');
-    if (flashEl) {
-      flashEl.classList.add('show');
-      setTimeout(() => flashEl.classList.remove('show'), 200);
-    }
-    MapEntities.removeEncountered();
-
-    const enemyId = enc.enemies && enc.enemies[0];
-    const raw  = G && G.enemies && enemyId && G.enemies.find(e => e.id === enemyId);
-    const name = raw ? raw.name : (enemyId || '?');
-
-    // Ambush? If fog is active and encounter triggered outside clear vision
+    const enemyId  = enc.enemies && enc.enemies[0];
+    const raw      = G && G.enemies && enemyId && G.enemies.find(e => e.id === enemyId);
+    const name     = raw ? raw.name : (enemyId || '?');
     const isAmbush = _fogAlpha() > 0.15;
     enc.ambush = isAmbush;
 
-    // Dramatic encounter dialogue on canvas
+    // 1. Stop movement immediately
+    stop();
+
+    // 2. Screen shake
+    _shakeTime = isAmbush ? 0.55 : 0.35;
+
+    // 3. Red edge flash — longer and more intense than before
+    const flashEl = document.getElementById('explore-flash');
+    if (flashEl) {
+      flashEl.classList.add('show');
+      setTimeout(() => flashEl.classList.remove('show'), isAmbush ? 600 : 380);
+    }
+
+    // 4. Dramatic canvas voice line
     if (_map && _map.voiceLines && _map.voiceLines.encounter) {
       _sayLine(_randomLine(_map.voiceLines.encounter));
     }
 
-    // Banner message — ambush gets a different tone
+    // 5. Banner message
     if (typeof MapUI !== 'undefined') {
       MapUI.showMsg(isAmbush ? `💀 AMBUSH — ${name}!` : `⚔ ${name} appeared!`, 2200);
     }
 
-    // Delegate to host game if wired up
+    // 6. Brief dramatic pause, then transition
+    MapEntities.removeEncountered();
+    const delay = isAmbush ? 700 : 480;
     if (typeof MapEngine !== 'undefined' && typeof MapEngine.onEncounterStart === 'function') {
-      stop();
-      setTimeout(() => MapEngine.onEncounterStart(enc, _map), 120);
+      setTimeout(() => MapEngine.onEncounterStart(enc, _map), delay);
     }
   }
 

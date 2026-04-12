@@ -119,7 +119,7 @@ MAP_DEFS.verdant_vale = {
     })(),
 
     npcs: [
-      { id: 'essabella', x: 52, y: 29, dialogueKey: 'verdant_vale' },
+      { id: 'essabella', x: 44, y: 22, dialogueKey: 'verdant_vale' },
     ],
 
     objective: {

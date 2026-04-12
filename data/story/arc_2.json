@@ -38,9 +38,9 @@
           "dialogue": [
             { "speaker": "narrator", "emotion": "grave", "text": "Old Keeper: You are not shadow-soldiers. You are real. I have not seen that in weeks." },
             { "speaker": "Xiao", "emotion": "direct", "text": "The demon lord who did this — where is he?" },
-            { "speaker": "narrator", "emotion": "fearful", "text": "Old Keeper: The throne room. He has the red crystal — says it feeds him, that he will use it to call the Emperor here." },
-            { "speaker": "Hutao", "emotion": "dark", "text": "Calling the Emperor through a Fragment. Clever. In a catastrophically evil way." },
-            { "speaker": "Ayaka", "emotion": "resolved", "text": "Then we take it from him first." }
+            { "speaker": "narrator", "emotion": "fearful", "text": "Old Keeper: He was in the throne room. But he moves. He knows when something is coming. He has been waiting for something to be worth facing." },
+            { "speaker": "Hutao", "emotion": "dark", "text": "Something worth facing. How flattering and deeply concerning." },
+            { "speaker": "Ayaka", "emotion": "resolved", "text": "Then we go through the cinder passage. If he is hunting us, we make him come to us on ground we choose." }
           ]
         }
       ]
@@ -53,29 +53,33 @@
       "background": "scorched_wastes",
       "cast": ["Ayaka", "Hutao", "Nilou", "Xiao"],
       "pre_dialogue": [
-        { "speaker": "narrator", "emotion": "tense", "text": "The direct path to the throne room is collapsed — floors caved in, walls crumbled to slag. There is only one way through: the old cinder passage beneath the city." },
-        { "speaker": "Ayaka", "emotion": "resolved", "text": "The underground tunnels. The old keeper mentioned them. They connect beneath the palace." },
-        { "speaker": "Hutao", "emotion": "delighted", "text": "Crawling through the underbelly of a ruined kingdom? I have done worse before breakfast. Lead on!" },
-        { "speaker": "Xiao", "emotion": "alert", "text": "The passage will not be empty. Stay together. Stay sharp." },
-        { "speaker": "Nilou", "emotion": "steady", "text": "Then we move. Together." }
+        { "speaker": "narrator", "emotion": "tense", "text": "The direct path through Ashveil is impassable — streets collapsed, bridges burned, shadow-creatures swarming every open road. The old cinder passage runs beneath the city, carved when Ashveil was young." },
+        { "speaker": "Ayaka", "emotion": "resolved", "text": "Underground. Through the passage. We come up on the other side of the city and draw him out." },
+        { "speaker": "Xiao", "emotion": "alert", "text": "He will feel us moving beneath. Stay sharp — the passage will not be empty." },
+        { "speaker": "Hutao", "emotion": "focused", "text": "Crawling through burning tunnels hunting a demon lord. This is absolutely a normal Tuesday. Move." },
+        { "speaker": "Nilou", "emotion": "steady", "text": "Together. We go together." }
       ],
-      "map_hint": "Navigate the cinder passage — reach the palace entrance on the other side.",
+      "map_hint": "Cross the cinder passage — find the tunnel exit on the far side.",
       "post_dialogue": [
-        { "speaker": "narrator", "emotion": "quiet", "text": "The passage opens into the palace undercroft. Scorched columns rise around them, and at the far end — a set of great doors, sealed with shadow fire." },
-        { "speaker": "Hutao", "emotion": "cheerful", "text": "Look at that. We made it through without getting horribly lost. I am genuinely impressed with us." },
-        { "speaker": "Xiao", "emotion": "grim", "text": "The throne room is beyond those doors. He knows we are here." },
-        { "speaker": "Ayaka", "emotion": "controlled", "text": "Then we do not make him wait." }
+        { "speaker": "narrator", "emotion": "tense", "text": "The tunnel narrows then opens — a collapsed section, a gap of scorched sky above. They are through. The undercroft of Ashveil surrounds them, silent and hot." },
+        { "speaker": "Nilou", "emotion": "uneasy", "text": "Something is wrong. It is too quiet. He should have sent something by now." },
+        { "speaker": "Xiao", "emotion": "tense", "text": "He did not send anything. He came himself." },
+        { "speaker": "narrator", "emotion": "ominous", "text": "A sound — not footsteps but pressure, the air thickening with heat that has nothing to do with the fires above. The Demon Lord steps from the shadows of the undercroft. Not waiting on a throne. Waiting here. For them." },
+        { "speaker": "Hutao", "emotion": "quiet", "text": "...He knew exactly where we would come out." },
+        { "speaker": "Ayaka", "emotion": "controlled", "text": "Then we do not make him wait any longer. Form up." }
       ]
     }
   ],
 
   "boss_chapter": {
-    "title": "The Throne of Cinders",
+    "title": "The Ambush in the Undercroft",
     "background": "throne_room",
     "cast": ["Ayaka", "Hutao", "Nilou", "Xiao"],
     "pre_dialogue": [
-      { "speaker": "narrator", "emotion": "intense", "text": "The Demon Lord sits on Ashveil's stolen throne, the fire Seal Fragment pulsing against his chest like a second heartbeat. The heat in the room is not natural. It presses against skin like a hand that has not decided whether to push or hold." },
-      { "speaker": "narrator", "emotion": "sinister", "text": "Demon Lord: Summoned warriors. How quaint. Valdris will be amused that you died before reaching him." },
+      { "speaker": "narrator", "emotion": "intense", "text": "The Demon Lord fills the undercroft — the fire Seal Fragment blazing against his chest, the heat warping the air around him. He did not wait in his throne room. He hunted them into the tunnel and let them walk straight to him." },
+      { "speaker": "narrator", "emotion": "sinister", "text": "Demon Lord: You are smaller than I expected. The Fragment told me you were coming days ago. I have been patient." },
+      { "speaker": "Xiao", "emotion": "cold", "text": "The Fragment speaks to you." },
+      { "speaker": "narrator", "emotion": "sinister", "text": "Demon Lord: Everything that burns speaks to me. And you four burn very brightly." },
       { "speaker": "Hutao", "emotion": "bright", "text": "Ohoho~! Bold last words for someone about to learn what a funeral director can really do!" },
       { "speaker": "Nilou", "emotion": "steady", "text": "That Fragment does not belong to you. It never did. Give it back to the world you took it from." },
       { "speaker": "Xiao", "emotion": "flat", "text": "We have faced worse. Much worse. This ends now." }
@@ -88,7 +92,7 @@
       { "speaker": "Hutao", "emotion": "content", "text": "Two down. Three to go. I think I am starting to genuinely enjoy this quest." },
       { "speaker": "Xiao", "emotion": "quiet", "text": "You are not taking it seriously enough." },
       { "speaker": "Hutao", "emotion": "grinning", "text": "I am taking it seriously AND enjoying it. Multitasking is a core funeral director skill." },
-      { "speaker": "narrator", "emotion": "cold", "text": "Then a presence settles over the throne room. Not a sound. Not a figure. A weight — the kind that has no temperature, that presses from every direction at once." },
+      { "speaker": "narrator", "emotion": "cold", "text": "Then a presence settles over the undercroft. Not a sound. Not a figure. A weight — the kind that has no temperature, that presses from every direction at once." },
       { "speaker": "narrator", "emotion": "cold", "text": "Valdris: You freed the Fragment. Good. That creature was wasting it." },
       { "speaker": "Ayaka", "emotion": "sharp", "text": "You are watching us." },
       { "speaker": "narrator", "emotion": "measured", "text": "Valdris: I have always been watching. You are the most interesting thing to enter my world in a century. The Oracle chose well — four resonances, cleanly matched. I almost respect it." },
