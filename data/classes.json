@@ -69,38 +69,38 @@
         "id": "spirit_flame",
         "name": "Spirit Flame",
         "icon": "🔥",
-        "mp": 4,
+        "mp": 0,
         "type": "physical",
-        "description": "Spear strike infused with ghost fire — 1.7x ATK, heal 20% damage dealt",
-        "effect": { "dmgMultiplier": 1.7, "element": "fire", "lifeSteal": 0.2 }
+        "description": "Ghost-fire spear strike — 1.6x ATK, self-heal 15% damage",
+        "effect": { "dmgMultiplier": 1.6, "element": "fire", "lifeSteal": 0.15 }
       },
       {
         "id": "paramita_papilio",
         "name": "Paramita Papilio",
-        "icon": "🔥",
-        "mp": 7,
-        "type": "magic_damage",
-        "description": "Ghost butterflies strike — 2.3x magic damage, ATK +50% next turn if HP < 50%",
-        "effect": { "dmgMultiplier": 2.3, "element": "fire", "atkBuffLow": 1.5 }
-      },
-      {
-        "id": "blood_blossom_enhanced",
-        "name": "Blood Blossom Aura",
-        "icon": "🌸",
+        "icon": "🦋",
         "mp": 6,
         "type": "buff",
-        "description": "Enter burning state: ATK +40%, heal from fire damage dealt, lasts 3 turns",
-        "effect": { "stat": "atk", "multiplier": 1.4, "lifeSteal": 0.25, "duration": 3 }
+        "description": "Enter the butterfly state — Costs 30% current HP, ATK +60%, attacks become FIRE, 3 turns",
+        "effect": { "stat": "atk", "multiplier": 1.6, "hpCostPercent": 0.3, "infusion": "fire", "duration": 3 }
       },
       {
-        "id": "guide_to_afterlife",
-        "name": "Guide to Afterlife",
+        "id": "sanguine_rouge",
+        "name": "Sanguine Rouge",
+        "icon": "🩸",
+        "mp": 4,
+        "type": "buff",
+        "description": "Passive empowerment — Fire damage +33% whenever HP is below 50%, lasts 5 turns",
+        "effect": { "fireAmp": 1.33, "duration": 5 }
+      },
+      {
+        "id": "spirit_soother",
+        "name": "Spirit Soother",
         "icon": "💀",
         "mp": 12,
         "type": "magic_damage",
         "isUltimate": true,
-        "description": "Ultimate pyro skill — 4.0x magic damage, drain 30% enemy max HP as healing",
-        "effect": { "dmgMultiplier": 4.0, "element": "fire", "lifeSteal": 0.3 }
+        "description": "Ultimate ghost strike — 4.0x magic damage (scales with ATK), massive self-heal (boosted if HP < 50%)",
+        "effect": { "dmgMultiplier": 4.0, "element": "fire", "statScale": "atk", "lifeSteal": 0.35, "healLowMult": 1.6 }
       }
     ],
     "growthPerLevel": { "hp": 7, "mp": 4, "atk": 5, "def": 1, "spd": 3, "mag": 4 }

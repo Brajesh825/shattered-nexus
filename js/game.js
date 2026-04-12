@@ -1327,8 +1327,8 @@ function heroAttack() {
   const enemy = G.enemy;
   if (!actor || !enemy) { G.busy = false; return; }
 
-  // Basic attack carries the character's class element
-  const _atkElem = actor.cls?.element || 'physical';
+  // Basic attack carries the character's class element OR infusion
+  const _atkElem = actor.infusion || actor.cls?.element || 'physical';
   const actorSpr = document.getElementById('pspr-' + G.activeMemberIdx);
   if (actorSpr) {
     actorSpr.classList.add('anim-slash');
@@ -1402,6 +1402,14 @@ function heroAbility(ab) {
   UI.setLog([`${actor.displayName} uses ${ab.name}!`], ['magic']);
   actor.mp = Math.max(0, actor.mp - _mpCost);
 
+  // HP Sacrifice (Hu Tao mechanics)
+  if (e.hpCostPercent) {
+    const cost = Math.floor(actor.hp * e.hpCostPercent);
+    actor.hp = Math.max(1, actor.hp - cost);
+    UI.popParty(G.activeMemberIdx, cost, 'dmg', 'dark');
+    UI.addLog(`${actor.displayName} sacrifices vitality for power!`, 'dmg');
+  }
+
   setTimeout(() => {
     const enemy = G.enemy;
 
@@ -1423,7 +1431,9 @@ function heroAbility(ab) {
       let totalDmg = 0;
       targets.forEach(({ en: tgt, i: tIdx }) => {
         const _em = Battle.elemMult(element, tgt);
-        const dmg = Math.floor(Battle.physDmg(_effectiveAtk, tgt.def, e.dmgMultiplier || 1, actor.lv || 1, tgt.level || 1, e.defPen || 0) * _em * _stab * _bb);
+        // Elemental Amps (Hu Tao's Fire boost)
+        const _amp = (element === 'fire' ? actor.fireAmp || 1.0 : 1.0);
+        const dmg = Math.floor(Battle.physDmg(_effectiveAtk, tgt.def, e.dmgMultiplier || 1, actor.lv || 1, tgt.level || 1, e.defPen || 0) * _em * _stab * _bb * _amp);
         tgt.hp = Math.max(0, tgt.hp - dmg);
         if (tgt.hp <= 0) tgt.isKO = true;
         totalDmg += dmg;
@@ -1462,15 +1472,25 @@ function heroAbility(ab) {
         delete actor._cryoReset;
       }
 
-      // Handle LifeSteal (Lulu's moves)
+      // Handle LifeSteal
       if (e.lifeSteal && totalDmg > 0) {
-        const healAmt = Math.floor(totalDmg * e.lifeSteal);
-        G.party.forEach((m, idx) => {
-          if (!Battle.alive(m)) return;
-          m.hp = Math.min(m.maxHp, m.hp + healAmt);
-          UI.popParty(idx, healAmt, 'heal', 'light');
-        });
-        UI.addLog(`💖 ${ab.name}: Party restored ${healAmt} HP from strike!`, 'heal');
+        let lMult = e.lifeSteal;
+        // Low HP Bonus Healing (Hu Tao ultimate)
+        if (e.healLowMult && actor.hp / actor.maxHp < 0.5) lMult *= e.healLowMult;
+        
+        const healAmt = Math.floor(totalDmg * lMult);
+        if (e.aoe) {
+          G.party.forEach((m, idx) => {
+            if (!Battle.alive(m)) return;
+            m.hp = Math.min(m.maxHp, m.hp + healAmt);
+            UI.popParty(idx, healAmt, 'heal', 'light');
+          });
+          UI.addLog(`💖 ${ab.name}: Party restored ${healAmt} HP!`, 'heal');
+        } else {
+          actor.hp = Math.min(actor.maxHp, actor.hp + healAmt);
+          UI.popParty(G.activeMemberIdx, healAmt, 'heal', 'light');
+          UI.addLog(`💖 ${ab.name}: ${actor.displayName} restored ${healAmt} HP!`, 'heal');
+        }
       }
 
       // Handle Secondary Buffs on self
@@ -1535,7 +1555,9 @@ function heroAbility(ab) {
         let totalDmg = 0;
         _magTargets.forEach(({ en: tgt, i: tIdx }) => {
           const _em = Battle.elemMult(element, tgt);
-          const dmg = Math.floor(Battle.magicDmg(_effectiveMag, e.dmgMultiplier || 1.5, passiveBonus, actor.lv || 1, tgt.mag, tgt.lv || 1) * _em * _stab);
+          // Amps
+          const _amp = (element === 'fire' ? actor.fireAmp || 1.0 : 1.0);
+          const dmg = Math.floor(Battle.magicDmg(_effectiveMag, e.dmgMultiplier || 1.5, passiveBonus, actor.lv || 1, tgt.mag, tgt.lv || 1) * _em * _stab * _amp);
           tgt.hp = Math.max(0, tgt.hp - dmg);
           if (tgt.hp <= 0) tgt.isKO = true;
           totalDmg += dmg;
@@ -1618,6 +1640,8 @@ function heroAbility(ab) {
         if (e.evasion) m.evasion = e.evasion;
         if (e.hpRegen) { m.regenTurns = e.duration || 3; m.hpRegenAmt = e.hpRegen; }
         if (e.reflect) m.reflect = e.reflect;
+        if (e.infusion) m.infusion = e.infusion;
+        if (e.fireAmp) m.fireAmp = e.fireAmp;
 
         createEffectOverlay(idx, element, 'party', ab.id);
       };
@@ -2131,11 +2155,13 @@ function enemyAct(enemy, enemyIdx) {
         if (m.buff.turns <= 0) { 
           m[m.buff.stat] = m.buff.origVal; 
           m.buff = null; 
-          // Reset special buff flags
+          // Reset special buff flags: Hu Tao cleanup
           m.dmgReduction = null;
           m.evasion = null;
           m.hpRegenAmt = null;
           m.reflect = null;
+          m.infusion = null;
+          m.fireAmp = null;
         } 
       }
     });
