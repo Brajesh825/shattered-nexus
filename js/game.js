@@ -97,10 +97,12 @@ const Battle = {
     if (row.weak.includes(clsElem))   return 'resist';
     return null;
   },
-  physDmg(atk, def, mult = 1, atkLevel = 1, defLevel = 1) {
+  physDmg(atk, def, mult = 1, atkLevel = 1, defLevel = 1, defPen = 0) {
     // NEW: heavier level-weighting + stronger defense factor (0.75x)
     const scaledAtk = atk + (atkLevel * 1.2);
-    const scaledDef = def + (defLevel * 0.6);
+    // defPen: reduces effectiveness of enemy defense (e.g. 0.2 removes 20% of DEF)
+    const effectiveDef = def * (1 - Math.min(0.9, defPen));
+    const scaledDef = effectiveDef + (defLevel * 0.6);
     const base = Math.max(1, scaledAtk - scaledDef * 0.75);
     return Math.max(1, Math.floor(base * (0.85 + Math.random() * 0.3) * mult));
   },
@@ -1404,42 +1406,60 @@ function heroAbility(ab) {
     const enemy = G.enemy;
 
     if (ab.type === 'physical') {
-      if (typeof SFX !== 'undefined') { SFX.attack(); setTimeout(() => SFX.enemyHit(), 80); }
+      if (typeof SFX !== 'undefined') SFX.attack();
       const _stab = actor.passive?.id === 'eidolon_bond' ? 1.25 : element === actor.cls?.element ? 1.25 : 1.0;
       const _bb   = actor.passive?.id === 'blood_blossom' && actor.hp / actor.maxHp < 0.5 ? 1.35 : 1.0;
-      const _phyTargets = e.aoe
+      
+      const targets = e.aoe
         ? G.enemyGroup.map((en, i) => ({ en, i })).filter(({ en }) => Battle.alive(en))
         : [{ en: enemy, i: G.targetEnemyIdx }];
-      _phyTargets.forEach(({ en: tgt, i: tIdx }) => {
+
+      let totalDmg = 0;
+      targets.forEach(({ en: tgt, i: tIdx }) => {
         const _em = Battle.elemMult(element, tgt);
-        const dmg = Math.floor(Battle.physDmg(actor.atk, tgt.def, e.dmgMultiplier || 1, actor.lv || 1, tgt.level || 1) * _em * _stab * _bb);
+        const dmg = Math.floor(Battle.physDmg(actor.atk, tgt.def, e.dmgMultiplier || 1, actor.lv || 1, tgt.level || 1, e.defPen || 0) * _em * _stab * _bb);
         tgt.hp = Math.max(0, tgt.hp - dmg);
         if (tgt.hp <= 0) tgt.isKO = true;
+        totalDmg += dmg;
+
         const _er = Battle.elemResult(element, tgt);
-        if (_er === 'shatter') UI.addLog('⚡ SHATTER!', 'magic');
-        else if (_er === 'weak')   UI.addLog('✦ WEAK!', 'magic');
+        if (_er === 'shatter') UI.addLog('⚡ SHATTER!', 'dmg');
+        else if (_er === 'weak') UI.addLog('✦ WEAK!', 'dmg');
         else if (_er === 'resist') UI.addLog('▸ Resist', 'regen');
-        else if (_er === 'immune') UI.addLog('■ IMMUNE — no effect!', 'regen');
+        else if (_er === 'immune') UI.addLog('■ IMMUNE!', 'regen');
+
         UI.popEnemy(tIdx, dmg, 'dmg', element);
         createEffectOverlay(tIdx, element, 'enemy', ab.id);
         const eSpr = document.getElementById('espr-' + tIdx);
         if (eSpr) { eSpr.classList.add('sprite-damage-flash'); setTimeout(() => eSpr.classList.remove('sprite-damage-flash'), 200); }
         shakeEnemy(tIdx);
         _applyVampiric(tgt, dmg, tIdx);
-        UI.addLog(`${tgt.name} took ${dmg} damage!`, 'dmg');
+        UI.addLog(`${actor.displayName} strikes ${tgt.name} for ${dmg}!`, 'dmg');
       });
+
       if (_stab > 1) UI.addLog('◈ STAB!', 'magic');
       if (_bb > 1)   UI.addLog('🔥 Blood Blossom!', 'magic');
-      // Slow secondary effect
-      if (e.slowChance) {
-        const _st = _phyTargets[0]?.en;
-        if (_st && !_st.debuff && Math.random() < e.slowChance) {
-          _st.debuff = { stat: 'spd', origVal: _st.spd, turns: 2 };
-          _st.spd = Math.floor(_st.spd * 0.6);
-          UI.addLog(`${_st.name}'s SPD slowed!`, 'magic');
-        }
+
+      // Handle LifeSteal (Lulu's moves)
+      if (e.lifeSteal && totalDmg > 0) {
+        const healAmt = Math.floor(totalDmg * e.lifeSteal);
+        G.party.forEach((m, idx) => {
+          if (!Battle.alive(m)) return;
+          m.hp = Math.min(m.maxHp, m.hp + healAmt);
+          UI.popParty(idx, healAmt, 'heal', 'light');
+        });
+        UI.addLog(`💖 ${ab.name}: Party restored ${healAmt} HP from strike!`, 'heal');
       }
+
+      // Handle Secondary Buffs on self
+      if (e.spdBuff) {
+        actor.spd += e.spdBuff;
+        UI.addLog(`${actor.displayName}'s SPD raised!`, 'heal');
+      }
+
       _checkDragonLeap(actor);
+      UI.renderEnemyRow(); UI.renderPartyStatus();
+      setTimeout(advanceTurn, targets.length > 1 ? 1000 : 600);
 
     } else if (ab.type === 'magic_damage') {
       if (typeof SFX !== 'undefined') SFX.magic();
@@ -1490,11 +1510,14 @@ function heroAbility(ab) {
         const _magTargets = e.aoe
           ? G.enemyGroup.map((en, i) => ({ en, i })).filter(({ en }) => Battle.alive(en))
           : [{ en: enemy, i: G.targetEnemyIdx }];
+        let totalDmg = 0;
         _magTargets.forEach(({ en: tgt, i: tIdx }) => {
           const _em = Battle.elemMult(element, tgt);
-          const dmg = Math.floor(Battle.magicDmg(_effectiveMag, e.dmgMultiplier || 1.5, passiveBonus, actor.lv || 1) * _em * _stab);
+          const dmg = Math.floor(Battle.magicDmg(_effectiveMag, e.dmgMultiplier || 1.5, passiveBonus, actor.lv || 1, tgt.mag, tgt.lv || 1) * _em * _stab);
           tgt.hp = Math.max(0, tgt.hp - dmg);
           if (tgt.hp <= 0) tgt.isKO = true;
+          totalDmg += dmg;
+
           const _er = Battle.elemResult(element, tgt);
           if (_er === 'shatter') UI.addLog('⚡ SHATTER!', 'magic');
           else if (_er === 'weak')   UI.addLog('✦ WEAK!', 'magic');
@@ -1508,6 +1531,18 @@ function heroAbility(ab) {
           _applyVampiric(tgt, dmg, tIdx);
           UI.addLog(`${tgt.name} took ${dmg} magic damage!`, 'magic');
         });
+
+        // LifeSteal for Magic (Lulu's Water Wheel)
+        if (e.lifeSteal && totalDmg > 0) {
+          const healAmt = Math.floor(totalDmg * e.lifeSteal);
+          G.party.forEach((m, idx) => {
+            if (!Battle.alive(m)) return;
+            m.hp = Math.min(m.maxHp, m.hp + healAmt);
+            UI.popParty(idx, healAmt, 'heal', 'light');
+          });
+          UI.addLog(`💖 ${ab.name}: Party restored ${healAmt} HP from spell!`, 'heal');
+        }
+
         if (_stab > 1) UI.addLog('◈ STAB!', 'magic');
         _checkDragonLeap(actor);
       }
@@ -1515,10 +1550,15 @@ function heroAbility(ab) {
     } else if (ab.type === 'heal') {
       if (typeof SFX !== 'undefined') SFX.heal();
       const _healAmp = actor.passive?.id === 'dance_of_haftkarsvar' ? 1.3 : 1.0;
+      const getHealAmt = (m) => {
+        if (e.healPercent) return Math.floor(m.maxHp * e.healPercent);
+        return Math.floor(((e.healBase || 20) + Math.floor(Math.random() * (e.healRandom || 15))) * _healAmp);
+      };
+
       if (e.aoe) {
         G.party.forEach((m, i) => {
           if (!Battle.alive(m)) return;
-          const amt = Math.floor(((e.healBase || 20) + Math.floor(Math.random() * (e.healRandom || 15))) * _healAmp);
+          const amt = getHealAmt(m);
           m.hp = Math.min(m.maxHp, m.hp + amt);
           UI.popParty(i, amt, 'heal', 'light');
           if (e.cleanse && m.buff) { m[m.buff.stat] = m.buff.origVal; m.buff = null; }
@@ -1526,7 +1566,7 @@ function heroAbility(ab) {
         createEffectOverlay(G.activeMemberIdx, element, 'party', ab.id);
         UI.addLog(`${actor.displayName} healed the entire party!`, 'heal');
       } else {
-        const amt = Math.floor(((e.healBase || 20) + Math.floor(Math.random() * (e.healRandom || 15))) * _healAmp);
+        const amt = getHealAmt(actor);
         actor.hp  = Math.min(actor.maxHp, actor.hp + amt);
         UI.popParty(G.activeMemberIdx, amt, 'heal', 'light');
         createEffectOverlay(G.activeMemberIdx, element, 'party', ab.id);
@@ -1539,26 +1579,32 @@ function heroAbility(ab) {
       UI.addLog(`${actor.displayName}: Regen for ${actor.regenTurns} turns!`, 'regen');
 
     } else if (ab.type === 'buff') {
+      const applyBuff = (m, idx) => {
+        if (!Battle.alive(m)) return;
+        // Primary stat buff
+        if (e.stat) {
+          if (m.buff) m[m.buff.stat] = m.buff.origVal;
+          m.buff = { stat: e.stat, origVal: m[e.stat], turns: e.duration || 2 };
+          m[e.stat] = Math.floor(m[e.stat] * (e.multiplier || 1.3));
+        }
+        // Secondary stat buffs (Valkyrie/Lulu moves)
+        if (e.defBuff) { m.def = Math.floor(m.def * e.defBuff); }
+        if (e.spdBuff) { m.spd += e.spdBuff; }
+        
+        // Special status effects
+        if (e.damageReduction) m.dmgReduction = (1 - e.damageReduction);
+        if (e.evasion) m.evasion = e.evasion;
+        if (e.hpRegen) { m.regenTurns = e.duration || 3; m.hpRegenAmt = e.hpRegen; }
+        if (e.reflect) m.reflect = e.reflect;
+
+        createEffectOverlay(idx, element, 'party', ab.id);
+      };
+
       if (e.aoe) {
-        // Party-wide buff
-        G.party.forEach((m, i) => {
-          if (!Battle.alive(m)) return;
-          if (e.stat) {
-            if (m.buff) m[m.buff.stat] = m.buff.origVal;
-            m.buff = { stat: e.stat, origVal: m[e.stat], turns: e.duration || 2 };
-            m[e.stat] = Math.floor(m[e.stat] * (e.multiplier || 1.3));
-          }
-          createEffectOverlay(i, element, 'party', ab.id);
-        });
+        G.party.forEach((m, i) => applyBuff(m, i));
         UI.addLog(`${actor.displayName}: ${ab.name} shields the entire party!`, 'heal');
-      } else if (e.stat) {
-        if (actor.buff) actor[actor.buff.stat] = actor.buff.origVal;
-        actor.buff = { stat: e.stat, origVal: actor[e.stat], turns: e.duration || 2 };
-        actor[e.stat] = Math.floor(actor[e.stat] * (e.multiplier || 1.3));
-        createEffectOverlay(G.activeMemberIdx, element, 'party', ab.id);
-        UI.addLog(`${actor.displayName}'s ${e.stat.toUpperCase()} raised!`, 'heal');
       } else {
-        createEffectOverlay(G.activeMemberIdx, element, 'party', ab.id);
+        applyBuff(actor, G.activeMemberIdx);
         UI.addLog(`${actor.displayName} gained a temporary boost!`, 'heal');
       }
 
@@ -1944,11 +1990,23 @@ function enemyAct(enemy, enemyIdx) {
 
     if (!ab || ab.type === 'physical') {
       if (typeof SFX !== 'undefined') { SFX.enemyHit(); setTimeout(() => SFX.attack(), 60); }
+      
+      // 1. Check Evasion
+      if (target.evasion && Math.random() < target.evasion) {
+        UI.addLog(`💨 ${target.displayName} dodged the attack!`, 'hi');
+        UI.popParty(targetIdx, 0, 'miss');
+        return;
+      }
+
       const _pm  = Battle.playerElemMult(element, target);
       let dmg    = Math.floor(Battle.physDmg(enemy.atk, target.def, ab?.dmgMultiplier || 1, enemy.level || 1, target.lv || 1) * _pm);
+      
+      // Apply passive & buff damage reductions
       if (target.passive?.id === 'yakshas_valor')    dmg = Math.floor(dmg * 0.9);
       if (target.passive?.id === 'divine_authority') dmg = Math.floor(dmg * 0.85);
       if (target.passive?.id === 'divine_blessing')  dmg = Math.floor(dmg * 0.88);
+      if (target.dmgReduction) dmg = Math.floor(dmg * target.dmgReduction);
+
       dmg = _applyEliteResist(dmg, target); // Tarnished Wing elite resist
       target.hp  = Math.max(0, target.hp - dmg);
       UI.popParty(targetIdx, dmg, 'dmg', element);
@@ -1959,23 +2017,33 @@ function enemyAct(enemy, enemyIdx) {
       UI.setLog([`${enemy.name} attacks ${target.displayName}!`, `${target.displayName} took ${dmg} damage!`], ['','dmg']);
       if (_pr === 'weak')   UI.addLog('✦ WEAK!', 'dmg');
       else if (_pr === 'resist') UI.addLog('▸ Resist', 'regen');
-      // Divine Authority reflect
-      if (target.passive?.id === 'divine_authority') {
-        const reflect = Math.floor(dmg * 0.1);
-        if (reflect > 0 && Battle.alive(enemy)) {
-          enemy.hp = Math.max(0, enemy.hp - reflect);
-          UI.addLog(`✦ Reflected ${reflect} damage!`, 'magic');
-        }
+
+      // Reflect Damage (Warden's Valor / passive)
+      const reflectPerc = (target.reflect || 0) + (target.passive?.id === 'divine_authority' ? 0.1 : 0);
+      if (reflectPerc > 0 && dmg > 0 && Battle.alive(enemy)) {
+        const reflect = Math.floor(dmg * reflectPerc);
+        enemy.hp = Math.max(0, enemy.hp - reflect);
+        UI.addLog(`✦ Reflected ${reflect} damage!`, 'magic');
       }
 
     } else if (ab.type === 'magic_damage') {
       if (typeof SFX !== 'undefined') SFX.magic();
+      
+      // 1. Check Evasion (can dodge magic too in this system)
+      if (target.evasion && Math.random() < target.evasion) {
+        UI.addLog(`💨 ${target.displayName} dodged the spell!`, 'hi');
+        UI.popParty(targetIdx, 0, 'miss');
+        return;
+      }
+
       const _pm = Battle.playerElemMult(element, target);
-      // SDEF: target's MAG is their Spirit Defense against enemy magic
       let dmg   = Math.floor(Battle.magicDmg(enemy.mag, ab.dmgMultiplier || 1.3, 1.0, enemy.level || 1, target.mag || 0, target.lv || 1) * _pm);
+      
       if (target.passive?.id === 'yakshas_valor')    dmg = Math.floor(dmg * 0.9);
       if (target.passive?.id === 'divine_authority') dmg = Math.floor(dmg * 0.85);
       if (target.passive?.id === 'divine_blessing')  dmg = Math.floor(dmg * 0.88);
+      if (target.dmgReduction) dmg = Math.floor(dmg * target.dmgReduction);
+
       dmg = _applyEliteResist(dmg, target); // Tarnished Wing elite resist
       target.hp = Math.max(0, target.hp - dmg);
       UI.popParty(targetIdx, dmg, 'magic', element);
@@ -1984,12 +2052,13 @@ function enemyAct(enemy, enemyIdx) {
       UI.setLog([`${enemy.name} uses ${ab.name}!`, `${target.displayName} took ${dmg} magic damage!`], ['magic','dmg']);
       if (_pr === 'weak')   UI.addLog('✦ WEAK!', 'dmg');
       else if (_pr === 'resist') UI.addLog('▸ Resist', 'regen');
-      if (target.passive?.id === 'divine_authority') {
-        const reflect = Math.floor(dmg * 0.1);
-        if (reflect > 0 && Battle.alive(enemy)) {
-          enemy.hp = Math.max(0, enemy.hp - reflect);
-          UI.addLog(`✦ Reflected ${reflect} damage!`, 'magic');
-        }
+
+      // Reflect
+      const reflectPerc = (target.reflect || 0) + (target.passive?.id === 'divine_authority' ? 0.1 : 0);
+      if (reflectPerc > 0 && dmg > 0 && Battle.alive(enemy)) {
+        const reflect = Math.floor(dmg * reflectPerc);
+        enemy.hp = Math.max(0, enemy.hp - reflect);
+        UI.addLog(`✦ Reflected ${reflect} damage!`, 'magic');
       }
 
     } else {
@@ -2013,14 +2082,28 @@ function enemyAct(enemy, enemyIdx) {
         m.hp = Math.min(m.maxHp, m.hp + 5); UI.popParty(i, 5, 'regen');
       }
       if (m.regenTurns > 0) {
-        m.regenTurns--; m.hp = Math.min(m.maxHp, m.hp + 8); UI.popParty(i, 8, 'regen');
+        m.regenTurns--; 
+        const _amt = m.hpRegenAmt || 8;
+        m.hp = Math.min(m.maxHp, m.hp + _amt); 
+        UI.popParty(i, _amt, 'regen');
       }
       // Divine Blessing: knight king's aura grants all allies 2% max HP regen per turn
       if (_hasDivBless && m.hp < m.maxHp) {
         const _dbAmt = Math.max(1, Math.floor(m.maxHp * 0.02));
         m.hp = Math.min(m.maxHp, m.hp + _dbAmt);
       }
-      if (m.buff) { m.buff.turns--; if (m.buff.turns <= 0) { m[m.buff.stat] = m.buff.origVal; m.buff = null; } }
+      if (m.buff) { 
+        m.buff.turns--; 
+        if (m.buff.turns <= 0) { 
+          m[m.buff.stat] = m.buff.origVal; 
+          m.buff = null; 
+          // Reset special buff flags
+          m.dmgReduction = null;
+          m.evasion = null;
+          m.hpRegenAmt = null;
+          m.reflect = null;
+        } 
+      }
     });
 
     // ── Mutant trait ticks after enemy action ─────────────────
