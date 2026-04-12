@@ -3,6 +3,7 @@
     "id": "cryo_bladestorm",
     "name": "Cryo Bladestorm",
     "icon": "❄️",
+    "element": "ice",
     "tag": "Ice / Swift Strike",
     "description": "An elegant frozen combat style. Swift strikes infused with cryo energy that freeze enemies in place.",
     "color": "#4b9fce",
@@ -55,6 +56,7 @@
     "id": "spirit_incinerator",
     "name": "Spirit Incinerator",
     "icon": "🔥",
+    "element": "fire",
     "tag": "Fire / Life Force",
     "description": "A pyromantic guide art. Harness ghost energy and flames to incinerate foes while draining their vitality.",
     "color": "#c03010",
@@ -107,6 +109,7 @@
     "id": "hydro_performer",
     "name": "Hydro Performer",
     "icon": "💧",
+    "element": "water",
     "tag": "Water / Grace",
     "description": "A star-blessed dance. Graceful water magic that heals allies and supports the party with aquatic blessing.",
     "color": "#0e9080",
@@ -159,6 +162,7 @@
     "id": "yaksha_protector",
     "name": "Ancient Warden",
     "icon": "🌀",
+    "element": "wind",
     "tag": "Guardian / Karmic",
     "description": "An ancient warden's power. Protective stance with karmic resolution, reducing damage and punishing aggressors.",
     "color": "#0a4030",
@@ -211,10 +215,10 @@
     "id": "summoner_eidolon",
     "name": "Summoner",
     "icon": "✨",
+    "element": null,
     "tag": "Magic / Eidolons",
     "description": "A summoner's prowess. Command mighty eidolons from the spirit realm to decimate foes and protect allies.",
     "color": "#6d28d9",
-    "element": "summoning",
     "role": "Mage",
     "stat_multipliers": {
       "hp": 0.95, "mp": 1.5, "atk": 0.6, "def": 0.8, "spd": 0.95, "mag": 1.6
@@ -264,10 +268,10 @@
     "id": "valkyrie_guardian",
     "name": "Valkyrie",
     "icon": "👑",
+    "element": "holy",
     "tag": "Divine / Judgment",
     "description": "A divine valkyrie's power. Strike with sacred judgment while protecting allies with celestial authority.",
     "color": "#a855f7",
-    "element": "holy",
     "role": "Knight",
     "stat_multipliers": {
       "hp": 1.3, "mp": 1.1, "atk": 1.3, "def": 1.35, "spd": 1.0, "mag": 1.2
@@ -317,10 +321,10 @@
     "id": "dragoon_skyward",
     "name": "Divine Dragoon",
     "icon": "🐉",
+    "element": "wind",
     "tag": "Dragon / Sky",
     "description": "A dragoon's legacy elevated by divine power. Soar through the heavens with lance strikes and dragon-channeled attacks.",
     "color": "#0c4a6e",
-    "element": "wind",
     "role": "Ranger",
     "stat_multipliers": {
       "hp": 1.15, "mp": 0.9, "atk": 1.35, "def": 1.05, "spd": 1.25, "mag": 0.95
@@ -370,10 +374,10 @@
     "id": "knight_king_divine",
     "name": "Grail Guardian",
     "icon": "⚔️",
+    "element": "holy",
     "tag": "Holy / Divinity",
     "description": "A god-blessed kingship. Wield divine authority and summon the power of gods to protect and annihilate.",
     "color": "#b45309",
-    "element": "holy",
     "role": "Paladin",
     "stat_multipliers": {
       "hp": 1.35, "mp": 1.15, "atk": 1.4, "def": 1.4, "spd": 0.95, "mag": 1.25
