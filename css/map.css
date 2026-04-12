@@ -154,7 +154,8 @@
   border-color: var(--gold);
   background: rgba(40,28,80,0.95);
   box-shadow: 0 0 18px var(--gold-glow), 0 0 32px #f5d06020;
-  animation: glowPulse 2s ease-in-out infinite;
+  background: rgba(18, 10, 50, 0.95);
+  box-shadow: 0 0 15px var(--gold-glow), inset 0 0 10px rgba(180, 140, 255, 0.15);
 }
 .map-node.current .mn-num  { color: var(--gold); }
 .map-node.current .mn-name { color: #c0b0e8; font-size: var(--fs-base); }
@@ -495,15 +496,16 @@
 }
 
 .npc-dialogue-panel {
-  background: linear-gradient(160deg, #0a0620 0%, #06030f 100%);
-  border: 1px solid #3a2070;
-  border-radius: 10px;
-  padding: 16px 20px 14px;
+  background: rgba(10, 6, 28, 0.9);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(96, 80, 184, 0.35);
+  border-radius: 12px;
+  padding: 18px 22px;
   width: min(560px, 96vw);
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  box-shadow: 0 0 32px #2010601a;
+  gap: 12px;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(96, 80, 184, 0.1);
 }
 
 .npc-dialogue-header {
@@ -573,15 +575,16 @@
 }
 
 .camp-panel {
-  background: linear-gradient(160deg, #0a0620 0%, #06030f 100%);
-  border: 1px solid #2a1860;
-  border-radius: 10px;
+  background: linear-gradient(160deg, rgba(14, 10, 42, 0.95) 0%, rgba(8, 5, 20, 0.98) 100%);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(96, 80, 184, 0.3);
+  border-radius: 12px;
   padding: 24px 28px;
   width: min(340px, 90vw);
   display: flex;
   flex-direction: column;
   gap: 14px;
-  box-shadow: 0 0 40px #30108040;
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(96, 80, 184, 0.1);
 }
 
 .camp-title {
@@ -640,16 +643,18 @@
   z-index: 60;
 }
 .relic-panel-inner {
-  background: linear-gradient(160deg, #0a0620 0%, #06030f 100%);
-  border: 1px solid #2a1860;
-  border-radius: 10px;
+  background: linear-gradient(160deg, rgba(14, 10, 42, 0.96) 0%, rgba(6, 4, 18, 0.99) 100%);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(160, 140, 255, 0.25);
+  border-radius: 12px;
   padding: 20px 22px;
   width: min(360px, 94vw);
   max-height: 88vh;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
+  box-shadow: 0 0 60px rgba(0, 0, 0, 0.7);
 }
 .relic-panel-title {
   font-family: var(--px);
@@ -1032,16 +1037,17 @@
 .ex-hud-member {
   display: flex;
   align-items: center;
-  gap: 8px;
-  background: rgba(5, 4, 26, 0.88);
-  border: 1px solid rgba(42, 29, 96, 0.7);
-  border-left: 2px solid var(--ex-accent);
-  padding: 5px 9px 5px 7px;
-  min-width: 162px;
+  gap: 10px;
+  background: rgba(12, 10, 40, 0.82);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(96, 80, 184, 0.3);
+  border-left: 3px solid var(--ex-accent);
+  padding: 6px 12px 6px 8px;
+  min-width: 170px;
   position: relative;
   overflow: hidden;
   cursor: pointer;
-  transition: background 0.15s, border-left-color 0.15s;
+  transition: all 0.2s cubic-bezier(0.17, 0.67, 0.83, 0.67);
 }
 .ex-hud-member:hover {
   background: rgba(12, 8, 40, 0.95);
@@ -1075,9 +1081,11 @@
 }
 
 .ex-hud-bar-wrap {
-  height: 3px;
-  background: rgba(255,255,255,0.07);
+  height: 5px;
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 2px;
   overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .ex-hud-bar-fill {
@@ -1105,11 +1113,13 @@
   bottom: 44px;
   right: 14px;
   z-index: 20;
-  background: rgba(5, 4, 26, 0.88);
-  border: 1px solid rgba(42, 29, 96, 0.7);
-  border-top: 2px solid var(--ex-accent);
-  padding: 9px;
+  background: rgba(10, 8, 38, 0.8);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(96, 80, 184, 0.3);
+  border-top: 3px solid var(--ex-accent);
+  padding: 11px;
   pointer-events: none;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
 }
 
 .ex-minimap-label {

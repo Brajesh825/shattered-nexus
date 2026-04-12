@@ -98,15 +98,17 @@ const Battle = {
     return null;
   },
   physDmg(atk, def, mult = 1, atkLevel = 1, defLevel = 1) {
-    const scaledAtk = atk + (atkLevel * 0.5);
-    const scaledDef = def + (defLevel * 0.3);
-    // Defense now cancels 60% of itself — more meaningful damage mitigation
-    const base = Math.max(1, scaledAtk - scaledDef * 0.6);
+    // NEW: heavier level-weighting + stronger defense factor (0.75x)
+    const scaledAtk = atk + (atkLevel * 1.2);
+    const scaledDef = def + (defLevel * 0.6);
+    const base = Math.max(1, scaledAtk - scaledDef * 0.75);
     return Math.max(1, Math.floor(base * (0.85 + Math.random() * 0.3) * mult));
   },
-  magicDmg(mag, mult = 1, passiveBonus = 1, magLevel = 1) {
-    const scaledMag = mag + (magLevel * 0.3);
-    const base = Math.max(1, scaledMag * 0.9);
+  // targetMag / targetMagLv = Spirit Defense (SDEF) — high-MAG targets resist magic
+  magicDmg(mag, mult = 1, passiveBonus = 1, magLevel = 1, targetMag = 0, targetMagLv = 1) {
+    const scaledMag      = mag + (magLevel * 0.8);
+    const magMitigation  = (targetMag + targetMagLv * 0.3) * 0.4;
+    const base = Math.max(1, scaledMag - magMitigation);
     return Math.max(1, Math.floor(base * (0.9 + Math.random() * 0.2) * mult * passiveBonus));
   },
   pickAbility(abilities) {
@@ -993,18 +995,19 @@ function applyRelicBonuses() {
   const defs = G.relics || [];
 
   // Aggregate bonuses from all active relics
-  const bonus = { hp: 1, mp: 1, atk: 1, def: 1, spd: 1, mag: 1, healAmp: 1, mpRegen: 0 };
+  const bonus = { hp: 1, mp: 1, atk: 1, def: 1, spd: 1, mag: 1, healAmp: 1, mpRegen: 0, eliteResist: 0 };
   active.forEach(id => {
     const r = defs.find(d => d.id === id);
     if (!r || !r.bonus) return;
-    if (r.bonus.hp)       bonus.hp       += r.bonus.hp;
-    if (r.bonus.mp)       bonus.mp       += r.bonus.mp;
-    if (r.bonus.atk)      bonus.atk      += r.bonus.atk;
-    if (r.bonus.def)      bonus.def      += r.bonus.def;
-    if (r.bonus.spd)      bonus.spd      += r.bonus.spd;
-    if (r.bonus.mag)      bonus.mag      += r.bonus.mag;
-    if (r.bonus.healAmp)  bonus.healAmp  += r.bonus.healAmp;
-    if (r.bonus.mpRegen)  bonus.mpRegen  += r.bonus.mpRegen;
+    if (r.bonus.hp)          bonus.hp          += r.bonus.hp;
+    if (r.bonus.mp)          bonus.mp          += r.bonus.mp;
+    if (r.bonus.atk)         bonus.atk         += r.bonus.atk;
+    if (r.bonus.def)         bonus.def         += r.bonus.def;
+    if (r.bonus.spd)         bonus.spd         += r.bonus.spd;
+    if (r.bonus.mag)         bonus.mag         += r.bonus.mag;
+    if (r.bonus.healAmp)     bonus.healAmp     += r.bonus.healAmp;
+    if (r.bonus.mpRegen)     bonus.mpRegen     += r.bonus.mpRegen;
+    if (r.bonus.eliteResist) bonus.eliteResist += r.bonus.eliteResist; // Tarnished Wing
   });
 
   G.party.forEach(m => {
@@ -1016,17 +1019,19 @@ function applyRelicBonuses() {
     m.def    = Math.floor(m.def    * bonus.def);
     m.spd    = Math.floor(m.spd    * bonus.spd);
     m.mag    = Math.floor(m.mag    * bonus.mag);
-    m._healAmpRelic  = bonus.healAmp;  // used by healing logic
-    m._mpRegenBonus  = bonus.mpRegen;  // extra % of maxMp per turn
+    m._healAmpRelic  = bonus.healAmp;    // used by healing logic
+    m._mpRegenBonus  = bonus.mpRegen;    // extra % of maxMp per turn
+    m._eliteResist   = bonus.eliteResist; // fraction of damage reduction vs Corrupted/Mutant
   });
 }
 
 function buildEnemyGroup(defs, spawnLevel = 1, isBoss = false) {
   // Tier-based growth rates
   const tierGrowth = {
-    1: { hp: 3, atk: 0.4, def: 0.2, spd: 0.3, mag: 0.2, statMult: 1.0, expMult: 1.0 },
-    2: { hp: 5, atk: 0.7, def: 0.4, spd: 0.5, mag: 0.4, statMult: 1.3, expMult: 1.5 },
-    3: { hp: 8, atk: 1.0, def: 0.7, spd: 0.7, mag: 0.6, statMult: 1.7, expMult: 2.5 },
+    // NEW growth rates — ensures enemies scale as threats through Lv40
+    1: { hp: 5,  atk: 1.2, def: 0.5, spd: 0.5, mag: 0.3, statMult: 1.0, expMult: 1.0 },
+    2: { hp: 10, atk: 2.5, def: 1.0, spd: 0.8, mag: 0.5, statMult: 1.3, expMult: 1.5 },
+    3: { hp: 18, atk: 4.5, def: 1.8, spd: 1.2, mag: 0.8, statMult: 1.7, expMult: 2.5 },
   };
 
   // Boss multiplier: solo boss gets beefed-up base stats on top of higher level
@@ -1818,11 +1823,12 @@ function heroRun() {
   if (G.busy) return;
   G.busy = true; UI.btns(false);
   UI.openSub(null);
-  if (Math.random() < 0.5) {
+  if (Math.random() < 0.6) {
     UI.setLog(['The party escapes!'], ['hi']);
     setTimeout(() => showResult('escaped'), 900);
   } else {
-    UI.setLog(['Could not escape!'], ['dmg']);
+    const _isMutant = G.enemyGroup.some(e => e.mutantTraits && Battle.alive(e));
+    UI.setLog([_isMutant ? '⚠ Escape failed! The Mutant strikes!' : 'Could not escape!'], ['dmg']);
     setTimeout(advanceTurn, 800);
   }
 }
@@ -1921,6 +1927,13 @@ function enemyAct(enemy, enemyIdx) {
   }
 
   setTimeout(() => {
+    // Helper: apply elite resist (Tarnished Wing relic) to damage from Corrupted/Mutant
+    const _isElite = !!(enemy.mutantTraits || enemy.isCorrupted);
+    const _applyEliteResist = (dmg, tgt) => {
+      const resist = tgt._eliteResist || 0;
+      return (_isElite && resist > 0) ? Math.max(1, Math.floor(dmg * (1 - resist))) : dmg;
+    };
+
     if (!ab || ab.type === 'physical') {
       if (typeof SFX !== 'undefined') { SFX.enemyHit(); setTimeout(() => SFX.attack(), 60); }
       const _pm  = Battle.playerElemMult(element, target);
@@ -1928,6 +1941,7 @@ function enemyAct(enemy, enemyIdx) {
       if (target.passive?.id === 'yakshas_valor')    dmg = Math.floor(dmg * 0.9);
       if (target.passive?.id === 'divine_authority') dmg = Math.floor(dmg * 0.85);
       if (target.passive?.id === 'divine_blessing')  dmg = Math.floor(dmg * 0.88);
+      dmg = _applyEliteResist(dmg, target); // Tarnished Wing elite resist
       target.hp  = Math.max(0, target.hp - dmg);
       UI.popParty(targetIdx, dmg, 'dmg', element);
       createEffectOverlay(targetIdx, element, 'party');
@@ -1949,10 +1963,12 @@ function enemyAct(enemy, enemyIdx) {
     } else if (ab.type === 'magic_damage') {
       if (typeof SFX !== 'undefined') SFX.magic();
       const _pm = Battle.playerElemMult(element, target);
-      let dmg   = Math.floor(Battle.magicDmg(enemy.mag, ab.dmgMultiplier || 1.3, 1.0, enemy.level || 1) * _pm);
+      // SDEF: target's MAG is their Spirit Defense against enemy magic
+      let dmg   = Math.floor(Battle.magicDmg(enemy.mag, ab.dmgMultiplier || 1.3, 1.0, enemy.level || 1, target.mag || 0, target.lv || 1) * _pm);
       if (target.passive?.id === 'yakshas_valor')    dmg = Math.floor(dmg * 0.9);
       if (target.passive?.id === 'divine_authority') dmg = Math.floor(dmg * 0.85);
       if (target.passive?.id === 'divine_blessing')  dmg = Math.floor(dmg * 0.88);
+      dmg = _applyEliteResist(dmg, target); // Tarnished Wing elite resist
       target.hp = Math.max(0, target.hp - dmg);
       UI.popParty(targetIdx, dmg, 'magic', element);
       createEffectOverlay(targetIdx, element, 'party');
@@ -2011,14 +2027,12 @@ function enemyAct(enemy, enemyIdx) {
         UI.popEnemy(i, healAmt, 'regen');
       }
 
-      // Enraged: ATK grows +8% per turn survived (up to +50% bonus max)
+      // Enraged: ATK grows +5% per turn, no cap — hard DPS timer
       if (traits.some(t => t.id === 'enraged')) {
         e._enragedTurns = (e._enragedTurns || 0) + 1;
-        if (e._enragedTurns <= 6) { // cap at 6 turns (~+48%)
-          const gain = Math.max(1, Math.floor(e.atk * 0.08));
-          e.atk += gain;
-          if (e._enragedTurns === 1) UI.addLog(`⚠ ${e.name} is Enraged! ATK rising!`, 'dmg');
-        }
+        const gain = Math.max(1, Math.floor(e.atk * 0.05));
+        e.atk += gain;
+        if (e._enragedTurns === 1) UI.addLog(`⚡ ${e.name} is Enraged! ATK rising each turn!`, 'dmg');
       }
     });
 
