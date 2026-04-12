@@ -5,18 +5,42 @@
 
 /* ── Speaker colours ──────────────────────────────────────────────────────── */
 const SPEAKER_COLOR = {
-  Ayaka: '#7dd3fc',
-  Hutao: '#ef4444',
-  Nilou: '#2dd4bf',
-  Xiao: '#4ade80',
+  Aya:   '#7dd3fc',
+  Tao:   '#ef4444',
+  Lulu:  '#2dd4bf',
+  Rei:   '#4ade80',
+  Ria:   '#a78bfa',
+  Valka: '#e879f9',
+  Drake: '#0ea5e9',
+  Rex:   '#fbbf24',
 };
+
+/* ── Alias → charId mapping for image file lookups ──────────────────────── */
+const ALIAS_TO_CHARID = {
+  aya:   'ayaka',
+  tao:   'hutao',
+  lulu:  'nilou',
+  rei:   'xiao',
+  ria:   'rydia',
+  valka: 'lenneth',
+  drake: 'kain',
+  rex:   'leon',
+};
+
+function _charIdForSpeaker(name) {
+  return ALIAS_TO_CHARID[name.toLowerCase()] || name.toLowerCase();
+}
 
 /* ── Speaker portrait images ─────────────────────────────────────────────── */
 const SPEAKER_IMG = {
-  Ayaka: 'images/characters/spirits/ayaka_spirit.png',
-  Hutao: 'images/characters/spirits/hutao_spirit.png',
-  Nilou: 'images/characters/spirits/nilou_spirit.png',
-  Xiao: 'images/characters/spirits/xiao_spirit.png',
+  Aya:   'images/characters/spirits/ayaka_spirit.png',
+  Tao:   'images/characters/spirits/hutao_spirit.png',
+  Lulu:  'images/characters/spirits/nilou_spirit.png',
+  Rei:   'images/characters/spirits/xiao_spirit.png',
+  Ria:   'images/characters/spirits/rydia_spirit.png',
+  Valka: 'images/characters/spirits/lenneth_spirit.png',
+  Drake: 'images/characters/spirits/kain_spirit.png',
+  Rex:   'images/characters/spirits/leon_spirit.png',
 };
 
 /* ── Speaker portrait emojis (narrator fallback) ────────────────────────── */
@@ -44,11 +68,11 @@ const MAP_COLORS  = ['#1a4010','#7a2808','#083868','#300860','#481068','#201838'
 /* Explore map linked to each arc (index = arcIdx 0-based) */
 const ARC_MAP_ID  = [
   'verdant_vale',      // Arc 1
-  'ember_wastes',      // Arc 2
-  'sunken_temple',     // Arc 3
-  'shadow_reach',      // Arc 4
-  'void_citadel',      // Arc 5
-  'void_citadel',      // Arc 6 (same fortress, higher tier)
+  'crystal_cavern',    // Arc 2
+  'ember_wastes',      // Arc 3
+  'sunken_temple',     // Arc 4
+  'shadow_reach',      // Arc 5
+  'void_citadel',      // Arc 6
   'fortress_ramparts', // Arc 7
   'eternal_void',      // Arc 8
 ];
@@ -57,10 +81,10 @@ const ARC_MAP_ID  = [
 const ARC_LORE = [
   'The ruins still echo with the shouts of confusion — four strangers, summoned against their will, finding purpose in chaos.',
   'Ashveil burned for three days. The sands swallowed what the flames didn\'t claim. The survivors remember a sky made of embers.',
+  'The Ember Wastes do not cool. The ground remembers the fire. Something in the spiral still turns.',
   'The Sunken Temple holds its breath. Water fills every crack, every corridor — and still the guardians patrol, loyal to a god already drowned.',
   'The Shadow Reach was the first place they felt truly afraid. Not of the monsters — but of the silence between them.',
   'Beyond the Gates, the darkness spoke. It offered rest, oblivion, an end to the weight of a world that wasn\'t theirs to save.',
-  'The outer walls were not built to keep invaders out. They were built to keep something in.',
   'The inner sanctum smells of ozone and old grief. Every torch is cold. Every door opens inward.',
   'Here, the void does not press against you. It waits inside you, patient as the end of all things.',
 ];
@@ -247,10 +271,12 @@ const Story = {
         G.hero.gold = s.hero.gold || 0;
       }
       // Restore unlocked characters and inventory from save
-      if (s.unlockedChars) G.unlockedChars = s.unlockedChars;
-      if (s.clearedMaps)   G.clearedMaps   = s.clearedMaps;
-      if (s.inventory)     G.inventory     = s.inventory;
-      if (s.npcTalked)     G.npcTalked     = s.npcTalked;
+      if (s.unlockedChars)  G.unlockedChars  = s.unlockedChars;
+      if (s.clearedMaps)    G.clearedMaps    = s.clearedMaps;
+      if (s.inventory)      G.inventory      = s.inventory;
+      if (s.npcTalked)      G.npcTalked      = s.npcTalked;
+      if (s.ownedRelics)    G.ownedRelics    = s.ownedRelics;
+      if (s.activeRelics)   G.activeRelics   = s.activeRelics;
 
       // If saved from explore map, restore directly to that map (no overlay/selection)
       if (s.mapId) {
@@ -302,7 +328,7 @@ const Story = {
     // Show dialogue again after battle
     this._showSection('s-dialogue');
 
-    // Process onVictory events from boss_chapter (character recruitment)
+    // Process onVictory events from boss_chapter (character recruitment + relic reward)
     if (this.phase === 'boss_in' && this.currentBossChapter && this.currentBossChapter.onVictory) {
       this.currentBossChapter.onVictory.forEach(event => {
         if (event.type === 'recruit') {
@@ -311,9 +337,30 @@ const Story = {
       });
     }
 
+    // Award boss relic if the arc defines one
+    if (this.phase === 'boss_in' && this.arc) {
+      const arcRelicId = (G.relics || []).find(r => r.arcDrop === this.arc.number)?.id;
+      if (arcRelicId && typeof awardBossRelic === 'function') {
+        const relic = awardBossRelic(arcRelicId);
+        if (relic) {
+          // Relic message will show as first line of post_dialogue banner
+          this._pendingRelicMsg = `✦ Relic obtained: ${relic.icon} ${relic.name} — ${relic.bonusText}`;
+        }
+      }
+    }
+
     if (this.phase === 'boss_in') {
       this.phase = 'boss_post';
-      this._showLines(chap.post_dialogue || [], () => this._showCharMoment());
+      const postLines = chap.post_dialogue || [];
+      if (this._pendingRelicMsg) {
+        const msg = this._pendingRelicMsg;
+        this._pendingRelicMsg = null;
+        // Prepend relic notification as a narrator line
+        const relicLine = { speaker: 'narrator', emotion: 'solemn', text: msg };
+        this._showLines([relicLine, ...postLines], () => this._showCharMoment());
+      } else {
+        this._showLines(postLines, () => this._showCharMoment());
+      }
     } else {
       this.phase = 'post_battle';
       this._showLines(chap.post_dialogue || [], () => this._nextChapter());
@@ -973,9 +1020,11 @@ const Story = {
       // Keep legacy hero field for backward compat
       hero: { lv: G.hero.lv, exp: G.hero.exp, gold: G.hero.gold || 0 },
       unlockedChars: G.unlockedChars,
-      clearedMaps:   G.clearedMaps || [],
-      npcTalked:     G.npcTalked   || {},
-      inventory:     G.inventory || [],
+      clearedMaps:   G.clearedMaps   || [],
+      npcTalked:     G.npcTalked    || {},
+      inventory:     G.inventory    || [],
+      ownedRelics:   G.ownedRelics  || [],
+      activeRelics:  G.activeRelics || [],
       mapId,
       mapX,
       mapY,
@@ -1225,9 +1274,9 @@ const Story = {
       spkEl.style.display = 'block';
       box.dataset.speaker = speaker.toLowerCase();
 
-      // Get speaker character ID for face image path
-      const speakerLower = speaker.toLowerCase();
-      const faceImgSrc = `images/characters/faces/${speakerLower}_face.png`;
+      // Get speaker character ID for face image path (alias → charId)
+      const speakerCharId = _charIdForSpeaker(speaker);
+      const faceImgSrc = `images/characters/faces/${speakerCharId}_face.png`;
 
       // Face image (left, small) — hide gracefully if file missing
       if (imgEl) {
@@ -1310,7 +1359,7 @@ const Story = {
         charEl.id = `s-scene-char-${charName.toLowerCase()}`;
 
         const img = document.createElement('img');
-        img.src = `images/characters/spirits/${charName.toLowerCase()}_spirit.png`;
+        img.src = `images/characters/spirits/${_charIdForSpeaker(charName)}_spirit.png`;
         img.alt = charName;
 
         const nameEl = document.createElement('div');

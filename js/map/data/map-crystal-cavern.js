@@ -142,22 +142,22 @@ MAP_DEFS.crystal_cavern = {
 
     voiceLines: {
       ambient: [
-        { char:'Ayaka',  color:'#7dd3fc', text:'The crystals hum. Something lives in this dark.' },
-        { char:'Xiao',   color:'#4ade80', text:'Underground. No wind, no sky. Keep focused.' },
-        { char:'Hutao',  color:'#ef4444', text:'Lovely place. Very murder-y.' },
-        { char:'Nilou',  color:'#2dd4bf', text:'The dark here feels… aware.' },
+        { char:'Aya',  color:'#7dd3fc', text:'The crystals hum. Something lives in this dark.' },
+        { char:'Rei',   color:'#4ade80', text:'Underground. No wind, no sky. Keep focused.' },
+        { char:'Tao',  color:'#ef4444', text:'Lovely place. Very murder-y.' },
+        { char:'Lulu',  color:'#2dd4bf', text:'The dark here feels… aware.' },
       ],
       fogRising: [
-        { char:'Xiao',   color:'#4ade80', text:'The crystal-light is dying. Move fast.' },
-        { char:'Ayaka',  color:'#7dd3fc', text:'I can\'t see the walls anymore.' },
-        { char:'Hutao',  color:'#ef4444', text:'Darkness thickens. Something is enjoying this.' },
-        { char:'Nilou',  color:'#2dd4bf', text:'Stay close. Please.' },
+        { char:'Rei',   color:'#4ade80', text:'The crystal-light is dying. Move fast.' },
+        { char:'Aya',  color:'#7dd3fc', text:'I can\'t see the walls anymore.' },
+        { char:'Tao',  color:'#ef4444', text:'Darkness thickens. Something is enjoying this.' },
+        { char:'Lulu',  color:'#2dd4bf', text:'Stay close. Please.' },
       ],
       encounter: [
-        { char:'Xiao',   color:'#4ade80', text:'Out of the dark — brace!' },
-        { char:'Hutao',  color:'#ef4444', text:'They were waiting in the black!' },
-        { char:'Ayaka',  color:'#7dd3fc', text:'Ambush from the shadows!' },
-        { char:'Nilou',  color:'#2dd4bf', text:'I didn\'t see it at all—' },
+        { char:'Rei',   color:'#4ade80', text:'Out of the dark — brace!' },
+        { char:'Tao',  color:'#ef4444', text:'They were waiting in the black!' },
+        { char:'Aya',  color:'#7dd3fc', text:'Ambush from the shadows!' },
+        { char:'Lulu',  color:'#2dd4bf', text:'I didn\'t see it at all—' },
       ],
     },
 };

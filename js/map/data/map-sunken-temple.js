@@ -111,7 +111,7 @@ MAP_DEFS.sunken_temple = (function() {
     return {
         id: 'sunken_temple',
         name: 'The Great Sunken Temple',
-        arcId: 3,
+        arcId: 4,
         width: width,
         height: height,
         playerStart: { x: 30, y: 30 },
@@ -119,49 +119,56 @@ MAP_DEFS.sunken_temple = (function() {
         ambientLight: 'rgba(0,100,255,0.1)',
         enemyLevelRange: [15, 25],
         encounterTemplates: [
-          { weight: 3, enemies: ['skeleton'] },
-          { weight: 2, enemies: ['skeleton', 'skeleton'] },
+          { weight: 3, enemies: ['merman'] },
+          { weight: 2, enemies: ['merman', 'merman'] },
           { weight: 2, enemies: ['ghost', 'zombie'] },
-          { weight: 2, enemies: ['spider', 'spider', 'bat'] },
-          { weight: 2, enemies: ['harpy', 'skeleton'] },
-          { weight: 1, enemies: ['skeleton', 'ghost', 'zombie'] },
-          { weight: 1, enemies: ['werewolf', 'harpy', 'spider'] },
-          { weight: 1, enemies: ['skeleton', 'skeleton', 'ghost', 'zombie'] },
+          { weight: 2, enemies: ['merman', 'ghost'] },
+          { weight: 2, enemies: ['necromancer', 'merman'] },
+          { weight: 1, enemies: ['merman', 'ghost', 'zombie'] },
+          { weight: 1, enemies: ['bone_dragon', 'merman'] },
+          { weight: 1, enemies: ['merman', 'merman', 'ghost', 'zombie'] },
         ],
         tiles: tiles,
         enemies: [
-            { id: 'skeleton', x: 80,  y: 30,  patrol: 'random', range: 10, speed: 1.1 },
-            { id: 'ghost',    x: 130, y: 80,  patrol: 'vertical', range: 15, speed: 1.4 },
-            { id: 'spider',   x: 130, y: 130, patrol: 'horizontal', range: 12, speed: 1.3 },
-            { id: 'zombie',   x: 80,  y: 130, patrol: 'random', range: 10, speed: 1.0 },
-            { id: 'harpy',    x: 30,  y: 130, patrol: 'vertical', range: 15, speed: 1.8 },
-            { id: 'werewolf', x: 80,  y: 80,  patrol: 'random', range: 12, speed: 1.6 }
+            { id: 'merman',     x: 80,  y: 30,  patrol: 'random',     range: 10, speed: 1.2 },
+            { id: 'ghost',      x: 130, y: 80,  patrol: 'vertical',   range: 15, speed: 1.4 },
+            { id: 'merman',     x: 130, y: 130, patrol: 'horizontal', range: 12, speed: 1.1 },
+            { id: 'zombie',     x: 80,  y: 130, patrol: 'random',     range: 10, speed: 1.0 },
+            { id: 'necromancer',x: 30,  y: 130, patrol: 'vertical',   range: 15, speed: 1.0 },
+            { id: 'bone_dragon',x: 80,  y: 80,  patrol: 'random',     range: 12, speed: 1.3 }
         ],
 
         npcs: [
           { id: 'essabella', x: 120, y: 80, dialogueKey: 'sunken_temple' },
         ],
 
+        objective: {
+          type: 'reach',
+          target: { x: 80, y: 80 },
+          label: 'Descend to the Flooded Core',
+          completeMsg: '✦ The water stirs beneath you — something vast rises from the depths.',
+        },
+
         fog: { delay: 8, peak: 80, max: 0.86, vision: 2.5 },
 
         voiceLines: {
           ambient: [
-            { char:'Nilou',  color:'#2dd4bf', text:'Water drips somewhere. This place is ancient.' },
-            { char:'Ayaka',  color:'#7dd3fc', text:'The temple has been sealed for centuries. Something kept it that way.' },
-            { char:'Hutao',  color:'#ef4444', text:'Lots of old death here. I can tell.' },
-            { char:'Xiao',   color:'#4ade80', text:'Careful. The floor is not always what it appears.' },
+            { char:'Lulu',  color:'#2dd4bf', text:'Water drips somewhere. This place is ancient.' },
+            { char:'Aya',  color:'#7dd3fc', text:'The temple has been sealed for centuries. Something kept it that way.' },
+            { char:'Tao',  color:'#ef4444', text:'Lots of old death here. I can tell.' },
+            { char:'Rei',   color:'#4ade80', text:'Careful. The floor is not always what it appears.' },
           ],
           fogRising: [
-            { char:'Nilou',  color:'#2dd4bf', text:'The mist is rising from the water. I can\'t see ahead.' },
-            { char:'Ayaka',  color:'#7dd3fc', text:'The temple fog is thickening. Weapons ready.' },
-            { char:'Hutao',  color:'#ef4444', text:'Ideal ambush conditions. Wonderful.' },
-            { char:'Xiao',   color:'#4ade80', text:'Something moves in the murk. Not us.' },
+            { char:'Lulu',  color:'#2dd4bf', text:'The mist is rising from the water. I can\'t see ahead.' },
+            { char:'Aya',  color:'#7dd3fc', text:'The temple fog is thickening. Weapons ready.' },
+            { char:'Tao',  color:'#ef4444', text:'Ideal ambush conditions. Wonderful.' },
+            { char:'Rei',   color:'#4ade80', text:'Something moves in the murk. Not us.' },
           ],
           encounter: [
-            { char:'Nilou',  color:'#2dd4bf', text:'Out of the water — look out!' },
-            { char:'Xiao',   color:'#4ade80', text:'From the mist — now!' },
-            { char:'Hutao',  color:'#ef4444', text:'Used the fog. I respect it.' },
-            { char:'Ayaka',  color:'#7dd3fc', text:'Ambush from the temple dark!' },
+            { char:'Lulu',  color:'#2dd4bf', text:'Out of the water — look out!' },
+            { char:'Rei',   color:'#4ade80', text:'From the mist — now!' },
+            { char:'Tao',  color:'#ef4444', text:'Used the fog. I respect it.' },
+            { char:'Aya',  color:'#7dd3fc', text:'Ambush from the temple dark!' },
           ],
         },
     };

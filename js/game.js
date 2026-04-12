@@ -70,6 +70,9 @@ const G = {
   enemies: [],
   items:     [],          // item definitions from ITEMS_DATA
   inventory: [],          // [{ itemId, qty }] — party's bag (max 20 stacks)
+  relics:       [],       // relic definitions from RELICS_DATA
+  ownedRelics:  [],       // relic IDs the party has collected
+  activeRelics: [],       // relic IDs currently equipped (max 3)
   selectedChar:  null,
   selectedClass: null,
   selectedChars: [],   // ordered array of up to 4 char IDs
@@ -511,6 +514,7 @@ window.addEventListener('DOMContentLoaded', () => {
   G.classes = window.CLASSES_DATA    || [];
   G.enemies = window.ENEMIES_DATA    || [];
   G.items   = window.ITEMS_DATA      || [];
+  G.relics  = window.RELICS_DATA     || [];
   window._origEnemies = G.enemies.slice();
   initStars();
   UI.show('title-screen');
@@ -885,6 +889,40 @@ function buildParty() {
       isKO: false,
       buff: null, debuff: null, regenTurns: 0, stunned: false,
     });
+  });
+  applyRelicBonuses();
+}
+
+// Apply active relic bonuses as multipliers on top of base party stats
+function applyRelicBonuses() {
+  const active = G.activeRelics || [];
+  if (!active.length) return;
+  const defs = G.relics || [];
+
+  // Aggregate bonuses from all active relics
+  const bonus = { hp: 1, mp: 1, atk: 1, def: 1, spd: 1, mag: 1, healAmp: 1 };
+  active.forEach(id => {
+    const r = defs.find(d => d.id === id);
+    if (!r || !r.bonus) return;
+    if (r.bonus.hp)       bonus.hp       += r.bonus.hp;
+    if (r.bonus.mp)       bonus.mp       += r.bonus.mp;
+    if (r.bonus.atk)      bonus.atk      += r.bonus.atk;
+    if (r.bonus.def)      bonus.def      += r.bonus.def;
+    if (r.bonus.spd)      bonus.spd      += r.bonus.spd;
+    if (r.bonus.mag)      bonus.mag      += r.bonus.mag;
+    if (r.bonus.healAmp)  bonus.healAmp  += r.bonus.healAmp;
+  });
+
+  G.party.forEach(m => {
+    m.maxHp  = Math.floor(m.maxHp  * bonus.hp);
+    m.hp     = Math.min(m.hp, m.maxHp);
+    m.maxMp  = Math.floor(m.maxMp  * bonus.mp);
+    m.mp     = Math.min(m.mp, m.maxMp);
+    m.atk    = Math.floor(m.atk    * bonus.atk);
+    m.def    = Math.floor(m.def    * bonus.def);
+    m.spd    = Math.floor(m.spd    * bonus.spd);
+    m.mag    = Math.floor(m.mag    * bonus.mag);
+    m._healAmpRelic = bonus.healAmp; // used by healing logic
   });
 }
 
@@ -1548,6 +1586,33 @@ function _awardDrops(enemyDef) {
   return awarded;
 }
 
+// Attempt to drop a random common/uncommon relic from enemies
+// elite flag raises the chance
+function _tryRelicDrop(isElite) {
+  const chance = isElite ? 25 : 8;
+  if (Math.random() * 100 > chance) return null;
+  const pool = (G.relics || []).filter(r =>
+    (r.rarity === 'common' || r.rarity === 'uncommon') &&
+    !G.ownedRelics.includes(r.id)
+  );
+  if (!pool.length) return null;
+  const relic = pool[Math.floor(Math.random() * pool.length)];
+  G.ownedRelics.push(relic.id);
+  // Auto-equip if a slot is free
+  if (G.activeRelics.length < 3) G.activeRelics.push(relic.id);
+  return relic;
+}
+
+// Award a specific boss relic by ID (called after arc boss victory)
+function awardBossRelic(relicId) {
+  if (!relicId || G.ownedRelics.includes(relicId)) return null;
+  const relic = (G.relics || []).find(r => r.id === relicId);
+  if (!relic) return null;
+  G.ownedRelics.push(relicId);
+  if (G.activeRelics.length < 3) G.activeRelics.push(relicId);
+  return relic;
+}
+
 function heroRun() {
   if (G.busy) return;
   G.busy = true; UI.btns(false);
@@ -1692,11 +1757,14 @@ function checkBattleEnd() {
   if (allEnemiesDead) {
     let totalExp = 0, totalGold = 0;
     const allDrops = [];
+    let relicDrop = null;
     G.enemyGroup.forEach(e => {
       totalExp  += e.exp;
       totalGold += e.gold;
       const rawDef = G.enemies.find(r => r.id === e.id);
       if (rawDef) _awardDrops(rawDef).forEach(id => allDrops.push(id));
+      // One relic drop attempt per encounter (elite enemies have higher chance)
+      if (!relicDrop) relicDrop = _tryRelicDrop(rawDef?.elite || false);
     });
 
     // Average enemy level for the encounter
@@ -1730,10 +1798,12 @@ function checkBattleEnd() {
     const dropMsg = allDrops.length
       ? allDrops.map(id => { const d = G.items.find(i => i.id === id); return d ? `${d.icon}${d.name}` : id; }).join(', ')
       : null;
+    const relicMsg = relicDrop ? `✦ Relic found: ${relicDrop.icon} ${relicDrop.name}!` : null;
     UI.setLog([
       `Enemies defeated! +${totalExp} EXP +${totalGold} Gold`,
-      dropMsg ? `Drops: ${dropMsg}` : ''
-    ].filter(Boolean), ['hi', 'hi']);
+      dropMsg  ? `Drops: ${dropMsg}` : '',
+      relicMsg || ''
+    ].filter(Boolean), ['hi', 'hi', 'hi']);
     UI.renderPartyStatus();
     UI.updateStats();
 

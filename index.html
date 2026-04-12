@@ -387,8 +387,21 @@
             <button class="camp-btn camp-btn-worldmap" onclick="MapUI.campWorldMap()">🗺 WORLD MAP</button>
             <button class="camp-btn" onclick="MapUI.campChangeParty()">👥 CHANGE PARTY</button>
             <button class="camp-btn" onclick="MapUI.campHeal()">💊 HEAL PARTY</button>
+            <button class="camp-btn" onclick="MapUI.campRelics()">✦ RELICS</button>
             <button class="camp-btn camp-btn-minor" onclick="MapUI.closeCampMenu()">▶ CONTINUE</button>
           </div>
+        </div>
+      </div>
+
+      <!-- Relic management panel -->
+      <div id="relic-panel" style="display:none">
+        <div class="relic-panel-inner">
+          <div class="relic-panel-title">✦ RELICS</div>
+          <div class="relic-panel-subtitle">Equip up to 3 relics. Bonuses apply to all party members.</div>
+          <div class="relic-slots-row" id="relic-slots"></div>
+          <div class="relic-panel-label">OWNED RELICS</div>
+          <div class="relic-list" id="relic-list"></div>
+          <button class="camp-btn camp-btn-minor" onclick="MapUI.closeRelics()" style="margin-top:12px">◀ BACK TO CAMP</button>
         </div>
       </div>
 

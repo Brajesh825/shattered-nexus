@@ -42,7 +42,7 @@ MAP_DEFS.ember_wastes = (function() {
         
         // Progressive Biome logic
         let tile = 15; // Cracked Stone (Start)
-        if (t > 16)      tile = 16; // Ember Pit (Center)
+        if (t > 16)      tile = 13; // Lava Floor (Center — walkable)
         else if (t > 8)  tile = 33; // Ash Field (Mid)
         
         h.carve(x, y, 3.5, tile);
@@ -64,7 +64,7 @@ MAP_DEFS.ember_wastes = (function() {
     return {
         id: 'ember_wastes',
         name: 'The Scorched Spiral',
-        arcId: 4,
+        arcId: 3,
         width: width,
         height: height,
         playerStart: { x: 5, y: 40 },
@@ -72,53 +72,60 @@ MAP_DEFS.ember_wastes = (function() {
         ambientLight: 'rgba(255,80,0,0.12)',
         enemyLevelRange: [10, 15],
         encounterTemplates: [
-          { weight: 3, enemies: ['harpy'] },
+          { weight: 3, enemies: ['imp'] },
           { weight: 3, enemies: ['imp', 'imp'] },
-          { weight: 2, enemies: ['zombie', 'zombie'] },
-          { weight: 2, enemies: ['harpy', 'imp'] },
-          { weight: 2, enemies: ['werewolf'] },
-          { weight: 1, enemies: ['zombie', 'imp', 'imp'] },
-          { weight: 1, enemies: ['harpy', 'harpy', 'ghost'] },
-          { weight: 1, enemies: ['imp', 'imp', 'zombie', 'harpy'] },
+          { weight: 2, enemies: ['fire_elemental'] },
+          { weight: 2, enemies: ['imp', 'fire_elemental'] },
+          { weight: 2, enemies: ['gargoyle'] },
+          { weight: 1, enemies: ['lesser_demon', 'imp', 'imp'] },
+          { weight: 1, enemies: ['gargoyle', 'fire_elemental'] },
+          { weight: 1, enemies: ['golem', 'imp', 'fire_elemental'] },
         ],
         tiles: tiles,
         enemies: [
             // Enemies placed specifically on the spiral arc
-            { id: 'harpy',    x: 20, y: 55, patrol: 'random',     range: 4, speed: 1.8 },
-            { id: 'zombie',   x: 50, y: 5,  patrol: 'horizontal', range: 10,speed: 0.9 },
-            { id: 'werewolf', x: 85, y: 25, patrol: 'vertical',   range: 12,speed: 1.5 },
-            { id: 'ghost',    x: 70, y: 65, patrol: 'horizontal', range: 8, speed: 1.2 },
-            { id: 'imp',      x: 30, y: 30, patrol: 'random',     range: 5, speed: 1.6 },
-            
+            { id: 'imp',            x: 20, y: 55, patrol: 'random',     range: 4, speed: 1.8 },
+            { id: 'fire_elemental', x: 50, y: 5,  patrol: 'horizontal', range: 10,speed: 1.1 },
+            { id: 'gargoyle',       x: 85, y: 25, patrol: 'vertical',   range: 12,speed: 1.4 },
+            { id: 'lesser_demon',   x: 70, y: 65, patrol: 'horizontal', range: 8, speed: 1.2 },
+            { id: 'imp',            x: 30, y: 30, patrol: 'random',     range: 5, speed: 1.6 },
+
             // Central Guardians
-            { id: 'werewolf', x: 50, y: 45, patrol: 'random',     range: 3, speed: 1.8 },
-            { id: 'imp',      x: 55, y: 40, patrol: 'random',     range: 3, speed: 1.7 }
+            { id: 'golem',          x: 50, y: 45, patrol: 'random',     range: 3, speed: 1.0 },
+            { id: 'fire_elemental', x: 55, y: 40, patrol: 'random',     range: 3, speed: 1.3 }
         ],
 
         npcs: [
           { id: 'essabella', x: 80, y: 40, dialogueKey: 'ember_wastes' },
         ],
 
+        objective: {
+          type: 'reach',
+          target: { x: 50, y: 40 },
+          label: 'Find the Heart of the Spiral',
+          completeMsg: '✦ The Dark Phoenix stirs — it has sensed you reach its lair.',
+        },
+
         fog: { delay: 15, peak: 100, max: 0.82, vision: 3.0 },
 
         voiceLines: {
           ambient: [
-            { char:'Ayaka',  color:'#7dd3fc', text:'The ash makes it hard to breathe.' },
-            { char:'Hutao',  color:'#ef4444', text:'Smells like the inside of a cremation urn. Lovely.' },
-            { char:'Nilou',  color:'#2dd4bf', text:'The heat here is suffocating.' },
-            { char:'Xiao',   color:'#4ade80', text:'The wastes distort sound. Something could be anywhere.' },
+            { char:'Aya',  color:'#7dd3fc', text:'The ash makes it hard to breathe.' },
+            { char:'Tao',  color:'#ef4444', text:'Smells like the inside of a cremation urn. Lovely.' },
+            { char:'Lulu',  color:'#2dd4bf', text:'The heat here is suffocating.' },
+            { char:'Rei',   color:'#4ade80', text:'The wastes distort sound. Something could be anywhere.' },
           ],
           fogRising: [
-            { char:'Hutao',  color:'#ef4444', text:'Ash cloud rising. Classic bad omen.' },
-            { char:'Xiao',   color:'#4ade80', text:'Smoke and ash — perfect cover for ambush.' },
-            { char:'Ayaka',  color:'#7dd3fc', text:'I can\'t see the path. Stay close.' },
-            { char:'Nilou',  color:'#2dd4bf', text:'The smoke is getting into everything.' },
+            { char:'Tao',  color:'#ef4444', text:'Ash cloud rising. Classic bad omen.' },
+            { char:'Rei',   color:'#4ade80', text:'Smoke and ash — perfect cover for ambush.' },
+            { char:'Aya',  color:'#7dd3fc', text:'I can\'t see the path. Stay close.' },
+            { char:'Lulu',  color:'#2dd4bf', text:'The smoke is getting into everything.' },
           ],
           encounter: [
-            { char:'Hutao',  color:'#ef4444', text:'Out of the smoke — of course!' },
-            { char:'Xiao',   color:'#4ade80', text:'They used the ash as cover. Smart.' },
-            { char:'Ayaka',  color:'#7dd3fc', text:'Incoming — from the smoke!' },
-            { char:'Nilou',  color:'#2dd4bf', text:'I couldn\'t see them at all!' },
+            { char:'Tao',  color:'#ef4444', text:'Out of the smoke — of course!' },
+            { char:'Rei',   color:'#4ade80', text:'They used the ash as cover. Smart.' },
+            { char:'Aya',  color:'#7dd3fc', text:'Incoming — from the smoke!' },
+            { char:'Lulu',  color:'#2dd4bf', text:'I couldn\'t see them at all!' },
           ],
         },
     };

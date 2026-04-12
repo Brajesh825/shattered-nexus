@@ -85,7 +85,7 @@ MAP_DEFS.shadow_reach = (function() {
     return {
         id: 'shadow_reach',
         name: 'Shadow Reach',
-        arcId: 4,
+        arcId: 5,
         width: width,
         height: height,
         playerStart: { x: 50, y: 15 },
@@ -136,26 +136,33 @@ MAP_DEFS.shadow_reach = (function() {
           { id: 'essabella', x: 50, y: 60, dialogueKey: 'shadow_reach' },
         ],
 
+        objective: {
+          type: 'reach',
+          target: { x: 50, y: 90 },
+          label: 'Find the Shadow Gate',
+          completeMsg: '✦ You stand at the gate — the Fallen Angel stirs beyond it.',
+        },
+
         fog: { delay: 5, peak: 60, max: 0.92, vision: 2.2 },
 
         voiceLines: {
           ambient: [
-            { char:'Xiao',   color:'#4ade80', text:'Even I cannot sense the edges of this dark.' },
-            { char:'Hutao',  color:'#ef4444', text:'The shadow here thinks. I can feel it.' },
-            { char:'Ayaka',  color:'#7dd3fc', text:'Valdris\'s power saturates this place.' },
-            { char:'Nilou',  color:'#2dd4bf', text:'Something watches from the black. Don\'t stop moving.' },
+            { char:'Rei',   color:'#4ade80', text:'Even I cannot sense the edges of this dark.' },
+            { char:'Tao',  color:'#ef4444', text:'The shadow here thinks. I can feel it.' },
+            { char:'Aya',  color:'#7dd3fc', text:'Valdris\'s power saturates this place.' },
+            { char:'Lulu',  color:'#2dd4bf', text:'Something watches from the black. Don\'t stop moving.' },
           ],
           fogRising: [
-            { char:'Xiao',   color:'#4ade80', text:'The shadow closes in. Do not separate.' },
-            { char:'Ayaka',  color:'#7dd3fc', text:'I can barely see my own hands.' },
-            { char:'Hutao',  color:'#ef4444', text:'This is a very committed darkness.' },
-            { char:'Nilou',  color:'#2dd4bf', text:'It\'s not just dark — it\'s alive.' },
+            { char:'Rei',   color:'#4ade80', text:'The shadow closes in. Do not separate.' },
+            { char:'Aya',  color:'#7dd3fc', text:'I can barely see my own hands.' },
+            { char:'Tao',  color:'#ef4444', text:'This is a very committed darkness.' },
+            { char:'Lulu',  color:'#2dd4bf', text:'It\'s not just dark — it\'s alive.' },
           ],
           encounter: [
-            { char:'Xiao',   color:'#4ade80', text:'The shadow moves — they\'re here!' },
-            { char:'Hutao',  color:'#ef4444', text:'Came from the dark itself!' },
-            { char:'Ayaka',  color:'#7dd3fc', text:'They were part of the shadow—' },
-            { char:'Nilou',  color:'#2dd4bf', text:'We couldn\'t see them at all!' },
+            { char:'Rei',   color:'#4ade80', text:'The shadow moves — they\'re here!' },
+            { char:'Tao',  color:'#ef4444', text:'Came from the dark itself!' },
+            { char:'Aya',  color:'#7dd3fc', text:'They were part of the shadow—' },
+            { char:'Lulu',  color:'#2dd4bf', text:'We couldn\'t see them at all!' },
           ],
         },
     };

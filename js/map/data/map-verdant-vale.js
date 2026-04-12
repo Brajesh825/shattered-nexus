@@ -133,22 +133,22 @@ MAP_DEFS.verdant_vale = {
 
     voiceLines: {
       ambient: [
-        { char:'Ayaka',  color:'#7dd3fc', text:'The vale feels larger at dusk.' },
-        { char:'Hutao',  color:'#ef4444', text:'Something rustles. Maybe just the wind.' },
-        { char:'Nilou',  color:'#2dd4bf', text:'I can hear the river somewhere ahead.' },
-        { char:'Xiao',   color:'#4ade80', text:'Stay alert. This place is not as peaceful as it looks.' },
+        { char:'Aya',  color:'#7dd3fc', text:'The vale feels larger at dusk.' },
+        { char:'Tao',  color:'#ef4444', text:'Something rustles. Maybe just the wind.' },
+        { char:'Lulu',  color:'#2dd4bf', text:'I can hear the river somewhere ahead.' },
+        { char:'Rei',   color:'#4ade80', text:'Stay alert. This place is not as peaceful as it looks.' },
       ],
       fogRising: [
-        { char:'Xiao',   color:'#4ade80', text:'A mist is rising. Keep moving.' },
-        { char:'Hutao',  color:'#ef4444', text:'Oh good, ominous fog. My favorite.' },
-        { char:'Ayaka',  color:'#7dd3fc', text:'The light is fading. Stay together.' },
-        { char:'Nilou',  color:'#2dd4bf', text:'I can barely see past the treeline.' },
+        { char:'Rei',   color:'#4ade80', text:'A mist is rising. Keep moving.' },
+        { char:'Tao',  color:'#ef4444', text:'Oh good, ominous fog. My favorite.' },
+        { char:'Aya',  color:'#7dd3fc', text:'The light is fading. Stay together.' },
+        { char:'Lulu',  color:'#2dd4bf', text:'I can barely see past the treeline.' },
       ],
       encounter: [
-        { char:'Xiao',   color:'#4ade80', text:'Enemy — don\'t let them surround us!' },
-        { char:'Hutao',  color:'#ef4444', text:'They came out of nowhere!' },
-        { char:'Ayaka',  color:'#7dd3fc', text:'Ambush — form up!' },
-        { char:'Nilou',  color:'#2dd4bf', text:'The fog — they were hiding in it!' },
+        { char:'Rei',   color:'#4ade80', text:'Enemy — don\'t let them surround us!' },
+        { char:'Tao',  color:'#ef4444', text:'They came out of nowhere!' },
+        { char:'Aya',  color:'#7dd3fc', text:'Ambush — form up!' },
+        { char:'Lulu',  color:'#2dd4bf', text:'The fog — they were hiding in it!' },
       ],
     },
 };
