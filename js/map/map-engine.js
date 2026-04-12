@@ -9,13 +9,25 @@
  */
 
 const MapEngine = (() => {
-  const TILE = 40;
+  const TILE = 64;
 
   let _canvas = null, _ctx = null;
   let _map    = null;
   let _rafId  = null, _lastTs = 0, _running = false;
-  let _wFrame = 0,    _wTimer = 0;
   let _time   = 0;
+  let _campUnlocked = false, _atCamp = false;
+  let _fogTime = 0;
+  let _fogCanvas = null, _fogCtx = null;
+  let _fogMilestone = 0; // 0=none, 1=30%, 2=60%, 3=90%
+  let _ambientTimer = 0, _ambientInterval = 60; // seconds between ambient lines
+  // Speech bubble queue: [{char, color, text, life, maxLife}]
+  const _bubbles = [];
+
+  // Objective state for current map session
+  let _objState = {
+    done: false,          // objective complete this session
+    collected: [],        // for 'collect' type — which artifact indices grabbed
+  };
 
   /* ── Camera ─────────────────────────────────────────── */
   const cam = { x: 0, y: 0 };
@@ -46,197 +58,21 @@ const MapEngine = (() => {
   }
 
   /* ── Tile pixel-art painter ─────────────────────────── */
-  function _paintTile(ctx, def, sx, sy, tw, th, wF) {
+  // Each tile defines its own render(ctx, sx, sy, tw, th, t) in TILE_DEFS.
+  // t = elapsed seconds (for animations). Falls back to _defaultRender.
+  function _defaultRender(ctx, def, sx, sy, tw, th) {
+    ctx.fillStyle = def.color; ctx.fillRect(sx, sy, tw, th);
+    ctx.fillStyle = def.hi;
+    ctx.fillRect(sx, sy, tw, 2); ctx.fillRect(sx, sy, 2, th);
+    ctx.fillStyle = def.shadow;
+    ctx.fillRect(sx, sy + th - 2, tw, 2); ctx.fillRect(sx + tw - 2, sy, 2, th);
+  }
+
+  function _paintTile(ctx, def, sx, sy, tw, th, t) {
     if (!def) return;
-
-    ctx.fillStyle = def.color;
-    ctx.fillRect(sx, sy, tw, th);
-
-    if (def.name === 'grass') {
-      ctx.fillStyle = def.hi;
-      ctx.fillRect(sx, sy, tw, 2);
-      ctx.fillRect(sx, sy, 2, th);
-      // Blade texture
-      ctx.fillStyle = 'rgba(40,100,20,0.3)';
-      const seed = (sx / tw) | 0;
-      for (let i = 0; i < 4; i++) {
-        const bx = sx + ((seed * 7 + i * 13) % tw);
-        ctx.fillRect(bx, sy + th - 8, 2, 8);
-        ctx.fillRect(bx + 1, sy + th - 12, 1, 6);
-      }
-      ctx.fillStyle = def.shadow;
-      ctx.fillRect(sx, sy + th - 2, tw, 2);
-      ctx.fillRect(sx + tw - 2, sy, 2, th);
-
-    } else if (def.name === 'forest') {
-      ctx.fillStyle = '#061404';
-      ctx.fillRect(sx, sy, tw, th);
-      // Trunk
-      ctx.fillStyle = '#2a1606';
-      ctx.fillRect(sx + tw / 2 - 3, sy + th - 14, 6, 14);
-      // Layered canopy blobs
-      const blobs = [
-        { bx: tw / 2 - 8, by: 0,  r: 9,  c: '#0a2006' },
-        { bx: tw / 2 + 1, by: -2, r: 8,  c: '#0d2808' },
-        { bx: tw / 2 - 4, by: 6,  r: 10, c: '#122e0a' },
-        { bx: tw / 2,     by: 2,  r: 7,  c: '#183808' },
-      ];
-      blobs.forEach(b => {
-        ctx.fillStyle = b.c;
-        ctx.beginPath();
-        ctx.arc(sx + b.bx + 8, sy + b.by + 8, b.r, 0, Math.PI * 2);
-        ctx.fill();
-      });
-      // Canopy top-light
-      ctx.fillStyle = 'rgba(60,120,20,0.15)';
-      ctx.beginPath();
-      ctx.arc(sx + tw / 2 - 2, sy + 6, 6, 0, Math.PI * 2);
-      ctx.fill();
-
-    } else if (def.name === 'mountain') {
-      ctx.fillStyle = '#383048';
-      ctx.fillRect(sx, sy, tw, th);
-      // Main face
-      ctx.fillStyle = def.hi;
-      ctx.beginPath();
-      ctx.moveTo(sx + tw / 2, sy + 3);
-      ctx.lineTo(sx + tw - 3, sy + th - 3);
-      ctx.lineTo(sx + 3, sy + th - 3);
-      ctx.closePath();
-      ctx.fill();
-      // Snow cap
-      ctx.fillStyle = '#e8e0f8';
-      ctx.beginPath();
-      ctx.moveTo(sx + tw / 2, sy + 3);
-      ctx.lineTo(sx + tw / 2 + 8, sy + 15);
-      ctx.lineTo(sx + tw / 2 - 8, sy + 15);
-      ctx.closePath();
-      ctx.fill();
-      // Shadow face
-      ctx.fillStyle = 'rgba(0,0,0,0.25)';
-      ctx.beginPath();
-      ctx.moveTo(sx + tw / 2, sy + 3);
-      ctx.lineTo(sx + tw - 3, sy + th - 3);
-      ctx.lineTo(sx + tw / 2, sy + th - 3);
-      ctx.closePath();
-      ctx.fill();
-
-    } else if (def.name === 'water') {
-      // Animated — always painted directly, never cached
-      ctx.fillStyle = '#081828';
-      ctx.fillRect(sx, sy, tw, th);
-      const shimmer = (Math.sin(wF * 0.5 + sx * 0.03) + 1) * 0.5;
-      const r = (8  + shimmer * 6)  | 0;
-      const g = (40 + shimmer * 30) | 0;
-      ctx.fillStyle = `rgba(${r},${g},160,0.35)`;
-      ctx.fillRect(sx, sy, tw, th);
-      for (let i = 0; i < 3; i++) {
-        const wy = sy + th * 0.2 + i * (th * 0.25) + Math.sin(wF * 0.3 + sx * 0.08 + i) * 3;
-        ctx.fillStyle = `rgba(60,120,220,${0.15 + shimmer * 0.2})`;
-        ctx.fillRect(sx + 3, wy, tw - 6, 2);
-      }
-      // Specular glint
-      ctx.fillStyle = `rgba(180,220,255,${0.3 * shimmer})`;
-      ctx.beginPath();
-      ctx.arc(sx + tw * 0.3, sy + th * 0.3, 2, 0, Math.PI * 2);
-      ctx.fill();
-
-    } else if (def.name === 'bridge') {
-      ctx.fillStyle = def.shadow;
-      for (let bx = sx + 4; bx < sx + tw - 4; bx += 9) {
-        ctx.fillRect(bx, sy + 2, 7, th - 4);
-      }
-      ctx.fillStyle = def.hi;
-      ctx.fillRect(sx, sy + 3, tw, 5);
-      ctx.fillRect(sx, sy + th - 8, tw, 5);
-      // Railing studs
-      ctx.fillStyle = '#9a7a48';
-      for (let bx = sx + 4; bx < sx + tw; bx += 8) {
-        ctx.fillRect(bx, sy + 1, 3, 4);
-        ctx.fillRect(bx, sy + th - 5, 3, 4);
-      }
-
-    } else if (def.name === 'cave-floor' || def.name === 'dungeon') {
-      ctx.strokeStyle = def.shadow;
-      ctx.lineWidth = 1;
-      ctx.strokeRect(sx + 2, sy + 2, tw - 4, th - 4);
-      ctx.strokeRect(sx + 5, sy + 5, tw - 10, th - 10);
-      if (def.name === 'dungeon') {
-        ctx.fillStyle = 'rgba(160,80,220,0.2)';
-        [[6, 8], [20, 6], [tw - 8, th - 7]].forEach(([fx, fy]) => {
-          ctx.beginPath(); ctx.arc(sx + fx, sy + fy, 1.5, 0, Math.PI * 2); ctx.fill();
-        });
-      }
-
-    } else if (def.name === 'cave-wall') {
-      ctx.fillStyle = '#0c0818';
-      ctx.fillRect(sx, sy, tw, th);
-      ctx.fillStyle = def.hi;
-      ctx.fillRect(sx + 4, sy + 4, 10, 10);
-      ctx.fillRect(sx + tw - 14, sy + th - 14, 10, 10);
-      ctx.strokeStyle = 'rgba(0,0,0,0.4)'; ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(sx + 4, sy + 4); ctx.lineTo(sx + tw - 4, sy + th - 4);
-      ctx.stroke();
-
-    } else if (def.detail === 'cobble') {
-      const cw2 = tw / 4, ch2 = th / 4;
-      for (let row = 0; row < 4; row++) {
-        for (let col = 0; col < 4; col++) {
-          ctx.fillStyle = (row + col) % 2 === 0 ? def.shadow : def.hi;
-          ctx.fillRect(sx + col * cw2 + 1, sy + row * ch2 + 1, cw2 - 2, ch2 - 2);
-        }
-      }
-      // Mortar lines
-      ctx.fillStyle = '#281006';
-      for (let i = 1; i < 4; i++) {
-        ctx.fillRect(sx + i * cw2, sy, 1, th);
-        ctx.fillRect(sx, sy + i * ch2, tw, 1);
-      }
-
-    } else if (def.detail === 'flower') {
-      ctx.fillStyle = def.hi;
-      ctx.fillRect(sx, sy, tw, th);
-      ctx.fillStyle = 'rgba(40,90,20,0.15)';
-      ctx.fillRect(sx, sy, tw, 2); ctx.fillRect(sx, sy, 2, th);
-      const petals = ['#ff7070', '#ff90ff', '#ffff80', '#70c0ff'];
-      const fx = sx + 8 + ((sx / TILE | 0) * 7) % (tw - 16);
-      const fy = sy + 8 + ((sy / TILE | 0) * 5) % (th - 16);
-      const pc = petals[((sx / TILE | 0) + (sy / TILE | 0)) % 4];
-      for (let a = 0; a < 4; a++) {
-        ctx.fillStyle = pc;
-        ctx.beginPath();
-        ctx.arc(fx + Math.cos(a * Math.PI / 2) * 4, fy + Math.sin(a * Math.PI / 2) * 4, 2.5, 0, Math.PI * 2);
-        ctx.fill();
-      }
-      ctx.fillStyle = '#ffffa0';
-      ctx.beginPath(); ctx.arc(fx, fy, 2, 0, Math.PI * 2); ctx.fill();
-
-    } else if (def.name === 'path') {
-      ctx.fillStyle = def.hi;  ctx.fillRect(sx, sy, tw, 2);
-      ctx.fillStyle = def.shadow; ctx.fillRect(sx, sy + th - 2, tw, 2);
-      const pebbles = [[6,8,2],[18,14,1.5],[28,6,2],[10,22,1.5],[24,20,2]];
-      pebbles.forEach(([px2, py2, r]) => {
-        ctx.fillStyle = 'rgba(90,66,30,0.5)';
-        ctx.beginPath(); ctx.arc(sx + px2, sy + py2, r + 0.5, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = def.shadow;
-        ctx.beginPath(); ctx.arc(sx + px2, sy + py2, r, 0, Math.PI * 2); ctx.fill();
-      });
-
-    } else if (def.name === 'sand') {
-      ctx.fillStyle = def.hi;  ctx.fillRect(sx, sy, tw, 2); ctx.fillRect(sx, sy, 2, th);
-      ctx.fillStyle = 'rgba(180,160,80,0.15)';
-      for (let i = 0; i < 8; i++) {
-        ctx.fillRect(sx + ((i * 17) % tw), sy + ((i * 11) % th), 3, 1);
-      }
-
-    } else {
-      // Generic fallback: bevel
-      ctx.fillStyle = def.hi;
-      ctx.fillRect(sx, sy, tw, 2); ctx.fillRect(sx, sy, 2, th);
-      ctx.fillStyle = def.shadow;
-      ctx.fillRect(sx, sy + th - 2, tw, 2); ctx.fillRect(sx + tw - 2, sy, 2, th);
-    }
+    const fn = typeof TILE_RENDERS !== 'undefined' && TILE_RENDERS[def.name];
+    if (fn) fn(ctx, def, sx, sy, tw, th, t);
+    else _defaultRender(ctx, def, sx, sy, tw, th);
   }
 
   /* ── Tile rendering ─────────────────────────────────── */
@@ -252,14 +88,183 @@ const MapEngine = (() => {
         const def    = TILE_DEFS[tileId] || TILE_DEFS[0];
         const sx     = c * TILE - cam.x;
         const sy     = r * TILE - cam.y;
-        if (tileId === 3) {
-          // Water is animated — paint directly each frame
-          _paintTile(_ctx, def, sx, sy, TILE, TILE, _wFrame);
+        if (def.anim) {
+          // Animated tiles painted directly each frame with current time
+          _paintTile(_ctx, def, sx, sy, TILE, TILE, _time);
         } else {
           _ctx.drawImage(_getTileCanvas(tileId), sx, sy);
         }
       }
     }
+  }
+
+  /* ── Objective system ───────────────────────────────── */
+
+  function _objCfg() { return _map && _map.objective; }
+
+  // Returns true if this map's objective is already marked cleared in G
+  function _objAlreadyCleared() {
+    if (!G || !_map) return false;
+    if (!Array.isArray(G.clearedMaps)) G.clearedMaps = [];
+    return G.clearedMaps.includes(_map.id);
+  }
+
+  function _markObjectiveCleared() {
+    if (!_map || _objState.done) return;
+    _objState.done = true;
+    if (G && Array.isArray(G.clearedMaps) && !G.clearedMaps.includes(_map.id)) {
+      G.clearedMaps.push(_map.id);
+    }
+    // Auto-save the cleared state
+    if (typeof Story !== 'undefined' && Story.active) Story._doSave();
+  }
+
+  function _checkObjective() {
+    if (!_map || !_map.objective || _objState.done) return;
+    const obj = _map.objective;
+
+    if (obj.type === 'kill_all') {
+      if (MapEntities.allCleared()) _completeObjective();
+
+    } else if (obj.type === 'reach') {
+      if (MapPlayer.tx === obj.target.x && MapPlayer.ty === obj.target.y) {
+        _completeObjective();
+      }
+
+    } else if (obj.type === 'collect') {
+      // Check each artifact tile
+      (obj.artifacts || []).forEach((art, i) => {
+        if (_objState.collected.includes(i)) return;
+        if (MapPlayer.tx === art.x && MapPlayer.ty === art.y) {
+          _objState.collected.push(i);
+          MapUI.showMsg(art.pickupMsg || `✦ Item collected! (${_objState.collected.length}/${obj.artifacts.length})`, 1800);
+        }
+      });
+      if (_objState.collected.length >= (obj.artifacts || []).length) _completeObjective();
+
+    } else if (obj.type === 'survive') {
+      if (_time >= obj.duration) _completeObjective();
+
+    } else if (obj.type === 'kill_all') {
+      if (MapEntities.allCleared()) _completeObjective();
+    }
+  }
+
+  function _completeObjective() {
+    _markObjectiveCleared();
+    const obj = _objCfg();
+    const msg = (obj && obj.completeMsg) ? obj.completeMsg : '✦ Objective complete!';
+    stop(); // pause engine while message shows
+    MapUI.showMsg(msg, 2200, () => {
+      if (typeof Story !== 'undefined' && Story.active && G.mode === 'story_explore') {
+        Story.onExploreComplete();
+      } else {
+        resume(); // free explore — just resume
+      }
+    });
+  }
+
+  // Render objective markers on the map canvas
+  function _renderObjectiveMarkers() {
+    if (!_map || !_map.objective) return;
+    const obj = _map.objective;
+    const pulse = 0.5 + 0.5 * Math.sin(_time * 3.0);
+
+    _ctx.save();
+    if (obj.type === 'reach' && obj.target) {
+      const sx = obj.target.x * TILE - cam.x;
+      const sy = obj.target.y * TILE - cam.y;
+      // Gold glow ring
+      _ctx.globalAlpha = 0.3 + 0.2 * pulse;
+      _ctx.fillStyle = '#fbbf24';
+      _ctx.beginPath();
+      _ctx.arc(sx + TILE / 2, sy + TILE / 2, TILE * 0.48, 0, Math.PI * 2);
+      _ctx.fill();
+      _ctx.globalAlpha = 1;
+      _ctx.font = `${Math.round(TILE * 0.48)}px serif`;
+      _ctx.textAlign = 'center'; _ctx.textBaseline = 'middle';
+      _ctx.fillText('🎯', sx + TILE / 2, sy + TILE / 2 + 2);
+
+    } else if (obj.type === 'collect') {
+      (obj.artifacts || []).forEach((art, i) => {
+        if (_objState.collected.includes(i)) return;
+        const sx = art.x * TILE - cam.x;
+        const sy = art.y * TILE - cam.y;
+        _ctx.globalAlpha = 0.35 + 0.2 * pulse;
+        _ctx.fillStyle = '#a78bfa';
+        _ctx.beginPath();
+        _ctx.arc(sx + TILE / 2, sy + TILE / 2, TILE * 0.4, 0, Math.PI * 2);
+        _ctx.fill();
+        _ctx.globalAlpha = 1;
+        _ctx.font = `${Math.round(TILE * 0.44)}px serif`;
+        _ctx.textAlign = 'center'; _ctx.textBaseline = 'middle';
+        _ctx.fillText(art.icon || '💎', sx + TILE / 2, sy + TILE / 2 + 2);
+      });
+
+    } else if (obj.type === 'kill_all') {
+      // No marker needed — enemies are the targets
+    }
+    _ctx.restore();
+  }
+
+  // Render objective HUD strip at bottom of canvas
+  function _renderObjectiveHUD() {
+    if (!_map || !_map.objective) return;
+    const obj = _map.objective;
+    const w   = _canvas.width;
+    const bh  = 22, by = _canvas.height - bh - 4, bx = 8;
+    const bw  = Math.min(360, w - 16);
+
+    let statusText = '';
+    if (_objState.done || _objAlreadyCleared()) {
+      statusText = '✔ ' + (obj.label || 'Objective complete');
+    } else if (obj.type === 'kill_all') {
+      const remaining = (typeof MapEntities !== 'undefined') ? MapEntities.remaining() : 0;
+      statusText = `☠ ${obj.label || 'Defeat all enemies'} — ${remaining} remaining`;
+    } else if (obj.type === 'reach') {
+      statusText = `🎯 ${obj.label || 'Reach the destination'}`;
+    } else if (obj.type === 'collect') {
+      statusText = `💎 ${obj.label || 'Collect artifacts'} — ${_objState.collected.length}/${(obj.artifacts||[]).length}`;
+    } else if (obj.type === 'survive') {
+      const left = Math.max(0, Math.ceil(obj.duration - _time));
+      statusText = `⏱ ${obj.label || 'Survive'} — ${left}s remaining`;
+    }
+
+    _ctx.save();
+    _ctx.globalAlpha = 0.82;
+    _ctx.fillStyle = '#06030f';
+    _ctx.beginPath();
+    if (_ctx.roundRect) _ctx.roundRect(bx, by, bw, bh, 4);
+    else _ctx.rect(bx, by, bw, bh);
+    _ctx.fill();
+    _ctx.globalAlpha = 1;
+    _ctx.font = '10px monospace';
+    _ctx.fillStyle = (_objState.done || _objAlreadyCleared()) ? '#4ade80' : '#d8c860';
+    _ctx.textAlign = 'left';
+    _ctx.textBaseline = 'middle';
+    _ctx.fillText(statusText, bx + 8, by + bh / 2);
+    _ctx.restore();
+  }
+
+  /* ── Camp marker ────────────────────────────────────── */
+  function _renderCampMarker() {
+    if (!_map || !_map.playerStart) return;
+    const sx = _map.playerStart.x * TILE - cam.x;
+    const sy = _map.playerStart.y * TILE - cam.y;
+    // Pulsing glow
+    const pulse = 0.5 + 0.5 * Math.sin(_time * 2.5);
+    _ctx.save();
+    _ctx.globalAlpha = 0.25 + 0.15 * pulse;
+    _ctx.fillStyle = '#f0a020';
+    _ctx.beginPath();
+    _ctx.arc(sx + TILE / 2, sy + TILE / 2, TILE * 0.42, 0, Math.PI * 2);
+    _ctx.fill();
+    _ctx.globalAlpha = 1;
+    _ctx.font = `${Math.round(TILE * 0.45)}px serif`;
+    _ctx.textAlign = 'center';
+    _ctx.textBaseline = 'middle';
+    _ctx.fillText('⛺', sx + TILE / 2, sy + TILE / 2 + 2);
+    _ctx.restore();
   }
 
   /* ── Atmosphere (vignette + ambient tint) ────────────── */
@@ -323,6 +328,159 @@ const MapEngine = (() => {
     );
   }
 
+  /* ── Fog of Darkness ────────────────────────────────── */
+  const FOG_COLOR = '4,2,12';
+
+  function _fogCfg() {
+    return (_map && _map.fog) || { delay: 20, peak: 180, max: 0.80, vision: 3.8 };
+  }
+
+  // Returns 0..1 progress through fog ramp
+  function _fogProgress() {
+    const cfg = _fogCfg();
+    if (_fogTime <= cfg.delay) return 0;
+    return Math.min((_fogTime - cfg.delay) / (cfg.peak - cfg.delay), 1);
+  }
+
+  function _fogAlpha() { return _fogProgress() * _fogCfg().max; }
+
+  // Pixel radius of clear vision circle around player
+  function _visionRadius() {
+    const cfg = _fogCfg();
+    const t   = _fogProgress();
+    // Shrinks from vision+1.5 down to vision-0.5 as fog maxes
+    return TILE * (cfg.vision + 1.5 - t * 2.0);
+  }
+
+  // Is the given tile position inside the player vision circle?
+  function _inVision(tx, ty) {
+    const dx = (tx - MapPlayer.tx) * TILE;
+    const dy = (ty - MapPlayer.ty) * TILE;
+    return Math.sqrt(dx * dx + dy * dy) <= _visionRadius();
+  }
+
+  function _ensureFogCanvas() {
+    const w = _canvas.width, h = _canvas.height;
+    if (!_fogCanvas || _fogCanvas.width !== w || _fogCanvas.height !== h) {
+      _fogCanvas = document.createElement('canvas');
+      _fogCanvas.width = w; _fogCanvas.height = h;
+      _fogCtx = _fogCanvas.getContext('2d');
+    }
+  }
+
+  function _renderFog() {
+    const alpha = _fogAlpha();
+    if (alpha < 0.01) return;
+
+    _ensureFogCanvas();
+    const w = _canvas.width, h = _canvas.height;
+    const fc = _fogCtx;
+    const px = MapPlayer.px - cam.x + TILE / 2;
+    const py = MapPlayer.py - cam.y + TILE / 2;
+    const visionR = _visionRadius();
+
+    fc.clearRect(0, 0, w, h);
+    fc.fillStyle = `rgba(${FOG_COLOR},${alpha})`;
+    fc.fillRect(0, 0, w, h);
+
+    fc.globalCompositeOperation = 'destination-out';
+    const grad = fc.createRadialGradient(px, py, 0, px, py, visionR);
+    grad.addColorStop(0,    'rgba(0,0,0,1)');
+    grad.addColorStop(0.5,  'rgba(0,0,0,0.95)');
+    grad.addColorStop(0.80, 'rgba(0,0,0,0.35)');
+    grad.addColorStop(1,    'rgba(0,0,0,0)');
+    fc.fillStyle = grad;
+    fc.fillRect(0, 0, w, h);
+    fc.globalCompositeOperation = 'source-over';
+
+    _ctx.drawImage(_fogCanvas, 0, 0);
+  }
+
+  /* ── Speech bubbles (canvas) ─────────────────────────── */
+  const BUBBLE_LIFE = 3.2; // seconds each bubble lives
+
+  function _sayLine(line) {
+    if (!line) return;
+    // Dismiss old bubble from same char if still showing
+    const existing = _bubbles.findIndex(b => b.char === line.char);
+    if (existing >= 0) _bubbles.splice(existing, 1);
+    _bubbles.push({ char: line.char, color: line.color, text: line.text,
+                    life: BUBBLE_LIFE, maxLife: BUBBLE_LIFE });
+  }
+
+  function _randomLine(arr) {
+    if (!arr || !arr.length) return null;
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
+  function _renderBubbles() {
+    if (!_bubbles.length) return;
+    const w = _canvas.width;
+    let y = 52; // start below the header
+
+    _bubbles.forEach((b, idx) => {
+      const fadeIn  = Math.min(b.maxLife - b.life, 0.4) / 0.4;
+      const fadeOut = Math.min(b.life, 0.5) / 0.5;
+      const alpha   = fadeIn * fadeOut;
+
+      const bx = 16, bw = Math.min(420, w - 32);
+      const by = y;
+      const bh = 38;
+
+      // Background pill
+      _ctx.save();
+      _ctx.globalAlpha = alpha * 0.88;
+      _ctx.fillStyle = '#080412';
+      _ctx.beginPath();
+      if (_ctx.roundRect) _ctx.roundRect(bx, by, bw, bh, 6);
+      else _ctx.rect(bx, by, bw, bh);
+      _ctx.fill();
+      _ctx.strokeStyle = b.color;
+      _ctx.lineWidth   = 1;
+      _ctx.stroke();
+      _ctx.globalAlpha = alpha;
+
+      // Character name
+      _ctx.font = 'bold 9px monospace';
+      _ctx.fillStyle = b.color;
+      _ctx.fillText(b.char.toUpperCase(), bx + 10, by + 14);
+
+      // Text
+      _ctx.font = 'italic 10px serif';
+      _ctx.fillStyle = '#e8e0f8';
+      _ctx.fillText(`"${b.text}"`, bx + 10, by + 28);
+
+      _ctx.restore();
+      y += bh + 6;
+    });
+  }
+
+  /* ── Fog milestone + ambient dialogue ───────────────── */
+  function _updateFogDialogue(dt) {
+    if (!_map || !_map.voiceLines) return;
+    const vl = _map.voiceLines;
+    const p  = _fogProgress();
+
+    // Milestone triggers at 30 / 60 / 90 %
+    if (_fogMilestone < 1 && p >= 0.30) {
+      _fogMilestone = 1;
+      _sayLine(_randomLine(vl.fogRising));
+    } else if (_fogMilestone < 2 && p >= 0.60) {
+      _fogMilestone = 2;
+      _sayLine(_randomLine(vl.fogRising));
+    } else if (_fogMilestone < 3 && p >= 0.90) {
+      _fogMilestone = 3;
+      _sayLine(_randomLine(vl.fogRising));
+    }
+
+    // Ambient idle lines
+    _ambientTimer -= dt;
+    if (_ambientTimer <= 0) {
+      _ambientTimer = 45 + Math.random() * 45;
+      if (vl.ambient && vl.ambient.length) _sayLine(_randomLine(vl.ambient));
+    }
+  }
+
   /* ── Party HUD — delegated to MapUI ─────────────────── */
   // MapUI.update(dt) handles party HUD rebuilds to avoid
   // duplicating DOM logic here.
@@ -333,29 +491,55 @@ const MapEngine = (() => {
     _ctx.fillStyle = _map.bgColor || '#080606';
     _ctx.fillRect(0, 0, _canvas.width, _canvas.height);
     _renderTiles();
+    _renderObjectiveMarkers();
+    _renderCampMarker();
     _renderAtmosphere();
-    MapEntities.renderEnemies(_ctx, cam, TILE, _map);
+    MapEntities.renderEnemies(_ctx, cam, TILE, _map, _inVision.bind(null));
     MapPlayer.render(_ctx, cam, TILE);
+    _renderFog();
+    _renderObjectiveHUD();
+    _renderBubbles();
     _renderMinimap();
   }
 
   /* ── Update ──────────────────────────────────────────── */
   function _update(dt) {
     if (!_map) return;
-    _time += dt;
+    _time    += dt;
+    _fogTime += dt;
     MapInput.poll();
     MapPlayer.update(dt, _map);
     MapEntities.updateEnemies(dt, _map);
     _updateCamera();
 
-    // Water animation ticker
-    _wTimer += dt;
-    if (_wTimer > 0.1) { _wTimer = 0; _wFrame = (_wFrame + 1) % 60; }
 
     // Encounter check
     const enc = MapEntities.checkEncounter(_map);
     if (enc) {
       _triggerEncounter(enc);
+    }
+
+    // Camp node check — player returns to playerStart tile
+    if (_map.playerStart && !MapPlayer.moving) {
+      const atStart = MapPlayer.tx === _map.playerStart.x && MapPlayer.ty === _map.playerStart.y;
+      if (!_campUnlocked && !atStart) _campUnlocked = true;
+      if (_campUnlocked && atStart && !_atCamp) {
+        _atCamp = true;
+        if (typeof MapUI !== 'undefined') MapUI.openCampMenu();
+      }
+      if (!atStart) _atCamp = false;
+    }
+
+    // Objective check each frame
+    _checkObjective();
+
+    // Fog dialogue + ambient voice lines
+    _updateFogDialogue(dt);
+
+    // Tick speech bubbles
+    for (let i = _bubbles.length - 1; i >= 0; i--) {
+      _bubbles[i].life -= dt;
+      if (_bubbles[i].life <= 0) _bubbles.splice(i, 1);
     }
 
     // Delegate HUD + minimap refresh to MapUI
@@ -376,9 +560,18 @@ const MapEngine = (() => {
     const raw  = G && G.enemies && enemyId && G.enemies.find(e => e.id === enemyId);
     const name = raw ? raw.name : (enemyId || '?');
 
-    // Use MapUI.showMsg so the banner uses the correct #explore-notif element
+    // Ambush? If fog is active and encounter triggered outside clear vision
+    const isAmbush = _fogAlpha() > 0.15;
+    enc.ambush = isAmbush;
+
+    // Dramatic encounter dialogue on canvas
+    if (_map && _map.voiceLines && _map.voiceLines.encounter) {
+      _sayLine(_randomLine(_map.voiceLines.encounter));
+    }
+
+    // Banner message — ambush gets a different tone
     if (typeof MapUI !== 'undefined') {
-      MapUI.showMsg(`⚔ ${name} appeared!`, 2200);
+      MapUI.showMsg(isAmbush ? `💀 AMBUSH — ${name}!` : `⚔ ${name} appeared!`, 2200);
     }
 
     // Delegate to host game if wired up
@@ -397,19 +590,10 @@ const MapEngine = (() => {
       return;
     }
     MapEntities.removeEncountered();
-    if (_allEnemiesCleared()) {
-      MapUI.showMsg('Area cleared!', 1000, () => {
-        if (typeof Story !== 'undefined') Story.onExploreComplete();
-      });
-      return;
-    }
     if (typeof UI !== 'undefined') UI.show('explore-screen');
     resume();
-    if (typeof MapUI !== 'undefined') MapUI.showMsg('Victory! Keep exploring…', 1500);
-  }
-
-  function _allEnemiesCleared() {
-    return typeof MapEntities !== 'undefined' && MapEntities.allCleared();
+    // Objective check runs next frame via _update → _checkObjective
+    if (typeof MapUI !== 'undefined') MapUI.showMsg('Victory!', 1200);
   }
 
   /* ── Game loop ───────────────────────────────────────── */
@@ -441,7 +625,14 @@ const MapEngine = (() => {
     const titleEl = document.getElementById('explore-map-name');
     if (titleEl) titleEl.textContent = `✦ ${_map.name.toUpperCase()} ✦`;
     _invalidateCache();
+    MapPlayer.pickVariants(); // pick random sprite variant for each party member
     MapPlayer.reset(_map.playerStart.x, _map.playerStart.y);
+    _campUnlocked = false; _atCamp = false;
+    _fogTime = 0; _fogCanvas = null;
+    _fogMilestone = 0;
+    _bubbles.length = 0;
+    _ambientTimer = 20 + Math.random() * 30; // first ambient line after 20-50s
+    _objState = { done: _objAlreadyCleared(), collected: [] };
     MapEntities.init(_map);
     cam.x = 0; cam.y = 0;
     _updateCamera();
@@ -472,9 +663,14 @@ const MapEngine = (() => {
   function getTile()   { return TILE; }
   function isRunning() { return _running; }
 
+  function resetFog() { _fogTime = 0; _fogCanvas = null; _fogMilestone = 0; _bubbles.length = 0; }
+
+  // 0..1 — how far fog has progressed (used by entities to scale aggro/speed)
+  function fogProgress() { return _fogProgress(); }
+
   return {
     init, loadMap, start, stop, resume, onBattleComplete,
-    getMap, getCam, getTile, isRunning,
+    getMap, getCam, getTile, isRunning, resetFog, fogProgress,
     // Optional callback — wire this up after init to handle encounter transitions:
     // MapEngine.onEncounterStart = function(enc) { ... }
     onEncounterStart: null,

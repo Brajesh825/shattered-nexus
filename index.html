@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Crystal Chronicles RPG</title>
+  <title>Shattered Nexus</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/animations.css">
@@ -30,7 +30,7 @@
   font-family: 'Cinzel', serif;
 ">
   <h2 style="color: #4ecfff; margin-bottom: 50px; font-size: 28px; letter-spacing: 2px;">
-    ⚔️ CRYSTAL CHRONICLES
+    ⚔️ SHATTERED NEXUS
   </h2>
   <div style="
     width: 320px;
@@ -73,7 +73,7 @@
       <span class="crystal">🔷</span>
       <span class="crystal">💎</span>
     </div>
-    <div class="game-title">CRYSTAL<br>CHRONICLES</div>
+    <div class="game-title">SHATTERED<br>NEXUS</div>
     <div class="subtitle">~ REBORN ~</div>
     <div style="font-size:15px;color:#4a4080;text-align:center;z-index:1;line-height:2">
       4 Characters · 4 Classes · 50 Enemies<br>
@@ -168,12 +168,30 @@
       <div class="map-info-name" id="map-info-name"></div>
       <div class="map-info-loc"  id="map-info-loc"></div>
     </div>
-    <button class="big-btn" id="map-proceed-btn" onclick="Story.proceedFromMap()" style="margin:0 12px 14px;align-self:flex-end">
-      ▶ TRAVEL THERE
-    </button>
+    <div class="map-bottom-bar">
+      <button class="map-party-btn" onclick="openPartySwap()">👥 PARTY</button>
+      <button class="big-btn" id="map-proceed-btn" onclick="Story.proceedFromMap()">▶ TRAVEL THERE</button>
+    </div>
 
     <!-- Region revisit panel (slides up when a completed node is clicked) -->
     <div id="map-region-panel" class="map-region-panel"></div>
+
+  </div>
+
+  <!-- Party swap overlay — global, works from any screen -->
+  <div id="party-swap-overlay" class="party-swap-overlay" onclick="if(event.target===this)closePartySwap()">
+    <div class="party-swap-panel">
+      <div class="party-swap-header">
+        <span class="party-swap-title">⚔ ACTIVE PARTY</span>
+        <span class="party-swap-counter" id="party-swap-counter">0 / 4 selected</span>
+        <button class="party-swap-close" onclick="closePartySwap()">✕</button>
+      </div>
+      <div class="party-swap-hint">Select exactly 4 characters. Tap again to deselect.</div>
+      <div class="party-swap-grid" id="party-swap-grid"></div>
+      <div class="party-swap-footer">
+        <button class="big-btn" id="party-swap-confirm" onclick="confirmPartySwap()" disabled>CONFIRM PARTY</button>
+      </div>
+    </div>
   </div>
 
   <!-- ═══════════════════════════════════════
@@ -281,6 +299,7 @@
         <button class="cmd-btn cmd-party-btn" onclick="openPartyMenu()">👥 PARTY</button>
       </div>
       <div class="sub-menu" id="ability-sub"></div>
+      <div class="sub-menu" id="item-sub"></div>
     </div>
     <div class="party-status-bar" id="party-status-bar"></div>
     <div class="stats-bar">
@@ -308,7 +327,11 @@
   <div id="result-screen" class="screen">
     <div class="result-title" id="result-title">VICTORY!</div>
     <div class="result-stats" id="result-stats"></div>
-    <button class="big-btn" onclick="playAgain()">▶ PLAY AGAIN</button>
+    <div class="result-party" id="result-party"></div>
+    <div class="result-btns">
+      <button class="big-btn" id="result-retry-btn" onclick="retryBattle()" style="display:none">↺ RETRY</button>
+      <button class="big-btn" id="result-again-btn" onclick="playAgain()">▶ PLAY AGAIN</button>
+    </div>
   </div>
 
   <!-- ═══════════════════════════════════════
@@ -322,15 +345,9 @@
         <span id="explore-map-name" class="explore-map-name">✦ EXPLORE ✦</span>
         <span class="explore-map-hint">↑↓←→ · WASD to move</span>
       </div>
-      <button class="explore-back-btn" id="explore-back-btn" onclick="
-        MapEngine.stop();
-        if (typeof Story !== 'undefined' && Story.active && G.mode === 'story_explore') {
-          Story.onExploreComplete();
-        } else {
-          G.mode = 'free';
-          UI.show('title-screen');
-        }
-      ">← EXIT MAP</button>
+      <div class="explore-header-right">
+        <button class="explore-menu-btn" onclick="MapUI.openPauseMenu()">☰ MENU</button>
+      </div>
     </div>
 
     <!-- Canvas fills all remaining height -->
@@ -342,6 +359,36 @@
           <div class="map-sel-crest">⚔</div>
           <div class="map-sel-title">REALM OF ECHOES</div>
           <div class="map-sel-sub">Choose your destination</div>
+        </div>
+      </div>
+
+      <!-- Pause menu overlay -->
+      <div id="map-pause-menu" style="display:none">
+        <div class="pause-panel">
+          <div class="pause-title">⚔ PARTY STATUS</div>
+          <div class="pause-party" id="pause-party-cards"></div>
+          <div class="pause-inventory" id="pause-inventory-section">
+            <div class="pause-section-label">INVENTORY</div>
+            <div class="pause-inv-grid" id="pause-inv-grid"></div>
+          </div>
+          <div class="pause-actions">
+            <button class="pause-btn save-btn" onclick="MapUI.pauseSave()">💾 SAVE</button>
+            <button class="pause-btn" onclick="MapUI.closePauseMenu()">▶ RESUME</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Camp menu overlay (triggered when player returns to start tile) -->
+      <div id="camp-menu" style="display:none">
+        <div class="camp-panel">
+          <div class="camp-title">⛺ CAMP</div>
+          <div class="camp-subtitle">Rest, regroup, or move on.</div>
+          <div class="camp-actions">
+            <button class="camp-btn camp-btn-worldmap" onclick="MapUI.campWorldMap()">🗺 WORLD MAP</button>
+            <button class="camp-btn" onclick="MapUI.campChangeParty()">👥 CHANGE PARTY</button>
+            <button class="camp-btn" onclick="MapUI.campHeal()">💊 HEAL PARTY</button>
+            <button class="camp-btn camp-btn-minor" onclick="MapUI.closeCampMenu()">▶ CONTINUE</button>
+          </div>
         </div>
       </div>
 
@@ -372,7 +419,17 @@
 
 </div><!-- /#game -->
 
+<script src="js/map/data/tile-defs.js"></script>
+<script src="js/map/data/tile-renders.js"></script>
 <script src="js/map/map-data.js"></script>
+<script src="js/map/data/map-verdant-vale.js"></script>
+<script src="js/map/data/map-crystal-cavern.js"></script>
+<script src="js/map/data/map-ember-wastes.js"></script>
+<script src="js/map/data/map-sunken-temple.js"></script>
+<script src="js/map/data/map-shadow-reach.js"></script>
+<script src="js/map/data/map-void-citadel.js"></script>
+<script src="js/map/data/map-fortress-ramparts.js"></script>
+<script src="js/map/data/map-eternal-void.js"></script>
 <script src="js/map/map-entities.js"></script>
 <script src="js/map/map-ui.js"></script>
 <script src="js/map/map-engine.js"></script>

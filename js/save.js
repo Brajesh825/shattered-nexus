@@ -1,5 +1,5 @@
 /**
- * save.js — Crystal Chronicles Save System v2
+ * save.js — Shattered Nexus Save System v2
  * • 3 independent save slots
  * • Export slot as downloadable JSON
  * • Import JSON file into a slot
@@ -79,7 +79,7 @@ const Save = {
     reader.onload = (e) => {
       try {
         const data = JSON.parse(e.target.result);
-        if (typeof data.arcIdx === 'undefined') throw new Error('Not a valid Crystal Chronicles save.');
+        if (typeof data.arcIdx === 'undefined') throw new Error('Not a valid Shattered Nexus save.');
         data.slot = slot;
         data.timestamp = data.timestamp || Date.now();
         localStorage.setItem(this._key(slot), JSON.stringify(data));

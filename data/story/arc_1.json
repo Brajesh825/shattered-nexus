@@ -292,6 +292,26 @@
           ]
         }
       ]
+    },
+    {
+      "id": "arc1_ch4",
+      "title": "Through the Verdant Vale",
+      "type": "explore",
+      "map": "verdant_vale",
+      "map_hint": "Cross the Verdant Vale — the Sacred Ruins lie beyond the old forest.",
+      "pre_dialogue": [
+        { "speaker": "narrator", "emotion": "calm", "text": "The Oracle's chamber falls silent. Outside, the path through the Verdant Vale stretches ahead — an ancient forest scarred by the Rift, where shadow-touched creatures now prowl where deer once walked." },
+        { "speaker": "Ayaka", "emotion": "resolved", "text": "The Sacred Ruins lie beyond this forest. We cross it together." },
+        { "speaker": "Hutao", "emotion": "cheerful", "text": "A cursed forest full of monsters between us and a doom-crystal. Wonderful. Lead on~" },
+        { "speaker": "Xiao", "emotion": "quiet", "text": "Stay alert. The Emperor's influence will be stronger the further we go." }
+      ],
+      "post_dialogue": [
+        { "speaker": "narrator", "emotion": "tense", "text": "The far edge of the Verdant Vale gives way to shattered stone and dead light. The Sacred Ruins of Aethoria rise before them — hollow towers and fallen arches swallowed in a silence that feels deliberate." },
+        { "speaker": "Nilou", "emotion": "uneasy", "text": "The trees stopped. All at once. Do you notice? Not gradually — just... stopped." },
+        { "speaker": "Xiao", "emotion": "grim", "text": "A boundary. Whatever guards those ruins does not allow anything living to grow near it." },
+        { "speaker": "Hutao", "emotion": "unusually_quiet", "text": "I can feel it from here. The Void Knight. It does not feel like a monster. It feels like grief." },
+        { "speaker": "Ayaka", "emotion": "steady", "text": "Then we end its grief. Move." }
+      ]
     }
   ]
 }

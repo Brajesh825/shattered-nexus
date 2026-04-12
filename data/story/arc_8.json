@@ -58,38 +58,21 @@
     },
     {
       "id": "arc8_ch3",
-      "title": "Echoes of Choice",
-      "type": "battle",
-      "enemy_id": "dark_phoenix",
-      "background": "void_realm",
-      "cast": ["Ayaka", "Hutao", "Nilou", "Xiao", "Rydia", "Lenneth", "Kain", "Leon"],
+      "title": "The Eternal Void",
+      "type": "explore",
+      "map": "eternal_void",
+      "map_hint": "Cross the Eternal Void — Valdris's true form waits at the heart of all darkness.",
       "pre_dialogue": [
-        { "speaker": "narrator", "emotion": "intense", "text": "From the void, shadows coalesce — the accumulated echoes of Valdris's hunger. Every world he consumed, every being he devoured — they manifest as one final test." },
-        { "speaker": "Leon", "emotion": "resolute", "text": "Then we free them. All of them. In his defeat, they find peace." }
+        { "speaker": "narrator", "emotion": "intense", "text": "The Eternal Void stretches beyond sight — shadow and accumulated hunger from seventeen consumed worlds, manifesting as creatures formed from grief and loss." },
+        { "speaker": "Leon", "emotion": "resolute", "text": "We free them. All of them. Every soul he trapped. In his defeat, they find peace." },
+        { "speaker": "Kain", "emotion": "struggling", "text": "I can feel them... all the worlds. All the stories that ended in his hunger. We carry them forward." },
+        { "speaker": "Rydia", "emotion": "awed", "text": "The eidolons sing their names so they are not forgotten. We sing them too." }
       ],
       "post_dialogue": [
-        { "speaker": "Lenneth", "emotion": "firm", "text": "The echoes fade. The souls cry out in gratitude — they sense that their end is near, and with it, true rest." },
-        { "speaker": "Rydia", "emotion": "understanding", "text": "The eidolons say the void thins. His defenses weaken. The path to his core lies open." }
-      ]
-    },
-    {
-      "id": "arc8_ch4",
-      "title": "The Weight of Worlds",
-      "type": "cutscene",
-      "background": "core_chamber",
-      "cast": ["Kain", "Leon", "Rydia", "Lenneth"],
-      "scenes": [
-        {
-          "narration": "As they press deeper into the void, the weight becomes unbearable. Not physical weight — the weight of memory, of time, of countless lives pressing against their consciousness."
-        },
-        {
-          "dialogue": [
-            { "speaker": "Kain", "emotion": "struggling", "text": "I can feel them... all the worlds. All the civilizations. All the stories that ended in his hunger." },
-            { "speaker": "Rydia", "emotion": "awed", "text": "The eidolons carry them. They sing their names so they are not forgotten. We sing them too." },
-            { "speaker": "Leon", "emotion": "determined", "text": "I have ruled, built, conquered. And all of it will end someday. But in that ending, meaning. In that meaning, purpose." },
-            { "speaker": "Lenneth", "emotion": "hopeful", "text": "He does not understand this. That endings are not emptiness — they are transformation. This is what we must teach him." }
-          ]
-        }
+        { "speaker": "narrator", "emotion": "apocalyptic", "text": "The void thins. The echoes fade. And at the heart of everything — a throne of shadow and starlight. Upon it, Valdris. His true form. Not a titan. Not a demon. Something far older." },
+        { "speaker": "Lenneth", "emotion": "hopeful", "text": "He does not understand that endings are not emptiness — they are transformation. This is what we must show him." },
+        { "speaker": "Ayaka", "emotion": "focused", "text": "All eight of us. All our power. All our purpose. This is the moment." },
+        { "speaker": "narrator", "emotion": "defiant", "text": "Valdris: You believe you can rewrite eternity? I am the end of all things. I am inevitable." }
       ]
     }
   ],

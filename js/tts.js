@@ -1,5 +1,5 @@
 /**
- * tts.js — Crystal Chronicles Text-to-Speech
+ * tts.js — Shattered Nexus Text-to-Speech
  * Uses the Web Speech API (built into all modern browsers, no API key needed).
  * Each character gets a distinct voice profile (pitch + rate + preferred voice).
  *
