@@ -3085,14 +3085,14 @@ body {
    SPRITE-BASED BATTLE UI
    ════════════════════════════════════════════════════════════ */
 
-/* Party sprite container (2x2 grid on LEFT side) */
+/* Party sprite container — LEFT BOTTOM */
 .party-container {
   position: absolute;
   left: 0;
-  top: 50%;
-  transform: translateY(-50%);
+  bottom: 56px;   /* sits just above the ground strip */
+  top: auto;
+  transform: none;
   width: 420px;
-  /* Compact formation height — party is support, not the focus */
   height: 380px;
 }
 
@@ -3210,14 +3210,13 @@ body {
   display: none;
 }
 
-/* Enemy sprite container (Pyramid on RIGHT side) */
+/* Enemy sprite container — RIGHT TOP */
 .enemy-container {
   position: absolute;
   right: 0;
-  top: 50%;
-  transform: translateY(-50%);
+  top: 0;
+  transform: none;
   width: 580px;
-  /* Enemies get more vertical room — they're the focus */
   height: 500px;
 }
 

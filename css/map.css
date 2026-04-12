@@ -774,6 +774,9 @@
   .mn-status { font-size: 5px; }
   .map-node.current .mn-name { font-size: 12px; }
 
+  /* Hide party HUD panel — d-pad takes that space */
+  #explore-party-hud { display: none; }
+
   /* Explore header */
   .explore-header    { padding: 6px 12px; }
   .explore-map-name  { font-size: 16px; }
@@ -1108,6 +1111,57 @@
 }
 
 #explore-minimap { display: block; }
+
+/* ── Mobile D-pad ────────────────────────────────────── */
+#explore-dpad {
+  display: none;          /* shown only on touch/mobile */
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  z-index: 25;
+  /* 3-col grid: [left] [up/center/down col] [right] */
+  display: grid;
+  grid-template-columns: 48px 48px 48px;
+  grid-template-rows:    48px 48px 48px;
+  gap: 4px;
+  opacity: 0.82;
+  pointer-events: auto;
+}
+/* Hide on non-touch / large screens */
+@media (hover: hover) and (min-width: 801px) {
+  #explore-dpad { display: none !important; }
+}
+
+.dpad-btn {
+  background: rgba(10, 6, 40, 0.78);
+  border: 1px solid rgba(96, 80, 184, 0.55);
+  border-radius: 8px;
+  color: rgba(180, 160, 255, 0.9);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+  transition: background 0.1s, border-color 0.1s;
+}
+.dpad-btn:active {
+  background: rgba(96, 80, 184, 0.35);
+  border-color: rgba(160, 140, 255, 0.9);
+}
+
+/* Grid placement */
+.dpad-up    { grid-column: 2; grid-row: 1; }
+.dpad-left  { grid-column: 1; grid-row: 2; }
+.dpad-center{ grid-column: 2; grid-row: 2;
+              background: rgba(10, 6, 40, 0.55);
+              border: 1px solid rgba(96, 80, 184, 0.25);
+              border-radius: 50%; }
+.dpad-right { grid-column: 3; grid-row: 2; }
+.dpad-down  { grid-column: 2; grid-row: 3; }
 
 /* ── Slim bottom hint bar ────────────────────────────── */
 .explore-loc-bar {
