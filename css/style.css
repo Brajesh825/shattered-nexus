@@ -3574,9 +3574,11 @@ body {
   .party-sprite { width: 72px !important; height: 72px !important; }
   .enemy-sprite { max-width: 80px !important; max-height: 96px !important; }
 
-  /* Party container — narrower, vertically centered within 240px scene */
+  /* Party container — left bottom, above 26px ground strip */
   .party-container {
     width: 300px;
+    height: 240px;
+    bottom: 26px;
   }
 
   /* Party member cards */
@@ -3593,8 +3595,8 @@ body {
   .party-member:nth-child(3) { left: 163px; top:  54px; }
   .party-member:nth-child(4) { left: 100px; top: 103px; }
 
-  /* Enemy container — scaled down for mobile landscape */
-  .enemy-container { width: 300px; height: 280px; }
+  /* Enemy container — right bottom, above 26px ground strip */
+  .enemy-container { width: 300px; height: 240px; bottom: 26px; }
 
   /* Per-count card sizes (scaled ~55% of desktop) */
   .enemy-container[data-count="1"] .enemy          { width: 145px; height: 220px; }
@@ -3616,11 +3618,11 @@ body {
   .enemy-container[data-count="3"] .enemy:nth-child(1) { right:106px; top:  0px; }
   .enemy-container[data-count="3"] .enemy:nth-child(2) { right: 15px; top: 80px; }
   .enemy-container[data-count="3"] .enemy:nth-child(3) { right:197px; top: 80px; }
-  /* count=4: diamond, card=72; center=(300-72)/2=114 */
+  /* count=4: diamond, card=72; center=(300-72)/2=114; 3 rows × 60px = 180+110=fits 240 */
   .enemy-container[data-count="4"] .enemy:nth-child(1) { right:114px; top:  0px; z-index:14; }
-  .enemy-container[data-count="4"] .enemy:nth-child(2) { right: 70px; top: 70px; z-index:16; }
-  .enemy-container[data-count="4"] .enemy:nth-child(3) { right:158px; top: 70px; z-index:16; }
-  .enemy-container[data-count="4"] .enemy:nth-child(4) { right:114px; top:140px; z-index:18; }
+  .enemy-container[data-count="4"] .enemy:nth-child(2) { right: 70px; top: 60px; z-index:16; }
+  .enemy-container[data-count="4"] .enemy:nth-child(3) { right:158px; top: 60px; z-index:16; }
+  .enemy-container[data-count="4"] .enemy:nth-child(4) { right:114px; top:120px; z-index:18; }
 
   .enemy-name { font-size: 9px; }
 }
