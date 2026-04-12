@@ -302,7 +302,7 @@ const UI = {
     // Mutation bonus makes corrupted/mutant visually bulkier.
     // Viewport scale: at ≥1600px tier-1 base matches party sprite height (~180px).
     const vw = window.innerWidth;
-    const VP_SCALE = vw >= 1600 ? 1.35 : vw >= 1200 ? 1.0 : 1.0;
+    const VP_SCALE = vw >= 1800 ? 1.35 : 1.0;
     const TIER_BASE_W   = { 1: Math.round(130 * VP_SCALE),
                              2: Math.round(180 * VP_SCALE),
                              3: Math.round(240 * VP_SCALE) };

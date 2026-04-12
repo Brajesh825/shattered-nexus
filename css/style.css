@@ -3720,12 +3720,70 @@ body {
 }
 
 /* ══════════════════════════════════════════════════════════════
-   RESPONSIVE — WIDE DESKTOP  (≥ 1600px)
+   RESPONSIVE — MEDIUM DESKTOP  (≥ 1440px)
+   panel 460px. party 460 + enemy 620 = 1080px.
+   Scene at 1440px = 980px → containers fit with ~100px breathing room.
+   Scene at 1799px = 1339px → containers leave wide battlefield gap.
+   ══════════════════════════════════════════════════════════════ */
+@media (min-width: 1440px) {
+
+  #battle-screen.active { grid-template-columns: 1fr 460px; }
+
+  #battle-screen .turn-bar          { padding: 9px 16px; }
+  #battle-screen .active-member-bar { padding: 12px 16px; }
+  #battle-screen #menu-area         { padding: 14px 16px; gap: 12px; }
+  #battle-screen .party-status-bar  { padding: 7px 16px; }
+  #battle-screen .stats-bar         { padding: 7px 16px; font-size: 14px; }
+  #battle-screen .cmd-grid          { gap: 9px; }
+  #battle-screen .cmd-btn           { padding: 18px 9px; font-size: 14px; }
+  #battle-screen .battle-log        { font-size: 14px; }
+
+  .bg-gnd { height: 62px; }
+
+  /* ── Party: 460px wide, 500px tall, 108px sprites ───────────── */
+  .party-container { width: 460px; height: 500px; bottom: 62px; }
+  .party-member    { width: 155px; height: 205px; padding: 4px; }
+  .party-sprite    { width: 108px !important; height: 108px !important; }
+  .party-hp-bar-bg { width: 147px; }
+  /* center=(460-155)/2=152 */
+  .party-member:nth-child(1) { left: 152px; top:   0px; }
+  .party-member:nth-child(2) { left:  30px; top: 107px; }
+  .party-member:nth-child(3) { left: 275px; top: 107px; }
+  .party-member:nth-child(4) { left: 152px; top: 211px; }
+
+  /* ── Enemy: 620px wide, 560px tall (≈1.07× base) ───────────── */
+  .enemy-container { width: 620px; height: 560px; bottom: 62px; }
+
+  .enemy-container[data-count="1"] .enemy          { width: 278px; height: 428px; }
+  .enemy-container[data-count="1"] .enemy-hp-bar-bg { width: 224px; }
+  .enemy-container[data-count="1"] .enemy:nth-child(1) { right: 171px; top: 53px; }
+
+  .enemy-container[data-count="2"] .enemy          { width: 214px; height: 331px; }
+  .enemy-container[data-count="2"] .enemy-hp-bar-bg { width: 171px; }
+  .enemy-container[data-count="2"] .enemy:nth-child(1) { right:  32px; top: 21px; }
+  .enemy-container[data-count="2"] .enemy:nth-child(2) { right: 246px; top: 150px; }
+
+  .enemy-container[data-count="3"] .enemy          { width: 171px; height: 262px; }
+  .enemy-container[data-count="3"] .enemy-hp-bar-bg { width: 128px; }
+  .enemy-container[data-count="3"] .enemy:nth-child(1) { right: 224px; top:   5px; }
+  .enemy-container[data-count="3"] .enemy:nth-child(2) { right:  96px; top: 171px; }
+  .enemy-container[data-count="3"] .enemy:nth-child(3) { right: 353px; top: 171px; }
+
+  .enemy-container[data-count="4"] .enemy          { width: 139px; height: 214px; }
+  .enemy-container[data-count="4"] .enemy-hp-bar-bg { width: 107px; }
+  .enemy-container[data-count="4"] .enemy:nth-child(1) { right: 240px; top:   0px; z-index:14; }
+  .enemy-container[data-count="4"] .enemy:nth-child(2) { right: 150px; top: 182px; z-index:16; }
+  .enemy-container[data-count="4"] .enemy:nth-child(3) { right: 331px; top: 182px; z-index:16; }
+  .enemy-container[data-count="4"] .enemy:nth-child(4) { right: 240px; top: 320px; z-index:18; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   RESPONSIVE — WIDE DESKTOP  (≥ 1800px)
    Bigger panel. party 640 + enemy 860 = 1500px.
    Party sprites 180px. Enemy sprites capped to prevent mutant
    blowout. Containers use vertical space of 1080px screens.
    ══════════════════════════════════════════════════════════════ */
-@media (min-width: 1600px) {
+@media (min-width: 1800px) {
 
   /* ── Wider panel ─────────────────────────────────────────────── */
   #battle-screen.active { grid-template-columns: 1fr 500px; }
