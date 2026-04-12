@@ -74,7 +74,12 @@ const MapPlayer = (() => {
   function _canMove(nx, ny, map) {
     if (nx < 0 || ny < 0 || nx >= map.width || ny >= map.height) return false;
     const tid = map.tiles[ny]?.[nx] ?? 0;
-    return (TILE_DEFS[tid] || TILE_DEFS[0]).walkable;
+    if (!(TILE_DEFS[tid] || TILE_DEFS[0]).walkable) return false;
+    // Block on NPCs
+    if (MapEntities.checkNPCAt && MapEntities.checkNPCAt(nx, ny)) return false;
+    // Block on alive enemies
+    if (MapEntities.hasEnemyAt && MapEntities.hasEnemyAt(nx, ny)) return false;
+    return true;
   }
 
   function update(dt, map) {
@@ -554,6 +559,109 @@ const MapEntities = (() => {
     });
   }
 
+  /* ── NPC system ─────────────────────────────────────── */
+  const MapNPCs = (() => {
+    let _npcs = [];
+    const _imgCache = {};
+
+    function _loadImg(src) {
+      if (_imgCache[src]) return _imgCache[src];
+      const img = new Image();
+      img.src = src;
+      _imgCache[src] = img;
+      return img;
+    }
+
+    function init(map) {
+      _npcs = (map.npcs || []).map(ref => {
+        const def = (typeof NPC_DEFS !== 'undefined' && NPC_DEFS[ref.id]) || {};
+        const dialogue = (def.dialogues && ref.dialogueKey && def.dialogues[ref.dialogueKey]) || [];
+        return { ...def, ...ref, dialogue, talked: false };
+      });
+    }
+
+    function checkInteract(map) {
+      const px = MapPlayer.tx, py = MapPlayer.ty;
+      return _npcs.find(n => n.x === px && n.y === py) || null;
+    }
+
+    function checkAt(x, y) {
+      return _npcs.find(n => n.x === x && n.y === y) || null;
+    }
+
+    function markTalked(id) {
+      const n = _npcs.find(n => n.id === id);
+      if (n) n.talked = true;
+    }
+
+    // Same sheet layout as party sprites: 6 cols × 2 rows, front strip at top-left
+    function _getNPCSheetDims(img) {
+      const w = img.naturalWidth, h = img.naturalHeight;
+      return { frameW: w / 6, frameH: h / 2 };
+    }
+
+    function render(ctx, cam, TILE, time) {
+      _npcs.forEach(n => {
+        const sx = n.x * TILE - cam.x;
+        const sy = n.y * TILE - cam.y;
+        if (sx < -TILE || sy < -TILE || sx > ctx.canvas.width + TILE || sy > ctx.canvas.height + TILE) return;
+
+        const dw  = Math.round(TILE * 1.1);
+        const dh  = Math.round(TILE * 1.6);
+        const ox  = Math.round((TILE - dw) / 2);
+        const oy  = TILE - dh;
+        const bob = Math.sin(time * 1.6) * 2; // gentle idle bob
+
+        // Shadow
+        ctx.fillStyle = 'rgba(0,0,0,0.25)';
+        ctx.beginPath();
+        ctx.ellipse(sx + TILE / 2, sy + TILE - 3, TILE * 0.32, 5, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Sprite — same sheet format as party, always front idle (frame 0)
+        const img = _loadImg(n.sprite);
+        if (img.complete && img.naturalWidth) {
+          const { frameW, frameH } = _getNPCSheetDims(img);
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = 'high';
+          // Front strip: cx=0, cy=0; frame 0 = idle (leftmost)
+          ctx.drawImage(img, 0, 0, frameW, frameH, sx + ox, sy + oy + bob, dw, dh);
+        } else {
+          // Loading placeholder
+          ctx.fillStyle = n.color || '#a78bfa';
+          ctx.beginPath();
+          ctx.arc(sx + TILE / 2, sy + TILE * 0.4 + bob, TILE * 0.28, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // Pulsing 💬 above head when not yet talked to
+        if (!n.talked) {
+          const pulse = 0.7 + 0.3 * Math.sin(time * 3.5);
+          ctx.save();
+          ctx.globalAlpha = pulse;
+          ctx.font = `${Math.round(TILE * 0.32)}px serif`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'bottom';
+          ctx.fillText('💬', sx + TILE / 2, sy + oy + bob - 2);
+          ctx.restore();
+        }
+
+        // Name label (same style as enemies)
+        ctx.fillStyle = 'rgba(0,0,0,0.55)';
+        ctx.fillRect(sx + ox, sy + TILE + 2, dw, 11);
+        ctx.fillStyle = n.color || '#c4b5fd';
+        ctx.font = '8px monospace';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        ctx.fillText(n.name || n.id, sx + TILE / 2, sy + TILE + 3);
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'alphabetic';
+      });
+    }
+
+    return { init, checkInteract, checkAt, markTalked, render };
+  })();
+
   function allCleared() {
     return _enemies.length === 0 || _enemies.every(e => !e.alive);
   }
@@ -562,5 +670,16 @@ const MapEntities = (() => {
     return _enemies.filter(e => e.alive).length;
   }
 
-  return { init, clear, updateEnemies, renderEnemies, checkEncounter, removeEncountered, allCleared, remaining };
+  function hasEnemyAt(x, y) {
+    return _enemies.some(e => e.alive && e.tx === x && e.ty === y);
+  }
+
+  function initNPCs(map) { MapNPCs.init(map); }
+  function renderNPCs(ctx, cam, TILE, time) { MapNPCs.render(ctx, cam, TILE, time); }
+  function checkNPCInteract(map) { return MapNPCs.checkInteract(map); }
+  function checkNPCAt(x, y) { return MapNPCs.checkAt(x, y); }
+  function markNPCTalked(id) { MapNPCs.markTalked(id); }
+
+  return { init, clear, updateEnemies, renderEnemies, checkEncounter, removeEncountered, allCleared, remaining,
+           hasEnemyAt, initNPCs, renderNPCs, checkNPCInteract, checkNPCAt, markNPCTalked };
 })();

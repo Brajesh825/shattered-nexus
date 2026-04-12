@@ -127,6 +127,10 @@ MAP_DEFS.crystal_cavern = {
 
     tiles: MAP_GENERATOR.generate(),
 
+    npcs: [
+      { id: 'essabella', x: 100, y: 50, dialogueKey: 'crystal_cavern' },
+    ],
+
     fog: { delay: 10, peak: 90, max: 0.88, vision: 2.8 },
 
     voiceLines: {
