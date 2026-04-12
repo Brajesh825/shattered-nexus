@@ -353,11 +353,16 @@ const MapEntities = (() => {
       moving:    false,
       stepDir:   { dx: 0, dy: 0 },
       tickTimer: 0,
-      tickRate:  0.8 + Math.random() * 0.6, // seconds between decision
+      tickRate:  0.8 + Math.random() * 0.6,
       dir:       { dx: 1, dy: 0 },
       alive:     true,
       frameTimer: 0,
       frame:     0,
+      // Mutation state
+      mapTime:        0,           // seconds alive on this map
+      mutationTick:   0,           // accumulator for per-second roll
+      mutation:       null,        // null | 'corrupted' | 'mutant'
+      mutationPhase:  0,           // animation phase for glow pulse
     }));
     _encounteredIdx = -1;
   }
@@ -423,11 +428,31 @@ const MapEntities = (() => {
     }
   }
 
+  // Mutation thresholds (seconds on map before rolls begin)
+  const CORRUPT_THRESHOLD = 45;  // corrupted stage starts rolling at 45s
+  const MUTANT_THRESHOLD  = 90;  // mutant stage starts rolling at 90s
+  const CORRUPT_CHANCE    = 0.04; // 4% per second once threshold met
+  const MUTANT_CHANCE     = 0.025;// 2.5% per second once threshold met
+
   function updateEnemies(dt, map) {
     MapNPCs.update(dt, map, _enemies);
     const TILE = MapEngine.getTile();
     _enemies.forEach(en => {
       if (!en.alive) return;
+
+      // ── Mutation timer ────────────────────────────────
+      en.mapTime       += dt;
+      en.mutationPhase += dt;
+      en.mutationTick  += dt;
+      if (en.mutationTick >= 1.0) {
+        en.mutationTick -= 1.0;
+        if (en.mutation === null && en.mapTime >= CORRUPT_THRESHOLD) {
+          if (Math.random() < CORRUPT_CHANCE) en.mutation = 'corrupted';
+        } else if (en.mutation === 'corrupted' && en.mapTime >= MUTANT_THRESHOLD) {
+          if (Math.random() < MUTANT_CHANCE) en.mutation = 'mutant';
+        }
+      }
+
       // Fog scales movement speed — recalc moveDur each frame
       en.moveDur = (1 / en.speed) / _fogSpeedMult();
       if (en.moving) {
@@ -464,7 +489,7 @@ const MapEntities = (() => {
       if (en.tx === ptx && en.ty === pty) {
         _encounteredIdx = i;
         const ids = _buildEncounterGroup(en.id, map);
-        return { enemies: ids };
+        return { enemies: ids, mutation: en.mutation || null };
       }
     }
     return null;
@@ -519,43 +544,85 @@ const MapEntities = (() => {
     const _edw = Math.round(TILE * 1.1);
     const _edh = Math.round(TILE * 1.6);
     const _eox = Math.round((TILE - _edw) / 2);
-    const _eoy = TILE - _edh;   // anchor bottom to tile bottom
+    const _eoy = TILE - _edh;
+
     _enemies.forEach(en => {
       if (!en.alive) return;
-      // Hidden by fog — only render if within player vision radius
       if (typeof inVision === 'function' && !inVision(en.tx, en.ty)) return;
       const sx = en.px - cam.x;
       const sy = en.py - cam.y;
       if (sx < -TILE || sy < -TILE || sx > ctx.canvas.width + TILE || sy > ctx.canvas.height + TILE) return;
 
       const bounce = en.moving ? Math.sin(en.frame / 4 * Math.PI * 2) * 3 : 0;
+      const mut    = en.mutation; // null | 'corrupted' | 'mutant'
 
-      ctx.fillStyle = 'rgba(0,0,0,0.28)';
-      ctx.beginPath();
-      ctx.ellipse(sx + TILE / 2, sy + TILE - 3, TILE * 0.35, 6, 0, 0, Math.PI * 2);
-      ctx.fill();
+      // ── Mutation scale ───────────────────────────────
+      const scale  = mut === 'mutant' ? 1.65 : mut === 'corrupted' ? 1.32 : 1.0;
+      const edw    = Math.round(_edw * scale);
+      const edh    = Math.round(_edh * scale);
+      const eox    = Math.round((TILE - edw) / 2);
+      const eoy    = TILE - edh;
 
-      const spr = _getEnemySprite(en.id);
-      if (spr) {
-        ctx.imageSmoothingEnabled = false;
-        ctx.drawImage(spr, sx + _eox, sy + _eoy + bounce, _edw, _edh);
+      // ── Glow ring for mutated enemies ────────────────
+      if (mut) {
+        const pulse  = 0.5 + 0.5 * Math.sin(en.mutationPhase * (mut === 'mutant' ? 4.0 : 2.5));
+        const glowR  = mut === 'mutant' ? Math.round(TILE * 0.85) : Math.round(TILE * 0.60);
+        const glowC  = mut === 'mutant' ? `rgba(80,255,60,${0.25 + 0.20 * pulse})`
+                                        : `rgba(160,40,255,${0.22 + 0.18 * pulse})`;
+        ctx.save();
+        ctx.shadowColor = mut === 'mutant' ? '#50ff3c' : '#a028ff';
+        ctx.shadowBlur  = 12 + 8 * pulse;
+        ctx.fillStyle   = glowC;
+        ctx.beginPath();
+        ctx.ellipse(sx + TILE / 2, sy + TILE - 4, glowR, glowR * 0.38, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
       }
 
+      // ── Shadow ───────────────────────────────────────
+      ctx.fillStyle = mut ? 'rgba(0,0,0,0.45)' : 'rgba(0,0,0,0.28)';
+      ctx.beginPath();
+      ctx.ellipse(sx + TILE / 2, sy + TILE - 3, TILE * 0.35 * scale, 6 * scale * 0.6, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // ── Sprite (with optional canvas filter for mutations) ──
+      const spr = _getEnemySprite(en.id);
+      if (spr) {
+        ctx.save();
+        ctx.imageSmoothingEnabled = false;
+        if (mut === 'corrupted') {
+          ctx.filter = 'hue-rotate(220deg) saturate(2.2) brightness(0.85)';
+        } else if (mut === 'mutant') {
+          // Slight wobble distortion via skew on canvas transform
+          const wobble = Math.sin(en.mutationPhase * 7.0) * 0.04;
+          ctx.transform(1, wobble, 0, 1, 0, 0);
+          ctx.filter = 'hue-rotate(100deg) saturate(3.0) brightness(1.15) contrast(1.3)';
+        }
+        ctx.drawImage(spr, sx + eox, sy + eoy + bounce, edw, edh);
+        ctx.restore();
+      }
+
+      // ── Aggro indicator ──────────────────────────────
       const dist = Math.abs(en.tx - MapPlayer.tx) + Math.abs(en.ty - MapPlayer.ty);
       if (dist <= _aggroRange()) {
-        ctx.fillStyle = '#ffff40';
+        ctx.fillStyle = mut === 'mutant' ? '#60ff40' : mut === 'corrupted' ? '#c060ff' : '#ffff40';
         ctx.font = 'bold 14px monospace';
         ctx.textAlign = 'center';
-        ctx.fillText('!', sx + TILE / 2, sy + _eoy + bounce - 4);
+        ctx.fillText(mut ? '!!' : '!', sx + TILE / 2, sy + eoy + bounce - 4);
         ctx.textAlign = 'left';
       }
 
+      // ── Name tag ─────────────────────────────────────
+      const label = mut === 'mutant'    ? `⚠ ${en.name}`
+                  : mut === 'corrupted' ? `✦ ${en.name}`
+                  : en.name;
+      const tagCol = mut === 'mutant' ? '#80ff60' : mut === 'corrupted' ? '#cc80ff' : '#ff8080';
       ctx.fillStyle = 'rgba(0,0,0,0.55)';
-      ctx.fillRect(sx + _eox, sy + TILE + 2, _edw, 11);
-      ctx.fillStyle = '#ff8080';
-      ctx.font = '8px monospace';
+      ctx.fillRect(sx + eox, sy + TILE + 2, edw, 11);
+      ctx.fillStyle = tagCol;
+      ctx.font = mut ? 'bold 8px monospace' : '8px monospace';
       ctx.textAlign = 'center';
-      ctx.fillText(en.name, sx + TILE / 2, sy + TILE + 11);
+      ctx.fillText(label, sx + TILE / 2, sy + TILE + 11);
       ctx.textAlign = 'left';
     });
   }

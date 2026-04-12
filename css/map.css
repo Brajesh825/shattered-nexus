@@ -865,6 +865,40 @@
   transition: opacity 0.08s ease;
 }
 #explore-flash.show { opacity: 1; }
+/* Corrupted encounter — purple vignette */
+#explore-flash.corrupted-flash {
+  background: radial-gradient(ellipse at center,
+    rgba(160,40,255,0) 30%,
+    rgba(160,40,255,0.60) 100%);
+}
+/* Mutant encounter — toxic green vignette */
+#explore-flash.mutant-flash {
+  background: radial-gradient(ellipse at center,
+    rgba(60,255,80,0) 30%,
+    rgba(60,255,80,0.55) 100%);
+}
+
+/* ── Mutated enemy battle sprites ────────────────────── */
+.enemy-corrupted {
+  filter: hue-rotate(220deg) saturate(2.4) brightness(0.9) !important;
+  transform: scale(1.28) !important;
+  transform-origin: bottom center;
+  animation: corrupt-pulse 1.8s ease-in-out infinite;
+}
+.enemy-mutant {
+  filter: hue-rotate(105deg) saturate(3.2) brightness(1.2) contrast(1.35) !important;
+  transform: scale(1.60) !important;
+  transform-origin: bottom center;
+  animation: mutant-pulse 0.9s ease-in-out infinite;
+}
+@keyframes corrupt-pulse {
+  0%, 100% { box-shadow: 0 0 8px 2px rgba(160,40,255,0.5); }
+  50%       { box-shadow: 0 0 20px 6px rgba(160,40,255,0.9); }
+}
+@keyframes mutant-pulse {
+  0%, 100% { box-shadow: 0 0 10px 3px rgba(60,255,80,0.5); filter: hue-rotate(105deg) saturate(3.2) brightness(1.2) contrast(1.35) !important; }
+  50%       { box-shadow: 0 0 24px 8px rgba(60,255,80,0.9); filter: hue-rotate(120deg) saturate(4.0) brightness(1.4) contrast(1.5) !important; }
+}
 
 /* ── Notification banner ─────────────────────────────── */
 #explore-notif {

@@ -551,47 +551,62 @@ function initStars() {
    MAP ENCOUNTER HANDLER (global setup)
    ============================================================ */
 MapEngine.onEncounterStart = (enc, map) => {
-  console.log('[Encounter] Starting battle:', { enc, mode: G.mode, storyActive: typeof Story !== 'undefined' });
-
   const enemyIds = enc.enemies || [];
-  console.log('[Encounter] Enemy IDs:', enemyIds);
+  const mutation = enc.mutation || null; // null | 'corrupted' | 'mutant'
 
   const enemyDefs = enemyIds
-    .map(id => {
-      const def = G.enemies.find(e => e.id === id);
-      console.log(`[Encounter] Looking for enemy "${id}":`, def ? 'FOUND' : 'NOT FOUND');
-      return def;
-    })
+    .map(id => G.enemies.find(e => e.id === id))
     .filter(Boolean);
 
-  console.log('[Encounter] Enemy defs count:', enemyDefs.length);
-  if (enemyDefs.length === 0) {
-    console.warn('[Encounter] No enemy definitions found, aborting');
-    return;
-  }
+  if (enemyDefs.length === 0) return;
 
-  // Get enemy level range from map
+  // Get enemy level range from map; mutated enemies spawn at higher end
   const [minLevel, maxLevel] = map?.enemyLevelRange || [1, 1];
-  const spawnLevel = minLevel + Math.floor(Math.random() * (maxLevel - minLevel + 1));
-  console.log('[Encounter] Spawn level:', spawnLevel, 'range:', [minLevel, maxLevel]);
+  const baseLevel  = minLevel + Math.floor(Math.random() * (maxLevel - minLevel + 1));
+  const spawnLevel = mutation === 'mutant'    ? maxLevel + 3
+                   : mutation === 'corrupted' ? maxLevel + 1
+                   : baseLevel;
 
-  // Story mode: build battle but route back to story
-  if (G.mode === 'story_explore' && typeof Story !== 'undefined') {
-    console.log('[Encounter] Story mode detected, launching battle');
-    buildEnemyGroup(enemyDefs, spawnLevel);
-    _initBattle();
-    const names = G.enemyGroup.map(e => e.name).join(' & ');
-    UI.setLog([`⚔ ${names} appeared!`, `Party to battle stations!`], ['hi','']);
-    processCurrentTurn();
-    return;
+  // Apply mutation: rename enemies and tag for stat boost in buildEnemyGroup
+  const mutatedDefs = mutation ? enemyDefs.map(def => ({
+    ...def,
+    name:     mutation === 'mutant' ? `Mutant ${def.name}` : `Corrupted ${def.name}`,
+    mutation, // carried into the built enemy object
+  })) : enemyDefs;
+
+  buildEnemyGroup(mutatedDefs, spawnLevel, false, mutation);
+
+  // Apply mutation stat multipliers on top of built group
+  if (mutation) {
+    const mult = mutation === 'mutant' ? 1.55 : 1.28;
+    G.enemyGroup.forEach(e => {
+      e.hp    = Math.floor(e.hp    * mult); e.maxHp = e.hp;
+      e.atk   = Math.floor(e.atk   * mult);
+      e.def   = Math.floor(e.def   * mult);
+      e.mag   = Math.floor(e.mag   * mult);
+      e.exp   = Math.floor(e.exp   * (mutation === 'mutant' ? 2.2 : 1.5));
+      e.gold  = Math.floor(e.gold  * (mutation === 'mutant' ? 2.0 : 1.4));
+      e.mutation = mutation;
+    });
   }
 
-  // Free explore mode: direct battle
-  console.log('[Encounter] Free explore mode, launching battle');
-  buildEnemyGroup(enemyDefs, spawnLevel);
   _initBattle();
+
+  // Apply mutation CSS to battle enemy sprites
+  if (mutation) {
+    setTimeout(() => {
+      G.enemyGroup.forEach((_, i) => {
+        const spr = document.getElementById('espr-' + i);
+        if (spr) spr.classList.add(mutation === 'mutant' ? 'enemy-mutant' : 'enemy-corrupted');
+      });
+    }, 80);
+  }
+
+  const prefix = mutation === 'mutant'    ? '☣ MUTANT '
+               : mutation === 'corrupted' ? '✦ CORRUPTED '
+               : '';
   const names = G.enemyGroup.map(e => e.name).join(' & ');
-  UI.setLog([`⚔ ${names} appeared!`, `Party to battle stations!`], ['hi','']);
+  UI.setLog([`${prefix}⚔ ${names} appeared!`, `Party to battle stations!`], ['hi','']);
   processCurrentTurn();
 };
 
