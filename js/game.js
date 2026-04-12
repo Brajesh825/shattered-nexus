@@ -698,7 +698,7 @@ function _renderPartySwapGrid() {
       (isActive ? `<div class="swap-card-badge">${slotIdx + 1}</div>` : '') +
       `<div class="swap-icon" style="background:${ch.portrait_color}20;border-color:${ch.portrait_color}50">${ch.icon}</div>` +
       `<div class="swap-info">` +
-        `<div class="swap-name">${ch.name}</div>` +
+        `<div class="swap-name">${ch.alias || ch.name}</div>` +
         `<div class="swap-title">${ch.title}</div>` +
         `<div class="swap-stats">ATK ${ch.base_stats.atk + (ch.stat_bonuses.atk||0)} · SPD ${ch.base_stats.spd + (ch.stat_bonuses.spd||0)}</div>` +
       `</div>`;
@@ -739,7 +739,7 @@ function _renderCharGrid() {
         <span>${ch.icon}</span>
       </div>
       <div class="char-info">
-        <div class="char-name">${ch.name}</div>
+        <div class="char-name">${ch.alias || ch.name}</div>
         <div class="char-title">${ch.title}</div>
         <div class="char-aff">Affinity: ${ch.class_affinity.join(', ')}</div>
       </div>`;
@@ -774,7 +774,7 @@ function selectChar(id) {
   if (!ch) return;
   const s = ch.base_stats;
   UI.el('char-detail').innerHTML = `
-    <strong style="color:${ch.portrait_color}">${ch.icon} ${ch.name}</strong> — <em style="color:var(--text-dim)">${ch.personality}</em><br>
+    <strong style="color:${ch.portrait_color}">${ch.icon} ${ch.alias || ch.name}</strong> — <em style="color:var(--text-dim)">${ch.personality}</em><br>
     ${ch.description}<br>
     <div class="stat-row">
       <span class="stat-chip">HP <span>${s.hp}</span></span>
@@ -873,7 +873,7 @@ function buildParty() {
     G.party.push({
       charId, classId,
       name: `${ch.name} / ${cls.name}`,
-      displayName: ch.name,
+      displayName: ch.alias || ch.name,
       hp: s.hp, maxHp: s.hp,
       mp: s.mp, maxMp: s.mp,
       atk: s.atk, def: s.def, spd: s.spd, mag: s.mag,
@@ -989,7 +989,7 @@ function showPreBattle() {
     d.className = 'pre-battle-char';
     d.innerHTML = `
       <div style="font-size:28px;margin-bottom:8px">${ch.icon}</div>
-      <div style="font-weight:bold;font-size:14px">${ch.name}</div>
+      <div style="font-weight:bold;font-size:14px">${ch.alias || ch.name}</div>
       <div style="font-size:12px;color:var(--text-dim)">${ch.title}</div>`;
     roster.appendChild(d);
   });

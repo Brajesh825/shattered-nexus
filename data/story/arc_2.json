@@ -1,10 +1,10 @@
 {
   "id": "arc_2",
   "number": 2,
-  "name": "The Scorched Kingdom",
+  "name": "Beneath the Ashes",
   "subtitle": "Where fire was meant to warm, not consume",
   "theme": "Loss / Resolve / The cost of inaction",
-  "location": "Ember Wastes to Kingdom of Ashveil",
+  "location": "Crystal Cavern to Kingdom of Ashveil",
   "shard": {
     "id": "seal_fire",
     "name": "Seal Fragment of Fire",
@@ -19,8 +19,12 @@
       "title": "Ashes of Ashveil",
       "type": "cutscene",
       "background": "burning_kingdom",
-      "cast": ["Ayaka", "Hutao", "Nilou", "Xiao"],
+      "cast": ["Aya", "Tao", "Lulu", "Rei"],
       "scenes": [
+        {
+          "narration": "The path from the Sacred Ruins leads north — through old roads and broken bridges — until the horizon turns orange. Not dawn. The smoke reaches them first, then the heat, then the silence where a city used to be.",
+          "dialogue": []
+        },
         {
           "narration": "The Kingdom of Ashveil was once the jewel of Aethoria. Now it is a canvas of smoke and silence. Buildings that stood for centuries are rubble.",
           "dialogue": []
@@ -28,19 +32,23 @@
         {
           "narration": "Nilou kneels beside the remains of a public garden — flowers reduced to ash, a fountain cracked and dry.",
           "dialogue": [
-            { "speaker": "Nilou", "emotion": "sorrowful", "text": "There were people here. Families. There is a child's shoe by that wall." },
-            { "speaker": "Hutao", "emotion": "quiet", "text": "...There is no one left to guide them across. That bothers me more than it should." },
-            { "speaker": "Ayaka", "emotion": "pained", "text": "This is what happens when darkness is left unopposed. I have seen what fear-driven choices cost people." }
+            { "speaker": "Lulu", "emotion": "sorrowful", "text": "There were people here. Families. There is a child's shoe by that wall." },
+            { "speaker": "Tao", "emotion": "quiet", "text": "...There is no one left to guide them across. That bothers me more than it should." },
+            { "speaker": "Aya", "emotion": "pained", "text": "This is what happens when darkness is left unopposed. I have seen what fear-driven choices cost people." }
           ]
         },
         {
           "narration": "An old keeper, burned and barely standing, watches them with hollow eyes.",
           "dialogue": [
             { "speaker": "narrator", "emotion": "grave", "text": "Old Keeper: You are not shadow-soldiers. You are real. I have not seen that in weeks." },
-            { "speaker": "Xiao", "emotion": "direct", "text": "The demon lord who did this — where is he?" },
+            { "speaker": "Rei", "emotion": "direct", "text": "The demon lord who did this — where is he?" },
             { "speaker": "narrator", "emotion": "fearful", "text": "Old Keeper: He was in the throne room. But he moves. He knows when something is coming. He has been waiting for something to be worth facing." },
-            { "speaker": "Hutao", "emotion": "dark", "text": "Something worth facing. How flattering and deeply concerning." },
-            { "speaker": "Ayaka", "emotion": "resolved", "text": "Then we go through the cinder passage. If he is hunting us, we make him come to us on ground we choose." }
+            { "speaker": "Lulu", "emotion": "pained", "text": "Has anyone tried to stop him? Has anyone come?" },
+            { "speaker": "narrator", "emotion": "hollow", "text": "Old Keeper: Two did. A summoner and a winged warrior — radiant things, not from here. They fought him in the undercroft before the city fell. He did not kill them. He kept them. Said their power was too rare to waste." },
+            { "speaker": "Rei", "emotion": "sharp", "text": "He has prisoners." },
+            { "speaker": "narrator", "emotion": "hollow", "text": "Old Keeper: Chained in the deep vault beneath the palace. He feeds on their resonance to hold the Fragment steady. Without them, it would burn him alive." },
+            { "speaker": "Tao", "emotion": "dark", "text": "So he is not just a conqueror. He is a collector. That is significantly worse." },
+            { "speaker": "Aya", "emotion": "resolved", "text": "Then we go through the cinder passage. If he is hunting us, we make him come to us on ground we choose — and we free whoever he is holding." }
           ]
         }
       ]
@@ -51,22 +59,22 @@
       "type": "explore",
       "map": "crystal_cavern",
       "background": "scorched_wastes",
-      "cast": ["Ayaka", "Hutao", "Nilou", "Xiao"],
+      "cast": ["Aya", "Tao", "Lulu", "Rei"],
       "pre_dialogue": [
         { "speaker": "narrator", "emotion": "tense", "text": "The direct path through Ashveil is impassable — streets collapsed, bridges burned, shadow-creatures swarming every open road. The old cinder passage runs beneath the city, carved when Ashveil was young." },
-        { "speaker": "Ayaka", "emotion": "resolved", "text": "Underground. Through the passage. We come up on the other side of the city and draw him out." },
-        { "speaker": "Xiao", "emotion": "alert", "text": "He will feel us moving beneath. Stay sharp — the passage will not be empty." },
-        { "speaker": "Hutao", "emotion": "focused", "text": "Crawling through burning tunnels hunting a demon lord. This is absolutely a normal Tuesday. Move." },
-        { "speaker": "Nilou", "emotion": "steady", "text": "Together. We go together." }
+        { "speaker": "Aya", "emotion": "resolved", "text": "Underground. Through the passage. We come up on the other side of the city and draw him out." },
+        { "speaker": "Rei", "emotion": "alert", "text": "He will feel us moving beneath. Stay sharp — the passage will not be empty." },
+        { "speaker": "Tao", "emotion": "focused", "text": "Crawling through burning tunnels hunting a demon lord. This is absolutely a normal Tuesday. Move." },
+        { "speaker": "Lulu", "emotion": "steady", "text": "Together. We go together." }
       ],
       "map_hint": "Cross the cinder passage — find the tunnel exit on the far side.",
       "post_dialogue": [
         { "speaker": "narrator", "emotion": "tense", "text": "The tunnel narrows then opens — a collapsed section, a gap of scorched sky above. They are through. The undercroft of Ashveil surrounds them, silent and hot." },
-        { "speaker": "Nilou", "emotion": "uneasy", "text": "Something is wrong. It is too quiet. He should have sent something by now." },
-        { "speaker": "Xiao", "emotion": "tense", "text": "He did not send anything. He came himself." },
+        { "speaker": "Lulu", "emotion": "uneasy", "text": "Something is wrong. It is too quiet. He should have sent something by now." },
+        { "speaker": "Rei", "emotion": "tense", "text": "He did not send anything. He came himself." },
         { "speaker": "narrator", "emotion": "ominous", "text": "A sound — not footsteps but pressure, the air thickening with heat that has nothing to do with the fires above. The Demon Lord steps from the shadows of the undercroft. Not waiting on a throne. Waiting here. For them." },
-        { "speaker": "Hutao", "emotion": "quiet", "text": "...He knew exactly where we would come out." },
-        { "speaker": "Ayaka", "emotion": "controlled", "text": "Then we do not make him wait any longer. Form up." }
+        { "speaker": "Tao", "emotion": "quiet", "text": "...He knew exactly where we would come out." },
+        { "speaker": "Aya", "emotion": "controlled", "text": "Then we do not make him wait any longer. Form up." }
       ]
     }
   ],
@@ -74,38 +82,39 @@
   "boss_chapter": {
     "title": "The Ambush in the Undercroft",
     "background": "throne_room",
-    "cast": ["Ayaka", "Hutao", "Nilou", "Xiao"],
+    "cast": ["Aya", "Tao", "Lulu", "Rei"],
     "pre_dialogue": [
       { "speaker": "narrator", "emotion": "intense", "text": "The Demon Lord fills the undercroft — the fire Seal Fragment blazing against his chest, the heat warping the air around him. He did not wait in his throne room. He hunted them into the tunnel and let them walk straight to him." },
       { "speaker": "narrator", "emotion": "sinister", "text": "Demon Lord: You are smaller than I expected. The Fragment told me you were coming days ago. I have been patient." },
-      { "speaker": "Xiao", "emotion": "cold", "text": "The Fragment speaks to you." },
+      { "speaker": "Rei", "emotion": "cold", "text": "The Fragment speaks to you." },
       { "speaker": "narrator", "emotion": "sinister", "text": "Demon Lord: Everything that burns speaks to me. And you four burn very brightly." },
-      { "speaker": "Hutao", "emotion": "bright", "text": "Ohoho~! Bold last words for someone about to learn what a funeral director can really do!" },
-      { "speaker": "Nilou", "emotion": "steady", "text": "That Fragment does not belong to you. It never did. Give it back to the world you took it from." },
-      { "speaker": "Xiao", "emotion": "flat", "text": "We have faced worse. Much worse. This ends now." }
+      { "speaker": "Tao", "emotion": "cold", "text": "Release them. The ones you took. A summoner and a warrior. Release them." },
+      { "speaker": "narrator", "emotion": "amused", "text": "Demon Lord: My guests? They sustain the Fragment. Without their resonance anchoring it, it would have consumed me months ago. They are... useful. As you will be, once I am done with you." },
+      { "speaker": "Lulu", "emotion": "steady", "text": "They are not yours to use. That Fragment does not belong to you. None of this does." },
+      { "speaker": "Rei", "emotion": "flat", "text": "We have faced worse. Much worse. This ends now." }
     ],
     "post_dialogue": [
       { "speaker": "narrator", "emotion": "solemn", "text": "The Demon Lord falls. Not with a roar — with a sound like an exhale. Like something holding its breath for a very long time finally letting go." },
       { "speaker": "narrator", "emotion": "quiet", "text": "The red crystal floats free from the ash. Its burning light shifts — from predatory to something older. Warmer. Like a hearthfire that remembers what homes felt like." },
-      { "speaker": "Nilou", "emotion": "awed", "text": "It is changing. The moment he lost hold of it — it changed completely." },
-      { "speaker": "Ayaka", "emotion": "thoughtful", "text": "The corruption was in the wielder, not the Fragment itself. It was never evil. Just captured." },
-      { "speaker": "Hutao", "emotion": "content", "text": "Two down. Three to go. I think I am starting to genuinely enjoy this quest." },
-      { "speaker": "Xiao", "emotion": "quiet", "text": "You are not taking it seriously enough." },
-      { "speaker": "Hutao", "emotion": "grinning", "text": "I am taking it seriously AND enjoying it. Multitasking is a core funeral director skill." },
+      { "speaker": "Lulu", "emotion": "awed", "text": "It is changing. The moment he lost hold of it — it changed completely." },
+      { "speaker": "Aya", "emotion": "thoughtful", "text": "The corruption was in the wielder, not the Fragment itself. It was never evil. Just captured." },
+      { "speaker": "Tao", "emotion": "content", "text": "Two down. Three to go. I think I am starting to genuinely enjoy this quest." },
+      { "speaker": "Rei", "emotion": "quiet", "text": "You are not taking it seriously enough." },
+      { "speaker": "Tao", "emotion": "grinning", "text": "I am taking it seriously AND enjoying it. Multitasking is a core funeral director skill." },
       { "speaker": "narrator", "emotion": "cold", "text": "Then a presence settles over the undercroft. Not a sound. Not a figure. A weight — the kind that has no temperature, that presses from every direction at once." },
       { "speaker": "narrator", "emotion": "cold", "text": "Valdris: You freed the Fragment. Good. That creature was wasting it." },
-      { "speaker": "Ayaka", "emotion": "sharp", "text": "You are watching us." },
+      { "speaker": "Aya", "emotion": "sharp", "text": "You are watching us." },
       { "speaker": "narrator", "emotion": "measured", "text": "Valdris: I have always been watching. You are the most interesting thing to enter my world in a century. The Oracle chose well — four resonances, cleanly matched. I almost respect it." },
-      { "speaker": "Xiao", "emotion": "cold", "text": "The kingdom. The people. This destruction — this is your doing. Not the Demon Lord's. Yours." },
+      { "speaker": "Rei", "emotion": "cold", "text": "The kingdom. The people. This destruction — this is your doing. Not the Demon Lord's. Yours." },
       { "speaker": "narrator", "emotion": "indifferent", "text": "Valdris: I broke a Seal. The unraveling was a consequence. I do not govern consequences. That is what mortality is — an endless chain of consequences that someone else pays." },
-      { "speaker": "Hutao", "emotion": "quiet_fury", "text": "There was a child's shoe in that garden." },
+      { "speaker": "Tao", "emotion": "quiet_fury", "text": "There was a child's shoe in that garden." },
       { "speaker": "narrator", "emotion": "unmoved", "text": "Valdris: I have consumed worlds older than that child's entire civilization. Grief is a luxury I shed six centuries ago. Come. Shatter my anchors. Break everything I have built. I will be patient." },
       { "speaker": "narrator", "emotion": "precise", "text": "Valdris: I am very good at patient." },
       { "speaker": "narrator", "emotion": "quiet", "text": "The presence lifts. The ash settles. The four stand in the silence of a kingdom that will never fully recover — and carry the second Fragment forward anyway." },
-      { "speaker": "Nilou", "emotion": "shaken", "text": "He is not afraid of us at all." },
-      { "speaker": "Xiao", "emotion": "flat", "text": "No." },
-      { "speaker": "Hutao", "emotion": "steady", "text": "Good thing we are not doing this to frighten him." },
-      { "speaker": "Ayaka", "emotion": "resolute", "text": "Forward. That is all there is now." }
+      { "speaker": "Lulu", "emotion": "shaken", "text": "He is not afraid of us at all." },
+      { "speaker": "Rei", "emotion": "flat", "text": "No." },
+      { "speaker": "Tao", "emotion": "steady", "text": "Good thing we are not doing this to frighten him." },
+      { "speaker": "Aya", "emotion": "resolute", "text": "Forward. That is all there is now." }
     ],
     "onVictory": [
       { "type": "recruit", "charId": "rydia" },
@@ -114,16 +123,18 @@
     "character_moment": {
       "background": "throne_room",
       "dialogue": [
-        { "speaker": null, "text": "As the presence of Valdris fades, a shimmer of purple light coalesces near the fallen throne. From it steps Rydia, her summoning robes flowing like water, her eyes glowing with eidolon power." },
-        { "speaker": "Rydia", "emotion": "calm", "text": "I felt it — a shattering of chains. The moment this Fragment was freed, my eidolons sang. They led me here." },
-        { "speaker": "Hutao", "emotion": "surprised", "text": "A new arrival. You have impeccable timing. Or terrible timing. Hard to say in a burning kingdom." },
-        { "speaker": "Rydia", "emotion": "serene", "text": "I am Rydia, Summoner of the Eidolons. In my world, I commanded the creatures of the Feymarch. Here, I sense something wounded — a realm crying out for balance. I will help restore it." },
-        { "speaker": "Ayaka", "emotion": "warm", "text": "Welcome. We move against the darkness itself. If you are willing, we would be honored to have you." },
-        { "speaker": null, "text": "A second light appears — brilliant gold and silver, cutting through the ash like divine judgment. Lenneth descends, her armor gleaming, her sword still coursing with holy power." },
-        { "speaker": "Lenneth", "emotion": "commanding", "text": "I am Lenneth, Valkyrie of the Celestial Realm. For millennia, I have judged souls and guided the worthy. This shadow — Valdris — he too must be judged." },
-        { "speaker": "Xiao", "emotion": "respectful", "text": "You carry the weight of ages. I have guarded this world for two thousand years. It is... reassuring to stand with one who understands that burden." },
-        { "speaker": "Lenneth", "emotion": "resolute", "text": "Then we are kindred. Let us break his chains and restore what was lost." },
-        { "speaker": "Nilou", "emotion": "hopeful", "text": "Four became six. The balance shifts. Perhaps we were meant to find each other." }
+        { "speaker": null, "text": "The deep vault beneath the undercroft shudders. Then cracks. Chains of shadow-iron, laced with the Demon Lord's binding sigils, fracture all at once — his power gone, his hold over them dissolved." },
+        { "speaker": null, "text": "Purple light floods upward through the broken stone. From the ruins of the vault, a young woman rises — summoning robes torn at the edges, eyes blazing with the fury of creatures that have been caged too long." },
+        { "speaker": "Ria", "emotion": "shaken_but_fierce", "text": "My eidolons... I could hear them calling the entire time. He kept them just out of reach." },
+        { "speaker": "Tao", "emotion": "quiet", "text": "How long were you down there?" },
+        { "speaker": "Ria", "emotion": "calm", "text": "Long enough to know exactly what this Fragment has been used for. Long enough to understand what Valdris is building toward." },
+        { "speaker": "Aya", "emotion": "warm", "text": "You are free now. And if you are willing — we still have four more Seals to break." },
+        { "speaker": "Ria", "emotion": "resolved", "text": "I am called Ria. A summoner — or I was, before all of this. I do not leave debts unpaid. I will see this through with you." },
+        { "speaker": null, "text": "Gold and silver light tears through the vault ceiling — a winged warrior descends, armor cracked but unyielding, wings cutting ash aside as she lands with the weight of judgment made physical." },
+        { "speaker": "Valka", "emotion": "controlled_fury", "text": "He was not strong enough to break me. Only to hold me. There is a difference." },
+        { "speaker": "Rei", "emotion": "respectful", "text": "You held for months under a binding designed to break resonance. I have guarded this world for two thousand years. I recognize endurance when I see it." },
+        { "speaker": "Valka", "emotion": "resolute", "text": "They called me Valka, where I come from. A judge of souls. I do not remember what I was before that — only what I must do now. Valdris will be judged. When the time comes." },
+        { "speaker": "Lulu", "emotion": "hopeful", "text": "Four became six. And they are not broken. They are furious. Something tells me that matters." }
       ]
     }
   }
