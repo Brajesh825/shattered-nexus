@@ -174,6 +174,14 @@ const CHAR_COLOR = {
 };
 const ENEMY_POP_X = [580, 720, 860, 650]; // 4th is between 1st and 2nd for diamond layout
 const PARTY_POP_X = [42, 108, 174, 240];
+const TYPE_ICONS = {
+  physical: '🗡️',
+  magic_damage: '🔮',
+  heal: '💚',
+  buff: '🛡️',
+  debuff: '☣️',
+  regen: '🌿'
+};
 
 /* ============================================================
    MOVE ANIMATION MAPPINGS
@@ -450,16 +458,75 @@ const UI = {
       const mpPct = Math.max(0, m.mp / m.maxMp * 100);
       const hpCol = hpPct > 50 ? 'var(--hp-hi)' : hpPct > 25 ? 'var(--hp-mid)' : 'var(--hp-lo)';
       const isActive = G.turnQueue[G.turnIdx]?.type === 'party' && G.turnQueue[G.turnIdx]?.idx === i;
+      
       const card = document.createElement('div');
       card.className = 'psc' + (m.isKO ? ' ko-psc' : '') + (isActive ? ' active-psc' : '');
       card.style.borderColor = isActive ? col : col + '50';
+      
+      const statusHtml = this._renderPSCStatuses(m);
+      
       card.innerHTML = `
-        <div class="psc-name" style="color:${col}">${m.displayName} <span class="psc-lv">LV${m.lv}</span></div>
+        <div class="psc-header">
+          <div class="psc-name" style="color:${col}">${m.displayName} <span class="psc-lv">L${m.lv}</span></div>
+          <div class="psc-statuses">${statusHtml}</div>
+        </div>
         <div class="psc-hp-bg"><div class="psc-hp-bar" style="width:${hpPct}%;background:${hpCol}"></div></div>
         <div class="psc-hp-txt">${Math.max(0,m.hp)}/${m.maxHp} HP · ${m.mp}/${m.maxMp} MP</div>
         <div class="psc-mp-bg"><div class="psc-mp-bar" style="width:${mpPct}%"></div></div>`;
       bar.appendChild(card);
     });
+  },
+
+  _renderPSCStatuses(m) {
+    const tokens = [];
+    const push = (icon, turns, cl = '') => {
+      if (turns === undefined || turns === null) tokens.push(`<div class="psct ${cl}">${icon}</div>`);
+      else tokens.push(`<div class="psct ${cl}">${icon}<span class="psct-cnt">${turns}</span></div>`);
+    };
+
+    if (m.buff) {
+      const icon = m.buff.stat === 'atk' ? '⚔️' : m.buff.stat === 'def' ? '🛡️' : m.buff.stat === 'spd' ? '💨' : '🔮';
+      push(icon, m.buff.turns, 'buff');
+    }
+    if (m._atkBuffVal && (!m.buff || m.buff.stat !== 'atk')) push('⚔️', m.buff?.turns || 2, 'buff');
+    if (m._defBuffVal && (!m.buff || m.buff.stat !== 'def')) push('🛡️', m.buff?.turns || 2, 'buff');
+    if (m._magBuffVal && (!m.buff || m.buff.stat !== 'mag')) push('🔮', m.buff?.turns || 2, 'buff');
+    
+    if (m.regenTurns > 0)    push('🌿', m.regenTurns, 'regen');
+    if (m.healBoostTurns > 0) push('💖', m.healBoostTurns, 'buff');
+    if (m.guardMarkTurns > 0) push('🛡️', m.guardMarkTurns, 'guard');
+    if (m.guardianTurns > 0)  push('🛡️', m.guardianTurns, 'guard');
+    if (m.dmgReduction < 1)   push('💎', '-', 'buff');
+    if (m.frozen > 0)        push('❄️', m.frozen, 'debuff');
+    if (m.stunned)           push('💫', '1', 'debuff');
+    if (m.debuff)            push('🔻', m.debuff.turns, 'debuff');
+
+    return tokens.join('');
+  },
+
+  _getBuffReport(m) {
+    if (!m) return '';
+    const parts = [];
+    const _fmt = v => (v >= 1) ? `+${Math.round((v-1)*100)}%` : `-${Math.round((1-v)*100)}%`;
+
+    if (m.buff) {
+      const sName = m.buff.stat.toUpperCase();
+      const mult = (m[m.buff.stat] / m.buff.origVal) || 1;
+      parts.push(`${sName} ${_fmt(mult)}`);
+    }
+    // Secondary buffs
+    if (m._atkBuffVal && (!m.buff || m.buff.stat !== 'atk')) parts.push(`ATK ${_fmt(m._atkBuffVal)}`);
+    if (m._defBuffVal && (!m.buff || m.buff.stat !== 'def')) parts.push(`DEF ${_fmt(m._defBuffVal)}`);
+    if (m._magBuffVal && (!m.buff || m.buff.stat !== 'mag')) parts.push(`MAG ${_fmt(m._magBuffVal)}`);
+    if (m._spdBuffVal && (!m.buff || m.buff.stat !== 'spd')) parts.push(`SPD ${_fmt(m._spdBuffVal)}`);
+
+    if (m.dmgReduction < 1)   parts.push(`Shield ${Math.round((1-m.dmgReduction)*100)}%`);
+    if (m.regenTurns > 0)    parts.push(`Regen`);
+    if (m.guardMark)         parts.push(`Guard`);
+    if (m.frozen > 0)        parts.push(`Frozen`);
+    if (m.stunned)           parts.push(`Stunned`);
+    
+    return parts.length ? ` (${parts.join(', ')})` : '';
   },
 
   /* ── Active member action bar ───────────────────────── */
@@ -969,17 +1036,19 @@ function buildParty() {
       charId, classId,
       name: `${ch.name} / ${cls.name}`,
       displayName: ch.alias || ch.name,
-      hp: s.hp, maxHp: s.hp,
       // Restore saved MP if available so it carries between battles; cap to max
       mp: (ch.mp !== undefined ? Math.min(ch.mp, s.mp) : s.mp), maxMp: s.mp,
+      // Restore saved HP if available; otherwise start at max
+      hp: (ch.hp !== undefined ? Math.min(ch.hp, s.hp) : s.hp), maxHp: s.hp,
       atk: s.atk, def: s.def, spd: s.spd, mag: s.mag,
       lv: ch.lv || 1, exp: ch.exp || 0, gold: ch.gold || 0,
       char: ch, cls: cls,
       passive: ch.passive,
       abilities: cls.abilities,
       isPlayer,
-      isKO: false,
+      isKO: ch.hp === 0 || !!ch.isKO,
       buff: null, debuff: null, regenTurns: 0, stunned: false, frozen: 0,
+      cooldowns: {},
       _dragonLeapTurns: 0,
     });
     // Passive stat bonuses applied at battle build
@@ -1214,8 +1283,19 @@ function buildAbilityMenu() {
   menu.innerHTML = '';
   actor.abilities.forEach(ab => {
     const b = document.createElement('button');
-    b.className = 'cmd-btn';
-    b.innerHTML = `${ab.icon||''} ${ab.name} <span style="color:var(--text-dim);font-size:13px">(${ab.mp}MP)</span>`;
+    const icon   = ab.icon || '';
+    const type   = ab.type || 'physical';
+    const tIcon  = TYPE_ICONS[type] || '🗡️';
+
+    const mpCost = actor.passive?.id === 'eidolon_bond' ? Math.ceil(ab.mp * 0.85) : ab.mp;
+
+    b.className = `cmd-btn ability-btn ab-type-${type}`;
+    b.innerHTML = `
+      <span class="ab-type-icon">${tIcon}</span>
+      <span class="ab-icon">${icon}</span>
+      <span class="ab-name">${ab.name}</span>
+      <span class="ab-cost">(${mpCost}MP)</span>
+    `;
     b.onclick = () => heroAbility(ab);
     menu.appendChild(b);
   });
@@ -1339,7 +1419,7 @@ function heroAttack() {
     }, 460);
   }
 
-  UI.setLog([`${actor.displayName} attacks ${enemy.name}!`], ['hi']);
+  UI.setLog([`${actor.displayName} attacks ${enemy.name}!${UI._getBuffReport(actor)}`], ['hi']);
 
   setTimeout(() => {
     if (typeof SFX !== 'undefined') { SFX.attack(); setTimeout(() => SFX.enemyHit(), 80); }
@@ -1539,10 +1619,17 @@ function heroAbility(ab) {
       if (isUltimate) {
         const _em = Battle.elemMult(element, enemy);
         const _er = Battle.elemResult(element, enemy);
+        const _summonBonus = (ab.id.startsWith('summon_') || ab.id.startsWith('absolute_')) ? (actor.summonBoost || 1.0) : 1.0;
+        
         createEffectOverlay(G.targetEnemyIdx, element, 'enemy', ab.id);
         UI.addLog(`${actor.displayName} ${ultimateChannels[ab.id]}`, 'magic');
         setTimeout(() => {
-          const dmg = Math.floor(Battle.magicDmg(_effectiveMag, e.dmgMultiplier || 1.5, passiveBonus, actor.lv || 1) * _em * _stab);
+          if (_summonBonus > 1.0) UI.addLog('✦ Eidolon Power Boost!', 'magic');
+          const dmg = Math.floor(Battle.magicDmg(_effectiveMag, e.dmgMultiplier || 1.5, passiveBonus, actor.lv || 1) * _em * _stab * _summonBonus);
+          if (e.guardian) {
+            G.party.forEach(m => { if (Battle.alive(m)) m.guardianTurns = 2; });
+            UI.addLog('🛡️ Phantom Guardian summoned!', 'heal');
+          }
           if (_scaleStat > 0) UI.addLog(`💠 Karmic scales +${_scaleStat} from ${e.statScale.toUpperCase()}!`, 'magic');
           enemy.hp  = Math.max(0, enemy.hp - dmg);
           if (enemy.hp <= 0) enemy.isKO = true;
@@ -1570,7 +1657,10 @@ function heroAbility(ab) {
           const _em = Battle.elemMult(element, tgt);
           // Amps
           const _amp = (element === 'fire' ? actor.fireAmp || 1.0 : 1.0);
-          const dmg = Math.floor(Battle.magicDmg(_effectiveMag, e.dmgMultiplier || 1.5, passiveBonus, actor.lv || 1, tgt.mag, tgt.lv || 1) * _em * _stab * _amp * _lowHpMult);
+          const _summonBonus = (ab.id.startsWith('summon_') || ab.id.startsWith('absolute_')) ? (actor.summonBoost || 1.0) : 1.0;
+          if (_summonBonus > 1.0) UI.addLog('✦ Eidolon Power Boost!', 'magic');
+
+          const dmg = Math.floor(Battle.magicDmg(_effectiveMag, e.dmgMultiplier || 1.5, passiveBonus, actor.lv || 1, tgt.mag, tgt.lv || 1) * _em * _stab * _amp * _lowHpMult * _summonBonus);
           tgt.hp = Math.max(0, tgt.hp - dmg);
           if (tgt.hp <= 0) tgt.isKO = true;
           totalDmg += dmg;
@@ -1615,10 +1705,18 @@ function heroAbility(ab) {
         return Math.floor((base + Math.random() * rand + magBonus) * _healAmp);
       };
 
-      const targets = e.aoe ? G.party.filter(m => Battle.alive(m)) : [G.party[G.activeMemberIdx]];
+      const targets = (e.aoe || ab.isUltimate) ? G.party.filter(m => (Battle.alive(m) || ab.isUltimate)) : [G.party[G.activeMemberIdx]];
       targets.forEach(m => {
+        // Revival logic for Ultimate heals (Hajra's Hymn)
+        if (ab.isUltimate && m.isKO) {
+          m.isKO = false;
+          m.hp = 1; // Start at 1 for the addition process below
+        }
         const amt = getHealAmt(m);
         m.hp = Math.min(m.maxHp, m.hp + amt);
+        if (e.cleanse) {
+          m.frozen = 0; m.stunned = false; m.debuff = null;
+        }
         const pIdx = G.party.indexOf(m);
         UI.popParty(pIdx, amt, 'heal', 'light');
         
@@ -1634,12 +1732,12 @@ function heroAbility(ab) {
       if (e.healBoost) {
         actor.healBoost = e.healBoost;
         actor.healBoostTurns = e.duration || 3;
-        UI.addLog(`🌿 ${actor.displayName}'s healing power surged!`, 'heal');
+        UI.addLog(`🌿 ${actor.displayName}: Healing Power +${Math.round((e.healBoost-1)*100)}%!`, 'heal');
       }
       if (e.spdBuff) {
         actor.spd = Math.floor(actor.spd * e.spdBuff);
         actor._spdBuffVal = e.spdBuff;
-        UI.addLog(`💨 ${actor.displayName}'s SPD raised!`, 'heal');
+        UI.addLog(`💨 ${actor.displayName}: SPD +${Math.round((e.spdBuff-1)*100)}%!`, 'heal');
       }
 
       UI.renderPartyStatus();
@@ -1648,41 +1746,43 @@ function heroAbility(ab) {
     } else if (ab.type === 'regen') {
       actor.regenTurns = e.duration || 3;
       createEffectOverlay(G.activeMemberIdx, element, 'party', ab.id);
-      UI.addLog(`${actor.displayName}: Regen for ${actor.regenTurns} turns!`, 'regen');
+      UI.addLog(`${actor.displayName}: Regen (${e.hpRegen || 8} HP/turn) for ${actor.regenTurns} turns!`, 'regen');
 
     } else if (ab.type === 'buff') {
+      const _fmt = v => (v > 1) ? `+${Math.round((v-1)*100)}%` : `${Math.round((v-1)*100)}%`;
       const applyBuff = (m, idx) => {
-        if (!Battle.alive(m)) return;
+        // Ultimate heals/buffs (like Hajra's Hymn) can target everyone
+        if (!Battle.alive(m) && !ab.isUltimate) return;
+        
+        // Revive logic for Ultimates
+        if (ab.isUltimate && m.isKO) { m.isKO = false; m.hp = 1; }
+
         // Primary stat buff
         if (e.stat) {
           if (m.buff) m[m.buff.stat] = m.buff.origVal;
           m.buff = { stat: e.stat, origVal: m[e.stat], turns: e.duration || 2 };
-          m[e.stat] = Math.floor(m[e.stat] * (e.multiplier || 1.3));
+          const mult = e.multiplier || 1.3;
+          m[e.stat] = Math.floor(m[e.stat] * mult);
         }
         
-        // Multi-stat secondary boosters
         if (e.atkBuff) { m.atk = Math.floor(m.atk * e.atkBuff); m._atkBuffVal = e.atkBuff; }
         if (e.defBuff) { m.def = Math.floor(m.def * e.defBuff); m._defBuffVal = e.defBuff; }
-        if (e.spdBuff && !m._spdBuffVal) { m.spd = Math.floor(m.spd * e.spdBuff); m._spdBuffVal = e.spdBuff; }
         if (e.magBuff) { m.mag = Math.floor(m.mag * e.magBuff); m._magBuffVal = e.magBuff; }
         
-        // Special status effects
-        if (e.damageReduction) m.dmgReduction = (1 - e.damageReduction);
-        if (e.evasion) m.evasion = e.evasion;
-        if (e.reflect) m.reflect = e.reflect;
+        if (e.damageReduction) { m.dmgReduction = (1 - e.damageReduction); }
+        if (e.hpRegen) { m.hpRegenAmt = e.hpRegen; m.regenTurns = e.duration || 3; }
         if (e.guardMark) { m.guardMark = true; m.guardMarkTurns = e.duration || 3; }
-        if (e.fireAmp) m.fireAmp = e.fireAmp;
-        if (e.absorb) m.absorbElement = e.absorb;
+        if (e.summonBoost) { m.summonBoost = e.summonBoost; }
 
         createEffectOverlay(idx, element, 'party', ab.id);
       };
 
       if (e.aoe) {
         G.party.forEach((m, i) => applyBuff(m, i));
-        UI.addLog(`${actor.displayName}: ${ab.name} shields the entire party!`, 'heal');
+        UI.addLog(`${actor.displayName}: ${ab.name}!${UI._getBuffReport(actor)}`, 'heal');
       } else {
         applyBuff(actor, G.activeMemberIdx);
-        UI.addLog(`${actor.displayName} gained a temporary boost!`, 'heal');
+        UI.addLog(`${actor.displayName}: ${ab.name}!${UI._getBuffReport(actor)}`, 'heal');
       }
 
     } else if (ab.type === 'debuff') {
@@ -1726,7 +1826,7 @@ function heroAbility(ab) {
     }
 
     // Skip normal render/turn for all ultimates (handled in special timing)
-    const ultimateIds = ['cryoclasm', 'guide_to_afterlife', 'hajras_hymn', 'mastery_of_pain'];
+    const ultimateIds = ['cryoclasm', 'guide_to_afterlife', 'hajras_hymn', 'mastery_of_pain', 'absolute_summon'];
     if (ab.type === 'magic_damage' && ultimateIds.includes(ab.id)) {
       return;
     }
@@ -2105,6 +2205,10 @@ function enemyAct(enemy, enemyIdx) {
       if (target.passive?.id === 'divine_authority') dmg = Math.floor(dmg * 0.85);
       if (target.passive?.id === 'divine_blessing')  dmg = Math.floor(dmg * 0.88);
       if (target.dmgReduction) dmg = Math.floor(dmg * target.dmgReduction);
+      if (target.guardianTurns > 0) {
+        dmg = Math.floor(dmg * 0.7);
+        UI.addLog(`(Guardian Mitigated -30%)`, 'hi');
+      }
 
       dmg = _applyEliteResist(dmg, target); // Tarnished Wing elite resist
       target.hp  = Math.max(0, target.hp - dmg);
@@ -2153,6 +2257,10 @@ function enemyAct(enemy, enemyIdx) {
       if (target.passive?.id === 'divine_authority') dmg = Math.floor(dmg * 0.85);
       if (target.passive?.id === 'divine_blessing')  dmg = Math.floor(dmg * 0.88);
       if (target.dmgReduction) dmg = Math.floor(dmg * target.dmgReduction);
+      if (target.guardianTurns > 0) {
+        dmg = Math.floor(dmg * 0.7);
+        UI.addLog(`(Guardian Mitigated -30%)`, 'hi');
+      }
 
       dmg = _applyEliteResist(dmg, target); // Tarnished Wing elite resist
       target.hp = Math.max(0, target.hp - dmg);
@@ -2208,6 +2316,7 @@ function enemyAct(enemy, enemyIdx) {
         m.guardMarkTurns--;
         if (m.guardMarkTurns <= 0) m.guardMark = null;
       }
+      if (m.guardianTurns > 0) m.guardianTurns--;
 
       if (m.cooldowns) {
         for (let cid in m.cooldowns) {
@@ -2321,6 +2430,8 @@ function checkBattleEnd() {
         ch.exp  = m.exp;
         ch.gold = m.gold;
         ch.mp   = m.mp;   // persist MP so it carries between battles
+        ch.hp   = m.hp;   // persist HP
+        ch.isKO = m.isKO; // persist KO state
       }
     });
 
@@ -2375,10 +2486,14 @@ function checkMemberLevel(m) {
   if (!m || m.exp < 30 * m.lv) return false;
   m.lv++;
   const g = m.cls.growthPerLevel || {};
-  m.maxHp += (g.hp  || 8);
-  m.maxMp += (g.mp  || 3);
-  m.hp     = m.maxHp;
-  m.mp     = m.maxMp;
+  const hpGain = (g.hp  || 8);
+  const mpGain = (g.mp  || 3);
+  m.maxHp += hpGain;
+  m.maxMp += mpGain;
+  // NO LONGER resetting to full HP/MP on level up per user request
+  // Only gain the raw amount of the stat increase
+  m.hp += hpGain;
+  m.mp += mpGain;
   m.atk   += (g.atk || 2);
   m.def   += (g.def || 1);
   m.mag   += (g.mag || 1);
