@@ -572,6 +572,7 @@ window.addEventListener('DOMContentLoaded', () => {
   G.relics  = window.RELICS_DATA     || [];
   window._origEnemies = G.enemies.slice();
   initStars();
+  scaleGame();           // initial scale on load (resize fires on changes after)
   UI.show('title-screen');
 });
 

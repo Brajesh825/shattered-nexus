@@ -757,6 +757,31 @@
   image-rendering: auto;
 }
 
+/* ══════════════════════════════════════════════════════
+   MOBILE LANDSCAPE — map.css overrides
+   Lives here because map.css loads AFTER style.css;
+   the cascade means only this sheet can win for
+   #map-screen and #explore-screen min-height.
+   ══════════════════════════════════════════════════════ */
+@media (orientation:landscape) and (max-height:500px) {
+  /* Remove the hard blockers that prevent these screens
+     from rendering on landscape phones (h ≤ 430px)     */
+  #map-screen     { min-height: 0; }
+  #explore-screen { min-height: 0; }
+
+  /* Compact map header/footer — reclaim vertical space   */
+  .map-header      { padding: 6px 14px 4px; }
+  .map-title-label { font-size: 8px; letter-spacing: 2px; }
+  .map-arc-label   { font-size: 15px; margin-top: 1px; }
+  .map-footer      { padding: 5px 14px 4px; min-height: 0; }
+
+  /* Compact explore header bar                           */
+  .explore-header   { padding: 6px 12px; }
+  .explore-map-name { font-size: 11px; }
+  .explore-map-hint { font-size: 9px; }
+  .explore-menu-btn { font-size: 9px; padding: 4px 10px; }
+}
+
 /* ── Map select overlay — cinematic ──────────────────── */
 #map-select-overlay {
   position: absolute;

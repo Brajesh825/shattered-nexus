@@ -1535,58 +1535,128 @@ body {
   .pmb-spr  { width:40px; height:48px; }
 }
 
-/* ── MOBILE LANDSCAPE ────────────────────────────────── */
-/* Scale handled by JS scaleGame(); these rules reduce visual
-   clutter so content fits after scaling. */
+/* ══════════════════════════════════════════════════════════════
+   MOBILE LANDSCAPE  (orientation:landscape AND max-height:500px)
+   Covers: iPhone SE (568×320) → iPhone 14 Pro Max (932×430)
+           Galaxy S-series (780×360) and similar Android phones.
+   All 9 screens addressed; scaleGame() handles width-based
+   transform so CSS here trims vertical fat so content sits
+   comfortably inside the available height.
+   ══════════════════════════════════════════════════════════════ */
 @media (orientation:landscape) and (max-height:500px) {
   body { align-items: flex-start; }
-  /* Remove artificial min-heights so scaleGame() measures real content */
-  #game         { min-height: 0; }
-  #title-screen { min-height: 0; }
-  #char-screen, #class-screen { min-height: 0; }
-  #battle-screen .pm-wrap { min-height: 0; }
 
-  /* Tighten spacing on title screen */
-  #title-screen { padding: 16px 14px; gap: 8px; }
-  .crystals     { gap: 14px; margin-bottom: 0; }
-  .crystal      { font-size: 24px; }
-  .game-title   { font-size: 14px; line-height: 1.4; }
+  /* ── Zero all blocking min-heights ──────────────────────────── */
+  #game                    { min-height: 0; }
+  #title-screen            { min-height: 0; }
+  #char-screen,
+  #class-screen            { min-height: 0; }
+  #battle-screen .pm-wrap  { min-height: 0; }
+  /* #map-screen (520px) and #explore-screen (500px) overrides
+     live in map.css because that sheet loads after this one      */
 
-  /* Tighten battle UI for small viewports — scene fills remaining via flex:1 */
-  #battle-scene        { min-height: 160px; }  /* floor so scene never collapses */
-  .bg-mts              { height: 48px; }
-  .bg-gnd              { height: 28px; }
-  .turn-bar            { height: 28px; min-height: 0; padding: 2px 8px; overflow: hidden; }
-  .active-member-bar   { min-height: 0; height: 22px; padding: 2px 10px; }
-  #menu-area           { padding: 4px 10px; }
-  .battle-log          { min-height: 0; max-height: 52px; overflow-y: auto; padding: 3px 10px; }
-  .party-status-bar    { padding: 1px 6px; }
-  .psc                 { padding: 1px 4px; }
-  .stats-bar           { padding: 1px 10px; font-size: 12px; }
+  /* ── TITLE SCREEN ───────────────────────────────────────────── */
+  #title-screen  { padding: 10px 16px; gap: 5px; }
+  .crystals      { display: none; }
+  .game-title    { font-size: 13px; line-height: 1.3; }
+  .subtitle      { font-size: 14px; letter-spacing: 3px; }
+  .ver-tag       { display: none; }
+  .title-stats,
+  .title-tagline { display: none; }
+  .big-btn       { font-size: 9px; padding: 8px 14px; margin: 2px 8px; }
 
-  /* Scale down battle sprites for small screens */
-  .party-sprite        { width: 72px !important;  height: 72px !important; }
-  .enemy-sprite        { max-width: 80px !important;  max-height: 96px !important; }
-  .party-member        { width: 110px; height: 130px; }
-  .party-container     { height: 280px; }
-  .enemy-container     { height: 280px; }
+  /* ── CHAR / CLASS SELECT ────────────────────────────────────── */
+  #char-screen,
+  #class-screen  { max-height: 100vh; overflow-y: auto; padding: 4px 8px; }
+  .char-grid,
+  .class-grid    { grid-template-columns: 1fr 1fr; max-height: none; gap: 5px; }
+  .screen-title  { padding: 5px 12px; }
+  .step-bar      { padding: 3px 8px; }
+  .step          { font-size: 11px; padding: 2px 6px; }
+  .step-num      { width: 16px; height: 16px; font-size: 10px; }
+  .ecrd          { min-width: 54px; padding: 2px; }
+  .ecrd-spr      { width: 44px; height: 52px; }
+  .ecrd-hp-bg    { width: 44px; }
+  .ecrd-name     { max-width: 54px; font-size: 9px; }
 
-  /* Scale down enemy cards */
-  .ecrd                { min-width: 54px; padding: 2px; }
-  .ecrd-spr            { width: 44px; height: 52px; }
-  .ecrd-hp-bg          { width: 44px; }
-  .ecrd-name           { max-width: 54px; font-size: 9px; }
+  /* ── BATTLE SCREEN — chrome ─────────────────────────────────── */
+  #battle-scene      { min-height: 160px; }
+  .bg-mts            { height: 48px; }
+  .bg-gnd            { height: 28px; }
+  .turn-bar          { height: 28px; min-height: 0; padding: 2px 8px; overflow: hidden; }
+  .active-member-bar { min-height: 0; height: 22px; padding: 2px 10px; }
+  #menu-area         { padding: 4px 10px; }
+  .battle-log        { min-height: 0; max-height: 52px; overflow-y: auto; padding: 3px 10px; }
+  .party-status-bar  { padding: 1px 6px; }
+  .psc               { padding: 1px 4px; }
+  .stats-bar         { padding: 1px 10px; font-size: 12px; }
 
-  /* Scale down party bottom portraits */
-  .pmb-spr             { width: 32px; height: 38px; }
-  .party-row           { bottom: 28px; gap: 3px; }
+  /* ── BATTLE — party formation (left side) ───────────────────── */
+  /* Must set WIDTH — default 420px + enemy 580px = 1000px total,
+     which crushes both containers on a 700px landscape phone.    */
+  .party-container   { width: 200px; height: 220px; }
+  .party-sprite      { width: 64px !important; height: 64px !important; }
+  .party-member      { width: 86px; height: 105px; padding: 2px; }
+  /* Pyramid recalculated for 200px container, 86px-wide cards
+     Centre col = (200-86)/2 = 57px                              */
+  .party-member:nth-child(1) { left:  57px; top:   0px; }
+  .party-member:nth-child(2) { left:  10px; top:  52px; }
+  .party-member:nth-child(3) { left: 104px; top:  52px; } /* right edge 190px ✓ */
+  .party-member:nth-child(4) { left:  57px; top: 104px; } /* bottom 209px ✓ */
+  .party-hp-bar-bg   { width: 68px; }
+  .pmb-spr           { width: 32px; height: 38px; }
+  .party-row         { bottom: 28px; gap: 3px; }
 
-  /* Compact char/class select */
-  #char-screen, #class-screen { min-height: 360px; }
-  .char-grid, .class-grid     { grid-template-columns: 1fr 1fr; }
+  /* ── BATTLE — enemy formation (right side) ──────────────────── */
+  /* Container: 320px wide × 280px tall                            */
+  .enemy-container   { width: 320px; height: 280px; }
 
-  /* Story screen: hide portrait column on very small heights */
+  /* Card sizes — ≈55% of desktop, aspect ratio ~1.52 preserved   */
+  .enemy-container[data-count="1"] .enemy           { width: 145px; height: 220px; }
+  .enemy-container[data-count="1"] .enemy-hp-bar-bg  { width: 115px; }
+  .enemy-container[data-count="2"] .enemy           { width: 110px; height: 167px; }
+  .enemy-container[data-count="2"] .enemy-hp-bar-bg  { width:  88px; }
+  .enemy-container[data-count="3"] .enemy           { width:  88px; height: 134px; }
+  .enemy-container[data-count="3"] .enemy-hp-bar-bg  { width:  66px; }
+  .enemy-container[data-count="4"] .enemy           { width:  72px; height: 110px; }
+  .enemy-container[data-count="4"] .enemy-hp-bar-bg  { width:  55px; }
+
+  /* Positions — edge-touch geometry maintained from desktop plan,
+     scaled to 320px container width                              */
+  /* count=1  centre = (320-145)/2 = 87px                        */
+  .enemy-container[data-count="1"] .enemy:nth-child(1) { right:  87px; top: 25px; }
+  /* count=2  stagger edge-to-edge at x=194                      */
+  .enemy-container[data-count="2"] .enemy:nth-child(1) { right:  16px; top: 11px; z-index:14; }
+  .enemy-container[data-count="2"] .enemy:nth-child(2) { right: 194px; top: 77px; z-index:16; }
+  /* count=3  triangle — apex centre, flanks edge-touch apex     */
+  .enemy-container[data-count="3"] .enemy:nth-child(1) { right: 116px; top:  3px; z-index:14; }
+  .enemy-container[data-count="3"] .enemy:nth-child(2) { right:  28px; top: 88px; z-index:16; }
+  .enemy-container[data-count="3"] .enemy:nth-child(3) { right: 204px; top: 88px; z-index:16; }
+  /* count=4  diamond — 72px gap between flanks, 20px overflow ✓ */
+  .enemy-container[data-count="4"] .enemy:nth-child(1) { right: 124px; top:   0px; z-index:14; }
+  .enemy-container[data-count="4"] .enemy:nth-child(2) { right:  52px; top:  94px; z-index:16; }
+  .enemy-container[data-count="4"] .enemy:nth-child(3) { right: 196px; top:  94px; z-index:16; }
+  .enemy-container[data-count="4"] .enemy:nth-child(4) { right: 124px; top: 188px; z-index:18; }
+
+  /* ── STORY SCREEN ───────────────────────────────────────────── */
   .s-dialogue-portrait { display: none; }
+  .s-header            { padding: 5px 10px; }
+  .s-header-chap       { font-size: 11px; }
+  .s-cast-row          { padding: 4px 10px; gap: 6px; }
+  .s-cast-face         { width: 28px; height: 28px; }
+  .s-dialogue          { padding: 8px 14px; }
+  .s-dialogue-speaker  { font-size: 12px; }
+  .s-dialogue-text     { font-size: 14px; line-height: 1.4; }
+  .s-continue-hint     { font-size: 9px; }
+  .s-choice-btn        { font-size: 11px; padding: 8px 12px; }
+
+  /* ── RESULT SCREEN ──────────────────────────────────────────── */
+  #result-screen  { padding: 8px 12px; gap: 8px; }
+  .result-title   { font-size: 11px; line-height: 1.4; }
+  .result-stats   { font-size: 13px; line-height: 1.6; }
+  .result-party   { gap: 6px; }
+  .result-member  { padding: 4px 8px; min-width: 70px; font-size: 8px; }
+  .result-btns    { gap: 6px; }
 }
 
 /* ══════════════════════════════════════════════════════
