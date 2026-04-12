@@ -68,33 +68,37 @@
   <div id="title-screen" class="screen active">
     <div class="stars" id="stars"></div>
 
-    <div class="crystals">
-      <span class="crystal">💎</span>
-      <span class="crystal">💠</span>
-      <span class="crystal">🔷</span>
-      <span class="crystal">💎</span>
-    </div>
+    <!-- Cinematic top border accent -->
+    <div class="title-top-bar"></div>
 
-    <div class="game-title">SHATTERED<br>NEXUS</div>
-    <div class="subtitle">~ REBORN ~</div>
-    <div class="title-tagline">4 Characters · 4 Classes · 50 Enemies · 5 Arcs</div>
+    <!-- Title block -->
+    <div class="title-hero">
+      <div class="title-eyebrow">✦ &nbsp; A N   E P I C   S A G A &nbsp; ✦</div>
+      <div class="game-title">SHATTERED<br>NEXUS</div>
+      <div class="title-ornament"><span></span><span class="orn-gem">✦</span><span></span></div>
+      <div class="subtitle">R E B O R N</div>
+      <div class="title-tagline">4 Characters &nbsp;·&nbsp; 4 Classes &nbsp;·&nbsp; 50 Enemies &nbsp;·&nbsp; 5 Arcs</div>
+    </div>
 
     <!-- CONTINUE sits above the grid — full width, hidden until save exists -->
     <button class="big-btn title-continue-btn blink" id="title-continue-btn"
             onclick="openSlotOverlay('load')" style="display:none">
-      ▶ CONTINUE
+      ▶ &nbsp; CONTINUE
     </button>
 
-    <!-- 2-column button grid on desktop, single column on mobile -->
+    <!-- Menu button grid -->
     <div class="menu-btns">
-      <button class="big-btn" onclick="openSlotOverlay('new')">
-        📖 NEW STORY
+      <button class="title-btn title-btn-primary" onclick="openSlotOverlay('new')">
+        <span class="tbtn-icon">📖</span>
+        <span class="tbtn-label">NEW STORY</span>
       </button>
-      <button class="big-btn btn-secondary" onclick="goCharSelect()">
-        ⚔ FREE BATTLE
+      <button class="title-btn title-btn-secondary" onclick="goCharSelect()">
+        <span class="tbtn-icon">⚔</span>
+        <span class="tbtn-label">FREE BATTLE</span>
       </button>
-      <button class="big-btn btn-tertiary" onclick="startExplore()">
-        🗺 EXPLORE
+      <button class="title-btn title-btn-tertiary" onclick="startExplore()">
+        <span class="tbtn-icon">🗺</span>
+        <span class="tbtn-label">EXPLORE</span>
       </button>
     </div>
 

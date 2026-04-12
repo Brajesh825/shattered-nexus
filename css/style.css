@@ -81,30 +81,23 @@ body {
 #battle-screen { flex:1; overflow:hidden; }
 
 /* ═══════════════════════════════════════════════════════════
-   TITLE SCREEN
+   TITLE SCREEN  —  Cinematic redesign (matches map aesthetic)
    ═══════════════════════════════════════════════════════════ */
 #title-screen {
-  min-height: 100vh;
+  flex: 1;            /* fill #game height — avoids iOS 100vh gap */
+  min-height: 0;
   align-items: center;
   justify-content: center;
+  /* Deep-space background — same palette as map-screen */
   background:
-    radial-gradient(ellipse 80% 60% at 50% 20%, #1a083a 0%, transparent 70%),
-    radial-gradient(ellipse 60% 80% at 30% 80%, #060240 0%, transparent 60%),
-    radial-gradient(ellipse 50% 60% at 70% 60%, #0a0430 0%, transparent 60%),
+    radial-gradient(ellipse 70% 55% at 50% 30%, #180840 0%, transparent 65%),
+    radial-gradient(ellipse 55% 70% at 20% 85%, #060228 0%, transparent 55%),
+    radial-gradient(ellipse 45% 55% at 80% 65%, #0b0434 0%, transparent 55%),
     #03020c;
-  padding: 32px 24px;
-  gap: 12px;
+  padding: 36px 24px 28px;
+  gap: 0;
   position: relative;
   overflow: hidden;
-}
-
-/* Animated aurora stripe */
-#title-screen::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0; height: 3px;
-  background: linear-gradient(90deg, transparent, #6040c0, #9060ff, #6040c0, transparent);
-  animation: scanline 3s ease-in-out infinite;
 }
 
 /* ── Stars ──────────────────────────────────────────────── */
@@ -116,166 +109,269 @@ body {
   animation: twinkle 2s infinite alternate;
 }
 
-/* ── Crystals ───────────────────────────────────────────── */
-.crystals {
-  display: flex;
-  gap: 24px;
-  z-index: 1;
-  margin-bottom: 2px;
+/* ── Cinematic top accent bar ───────────────────────────── */
+.title-top-bar {
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    #6040c0 20%,
+    var(--gold) 50%,
+    #6040c0 80%,
+    transparent 100%);
+  box-shadow: 0 0 24px #9060ff60;
+  z-index: 2;
 }
-.crystal {
-  font-size: 30px;
-  animation: float 3s ease-in-out infinite;
-  filter: drop-shadow(0 0 14px #9060ff) drop-shadow(0 0 4px #fff4);
-}
-.crystal:nth-child(2) { animation-delay: .5s; }
-.crystal:nth-child(3) { animation-delay: 1s; }
-.crystal:nth-child(4) { animation-delay: 1.5s; }
 
-/* ── Game title ─────────────────────────────────────────── */
-.game-title {
+/* ── Title hero block ───────────────────────────────────── */
+.title-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  z-index: 1;
+  margin-bottom: 28px;
+}
+
+/* Eyebrow label above title */
+.title-eyebrow {
   font-family: var(--px);
-  font-size: 22px;
+  font-size: 7px;
+  color: #6050a0;
+  letter-spacing: 3px;
+  margin-bottom: 14px;
+  text-shadow: 0 0 14px #6040c040;
+}
+
+/* ── Main game title — Cinzel, large, gold ──────────────── */
+.game-title {
+  font-family: 'Cinzel', serif;
+  font-size: 54px;
+  font-weight: 700;
   color: var(--gold);
   text-align: center;
+  letter-spacing: 8px;
+  line-height: 1.15;
   text-shadow:
-    0 0 10px #f5d06088,
-    0 0 30px #e09010aa,
-    3px 3px 0 #3a2000;
-  line-height: 1.7;
+    0 0 18px #f5c84088,
+    0 0 50px #c08000aa,
+    0 2px 4px #00000088;
   z-index: 1;
   position: relative;
 }
 
-/* Gold shimmer line under title */
-.game-title::after {
-  content: '';
-  display: block;
-  width: 80%;
+/* ── Ornament divider ✦ ─── ✦ ─── ✦ ────────────────────── */
+.title-ornament {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 280px;
+  margin: 14px auto 10px;
+}
+.title-ornament span:not(.orn-gem) {
+  flex: 1;
   height: 1px;
-  margin: 8px auto 0;
-  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  background: linear-gradient(90deg, transparent, #5040a0, transparent);
+}
+.orn-gem {
+  font-size: 13px;
+  color: var(--gold);
+  text-shadow: 0 0 12px var(--gold-glow), 0 0 28px #c0800060;
+  animation: float 3s ease-in-out infinite;
 }
 
+/* ── Subtitle — Cinzel, spaced, muted ──────────────────── */
 .subtitle {
-  font-family: var(--vt);
-  font-size: 20px;
-  color: #7060a8;
-  letter-spacing: 6px;
-  z-index: 1;
-  text-shadow: 0 0 12px #7060a840;
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: #8070b8;
+  letter-spacing: 10px;
+  text-shadow: 0 0 20px #6050a040;
+  margin-bottom: 10px;
 }
 
+/* ── Tagline ────────────────────────────────────────────── */
 .title-tagline {
-  font-size: 12px;
-  color: #4a4080;
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-size: 14px;
+  font-style: italic;
+  color: #504878;
   text-align: center;
-  z-index: 1;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
   line-height: 1.6;
+  margin-top: 2px;
 }
 
 /* ── CONTINUE button (full-width, above grid) ───────────── */
 .title-continue-btn {
+  font-family: 'Cinzel', serif !important;
+  font-size: 13px !important;
+  letter-spacing: 3px !important;
   width: 100%;
   max-width: 440px;
   z-index: 1;
-  margin: 0;
+  margin: 0 0 14px;
+  background: linear-gradient(180deg, #0d1a30, #081220) !important;
+  border: 1px solid #4a80b0 !important;
+  color: #80c0f0 !important;
+  padding: 16px 20px !important;
+  box-shadow: 0 0 20px #3a608030, inset 0 1px 0 #ffffff10 !important;
+}
+.title-continue-btn:hover {
+  border-color: #70b8e8 !important;
+  box-shadow: 0 0 30px #4a90c060 !important;
+  color: #b0d8f8 !important;
 }
 
 /* ── Menu button grid ───────────────────────────────────── */
-/* Desktop: 3 buttons in a row; CONTINUE above full-width   */
 .menu-btns {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 10px;
+  gap: 12px;
   width: 100%;
-  max-width: 580px;
+  max-width: 600px;
   z-index: 1;
 }
 
-.menu-btns .big-btn {
-  margin: 0;
-  width: 100%;
-  padding: 16px 10px;
-  font-size: 9px;
+/* ── New cinematic title buttons ────────────────────────── */
+.title-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 20px 12px;
+  background: rgba(5, 3, 18, 0.80);
+  border: 1px solid #2a1a60;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: border-color .2s, box-shadow .2s, background .2s;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+}
+/* subtle inner top-highlight */
+.title-btn::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 10%; right: 10%; height: 1px;
+  background: linear-gradient(90deg, transparent, #ffffff18, transparent);
 }
 
-/* Secondary / tertiary colour variants */
-.big-btn.btn-secondary {
-  background: transparent;
-  border-color: #4a4080;
-  color: #8080c0;
+.tbtn-icon {
+  font-size: 22px;
+  line-height: 1;
+  filter: drop-shadow(0 0 8px currentColor);
 }
-.big-btn.btn-secondary:hover {
-  border-color: #8080c0;
-  color: #c0b8f0;
-  box-shadow: 0 0 16px #6050a040;
+.tbtn-label {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
-.big-btn.btn-tertiary {
-  background: transparent;
-  border-color: #2a5040;
-  color: #60c090;
+
+/* Primary — gold/amber (NEW STORY) */
+.title-btn-primary {
+  border-color: #3a2a00;
+  color: #c0a040;
 }
-.big-btn.btn-tertiary:hover {
-  border-color: #60c090;
-  color: #90e0b0;
-  box-shadow: 0 0 16px #30804040;
+.title-btn-primary:hover {
+  background: rgba(30, 18, 0, 0.90);
+  border-color: var(--gold);
+  box-shadow: 0 0 24px #c0900040, inset 0 0 20px #c0900018;
+  color: var(--gold);
+}
+
+/* Secondary — purple/violet (FREE BATTLE) */
+.title-btn-secondary {
+  border-color: #2a1a60;
+  color: #8070c0;
+}
+.title-btn-secondary:hover {
+  background: rgba(20, 10, 50, 0.90);
+  border-color: #8060d0;
+  box-shadow: 0 0 24px #6050c040, inset 0 0 20px #6050c018;
+  color: #b0a0e8;
+}
+
+/* Tertiary — teal/green (EXPLORE) */
+.title-btn-tertiary {
+  border-color: #0a3030;
+  color: #40a880;
+}
+.title-btn-tertiary:hover {
+  background: rgba(5, 20, 18, 0.90);
+  border-color: #40c090;
+  box-shadow: 0 0 24px #30906040, inset 0 0 20px #30906018;
+  color: #70d8a8;
 }
 
 .ver-tag {
   position: absolute;
   bottom: 10px; right: 14px;
-  font-size: 11px;
-  color: var(--text-dim);
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-size: 12px;
+  color: #2a2050;
+  letter-spacing: 1px;
   z-index: 1;
 }
 
 /* ── Title responsive — tablet (≤ 920px) ────────────────── */
 @media (max-width: 920px) {
-  .menu-btns          { max-width: 480px; }
-  .title-continue-btn { max-width: 380px; }
+  .game-title         { font-size: 44px; letter-spacing: 6px; }
+  .menu-btns          { max-width: 500px; }
+  .title-continue-btn { max-width: 400px; }
 }
 
 /* ── Title responsive — mobile portrait (≤ 600px) ────────── */
 @media (max-width: 600px) {
-  #title-screen       { padding: 24px 20px; gap: 10px; min-height: 100vh; }
-  .crystals           { gap: 18px; }
-  .crystal            { font-size: 26px; }
-  .game-title         { font-size: 17px; line-height: 1.6; }
-  .subtitle           { font-size: 16px; letter-spacing: 4px; }
-  .title-tagline      { font-size: 11px; }
+  #title-screen       { padding: 28px 20px 20px; gap: 0; }
+  .game-title         { font-size: 34px; letter-spacing: 5px; }
+  .subtitle           { font-size: 11px; letter-spacing: 8px; }
+  .title-tagline      { font-size: 13px; }
+  .title-hero         { margin-bottom: 20px; }
   /* 2-column grid on medium mobile */
-  .menu-btns          { grid-template-columns: 1fr 1fr; max-width: 340px; gap: 8px; }
-  .menu-btns .big-btn { padding: 14px 8px; font-size: 9px; }
-  .title-continue-btn { max-width: 340px; }
+  .menu-btns          { grid-template-columns: 1fr 1fr; max-width: 360px; gap: 10px; }
+  .title-btn          { padding: 16px 10px; gap: 6px; }
+  .tbtn-label         { font-size: 8px; letter-spacing: 1.5px; }
+  .tbtn-icon          { font-size: 18px; }
+  .title-continue-btn { max-width: 360px; }
 }
 
 /* ── Title responsive — small mobile (≤ 400px) ───────────── */
 @media (max-width: 400px) {
-  #title-screen       { padding: 20px 16px; gap: 8px; }
-  .crystals           { gap: 14px; }
-  .crystal            { font-size: 22px; }
-  .game-title         { font-size: 14px; line-height: 1.5; }
-  .subtitle           { font-size: 14px; letter-spacing: 3px; }
+  #title-screen       { padding: 20px 14px 16px; }
+  .game-title         { font-size: 26px; letter-spacing: 4px; }
+  .subtitle           { font-size: 10px; letter-spacing: 6px; }
   .title-tagline      { display: none; }
-  /* Stack to single column on very small phones */
-  .menu-btns          { grid-template-columns: 1fr; max-width: 260px; gap: 7px; }
-  .menu-btns .big-btn { padding: 13px 8px; font-size: 8px; }
-  .title-continue-btn { max-width: 260px; }
+  .title-eyebrow      { font-size: 6px; margin-bottom: 10px; }
+  .title-ornament     { width: 200px; }
+  .title-hero         { margin-bottom: 16px; }
+  /* Single column */
+  .menu-btns          { grid-template-columns: 1fr; max-width: 240px; gap: 8px; }
+  .title-btn          { padding: 14px 10px; flex-direction: row; gap: 10px; }
+  .tbtn-label         { font-size: 8px; }
+  .title-continue-btn { max-width: 240px; }
 }
 
 /* ── Title — landscape phone override ───────────────────── */
 @media (orientation: landscape) and (max-height: 500px) {
-  #title-screen       { padding: 12px 20px; gap: 6px; min-height: 0; }
-  .crystals           { display: none; }
-  .game-title         { font-size: 14px; line-height: 1.3; }
-  .subtitle           { font-size: 14px; letter-spacing: 3px; }
+  #title-screen       { padding: 10px 20px 8px; gap: 0; min-height: 0; }
+  .title-eyebrow      { display: none; }
+  .title-hero         { flex-direction: row; align-items: center; gap: 20px; margin-bottom: 10px; }
+  .game-title         { font-size: 26px; letter-spacing: 4px; line-height: 1.2; }
+  .title-ornament     { display: none; }
+  .subtitle           { font-size: 10px; letter-spacing: 5px; margin-bottom: 0; }
   .title-tagline      { display: none; }
-  /* 3-column row to keep everything in one viewport height */
-  .menu-btns          { grid-template-columns: 1fr 1fr 1fr; max-width: 500px; gap: 6px; }
-  .menu-btns .big-btn { padding: 10px 6px; font-size: 8px; }
-  .title-continue-btn { max-width: 500px; padding: 10px; font-size: 8px; }
+  /* 3-column row */
+  .menu-btns          { grid-template-columns: 1fr 1fr 1fr; max-width: 520px; gap: 8px; }
+  .title-btn          { padding: 10px 8px; gap: 4px; }
+  .tbtn-icon          { font-size: 16px; }
+  .tbtn-label         { font-size: 7px; }
+  .title-continue-btn { max-width: 520px; padding: 10px !important; font-size: 10px !important; }
 }
 
 /* ── STEP INDICATOR ──────────────────────────────────── */
@@ -1695,64 +1791,88 @@ body {
   .ecrd-hp-bg    { width: 44px; }
   .ecrd-name     { max-width: 54px; font-size: 9px; }
 
-  /* ── BATTLE SCREEN — chrome ─────────────────────────────────── */
-  #battle-scene      { min-height: 160px; }
-  .bg-mts            { height: 48px; }
-  .bg-gnd            { height: 28px; }
-  .turn-bar          { height: 28px; min-height: 0; padding: 2px 8px; overflow: hidden; }
-  .active-member-bar { min-height: 0; height: 22px; padding: 2px 10px; }
-  #menu-area         { padding: 4px 10px; }
-  .battle-log        { min-height: 0; max-height: 52px; overflow-y: auto; padding: 3px 10px; }
-  .party-status-bar  { padding: 1px 6px; }
-  .psc               { padding: 1px 4px; }
-  .stats-bar         { padding: 1px 10px; font-size: 12px; }
+  /* ── BATTLE SCREEN — 2-column grid layout ──────────────────────
+     Left  (1fr ≈ 447px on 667px phone): battle scene (enemies+party)
+     Right (220px): turn-bar → member-bar → menu/log → status/stats
+     ─────────────────────────────────────────────────────────────── */
+  #battle-screen.active {
+    display: grid !important;
+    grid-template-columns: 1fr 220px;
+    grid-template-rows: auto auto 1fr auto auto;
+    overflow: hidden;
+  }
 
-  /* ── BATTLE — party formation (left side) ───────────────────── */
-  /* Must set WIDTH — default 420px + enemy 580px = 1000px total,
-     which crushes both containers on a 700px landscape phone.    */
+  /* Column placement via grid-column / grid-row */
+  #battle-screen .turn-bar           { grid-column: 2; grid-row: 1;
+                                        height: auto; min-height:0; padding: 3px 6px;
+                                        overflow: hidden; border-bottom: 1px solid #1a1448; }
+  #battle-screen #battle-scene       { grid-column: 1; grid-row: 1 / 6;
+                                        min-height: 0; border-bottom: none; }
+  #battle-screen .active-member-bar  { grid-column: 2; grid-row: 2;
+                                        min-height: 0; height: auto; padding: 3px 8px;
+                                        border-bottom: 1px solid #1a1448; }
+  #battle-screen #menu-area          { grid-column: 2; grid-row: 3;
+                                        padding: 4px 8px; overflow-y: auto; }
+  #battle-screen .party-status-bar   { grid-column: 2; grid-row: 4;
+                                        padding: 2px 6px; }
+  #battle-screen .stats-bar          { grid-column: 2; grid-row: 5;
+                                        padding: 2px 8px; font-size: 11px; }
+
+  /* Battle scene internals */
+  .bg-mts   { height: 44px; }
+  .bg-gnd   { height: 26px; }
+
+  /* Battle log compact */
+  .battle-log        { min-height: 0; max-height: 60px; overflow-y: auto;
+                        padding: 3px 6px; font-size: 12px; }
+  .psc               { padding: 1px 3px; }
+
+  /* Cmd grid: 2×2 in 220px side panel */
+  .cmd-grid          { grid-template-columns: 1fr 1fr; gap: 4px; }
+  .cmd-btn           { padding: 8px 4px; font-size: 8px; }
+
+  /* ── BATTLE — party formation (left side, 200px wide) ──────── */
   .party-container   { width: 200px; height: 220px; }
-  .party-sprite      { width: 64px !important; height: 64px !important; }
+  .party-sprite      { width: 60px !important; height: 60px !important; }
   .party-member      { width: 86px; height: 105px; padding: 2px; }
-  /* Pyramid recalculated for 200px container, 86px-wide cards
-     Centre col = (200-86)/2 = 57px                              */
   .party-member:nth-child(1) { left:  57px; top:   0px; }
   .party-member:nth-child(2) { left:  10px; top:  52px; }
-  .party-member:nth-child(3) { left: 104px; top:  52px; } /* right edge 190px ✓ */
-  .party-member:nth-child(4) { left:  57px; top: 104px; } /* bottom 209px ✓ */
+  .party-member:nth-child(3) { left: 104px; top:  52px; }
+  .party-member:nth-child(4) { left:  57px; top: 104px; }
   .party-hp-bar-bg   { width: 68px; }
-  .pmb-spr           { width: 32px; height: 38px; }
-  .party-row         { bottom: 28px; gap: 3px; }
+  .pmb-spr           { width: 30px; height: 36px; }
+  .party-row         { bottom: 26px; gap: 3px; }
 
-  /* ── BATTLE — enemy formation (right side) ──────────────────── */
-  /* Container: 320px wide × 280px tall                            */
-  .enemy-container   { width: 320px; height: 280px; }
+  /* ── BATTLE — enemy formation (right side, 200px container) ──
+     Scale factor vs desktop: 200/580 ≈ 0.34 (of default)
+     But based on current landscape 320px → 200px: factor ≈ 0.625 */
+  .enemy-container   { width: 200px; height: 210px; }
 
-  /* Card sizes — ≈55% of desktop, aspect ratio ~1.52 preserved   */
-  .enemy-container[data-count="1"] .enemy           { width: 145px; height: 220px; }
-  .enemy-container[data-count="1"] .enemy-hp-bar-bg  { width: 115px; }
-  .enemy-container[data-count="2"] .enemy           { width: 110px; height: 167px; }
-  .enemy-container[data-count="2"] .enemy-hp-bar-bg  { width:  88px; }
-  .enemy-container[data-count="3"] .enemy           { width:  88px; height: 134px; }
-  .enemy-container[data-count="3"] .enemy-hp-bar-bg  { width:  66px; }
-  .enemy-container[data-count="4"] .enemy           { width:  72px; height: 110px; }
-  .enemy-container[data-count="4"] .enemy-hp-bar-bg  { width:  55px; }
+  /* Card sizes — scaled to 200px container */
+  .enemy-container[data-count="1"] .enemy            { width:  91px; height: 138px; }
+  .enemy-container[data-count="1"] .enemy-hp-bar-bg   { width:  72px; }
+  .enemy-container[data-count="2"] .enemy            { width:  69px; height: 104px; }
+  .enemy-container[data-count="2"] .enemy-hp-bar-bg   { width:  55px; }
+  .enemy-container[data-count="3"] .enemy            { width:  55px; height:  84px; }
+  .enemy-container[data-count="3"] .enemy-hp-bar-bg   { width:  42px; }
+  .enemy-container[data-count="4"] .enemy            { width:  45px; height:  69px; }
+  .enemy-container[data-count="4"] .enemy-hp-bar-bg   { width:  34px; }
 
-  /* Positions — edge-touch geometry maintained from desktop plan,
-     scaled to 320px container width                              */
-  /* count=1  centre = (320-145)/2 = 87px                        */
-  .enemy-container[data-count="1"] .enemy:nth-child(1) { right:  87px; top: 25px; }
-  /* count=2  stagger edge-to-edge at x=194                      */
-  .enemy-container[data-count="2"] .enemy:nth-child(1) { right:  16px; top: 11px; z-index:14; }
-  .enemy-container[data-count="2"] .enemy:nth-child(2) { right: 194px; top: 77px; z-index:16; }
-  /* count=3  triangle — apex centre, flanks edge-touch apex     */
-  .enemy-container[data-count="3"] .enemy:nth-child(1) { right: 116px; top:  3px; z-index:14; }
-  .enemy-container[data-count="3"] .enemy:nth-child(2) { right:  28px; top: 88px; z-index:16; }
-  .enemy-container[data-count="3"] .enemy:nth-child(3) { right: 204px; top: 88px; z-index:16; }
-  /* count=4  diamond — 72px gap between flanks, 20px overflow ✓ */
-  .enemy-container[data-count="4"] .enemy:nth-child(1) { right: 124px; top:   0px; z-index:14; }
-  .enemy-container[data-count="4"] .enemy:nth-child(2) { right:  52px; top:  94px; z-index:16; }
-  .enemy-container[data-count="4"] .enemy:nth-child(3) { right: 196px; top:  94px; z-index:16; }
-  .enemy-container[data-count="4"] .enemy:nth-child(4) { right: 124px; top: 188px; z-index:18; }
+  /* Positions — 200px container, geometry preserved */
+  /* count=1  centre = (200-91)/2 = 54 */
+  .enemy-container[data-count="1"] .enemy:nth-child(1) { right:  54px; top: 16px; }
+  /* count=2 */
+  .enemy-container[data-count="2"] .enemy:nth-child(1) { right:  10px; top:  7px; z-index:14; }
+  .enemy-container[data-count="2"] .enemy:nth-child(2) { right: 121px; top: 48px; z-index:16; }
+  /* count=3  triangle */
+  .enemy-container[data-count="3"] .enemy:nth-child(1) { right:  73px; top:  2px; z-index:14; }
+  .enemy-container[data-count="3"] .enemy:nth-child(2) { right:  18px; top: 55px; z-index:16; }
+  .enemy-container[data-count="3"] .enemy:nth-child(3) { right: 128px; top: 55px; z-index:16; }
+  /* count=4  diamond */
+  .enemy-container[data-count="4"] .enemy:nth-child(1) { right:  78px; top:   0px; z-index:14; }
+  .enemy-container[data-count="4"] .enemy:nth-child(2) { right:  33px; top:  59px; z-index:16; }
+  .enemy-container[data-count="4"] .enemy:nth-child(3) { right: 123px; top:  59px; z-index:16; }
+  .enemy-container[data-count="4"] .enemy:nth-child(4) { right:  78px; top: 118px; z-index:18; }
 
   /* ── STORY SCREEN ───────────────────────────────────────────── */
   .s-dialogue-portrait { display: none; }
