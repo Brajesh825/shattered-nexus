@@ -43,7 +43,7 @@
 
 .map-title-label {
   font-family: var(--px);
-  font-size: 10px;
+  font-size: var(--fs-xs);
   color: var(--gold);
   letter-spacing: 4px;
   text-shadow: 0 0 20px var(--gold-glow), 0 0 40px #6040c040;
@@ -51,7 +51,7 @@
 
 .map-arc-label {
   font-family: var(--vt);
-  font-size: 22px;
+  font-size: var(--fs-h3);
   color: #7060b0;
   margin-top: 4px;
   letter-spacing: 2px;
@@ -87,7 +87,7 @@
 
 .mn-status {
   font-family: var(--px);
-  font-size: 6px;
+  font-size: var(--fs-xxs);
   letter-spacing: 0.5px;
   color: #3a2860;
   text-transform: uppercase;
@@ -106,14 +106,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 26px;
+  font-size: 1.6rem;
   transition: border-color .3s, box-shadow .3s;
   flex-shrink: 0;
 }
 
 .mn-num {
   font-family: var(--px);
-  font-size: 6.5px;
+  font-size: var(--fs-xxs);
   color: #3a2870;
   letter-spacing: 1px;
   text-align: center;
@@ -123,7 +123,7 @@
 
 .mn-name {
   font-family: var(--vt);
-  font-size: 14px;
+  font-size: var(--fs-sm);
   color: #5040a0;
   text-align: center;
   line-height: 1.1;
@@ -157,7 +157,7 @@
   animation: glowPulse 2s ease-in-out infinite;
 }
 .map-node.current .mn-num  { color: var(--gold); }
-.map-node.current .mn-name { color: #c0b0e8; font-size: 15px; }
+.map-node.current .mn-name { color: #c0b0e8; font-size: var(--fs-base); }
 
 .map-node.next { cursor: pointer; }
 .map-node.next .mn-status { color: #60a8f0; }
@@ -197,29 +197,29 @@
   pointer-events: all;
 }
 .mrp-num {
-  font-size: 9px;
+  font-size: var(--fs-xxs);
   color: #3a2860;
   letter-spacing: 3px;
   text-transform: uppercase;
 }
 .mrp-name {
-  font-size: 18px;
+  font-size: var(--fs-h3);
   color: #a090d8;
   letter-spacing: 2px;
 }
 .mrp-loc {
-  font-size: 12px;
+  font-size: var(--fs-sm);
   color: #3a3060;
   letter-spacing: 1px;
   margin-bottom: 2px;
 }
 .mrp-shard {
-  font-size: 12px;
+  font-size: var(--fs-sm);
   letter-spacing: 1px;
   margin-bottom: 2px;
 }
 .mrp-lore {
-  font-size: 12px;
+  font-size: var(--fs-sm);
   color: #4a4068;
   line-height: 1.6;
   max-width: 520px;
@@ -235,7 +235,7 @@
   background: none;
   border: 1px solid #2a2048;
   color: #5848a0;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   padding: 7px 16px;
   border-radius: 5px;
   cursor: pointer;
@@ -257,14 +257,14 @@
 
 .map-info-name {
   font-family: var(--px);
-  font-size: 11px;
+  font-size: var(--fs-sm);
   color: #c0b0e8;
   letter-spacing: 2px;
 }
 
 .map-info-loc {
   font-family: var(--vt);
-  font-size: 17px;
+  font-size: var(--fs-md);
   color: #5040a0;
   margin-top: 3px;
   letter-spacing: 1px;
@@ -303,7 +303,7 @@
 /* Map name — matches game's VT323 style */
 .explore-map-name {
   font-family: var(--vt);
-  font-size: 22px;
+  font-size: var(--fs-h3);
   color: var(--ex-text);
   letter-spacing: 3px;
   text-shadow: 0 0 14px rgba(144,128,224,0.5);
@@ -312,7 +312,7 @@
 /* Subtle movement hint beside the name */
 .explore-map-hint {
   font-family: var(--vt);
-  font-size: 16px;
+  font-size: var(--fs-sm);
   color: rgba(90, 82, 122, 0.75);
   letter-spacing: 1px;
 }
@@ -327,7 +327,7 @@
 /* Shared header button style */
 .explore-back-btn, .explore-menu-btn {
   font-family: var(--px);
-  font-size: 10px;
+  font-size: var(--fs-xs);
   letter-spacing: 1px;
   padding: 6px 12px;
   background: var(--ex-ui-bg);
@@ -372,7 +372,7 @@
 
 .pause-title {
   font-family: var(--px);
-  font-size: 11px;
+  font-size: var(--fs-sm);
   letter-spacing: 3px;
   color: var(--ex-accent2);
   text-align: center;
@@ -400,8 +400,8 @@
 .pause-member.active-member { border-color: #6040c0; box-shadow: 0 0 8px #6040c040; }
 
 .pm-header { display: flex; justify-content: space-between; align-items: baseline; }
-.pm-name   { font-family: var(--px); font-size: 9px; }
-.pm-lv     { font-size: 9px; color: #d8c860; }
+.pm-name   { font-family: var(--px); font-size: var(--fs-xs); }
+.pm-lv     { font-size: var(--fs-xxs); color: #d8c860; }
 
 .pm-hp-bar-bg  { height: 4px; background: #1a1030; border-radius: 2px; }
 .pm-hp-bar-fill { height: 100%; border-radius: 2px; transition: width .3s; }
@@ -411,15 +411,15 @@
 .pm-stats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 2px 6px;
-  font-size: 9px;
+  gap: 20px 6px;
+  font-size: var(--fs-xxs);
   color: #8888aa;
   margin-top: 2px;
 }
 .pm-stats span { color: #c0b8e0; }
 
 .pm-passive {
-  font-size: 8px;
+  font-size: var(--fs-xxs);
   color: #7060a8;
   border-top: 1px solid #1a1040;
   padding-top: 4px;
@@ -430,7 +430,7 @@
 /* Inventory section */
 .pause-section-label {
   font-family: var(--px);
-  font-size: 8px;
+  font-size: var(--fs-xs);
   letter-spacing: 2px;
   color: #6050a0;
   margin-bottom: 6px;
@@ -447,14 +447,14 @@
   border: 1px solid #1a1040;
   border-radius: 4px;
   padding: 5px 10px;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   color: #c0b8e0;
   display: flex;
   align-items: center;
   gap: 5px;
 }
-.pause-inv-slot .pi-qty { color: #d8c860; font-size: 9px; }
-.pause-inv-empty { font-size: 10px; color: #403860; font-style: italic; }
+.pause-inv-slot .pi-qty { color: #d8c860; font-size: var(--fs-xxs); }
+.pause-inv-empty { font-size: var(--fs-xs); color: #403860; font-style: italic; }
 
 /* Action buttons */
 .pause-actions {
@@ -467,7 +467,7 @@
 
 .pause-btn {
   font-family: var(--px);
-  font-size: 8px;
+  font-size: var(--fs-xs);
   letter-spacing: 1px;
   padding: 10px 20px;
   background: rgba(40,20,80,0.6);
@@ -515,8 +515,8 @@
 }
 
 .npc-portrait {
-  width: 52px;
-  height: 52px;
+  width: 64px;
+  height: 64px;
   object-fit: cover;
   object-position: top;
   border-radius: 50%;
@@ -526,17 +526,17 @@
 
 .npc-dialogue-name {
   font-family: var(--px);
-  font-size: 10px;
+  font-size: var(--fs-md);
   letter-spacing: 2px;
   color: #c4b5fd;
 }
 
 .npc-dialogue-text {
-  font-size: 13px;
+  font-size: var(--fs-md);
   color: #e8e0f8;
   line-height: 1.6;
   font-style: italic;
-  min-height: 48px;
+  min-height: 52px;
 }
 
 .npc-dialogue-footer {
@@ -548,12 +548,12 @@
 
 .npc-dialogue-next {
   font-family: var(--px);
-  font-size: 8px;
-  letter-spacing: 1px;
-  padding: 8px 18px;
-  background: rgba(60,30,120,0.5);
-  border: 1px solid #3a2070;
-  color: #c4b5fd;
+  font-size: var(--fs-sm);
+  letter-spacing: 2px;
+  padding: 10px 24px;
+  background: rgba(80,40,160,0.6);
+  border: 1px solid #5030a0;
+  color: #d8c8ff;
   cursor: pointer;
   border-radius: 4px;
   transition: all .15s;
@@ -586,14 +586,14 @@
 
 .camp-title {
   font-family: var(--px);
-  font-size: 12px;
+  font-size: var(--fs-md);
   letter-spacing: 3px;
   color: var(--ex-accent2);
   text-align: center;
 }
 
 .camp-subtitle {
-  font-size: 10px;
+  font-size: var(--fs-xs);
   color: #6050a0;
   text-align: center;
   margin-top: -8px;
@@ -609,7 +609,7 @@
 
 .camp-btn {
   font-family: var(--px);
-  font-size: 9px;
+  font-size: var(--fs-sm);
   letter-spacing: 1px;
   padding: 11px 16px;
   background: rgba(40,20,80,0.6);
@@ -625,7 +625,7 @@
 .camp-btn-minor {
   border-color: #1a1040;
   color: #6050a0;
-  font-size: 8px;
+  font-size: var(--fs-xxs);
 }
 .camp-btn-minor:hover { color: #9080c0; border-color: #3a2060; }
 
@@ -653,20 +653,20 @@
 }
 .relic-panel-title {
   font-family: var(--px);
-  font-size: 11px;
+  font-size: var(--fs-md);
   letter-spacing: 3px;
   color: #d4af37;
   text-align: center;
 }
 .relic-panel-subtitle {
-  font-size: 9px;
+  font-size: var(--fs-xs);
   color: #6050a0;
   text-align: center;
   margin-top: -4px;
 }
 .relic-panel-label {
   font-family: var(--px);
-  font-size: 8px;
+  font-size: var(--fs-xxs);
   letter-spacing: 2px;
   color: #4a3880;
   margin-top: 4px;
@@ -692,7 +692,7 @@
   justify-content: center;
   gap: 4px;
   padding: 6px;
-  font-size: 9px;
+  font-size: var(--fs-xxs);
   color: #6050a0;
   text-align: center;
   cursor: pointer;
@@ -704,8 +704,8 @@
   background: rgba(212,175,55,0.06);
 }
 .relic-slot.filled:hover { background: rgba(212,175,55,0.14); }
-.relic-slot-icon { font-size: 22px; }
-.relic-slot-name { font-size: 7px; letter-spacing: 0.5px; line-height: 1.3; }
+.relic-slot-icon { font-size: 1.4rem; }
+.relic-slot-name { font-size: var(--fs-xxs); letter-spacing: 0.5px; line-height: 1.3; }
 .relic-list {
   display: flex;
   flex-direction: column;
@@ -724,13 +724,13 @@
 }
 .relic-card:hover { border-color: #3a2870; background: rgba(40,20,80,0.4); }
 .relic-card.equipped { border-color: #d4af37; background: rgba(212,175,55,0.06); }
-.relic-card-icon { font-size: 22px; flex-shrink: 0; }
+.relic-card-icon { font-size: 1.4rem; flex-shrink: 0; }
 .relic-card-info { flex: 1; min-width: 0; }
-.relic-card-name { font-family: var(--px); font-size: 8px; color: #c0b0e8; letter-spacing: 0.5px; }
-.relic-card-bonus { font-size: 8px; color: #d4af37; margin-top: 2px; }
-.relic-card-desc { font-size: 8px; color: #4a3880; margin-top: 2px; line-height: 1.4; }
+.relic-card-name { font-family: var(--px); font-size: var(--fs-sm); color: #c0b0e8; letter-spacing: 0.5px; }
+.relic-card-bonus { font-size: var(--fs-xs); color: #d4af37; margin-top: 2px; }
+.relic-card-desc { font-size: var(--fs-xs); color: #4a3880; margin-top: 2px; line-height: 1.4; }
 .relic-card-badge {
-  font-size: 7px;
+  font-size: var(--fs-xxs);
   font-family: var(--px);
   padding: 2px 5px;
   border-radius: 3px;
@@ -824,7 +824,7 @@
   /* Compact map header/footer — reclaim vertical space   */
   .map-header      { padding: 6px 14px 4px; }
   .map-title-label { font-size: 8px; letter-spacing: 2px; }
-  .map-arc-label   { font-size: 15px; margin-top: 1px; }
+  .map-arc-label   { font-size: var(--fs-sm); margin-top: 1px; }
   .map-footer      { padding: 5px 14px 4px; min-height: 0; }
 
   /* Compact explore header bar                           */
@@ -857,7 +857,7 @@
 
 /* Large decorative crest emoji */
 .map-sel-crest {
-  font-size: 36px;
+  font-size: 2.2rem;
   margin-bottom: 14px;
   filter: drop-shadow(0 0 16px rgba(200,164,90,0.5));
   animation: float 3s ease-in-out infinite;
@@ -866,7 +866,7 @@
 /* Main heading — matches game title style */
 .map-sel-title {
   font-family: var(--px);
-  font-size: 12px;
+  font-size: var(--fs-sm);
   color: var(--gold);
   letter-spacing: 4px;
   text-shadow: 0 0 20px var(--gold-glow);
@@ -877,7 +877,7 @@
 /* Subheading */
 .map-sel-sub {
   font-family: var(--vt);
-  font-size: 20px;
+  font-size: var(--fs-md);
   color: rgba(160, 148, 220, 0.55);
   letter-spacing: 2px;
   margin-bottom: 28px;
@@ -896,7 +896,7 @@
 /* Region buttons — matches game's big-btn style */
 .map-sel-btn {
   font-family: var(--px);
-  font-size: 10px;
+  font-size: var(--fs-sm);
   letter-spacing: 2px;
   color: var(--ex-text);
   background: rgba(5, 4, 22, 0.88);
@@ -1005,7 +1005,7 @@
   border-top: 2px solid var(--ex-accent2);
   padding: 9px 26px;
   font-family: var(--px);
-  font-size: 8px;
+  font-size: var(--fs-xs);
   letter-spacing: 2px;
   color: var(--ex-text);
   text-align: center;
@@ -1058,14 +1058,14 @@
   background: rgba(96, 80, 184, 0.15);
   border: 1px solid rgba(96, 80, 184, 0.35);
   display: flex; align-items: center; justify-content: center;
-  font-size: 13px; flex-shrink: 0;
+  font-size: var(--fs-sm); flex-shrink: 0;
 }
 
 .ex-hud-info { flex: 1; min-width: 0; }
 
 .ex-hud-name {
   font-family: var(--px);
-  font-size: 6px;
+  font-size: var(--fs-xxs);
   letter-spacing: 1px;
   color: var(--ex-text);
   margin-bottom: 3px;
@@ -1094,7 +1094,7 @@
 
 .ex-hud-hp {
   font-family: var(--vt);
-  font-size: 13px;
+  font-size: var(--fs-sm);
   color: rgba(160, 148, 220, 0.6);
   margin-top: 2px;
 }
@@ -1114,7 +1114,7 @@
 
 .ex-minimap-label {
   font-family: var(--px);
-  font-size: 5px;
+  font-size: var(--fs-xxs);
   letter-spacing: 2px;
   color: rgba(144, 128, 224, 0.6);
   text-align: center;
@@ -1187,7 +1187,7 @@
 
 #explore-loc {
   font-family: var(--vt);
-  font-size: 15px;
+  font-size: var(--fs-sm);
   color: rgba(90, 82, 122, 0.8);
   letter-spacing: 1px;
 }
