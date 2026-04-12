@@ -1406,10 +1406,16 @@ function heroAbility(ab) {
     const enemy = G.enemy;
 
     if (ab.type === 'physical') {
+      const isOnCD = actor.cooldowns && actor.cooldowns[ab.id] > 0;
+      if (isOnCD) { UI.addLog(`${ab.name} is on cooldown for ${actor.cooldowns[ab.id]} turns!`, 'dmg'); G.busy = false; UI.btns(true); return; }
+
       if (typeof SFX !== 'undefined') SFX.attack();
       const _stab = actor.passive?.id === 'eidolon_bond' ? 1.25 : element === actor.cls?.element ? 1.25 : 1.0;
       const _bb   = actor.passive?.id === 'blood_blossom' && actor.hp / actor.maxHp < 0.5 ? 1.35 : 1.0;
       
+      const _scaleStat = e.statScale ? Math.floor((actor[e.statScale] || 0) * 0.5) : 0;
+      const _effectiveAtk = actor.atk + _scaleStat;
+
       const targets = e.aoe
         ? G.enemyGroup.map((en, i) => ({ en, i })).filter(({ en }) => Battle.alive(en))
         : [{ en: enemy, i: G.targetEnemyIdx }];
@@ -1417,10 +1423,15 @@ function heroAbility(ab) {
       let totalDmg = 0;
       targets.forEach(({ en: tgt, i: tIdx }) => {
         const _em = Battle.elemMult(element, tgt);
-        const dmg = Math.floor(Battle.physDmg(actor.atk, tgt.def, e.dmgMultiplier || 1, actor.lv || 1, tgt.level || 1, e.defPen || 0) * _em * _stab * _bb);
+        const dmg = Math.floor(Battle.physDmg(_effectiveAtk, tgt.def, e.dmgMultiplier || 1, actor.lv || 1, tgt.level || 1, e.defPen || 0) * _em * _stab * _bb);
         tgt.hp = Math.max(0, tgt.hp - dmg);
         if (tgt.hp <= 0) tgt.isKO = true;
         totalDmg += dmg;
+
+        // Cryoclasm reset logic
+        if (ab.id === 'cryoclasm' && tgt.frozen > 0) {
+          actor._cryoReset = true;
+        }
 
         const _er = Battle.elemResult(element, tgt);
         if (_er === 'shatter') UI.addLog('⚡ SHATTER!', 'dmg');
@@ -1439,6 +1450,17 @@ function heroAbility(ab) {
 
       if (_stab > 1) UI.addLog('◈ STAB!', 'magic');
       if (_bb > 1)   UI.addLog('🔥 Blood Blossom!', 'magic');
+      if (_scaleStat > 0) UI.addLog(`💠 Scales +${_scaleStat} ATK from ${e.statScale.toUpperCase()}!`, 'magic');
+
+      // Set cooldown
+      if (e.cooldown) {
+        actor.cooldowns[ab.id] = e.cooldown + 1; // +1 because decrement happens immediately/next turn
+      }
+      if (actor._cryoReset) {
+        actor.cooldowns[ab.id] = 0;
+        UI.addLog('❄ Cryoclasm Reset! Strike again!', 'regen');
+        delete actor._cryoReset;
+      }
 
       // Handle LifeSteal (Lulu's moves)
       if (e.lifeSteal && totalDmg > 0) {
@@ -1932,9 +1954,12 @@ function _checkDragonLeap(actor) {
    ENEMY AI
    ============================================================ */
 function enemyAct(enemy, enemyIdx) {
-  if (enemy.stunned) {
-    enemy.stunned = false;
-    UI.setLog([`${enemy.name} is stunned — skips turn!`], ['magic']);
+  if (enemy.stunned || enemy.frozen > 0) {
+    const isFrozen = enemy.frozen > 0;
+    if (isFrozen) enemy.frozen--;
+    else enemy.stunned = false;
+    
+    UI.setLog([`${enemy.name} is ${isFrozen?'Frozen':'Stunned'} — skips turn!`], ['magic']);
     setTimeout(advanceTurn, 700);
     return;
   }
@@ -2087,6 +2112,15 @@ function enemyAct(enemy, enemyIdx) {
         m.hp = Math.min(m.maxHp, m.hp + _amt); 
         UI.popParty(i, _amt, 'regen');
       }
+      
+      // Cooldown & Status decrement
+      if (m.frozen > 0) m.frozen--;
+      if (m.cooldowns) {
+        for (let cid in m.cooldowns) {
+          if (m.cooldowns[cid] > 0) m.cooldowns[cid]--;
+        }
+      }
+
       // Divine Blessing: knight king's aura grants all allies 2% max HP regen per turn
       if (_hasDivBless && m.hp < m.maxHp) {
         const _dbAmt = Math.max(1, Math.floor(m.maxHp * 0.02));

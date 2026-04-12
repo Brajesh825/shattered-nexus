@@ -26,9 +26,9 @@
         "name": "Glacial Waltz",
         "icon": "❄",
         "mp": 8,
-        "type": "magic_damage",
-        "description": "Spin attack dealing 2.2x magic damage to all enemies, +1 turn to speed",
-        "effect": { "dmgMultiplier": 2.2, "element": "ice", "aoe": true, "spdBuff": 1 }
+        "type": "physical",
+        "description": "Spin attack dealing 2.2x physical damage to all, bonus from SPD",
+        "effect": { "dmgMultiplier": 2.2, "element": "ice", "aoe": true, "statScale": "spd", "spdBuff": 1 }
       },
       {
         "id": "permafrost",
@@ -37,17 +37,17 @@
         "mp": 6,
         "type": "debuff",
         "description": "60% chance to freeze enemy for 1 turn, DEF -20%",
-        "effect": { "freezeChance": 0.6, "stat": "def", "multiplier": 0.8, "duration": 2 }
+        "effect": { "freezeChance": 0.6, "stat": "def", "multiplier": 0.8, "duration": 2, "statScale": "spd" }
       },
       {
         "id": "cryoclasm",
         "name": "Cryoclasm",
         "icon": "❄",
         "mp": 10,
-        "type": "magic_damage",
+        "type": "physical",
         "isUltimate": true,
-        "description": "Massive ice explosion — 3.0x magic damage, resets after 2 turns if enemy frozen",
-        "effect": { "dmgMultiplier": 3.0, "element": "ice", "cooldown": 2 }
+        "description": "Massive ice explosion — 3.0x physical damage, scales with SPD, resets if enemy frozen",
+        "effect": { "dmgMultiplier": 3.0, "element": "ice", "statScale": "spd", "cooldown": 2 }
       }
     ],
     "growthPerLevel": { "hp": 6, "mp": 5, "atk": 3, "def": 2, "spd": 5, "mag": 3 }
