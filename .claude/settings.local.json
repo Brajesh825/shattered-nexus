@@ -25,7 +25,13 @@
       "Bash(cp images/characters/map/sheets/ayaka_sheet.png images/characters/map/sheets/kain_sheet.png)",
       "Bash(cp images/characters/map/sheets/ayaka_sheet.png images/characters/map/sheets/leon_sheet.png)",
       "Bash(cp images/characters/map/sheets/ayaka_sheet.png images/characters/map/sheets/lenneth_sheet.png)",
-      "Bash(gh pr create --title 'feat: tile rendering refactor, map data split, character toggle' --body ':*)"
+      "Bash(gh pr create --title 'feat: tile rendering refactor, map data split, character toggle' --body ':*)",
+      "Bash(grep -E '\\(id|name|arcId|theme\\)\"\\\\s*:' /c/Users/ASUS/VVI/rpg+/js/map/data/map-*.js)",
+      "Bash(grep -o \"MAP_DEFS\\\\.[a-z_]* =\" /c/Users/ASUS/VVI/rpg+/js/map/data/map-*.js)",
+      "Bash(find \"C:\\\\Users\\\\ASUS\\\\VVI\\\\rpg+\" -name \"*.js\" -type f -exec grep -l \"registerEnemy\\\\|slime.*ctx.*fillRect\" {} \\\\;)",
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('data/classes.json','utf8'\\)\\); console.log\\('OK'\\)\")",
+      "Bash(sort -t' ' -k2)",
+      "Bash(uniq -d -f1)"
     ]
   }
 }
