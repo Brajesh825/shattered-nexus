@@ -764,14 +764,32 @@
    #map-screen and #explore-screen min-height.
    ══════════════════════════════════════════════════════ */
 
-/* ── Smaller map nodes (≤ 800px) ──────── */
+/* ── Compact sizes for tablets/phones (≤ 800px) ──────────── */
 @media (max-width: 800px) {
+  /* Map nodes */
   .map-node  { width: 60px; }
   .mn-icon   { width: 46px; height: 46px; font-size: 20px; }
   .mn-name   { font-size: 11px; max-width: 60px; }
   .mn-num    { font-size: 5.5px; margin-top: 3px; }
   .mn-status { font-size: 5px; }
   .map-node.current .mn-name { font-size: 12px; }
+
+  /* Explore header */
+  .explore-header    { padding: 6px 12px; }
+  .explore-map-name  { font-size: 16px; }
+  .explore-map-hint  { font-size: 13px; }
+  .explore-menu-btn  { font-size: 9px; padding: 4px 10px; }
+
+  /* Explore party HUD cards */
+  #explore-party-hud { gap: 4px; left: 8px; bottom: 36px; }
+  .ex-hud-member     { padding: 3px 7px 3px 5px; min-width: 130px; gap: 6px; }
+  .ex-hud-avatar     { width: 20px; height: 20px; font-size: 10px; }
+  .ex-hud-name       { font-size: 5.5px; }
+  .ex-hud-hp         { font-size: 11px; }
+  .ex-hud-bar-wrap   { margin-top: 2px; }
+
+  /* Minimap */
+  #explore-minimap-wrap { right: 8px; bottom: 36px; }
 }
 
 /* ── Tiny phones (≤ 400px) ───────────────────────────────── */
