@@ -92,6 +92,13 @@ MAP_DEFS.shadow_reach = (function() {
         bgColor: '#05020c',
         ambientLight: 'rgba(80,20,140,0.08)',
         enemyLevelRange: [14, 18],
+        // Arc 5 — shadow energy mutates everything. High pressure zone.
+        mutationConfig: {
+          corruptThreshold: 38,
+          mutantThreshold:  76,
+          corruptChance:    0.048,
+          mutantChance:     0.026,
+        },
         encounterTemplates: [
           { weight: 3, enemies: ['ghost'] },
           { weight: 2, enemies: ['vampire'] },

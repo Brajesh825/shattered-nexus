@@ -859,23 +859,39 @@
   z-index: 30;
   pointer-events: none;
   opacity: 0;
-  background: radial-gradient(ellipse at 50% 50%,
-    rgba(224,96,48,0) 30%,
-    rgba(224,96,48,0.55) 100%);
+  /* default — fire/ember encounter */
+  background: radial-gradient(ellipse at center,
+    rgba(224,96,48,0) 25%,
+    rgba(224,96,48,0.65) 100%);
   transition: opacity 0.08s ease;
 }
 #explore-flash.show { opacity: 1; }
-/* Corrupted encounter — purple vignette */
+
+/* Corrupted encounter — deep purple vignette with inner dark */
 #explore-flash.corrupted-flash {
-  background: radial-gradient(ellipse at center,
-    rgba(160,40,255,0) 30%,
-    rgba(160,40,255,0.60) 100%);
+  background:
+    radial-gradient(ellipse at center, rgba(0,0,0,0.45) 0%, transparent 55%),
+    radial-gradient(ellipse at center, rgba(160,20,255,0) 28%, rgba(160,20,255,0.80) 100%);
+  animation: flashPulseCorrupt 0.75s ease-out forwards;
 }
-/* Mutant encounter — toxic green vignette */
+/* Mutant encounter — toxic green vignette with inner dark */
 #explore-flash.mutant-flash {
-  background: radial-gradient(ellipse at center,
-    rgba(60,255,80,0) 30%,
-    rgba(60,255,80,0.55) 100%);
+  background:
+    radial-gradient(ellipse at center, rgba(0,0,0,0.40) 0%, transparent 50%),
+    radial-gradient(ellipse at center, rgba(30,255,70,0) 28%, rgba(30,255,70,0.75) 100%);
+  animation: flashPulseMutant 0.75s ease-out forwards;
+}
+@keyframes flashPulseCorrupt {
+  0%   { opacity: 0; }
+  15%  { opacity: 1; }
+  60%  { opacity: 0.85; }
+  100% { opacity: 0; }
+}
+@keyframes flashPulseMutant {
+  0%   { opacity: 0; }
+  15%  { opacity: 1; }
+  60%  { opacity: 0.80; }
+  100% { opacity: 0; }
 }
 
 /* ── Mutated enemy battle sprites ────────────────────── */

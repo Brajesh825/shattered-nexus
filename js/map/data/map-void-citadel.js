@@ -93,6 +93,13 @@ MAP_DEFS.void_citadel = (function() {
         bgColor: '#040210',
         ambientLight: 'rgba(60,20,160,0.1)',
         enemyLevelRange: [18, 22],
+        // Arc 6 — void energy tears at reality. Mutation is near-constant.
+        mutationConfig: {
+          corruptThreshold: 32,
+          mutantThreshold:  64,
+          corruptChance:    0.054,
+          mutantChance:     0.030,
+        },
         encounterTemplates: [
           { weight: 3, enemies: ['void_knight'] },
           { weight: 2, enemies: ['void_knight', 'void_knight'] },

@@ -71,6 +71,13 @@ MAP_DEFS.ember_wastes = (function() {
         bgColor: '#150500',
         ambientLight: 'rgba(255,80,0,0.12)',
         enemyLevelRange: [10, 15],
+        // Arc 3 — volcanic heat warps creatures faster. Noticeable mutation pressure.
+        mutationConfig: {
+          corruptThreshold: 55,
+          mutantThreshold:  110,
+          corruptChance:    0.036,
+          mutantChance:     0.018,
+        },
         encounterTemplates: [
           { weight: 3, enemies: ['imp'] },
           { weight: 3, enemies: ['imp', 'imp'] },

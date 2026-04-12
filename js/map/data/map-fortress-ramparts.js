@@ -91,6 +91,13 @@ MAP_DEFS.fortress_ramparts = (function() {
         bgColor: '#080610',
         ambientLight: 'rgba(40,30,80,0.08)',
         enemyLevelRange: [22, 26],
+        // Arc 7 — corrupted fortress, every creature is already half-gone.
+        mutationConfig: {
+          corruptThreshold: 26,
+          mutantThreshold:  52,
+          corruptChance:    0.060,
+          mutantChance:     0.034,
+        },
         encounterTemplates: [
           { weight: 3, enemies: ['fallen_angel'] },
           { weight: 2, enemies: ['shadow_wraith', 'shadow_wraith'] },

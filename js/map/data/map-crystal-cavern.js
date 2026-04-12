@@ -84,6 +84,13 @@ MAP_DEFS.crystal_cavern = {
     bgColor:     '#04010a',
     ambientLight:'rgba(140,80,255,0.07)',
     enemyLevelRange: [5, 12],
+    // Arc 2 — slightly more aggressive. Dungeon feel, enemies linger in dark.
+    mutationConfig: {
+      corruptThreshold: 70,   // 70s
+      mutantThreshold:  140,
+      corruptChance:    0.028, // 2.8%/s
+      mutantChance:     0.014,
+    },
 
     encounterTemplates: [
       { weight: 3, enemies: ['bat', 'bat'] },

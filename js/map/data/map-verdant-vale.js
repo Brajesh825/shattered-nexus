@@ -16,6 +16,13 @@ MAP_DEFS.verdant_vale = {
     bgColor:     '#0a1a05',
     ambientLight:'rgba(60,180,60,0.04)',
     enemyLevelRange: [1, 3],
+    // Arc 1 — very lenient. Player is still learning the game.
+    mutationConfig: {
+      corruptThreshold: 90,   // 90s before corruption rolls begin
+      mutantThreshold:  180,  // 3 min before mutant possible
+      corruptChance:    0.020, // 2%/s — slow creep
+      mutantChance:     0.010, // 1%/s — rare
+    },
 
     encounterTemplates: [
       { weight: 3, enemies: ['goblin'] },

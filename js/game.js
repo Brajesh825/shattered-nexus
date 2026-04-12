@@ -302,9 +302,28 @@ const UI = {
     if (!container) return;
     container.innerHTML = '';
 
+    const count = G.enemyGroup.length; // 1–4
+    container.dataset.count = count;
+
+    // ── Per-enemy sprite size: tier base × count scale × mutation bonus ──────
+    // Tier sets the "class" of the creature (goblin vs demon).
+    // Count scale keeps sprites from crushing each other in crowded groups.
+    // Mutation bonus makes corrupted/mutant visually bulkier.
+    const TIER_BASE_W   = { 1: 130, 2: 180, 3: 240 };   // px width per tier
+    const COUNT_SCALE   = { 1: 1.00, 2: 0.87, 3: 0.75, 4: 0.64 };
+    const MUTATION_MULT = { normal: 1.00, corrupted: 1.12, mutant: 1.28 };
+    const ASPECT        = 1.23; // height = width × aspect
+
     G.enemyGroup.forEach((e, i) => {
       const alive = Battle.alive(e);
       const pct   = Math.max(0, e.hp / e.maxHp * 100);
+
+      // Compute this enemy's individual sprite size
+      const tierW  = TIER_BASE_W[e.tier || 1] || TIER_BASE_W[1];
+      const cScale = COUNT_SCALE[count] || COUNT_SCALE[4];
+      const mMult  = MUTATION_MULT[e.mutation || 'normal'] || 1.0;
+      const sprW   = Math.round(tierW * cScale * mMult);
+      const sprH   = Math.round(sprW * ASPECT);
 
       // Enemy wrapper
       const enemy = document.createElement('div');
@@ -313,10 +332,12 @@ const UI = {
       enemy.dataset.target = i === G.targetEnemyIdx ? 'true' : 'false';
       enemy.onclick = () => selectTarget(i);
 
-      // Sprite
+      // Sprite — sized by tier + count + mutation
       const spr = document.createElement('img');
       spr.className = 'enemy-sprite';
       spr.id = 'espr-' + i;
+      spr.style.width  = sprW + 'px';
+      spr.style.height = sprH + 'px';
       SpriteRenderer.drawEnemy(spr, e.id, e.palette);
       enemy.appendChild(spr);
 
@@ -624,6 +645,14 @@ MapEngine.onEncounterStart = (enc, map) => {
   }
 
   _initBattle();
+
+  // ── Apply mutation atmosphere to the whole battle scene ──────
+  const scene = document.getElementById('battle-scene');
+  if (scene) {
+    scene.classList.remove('battle-corrupted', 'battle-mutant');
+    if (mutation === 'corrupted') scene.classList.add('battle-corrupted');
+    if (mutation === 'mutant')    scene.classList.add('battle-mutant');
+  }
 
   // Apply mutation CSS to battle enemy sprites
   if (mutation) {
@@ -1041,6 +1070,7 @@ function buildEnemyGroup(defs, spawnLevel = 1, isBoss = false) {
       element:  def.element  || 'physical',
       weakTo:   def.weakTo   || [],
       resistTo: def.resistTo || [],
+      tier:     tier,
       isKO: false, stunned: false, debuff: null,
     };
   });
@@ -1132,6 +1162,13 @@ function startBattle() {
   const names = G.enemyGroup.map(e => e.name).join(' & ');
   UI.setLog([`${names} appear!`, `Party to battle stations!`], ['hi','']);
   processCurrentTurn();
+}
+
+// ── Battle atmosphere cleanup ──────────────────────────────────────────────
+// Removes mutation scene classes so the next battle starts clean.
+function _clearBattleAtmosphere() {
+  const scene = document.getElementById('battle-scene');
+  if (scene) scene.classList.remove('battle-corrupted', 'battle-mutant');
 }
 
 // ── Mutant trait: Vampiric ─────────────────────────────────────────────────
@@ -1954,6 +1991,7 @@ function checkBattleEnd() {
         UI.renderPartyStatus();
       }
       setTimeout(() => {
+        _clearBattleAtmosphere();
         if (G.mode === 'explore' || G.mode === 'story_explore') { MapEngine.onBattleComplete(true); }
         else if (typeof Story !== 'undefined' && Story.active) Story.onBattleWon();
         else showResult('victory');
@@ -1965,6 +2003,7 @@ function checkBattleEnd() {
   if (allPartyDown) {
     UI.setLog(['The party has fallen...'], ['dmg']);
     setTimeout(() => {
+      _clearBattleAtmosphere();
       if (G.mode === 'explore' || G.mode === 'story_explore') { MapEngine.onBattleComplete(false); }
       else if (typeof Story !== 'undefined' && Story.active) Story.onBattleLost();
       else showResult('defeat');
@@ -1998,6 +2037,7 @@ function checkMemberLevel(m) {
    RESULT SCREEN
    ============================================================ */
 function showResult(type) {
+  _clearBattleAtmosphere();
   closePartyMenu();
   const t       = UI.el('result-title');
   const st      = UI.el('result-stats');

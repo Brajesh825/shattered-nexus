@@ -428,11 +428,13 @@ const MapEntities = (() => {
     }
   }
 
-  // Mutation thresholds (seconds on map before rolls begin)
-  const CORRUPT_THRESHOLD = 45;  // corrupted stage starts rolling at 45s
-  const MUTANT_THRESHOLD  = 90;  // mutant stage starts rolling at 90s
-  const CORRUPT_CHANCE    = 0.04; // 4% per second once threshold met
-  const MUTANT_CHANCE     = 0.025;// 2.5% per second once threshold met
+  // Mutation defaults — overridden per-map via map.mutationConfig
+  const MUTATION_DEFAULTS = {
+    corruptThreshold: 45,
+    mutantThreshold:  90,
+    corruptChance:    0.040,
+    mutantChance:     0.025,
+  };
 
   // ── Mutant Trait Pool ─────────────────────────────────────────
   // Each mutant rolls 1–3 random traits from this pool.
@@ -480,12 +482,19 @@ const MapEntities = (() => {
       en.mutationTick  += dt;
       if (en.mutationTick >= 1.0) {
         en.mutationTick -= 1.0;
-        if (en.mutation === null && en.mapTime >= CORRUPT_THRESHOLD) {
-          if (Math.random() < CORRUPT_CHANCE) en.mutation = 'corrupted';
-        } else if (en.mutation === 'corrupted' && en.mapTime >= MUTANT_THRESHOLD) {
-          if (Math.random() < MUTANT_CHANCE) {
+        // Read per-map config, fall back to defaults
+        const mc = map.mutationConfig || MUTATION_DEFAULTS;
+        const corruptThreshold = mc.corruptThreshold ?? MUTATION_DEFAULTS.corruptThreshold;
+        const mutantThreshold  = mc.mutantThreshold  ?? MUTATION_DEFAULTS.mutantThreshold;
+        const corruptChance    = mc.corruptChance    ?? MUTATION_DEFAULTS.corruptChance;
+        const mutantChance     = mc.mutantChance     ?? MUTATION_DEFAULTS.mutantChance;
+
+        if (en.mutation === null && en.mapTime >= corruptThreshold) {
+          if (Math.random() < corruptChance) en.mutation = 'corrupted';
+        } else if (en.mutation === 'corrupted' && en.mapTime >= mutantThreshold) {
+          if (Math.random() < mutantChance) {
             en.mutation = 'mutant';
-            en.mutantTraits = _rollMutantTraits(); // roll 1–3 random traits
+            en.mutantTraits = _rollMutantTraits();
           }
         }
       }

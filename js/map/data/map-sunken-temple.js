@@ -118,6 +118,13 @@ MAP_DEFS.sunken_temple = (function() {
         bgColor: '#020c14',
         ambientLight: 'rgba(0,100,255,0.1)',
         enemyLevelRange: [15, 25],
+        // Arc 4 — cursed waters accelerate corruption. Stay moving.
+        mutationConfig: {
+          corruptThreshold: 45,
+          mutantThreshold:  90,
+          corruptChance:    0.042,
+          mutantChance:     0.022,
+        },
         encounterTemplates: [
           { weight: 3, enemies: ['merman'] },
           { weight: 2, enemies: ['merman', 'merman'] },

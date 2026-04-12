@@ -76,6 +76,13 @@ MAP_DEFS.eternal_void = (function() {
         bgColor: '#000000',
         ambientLight: 'rgba(40,10,80,0.12)',
         enemyLevelRange: [26, 30],
+        // Arc 8 — the Eternal Void. Mutation is almost instant. Nothing is clean here.
+        mutationConfig: {
+          corruptThreshold: 20,
+          mutantThreshold:  40,
+          corruptChance:    0.068,
+          mutantChance:     0.040,
+        },
         encounterTemplates: [
           { weight: 2, enemies: ['shadow_wraith'] },
           { weight: 2, enemies: ['necromancer'] },
