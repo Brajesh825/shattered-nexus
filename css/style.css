@@ -1754,6 +1754,41 @@ body {
   .pmb-spr  { width:40px; height:48px; }
 }
 
+/* ── Mobile portrait — smaller char/class cards (≤ 600px) ── */
+@media (max-width: 600px) {
+  /* Char select */
+  #char-screen, #class-screen { min-height: 0; padding: 0; }
+  .char-grid   { gap: 7px; padding: 8px 10px; max-height: none; }
+  .char-card   { padding: 10px 10px; gap: 10px; }
+  .char-portrait { width: 40px; height: 40px; }
+  .char-name   { font-size: 15px; }
+  .char-title  { font-size: 11px; }
+  .char-aff    { font-size: 11px; margin-top: 2px; }
+
+  /* Class select */
+  .class-grid  { gap: 7px; padding: 8px 10px; }
+  .class-card  { padding: 10px 10px; }
+  .class-header{ gap: 8px; margin-bottom: 4px; }
+  .class-icon  { font-size: 20px; }
+  .class-name  { font-size: 14px; }
+  .class-tag   { font-size: 11px; }
+  .class-desc  { font-size: 12px; }
+}
+
+/* ── Mobile portrait — even smaller on tiny phones (≤ 400px) */
+@media (max-width: 400px) {
+  .char-grid   { gap: 6px; padding: 6px 8px; }
+  .char-card   { padding: 8px 8px; gap: 8px; }
+  .char-portrait { width: 34px; height: 34px; }
+  .char-name   { font-size: 13px; }
+  .char-title, .char-aff { font-size: 10px; }
+
+  .class-grid  { gap: 6px; padding: 6px 8px; }
+  .class-card  { padding: 8px 8px; }
+  .class-icon  { font-size: 17px; }
+  .class-name  { font-size: 13px; }
+}
+
 /* ══════════════════════════════════════════════════════════════
    MOBILE LANDSCAPE  (orientation:landscape AND max-height:500px)
    Covers: iPhone SE (568×320) → iPhone 14 Pro Max (932×430)
