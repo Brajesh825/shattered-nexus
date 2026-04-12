@@ -3210,11 +3210,12 @@ body {
   display: none;
 }
 
-/* Enemy sprite container — RIGHT TOP */
+/* Enemy sprite container — RIGHT BOTTOM */
 .enemy-container {
   position: absolute;
   right: 0;
-  top: 0;
+  bottom: 56px;   /* above ground strip, same anchor as party */
+  top: auto;
   transform: none;
   width: 580px;
   height: 500px;
@@ -3655,53 +3656,52 @@ body {
   .step-header { font-size: 10px; padding: 8px 12px; }
   .step-count  { font-size: 9px; }
 
-  /* ── Battle scene — flex:1 fills remaining; set formation floors ── */
+  /* ── Battle scene ── */
   #battle-scene { min-height: 180px; }
-  .party-container { height: 320px; }
-  .enemy-container { height: 320px; }
   .bg-mts  { height: 50px; }
   .bg-gnd  { height: 28px; }
 
-  /* Party sprites + positions */
-  .party-sprite  { width: 64px !important; height: 64px !important; }
-  .party-member  { width: 90px; height: 110px; padding: 2px; }
-  .party-member:nth-child(1) { left: 80px;  top:  0px; }
-  .party-member:nth-child(2) { left: 20px;  top: 48px; }
-  .party-member:nth-child(3) { left: 140px; top: 48px; }
-  .party-member:nth-child(4) { left: 80px;  top: 92px; }
-  .party-hp-bar-bg { width: 70px; }
-  .party-container { width: 240px; }
+  /* Party — LEFT BOTTOM, 170px wide, above 28px ground */
+  .party-container { width: 170px; height: 200px; bottom: 28px; }
+  .party-sprite  { width: 56px !important; height: 56px !important; }
+  .party-member  { width: 80px; height: 98px; padding: 2px; }
+  /* Pyramid: centre = (170-80)/2 = 45 */
+  .party-member:nth-child(1) { left: 45px; top:  0px; }
+  .party-member:nth-child(2) { left:  5px; top: 46px; }
+  .party-member:nth-child(3) { left: 85px; top: 46px; }
+  .party-member:nth-child(4) { left: 45px; top: 92px; }
+  .party-hp-bar-bg { width: 62px; }
 
-  /* Enemy sprites — JS sizes the sprite inline; cap it so it fits small cards */
-  .enemy-sprite  { max-width: 90px !important; max-height: 110px !important; }
+  /* Enemy — RIGHT BOTTOM, 180px wide, above 28px ground */
+  .enemy-container { width: 180px; height: 200px; bottom: 28px; }
+  .enemy-sprite  { max-width: 70px !important; max-height: 100px !important; }
   .enemy-name    { font-size: 8px; }
-  .enemy-container { width: 240px; height: 220px; }
 
-  /* Per-count card sizes (≤600px) */
-  .enemy-container[data-count="1"] .enemy          { width: 120px; height: 185px; padding: 3px; }
-  .enemy-container[data-count="1"] .enemy-hp-bar-bg { width:  95px; }
-  .enemy-container[data-count="2"] .enemy          { width:  95px; height: 145px; padding: 3px; }
-  .enemy-container[data-count="2"] .enemy-hp-bar-bg { width:  75px; }
-  .enemy-container[data-count="3"] .enemy          { width:  76px; height: 115px; padding: 2px; }
-  .enemy-container[data-count="3"] .enemy-hp-bar-bg { width:  58px; }
-  .enemy-container[data-count="4"] .enemy          { width:  62px; height:  95px; padding: 2px; }
-  .enemy-container[data-count="4"] .enemy-hp-bar-bg { width:  48px; }
+  /* Per-count card sizes (180px container, aspect ~1.52) */
+  .enemy-container[data-count="1"] .enemy          { width:  90px; height: 137px; padding: 3px; }
+  .enemy-container[data-count="1"] .enemy-hp-bar-bg { width:  71px; }
+  .enemy-container[data-count="2"] .enemy          { width:  71px; height: 108px; padding: 2px; }
+  .enemy-container[data-count="2"] .enemy-hp-bar-bg { width:  56px; }
+  .enemy-container[data-count="3"] .enemy          { width:  57px; height:  87px; padding: 2px; }
+  .enemy-container[data-count="3"] .enemy-hp-bar-bg { width:  44px; }
+  .enemy-container[data-count="4"] .enemy          { width:  47px; height:  71px; padding: 2px; }
+  .enemy-container[data-count="4"] .enemy-hp-bar-bg { width:  36px; }
 
-  /* Positions within 240px container */
-  /* count=1: center=(240-120)/2=60 */
-  .enemy-container[data-count="1"] .enemy:nth-child(1) { right: 60px; top: 20px; }
-  /* count=2: stagger, card=95 */
-  .enemy-container[data-count="2"] .enemy:nth-child(1) { right: 10px; top:  8px; }
-  .enemy-container[data-count="2"] .enemy:nth-child(2) { right:120px; top: 55px; }
-  /* count=3: triangle, card=76; center=(240-76)/2=82 */
-  .enemy-container[data-count="3"] .enemy:nth-child(1) { right: 82px; top:  0px; }
-  .enemy-container[data-count="3"] .enemy:nth-child(2) { right: 10px; top: 62px; }
-  .enemy-container[data-count="3"] .enemy:nth-child(3) { right:154px; top: 62px; }
-  /* count=4: diamond, card=62; center=(240-62)/2=89 */
-  .enemy-container[data-count="4"] .enemy:nth-child(1) { right: 89px; top:  0px; z-index:14; }
-  .enemy-container[data-count="4"] .enemy:nth-child(2) { right: 55px; top: 55px; z-index:16; }
-  .enemy-container[data-count="4"] .enemy:nth-child(3) { right:123px; top: 55px; z-index:16; }
-  .enemy-container[data-count="4"] .enemy:nth-child(4) { right: 89px; top:110px; z-index:18; }
+  /* Positions — 180px container */
+  /* count=1: centre=(180-90)/2=45 */
+  .enemy-container[data-count="1"] .enemy:nth-child(1) { right: 45px; top: 15px; }
+  /* count=2: card=71; child2 left-edge=180-90-71=19 ✓ */
+  .enemy-container[data-count="2"] .enemy:nth-child(1) { right:  8px; top:  6px; z-index:14; }
+  .enemy-container[data-count="2"] .enemy:nth-child(2) { right: 90px; top: 41px; z-index:16; }
+  /* count=3: card=57; centre=(180-57)/2=62 */
+  .enemy-container[data-count="3"] .enemy:nth-child(1) { right: 62px; top:  0px; z-index:14; }
+  .enemy-container[data-count="3"] .enemy:nth-child(2) { right:  8px; top: 47px; z-index:16; }
+  .enemy-container[data-count="3"] .enemy:nth-child(3) { right:115px; top: 47px; z-index:16; }
+  /* count=4: card=47; centre=(180-47)/2=67 */
+  .enemy-container[data-count="4"] .enemy:nth-child(1) { right: 67px; top:  0px; z-index:14; }
+  .enemy-container[data-count="4"] .enemy:nth-child(2) { right: 41px; top: 41px; z-index:16; }
+  .enemy-container[data-count="4"] .enemy:nth-child(3) { right: 92px; top: 41px; z-index:16; }
+  .enemy-container[data-count="4"] .enemy:nth-child(4) { right: 67px; top: 83px; z-index:18; }
 
   /* Turn bar */
   .turn-bar { height: 30px; padding: 2px 8px; font-size: 10px; }
@@ -3780,34 +3780,41 @@ body {
 @media (max-width: 400px) {
   /* .game-title and menu buttons handled by title section breakpoints */
   #battle-scene { min-height: 140px; }
-  .party-container { width: 210px; height: 220px; }
-  .enemy-container { width: 210px; height: 220px; }
-  .party-member:nth-child(1) { left: 68px;  top:  0px; }
-  .party-member:nth-child(2) { left: 10px;  top: 42px; }
-  .party-member:nth-child(3) { left: 126px; top: 42px; }
-  .party-member:nth-child(4) { left: 68px;  top: 80px; }
 
-  /* Per-count card sizes (≤400px, 210px container) */
-  .enemy-container[data-count="1"] .enemy          { width: 105px; height: 160px; padding: 2px; }
-  .enemy-container[data-count="1"] .enemy-hp-bar-bg { width:  82px; }
-  .enemy-container[data-count="2"] .enemy          { width:  82px; height: 126px; padding: 2px; }
-  .enemy-container[data-count="2"] .enemy-hp-bar-bg { width:  64px; }
-  .enemy-container[data-count="3"] .enemy          { width:  65px; height:  99px; padding: 2px; }
-  .enemy-container[data-count="3"] .enemy-hp-bar-bg { width:  50px; }
-  .enemy-container[data-count="4"] .enemy          { width:  54px; height:  83px; padding: 2px; }
-  .enemy-container[data-count="4"] .enemy-hp-bar-bg { width:  42px; }
+  /* Party — LEFT BOTTOM, 150px fits ≤375px screen */
+  .party-container { width: 150px; height: 180px; bottom: 28px; }
+  .party-member  { width: 75px; height: 92px; }
+  /* Pyramid: centre=(150-75)/2=38 */
+  .party-member:nth-child(1) { left: 38px; top:  0px; }
+  .party-member:nth-child(2) { left:  5px; top: 44px; }
+  .party-member:nth-child(3) { left: 70px; top: 44px; }
+  .party-member:nth-child(4) { left: 38px; top: 88px; }
+  .party-hp-bar-bg { width: 58px; }
 
-  /* Positions within 210px container */
-  .enemy-container[data-count="1"] .enemy:nth-child(1) { right: 52px; top: 30px; }
-  .enemy-container[data-count="2"] .enemy:nth-child(1) { right:  8px; top:  6px; }
-  .enemy-container[data-count="2"] .enemy:nth-child(2) { right:105px; top: 46px; }
-  .enemy-container[data-count="3"] .enemy:nth-child(1) { right: 72px; top:  0px; }
-  .enemy-container[data-count="3"] .enemy:nth-child(2) { right:  8px; top: 52px; }
-  .enemy-container[data-count="3"] .enemy:nth-child(3) { right:137px; top: 52px; }
-  .enemy-container[data-count="4"] .enemy:nth-child(1) { right: 78px; top:  0px; z-index:14; }
-  .enemy-container[data-count="4"] .enemy:nth-child(2) { right: 48px; top: 46px; z-index:16; }
-  .enemy-container[data-count="4"] .enemy:nth-child(3) { right:108px; top: 46px; z-index:16; }
-  .enemy-container[data-count="4"] .enemy:nth-child(4) { right: 78px; top: 92px; z-index:18; }
+  /* Enemy — RIGHT BOTTOM, 155px */
+  .enemy-container { width: 155px; height: 180px; bottom: 28px; }
+
+  /* Per-count card sizes (≤400px, 155px container) */
+  .enemy-container[data-count="1"] .enemy          { width:  77px; height: 117px; padding: 2px; }
+  .enemy-container[data-count="1"] .enemy-hp-bar-bg { width:  61px; }
+  .enemy-container[data-count="2"] .enemy          { width:  61px; height:  93px; padding: 2px; }
+  .enemy-container[data-count="2"] .enemy-hp-bar-bg { width:  48px; }
+  .enemy-container[data-count="3"] .enemy          { width:  49px; height:  75px; padding: 2px; }
+  .enemy-container[data-count="3"] .enemy-hp-bar-bg { width:  38px; }
+  .enemy-container[data-count="4"] .enemy          { width:  40px; height:  61px; padding: 1px; }
+  .enemy-container[data-count="4"] .enemy-hp-bar-bg { width:  31px; }
+
+  /* Positions — 155px container */
+  .enemy-container[data-count="1"] .enemy:nth-child(1) { right: 39px; top: 13px; }
+  .enemy-container[data-count="2"] .enemy:nth-child(1) { right:  7px; top:  5px; z-index:14; }
+  .enemy-container[data-count="2"] .enemy:nth-child(2) { right: 87px; top: 35px; z-index:16; }
+  .enemy-container[data-count="3"] .enemy:nth-child(1) { right: 53px; top:  0px; z-index:14; }
+  .enemy-container[data-count="3"] .enemy:nth-child(2) { right:  7px; top: 41px; z-index:16; }
+  .enemy-container[data-count="3"] .enemy:nth-child(3) { right: 99px; top: 41px; z-index:16; }
+  .enemy-container[data-count="4"] .enemy:nth-child(1) { right: 57px; top:  0px; z-index:14; }
+  .enemy-container[data-count="4"] .enemy:nth-child(2) { right: 35px; top: 35px; z-index:16; }
+  .enemy-container[data-count="4"] .enemy:nth-child(3) { right: 80px; top: 35px; z-index:16; }
+  .enemy-container[data-count="4"] .enemy:nth-child(4) { right: 57px; top: 71px; z-index:18; }
 
   .battle-actions { grid-template-columns: 1fr 1fr; }
 }

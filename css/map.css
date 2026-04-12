@@ -1126,22 +1126,21 @@
 
 /* ── Mobile D-pad ────────────────────────────────────── */
 #explore-dpad {
-  display: none;          /* shown only on touch/mobile */
   position: absolute;
   bottom: 10px;
   left: 10px;
   z-index: 25;
-  /* 3-col grid: [left] [up/center/down col] [right] */
-  display: grid;
+  display: none;          /* hidden by default; shown on touch devices */
   grid-template-columns: 48px 48px 48px;
   grid-template-rows:    48px 48px 48px;
   gap: 4px;
   opacity: 0.82;
   pointer-events: auto;
 }
-/* Hide on non-touch / large screens */
-@media (hover: hover) and (min-width: 801px) {
-  #explore-dpad { display: none !important; }
+/* Show on touch devices (any size) */
+@media (hover: none) {
+  #explore-dpad       { display: grid; }
+  #explore-party-hud  { display: none; }   /* hide HUD — dpad replaces it */
 }
 
 .dpad-btn {
