@@ -764,8 +764,8 @@
    #map-screen and #explore-screen min-height.
    ══════════════════════════════════════════════════════ */
 
-/* ── Mobile portrait — smaller map nodes (≤ 600px) ──────── */
-@media (max-width: 600px) {
+/* ── Smaller map nodes (≤ 800px) ──────── */
+@media (max-width: 800px) {
   .map-node  { width: 60px; }
   .mn-icon   { width: 46px; height: 46px; font-size: 20px; }
   .mn-name   { font-size: 11px; max-width: 60px; }

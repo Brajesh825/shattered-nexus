@@ -1754,8 +1754,8 @@ body {
   .pmb-spr  { width:40px; height:48px; }
 }
 
-/* ── Mobile portrait — smaller char/class cards (≤ 600px) ── */
-@media (max-width: 600px) {
+/* ── Smaller char/class cards (≤ 800px) ── */
+@media (max-width: 800px) {
   /* Char select */
   #char-screen, #class-screen { min-height: 0; padding: 0; }
   .char-grid   { gap: 7px; padding: 8px 10px; max-height: none; }
