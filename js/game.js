@@ -1034,8 +1034,10 @@ function buildEnemyGroup(defs, spawnLevel = 1, isBoss = false) {
     3: { hp: 18, atk: 4.5, def: 1.8, spd: 1.2, mag: 0.8, statMult: 1.7, expMult: 2.5 },
   };
 
-  // Boss multiplier: solo boss gets beefed-up base stats on top of higher level
-  const bossMult = isBoss ? 1.6 : 1.0;
+  // Boss multiplier: solo boss gets beefed-up base stats on top of higher level.
+  // 1.3x keeps bosses clearly stronger than normal T3 encounters without one-shotting
+  // glass cannons at the party level that enters each arc.
+  const bossMult = isBoss ? 1.3 : 1.0;
 
   // Horde scaling: 3+ enemies get reduced individual stats so they're dangerous
   // but not overwhelming. Scales down as group grows.
@@ -1542,7 +1544,7 @@ function heroAbility(ab) {
           }
           createEffectOverlay(i, element, 'party', ab.id);
         });
-        UI.addLog(`${actor.displayName}'s power surges through the party!`, 'heal');
+        UI.addLog(`${actor.displayName}: ${ab.name} shields the entire party!`, 'heal');
       } else if (e.stat) {
         if (actor.buff) actor[actor.buff.stat] = actor.buff.origVal;
         actor.buff = { stat: e.stat, origVal: actor[e.stat], turns: e.duration || 2 };
