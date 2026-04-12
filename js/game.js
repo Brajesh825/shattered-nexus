@@ -38,15 +38,32 @@ window.addEventListener('orientationchange', () => setTimeout(scaleGame, 150));
    BATTLE ENGINE (math helpers)
    ============================================================ */
 const Battle = {
+  // Returns 1.5 (weak), 0.5 (resist), or 1.0 (neutral) based on ability element vs target's arrays
+  elemMult(abilityElement, target) {
+    if (!abilityElement || abilityElement === 'physical') return 1.0;
+    const weak   = target?.weakTo   || [];
+    const resist = target?.resistTo || [];
+    if (weak.includes(abilityElement))   return 1.5;
+    if (resist.includes(abilityElement)) return 0.5;
+    return 1.0;
+  },
+  // Returns 'weak', 'resist', or null for UI display
+  elemResult(abilityElement, target) {
+    if (!abilityElement || abilityElement === 'physical') return null;
+    const weak   = target?.weakTo   || [];
+    const resist = target?.resistTo || [];
+    if (weak.includes(abilityElement))   return 'weak';
+    if (resist.includes(abilityElement)) return 'resist';
+    return null;
+  },
   physDmg(atk, def, mult = 1, atkLevel = 1, defLevel = 1) {
-    // Level scales damage: +0.5 damage per level
     const scaledAtk = atk + (atkLevel * 0.5);
     const scaledDef = def + (defLevel * 0.3);
-    const base = Math.max(1, scaledAtk - scaledDef * 0.4);
+    // Defense now cancels 60% of itself — more meaningful damage mitigation
+    const base = Math.max(1, scaledAtk - scaledDef * 0.6);
     return Math.max(1, Math.floor(base * (0.85 + Math.random() * 0.3) * mult));
   },
   magicDmg(mag, mult = 1, passiveBonus = 1, magLevel = 1) {
-    // Level scales magic: +0.3 damage per level (less than physical)
     const scaledMag = mag + (magLevel * 0.3);
     const base = Math.max(1, scaledMag * 0.9);
     return Math.max(1, Math.floor(base * (0.9 + Math.random() * 0.2) * mult * passiveBonus));
@@ -879,7 +896,8 @@ function buildParty() {
       name: `${ch.name} / ${cls.name}`,
       displayName: ch.alias || ch.name,
       hp: s.hp, maxHp: s.hp,
-      mp: s.mp, maxMp: s.mp,
+      // Restore saved MP if available so it carries between battles; cap to max
+      mp: (ch.mp !== undefined ? Math.min(ch.mp, s.mp) : s.mp), maxMp: s.mp,
       atk: s.atk, def: s.def, spd: s.spd, mag: s.mag,
       lv: ch.lv || 1, exp: ch.exp || 0, gold: ch.gold || 0,
       char: ch, cls: cls,
@@ -900,7 +918,7 @@ function applyRelicBonuses() {
   const defs = G.relics || [];
 
   // Aggregate bonuses from all active relics
-  const bonus = { hp: 1, mp: 1, atk: 1, def: 1, spd: 1, mag: 1, healAmp: 1 };
+  const bonus = { hp: 1, mp: 1, atk: 1, def: 1, spd: 1, mag: 1, healAmp: 1, mpRegen: 0 };
   active.forEach(id => {
     const r = defs.find(d => d.id === id);
     if (!r || !r.bonus) return;
@@ -911,6 +929,7 @@ function applyRelicBonuses() {
     if (r.bonus.spd)      bonus.spd      += r.bonus.spd;
     if (r.bonus.mag)      bonus.mag      += r.bonus.mag;
     if (r.bonus.healAmp)  bonus.healAmp  += r.bonus.healAmp;
+    if (r.bonus.mpRegen)  bonus.mpRegen  += r.bonus.mpRegen;
   });
 
   G.party.forEach(m => {
@@ -922,17 +941,21 @@ function applyRelicBonuses() {
     m.def    = Math.floor(m.def    * bonus.def);
     m.spd    = Math.floor(m.spd    * bonus.spd);
     m.mag    = Math.floor(m.mag    * bonus.mag);
-    m._healAmpRelic = bonus.healAmp; // used by healing logic
+    m._healAmpRelic  = bonus.healAmp;  // used by healing logic
+    m._mpRegenBonus  = bonus.mpRegen;  // extra % of maxMp per turn
   });
 }
 
-function buildEnemyGroup(defs, spawnLevel = 1) {
+function buildEnemyGroup(defs, spawnLevel = 1, isBoss = false) {
   // Tier-based growth rates
   const tierGrowth = {
     1: { hp: 3, atk: 0.4, def: 0.2, spd: 0.3, mag: 0.2, statMult: 1.0, expMult: 1.0 },
     2: { hp: 5, atk: 0.7, def: 0.4, spd: 0.5, mag: 0.4, statMult: 1.3, expMult: 1.5 },
     3: { hp: 8, atk: 1.0, def: 0.7, spd: 0.7, mag: 0.6, statMult: 1.7, expMult: 2.5 },
   };
+
+  // Boss multiplier: solo boss gets beefed-up base stats on top of higher level
+  const bossMult = isBoss ? 1.6 : 1.0;
 
   // Horde scaling: 3+ enemies get reduced individual stats so they're dangerous
   // but not overwhelming. Scales down as group grows.
@@ -943,8 +966,8 @@ function buildEnemyGroup(defs, spawnLevel = 1) {
     const growth = tierGrowth[tier] || tierGrowth[1];
 
     const calcStat = (baseStat, statKey) => {
-      const base       = baseStat * growth.statMult * hordeScale;
-      const levelBonus = growth[statKey] * (spawnLevel - 1) * hordeScale;
+      const base       = baseStat * growth.statMult * hordeScale * bossMult;
+      const levelBonus = growth[statKey] * (spawnLevel - 1) * hordeScale * bossMult;
       return Math.max(1, Math.floor(base + levelBonus));
     };
 
@@ -967,6 +990,9 @@ function buildEnemyGroup(defs, spawnLevel = 1) {
       abilityDefs: def.abilities || [],
       palette: def.palette,
       subtitle: def.subtitle || '',
+      element:  def.element  || 'physical',
+      weakTo:   def.weakTo   || [],
+      resistTo: def.resistTo || [],
       isKO: false, stunned: false, debuff: null,
     };
   });
@@ -1206,9 +1232,13 @@ function heroAttack() {
 
   setTimeout(() => {
     if (typeof SFX !== 'undefined') { SFX.attack(); setTimeout(() => SFX.enemyHit(), 80); }
-    const dmg = Battle.physDmg(actor.atk, enemy.def, 1, actor.lv || 1, enemy.level || 1);
+    const _em  = Battle.elemMult('physical', enemy);
+    const dmg  = Math.floor(Battle.physDmg(actor.atk, enemy.def, 1, actor.lv || 1, enemy.level || 1) * _em);
     enemy.hp  = Math.max(0, enemy.hp - dmg);
     if (enemy.hp <= 0) enemy.isKO = true;
+    const _er = Battle.elemResult('physical', enemy);
+    if (_er === 'weak')   UI.addLog('✦ WEAK!', 'magic');
+    if (_er === 'resist') UI.addLog('▸ Resist', 'regen');
 
     // Damage number popup
     UI.popEnemy(G.targetEnemyIdx, dmg, 'dmg', 'physical');
@@ -1262,9 +1292,13 @@ function heroAbility(ab) {
 
     if (ab.type === 'physical') {
       if (typeof SFX !== 'undefined') { SFX.attack(); setTimeout(() => SFX.enemyHit(), 80); }
-      const dmg = Battle.physDmg(actor.atk, enemy.def, e.dmgMultiplier || 1, actor.lv || 1, enemy.level || 1);
+      const _em  = Battle.elemMult(element, enemy);
+      const dmg  = Math.floor(Battle.physDmg(actor.atk, enemy.def, e.dmgMultiplier || 1, actor.lv || 1, enemy.level || 1) * _em);
       enemy.hp  = Math.max(0, enemy.hp - dmg);
       if (enemy.hp <= 0) enemy.isKO = true;
+      const _er = Battle.elemResult(element, enemy);
+      if (_er === 'weak')   UI.addLog('✦ WEAK!', 'magic');
+      if (_er === 'resist') UI.addLog('▸ Resist', 'regen');
       UI.popEnemy(G.targetEnemyIdx, dmg, 'dmg', element);
       createEffectOverlay(G.targetEnemyIdx, element, 'enemy', ab.id);
       const enemySpr = document.getElementById('espr-' + G.targetEnemyIdx);
@@ -1277,6 +1311,8 @@ function heroAbility(ab) {
 
     } else if (ab.type === 'magic_damage') {
       if (typeof SFX !== 'undefined') SFX.magic();
+      const _em = Battle.elemMult(element, enemy);
+      const _er = Battle.elemResult(element, enemy);
 
       // Map of ultimate abilities to their channel messages
       const ultimateMessages = {
@@ -1297,9 +1333,11 @@ function heroAbility(ab) {
         // Wait for 3000ms (animation duration) then apply damage
         setTimeout(() => {
           const passiveBonus = actor.passive?.id === 'arcane_surge' ? 1.15 : 1.0;
-          const dmg = Battle.magicDmg(actor.mag, e.dmgMultiplier || 1.5, passiveBonus, actor.lv || 1);
+          const dmg = Math.floor(Battle.magicDmg(actor.mag, e.dmgMultiplier || 1.5, passiveBonus, actor.lv || 1) * _em);
           enemy.hp  = Math.max(0, enemy.hp - dmg);
           if (enemy.hp <= 0) enemy.isKO = true;
+          if (_er === 'weak')   UI.addLog('✦ WEAK!', 'magic');
+          if (_er === 'resist') UI.addLog('▸ Resist', 'regen');
           UI.popEnemy(G.targetEnemyIdx, dmg, 'magic', element);
           const enemySpr = document.getElementById('espr-' + G.targetEnemyIdx);
           if (enemySpr) {
@@ -1314,9 +1352,11 @@ function heroAbility(ab) {
       } else {
         // Normal magic damage: calculate immediately
         const passiveBonus = actor.passive?.id === 'arcane_surge' ? 1.15 : 1.0;
-        const dmg = Battle.magicDmg(actor.mag, e.dmgMultiplier || 1.5, passiveBonus, actor.lv || 1);
+        const dmg = Math.floor(Battle.magicDmg(actor.mag, e.dmgMultiplier || 1.5, passiveBonus, actor.lv || 1) * _em);
         enemy.hp  = Math.max(0, enemy.hp - dmg);
         if (enemy.hp <= 0) enemy.isKO = true;
+        if (_er === 'weak')   UI.addLog('✦ WEAK!', 'magic');
+        if (_er === 'resist') UI.addLog('▸ Resist', 'regen');
         UI.popEnemy(G.targetEnemyIdx, dmg, 'magic', element);
         createEffectOverlay(G.targetEnemyIdx, element, 'enemy', ab.id);
         const enemySpr = document.getElementById('espr-' + G.targetEnemyIdx);
@@ -1708,7 +1748,8 @@ function enemyAct(enemy, enemyIdx) {
 
     } else if (ab.type === 'magic_damage') {
       if (typeof SFX !== 'undefined') SFX.magic();
-      const dmg = Battle.magicDmg(enemy.atk * 0.8, ab.dmgMultiplier || 1.3, 1.0, enemy.level || 1);
+      // Use enemy.mag (not atk) for magic damage
+      const dmg = Battle.magicDmg(enemy.mag, ab.dmgMultiplier || 1.3, 1.0, enemy.level || 1);
       target.hp = Math.max(0, target.hp - dmg);
       UI.popParty(targetIdx, dmg, 'magic', element);
       createEffectOverlay(targetIdx, element, 'party');
@@ -1727,6 +1768,9 @@ function enemyAct(enemy, enemyIdx) {
     // Regen ticks for all party members after each enemy action
     G.party.forEach((m, i) => {
       if (!Battle.alive(m)) return;
+      // Passive MP regen: 3 MP per turn (mpRegen relic gives bonus)
+      const mpRegenAmt = 3 + Math.floor((m._mpRegenBonus || 0) * m.maxMp);
+      m.mp = Math.min(m.maxMp, m.mp + mpRegenAmt);
       if (m.passive?.id === 'natures_grace' && m.hp < m.maxHp) {
         m.hp = Math.min(m.maxHp, m.hp + 5); UI.popParty(i, 5, 'regen');
       }
@@ -1786,12 +1830,13 @@ function checkBattleEnd() {
       while (checkMemberLevel(m)) {
         if (!leveledNames.includes(m.displayName)) leveledNames.push(m.displayName);
       }
-      // Sync stats back to character data for persistence across arcs
+      // Sync stats back to character data for persistence across battles
       const ch = G.chars.find(c => c.id === m.charId);
       if (ch) {
-        ch.lv = m.lv;
-        ch.exp = m.exp;
+        ch.lv   = m.lv;
+        ch.exp  = m.exp;
         ch.gold = m.gold;
+        ch.mp   = m.mp;   // persist MP so it carries between battles
       }
     });
 

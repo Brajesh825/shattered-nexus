@@ -691,12 +691,16 @@ const Story = {
       }
     }
 
-    // Calculate spawn level based on arc and progress
-    // Arc 1: levels 1-3, Arc 2: 3-6, Arc 3: 6-10, Arc 4: 10-14, Arc 5: 14-18, Arc 6: 18-22, Arc 7: 22-26, Arc 8: 26-30
-    const arcProgression = [1, 3, 6, 10, 14, 18, 22, 26];
-    const spawnLevel = arcProgression[this.arcIdx] || 1;
+    // Calculate spawn level based on arc and whether this is a boss fight
+    // Regular: Arc 1→1, 2→3, 3→6, 4→10, 5→14, 6→18, 7→22, 8→26
+    // Boss: significantly higher — bosses should feel like a clear step up
+    const arcProgression  = [1,  3,  6,  10, 14, 18, 22, 26];
+    const bossProgression = [6, 12, 18,  24, 30, 36, 42, 50];
+    const spawnLevel = isBoss
+      ? (bossProgression[this.arcIdx] || arcProgression[this.arcIdx] || 1)
+      : (arcProgression[this.arcIdx] || 1);
 
-    buildEnemyGroup(defs, spawnLevel);
+    buildEnemyGroup(defs, spawnLevel, isBoss);
 
     // Reset per-battle state on party members (keep HP/MP/levels from prior battles)
     G.party.forEach(m => { m.buff = null; m.debuff = null; m.regenTurns = 0; m.stunned = false; });
