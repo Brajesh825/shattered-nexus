@@ -300,7 +300,12 @@ const UI = {
     // Tier sets the "class" of the creature (goblin vs demon).
     // Count scale keeps sprites from crushing each other in crowded groups.
     // Mutation bonus makes corrupted/mutant visually bulkier.
-    const TIER_BASE_W   = { 1: 130, 2: 180, 3: 240 };   // px width per tier
+    // Viewport scale: at ≥1600px tier-1 base matches party sprite height (~180px).
+    const vw = window.innerWidth;
+    const VP_SCALE = vw >= 1600 ? 1.35 : vw >= 1200 ? 1.0 : 1.0;
+    const TIER_BASE_W   = { 1: Math.round(130 * VP_SCALE),
+                             2: Math.round(180 * VP_SCALE),
+                             3: Math.round(240 * VP_SCALE) };
     const COUNT_SCALE   = { 1: 1.00, 2: 0.87, 3: 0.75, 4: 0.64 };
     const MUTATION_MULT = { normal: 1.00, corrupted: 1.12, mutant: 1.28 };
     const ASPECT        = 1.23; // height = width × aspect

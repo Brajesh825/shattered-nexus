@@ -3754,8 +3754,8 @@ body {
   .party-member:nth-child(4) { left: 215px; top: 295px; }
 
   /* ── Enemy: 860px wide, 760px tall ──────────────────────────── */
-  /* Sprite cap: prevents mutant/boss sprites blowing the card layout */
-  .enemy-sprite { max-width: 200px !important; max-height: 260px !important; }
+  /* Sprite cap: tier3 count=1 normal = 324×399px — allow that, cap mutant extremes */
+  .enemy-sprite { max-width: 340px !important; max-height: 420px !important; }
 
   .enemy-container { width: 860px; height: 760px; bottom: 80px; }
 
