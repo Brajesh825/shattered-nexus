@@ -78,7 +78,7 @@ body {
 .screen.active { display:flex; }
 
 /* Battle screen fills the entire game container */
-#battle-screen { flex:1; overflow:hidden; }
+#battle-screen { flex:1; overflow:hidden; justify-content:center; }
 
 /* ═══════════════════════════════════════════════════════════
    TITLE SCREEN  —  Cinematic redesign (matches map aesthetic)
