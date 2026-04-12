@@ -437,6 +437,19 @@
       <!-- Party HP strip (bottom-left, above loc bar) -->
       <div id="explore-party-hud"></div>
 
+      <!-- D-pad (mobile touch, bottom-right) -->
+      <div id="explore-dpad">
+        <button class="dpad-btn dpad-up"
+          ontouchstart="DPad.press(0,-1,event)" ontouchend="DPad.release()" ontouchcancel="DPad.release()">▲</button>
+        <button class="dpad-btn dpad-left"
+          ontouchstart="DPad.press(-1,0,event)" ontouchend="DPad.release()" ontouchcancel="DPad.release()">◀</button>
+        <div class="dpad-center"></div>
+        <button class="dpad-btn dpad-right"
+          ontouchstart="DPad.press(1,0,event)" ontouchend="DPad.release()" ontouchcancel="DPad.release()">▶</button>
+        <button class="dpad-btn dpad-down"
+          ontouchstart="DPad.press(0,1,event)" ontouchend="DPad.release()" ontouchcancel="DPad.release()">▼</button>
+      </div>
+
       <!-- Minimap panel (bottom-right, above loc bar) -->
       <div id="explore-minimap-wrap">
         <div class="ex-minimap-label">Overworld</div>
@@ -672,6 +685,23 @@
 
 <!-- Save toast notification -->
 <div id="save-toast"></div>
+
+<script>
+/* ── D-Pad controller for explore screen ──────────────────── */
+const DPad = (() => {
+  let _iv = null;
+  function press(dx, dy, e) {
+    if (e) e.preventDefault();
+    release();
+    MapPlayer.dpad(dx, dy);
+    _iv = setInterval(() => MapPlayer.dpad(dx, dy), 160);
+  }
+  function release() {
+    if (_iv) { clearInterval(_iv); _iv = null; }
+  }
+  return { press, release };
+})();
+</script>
 
 </body>
 </html>

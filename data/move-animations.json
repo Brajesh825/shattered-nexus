@@ -1,0 +1,41 @@
+{
+  "frostblossom":        { "actorDuration": 560, "overlayDuration":  600, "isUltimate": false },
+  "glacial_waltz":       { "actorDuration": 560, "overlayDuration":  600, "isUltimate": false },
+  "permafrost":          { "actorDuration": 560, "overlayDuration":  600, "isUltimate": false },
+  "cryoclasm":           { "actorDuration": 800, "overlayDuration": 3000, "isUltimate": true  },
+
+  "spirit_flame":            { "actorDuration": 560, "overlayDuration":  600, "isUltimate": false },
+  "paramita_papilio":        { "actorDuration": 560, "overlayDuration":  600, "isUltimate": false },
+  "blood_blossom_enhanced":  { "actorDuration": 560, "overlayDuration":  600, "isUltimate": false },
+  "guide_to_afterlife":      { "actorDuration": 800, "overlayDuration": 3000, "isUltimate": true  },
+
+  "dance_of_blessing":    { "actorDuration": 560, "overlayDuration":  600, "isUltimate": false },
+  "water_wheel":          { "actorDuration": 560, "overlayDuration":  600, "isUltimate": false },
+  "harmony_preservation": { "actorDuration": 560, "overlayDuration":  600, "isUltimate": false },
+  "hajras_hymn":          { "actorDuration": 800, "overlayDuration": 3000, "isUltimate": true  },
+
+  "lancing_strike":     { "actorDuration": 560, "overlayDuration":  600, "isUltimate": false },
+  "yaksha_valor_active": { "actorDuration": 560, "overlayDuration":  600, "isUltimate": false },
+  "karmic_barrier":     { "actorDuration": 560, "overlayDuration":  600, "isUltimate": false },
+  "mastery_of_pain":    { "actorDuration": 800, "overlayDuration": 3000, "isUltimate": true  },
+
+  "summon_bahamut":   { "actorDuration": 700, "overlayDuration": 2400, "isUltimate": false },
+  "summon_syldra":    { "actorDuration": 700, "overlayDuration": 2200, "isUltimate": false },
+  "eidolon_channel":  { "actorDuration": 700, "overlayDuration": 2100, "isUltimate": false },
+  "absolute_summon":  { "actorDuration": 850, "overlayDuration": 2700, "isUltimate": true  },
+
+  "valkyrie_strike":     { "actorDuration": 560, "overlayDuration": 1800, "isUltimate": false },
+  "judgment_seal":       { "actorDuration": 560, "overlayDuration": 2200, "isUltimate": false },
+  "transcendent_power":  { "actorDuration": 560, "overlayDuration": 2300, "isUltimate": false },
+  "divine_execution":    { "actorDuration": 800, "overlayDuration": 2600, "isUltimate": true  },
+
+  "dragoon_lance": { "actorDuration": 600, "overlayDuration": 1900, "isUltimate": false },
+  "dragon_jump":   { "actorDuration": 650, "overlayDuration": 2100, "isUltimate": false },
+  "divine_flight": { "actorDuration": 600, "overlayDuration": 2400, "isUltimate": false },
+  "heavens_fall":  { "actorDuration": 850, "overlayDuration": 2700, "isUltimate": true  },
+
+  "holy_strike":          { "actorDuration": 560, "overlayDuration": 1850, "isUltimate": false },
+  "divine_shield":        { "actorDuration": 560, "overlayDuration": 2200, "isUltimate": false },
+  "grail_blessing":       { "actorDuration": 560, "overlayDuration": 2300, "isUltimate": false },
+  "lionheart_ascendant":  { "actorDuration": 850, "overlayDuration": 2900, "isUltimate": true  }
+}
