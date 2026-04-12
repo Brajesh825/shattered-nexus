@@ -10,8 +10,8 @@
 // ── CHARACTERS ────────────────────────────────────────────────
 window.CHARACTERS_DATA = [
   {
-    "id":"ayaka","name":"Ayaka","title":"The Cryo Princess","icon":"❄️",
-    "description":"Eldest daughter of the Kamisato Clan, summoned mid-prayer to a world unknown.",
+    "id":"ayaka","name":"Ayaka","alias":"Aya","title":"The Cryo Princess","icon":"❄️",
+    "description":"A noble warrior summoned mid-prayer to a world unknown. She fights with precise, frozen grace — every strike a bloom of ice.",
     "personality":"Graceful, noble, quietly fierce",
     "portrait_color":"#7dd3fc","hair_color":"#c0e8ff",
     "skin_color":"#f8e8ff","armor_color":"#4b9fce",
@@ -19,11 +19,11 @@ window.CHARACTERS_DATA = [
     "stat_bonuses":{"spd":3,"atk":2},
     "class_affinity":["cryo_bladestorm"],
     "passive":{"id":"frostflake","name":"Frostflake Dance","description":"Always acts first. +3 SPD bonus and attacks carry a cryo edge."},
-    "lore":"Torn from her world mid-prayer. The last thing she saw was cherry blossoms."
+    "lore":"Torn from her world mid-prayer at a sacred shrine. The last thing she saw was cherry blossoms."
   },
   {
-    "id":"hutao","name":"Hu Tao","title":"The Ghost Guide","icon":"🔥",
-    "description":"Director of the Wangsheng Funeral Parlor. Chasing a spirit when the rift swallowed her.",
+    "id":"hutao","name":"Hu Tao","alias":"Tao","title":"The Ghost Guide","icon":"🔥",
+    "description":"A spirit guide and amateur poet. She was chasing a runaway spirit when the rift swallowed her whole — she considers it a professional hazard.",
     "personality":"Mischievous, death-obsessed, surprisingly caring",
     "portrait_color":"#ef4444","hair_color":"#4a2020",
     "skin_color":"#f5c8a0","armor_color":"#c03010",
@@ -34,8 +34,8 @@ window.CHARACTERS_DATA = [
     "lore":"She once wrote a poem about her own funeral and genuinely enjoyed it."
   },
   {
-    "id":"nilou","name":"Nilou","title":"The Star Dancer","icon":"💧",
-    "description":"A dancer of the Grand Bazaar, beloved by all. Summoned from the sacred pool mid-performance.",
+    "id":"nilou","name":"Nilou","alias":"Lulu","title":"The Star Dancer","icon":"💧",
+    "description":"A beloved dancer whose grace captivates all who witness her. She was dancing at the edge of a sacred pool when the summoning light carried her away.",
     "personality":"Gentle, radiant, courageous at heart",
     "portrait_color":"#2dd4bf","hair_color":"#40d0c0",
     "skin_color":"#f0d8c0","armor_color":"#0e9080",
@@ -46,20 +46,20 @@ window.CHARACTERS_DATA = [
     "lore":"Stepped through the rift sword-first. She stopped worrying about being grand enough."
   },
   {
-    "id":"xiao","name":"Xiao","title":"The Last Yaksha","icon":"🌀",
-    "description":"A guardian yaksha carrying two thousand years of karmic debt.",
+    "id":"xiao","name":"Xiao","alias":"Rei","title":"The Ancient Warden","icon":"🌀",
+    "description":"An ancient warden carrying two thousand years of karmic debt.",
     "personality":"Stoic, solitary, fiercely protective",
     "portrait_color":"#4ade80","hair_color":"#1a6040",
     "skin_color":"#d8e8c0","armor_color":"#0a4030",
     "base_stats":{"hp":80,"mp":18,"atk":18,"def":16,"spd":13,"mag":8},
     "stat_bonuses":{"atk":3,"def":3},
     "class_affinity":["yaksha_protector"],
-    "passive":{"id":"yakshas_valor","name":"Yaksha's Valor","description":"10% reduced damage. ATK +15% from karmic resolve."},
+    "passive":{"id":"yakshas_valor","name":"Warden's Valor","description":"10% reduced damage. ATK +15% from karmic resolve."},
     "lore":"He has slain ten thousand demons and does not speak of it."
   },
   {
-    "id":"rydia","name":"Rydia","title":"The Summoner","icon":"✨",
-    "description":"A powerful summoner blessed with the ability to call forth creatures from the realm of the Eidolons. She channels ancient summons with graceful precision, commanding beasts of fire, ice, and thunder to do her bidding.",
+    "id":"rydia","name":"Rydia","alias":"Ria","title":"The Summoner","icon":"✨",
+    "description":"A powerful summoner blessed with the ability to call forth creatures from ancient realms. She channels ancient summons with graceful precision, commanding beasts of fire, ice, and thunder to do her bidding.",
     "personality":"Wise, compassionate, magically attuned",
     "portrait_color":"#a78bfa","hair_color":"#8b5cf6",
     "skin_color":"#fce7f3","armor_color":"#6d28d9",
@@ -67,11 +67,11 @@ window.CHARACTERS_DATA = [
     "stat_bonuses":{"mag":6,"mp":6},
     "class_affinity":["summoner_eidolon"],
     "passive":{"id":"eidolon_bond","name":"Eidolon Bond","description":"Summoned creatures gain +20% stats. MP efficiency increased by 15%."},
-    "lore":"In her world, she commanded the mightiest creatures of the Feymarch. When the rift opened, her summoned eidolons followed her through — loyal companions across worlds."
+    "lore":"In her world, she commanded the mightiest creatures of ancient realms. When the rift opened, her summoned eidolons followed her through — loyal companions across worlds."
   },
   {
-    "id":"lenneth","name":"Lenneth","title":"The Valkyrie","icon":"👑",
-    "description":"A divine Valkyrie warrior who judges souls and claims the worthy. She wields sacred power and divine authority, her blade blessed by the gods themselves. Ageless and formidable in combat.",
+    "id":"lenneth","name":"Lenneth","alias":"Valka","title":"The Valkyrie","icon":"👑",
+    "description":"A divine Valkyrie warrior who judges souls and claims the worthy. She wields sacred power and divine authority, her blade blessed by ancient power. Ageless and formidable in combat.",
     "personality":"Principled, commanding, divinely righteous",
     "portrait_color":"#e879f9","hair_color":"#c084fc",
     "skin_color":"#faf5ff","armor_color":"#a855f7",
@@ -82,7 +82,7 @@ window.CHARACTERS_DATA = [
     "lore":"For millennia she walked between worlds, judging souls worthy of ascension. Now she stands in this shadowed realm, where even gods fear to tread — and she must decide if darkness itself can be redeemed."
   },
   {
-    "id":"kain","name":"Kain","title":"The Dragoon","icon":"🐉",
+    "id":"kain","name":"Kain","alias":"Drake","title":"The Dragoon","icon":"🐉",
     "description":"A noble Dragoon knight whose lance pierces the sky. He channels the power of dragons to perform devastating aerial attacks, his spear dancing through the air with lethal grace.",
     "personality":"Honorable, conflicted, steadfastly loyal",
     "portrait_color":"#0ea5e9","hair_color":"#0369a1",
@@ -91,10 +91,10 @@ window.CHARACTERS_DATA = [
     "stat_bonuses":{"atk":3,"spd":3},
     "class_affinity":["dragoon_skyward"],
     "passive":{"id":"dragon_leap","name":"Dragon's Leap","description":"Every 3rd turn, perform a bonus aerial attack. SPD +2 during aerial combat."},
-    "lore":"As a Dragoon of Baron, he swore oaths to his kingdom. But loyalties fracture when worlds collide. He came seeking redemption — instead, he found new purpose."
+    "lore":"A Dragoon knight who swore oaths to a kingdom long since lost to the rift. But loyalties fracture when worlds collide. He came seeking redemption — instead, he found new purpose."
   },
   {
-    "id":"leon","name":"Leon","title":"The Lionheart King","icon":"⚔️",
+    "id":"leon","name":"Leon","alias":"Rex","title":"The Lionheart King","icon":"⚔️",
     "description":"An immortal warrior-king who ruled for two centuries, blessed by the gods themselves. He commands divine power and can summon gods through sacred rituals. His presence radiates ancient authority.",
     "personality":"Regal, stoic, divinely resolute",
     "portrait_color":"#fbbf24","hair_color":"#fcd34d",
@@ -102,7 +102,7 @@ window.CHARACTERS_DATA = [
     "base_stats":{"hp":92,"mp":32,"atk":22,"def":20,"spd":14,"mag":18},
     "stat_bonuses":{"atk":5,"def":5,"hp":4},
     "class_affinity":["knight_king_divine"],
-    "passive":{"id":"divine_blessing","name":"Divine Blessing","description":"As a demi-god, Leon grants allies +15% HP regeneration. Takes 12% reduced damage from all sources."},
+    "passive":{"id":"divine_blessing","name":"Divine Blessing","description":"As a demi-god, grants allies +15% HP regeneration. Takes 12% reduced damage from all sources."},
     "lore":"He lived 200 years as a king, commanding gods and demons alike. When he was pulled into this shadowed realm, even he felt the weight of something beyond his ken. Yet his blade still shines with purpose."
   }
 ];
@@ -111,7 +111,7 @@ window.CHARACTERS_DATA = [
 window.CLASSES_DATA = [
   {
     "id":"cryo_bladestorm","name":"Cryo Bladestorm","icon":"❄️","tag":"Ice / Swift Strike",
-    "description":"Ayaka's elegant frozen combat style. Swift ice-infused strikes that freeze enemies.",
+    "description":"An elegant frozen combat style. Swift ice-infused strikes that freeze enemies.",
     "color":"#4b9fce",
     "role":"Ranger",
     "stat_multipliers":{"hp":0.95,"mp":1.1,"atk":1.25,"def":0.85,"spd":1.6,"mag":1.0},
@@ -125,7 +125,7 @@ window.CLASSES_DATA = [
   },
   {
     "id":"spirit_incinerator","name":"Spirit Incinerator","icon":"🔥","tag":"Fire / Life Force",
-    "description":"Hu Tao's pyromantic guide art. Harness ghost energy to incinerate foes while draining vitality.",
+    "description":"A pyromantic guide art. Harness ghost energy to incinerate foes while draining vitality.",
     "color":"#c03010",
     "role":"Warrior",
     "stat_multipliers":{"hp":0.85,"mp":1.0,"atk":1.5,"def":0.7,"spd":1.15,"mag":1.1},
@@ -139,7 +139,7 @@ window.CLASSES_DATA = [
   },
   {
     "id":"hydro_performer","name":"Hydro Performer","icon":"💧","tag":"Water / Grace",
-    "description":"Nilou's star-blessed dance. Graceful water magic that heals and supports the party.",
+    "description":"A star-blessed dance. Graceful water magic that heals and supports the party.",
     "color":"#0e9080",
     "role":"Healer",
     "stat_multipliers":{"hp":1.15,"mp":1.4,"atk":0.8,"def":1.0,"spd":0.95,"mag":1.3},
@@ -152,14 +152,14 @@ window.CLASSES_DATA = [
     "growthPerLevel":{"hp":10,"mp":8,"atk":1,"def":2,"spd":1,"mag":5}
   },
   {
-    "id":"yaksha_protector","name":"Yaksha Protector","icon":"🌀","tag":"Guardian / Karmic",
-    "description":"Xiao's ancient yaksha power. Protective stance with karmic resolution and damage reduction.",
+    "id":"yaksha_protector","name":"Ancient Warden","icon":"🌀","tag":"Guardian / Karmic",
+    "description":"An ancient warden's power. Protective stance with karmic resolution and damage reduction.",
     "color":"#0a4030",
     "role":"Knight",
     "stat_multipliers":{"hp":1.4,"mp":0.8,"atk":1.1,"def":1.4,"spd":0.85,"mag":0.7},
     "abilities":[
       {"id":"lancing_strike","name":"Lancing Strike","icon":"⚡","mp":0,"type":"physical","description":"1.4x ATK, ignore 20% DEF","effect":{"dmgMultiplier":1.4,"element":"physical"}},
-      {"id":"yaksha_valor_active","name":"Yaksha's Valor","icon":"🛡","mp":6,"type":"buff","description":"3-turn: -25% damage, +15% reflect","effect":{"stat":"def","multiplier":1.3,"duration":3}},
+      {"id":"yaksha_valor_active","name":"Warden's Valor","icon":"🛡","mp":6,"type":"buff","description":"3-turn: -25% damage, +15% reflect","effect":{"stat":"def","multiplier":1.3,"duration":3}},
       {"id":"karmic_barrier","name":"Karmic Barrier","icon":"🌀","mp":8,"type":"buff","description":"Party: DEF +40%, allies -10% damage","effect":{"aoe":true}},
       {"id":"mastery_of_pain","name":"Mastery of Pain","icon":"⚡","mp":14,"type":"magic_damage","description":"3.5x magic, scales with DEF","effect":{"dmgMultiplier":3.5,"element":"anemo"}}
     ],
@@ -167,7 +167,7 @@ window.CLASSES_DATA = [
   },
   {
     "id":"summoner_eidolon","name":"Summoner","icon":"✨","tag":"Magic / Eidolons",
-    "description":"Rydia's summoning prowess. Command mighty eidolons from the spirit realm to decimate foes and protect allies.",
+    "description":"A summoner's prowess. Command mighty eidolons from the spirit realm to decimate foes and protect allies.",
     "color":"#6d28d9",
     "role":"Mage",
     "stat_multipliers":{"hp":0.95,"mp":1.5,"atk":0.6,"def":0.8,"spd":0.95,"mag":1.6},
@@ -181,7 +181,7 @@ window.CLASSES_DATA = [
   },
   {
     "id":"valkyrie_guardian","name":"Valkyrie","icon":"👑","tag":"Divine / Judgment",
-    "description":"Lenneth's divine valkyrie power. Strike with sacred judgment while protecting allies with celestial authority.",
+    "description":"A divine valkyrie's power. Strike with sacred judgment while protecting allies with celestial authority.",
     "color":"#a855f7",
     "role":"Knight",
     "stat_multipliers":{"hp":1.3,"mp":1.1,"atk":1.3,"def":1.35,"spd":1.0,"mag":1.2},
@@ -195,7 +195,7 @@ window.CLASSES_DATA = [
   },
   {
     "id":"dragoon_skyward","name":"Divine Dragoon","icon":"🐉","tag":"Dragon / Sky",
-    "description":"Kain's dragoon legacy elevated by divine power. Soar through the heavens with lance strikes and dragon-channeled attacks.",
+    "description":"A dragoon's legacy elevated by divine power. Soar through the heavens with lance strikes and dragon-channeled attacks.",
     "color":"#0c4a6e",
     "role":"Ranger",
     "stat_multipliers":{"hp":1.15,"mp":0.9,"atk":1.35,"def":1.05,"spd":1.25,"mag":0.95},
@@ -209,7 +209,7 @@ window.CLASSES_DATA = [
   },
   {
     "id":"knight_king_divine","name":"Grail Guardian","icon":"⚔️","tag":"Holy / Divinity",
-    "description":"Leon's god-blessed kingship. Wield divine authority and summon the power of gods to protect and annihilate.",
+    "description":"A god-blessed kingship. Wield divine authority and summon the power of gods to protect and annihilate.",
     "color":"#b45309",
     "role":"Paladin",
     "stat_multipliers":{"hp":1.35,"mp":1.15,"atk":1.4,"def":1.4,"spd":0.95,"mag":1.25},

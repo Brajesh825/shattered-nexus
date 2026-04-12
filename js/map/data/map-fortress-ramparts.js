@@ -127,6 +127,10 @@ MAP_DEFS.fortress_ramparts = (function() {
             { id: 'shadow_wraith', x: 90, y: 55, patrol: 'horizontal', range: 8,  speed: 1.3 }
         ],
 
+        npcs: [
+          { id: 'essabella', x: 70, y: 55, dialogueKey: 'fortress_ramparts' },
+        ],
+
         fog: { delay: 10, peak: 70, max: 0.88, vision: 2.4 },
 
         voiceLines: {

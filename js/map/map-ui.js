@@ -31,6 +31,9 @@ const MapUI = (() => {
         el.classList.remove('show');
         if (cb) cb();
       }, durationMs || 1200);
+    } else {
+      // Element not found — still fire callback so story progression isn't lost
+      if (cb) setTimeout(cb, durationMs || 1200);
     }
   }
 

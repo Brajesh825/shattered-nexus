@@ -138,6 +138,10 @@ MAP_DEFS.sunken_temple = (function() {
             { id: 'werewolf', x: 80,  y: 80,  patrol: 'random', range: 12, speed: 1.6 }
         ],
 
+        npcs: [
+          { id: 'essabella', x: 120, y: 80, dialogueKey: 'sunken_temple' },
+        ],
+
         fog: { delay: 8, peak: 80, max: 0.86, vision: 2.5 },
 
         voiceLines: {

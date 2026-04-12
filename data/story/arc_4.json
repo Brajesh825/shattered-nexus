@@ -40,17 +40,17 @@
               "text": "Valdris: Four Seal Fragments reclaimed. I confess I did not expect you to reach this gate intact. The Oracle made a better choice than I gave her credit for."
             },
             {
-              "speaker": "Xiao",
+              "speaker": "Rei",
               "emotion": "cold",
               "text": "You speak to distract. It will not work."
             },
             {
               "speaker": "narrator",
               "emotion": "measured",
-              "text": "Valdris: No. I speak because I am curious. A yaksha who has carried karmic contamination for two thousand years \u00e2\u20ac\u201d every demon you devoured left a scar, and you kept going. That is either extraordinary will or extraordinary self-destruction. I have not decided which."
+              "text": "Valdris: No. I speak because I am curious. A warden who has carried karmic weight for two thousand years \u00e2\u20ac\u201d every demon you devoured left a scar, and you kept going. That is either extraordinary will or extraordinary self-destruction. I have not decided which."
             },
             {
-              "speaker": "Xiao",
+              "speaker": "Rei",
               "emotion": "tense",
               "text": "..."
             },
@@ -60,7 +60,7 @@
               "text": "Valdris: The funeral director. You have been around death long enough to know it does not frighten you \u00e2\u20ac\u201d but you have never truly faced the possibility that all that poetry and laughter might simply... stop. Have you?"
             },
             {
-              "speaker": "Hutao",
+              "speaker": "Tao",
               "emotion": "flat",
               "text": "I provide a service to those experiencing a natural transition. There is a difference between my death and the ones I manage."
             },
@@ -70,7 +70,7 @@
               "text": "Valdris: Is there? You are very convincing. You almost convinced yourself."
             },
             {
-              "speaker": "Hutao",
+              "speaker": "Tao",
               "emotion": "quiet",
               "text": "..."
             },
@@ -80,7 +80,7 @@
               "text": "Valdris: The dancer with the water that answers her. The princess who carries the weight of a name larger than herself. I know all four of you better than you know each other. I have been patient. I have had time."
             },
             {
-              "speaker": "Nilou",
+              "speaker": "Lulu",
               "emotion": "resolved",
               "text": "You spoke to me in the water. You tried to make hopelessness feel reasonable. It did not work."
             },
@@ -90,7 +90,7 @@
               "text": "Valdris: No. But it planted something. It always does. You will feel it in the gate \u00e2\u20ac\u201d when the Fallen Angel comes at you and you wonder, just for a moment, if breaking beautiful things is the only honest act left in this world."
             },
             {
-              "speaker": "Ayaka",
+              "speaker": "Aya",
               "emotion": "composed",
               "text": "Then we will answer that question by not breaking. Move. Together."
             }
@@ -100,22 +100,22 @@
           "narration": "The voice pulls back \u00e2\u20ac\u201d not gone, just watching from a greater distance. Nilou lets out a slow, controlled breath.",
           "dialogue": [
             {
-              "speaker": "Nilou",
+              "speaker": "Lulu",
               "emotion": "honest",
               "text": "He knew things. Specific things. Not just who we are \u00e2\u20ac\u201d how we think."
             },
             {
-              "speaker": "Xiao",
+              "speaker": "Rei",
               "emotion": "quiet",
               "text": "I have carried karma for two thousand years. I have been afraid before. I fought anyway. That is the only answer that matters."
             },
             {
-              "speaker": "Hutao",
+              "speaker": "Tao",
               "emotion": "direct",
               "text": "...Knowing someone and stopping them are very different problems. He knows us. We are about to stop him. Advantage: ours."
             },
             {
-              "speaker": "Ayaka",
+              "speaker": "Aya",
               "emotion": "warm",
               "text": "Well said. Both of you."
             }
@@ -123,10 +123,10 @@
         }
       ],
       "cast": [
-        "Ayaka",
-        "Hutao",
-        "Nilou",
-        "Xiao"
+        "Aya",
+        "Tao",
+        "Lulu",
+        "Rei"
       ]
     },
     {
@@ -137,15 +137,15 @@
       "map_hint": "Descend through the Sunken Temple — the Fallen Angel and the Wind Fragment wait in the depths.",
       "pre_dialogue": [
         { "speaker": "narrator", "emotion": "heavy", "text": "The Shadow Reach gives way to the drowned labyrinth of the Great Sunken Temple — corridors held up by nothing but old magic, shadow-creatures patrolling every passage." },
-        { "speaker": "Xiao", "emotion": "somber", "text": "The Fallen Angel is ahead. She was something sacred once. The shadow takes what is strong and breaks it into tools." },
-        { "speaker": "Ayaka", "emotion": "resolved", "text": "Then we undo what he made of her. One way or another." },
-        { "speaker": "Hutao", "emotion": "focused", "text": "Careful through the corridors. Whatever is in here does not want us reaching the bottom." }
+        { "speaker": "Rei", "emotion": "somber", "text": "The Fallen Angel is ahead. She was something sacred once. The shadow takes what is strong and breaks it into tools." },
+        { "speaker": "Aya", "emotion": "resolved", "text": "Then we undo what he made of her. One way or another." },
+        { "speaker": "Tao", "emotion": "focused", "text": "Careful through the corridors. Whatever is in here does not want us reaching the bottom." }
       ],
       "post_dialogue": [
         { "speaker": "narrator", "emotion": "solemn", "text": "The deepest chamber opens before them. The Fallen Angel waits — wings of compressed shadow, eyes with no memory of what they once were." },
-        { "speaker": "Nilou", "emotion": "moved", "text": "She does not want to be here either. I can feel it. She is trapped the same way the Kraken was." },
-        { "speaker": "Xiao", "emotion": "quiet", "text": "Then we free her. That is what we do." },
-        { "speaker": "Ayaka", "emotion": "resolved", "text": "Together. As we have done everything else." }
+        { "speaker": "Lulu", "emotion": "moved", "text": "She does not want to be here either. I can feel it. She is trapped the same way the Kraken was." },
+        { "speaker": "Rei", "emotion": "quiet", "text": "Then we free her. That is what we do." },
+        { "speaker": "Aya", "emotion": "resolved", "text": "Together. As we have done everything else." }
       ]
     }
   ],
@@ -153,19 +153,19 @@
   "boss_chapter": {
     "title": "The Fortress Inner Sanctum",
     "background": "fortress_throne",
-    "cast": ["Ayaka", "Hutao", "Nilou", "Xiao"],
+    "cast": ["Aya", "Tao", "Lulu", "Rei"],
     "pre_dialogue": [
       { "speaker": "narrator", "emotion": "heavy", "text": "The Fallen Angel has been broken. The fortress gate lies open. And beyond it — the sanctum. Where Valdris watches. Waits." },
-      { "speaker": "Xiao", "emotion": "grim", "text": "Four Fragments reclaimed. One remains. After this, there will be no turning back." },
-      { "speaker": "Hutao", "emotion": "steady", "text": "Good. I am tired of running. Tired of doubting. Let us end this." },
-      { "speaker": "Ayaka", "emotion": "resolved", "text": "Together. As we have done this entire time. That is what he cannot break." }
+      { "speaker": "Rei", "emotion": "grim", "text": "Four Fragments reclaimed. One remains. After this, there will be no turning back." },
+      { "speaker": "Tao", "emotion": "steady", "text": "Good. I am tired of running. Tired of doubting. Let us end this." },
+      { "speaker": "Aya", "emotion": "resolved", "text": "Together. As we have done this entire time. That is what he cannot break." }
     ],
     "post_dialogue": [
       { "speaker": "narrator", "emotion": "ominous", "text": "But when the shadow falls back, something is different. Valdris does not collapse. Valdris does not break. Valdris simply... steps aside." },
       { "speaker": "narrator", "emotion": "measured", "text": "Valdris: Well done. The Emperor has waited long enough in the wings. Perhaps it is time for an introduction. Or a reckoning. The distinction matters less than you might think." },
-      { "speaker": "Hutao", "emotion": "apprehensive", "text": "...That did not sound good." },
-      { "speaker": "Xiao", "emotion": "flat", "text": "No. It did not." },
-      { "speaker": "Ayaka", "emotion": "resolute", "text": "One more. One more Fragment, and then we face him directly. We are close." }
+      { "speaker": "Tao", "emotion": "apprehensive", "text": "...That did not sound good." },
+      { "speaker": "Rei", "emotion": "flat", "text": "No. It did not." },
+      { "speaker": "Aya", "emotion": "resolute", "text": "One more. One more Fragment, and then we face him directly. We are close." }
     ],
     "onVictory": [
       { "type": "recruit", "charId": "leon" }
@@ -174,12 +174,12 @@
       "background": "fortress_throne",
       "dialogue": [
         { "speaker": null, "text": "As Valdris's words hang in the air, the sanctum shifts. The shadows themselves recoil. And from them steps a figure draped in gold and ancient authority — a king whose eyes have seen empires crumble." },
-        { "speaker": "Leon", "emotion": "commanding", "text": "I am Leon, King of the Lionheart — or was, before this shadow claimed all crowns. I have walked two hundred years, commanded gods and demons alike. I will not let this darkness command me." },
-        { "speaker": "Ayaka", "emotion": "awed", "text": "An immortal king. You have borne witness to ages. Why do you join us now?" },
-        { "speaker": "Leon", "emotion": "resolute", "text": "Because even a god-blessed king knows when the time has come to kneel — not to shadow, but to purpose. You carry something I thought lost ages ago: hope without denial. Truth without despair. I would stand with that." },
-        { "speaker": "Hutao", "emotion": "respectful", "text": "From summoner to dragoon to immortal king. We gather strength as we move forward. Whatever comes next, we meet it together." },
-        { "speaker": "Xiao", "emotion": "quiet", "text": "Six warriors. The number holds power in its own right." },
-        { "speaker": "Lenneth", "emotion": "solemn", "text": "And now we are complete. Paired with the four who began this journey — together, we are ready for what comes." }
+        { "speaker": "Rex", "emotion": "commanding", "text": "I am Leon, King of the Lionheart — or was, before this shadow claimed all crowns. I have walked two hundred years, commanded gods and demons alike. I will not let this darkness command me." },
+        { "speaker": "Aya", "emotion": "awed", "text": "An immortal king. You have borne witness to ages. Why do you join us now?" },
+        { "speaker": "Rex", "emotion": "resolute", "text": "Because even a god-blessed king knows when the time has come to kneel — not to shadow, but to purpose. You carry something I thought lost ages ago: hope without denial. Truth without despair. I would stand with that." },
+        { "speaker": "Tao", "emotion": "respectful", "text": "From summoner to dragoon to immortal king. We gather strength as we move forward. Whatever comes next, we meet it together." },
+        { "speaker": "Rei", "emotion": "quiet", "text": "Six warriors. The number holds power in its own right." },
+        { "speaker": "Valka", "emotion": "solemn", "text": "And now we are complete. Paired with the four who began this journey — together, we are ready for what comes." }
       ]
     }
   }

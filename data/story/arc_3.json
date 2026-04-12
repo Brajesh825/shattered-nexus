@@ -19,7 +19,7 @@
       "title": "Beneath the Surface",
       "type": "cutscene",
       "background": "sunken_ruins",
-      "cast": ["Ayaka", "Hutao", "Nilou", "Xiao"],
+      "cast": ["Aya", "Tao", "Lulu", "Rei"],
       "scenes": [
         {
           "narration": "The Oracle's third marker leads to the coast of Aethoria's sunken west — a region that drowned when Valdris first shattered the Water Seal.",
@@ -28,17 +28,17 @@
         {
           "narration": "Nilou stands at the shoreline, watching the water with a strange expression — recognition, almost.",
           "dialogue": [
-            { "speaker": "Nilou", "emotion": "wistful", "text": "In Sumeru, the sacred pools respond to dance. This water feels different. Grief-soaked." },
-            { "speaker": "Hutao", "emotion": "curious", "text": "Grief-soaked water. That is poetic. I might use that in a poem, if you do not mind." },
-            { "speaker": "Nilou", "emotion": "gentle", "text": "It is yours. Though I hope you give it a more cheerful ending than the sea did." }
+            { "speaker": "Lulu", "emotion": "wistful", "text": "In my homeland, the sacred pools respond to dance. This water feels different. Grief-soaked." },
+            { "speaker": "Tao", "emotion": "curious", "text": "Grief-soaked water. That is poetic. I might use that in a poem, if you do not mind." },
+            { "speaker": "Lulu", "emotion": "gentle", "text": "It is yours. Though I hope you give it a more cheerful ending than the sea did." }
           ]
         },
         {
           "narration": "Xiao crouches at the edge, scanning beneath the surface. Shadow-forms move in the depths — slow, circling.",
           "dialogue": [
-            { "speaker": "Xiao", "emotion": "alert", "text": "The Kraken. Ancient. Pre-dates Valdris. He corrupted it when he broke the Seal — turned a guardian into a warden." },
-            { "speaker": "Ayaka", "emotion": "calm", "text": "A creature once protector of these waters, now their jailer. There is a particular sadness in that." },
-            { "speaker": "Hutao", "emotion": "focused", "text": "A sad fate. But also very large tentacles. Let us have a plan." }
+            { "speaker": "Rei", "emotion": "alert", "text": "The Kraken. Ancient. Pre-dates Valdris. He corrupted it when he broke the Seal — turned a guardian into a warden." },
+            { "speaker": "Aya", "emotion": "calm", "text": "A creature once protector of these waters, now their jailer. There is a particular sadness in that." },
+            { "speaker": "Tao", "emotion": "focused", "text": "A sad fate. But also very large tentacles. Let us have a plan." }
           ]
         }
       ]
@@ -51,15 +51,15 @@
       "map_hint": "Cross the Ember Wastes — the drowned coast and the Kraken lie beyond the scorched spiral.",
       "pre_dialogue": [
         { "speaker": "narrator", "emotion": "tense", "text": "The path to the sunken coast cuts through the Ember Wastes — a scarred landscape where even the rock burns. Shadow-corrupted creatures stalk between the cinders." },
-        { "speaker": "Xiao", "emotion": "alert", "text": "The Kraken's karmic weight grows stronger ahead. We are close." },
-        { "speaker": "Hutao", "emotion": "focused", "text": "Hot, dangerous, and full of things that want us dead. Perfectly normal Tuesday. Move." },
-        { "speaker": "Nilou", "emotion": "steady", "text": "Together. We go together." }
+        { "speaker": "Rei", "emotion": "alert", "text": "The Kraken's karmic weight grows stronger ahead. We are close." },
+        { "speaker": "Tao", "emotion": "focused", "text": "Hot, dangerous, and full of things that want us dead. Perfectly normal Tuesday. Move." },
+        { "speaker": "Lulu", "emotion": "steady", "text": "Together. We go together." }
       ],
       "post_dialogue": [
         { "speaker": "narrator", "emotion": "melancholy", "text": "The Ember Wastes give way to the sunken coast — a shoreline drowned in grief-soaked water. And beneath the surface, something immense circles." },
-        { "speaker": "Nilou", "emotion": "wistful", "text": "This water feels different. Grief-soaked, like it remembers what it lost." },
-        { "speaker": "Xiao", "emotion": "solemn", "text": "The Kraken does not want to fight. The shadow compels it. Remember that — and make it quick." },
-        { "speaker": "Hutao", "emotion": "focused", "text": "It deserves that much. Let us do what we came to do." }
+        { "speaker": "Lulu", "emotion": "wistful", "text": "This water feels different. Grief-soaked, like it remembers what it lost." },
+        { "speaker": "Rei", "emotion": "solemn", "text": "The Kraken does not want to fight. The shadow compels it. Remember that — and make it quick." },
+        { "speaker": "Tao", "emotion": "focused", "text": "It deserves that much. Let us do what we came to do." }
       ]
     }
   ],
@@ -67,19 +67,19 @@
   "boss_chapter": {
     "title": "The Guardian Unbound",
     "background": "deep_citadel",
-    "cast": ["Ayaka", "Hutao", "Nilou", "Xiao"],
+    "cast": ["Aya", "Tao", "Lulu", "Rei"],
     "pre_dialogue": [
       { "speaker": "narrator", "emotion": "intense", "text": "The Kraken rises from the depths. Ancient. Immense. Its corruption pulses with the captured Seal Fragment, and it comes for them with blind fury." },
-      { "speaker": "Xiao", "emotion": "grave", "text": "It does not want this fight. But it has no choice. That makes it more dangerous." },
-      { "speaker": "Nilou", "emotion": "determined", "text": "Then we end this quickly. For its sake." },
-      { "speaker": "Hutao", "emotion": "ready", "text": "For its sake, and for ours. Let us do what we came here to do." }
+      { "speaker": "Rei", "emotion": "grave", "text": "It does not want this fight. But it has no choice. That makes it more dangerous." },
+      { "speaker": "Lulu", "emotion": "determined", "text": "Then we end this quickly. For its sake." },
+      { "speaker": "Tao", "emotion": "ready", "text": "For its sake, and for ours. Let us do what we came here to do." }
     ],
     "post_dialogue": [
       { "speaker": "narrator", "emotion": "melancholy", "text": "The Kraken falls. As its shadow-form dissolves, the water Seal Fragment rises from the depths — clear and cold and weeping light." },
-      { "speaker": "Xiao", "emotion": "quiet", "text": "It is gone now. The karma is lifting. It can finally rest." },
-      { "speaker": "Nilou", "emotion": "bittersweet", "text": "I am glad it is free. I just wish we could have done it without the fighting." },
-      { "speaker": "Ayaka", "emotion": "gentle", "text": "Sometimes the only kindness left is the one that ends suffering. Not comfortable — but true." },
-      { "speaker": "Hutao", "emotion": "solemn", "text": "...I have seen enough to know she is right. Three Fragments down. One more before we truly face him." }
+      { "speaker": "Rei", "emotion": "quiet", "text": "It is gone now. The karma is lifting. It can finally rest." },
+      { "speaker": "Lulu", "emotion": "bittersweet", "text": "I am glad it is free. I just wish we could have done it without the fighting." },
+      { "speaker": "Aya", "emotion": "gentle", "text": "Sometimes the only kindness left is the one that ends suffering. Not comfortable — but true." },
+      { "speaker": "Tao", "emotion": "solemn", "text": "...I have seen enough to know she is right. Three Fragments down. One more before we truly face him." }
     ],
     "onVictory": [
       { "type": "recruit", "charId": "kain" }
@@ -87,13 +87,13 @@
     "character_moment": {
       "background": "deep_citadel",
       "dialogue": [
-        { "speaker": null, "text": "As the water settles, a figure descends from above — a dragoon knight, his armor marked with the sigil of Baron. His lance glows with aerial energy as he lands beside them." },
-        { "speaker": "Kain", "emotion": "formal", "text": "I am Kain, Dragoon of Baron. I felt the Fragment's freedom from above — the sky itself sang with it. A barrier I did not know existed has lifted." },
-        { "speaker": "Rydia", "emotion": "surprised", "text": "Kain? From Baron? That kingdom fell ages ago in my world. How is it you stand here?" },
-        { "speaker": "Kain", "emotion": "conflicted", "text": "I do not know. But I was bound by a curse I could not break. Now, feeling that curse shatter — I followed the sensation here. To help." },
-        { "speaker": "Xiao", "emotion": "knowing", "text": "A warrior chained by his own oaths, freed by the breaking of chains elsewhere. I understand that more than most." },
-        { "speaker": "Ayaka", "emotion": "welcoming", "text": "Then let us bind ourselves together — not by curse, but by choice. Will you stand with us?" },
-        { "speaker": "Kain", "emotion": "resolved", "text": "I will. My lance answers to a new oath now: the oath to see darkness broken." }
+        { "speaker": null, "text": "As the water settles, a figure descends from above — a dragoon knight, his armor marked with the sigil of a fallen kingdom. His lance glows with aerial energy as he lands beside them." },
+        { "speaker": "Drake", "emotion": "formal", "text": "I am Drake, Dragoon of the Sky. I felt the Fragment's freedom from above — the sky itself sang with it. A barrier I did not know existed has lifted." },
+        { "speaker": "Ria", "emotion": "surprised", "text": "Drake? From that fallen kingdom? That kingdom fell ages ago in my world. How is it you stand here?" },
+        { "speaker": "Drake", "emotion": "conflicted", "text": "I do not know. But I was bound by a curse I could not break. Now, feeling that curse shatter — I followed the sensation here. To help." },
+        { "speaker": "Rei", "emotion": "knowing", "text": "A warrior chained by his own oaths, freed by the breaking of chains elsewhere. I understand that more than most." },
+        { "speaker": "Aya", "emotion": "welcoming", "text": "Then let us bind ourselves together — not by curse, but by choice. Will you stand with us?" },
+        { "speaker": "Drake", "emotion": "resolved", "text": "I will. My lance answers to a new oath now: the oath to see darkness broken." }
       ]
     }
   }

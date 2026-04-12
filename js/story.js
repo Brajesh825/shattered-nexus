@@ -250,6 +250,7 @@ const Story = {
       if (s.unlockedChars) G.unlockedChars = s.unlockedChars;
       if (s.clearedMaps)   G.clearedMaps   = s.clearedMaps;
       if (s.inventory)     G.inventory     = s.inventory;
+      if (s.npcTalked)     G.npcTalked     = s.npcTalked;
 
       // If saved from explore map, restore directly to that map (no overlay/selection)
       if (s.mapId) {
@@ -973,6 +974,7 @@ const Story = {
       hero: { lv: G.hero.lv, exp: G.hero.exp, gold: G.hero.gold || 0 },
       unlockedChars: G.unlockedChars,
       clearedMaps:   G.clearedMaps || [],
+      npcTalked:     G.npcTalked   || {},
       inventory:     G.inventory || [],
       mapId,
       mapX,
