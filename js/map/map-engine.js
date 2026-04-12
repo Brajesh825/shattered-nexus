@@ -9,7 +9,14 @@
  */
 
 const MapEngine = (() => {
-  const TILE = 64;
+  let TILE = 64;
+
+  function _calcTileSize() {
+    const w = _canvas.width, h = _canvas.height;
+    // Landscape phones or narrow portrait: use 48px tiles so more map is visible
+    if (h <= 420 || w <= 600) return 48;
+    return 64;
+  }
 
   let _canvas = null, _ctx = null;
   let _map    = null;
@@ -666,10 +673,16 @@ const MapEngine = (() => {
     _ctx    = canvasEl.getContext('2d');
     _canvas.width  = canvasEl.offsetWidth  || window.innerWidth;
     _canvas.height = canvasEl.offsetHeight || window.innerHeight;
+    TILE = _calcTileSize();
     MapInput.init(canvasEl);
     window.addEventListener('resize', () => {
       _canvas.width  = _canvas.offsetWidth  || window.innerWidth;
       _canvas.height = _canvas.offsetHeight || window.innerHeight;
+      const newTile = _calcTileSize();
+      if (newTile !== TILE) {
+        TILE = newTile;
+        if (typeof MapPlayer !== 'undefined') MapPlayer.rescale();
+      }
       _invalidateCache();
     });
   }

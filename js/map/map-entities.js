@@ -303,13 +303,19 @@ const MapPlayer = (() => {
     }
   }
 
+  function rescale() {
+    const T = MapEngine.getTile();
+    px = tx * T;
+    py = ty * T;
+  }
+
   return {
     get tx() { return tx; },
     get ty() { return ty; },
     get px() { return px; },
     get py() { return py; },
     get moving() { return moving; },
-    reset, update, render, dpad, pickVariants,
+    reset, update, render, dpad, pickVariants, rescale,
   };
 })();
 
