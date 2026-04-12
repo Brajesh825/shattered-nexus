@@ -3637,47 +3637,147 @@ body {
 
 /* ══════════════════════════════════════════════════════════════
    RESPONSIVE — LARGE DESKTOP  (≥ 1200px)
-   Full-width layout: 2-column battle, uncapped scene height.
-   Mobile breakpoints (max-width) are unaffected by this block.
+   Full-width, 2-column battle. Containers sized for ~760px+ scene.
+   Mobile max-width breakpoints are unaffected.
    ══════════════════════════════════════════════════════════════ */
 @media (min-width: 1200px) {
 
-  /* ── Battle: 2-column grid ─────────────────────────────────── */
+  /* ── Battle: 2-column grid (scene | panel) ──────────────────── */
   #battle-screen.active {
     display: grid !important;
-    grid-template-columns: 1fr 360px;
+    grid-template-columns: 1fr 440px;
     grid-template-rows: auto auto 1fr auto auto;
     overflow: hidden;
     justify-content: initial;
   }
 
+  /* Column placements */
   #battle-screen .turn-bar          { grid-column: 2; grid-row: 1;
-                                       height: auto; padding: 6px 10px;
+                                       height: auto; padding: 8px 14px;
                                        border-bottom: 1px solid #1a1448; overflow: hidden; }
   #battle-screen #battle-scene      { grid-column: 1; grid-row: 1 / 6;
-                                       min-height: 0; border-bottom: none;
-                                       max-height: none; }
+                                       min-height: 0; border-bottom: none; max-height: none; }
   #battle-screen .active-member-bar { grid-column: 2; grid-row: 2;
-                                       min-height: 0; height: auto; padding: 6px 12px;
+                                       min-height: 0; height: auto; padding: 10px 14px;
                                        border-bottom: 1px solid #1a1448; }
   #battle-screen #menu-area         { grid-column: 2; grid-row: 3;
-                                       padding: 8px 12px; overflow-y: auto; }
-  #battle-screen .party-status-bar  { grid-column: 2; grid-row: 4; padding: 4px 10px; }
+                                       display: flex; flex-direction: column;
+                                       gap: 10px; padding: 12px 14px; overflow: hidden; }
+  #battle-screen .party-status-bar  { grid-column: 2; grid-row: 4; padding: 6px 14px;
+                                       border-top: 1px solid #1a1448; }
   #battle-screen .stats-bar         { grid-column: 2; grid-row: 5;
-                                       padding: 4px 12px; font-size: 13px; }
+                                       padding: 6px 14px; font-size: 13px;
+                                       border-top: 1px solid #1a1448; }
 
-  /* Cmd grid: 2×2 in 360px panel */
-  .cmd-grid { grid-template-columns: 1fr 1fr; gap: 6px; }
-  .cmd-btn  { padding: 12px 6px; font-size: 10px; }
+  /* Panel internals — Option C: log fills gap, buttons at bottom */
+  #battle-screen .battle-log { flex: 1; max-height: none; overflow-y: auto;
+                                 padding: 8px 10px; font-size: 13px; min-height: 60px; }
+  #battle-screen .cmd-grid   { grid-template-columns: 1fr 1fr; gap: 8px; flex-shrink: 0; }
+  #battle-screen .cmd-btn    { padding: 16px 8px; font-size: 13px; }
 
-  /* Battle log in right panel */
-  .battle-log { min-height: 0; max-height: 120px; overflow-y: auto;
-                 padding: 6px 10px; font-size: 13px; }
+  /* Party name visible at large screens */
+  .party-name { display: block; font-size: 12px; }
 
-  /* ── Battle containers — use full desktop sizes (already in base CSS),
-     just ensure bottom anchor matches the base 56px ground strip ── */
-  .party-container { bottom: 56px; }
-  .enemy-container { bottom: 56px; }
+  /* ── Battle containers: 300 + 400 = 700px — fits ≥760px scene ─ */
+  /* party-container: 300px wide, 270px tall */
+  .party-container { width: 300px; height: 270px; bottom: 56px; }
+  .party-member    { width: 100px; height: 132px; padding: 3px; }
+  .party-sprite    { width: 68px !important; height: 68px !important; }
+  .party-hp-bar-bg { width: 94px; }
+  .party-member:nth-child(1) { left: 100px; top:   0px; }
+  .party-member:nth-child(2) { left:  30px; top:  66px; }
+  .party-member:nth-child(3) { left: 170px; top:  66px; }
+  .party-member:nth-child(4) { left: 100px; top: 132px; }
+
+  /* enemy-container: 400px wide, 350px tall */
+  .enemy-container { width: 400px; height: 350px; bottom: 56px; }
+
+  .enemy-container[data-count="1"] .enemy          { width: 180px; height: 280px; }
+  .enemy-container[data-count="1"] .enemy-hp-bar-bg { width: 145px; }
+  .enemy-container[data-count="1"] .enemy:nth-child(1) { right: 110px; top: 35px; }
+
+  .enemy-container[data-count="2"] .enemy          { width: 140px; height: 215px; }
+  .enemy-container[data-count="2"] .enemy-hp-bar-bg { width: 110px; }
+  .enemy-container[data-count="2"] .enemy:nth-child(1) { right:  20px; top: 14px; }
+  .enemy-container[data-count="2"] .enemy:nth-child(2) { right: 160px; top: 97px; }
+
+  .enemy-container[data-count="3"] .enemy          { width: 110px; height: 170px; }
+  .enemy-container[data-count="3"] .enemy-hp-bar-bg { width:  85px; }
+  .enemy-container[data-count="3"] .enemy:nth-child(1) { right: 145px; top:  3px; }
+  .enemy-container[data-count="3"] .enemy:nth-child(2) { right:  62px; top: 110px; }
+  .enemy-container[data-count="3"] .enemy:nth-child(3) { right: 228px; top: 110px; }
+
+  .enemy-container[data-count="4"] .enemy          { width:  90px; height: 140px; }
+  .enemy-container[data-count="4"] .enemy-hp-bar-bg { width:  70px; }
+  .enemy-container[data-count="4"] .enemy:nth-child(1) { right: 155px; top:   0px; z-index:14; }
+  .enemy-container[data-count="4"] .enemy:nth-child(2) { right:  97px; top: 117px; z-index:16; }
+  .enemy-container[data-count="4"] .enemy:nth-child(3) { right: 213px; top: 117px; z-index:16; }
+  .enemy-container[data-count="4"] .enemy:nth-child(4) { right: 155px; top: 200px; z-index:18; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   RESPONSIVE — WIDE DESKTOP  (≥ 1600px)
+   Bigger panel, upscaled containers for ≥1100px scene width.
+   ══════════════════════════════════════════════════════════════ */
+@media (min-width: 1600px) {
+
+  /* ── Wider panel + bigger scene ─────────────────────────────── */
+  #battle-screen.active {
+    grid-template-columns: 1fr 500px;
+  }
+
+  /* Larger panel padding & fonts */
+  #battle-screen .turn-bar          { padding: 10px 18px; }
+  #battle-screen .active-member-bar { padding: 14px 18px; }
+  #battle-screen #menu-area         { padding: 16px 18px; gap: 14px; }
+  #battle-screen .party-status-bar  { padding: 8px 18px; }
+  #battle-screen .stats-bar         { padding: 8px 18px; font-size: 15px; }
+
+  /* Bigger buttons — 1 per row (full width), very readable */
+  #battle-screen .cmd-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  #battle-screen .cmd-btn  { padding: 20px 10px; font-size: 15px; }
+
+  /* Battle log */
+  #battle-screen .battle-log { font-size: 15px; padding: 10px 12px; }
+
+  /* Ground strip taller at large res */
+  .bg-gnd { height: 70px; }
+
+  /* ── Battle containers: 480 + 650 = 1130px — fits ≥1100px scene ─ */
+  /* party-container: 480px wide, 430px tall (×1.14 from base) */
+  .party-container { width: 480px; height: 430px; bottom: 70px; }
+  .party-member    { width: 160px; height: 212px; padding: 4px; }
+  .party-sprite    { width: 110px !important; height: 110px !important; }
+  .party-hp-bar-bg { width: 150px; }
+  .party-member:nth-child(1) { left: 160px; top:   0px; }
+  .party-member:nth-child(2) { left:  30px; top: 111px; }
+  .party-member:nth-child(3) { left: 290px; top: 111px; }
+  .party-member:nth-child(4) { left: 160px; top: 220px; }
+
+  /* enemy-container: 650px wide, 575px tall (×1.12 from base) */
+  .enemy-container { width: 650px; height: 575px; bottom: 70px; }
+
+  .enemy-container[data-count="1"] .enemy          { width: 290px; height: 450px; }
+  .enemy-container[data-count="1"] .enemy-hp-bar-bg { width: 235px; }
+  .enemy-container[data-count="1"] .enemy:nth-child(1) { right: 180px; top: 56px; }
+
+  .enemy-container[data-count="2"] .enemy          { width: 224px; height: 347px; }
+  .enemy-container[data-count="2"] .enemy-hp-bar-bg { width: 179px; }
+  .enemy-container[data-count="2"] .enemy:nth-child(1) { right:  34px; top: 22px; }
+  .enemy-container[data-count="2"] .enemy:nth-child(2) { right: 258px; top: 156px; }
+
+  .enemy-container[data-count="3"] .enemy          { width: 180px; height: 274px; }
+  .enemy-container[data-count="3"] .enemy-hp-bar-bg { width: 134px; }
+  .enemy-container[data-count="3"] .enemy:nth-child(1) { right: 235px; top:   6px; }
+  .enemy-container[data-count="3"] .enemy:nth-child(2) { right: 101px; top: 179px; }
+  .enemy-container[data-count="3"] .enemy:nth-child(3) { right: 369px; top: 179px; }
+
+  .enemy-container[data-count="4"] .enemy          { width: 146px; height: 224px; }
+  .enemy-container[data-count="4"] .enemy-hp-bar-bg { width: 112px; }
+  .enemy-container[data-count="4"] .enemy:nth-child(1) { right: 252px; top:   0px; z-index:14; }
+  .enemy-container[data-count="4"] .enemy:nth-child(2) { right: 157px; top: 190px; z-index:16; }
+  .enemy-container[data-count="4"] .enemy:nth-child(3) { right: 347px; top: 190px; z-index:16; }
+  .enemy-container[data-count="4"] .enemy:nth-child(4) { right: 252px; top: 350px; z-index:18; }
 }
 
 /* ══════════════════════════════════════════════════════════════
