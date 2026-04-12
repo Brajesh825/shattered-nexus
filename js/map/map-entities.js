@@ -558,5 +558,9 @@ const MapEntities = (() => {
     return _enemies.length === 0 || _enemies.every(e => !e.alive);
   }
 
-  return { init, clear, updateEnemies, renderEnemies, checkEncounter, removeEncountered, allCleared };
+  function remaining() {
+    return _enemies.filter(e => e.alive).length;
+  }
+
+  return { init, clear, updateEnemies, renderEnemies, checkEncounter, removeEncountered, allCleared, remaining };
 })();

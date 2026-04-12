@@ -338,7 +338,11 @@ const MapUI = (() => {
     // World Map locked until arc 1 boss is defeated (arcIdx > 0)
     const worldMapBtn = el.querySelector('.camp-btn-worldmap');
     if (worldMapBtn) {
-      const unlocked = typeof Story !== 'undefined' && Story.arcIdx > 0;
+      // Unlocked once arc 1 boss is beaten: arcIdx > 0, OR arcIdx===0 but in arc_end/world_map phase
+      const unlocked = typeof Story !== 'undefined' && (
+        Story.arcIdx > 0 ||
+        ['arc_end', 'world_map', 'epilogue'].includes(Story.phase)
+      );
       worldMapBtn.disabled = !unlocked;
       worldMapBtn.title = unlocked ? '' : 'Defeat the first boss to unlock the World Map';
       worldMapBtn.style.opacity = unlocked ? '' : '0.35';
@@ -354,10 +358,17 @@ const MapUI = (() => {
   }
 
   function campWorldMap() {
-    if (typeof Story !== 'undefined' && Story.arcIdx === 0) return; // locked until arc 1 complete
+    // Locked until arc 1 boss beaten
+    if (typeof Story !== 'undefined' && Story.arcIdx === 0 &&
+        !['arc_end', 'world_map', 'epilogue'].includes(Story.phase)) return;
     const el = document.getElementById('camp-menu');
     if (el) el.style.display = 'none';
-    if (typeof leaveExplore === 'function') leaveExplore();
+    // Return to world map without advancing the story chapter
+    MapEngine.stop();
+    if (typeof _dockPersistentBtns === 'function') _dockPersistentBtns(false);
+    G.mode = 'story';
+    if (typeof Story !== 'undefined' && Story._showWorldMap) Story._showWorldMap();
+    else if (typeof UI !== 'undefined') UI.show('map-screen');
   }
 
   function campChangeParty() {

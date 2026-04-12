@@ -23,6 +23,12 @@ const MapEngine = (() => {
   // Speech bubble queue: [{char, color, text, life, maxLife}]
   const _bubbles = [];
 
+  // Objective state for current map session
+  let _objState = {
+    done: false,          // objective complete this session
+    collected: [],        // for 'collect' type — which artifact indices grabbed
+  };
+
   /* ── Camera ─────────────────────────────────────────── */
   const cam = { x: 0, y: 0 };
 
@@ -90,6 +96,154 @@ const MapEngine = (() => {
         }
       }
     }
+  }
+
+  /* ── Objective system ───────────────────────────────── */
+
+  function _objCfg() { return _map && _map.objective; }
+
+  // Returns true if this map's objective is already marked cleared in G
+  function _objAlreadyCleared() {
+    if (!G || !_map) return false;
+    if (!Array.isArray(G.clearedMaps)) G.clearedMaps = [];
+    return G.clearedMaps.includes(_map.id);
+  }
+
+  function _markObjectiveCleared() {
+    if (!_map || _objState.done) return;
+    _objState.done = true;
+    if (G && Array.isArray(G.clearedMaps) && !G.clearedMaps.includes(_map.id)) {
+      G.clearedMaps.push(_map.id);
+    }
+    // Auto-save the cleared state
+    if (typeof Story !== 'undefined' && Story.active) Story._doSave();
+  }
+
+  function _checkObjective() {
+    if (!_map || !_map.objective || _objState.done) return;
+    const obj = _map.objective;
+
+    if (obj.type === 'kill_all') {
+      if (MapEntities.allCleared()) _completeObjective();
+
+    } else if (obj.type === 'reach') {
+      if (MapPlayer.tx === obj.target.x && MapPlayer.ty === obj.target.y) {
+        _completeObjective();
+      }
+
+    } else if (obj.type === 'collect') {
+      // Check each artifact tile
+      (obj.artifacts || []).forEach((art, i) => {
+        if (_objState.collected.includes(i)) return;
+        if (MapPlayer.tx === art.x && MapPlayer.ty === art.y) {
+          _objState.collected.push(i);
+          MapUI.showMsg(art.pickupMsg || `✦ Item collected! (${_objState.collected.length}/${obj.artifacts.length})`, 1800);
+        }
+      });
+      if (_objState.collected.length >= (obj.artifacts || []).length) _completeObjective();
+
+    } else if (obj.type === 'survive') {
+      if (_time >= obj.duration) _completeObjective();
+
+    } else if (obj.type === 'kill_all') {
+      if (MapEntities.allCleared()) _completeObjective();
+    }
+  }
+
+  function _completeObjective() {
+    _markObjectiveCleared();
+    const obj = _objCfg();
+    const msg = (obj && obj.completeMsg) ? obj.completeMsg : '✦ Objective complete!';
+    stop(); // pause engine while message shows
+    MapUI.showMsg(msg, 2200, () => {
+      if (typeof Story !== 'undefined' && Story.active && G.mode === 'story_explore') {
+        Story.onExploreComplete();
+      } else {
+        resume(); // free explore — just resume
+      }
+    });
+  }
+
+  // Render objective markers on the map canvas
+  function _renderObjectiveMarkers() {
+    if (!_map || !_map.objective) return;
+    const obj = _map.objective;
+    const pulse = 0.5 + 0.5 * Math.sin(_time * 3.0);
+
+    _ctx.save();
+    if (obj.type === 'reach' && obj.target) {
+      const sx = obj.target.x * TILE - cam.x;
+      const sy = obj.target.y * TILE - cam.y;
+      // Gold glow ring
+      _ctx.globalAlpha = 0.3 + 0.2 * pulse;
+      _ctx.fillStyle = '#fbbf24';
+      _ctx.beginPath();
+      _ctx.arc(sx + TILE / 2, sy + TILE / 2, TILE * 0.48, 0, Math.PI * 2);
+      _ctx.fill();
+      _ctx.globalAlpha = 1;
+      _ctx.font = `${Math.round(TILE * 0.48)}px serif`;
+      _ctx.textAlign = 'center'; _ctx.textBaseline = 'middle';
+      _ctx.fillText('🎯', sx + TILE / 2, sy + TILE / 2 + 2);
+
+    } else if (obj.type === 'collect') {
+      (obj.artifacts || []).forEach((art, i) => {
+        if (_objState.collected.includes(i)) return;
+        const sx = art.x * TILE - cam.x;
+        const sy = art.y * TILE - cam.y;
+        _ctx.globalAlpha = 0.35 + 0.2 * pulse;
+        _ctx.fillStyle = '#a78bfa';
+        _ctx.beginPath();
+        _ctx.arc(sx + TILE / 2, sy + TILE / 2, TILE * 0.4, 0, Math.PI * 2);
+        _ctx.fill();
+        _ctx.globalAlpha = 1;
+        _ctx.font = `${Math.round(TILE * 0.44)}px serif`;
+        _ctx.textAlign = 'center'; _ctx.textBaseline = 'middle';
+        _ctx.fillText(art.icon || '💎', sx + TILE / 2, sy + TILE / 2 + 2);
+      });
+
+    } else if (obj.type === 'kill_all') {
+      // No marker needed — enemies are the targets
+    }
+    _ctx.restore();
+  }
+
+  // Render objective HUD strip at bottom of canvas
+  function _renderObjectiveHUD() {
+    if (!_map || !_map.objective) return;
+    const obj = _map.objective;
+    const w   = _canvas.width;
+    const bh  = 22, by = _canvas.height - bh - 4, bx = 8;
+    const bw  = Math.min(360, w - 16);
+
+    let statusText = '';
+    if (_objState.done || _objAlreadyCleared()) {
+      statusText = '✔ ' + (obj.label || 'Objective complete');
+    } else if (obj.type === 'kill_all') {
+      const remaining = (typeof MapEntities !== 'undefined') ? MapEntities.remaining() : 0;
+      statusText = `☠ ${obj.label || 'Defeat all enemies'} — ${remaining} remaining`;
+    } else if (obj.type === 'reach') {
+      statusText = `🎯 ${obj.label || 'Reach the destination'}`;
+    } else if (obj.type === 'collect') {
+      statusText = `💎 ${obj.label || 'Collect artifacts'} — ${_objState.collected.length}/${(obj.artifacts||[]).length}`;
+    } else if (obj.type === 'survive') {
+      const left = Math.max(0, Math.ceil(obj.duration - _time));
+      statusText = `⏱ ${obj.label || 'Survive'} — ${left}s remaining`;
+    }
+
+    _ctx.save();
+    _ctx.globalAlpha = 0.82;
+    _ctx.fillStyle = '#06030f';
+    _ctx.beginPath();
+    if (_ctx.roundRect) _ctx.roundRect(bx, by, bw, bh, 4);
+    else _ctx.rect(bx, by, bw, bh);
+    _ctx.fill();
+    _ctx.globalAlpha = 1;
+    _ctx.font = '10px monospace';
+    _ctx.fillStyle = (_objState.done || _objAlreadyCleared()) ? '#4ade80' : '#d8c860';
+    _ctx.textAlign = 'left';
+    _ctx.textBaseline = 'middle';
+    _ctx.fillText(statusText, bx + 8, by + bh / 2);
+    _ctx.restore();
   }
 
   /* ── Camp marker ────────────────────────────────────── */
@@ -337,11 +491,13 @@ const MapEngine = (() => {
     _ctx.fillStyle = _map.bgColor || '#080606';
     _ctx.fillRect(0, 0, _canvas.width, _canvas.height);
     _renderTiles();
+    _renderObjectiveMarkers();
     _renderCampMarker();
     _renderAtmosphere();
     MapEntities.renderEnemies(_ctx, cam, TILE, _map, _inVision.bind(null));
     MapPlayer.render(_ctx, cam, TILE);
     _renderFog();
+    _renderObjectiveHUD();
     _renderBubbles();
     _renderMinimap();
   }
@@ -373,6 +529,9 @@ const MapEngine = (() => {
       }
       if (!atStart) _atCamp = false;
     }
+
+    // Objective check each frame
+    _checkObjective();
 
     // Fog dialogue + ambient voice lines
     _updateFogDialogue(dt);
@@ -431,19 +590,10 @@ const MapEngine = (() => {
       return;
     }
     MapEntities.removeEncountered();
-    if (_allEnemiesCleared()) {
-      MapUI.showMsg('Area cleared!', 1000, () => {
-        if (typeof Story !== 'undefined') Story.onExploreComplete();
-      });
-      return;
-    }
     if (typeof UI !== 'undefined') UI.show('explore-screen');
     resume();
-    if (typeof MapUI !== 'undefined') MapUI.showMsg('Victory! Keep exploring…', 1500);
-  }
-
-  function _allEnemiesCleared() {
-    return typeof MapEntities !== 'undefined' && MapEntities.allCleared();
+    // Objective check runs next frame via _update → _checkObjective
+    if (typeof MapUI !== 'undefined') MapUI.showMsg('Victory!', 1200);
   }
 
   /* ── Game loop ───────────────────────────────────────── */
@@ -482,6 +632,7 @@ const MapEngine = (() => {
     _fogMilestone = 0;
     _bubbles.length = 0;
     _ambientTimer = 20 + Math.random() * 30; // first ambient line after 20-50s
+    _objState = { done: _objAlreadyCleared(), collected: [] };
     MapEntities.init(_map);
     cam.x = 0; cam.y = 0;
     _updateCamera();

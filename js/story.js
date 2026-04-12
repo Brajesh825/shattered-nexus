@@ -248,6 +248,7 @@ const Story = {
       }
       // Restore unlocked characters and inventory from save
       if (s.unlockedChars) G.unlockedChars = s.unlockedChars;
+      if (s.clearedMaps)   G.clearedMaps   = s.clearedMaps;
       if (s.inventory)     G.inventory     = s.inventory;
 
       // If saved from explore map, restore directly to that map (no overlay/selection)
@@ -866,6 +867,12 @@ const Story = {
      NEXT ARC / EPILOGUE
   ════════════════════════════════════════════════════════════════════════ */
   _startNextArc() {
+    // Guard: can only advance once current arc boss is beaten (phase === 'arc_end')
+    if (this.phase !== 'arc_end' && this.phase !== 'epilogue') {
+      const lbl = this.el('map-info-loc');
+      if (lbl) { lbl.textContent = '⛔ Defeat this arc\'s boss first.'; lbl.style.color = '#ef4444'; setTimeout(() => { lbl.style.color = ''; }, 2500); }
+      return;
+    }
     this.arcIdx++;
     G.enemies = this._allEnemies.slice();
     if (this.arcIdx >= this.data.arcs.length) { this._beginEpilogue(); return; }
@@ -965,6 +972,7 @@ const Story = {
       // Keep legacy hero field for backward compat
       hero: { lv: G.hero.lv, exp: G.hero.exp, gold: G.hero.gold || 0 },
       unlockedChars: G.unlockedChars,
+      clearedMaps:   G.clearedMaps || [],
       inventory:     G.inventory || [],
       mapId,
       mapX,
@@ -1025,6 +1033,12 @@ const Story = {
         node.title = 'Click to revisit';
         node.addEventListener('click', () => this._openRegionPanel(i));
       } else if (isNext) {
+        const arcComplete = this.phase === 'arc_end' || this.phase === 'epilogue';
+        if (!arcComplete) {
+          node.style.opacity = '0.4';
+          node.style.cursor  = 'not-allowed';
+          node.title = '⛔ Defeat the current arc boss first';
+        }
         node.addEventListener('click', () => this._startNextArc());
       } else if (isCur) {
         node.addEventListener('click', () => this._openRegionPanel(i));
@@ -1035,8 +1049,16 @@ const Story = {
 
     /* ── Bottom info bar ── */
     const next = arcs[nextIdx];
+    const arcComplete = this.phase === 'arc_end' || this.phase === 'epilogue';
+    const proceedBtn = document.getElementById('map-proceed-btn');
+    if (proceedBtn) {
+      proceedBtn.disabled = !arcComplete;
+      proceedBtn.style.opacity = arcComplete ? '' : '0.35';
+      proceedBtn.style.cursor  = arcComplete ? '' : 'not-allowed';
+      proceedBtn.title = arcComplete ? '' : '⛔ Defeat the current arc boss first';
+    }
     this.el('map-arc-label').textContent = next
-      ? `NEXT: ${next.name.toUpperCase()}`
+      ? (arcComplete ? `NEXT: ${next.name.toUpperCase()}` : `⛔ BOSS UNDEFEATED`)
       : 'JOURNEY COMPLETE';
     this.el('map-info-name').textContent = next ? next.name        : '';
     this.el('map-info-loc').textContent  = next ? (next.location || '') : '';

@@ -118,6 +118,13 @@ MAP_DEFS.verdant_vale = {
         return rows;
     })(),
 
+    objective: {
+        type: 'reach',
+        target: { x: 53, y: 29 },
+        label: 'Reach the Eastern Cave',
+        completeMsg: '✦ You have reached the cave — the Seal Fragment awaits inside.',
+    },
+
     fog: { delay: 30, peak: 150, max: 0.72, vision: 3.8 },
 
     voiceLines: {
