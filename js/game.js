@@ -1456,13 +1456,19 @@ function heroAbility(ab) {
       };
       const isUltimate = ultimateChannels.hasOwnProperty(ab.id);
 
+      // statScale: some abilities (e.g. Mastery of Pain) add 50% of another stat to effective MAG
+      // This lets tank/defenders deal meaningful magic damage despite low MAG base
+      const _scaleStat = e.statScale ? Math.floor((actor[e.statScale] || 0) * 0.5) : 0;
+      const _effectiveMag = actor.mag + _scaleStat;
+
       if (isUltimate) {
         const _em = Battle.elemMult(element, enemy);
         const _er = Battle.elemResult(element, enemy);
         createEffectOverlay(G.targetEnemyIdx, element, 'enemy', ab.id);
         UI.addLog(`${actor.displayName} ${ultimateChannels[ab.id]}`, 'magic');
         setTimeout(() => {
-          const dmg = Math.floor(Battle.magicDmg(actor.mag, e.dmgMultiplier || 1.5, passiveBonus, actor.lv || 1) * _em * _stab);
+          const dmg = Math.floor(Battle.magicDmg(_effectiveMag, e.dmgMultiplier || 1.5, passiveBonus, actor.lv || 1) * _em * _stab);
+          if (_scaleStat > 0) UI.addLog(`💠 Karmic scales +${_scaleStat} MAG from DEF!`, 'magic');
           enemy.hp  = Math.max(0, enemy.hp - dmg);
           if (enemy.hp <= 0) enemy.isKO = true;
           if (_er === 'shatter') UI.addLog('⚡ SHATTER!', 'magic');
@@ -1486,7 +1492,7 @@ function heroAbility(ab) {
           : [{ en: enemy, i: G.targetEnemyIdx }];
         _magTargets.forEach(({ en: tgt, i: tIdx }) => {
           const _em = Battle.elemMult(element, tgt);
-          const dmg = Math.floor(Battle.magicDmg(actor.mag, e.dmgMultiplier || 1.5, passiveBonus, actor.lv || 1) * _em * _stab);
+          const dmg = Math.floor(Battle.magicDmg(_effectiveMag, e.dmgMultiplier || 1.5, passiveBonus, actor.lv || 1) * _em * _stab);
           tgt.hp = Math.max(0, tgt.hp - dmg);
           if (tgt.hp <= 0) tgt.isKO = true;
           const _er = Battle.elemResult(element, tgt);
