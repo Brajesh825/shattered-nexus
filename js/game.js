@@ -4,32 +4,23 @@
  * selectable enemy targets, individual levelling, party menu.
  */
 
-/* ── Mobile viewport scaler ─────────────────────────────────
-   Scales #game via CSS transform so it fits any screen size
-   without touching pixel values elsewhere in the codebase.
-   Called on load, resize, orientation change, and screen switch.
+/* ── Viewport height setter ──────────────────────────────────
+   Sets #game height to the real viewport height on every resize
+   or orientation change. CSS media queries handle all layout
+   and sizing — no transform/scale is applied here, which was
+   previously causing double-shrink on mobile (CSS already made
+   #game responsive, then scale() squished it further to ~37%).
    ──────────────────────────────────────────────────────────── */
 function scaleGame() {
   const el = document.getElementById('game');
   if (!el) return;
+  // Clear any stale transform from older code
   el.style.transform       = '';
-  el.style.height          = '';
   el.style.transformOrigin = '';
+  el.style.marginLeft      = '';
   document.body.style.justifyContent = '';
-
-  const vw = window.innerWidth;
-  const vh = window.innerHeight;
-  if (vw >= 1000) {
-    el.style.height = `${vh}px`;
-    return;
-  }
-
-  const scale = vw / 1000;
-  // Anchor to top-left so body overflow:hidden doesn't clip the right side
-  el.style.transform       = `scale(${scale})`;
-  el.style.transformOrigin = 'top left';
-  el.style.height          = `${vh / scale}px`;
-  document.body.style.justifyContent = 'flex-start';
+  // Fill the real viewport height — CSS handles width and layout
+  el.style.height = `${window.innerHeight}px`;
 }
 window.addEventListener('resize', scaleGame);
 window.addEventListener('orientationchange', () => setTimeout(scaleGame, 150));

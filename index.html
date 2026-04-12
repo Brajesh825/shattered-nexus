@@ -67,32 +67,37 @@
        ═══════════════════════════════════════ -->
   <div id="title-screen" class="screen active">
     <div class="stars" id="stars"></div>
+
     <div class="crystals">
       <span class="crystal">💎</span>
       <span class="crystal">💠</span>
       <span class="crystal">🔷</span>
       <span class="crystal">💎</span>
     </div>
+
     <div class="game-title">SHATTERED<br>NEXUS</div>
     <div class="subtitle">~ REBORN ~</div>
-    <div style="font-size:15px;color:#4a4080;text-align:center;z-index:1;line-height:2">
-      4 Characters · 4 Classes · 50 Enemies<br>
-      5 Arcs · One truth at the end
-    </div>
+    <div class="title-tagline">4 Characters · 4 Classes · 50 Enemies · 5 Arcs</div>
 
+    <!-- CONTINUE sits above the grid — full width, hidden until save exists -->
     <button class="big-btn title-continue-btn blink" id="title-continue-btn"
-            onclick="openSlotOverlay('load')" style="z-index:1;margin-top:10px;display:none">
+            onclick="openSlotOverlay('load')" style="display:none">
       ▶ CONTINUE
     </button>
-    <button class="big-btn" onclick="openSlotOverlay('new')" style="z-index:1;margin-top:6px">
-      📖 NEW STORY
-    </button>
-    <button class="big-btn" onclick="goCharSelect()" style="z-index:1;margin-top:4px;background:transparent;border-color:#4a4080;color:#8080c0">
-      ⚔ FREE BATTLE
-    </button>
-    <button class="big-btn" onclick="startExplore()" style="z-index:1;margin-top:4px;background:transparent;border-color:#2a5040;color:#60c090">
-      🗺 EXPLORE
-    </button>
+
+    <!-- 2-column button grid on desktop, single column on mobile -->
+    <div class="menu-btns">
+      <button class="big-btn" onclick="openSlotOverlay('new')">
+        📖 NEW STORY
+      </button>
+      <button class="big-btn btn-secondary" onclick="goCharSelect()">
+        ⚔ FREE BATTLE
+      </button>
+      <button class="big-btn btn-tertiary" onclick="startExplore()">
+        🗺 EXPLORE
+      </button>
+    </div>
+
     <div class="ver-tag">v3.0</div>
   </div>
 
