@@ -31,27 +31,27 @@
           "narration": "The inner sanctum is not what any of them expected. Vast. Dark stone and old starlight through cracks in the ceiling \u00e2\u20ac\u201d as though this place was once meant to hold something light. It was a temple. Before.",
           "dialogue": [
             {
-              "speaker": "Ayaka",
+              "speaker": "Aya",
               "emotion": "observant",
               "text": "This was a place of study. Before he claimed it."
             },
             {
-              "speaker": "Xiao",
+              "speaker": "Rei",
               "emotion": "heavy",
               "text": "He did not always want destruction. The Oracle said he was a scholar once. Curious. Then afraid. Then desperate. Then this."
             },
             {
-              "speaker": "Hutao",
+              "speaker": "Tao",
               "emotion": "serious",
               "text": "A man who feared dying, who consumed everything to stop it, and became something that makes everything else afraid. There is a very tragic poem in that."
             },
             {
-              "speaker": "Nilou",
+              "speaker": "Lulu",
               "emotion": "somber",
               "text": "Does it matter? The tragedy does not change what we have to do."
             },
             {
-              "speaker": "Xiao",
+              "speaker": "Rei",
               "emotion": "quiet",
               "text": "No. It does not. But it matters that we know it."
             }
@@ -66,7 +66,7 @@
               "text": "Valdris: I have watched you come a long way to die in my home."
             },
             {
-              "speaker": "Hutao",
+              "speaker": "Tao",
               "emotion": "bright",
               "text": "Oh, you know. Fight very hard, suffer extensively, then win dramatically at the last moment. It is a formula, but it works."
             },
@@ -76,7 +76,7 @@
               "text": "Valdris: The funeral director. Still performing. Even here."
             },
             {
-              "speaker": "Hutao",
+              "speaker": "Tao",
               "emotion": "quiet_steel",
               "text": "Not performing. I genuinely believe we will win. There is a difference."
             }
@@ -88,10 +88,10 @@
             {
               "speaker": "narrator",
               "emotion": "cold_clinical",
-              "text": "Valdris: Yaksha. Two millennia of karmic debt. You have been dying slowly since before these others' civilizations existed. You came here anyway. Why?"
+              "text": "Valdris: Warden. Two millennia of karmic debt. You have been dying slowly since before these others' civilizations existed. You came here anyway. Why?"
             },
             {
-              "speaker": "Xiao",
+              "speaker": "Rei",
               "emotion": "level",
               "text": "Because it was the right thing to do. That is the only reason that has ever been enough."
             },
@@ -101,17 +101,17 @@
               "text": "Valdris: And you \u00e2\u20ac\u201d the dancer. I offered you the truth in the water. That beauty is temporary. That feeling is suffering drawn out. You refused it."
             },
             {
-              "speaker": "Nilou",
+              "speaker": "Lulu",
               "emotion": "certain",
               "text": "Because you were wrong. Temporary things are not worth less. They are worth more."
             },
             {
               "speaker": "narrator",
               "emotion": "cold_clinical",
-              "text": "Valdris: Kamisato Ayaka. You carry the name of a clan, the expectation of a nation, the weight of an absent father and an older brother who loves you more than you know. You are always the composed one. Tell me \u00e2\u20ac\u201d what does that composure cost you?"
+              "text": "Valdris: Aya. You carry the weight of a name you barely remember, the expectation of a nation, the weight of an absent father and an older brother who loves you more than you know. You are always the composed one. Tell me \u00e2\u20ac\u201d what does that composure cost you?"
             },
             {
-              "speaker": "Ayaka",
+              "speaker": "Aya",
               "emotion": "serene",
               "text": "Less than it costs you to have nothing left worth composing yourself for."
             }
@@ -126,7 +126,7 @@
               "text": "Valdris: I have consumed seventeen worlds. Scholars. Warriors. Gods. Not one of them stood in this sanctum and spoke to me like I was still a person worth arguing with."
             },
             {
-              "speaker": "Hutao",
+              "speaker": "Tao",
               "emotion": "direct",
               "text": "You were. Once. The Oracle told us."
             },
@@ -136,7 +136,7 @@
               "text": "Valdris: ...I remember being afraid of death. I remember the moment I decided that was unacceptable. I do not remember what came after that. Not truly. It was a long time ago."
             },
             {
-              "speaker": "Nilou",
+              "speaker": "Lulu",
               "emotion": "soft",
               "text": "Does that not tell you something?"
             },
@@ -146,7 +146,7 @@
               "text": "Valdris: It tells me the cost was worth it. I am still here. The fear is gone. Everything I was afraid of losing \u00e2\u20ac\u201d gone. Nothing left to protect. Nothing left to lose. That is the only kind of peace that lasts."
             },
             {
-              "speaker": "Xiao",
+              "speaker": "Rei",
               "emotion": "heavy",
               "text": "That is not peace. That is just emptiness with a long life."
             },
@@ -159,10 +159,10 @@
         }
       ],
       "cast": [
-        "Ayaka",
-        "Hutao",
-        "Nilou",
-        "Xiao"
+        "Aya",
+        "Tao",
+        "Lulu",
+        "Rei"
       ]
     },
     {
@@ -173,15 +173,15 @@
       "map_hint": "Cross the Shadow Reach — Valdris's sanctum lies beyond the darkness.",
       "pre_dialogue": [
         { "speaker": "narrator", "emotion": "ominous", "text": "The Shadow Reach is where Valdris's power is absolute — perpetual half-dark, where even shadows cast shadows. His voice fills the air, not through sound, but through the space between thoughts." },
-        { "speaker": "Xiao", "emotion": "cold", "text": "He speaks to distract. It will not work. Move." },
-        { "speaker": "Hutao", "emotion": "focused", "text": "Knowing someone and stopping them are very different problems. He knows us. We are about to stop him. Advantage: ours." },
-        { "speaker": "Ayaka", "emotion": "resolved", "text": "Together. That is what he cannot replicate." }
+        { "speaker": "Rei", "emotion": "cold", "text": "He speaks to distract. It will not work. Move." },
+        { "speaker": "Tao", "emotion": "focused", "text": "Knowing someone and stopping them are very different problems. He knows us. We are about to stop him. Advantage: ours." },
+        { "speaker": "Aya", "emotion": "resolved", "text": "Together. That is what he cannot replicate." }
       ],
       "post_dialogue": [
         { "speaker": "narrator", "emotion": "climactic", "text": "The Shadow Reach opens into the Emperor's inner sanctum. Vast. Ancient. And Valdris is here — not hiding, not watching from a distance. Present. Waiting." },
         { "speaker": "narrator", "emotion": "sinister", "text": "Valdris: I will add your worlds to my silence. Every memory of you that exists anywhere. I will end it cleanly." },
-        { "speaker": "Xiao", "emotion": "ferocious", "text": "There is nothing after you. Because you end here." },
-        { "speaker": "Hutao", "emotion": "fierce", "text": "I am terrified. And I am going to fight you anyway. That is the difference between you and us." }
+        { "speaker": "Rei", "emotion": "ferocious", "text": "There is nothing after you. Because you end here." },
+        { "speaker": "Tao", "emotion": "fierce", "text": "I am terrified. And I am going to fight you anyway. That is the difference between you and us." }
       ]
     }
   ],
@@ -189,22 +189,22 @@
   "boss_chapter": {
     "title": "The Shadow Emperor",
     "background": "emperor_throne",
-    "cast": ["Ayaka", "Hutao", "Nilou", "Xiao"],
+    "cast": ["Aya", "Tao", "Lulu", "Rei"],
     "pre_dialogue": [
       { "speaker": "narrator", "emotion": "final", "text": "Four Seal Fragments reclaimed. Four anchors destroyed. And now, at last — the Shadow Emperor himself, unbound from his anchors, standing alone." },
       { "speaker": "narrator", "emotion": "ominous", "text": "Valdris: You freed my Fragments. You took my anchors. You made it so I cannot hide in your world any longer. Well done." },
-      { "speaker": "Ayaka", "emotion": "fierce", "text": "Your reign ends here. For Aethoria. For all the worlds you have consumed." },
-      { "speaker": "Hutao", "emotion": "determined", "text": "For the people who will not be remembered unless we remember them." },
-      { "speaker": "Nilou", "emotion": "unwavering", "text": "For the beauty you tried to destroy." },
-      { "speaker": "Xiao", "emotion": "resolute", "text": "And for the karma you will finally pay." }
+      { "speaker": "Aya", "emotion": "fierce", "text": "Your reign ends here. For Aethoria. For all the worlds you have consumed." },
+      { "speaker": "Tao", "emotion": "determined", "text": "For the people who will not be remembered unless we remember them." },
+      { "speaker": "Lulu", "emotion": "unwavering", "text": "For the beauty you tried to destroy." },
+      { "speaker": "Rei", "emotion": "resolute", "text": "And for the karma you will finally pay." }
     ],
     "post_dialogue": [
       { "speaker": "narrator", "emotion": "solemn", "text": "The Shadow Emperor falls. Not with fury — with a sound like something ancient finally letting go." },
       { "speaker": "narrator", "emotion": "warm", "text": "The Seals, all five, resonate together. Light — true, unbroken light — floods through Aethoria. The cracks in the world begin to mend. The corruption, centuries thick, begins to fade." },
-      { "speaker": "Nilou", "emotion": "gentle", "text": "It is ending. It is truly ending." },
-      { "speaker": "Ayaka", "emotion": "peaceful", "text": "Our journey is complete. We did what was needed." },
-      { "speaker": "Hutao", "emotion": "reflective", "text": "We came as strangers. We are leaving as something else." },
-      { "speaker": "Xiao", "emotion": "quiet", "text": "Yes. We are." },
+      { "speaker": "Lulu", "emotion": "gentle", "text": "It is ending. It is truly ending." },
+      { "speaker": "Aya", "emotion": "peaceful", "text": "Our journey is complete. We did what was needed." },
+      { "speaker": "Tao", "emotion": "reflective", "text": "We came as strangers. We are leaving as something else." },
+      { "speaker": "Rei", "emotion": "quiet", "text": "Yes. We are." },
       { "speaker": "narrator", "emotion": "eternal", "text": "And Aethoria, at long last, begins to heal." }
     ]
   }

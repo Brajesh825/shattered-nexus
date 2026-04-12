@@ -14,7 +14,7 @@
       "title": "The Inner Path",
       "type": "cutscene",
       "background": "sanctum_corridor",
-      "cast": ["Rydia", "Lenneth", "Leon", "Kain"],
+      "cast": ["Ria", "Valka", "Rex", "Drake"],
       "scenes": [
         {
           "narration": "The deeper passages of the fortress are not halls — they are arteries. The stone pulses with something that might be blood, might be power. The air tastes of fear and ancient memory."
@@ -22,10 +22,10 @@
         {
           "narration": "Lenneth walks ahead, her sword blazing with divine light. The darkness recoils from her presence.",
           "dialogue": [
-            { "speaker": "Lenneth", "emotion": "commanding", "text": "I have walked between worlds for millennia. I have never felt a darkness like this. It is not evil — it is grief. Infinite, absolute, all-consuming grief." },
-            { "speaker": "Leon", "emotion": "somber", "text": "A being that became everything it feared. That is a tragedy I understand all too well." },
-            { "speaker": "Rydia", "emotion": "peaceful", "text": "The eidolons weep. They sense what he was — and what he refused to be." },
-            { "speaker": "Kain", "emotion": "resolute", "text": "Then we show him another path. We show him that what he fears can be faced." }
+            { "speaker": "Valka", "emotion": "commanding", "text": "I have walked between worlds for millennia. I have never felt a darkness like this. It is not evil — it is grief. Infinite, absolute, all-consuming grief." },
+            { "speaker": "Rex", "emotion": "somber", "text": "A being that became everything it feared. That is a tragedy I understand all too well." },
+            { "speaker": "Ria", "emotion": "peaceful", "text": "The eidolons weep. They sense what he was — and what he refused to be." },
+            { "speaker": "Drake", "emotion": "resolute", "text": "Then we show him another path. We show him that what he fears can be faced." }
           ]
         }
       ]
@@ -38,46 +38,46 @@
       "map_hint": "Fight through the Fortress Ramparts — the Shadow Titan waits at the inner core.",
       "pre_dialogue": [
         { "speaker": "narrator", "emotion": "eerie", "text": "The fortress ramparts pulse like arteries — corrupted creatures emerging from every shadow, things that were once guardians now twisted beyond recognition." },
-        { "speaker": "Nilou", "emotion": "determined", "text": "They were sentient once. Let us free them from this torment." },
-        { "speaker": "Lenneth", "emotion": "commanding", "text": "I have walked between worlds for millennia. This darkness is not evil — it is grief. Infinite grief. We cut through it." },
-        { "speaker": "Kain", "emotion": "resolute", "text": "Then we show it another path. We show it that what it fears can be faced." }
+        { "speaker": "Lulu", "emotion": "determined", "text": "They were sentient once. Let us free them from this torment." },
+        { "speaker": "Valka", "emotion": "commanding", "text": "I have walked between worlds for millennia. This darkness is not evil — it is grief. Infinite grief. We cut through it." },
+        { "speaker": "Drake", "emotion": "resolute", "text": "Then we show it another path. We show it that what it fears can be faced." }
       ],
       "post_dialogue": [
         { "speaker": "narrator", "emotion": "solemn", "text": "At the core of the fortress, a scholar's chamber — ancient texts, constellations mapped on walls. And in the center, a mirror." },
-        { "speaker": "Hutao", "emotion": "sad", "text": "He was a scholar once. Curious about death. And when he could not escape it, he tried to escape life instead." },
-        { "speaker": "Xiao", "emotion": "grave", "text": "Then the darkness rises. Not Valdris himself — something he became. Vast. Immense. A titan of shadow." },
-        { "speaker": "Ayaka", "emotion": "focused", "text": "This is not him. This is what he became when he refused to let go. We break it. And free what remains." }
+        { "speaker": "Tao", "emotion": "sad", "text": "He was a scholar once. Curious about death. And when he could not escape it, he tried to escape life instead." },
+        { "speaker": "Rei", "emotion": "grave", "text": "Then the darkness rises. Not Valdris himself — something he became. Vast. Immense. A titan of shadow." },
+        { "speaker": "Aya", "emotion": "focused", "text": "This is not him. This is what he became when he refused to let go. We break it. And free what remains." }
       ]
     }
   ],
   "boss_chapter": {
     "title": "The Shadow Titan",
     "background": "core_chamber",
-    "cast": ["Ayaka", "Hutao", "Nilou", "Xiao"],
+    "cast": ["Aya", "Tao", "Lulu", "Rei"],
     "pre_dialogue": [
       { "speaker": "narrator", "emotion": "intense", "text": "The darkness coalesces into something immense — a titan of shadow and malice, wearing Valdris's form like armor." },
-      { "speaker": "Ayaka", "emotion": "focused", "text": "This is not him. This is what he became when he refused to let go." },
-      { "speaker": "Xiao", "emotion": "resolute", "text": "Then we break it. And we free what remains." }
+      { "speaker": "Aya", "emotion": "focused", "text": "This is not him. This is what he became when he refused to let go." },
+      { "speaker": "Rei", "emotion": "resolute", "text": "Then we break it. And we free what remains." }
     ],
     "post_dialogue": [
       { "speaker": "narrator", "emotion": "solemn", "text": "The titan staggers, cracks appearing in its form. But it does not fall. It simply withdraws, pulling back deeper into the fortress." },
-      { "speaker": "Hutao", "emotion": "understanding", "text": "It is weakening. We wounded something that thought itself invulnerable." },
-      { "speaker": "Nilou", "emotion": "hopeful", "text": "We are close. One more push — one final confrontation." },
-      { "speaker": "Ayaka", "emotion": "determined", "text": "Then we finish this. All of us. Together." }
+      { "speaker": "Tao", "emotion": "understanding", "text": "It is weakening. We wounded something that thought itself invulnerable." },
+      { "speaker": "Lulu", "emotion": "hopeful", "text": "We are close. One more push — one final confrontation." },
+      { "speaker": "Aya", "emotion": "determined", "text": "Then we finish this. All of us. Together." }
     ]
   },
   "recruitment_chapter": {
     "title": "The Immortal King's Choice",
     "background": "core_chamber",
-    "cast": ["Ayaka", "Hutao", "Nilou", "Xiao", "Leon", "Lenneth"],
+    "cast": ["Aya", "Tao", "Lulu", "Rei", "Rex", "Valka"],
     "scenes": [
       {
         "narration": "As the Shadow Titan withdraws, a figure steps forward from the gathered light — a king in golden armor, his eyes holding the weight of two hundred years.",
         "dialogue": [
-          { "speaker": "Leon", "emotion": "solemn", "text": "I have ruled for ages. Commanded armies. Built monuments meant to last forever. I chose immortality, thinking it was strength." },
-          { "speaker": "Leon", "emotion": "resolved", "text": "I see now that true immortality is purpose. And my purpose — here, now — is to stand with you, six warriors against the darkness." },
-          { "speaker": "Ayaka", "emotion": "warm", "text": "You were a king. Now you are something greater — you are free." },
-          { "speaker": "Lenneth", "emotion": "approving", "text": "Seven now. The number of completion. The number of final judgment." }
+          { "speaker": "Rex", "emotion": "solemn", "text": "I have ruled for ages. Commanded armies. Built monuments meant to last forever. I chose immortality, thinking it was strength." },
+          { "speaker": "Rex", "emotion": "resolved", "text": "I see now that true immortality is purpose. And my purpose — here, now — is to stand with you, six warriors against the darkness." },
+          { "speaker": "Aya", "emotion": "warm", "text": "You were a king. Now you are something greater — you are free." },
+          { "speaker": "Valka", "emotion": "approving", "text": "Seven now. The number of completion. The number of final judgment." }
         ]
       }
     ]

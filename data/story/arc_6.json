@@ -14,7 +14,7 @@
       "title": "The Fortress Revealed",
       "type": "cutscene",
       "background": "fortress_gates",
-      "cast": ["Ayaka", "Hutao", "Nilou", "Xiao"],
+      "cast": ["Aya", "Tao", "Lulu", "Rei"],
       "scenes": [
         {
           "narration": "The fortress materializes before them like a wound in the sky — black stone that seems to swallow light, towers that twist in ways that hurt to look at. It is not built. It is grown. Fed. Alive."
@@ -22,10 +22,10 @@
         {
           "narration": "Ayaka stands at the front, the four Seal Fragments held in her hands. They pulse with light — answering each other, drawing closer to completion.",
           "dialogue": [
-            { "speaker": "Ayaka", "emotion": "resolute", "text": "Four pieces broken and reclaimed. One fragment remains — inside that darkness. And one more answer: why." },
-            { "speaker": "Hutao", "emotion": "focused", "text": "I have guided the dead across the veil for so long. I can feel the weight of souls trapped in that place. Screaming." },
-            { "speaker": "Xiao", "emotion": "determined", "text": "Then we give them peace. We give them freedom. We tear down this monument to fear." },
-            { "speaker": "Nilou", "emotion": "steady", "text": "Six of us. One darkness. The math is simple." }
+            { "speaker": "Aya", "emotion": "resolute", "text": "Four pieces broken and reclaimed. One fragment remains — inside that darkness. And one more answer: why." },
+            { "speaker": "Tao", "emotion": "focused", "text": "I have guided the dead across the veil for so long. I can feel the weight of souls trapped in that place. Screaming." },
+            { "speaker": "Rei", "emotion": "determined", "text": "Then we give them peace. We give them freedom. We tear down this monument to fear." },
+            { "speaker": "Lulu", "emotion": "steady", "text": "Six of us. One darkness. The math is simple." }
           ]
         }
       ]
@@ -38,44 +38,44 @@
       "map_hint": "Push through the Void Citadel — the Void Warden guards the fortress gate beyond.",
       "pre_dialogue": [
         { "speaker": "narrator", "emotion": "intense", "text": "The Void Citadel stretches before them — black stone that swallows light, towers that twist in ways that hurt to look at. Shadow-creatures pour from every passage, guardians of the outer ring." },
-        { "speaker": "Xiao", "emotion": "ready", "text": "Let them come. We break through." },
-        { "speaker": "Rydia", "emotion": "calm", "text": "The eidolons say this place was not always dark. Once, it held light. They remember singing in its halls." },
-        { "speaker": "Lenneth", "emotion": "resolute", "text": "Then we reclaim it. Not for ourselves — for what was stolen from it." }
+        { "speaker": "Rei", "emotion": "ready", "text": "Let them come. We break through." },
+        { "speaker": "Ria", "emotion": "calm", "text": "The eidolons say this place was not always dark. Once, it held light. They remember singing in its halls." },
+        { "speaker": "Valka", "emotion": "resolute", "text": "Then we reclaim it. Not for ourselves — for what was stolen from it." }
       ],
       "post_dialogue": [
         { "speaker": "narrator", "emotion": "grave", "text": "At the heart of the citadel, a figure coalesces from shadow — ancient, vast, wearing robes of starlight corrupted to ash. The Void Warden." },
         { "speaker": "narrator", "emotion": "cold", "text": "Void Warden: Valdris is pleased you reached this far. He did not think you would." },
-        { "speaker": "Ayaka", "emotion": "sharp", "text": "Then he has learned nothing about us." },
-        { "speaker": "Hutao", "emotion": "determined", "text": "Enough talk. We unmake it." }
+        { "speaker": "Aya", "emotion": "sharp", "text": "Then he has learned nothing about us." },
+        { "speaker": "Tao", "emotion": "determined", "text": "Enough talk. We unmake it." }
       ]
     }
   ],
   "boss_chapter": {
     "title": "The Gate Guardian",
     "background": "fortress_entrance",
-    "cast": ["Ayaka", "Hutao", "Nilou", "Xiao"],
+    "cast": ["Aya", "Tao", "Lulu", "Rei"],
     "pre_dialogue": [
       { "speaker": "narrator", "emotion": "ominous", "text": "The Void Warden solidifies fully — a creature of pure shadow, wielding authority over this realm." },
-      { "speaker": "Xiao", "emotion": "grim", "text": "It is not alive. It is purpose given form." },
-      { "speaker": "Hutao", "emotion": "determined", "text": "Then we unmake it." }
+      { "speaker": "Rei", "emotion": "grim", "text": "It is not alive. It is purpose given form." },
+      { "speaker": "Tao", "emotion": "determined", "text": "Then we unmake it." }
     ],
     "post_dialogue": [
       { "speaker": "narrator", "emotion": "quiet", "text": "The Void Warden dissolves, its form unraveling like burning paper." },
-      { "speaker": "Nilou", "emotion": "hopeful", "text": "The gates are breaking. The fortress is... weakening. We can feel it." },
-      { "speaker": "Ayaka", "emotion": "resolved", "text": "Then we continue. We are close now. The last darkness awaits." }
+      { "speaker": "Lulu", "emotion": "hopeful", "text": "The gates are breaking. The fortress is... weakening. We can feel it." },
+      { "speaker": "Aya", "emotion": "resolved", "text": "Then we continue. We are close now. The last darkness awaits." }
     ]
   },
   "recruitment_chapter": {
     "title": "Six Stand United",
     "background": "fortress_entrance",
-    "cast": ["Ayaka", "Hutao", "Nilou", "Xiao", "Rydia", "Kain"],
+    "cast": ["Aya", "Tao", "Lulu", "Rei", "Ria", "Drake"],
     "scenes": [
       {
         "narration": "As the Void Warden falls, Kain emerges from the shadow, his dragoon armor gleaming with aerial energy. Behind him, the sky itself seems to brighten.",
         "dialogue": [
-          { "speaker": "Kain", "emotion": "strong", "text": "The barrier that bound me — it shattered the moment your light broke through. I am free. And I stand with you." },
-          { "speaker": "Ayaka", "emotion": "welcoming", "text": "The Dragoon of Baron. You have come far to find this purpose." },
-          { "speaker": "Xiao", "emotion": "knowing", "text": "Another soul released from chains. Another voice to sing against the darkness." }
+          { "speaker": "Drake", "emotion": "strong", "text": "The barrier that bound me — it shattered the moment your light broke through. I am free. And I stand with you." },
+          { "speaker": "Aya", "emotion": "welcoming", "text": "The Dragoon of the Sky. You have come far to find this purpose." },
+          { "speaker": "Rei", "emotion": "knowing", "text": "Another soul released from chains. Another voice to sing against the darkness." }
         ]
       }
     ]

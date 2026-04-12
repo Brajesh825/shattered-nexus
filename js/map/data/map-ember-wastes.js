@@ -95,6 +95,10 @@ MAP_DEFS.ember_wastes = (function() {
             { id: 'imp',      x: 55, y: 40, patrol: 'random',     range: 3, speed: 1.7 }
         ],
 
+        npcs: [
+          { id: 'essabella', x: 80, y: 40, dialogueKey: 'ember_wastes' },
+        ],
+
         fog: { delay: 15, peak: 100, max: 0.82, vision: 3.0 },
 
         voiceLines: {

@@ -23,6 +23,9 @@ const MapEngine = (() => {
   // Speech bubble queue: [{char, color, text, life, maxLife}]
   const _bubbles = [];
 
+  // Track player tile to detect entry (not just presence)
+  let _lastPlayerTx = -1, _lastPlayerTy = -1;
+
   // Objective state for current map session
   let _objState = {
     done: false,          // objective complete this session
@@ -32,13 +35,21 @@ const MapEngine = (() => {
   /* ── Camera ─────────────────────────────────────────── */
   const cam = { x: 0, y: 0 };
 
-  function _updateCamera() {
+  function _updateCamera(dt) {
     if (!_map) return;
     const cw = _canvas.width, ch = _canvas.height;
     const maxX = _map.width  * TILE - cw;
     const maxY = _map.height * TILE - ch;
     cam.x = Math.max(0, Math.min(maxX || 0, MapPlayer.px - cw / 2 + TILE / 2));
     cam.y = Math.max(0, Math.min(maxY || 0, MapPlayer.py - ch / 2 + TILE / 2));
+
+    // Screen shake
+    if (_shakeTime > 0) {
+      if (dt) _shakeTime -= dt;
+      const mag = Math.round(_shakeTime * 10);
+      cam.x += (Math.random() - 0.5) * mag;
+      cam.y += (Math.random() - 0.5) * mag;
+    }
   }
 
   /* ── Tile offscreen cache ───────────────────────────── */
@@ -495,6 +506,7 @@ const MapEngine = (() => {
     _renderCampMarker();
     _renderAtmosphere();
     MapEntities.renderEnemies(_ctx, cam, TILE, _map, _inVision.bind(null));
+    MapEntities.renderNPCs(_ctx, cam, TILE, _time);
     MapPlayer.render(_ctx, cam, TILE);
     _renderFog();
     _renderObjectiveHUD();
@@ -510,7 +522,7 @@ const MapEngine = (() => {
     MapInput.poll();
     MapPlayer.update(dt, _map);
     MapEntities.updateEnemies(dt, _map);
-    _updateCamera();
+    _updateCamera(dt);
 
 
     // Encounter check
@@ -530,6 +542,28 @@ const MapEngine = (() => {
       if (!atStart) _atCamp = false;
     }
 
+    // NPC interaction check — only fire when player just moved onto an adjacent tile
+    const ptx = MapPlayer.tx, pty = MapPlayer.ty;
+    const justMoved = !MapPlayer.moving && (ptx !== _lastPlayerTx || pty !== _lastPlayerTy);
+    if (justMoved) {
+      _lastPlayerTx = ptx; _lastPlayerTy = pty;
+      // Check player tile AND all 4 adjacent tiles for an NPC
+      const checks = [
+        {x: ptx,   y: pty},
+        {x: ptx+1, y: pty}, {x: ptx-1, y: pty},
+        {x: ptx,   y: pty+1}, {x: ptx,   y: pty-1},
+      ];
+      for (const pos of checks) {
+        const npc = MapEntities.checkNPCAt(pos.x, pos.y);
+        if (npc && !npc._dialogueOpen && !npc.talked) {
+          npc._dialogueOpen = true;
+          stop();
+          _openNPCDialogue(npc);
+          break;
+        }
+      }
+    }
+
     // Objective check each frame
     _checkObjective();
 
@@ -547,37 +581,43 @@ const MapEngine = (() => {
   }
 
   /* ── Encounter ───────────────────────────────────────── */
+  let _shakeTime = 0; // seconds remaining for camera shake
+
   function _triggerEncounter(enc) {
-    // Ember-red edge flash
-    const flashEl = document.getElementById('explore-flash');
-    if (flashEl) {
-      flashEl.classList.add('show');
-      setTimeout(() => flashEl.classList.remove('show'), 200);
-    }
-    MapEntities.removeEncountered();
-
-    const enemyId = enc.enemies && enc.enemies[0];
-    const raw  = G && G.enemies && enemyId && G.enemies.find(e => e.id === enemyId);
-    const name = raw ? raw.name : (enemyId || '?');
-
-    // Ambush? If fog is active and encounter triggered outside clear vision
+    const enemyId  = enc.enemies && enc.enemies[0];
+    const raw      = G && G.enemies && enemyId && G.enemies.find(e => e.id === enemyId);
+    const name     = raw ? raw.name : (enemyId || '?');
     const isAmbush = _fogAlpha() > 0.15;
     enc.ambush = isAmbush;
 
-    // Dramatic encounter dialogue on canvas
+    // 1. Stop movement immediately
+    stop();
+
+    // 2. Screen shake
+    _shakeTime = isAmbush ? 0.55 : 0.35;
+
+    // 3. Red edge flash — longer and more intense than before
+    const flashEl = document.getElementById('explore-flash');
+    if (flashEl) {
+      flashEl.classList.add('show');
+      setTimeout(() => flashEl.classList.remove('show'), isAmbush ? 600 : 380);
+    }
+
+    // 4. Dramatic canvas voice line
     if (_map && _map.voiceLines && _map.voiceLines.encounter) {
       _sayLine(_randomLine(_map.voiceLines.encounter));
     }
 
-    // Banner message — ambush gets a different tone
+    // 5. Banner message
     if (typeof MapUI !== 'undefined') {
       MapUI.showMsg(isAmbush ? `💀 AMBUSH — ${name}!` : `⚔ ${name} appeared!`, 2200);
     }
 
-    // Delegate to host game if wired up
+    // 6. Brief dramatic pause, then transition
+    MapEntities.removeEncountered();
+    const delay = isAmbush ? 700 : 480;
     if (typeof MapEngine !== 'undefined' && typeof MapEngine.onEncounterStart === 'function') {
-      stop();
-      setTimeout(() => MapEngine.onEncounterStart(enc, _map), 120);
+      setTimeout(() => MapEngine.onEncounterStart(enc, _map), delay);
     }
   }
 
@@ -628,12 +668,14 @@ const MapEngine = (() => {
     MapPlayer.pickVariants(); // pick random sprite variant for each party member
     MapPlayer.reset(_map.playerStart.x, _map.playerStart.y);
     _campUnlocked = false; _atCamp = false;
+    _lastPlayerTx = -1; _lastPlayerTy = -1;
     _fogTime = 0; _fogCanvas = null;
     _fogMilestone = 0;
     _bubbles.length = 0;
     _ambientTimer = 20 + Math.random() * 30; // first ambient line after 20-50s
     _objState = { done: _objAlreadyCleared(), collected: [] };
     MapEntities.init(_map);
+    MapEntities.initNPCs(_map);
     cam.x = 0; cam.y = 0;
     _updateCamera();
   }
@@ -665,12 +707,95 @@ const MapEngine = (() => {
 
   function resetFog() { _fogTime = 0; _fogCanvas = null; _fogMilestone = 0; _bubbles.length = 0; }
 
+  /* ── NPC dialogue ────────────────────────────────────── */
+  let _npcLines = [], _npcLineIdx = 0, _npcCurrent = null;
+
+  function _openNPCDialogue(npc) {
+    _npcCurrent = npc;
+    _npcLines   = npc.dialogue || [];
+    _npcLineIdx = 0;
+    _showNPCLine();
+  }
+
+  function _showNPCLine() {
+    const el = document.getElementById('npc-dialogue');
+    if (!el) return;
+    if (_npcLineIdx >= _npcLines.length) {
+      _closeNPCDialogue();
+      return;
+    }
+    const line = _npcLines[_npcLineIdx];
+    // Portrait — party speakers use face images; NPC uses sheet canvas crop
+    const portrait = document.getElementById('npc-dialogue-portrait');
+    const speaker  = line.speaker || '';
+    const speakerLower = speaker.toLowerCase().replace(/\s+/g, '_');
+    const PARTY_IDS = ['ayaka', 'hutao', 'nilou', 'xiao', 'rydia', 'lenneth', 'kain', 'leon'];
+    const isParty = PARTY_IDS.some(id => speakerLower.includes(id));
+
+    if (portrait) {
+      const size = 52;
+      portrait.width  = size;
+      portrait.height = size;
+      portrait.style.display = '';
+      const pctx = portrait.getContext('2d');
+      pctx.clearRect(0, 0, size, size);
+
+      if (isParty) {
+        // Use face image same as story cutscenes
+        const faceImg = new Image();
+        faceImg.onload = () => {
+          pctx.clearRect(0, 0, size, size);
+          pctx.drawImage(faceImg, 0, 0, size, size);
+        };
+        faceImg.src = `images/characters/faces/${speakerLower}_face.png`;
+      } else if (_npcCurrent.sprite) {
+        // NPC: draw frame 0 front strip, top 30% crop
+        const img = new Image();
+        img.onload = () => {
+          const frameW = img.naturalWidth / 6;
+          const frameH = img.naturalHeight / 2;
+          const cropH  = frameH * 0.50;
+          pctx.imageSmoothingEnabled = false;
+          pctx.clearRect(0, 0, size, size);
+          pctx.drawImage(img, 0, 0, frameW, cropH, 0, 0, size, size);
+        };
+        img.src = _npcCurrent.sprite;
+      }
+    }
+    document.getElementById('npc-dialogue-name').textContent =
+      (line.speaker || _npcCurrent.name || '').toUpperCase();
+    document.getElementById('npc-dialogue-text').textContent = line.text || '';
+    const btn = document.getElementById('npc-dialogue-next');
+    if (btn) btn.textContent = (_npcLineIdx >= _npcLines.length - 1) ? '✔ CLOSE' : '▶ CONTINUE';
+    el.style.display = 'flex';
+  }
+
+  function npcDialogueNext() {
+    _npcLineIdx++;
+    if (_npcLineIdx >= _npcLines.length) {
+      _closeNPCDialogue();
+    } else {
+      _showNPCLine();
+    }
+  }
+
+  function _closeNPCDialogue() {
+    const el = document.getElementById('npc-dialogue');
+    if (el) el.style.display = 'none';
+    if (_npcCurrent) {
+      MapEntities.markNPCTalked(_npcCurrent.id);
+      _npcCurrent._dialogueOpen = false;
+      _npcCurrent = null;
+    }
+    resume();
+  }
+
   // 0..1 — how far fog has progressed (used by entities to scale aggro/speed)
   function fogProgress() { return _fogProgress(); }
 
   return {
     init, loadMap, start, stop, resume, onBattleComplete,
-    getMap, getCam, getTile, isRunning, resetFog, fogProgress,
+    getMap, getCam, getTile, isRunning, resetFog, fogProgress, npcDialogueNext,
     // Optional callback — wire this up after init to handle encounter transitions:
     // MapEngine.onEncounterStart = function(enc) { ... }
     onEncounterStart: null,

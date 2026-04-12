@@ -16,101 +16,101 @@
   "boss_chapter": {
     "title": "The Unmade Knight",
     "background": "sacred_ruins_boss",
-    "cast": ["Ayaka", "Hutao", "Nilou", "Xiao"],
+    "cast": ["Aya", "Tao", "Lulu", "Rei"],
     "pre_dialogue": [
       { "speaker": "narrator", "emotion": "grave", "text": "The Sacred Ruins of Aethoria. What was once a place of light and ceremony is now a hollow throne of shadow. And on that throne — something waits." },
       { "speaker": "narrator", "emotion": "ominous", "text": "It was a warrior once. A name. A life. Valdris took both and left only the shape of a soldier, filled with darkness and given one purpose: guard the Seal Fragment. Forever." },
-      { "speaker": "Xiao", "emotion": "grim", "text": "I can feel what it lost. There is no malice in it. Only obedience. That makes it more dangerous, not less." },
-      { "speaker": "Hutao", "emotion": "unusually_quiet", "text": "...I have guided many souls onward. I have never seen one forced to stay like this. This is not death. This is something worse." },
-      { "speaker": "Nilou", "emotion": "sorrowful", "text": "Can we free it? After we —" },
-      { "speaker": "Ayaka", "emotion": "controlled", "text": "We defeat it first. Then we ask that question." },
+      { "speaker": "Rei", "emotion": "grim", "text": "I can feel what it lost. There is no malice in it. Only obedience. That makes it more dangerous, not less." },
+      { "speaker": "Tao", "emotion": "unusually_quiet", "text": "...I have guided many souls onward. I have never seen one forced to stay like this. This is not death. This is something worse." },
+      { "speaker": "Lulu", "emotion": "sorrowful", "text": "Can we free it? After we —" },
+      { "speaker": "Aya", "emotion": "controlled", "text": "We defeat it first. Then we ask that question." },
       { "speaker": "narrator", "emotion": "tense", "text": "The Void Knight raises its blade. It does not speak. It has forgotten how. The only thing left in it is the order it was given — and the four of them stand between it and that order." }
     ],
     "post_dialogue": [
       { "speaker": "narrator", "emotion": "solemn", "text": "The Void Knight staggers. The darkness holding it together begins to fracture — hairline cracks of pale light splitting through the shadow armor." },
-      { "speaker": "Hutao", "emotion": "quiet", "text": "There. Do you see it? Underneath all that shadow — there is still something in there." },
-      { "speaker": "Xiao", "emotion": "low", "text": "A remnant. It has been in there the whole time." },
+      { "speaker": "Tao", "emotion": "quiet", "text": "There. Do you see it? Underneath all that shadow — there is still something in there." },
+      { "speaker": "Rei", "emotion": "low", "text": "A remnant. It has been in there the whole time." },
       { "speaker": "narrator", "emotion": "gentle", "text": "The Void Knight goes still. The blade lowers. And for one brief, impossible moment — something like recognition crosses what remains of its face." },
-      { "speaker": "Nilou", "emotion": "soft", "text": "...It remembers. Even now, it remembers." },
+      { "speaker": "Lulu", "emotion": "soft", "text": "...It remembers. Even now, it remembers." },
       { "speaker": "narrator", "emotion": "solemn", "text": "Then the shadow collapses inward. The knight crumbles. And where it stood, a pale crystal pulses once — like a heartbeat — and goes quiet. The first Seal Fragment." },
-      { "speaker": "Ayaka", "emotion": "resolved", "text": "One fragment. Four to go. We honour what it was by finishing this." },
-      { "speaker": "Hutao", "emotion": "earnest", "text": "I will remember its name. When we find out what it was — I will remember." },
-      { "speaker": "Xiao", "emotion": "quiet", "text": "...So will I." }
+      { "speaker": "Aya", "emotion": "resolved", "text": "One fragment. Four to go. We honour what it was by finishing this." },
+      { "speaker": "Tao", "emotion": "earnest", "text": "I will remember its name. When we find out what it was — I will remember." },
+      { "speaker": "Rei", "emotion": "quiet", "text": "...So will I." }
     ]
   },
 
   "chapters": [
     {
       "id": "arc1_prologue_xiao",
-      "title": "The Yaksha's Arrival",
+      "title": "The Warden's Arrival",
       "type": "cutscene",
       "background": "summoning_ruins",
-      "cast": ["Xiao"],
+      "cast": ["Rei"],
       "scenes": [
         {
           "narration": "Silence. Then a tearing of the world. The sound of something ancient waking. A figure stands alone in cracked stone ruins — not fallen, but arriving with the gravity of a stone dropped from heaven.",
           "dialogue": []
         },
         {
-          "narration": "Xiao's eyes snap open. This place is not Liyue. The air tastes of old magic and dying light. His hand reaches automatically for the amber glow that should respond to his call — the power that has sustained him for two thousand years.",
+          "narration": "Rei's eyes snap open. This place is not the world he came from. The air tastes of old magic and dying light. His hand reaches automatically for the amber glow that should respond to his call — the power that has sustained him for two thousand years.",
           "dialogue": [
-            { "speaker": "Xiao", "emotion": "alert", "text": "...The Vision. It does not..." },
-            { "speaker": "narrator", "emotion": "gentle", "text": "Your world is distant now, Yaksha. The power you carried belongs to Teyvat. Here, you carry something else." },
-            { "speaker": "Xiao", "emotion": "sharp", "text": "Who speaks? Show yourself." }
+            { "speaker": "Rei", "emotion": "alert", "text": "...The power. It does not..." },
+            { "speaker": "narrator", "emotion": "gentle", "text": "Your world is distant now, Warden. The gift you carried belongs to the world you came from. Here, you carry something else." },
+            { "speaker": "Rei", "emotion": "sharp", "text": "Who speaks? Show yourself." }
           ]
         },
         {
-          "narration": "There is no figure. Only the ruins, and the strange purple luminescence that settles over them like twilight that never came before. Xiao reaches inward, past the familiar emptiness where his Vision should be, and finds something else awakening — deeper, older, more attuned to this wounded world.",
+          "narration": "There is no figure. Only the ruins, and the strange purple luminescence that settles over them like twilight that never came before. Rei reaches inward, past the familiar emptiness where his power should be, and finds something else awakening — deeper, older, more attuned to this wounded world.",
           "dialogue": [
-            { "speaker": "Xiao", "emotion": "grim", "text": "Karmic resonance. This world suffers as I do. Something broke here — something fundamental." },
-            { "speaker": "narrator", "emotion": "solemn", "text": "You were called because you alone carry the weight to stand against it. Your burden in Teyvat has become your strength in Aethoria." }
+            { "speaker": "Rei", "emotion": "grim", "text": "Karmic resonance. This world suffers as I do. Something broke here — something fundamental." },
+            { "speaker": "narrator", "emotion": "solemn", "text": "You were called because you alone carry the weight to stand against it. Your burden in the world you came from has become your strength in Aethoria." }
           ]
         },
         {
-          "narration": "Power thrums through him — not the familiar elemental clarity of Anemo, but something rawer. The karmic contamination that has plagued him for millennia suddenly makes sense here. It is not a curse in this place. It is a compass.",
+          "narration": "Power thrums through him — not the familiar elemental clarity of his old gift, but something rawer. The karmic weight that has plagued him for millennia suddenly makes sense here. It is not a curse in this place. It is a compass.",
           "dialogue": [
-            { "speaker": "Xiao", "emotion": "quiet", "text": "Others have been called as well. I can sense it. Multiple presences, each touching down where the light is brightest." },
+            { "speaker": "Rei", "emotion": "quiet", "text": "Others have been called as well. I can sense it. Multiple presences, each touching down where the light is brightest." },
             { "speaker": "narrator", "emotion": "knowing", "text": "Four summoned. Four anchors for a world falling apart. Will you stand?" },
-            { "speaker": "Xiao", "emotion": "resolved", "text": "...I have fought alone for two thousand years. It would be dishonest to say I am unwilling to try otherwise." }
+            { "speaker": "Rei", "emotion": "resolved", "text": "...I have fought alone for two thousand years. It would be dishonest to say I am unwilling to try otherwise." }
           ]
         }
       ]
     },
     {
       "id": "arc1_prologue_ayaka",
-      "title": "The Kamisato's Duty",
+      "title": "The Blade's Duty",
       "type": "cutscene",
       "background": "summoning_ruins",
-      "cast": ["Ayaka"],
+      "cast": ["Aya"],
       "scenes": [
         {
-          "narration": "Light tears through existence. A figure falls through the break in worlds with the precision of training — rolling, rising, sword drawn in a single motion. Ayaka lands in a crouch on ancient stone, blade gleaming with frost that will not melt.",
+          "narration": "Light tears through existence. A figure falls through the break in worlds with the precision of training — rolling, rising, sword drawn in a single motion. Aya lands in a crouch on ancient stone, blade gleaming with frost that will not melt.",
           "dialogue": [
-            { "speaker": "Ayaka", "emotion": "calm", "text": "...This is not Inazuma. Not any place in Teyvat I have been taught to recognize." }
+            { "speaker": "Aya", "emotion": "calm", "text": "...This is not my homeland. Not any place in the world I came from that I have been taught to recognize." }
           ]
         },
         {
-          "narration": "She reaches for her Vision — the Cryo gem that has always answered her call, that has made her graceful strikes possible, that has been as much a part of her as her name. Her hand closes on emptiness.",
+          "narration": "She reaches for her power — the gift that has always answered her call, that has made her graceful strikes possible, that has been as much a part of her as her name. Her hand closes on emptiness.",
           "dialogue": [
-            { "speaker": "Ayaka", "emotion": "composed", "text": "The Vision. It does not respond." },
+            { "speaker": "Aya", "emotion": "composed", "text": "My power. It does not respond." },
             { "speaker": "narrator", "emotion": "peaceful", "text": "What you carried was born from your world. In this world, you are born anew." },
-            { "speaker": "Ayaka", "emotion": "thoughtful", "text": "You speak as though you know me. Yet I know nothing of this place, and less of you." }
+            { "speaker": "Aya", "emotion": "thoughtful", "text": "You speak as though you know me. Yet I know nothing of this place, and less of you." }
           ]
         },
         {
           "narration": "She does not panic. Instead, she stands, closing her eyes. Her brother taught her that composure is not the absence of feeling — it is the mastery of it. She breathes, and in that breathing, finds something else awakening within her. A connection to this place's pain. A pull toward something that needs to be done.",
           "dialogue": [
-            { "speaker": "Ayaka", "emotion": "serene", "text": "There is something... broken. A world being unmade. And I have been called to help mend it." },
+            { "speaker": "Aya", "emotion": "serene", "text": "There is something... broken. A world being unmade. And I have been called to help mend it." },
             { "speaker": "narrator", "emotion": "warm", "text": "You carry the weight of legacy. Here, that weight becomes purpose." },
-            { "speaker": "Ayaka", "emotion": "resolved", "text": "Purpose I can bear. My clan has always answered when duty called. This is merely a different duty." }
+            { "speaker": "Aya", "emotion": "resolved", "text": "Purpose I can bear. My clan has always answered when duty called — and this is merely a different duty." }
           ]
         },
         {
-          "narration": "Something stirs within her — not the sharp cryo magic of her Vision, but something broader. An ability to sense what this world needs from her, independent of her own power. A clarity that requires no gem to manifest.",
+          "narration": "Something stirs within her — not the sharp cryo magic of her gift, but something broader. An ability to sense what this world needs from her, independent of her own power. A clarity that requires no gem to manifest.",
           "dialogue": [
-            { "speaker": "Ayaka", "emotion": "calm", "text": "I am not alone here. There are others. I can feel them arriving, one by one." },
+            { "speaker": "Aya", "emotion": "calm", "text": "I am not alone here. There are others. I can feel them arriving, one by one." },
             { "speaker": "narrator", "emotion": "knowing", "text": "Four will meet in the ruins. Four will be needed to hold back the shadow." },
-            { "speaker": "Ayaka", "emotion": "steady", "text": "Then I will stand with them. Whatever comes." }
+            { "speaker": "Aya", "emotion": "steady", "text": "Then I will stand with them. Whatever comes." }
           ]
         }
       ]
@@ -120,36 +120,36 @@
       "title": "The Dancer's New Song",
       "type": "cutscene",
       "background": "summoning_ruins",
-      "cast": ["Nilou"],
+      "cast": ["Lulu"],
       "scenes": [
         {
           "narration": "Water cascades through a rift in the world. Nilou emerges not with violence but with grace, her dancer's instincts translating the chaos into something resembling a step. She lands on fractured stone, and the first thing she notices is the stars.",
           "dialogue": [
-            { "speaker": "Nilou", "emotion": "awed", "text": "The constellations... they are wrong. Or perhaps I have never seen them at all." }
+            { "speaker": "Lulu", "emotion": "awed", "text": "The constellations... they are wrong. Or perhaps I have never seen them at all." }
           ]
         },
         {
-          "narration": "She reaches for the familiar coolness of her water Vision, seeking the connection to the sacred pools of Sumeru. For a moment, there is only silence. Then panic — small, carefully hidden behind a dancer's smile.",
+          "narration": "She reaches for the familiar coolness of her gift, seeking the connection to the sacred pools of her homeland. For a moment, there is only silence. Then panic — small, carefully hidden behind a dancer's smile.",
           "dialogue": [
-            { "speaker": "Nilou", "emotion": "gentle", "text": "Where is the water? Where are my waters?" },
-            { "speaker": "narrator", "emotion": "soft", "text": "Your vision belonged to Teyvat. Here, you must learn to hear a new song." },
-            { "speaker": "Nilou", "emotion": "sad", "text": "I do not know this place. I do not know its song." }
+            { "speaker": "Lulu", "emotion": "gentle", "text": "Where is the water? Where are my waters?" },
+            { "speaker": "narrator", "emotion": "soft", "text": "Your gift belonged to the world you came from. Here, you must learn to hear a new song." },
+            { "speaker": "Lulu", "emotion": "sad", "text": "I do not know this place. I do not know its song." }
           ]
         },
         {
           "narration": "But as she stands there, surrounded by ruin and strangeness, something begins to come clear. Not a song she recognizes, but a rhythm. A heartbeat underneath the broken stone. The world itself bleeding, calling out, needing something to answer its tempo.",
           "dialogue": [
-            { "speaker": "Nilou", "emotion": "wondering", "text": "This world is crying. I can hear it. Not in words, but... in feeling. In the spaces between things." },
+            { "speaker": "Lulu", "emotion": "wondering", "text": "This world is crying. I can hear it. Not in words, but... in feeling. In the spaces between things." },
             { "speaker": "narrator", "emotion": "gentle", "text": "Your gift was always to feel beauty in the temporary. This world is temporary. Broken. Will you dance with it?" },
-            { "speaker": "Nilou", "emotion": "soft_strength", "text": "...Even broken things have beauty. Even dying things deserve to be heard." }
+            { "speaker": "Lulu", "emotion": "soft_strength", "text": "...Even broken things have beauty. Even dying things deserve to be heard." }
           ]
         },
         {
-          "narration": "She does not move like a warrior. She moves like a dancer — and yet every motion carries purpose now, synchronized with the world's need. Her new power is not the sharp clarity of water magic, but the intuitive understanding of what this place feels.",
+          "narration": "She does not move like a warrior. She moves like a dancer — and yet every motion carries purpose now, synchronized with the world's need. Her new power is not the sharp clarity of her old gift, but the intuitive understanding of what this place feels.",
           "dialogue": [
-            { "speaker": "Nilou", "emotion": "calm", "text": "There are others coming. Three more to join this broken world's song." },
+            { "speaker": "Lulu", "emotion": "calm", "text": "There are others coming. Three more to join this broken world's song." },
             { "speaker": "narrator", "emotion": "knowing", "text": "Four called to Aethoria. Four to dance with its final hope." },
-            { "speaker": "Nilou", "emotion": "determined", "text": "Then I will teach them the steps." }
+            { "speaker": "Lulu", "emotion": "determined", "text": "Then I will teach them the steps." }
           ]
         }
       ]
@@ -159,36 +159,36 @@
       "title": "The Funeral Director's Calling",
       "type": "cutscene",
       "background": "summoning_ruins",
-      "cast": ["Hutao"],
+      "cast": ["Tao"],
       "scenes": [
         {
           "narration": "A burst of flame, then laughter. Hu Tao tumbles through a rift in the world like it is the most natural thing, landing on broken stone with a grin that does not quite reach her eyes.",
           "dialogue": [
-            { "speaker": "Hutao", "emotion": "delighted", "text": "Well! This is far more interesting than yesterday's paperwork~ Where am I this time?" }
+            { "speaker": "Tao", "emotion": "delighted", "text": "Well! This is far more interesting than yesterday's paperwork~ Where am I this time?" }
           ]
         },
         {
-          "narration": "She reaches for her Vision — the Pyro gem that has burned bright since she was young, the power that connected her to the spirit realm and all the souls that needed guidance. For a moment, her hand grips at nothing, and the smile falters.",
+          "narration": "She reaches for her power — the gift that has burned bright since she was young, the flame that connected her to the spirit realm and all the souls that needed guidance. For a moment, her hand grips at nothing, and the smile falters.",
           "dialogue": [
-            { "speaker": "Hutao", "emotion": "quiet", "text": "The flame. It will not answer." },
+            { "speaker": "Tao", "emotion": "quiet", "text": "The flame. It will not answer." },
             { "speaker": "narrator", "emotion": "solemn", "text": "Your world's fire burns no longer. But you have been called to this world's dying light." },
-            { "speaker": "Hutao", "emotion": "dark", "text": "Dying? Now that is poetic. And troubling. I do not usually guide the living." }
+            { "speaker": "Tao", "emotion": "dark", "text": "Dying? Now that is poetic. And troubling. I do not usually guide the living." }
           ]
         },
         {
           "narration": "She steadies herself, straightens her coat, and forces the smile back. But beneath it, something deeper is stirring — a sensitivity to the boundary between life and death in this place. She can feel it now: a world at its ending, souls trapped in transition, a silence that should not be so quiet.",
           "dialogue": [
-            { "speaker": "Hutao", "emotion": "serious", "text": "This world is dying. Not quickly. Not naturally. Someone is holding it here, letting it waste away piece by piece." },
+            { "speaker": "Tao", "emotion": "serious", "text": "This world is dying. Not quickly. Not naturally. Someone is holding it here, letting it waste away piece by piece." },
             { "speaker": "narrator", "emotion": "heavy", "text": "You see truly. And yet you were summoned not to mourn it, but to save it." },
-            { "speaker": "Hutao", "emotion": "genuine", "text": "A world worth saving, then. That changes things." }
+            { "speaker": "Tao", "emotion": "genuine", "text": "A world worth saving, then. That changes things." }
           ]
         },
         {
-          "narration": "Power ignites within her — not the familiar warmth of her Pyro Vision, but something deeper. An understanding of cycles, of endings, of when to let go and when to fight to hold on. Her gift is no longer to guide the dead — it is to understand what is worth saving from death.",
+          "narration": "Power ignites within her — not the familiar warmth of her old gift, but something deeper. An understanding of cycles, of endings, of when to let go and when to fight to hold on. Her gift is no longer to guide the dead — it is to understand what is worth saving from death.",
           "dialogue": [
-            { "speaker": "Hutao", "emotion": "determined", "text": "Three others are being summoned. I can feel them — each one a voice in this dying world's chorus." },
+            { "speaker": "Tao", "emotion": "determined", "text": "Three others are being summoned. I can feel them — each one a voice in this dying world's chorus." },
             { "speaker": "narrator", "emotion": "knowing", "text": "Four to answer. Four to choose what Aethoria will become." },
-            { "speaker": "Hutao", "emotion": "resolute", "text": "Then let us make sure it is a choice worth making." }
+            { "speaker": "Tao", "emotion": "resolute", "text": "Then let us make sure it is a choice worth making." }
           ]
         }
       ]
@@ -198,41 +198,41 @@
       "title": "Between Worlds",
       "type": "cutscene",
       "background": "summoning_ruins",
-      "cast": ["Ayaka", "Hutao", "Nilou", "Xiao"],
+      "cast": ["Aya", "Tao", "Lulu", "Rei"],
       "scenes": [
         {
           "narration": "Silence. Then light — violent, white, all-consuming. Then the sound of breathing that is not one's own.",
           "dialogue": []
         },
         {
-          "narration": "Ayaka lands on cracked stone, sword already drawn by instinct. The ruins around her are ancient and broken. This is not Inazuma.",
+          "narration": "Aya lands on cracked stone, sword already drawn by instinct. The ruins around her are ancient and broken. This is not her homeland.",
           "dialogue": [
-            { "speaker": "Ayaka", "emotion": "calm", "text": "...Where am I? This architecture resembles nothing in Teyvat records." }
+            { "speaker": "Aya", "emotion": "calm", "text": "...Where am I? This architecture resembles nothing in the world I came from." }
           ]
         },
         {
           "narration": "A burst of flame ignites nearby as Hu Tao tumbles through a crackling rift, already grinning.",
           "dialogue": [
-            { "speaker": "Hutao", "emotion": "delighted", "text": "Ohoho~! Now THIS is the most interesting thing that has happened to me all week, and I was chasing a malevolent spirit this morning!" },
-            { "speaker": "Ayaka", "emotion": "surprised", "text": "...You seem remarkably calm for someone who just fell out of thin air." },
-            { "speaker": "Hutao", "emotion": "cheerful", "text": "Funeral directors must stay composed around the unexpected! Also this is exciting, not scary. Very important distinction." }
+            { "speaker": "Tao", "emotion": "delighted", "text": "Ohoho~! Now THIS is the most interesting thing that has happened to me all week, and I was chasing a malevolent spirit this morning!" },
+            { "speaker": "Aya", "emotion": "surprised", "text": "...You seem remarkably calm for someone who just fell out of thin air." },
+            { "speaker": "Tao", "emotion": "cheerful", "text": "Funeral directors must stay composed around the unexpected! Also this is exciting, not scary. Very important distinction." }
           ]
         },
         {
           "narration": "Water cascades from a second rift as Nilou steps through, her dancer instincts keeping her upright.",
           "dialogue": [
-            { "speaker": "Nilou", "emotion": "awed", "text": "Oh... the stars here are a different color. Did we cross worlds?" },
-            { "speaker": "Hutao", "emotion": "philosophical", "text": "The boundary between worlds is thinner than people think. I have always suspected as much." },
-            { "speaker": "Ayaka", "emotion": "focused", "text": "Whatever brought us here, we should assess before assuming we are safe." }
+            { "speaker": "Lulu", "emotion": "awed", "text": "Oh... the stars here are a different color. Did we cross worlds?" },
+            { "speaker": "Tao", "emotion": "philosophical", "text": "The boundary between worlds is thinner than people think. I have always suspected as much." },
+            { "speaker": "Aya", "emotion": "focused", "text": "Whatever brought us here, we should assess before assuming we are safe." }
           ]
         },
         {
           "narration": "He does not fall through the rift. He steps through it. Xiao surveys the ruins with eyes that have seen the end of things before.",
           "dialogue": [
-            { "speaker": "Xiao", "emotion": "grim", "text": "This place reeks of karmic contamination. Something ancient has been wounded here." },
-            { "speaker": "Nilou", "emotion": "gentle", "text": "You can sense that? Are you an adeptus?" },
-            { "speaker": "Xiao", "emotion": "flat", "text": "I am the last yaksha. I carry enough karma to recognize when a world is dying. This world is dying." },
-            { "speaker": "Hutao", "emotion": "thoughtful", "text": "A world on the edge of passing, and something called us here rather than letting it go quietly. Rude. I am intrigued." }
+            { "speaker": "Rei", "emotion": "grim", "text": "This place reeks of karmic weight. Something ancient has been wounded here." },
+            { "speaker": "Lulu", "emotion": "gentle", "text": "You can sense that? Are you a guardian spirit?" },
+            { "speaker": "Rei", "emotion": "flat", "text": "I am the last of my kind. I carry enough karma to recognize when a world is dying. This world is dying." },
+            { "speaker": "Tao", "emotion": "thoughtful", "text": "A world on the edge of passing, and something called us here rather than letting it go quietly. Rude. I am intrigued." }
           ]
         }
       ]
@@ -242,17 +242,17 @@
       "title": "The Oracle Call",
       "type": "battle",
       "background": "shattered_ruins",
-      "cast": ["Ayaka", "Hutao", "Nilou", "Xiao"],
+      "cast": ["Aya", "Tao", "Lulu", "Rei"],
       "pre_dialogue": [
         { "speaker": "narrator", "emotion": "tense", "text": "The ruins are not empty. Shadow creatures lurk among the broken columns, drawn to the light of the summoning." },
-        { "speaker": "Xiao", "emotion": "alert", "text": "Shadow-touched. They serve the Emperor. End them." },
-        { "speaker": "Hutao", "emotion": "eager", "text": "I was just starting to feel restless! Let us go!" }
+        { "speaker": "Rei", "emotion": "alert", "text": "Shadow-touched. They serve the Emperor. End them." },
+        { "speaker": "Tao", "emotion": "eager", "text": "I was just starting to feel restless! Let us go!" }
       ],
       "post_dialogue": [
-        { "speaker": "Nilou", "emotion": "relieved", "text": "We work well together. Considering we just met." },
-        { "speaker": "Ayaka", "emotion": "composed", "text": "I am Kamisato Ayaka. I am glad to have met warriors of your caliber." },
-        { "speaker": "Hutao", "emotion": "cheerful", "text": "Hu Tao, 77th Director of Wangsheng Funeral Parlor! Amateur poet! Very pleased!" },
-        { "speaker": "Xiao", "emotion": "quiet", "text": "Xiao. We can trade names later. We are being watched." }
+        { "speaker": "Lulu", "emotion": "relieved", "text": "We work well together. Considering we just met." },
+        { "speaker": "Aya", "emotion": "composed", "text": "I am called Aya. I am glad to have met warriors of your caliber." },
+        { "speaker": "Tao", "emotion": "cheerful", "text": "Tao! Amateur poet, professional optimist about death. Very pleased!" },
+        { "speaker": "Rei", "emotion": "quiet", "text": "Rei. We can trade names later. We are being watched." }
       ]
     },
     {
@@ -260,34 +260,34 @@
       "title": "What the Oracle Knows",
       "type": "cutscene",
       "background": "oracle_chamber",
-      "cast": ["Ayaka", "Hutao", "Nilou", "Xiao"],
+      "cast": ["Aya", "Tao", "Lulu", "Rei"],
       "scenes": [
         {
           "narration": "At the heart of the ruins stands a figure barely corporeal, wrapped in flickering light. The Oracle of Aethoria.",
           "dialogue": [
             { "speaker": "narrator", "emotion": "solemn", "text": "Oracle: I called you from the furthest reaches of existence. Four who carry the resonance of the broken Seals. Forgive me — I had no right. And yet I had no choice." },
-            { "speaker": "Xiao", "emotion": "direct", "text": "Explain." },
+            { "speaker": "Rei", "emotion": "direct", "text": "Explain." },
             { "speaker": "narrator", "emotion": "grave", "text": "Oracle: The Shadow Emperor Valdris has shattered four of the Five Elemental Seals. When the final Seal breaks, every world connected to Aethoria will be consumed — including yours." }
           ]
         },
         {
-          "narration": "Ayaka tightens her grip. Nilou catches her breath. Hutao tilts her head with professional interest. Xiao closes his eyes.",
+          "narration": "Aya tightens her grip. Lulu catches her breath. Tao tilts her head with professional interest. Rei closes his eyes.",
           "dialogue": [
-            { "speaker": "Ayaka", "emotion": "resolved", "text": "If our worlds are at risk, we have no choice but to act. What must be done?" },
+            { "speaker": "Aya", "emotion": "resolved", "text": "If our worlds are at risk, we have no choice but to act. What must be done?" },
             { "speaker": "narrator", "emotion": "urgent", "text": "Oracle: Valdris draws power from four Seal Fragments scattered as anchors across Aethoria. Destroy them, and he will be weak enough to face directly." },
-            { "speaker": "Hutao", "emotion": "grinning", "text": "A scavenger hunt for ancient doom-crystals. Much more interesting than the average Tuesday." },
-            { "speaker": "Nilou", "emotion": "determined", "text": "Tell us where to go. We will handle the rest." },
+            { "speaker": "Tao", "emotion": "grinning", "text": "A scavenger hunt for ancient doom-crystals. Much more interesting than the average Tuesday." },
+            { "speaker": "Lulu", "emotion": "determined", "text": "Tell us where to go. We will handle the rest." },
             { "speaker": "narrator", "emotion": "solemn", "text": "Oracle: The first Fragment lies in the Sacred Ruins, guarded by the Void Knight — a warrior Valdris unmade and rebuilt in shadow." },
-            { "speaker": "Ayaka", "emotion": "calm", "text": "It never does." }
+            { "speaker": "Aya", "emotion": "calm", "text": "It never does." }
           ]
         },
         {
           "narration": "As they turn to leave, a cold stillness descends over the ruins. The air pressure drops. The shadows around the chamber's edge lengthen — inward, toward the four of them — without any source of light changing.",
           "dialogue": [
-            { "speaker": "Xiao", "emotion": "tense", "text": "Something is watching." },
-            { "speaker": "Hutao", "emotion": "unusually_quiet", "text": "...I feel it too. Something very, very old." },
-            { "speaker": "Nilou", "emotion": "steady", "text": "It is not the Oracle." },
-            { "speaker": "Ayaka", "emotion": "controlled", "text": "No. It is not." },
+            { "speaker": "Rei", "emotion": "tense", "text": "Something is watching." },
+            { "speaker": "Tao", "emotion": "unusually_quiet", "text": "...I feel it too. Something very, very old." },
+            { "speaker": "Lulu", "emotion": "steady", "text": "It is not the Oracle." },
+            { "speaker": "Aya", "emotion": "controlled", "text": "No. It is not." },
             { "speaker": "narrator", "emotion": "ominous", "text": "No voice. No form. Only the absolute, bone-deep certainty that whatever waits at the end of this road already knows their names. Has always known their names. And is in no hurry at all." }
           ]
         }
@@ -301,16 +301,16 @@
       "map_hint": "Cross the Verdant Vale — the Sacred Ruins lie beyond the old forest.",
       "pre_dialogue": [
         { "speaker": "narrator", "emotion": "calm", "text": "The Oracle's chamber falls silent. Outside, the path through the Verdant Vale stretches ahead — an ancient forest scarred by the Rift, where shadow-touched creatures now prowl where deer once walked." },
-        { "speaker": "Ayaka", "emotion": "resolved", "text": "The Sacred Ruins lie beyond this forest. We cross it together." },
-        { "speaker": "Hutao", "emotion": "cheerful", "text": "A cursed forest full of monsters between us and a doom-crystal. Wonderful. Lead on~" },
-        { "speaker": "Xiao", "emotion": "quiet", "text": "Stay alert. The Emperor's influence will be stronger the further we go." }
+        { "speaker": "Aya", "emotion": "resolved", "text": "The Sacred Ruins lie beyond this forest. We cross it together." },
+        { "speaker": "Tao", "emotion": "cheerful", "text": "A cursed forest full of monsters between us and a doom-crystal. Wonderful. Lead on~" },
+        { "speaker": "Rei", "emotion": "quiet", "text": "Stay alert. The Emperor's influence will be stronger the further we go." }
       ],
       "post_dialogue": [
         { "speaker": "narrator", "emotion": "tense", "text": "The far edge of the Verdant Vale gives way to shattered stone and dead light. The Sacred Ruins of Aethoria rise before them — hollow towers and fallen arches swallowed in a silence that feels deliberate." },
-        { "speaker": "Nilou", "emotion": "uneasy", "text": "The trees stopped. All at once. Do you notice? Not gradually — just... stopped." },
-        { "speaker": "Xiao", "emotion": "grim", "text": "A boundary. Whatever guards those ruins does not allow anything living to grow near it." },
-        { "speaker": "Hutao", "emotion": "unusually_quiet", "text": "I can feel it from here. The Void Knight. It does not feel like a monster. It feels like grief." },
-        { "speaker": "Ayaka", "emotion": "steady", "text": "Then we end its grief. Move." }
+        { "speaker": "Lulu", "emotion": "uneasy", "text": "The trees stopped. All at once. Do you notice? Not gradually — just... stopped." },
+        { "speaker": "Rei", "emotion": "grim", "text": "A boundary. Whatever guards those ruins does not allow anything living to grow near it." },
+        { "speaker": "Tao", "emotion": "unusually_quiet", "text": "I can feel it from here. The Void Knight. It does not feel like a monster. It feels like grief." },
+        { "speaker": "Aya", "emotion": "steady", "text": "Then we end its grief. Move." }
       ]
     }
   ]

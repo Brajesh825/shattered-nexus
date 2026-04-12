@@ -481,6 +481,85 @@
 .pause-btn.save-btn { border-color: #2060a0; color: #80c0ff; }
 .pause-btn.save-btn:hover { background: rgba(20,60,120,0.5); border-color: #4090d0; }
 
+/* ── NPC Dialogue ────────────────────────────────────── */
+#npc-dialogue {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 16px;
+  z-index: 55;
+  background: rgba(2,1,8,0.55);
+  backdrop-filter: blur(2px);
+}
+
+.npc-dialogue-panel {
+  background: linear-gradient(160deg, #0a0620 0%, #06030f 100%);
+  border: 1px solid #3a2070;
+  border-radius: 10px;
+  padding: 16px 20px 14px;
+  width: min(560px, 96vw);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 0 32px #2010601a;
+}
+
+.npc-dialogue-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid #1a0d40;
+  padding-bottom: 8px;
+}
+
+.npc-portrait {
+  width: 52px;
+  height: 52px;
+  object-fit: cover;
+  object-position: top;
+  border-radius: 50%;
+  border: 1px solid #3a2070;
+  image-rendering: pixelated;
+}
+
+.npc-dialogue-name {
+  font-family: var(--px);
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: #c4b5fd;
+}
+
+.npc-dialogue-text {
+  font-size: 13px;
+  color: #e8e0f8;
+  line-height: 1.6;
+  font-style: italic;
+  min-height: 48px;
+}
+
+.npc-dialogue-footer {
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1px solid #1a0d40;
+  padding-top: 8px;
+}
+
+.npc-dialogue-next {
+  font-family: var(--px);
+  font-size: 8px;
+  letter-spacing: 1px;
+  padding: 8px 18px;
+  background: rgba(60,30,120,0.5);
+  border: 1px solid #3a2070;
+  color: #c4b5fd;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all .15s;
+}
+.npc-dialogue-next:hover { background: rgba(100,60,200,0.4); border-color: #7c3aed; color: #fff; }
+
 /* ── Camp Menu ───────────────────────────────────────── */
 #camp-menu {
   position: absolute;

@@ -123,6 +123,10 @@ MAP_DEFS.void_citadel = (function() {
             { id: 'necromancer', x: 70, y: 105, patrol: 'random', range: 5, speed: 0.8 }
         ],
 
+        npcs: [
+          { id: 'essabella', x: 60, y: 70, dialogueKey: 'void_citadel' },
+        ],
+
         fog: { delay: 5, peak: 50, max: 0.94, vision: 2.0 },
 
         voiceLines: {

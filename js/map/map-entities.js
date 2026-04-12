@@ -74,7 +74,12 @@ const MapPlayer = (() => {
   function _canMove(nx, ny, map) {
     if (nx < 0 || ny < 0 || nx >= map.width || ny >= map.height) return false;
     const tid = map.tiles[ny]?.[nx] ?? 0;
-    return (TILE_DEFS[tid] || TILE_DEFS[0]).walkable;
+    if (!(TILE_DEFS[tid] || TILE_DEFS[0]).walkable) return false;
+    // Block on NPCs
+    if (MapEntities.checkNPCAt && MapEntities.checkNPCAt(nx, ny)) return false;
+    // Block on alive enemies
+    if (MapEntities.hasEnemyAt && MapEntities.hasEnemyAt(nx, ny)) return false;
+    return true;
   }
 
   function update(dt, map) {
@@ -419,6 +424,7 @@ const MapEntities = (() => {
   }
 
   function updateEnemies(dt, map) {
+    MapNPCs.update(dt, map, _enemies);
     const TILE = MapEngine.getTile();
     _enemies.forEach(en => {
       if (!en.alive) return;
@@ -554,6 +560,230 @@ const MapEntities = (() => {
     });
   }
 
+  /* ── NPC system ─────────────────────────────────────── */
+  const MapNPCs = (() => {
+    let _npcs = [];
+    let _mapId = null;
+    const _imgCache = {};
+
+    // 8 waypoints clockwise around origin — each adjacent via a single cardinal step:
+    // right → down → left → left → up → up → right → right (back to start)
+    function _buildCircle(ox, oy) {
+      return [
+        { x: ox+1, y: oy   },  // right
+        { x: ox+1, y: oy+1 },  // down
+        { x: ox,   y: oy+1 },  // left
+        { x: ox-1, y: oy+1 },  // left
+        { x: ox-1, y: oy   },  // up
+        { x: ox-1, y: oy-1 },  // up
+        { x: ox,   y: oy-1 },  // right
+        { x: ox+1, y: oy-1 },  // right
+      ];
+    }
+
+    const NPC_MOVE_DUR  = 0.38; // seconds to slide one tile (long enough for 3-frame cycle)
+    const NPC_IDLE_WAIT = 0.5;  // seconds to pause between steps
+
+    function _initWander(n) {
+      const TILE = MapEngine.getTile();
+      n._wanderInited = true;
+      n._ox     = n.x; n._oy = n.y;
+      n._circle = _buildCircle(n.x, n.y);
+      n._px     = n.x * TILE; n._py = n.y * TILE;
+      n._tx     = n.x; n._ty = n.y;
+      n._prevTx = n.x; n._prevTy = n.y;
+      n._moveTimer  = NPC_MOVE_DUR;
+      n._idleTimer  = 0;
+      n._moving     = false;
+      n._stepIdx    = 0;
+      n._frame      = 0;
+      n._frameTimer = 0;
+      n._facingDx   = 0; n._facingDy = 1;
+    }
+
+    function update(dt, map, enemies) {
+      const TILE = MapEngine.getTile();
+      _npcs.forEach(n => {
+        if (!n._wanderInited) _initWander(n);
+
+        if (n._moving) {
+          n._moveTimer += dt;
+          const t = Math.min(n._moveTimer / NPC_MOVE_DUR, 1);
+          n._px = n._prevTx * TILE + (n._tx * TILE - n._prevTx * TILE) * t;
+          n._py = n._prevTy * TILE + (n._ty * TILE - n._prevTy * TILE) * t;
+
+          n._frameTimer += dt;
+          if (n._frameTimer >= NPC_FRAME_DUR) {
+            n._frameTimer = 0;
+            n._frame = (n._frame + 1) % NPC_FRAME_COUNT;
+          }
+
+          if (t >= 1) {
+            n._px = n._tx * TILE; n._py = n._ty * TILE;
+            n.x   = n._tx;        n.y   = n._ty;
+            n._moving    = false;
+            n._idleTimer = 0;
+            n._frame     = 0;
+          }
+        } else {
+          n._idleTimer += dt;
+          if (n._idleTimer >= NPC_IDLE_WAIT) {
+            n._idleTimer = 0;
+            const wp  = n._circle[n._stepIdx % n._circle.length];
+            n._stepIdx++;
+            const tid = map.tiles[wp.y]?.[wp.x] ?? 0;
+            if ((TILE_DEFS[tid] || TILE_DEFS[0]).walkable) {
+              const dx = wp.x - n.x, dy = wp.y - n.y;
+              n._prevTx = n.x; n._prevTy = n.y;
+              n._tx = wp.x;    n._ty = wp.y;
+              n._moveTimer = 0;
+              n._moving    = true;
+              n._facingDx  = dx; n._facingDy = dy;
+            }
+          }
+        }
+
+        if (enemies) {
+          enemies.forEach(en => {
+            if (en.alive && en.tx === n.x && en.ty === n.y) en.alive = false;
+          });
+        }
+      });
+    }
+
+    function _loadImg(src) {
+      if (_imgCache[src]) return _imgCache[src];
+      const img = new Image();
+      img.src = src;
+      _imgCache[src] = img;
+      return img;
+    }
+
+    function init(map) {
+      _mapId = map.id;
+      const talkedSet = (typeof G !== 'undefined' && G.npcTalked && G.npcTalked[map.id]) || [];
+      _npcs = (map.npcs || []).map(ref => {
+        const def = (typeof NPC_DEFS !== 'undefined' && NPC_DEFS[ref.id]) || {};
+        const dialogue = (def.dialogues && ref.dialogueKey && def.dialogues[ref.dialogueKey]) || [];
+        const talked = talkedSet.includes(ref.id);
+        return { ...def, ...ref, dialogue, talked };
+      });
+    }
+
+    function checkInteract(map) {
+      const px = MapPlayer.tx, py = MapPlayer.ty;
+      return _npcs.find(n => n.x === px && n.y === py) || null;
+    }
+
+    function checkAt(x, y) {
+      return _npcs.find(n => n.x === x && n.y === y) || null;
+    }
+
+    function markTalked(id) {
+      const n = _npcs.find(n => n.id === id);
+      if (n) {
+        n.talked = true;
+        if (typeof G !== 'undefined' && _mapId) {
+          if (!G.npcTalked[_mapId]) G.npcTalked[_mapId] = [];
+          if (!G.npcTalked[_mapId].includes(id)) G.npcTalked[_mapId].push(id);
+        }
+      }
+    }
+
+    // Sheet layout matches party exactly (see _getSheetDims):
+    //   front: cx=0,   cy=0,   rev=false
+    //   left:  cx=w/2, cy=0,   rev=true
+    //   right: cx=0,   cy=h/2, rev=false
+    //   back:  cx=w/2, cy=h/2, rev=false
+    // Each strip has 3 frames (frameW = imgW/6)
+    const NPC_FRAME_DUR   = 0.14;
+    const NPC_FRAME_COUNT = 3;
+
+    function _getNPCDir(n, img) {
+      const w = img.naturalWidth, h = img.naturalHeight;
+      const dx = n._facingDx !== undefined ? n._facingDx : 0;
+      const dy = n._facingDy !== undefined ? n._facingDy : 1;
+      if      (dy > 0)  return { cx: 0,      cy: 0,      rev: false }; // front
+      else if (dy < 0)  return { cx: w / 2,  cy: h / 2,  rev: false }; // back
+      else if (dx < 0)  return { cx: w / 2,  cy: 0,      rev: true  }; // left
+      else              return { cx: 0,       cy: h / 2,  rev: false }; // right
+    }
+
+    function _getNPCSheetDims(img) {
+      const w = img.naturalWidth, h = img.naturalHeight;
+      return { frameW: w / 6, frameH: h / 2 };
+    }
+
+    function render(ctx, cam, TILE, time) {
+      _npcs.forEach(n => {
+        const px  = n._px !== undefined ? n._px : n.x * TILE;
+        const py  = n._py !== undefined ? n._py : n.y * TILE;
+        const sx  = px - cam.x;
+        const sy  = py - cam.y;
+        if (sx < -TILE || sy < -TILE || sx > ctx.canvas.width + TILE || sy > ctx.canvas.height + TILE) return;
+
+        const dw  = Math.round(TILE * 1.1);
+        const dh  = Math.round(TILE * 1.6);
+        const ox  = Math.round((TILE - dw) / 2);
+        const oy  = TILE - dh;
+
+        const isMoving = !!n._moving;
+        const bounce   = isMoving
+          ? Math.sin((n._frame / NPC_FRAME_COUNT) * Math.PI * 2) * 3
+          : Math.sin(time * 1.6) * 1.5;
+
+        // Shadow
+        ctx.fillStyle = 'rgba(0,0,0,0.25)';
+        ctx.beginPath();
+        ctx.ellipse(sx + TILE / 2, sy + TILE - 3, TILE * 0.32, 5, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Sprite — directional walk cycle matching party sheet layout
+        const img = _loadImg(n.sprite);
+        if (img.complete && img.naturalWidth) {
+          const { frameW, frameH } = _getNPCSheetDims(img);
+          const dir = _getNPCDir(n, img);
+          const frameIdx = dir.rev ? (NPC_FRAME_COUNT - 1 - n._frame) : n._frame;
+          const srcX = dir.cx + frameIdx * frameW;
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = 'high';
+          ctx.drawImage(img, srcX, dir.cy, frameW, frameH, sx + ox, sy + oy + bounce, dw, dh);
+        } else {
+          // Loading placeholder
+          ctx.fillStyle = n.color || '#a78bfa';
+          ctx.beginPath();
+          ctx.arc(sx + TILE / 2, sy + TILE * 0.4 + bounce, TILE * 0.28, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // Pulsing 💬 above head when not yet talked to
+        if (!n.talked) {
+          const pulse = 0.7 + 0.3 * Math.sin(time * 3.5);
+          ctx.save();
+          ctx.globalAlpha = pulse;
+          ctx.font = `${Math.round(TILE * 0.32)}px serif`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'bottom';
+          ctx.fillText('💬', sx + TILE / 2, sy + oy + bounce - 2);
+          ctx.restore();
+        }
+
+        // Name label (same style as enemies)
+        ctx.fillStyle = 'rgba(0,0,0,0.55)';
+        ctx.fillRect(sx + ox, sy + TILE + 2, dw, 11);
+        ctx.fillStyle = n.color || '#c4b5fd';
+        ctx.font = '8px monospace';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        ctx.fillText(n.name || n.id, sx + TILE / 2, sy + TILE + 3);
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'alphabetic';
+      });
+    }
+
+    return { init, update, checkInteract, checkAt, markTalked, render };
+  })();
+
   function allCleared() {
     return _enemies.length === 0 || _enemies.every(e => !e.alive);
   }
@@ -562,5 +792,16 @@ const MapEntities = (() => {
     return _enemies.filter(e => e.alive).length;
   }
 
-  return { init, clear, updateEnemies, renderEnemies, checkEncounter, removeEncountered, allCleared, remaining };
+  function hasEnemyAt(x, y) {
+    return _enemies.some(e => e.alive && e.tx === x && e.ty === y);
+  }
+
+  function initNPCs(map) { MapNPCs.init(map); }
+  function renderNPCs(ctx, cam, TILE, time) { MapNPCs.render(ctx, cam, TILE, time); }
+  function checkNPCInteract(map) { return MapNPCs.checkInteract(map); }
+  function checkNPCAt(x, y) { return MapNPCs.checkAt(x, y); }
+  function markNPCTalked(id) { MapNPCs.markTalked(id); }
+
+  return { init, clear, updateEnemies, renderEnemies, checkEncounter, removeEncountered, allCleared, remaining,
+           hasEnemyAt, initNPCs, renderNPCs, checkNPCInteract, checkNPCAt, markNPCTalked };
 })();
