@@ -32,53 +32,21 @@
     },
     {
       "id": "arc6_ch2",
-      "title": "Breaking the Outer Ward",
-      "type": "battle",
-      "enemy_id": "void_knight",
-      "background": "fortress_courtyard",
-      "cast": ["Ayaka", "Hutao", "Nilou", "Xiao"],
+      "title": "The Void Citadel",
+      "type": "explore",
+      "map": "void_citadel",
+      "map_hint": "Push through the Void Citadel — the Void Warden guards the fortress gate beyond.",
       "pre_dialogue": [
-        { "speaker": "narrator", "emotion": "intense", "text": "The fortress gate opens — not in welcome, but in hunger. Shadow-creatures pour forth, guardians of the outer ring." },
-        { "speaker": "Xiao", "emotion": "ready", "text": "Let them come." }
+        { "speaker": "narrator", "emotion": "intense", "text": "The Void Citadel stretches before them — black stone that swallows light, towers that twist in ways that hurt to look at. Shadow-creatures pour from every passage, guardians of the outer ring." },
+        { "speaker": "Xiao", "emotion": "ready", "text": "Let them come. We break through." },
+        { "speaker": "Rydia", "emotion": "calm", "text": "The eidolons say this place was not always dark. Once, it held light. They remember singing in its halls." },
+        { "speaker": "Lenneth", "emotion": "resolute", "text": "Then we reclaim it. Not for ourselves — for what was stolen from it." }
       ],
       "post_dialogue": [
-        { "speaker": "Rydia", "emotion": "awed", "text": "Your unity is remarkable. The eidolons sing of it." },
-        { "speaker": "Lenneth", "emotion": "approving", "text": "Six warriors moving as one. This is what the heavens would call worthy." }
-      ]
-    },
-    {
-      "id": "arc6_ch3",
-      "title": "Counsel of Allies",
-      "type": "cutscene",
-      "background": "fortress_courtyard",
-      "cast": ["Kain", "Leon", "Rydia", "Lenneth"],
-      "scenes": [
-        {
-          "narration": "In the shadow of the fortress, the four newer members of the group gather. Kain traces his fingers along cracks in the ancient stone.",
-          "dialogue": [
-            { "speaker": "Kain", "emotion": "thoughtful", "text": "In my kingdom, we had ancient stones like this. They spoke of things that came before. This stone screams." },
-            { "speaker": "Leon", "emotion": "heavy", "text": "I ruled for two centuries. I built monuments meant to last forever. This place — it is a monument to eternity twisted into nightmare." },
-            { "speaker": "Rydia", "emotion": "serene", "text": "The eidolons say this fortress was not always dark. Once, it held light. They remember singing in its halls." },
-            { "speaker": "Lenneth", "emotion": "resolute", "text": "Then we reclaim it. Not for ourselves — for what was stolen from it." }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "arc6_ch4",
-      "title": "The Warden Emerges",
-      "type": "cutscene",
-      "background": "fortress_gate",
-      "cast": ["Ayaka", "Xiao", "Hutao", "Nilou"],
-      "scenes": [
-        {
-          "narration": "As they push deeper, the fortress itself responds. A figure coalesces from shadow — ancient, vast, wearing robes of starlight corrupted to ash.",
-          "dialogue": [
-            { "speaker": "narrator", "emotion": "grave", "text": "Void Warden: Valdris senses your approach. He is... pleased. He did not think you would reach this far." },
-            { "speaker": "Ayaka", "emotion": "sharp", "text": "Then he has learned nothing about us." },
-            { "speaker": "narrator", "emotion": "cold", "text": "Void Warden: Perhaps. Or perhaps he simply enjoys the hunt. He has waited eons. He can wait for you to reach him." }
-          ]
-        }
+        { "speaker": "narrator", "emotion": "grave", "text": "At the heart of the citadel, a figure coalesces from shadow — ancient, vast, wearing robes of starlight corrupted to ash. The Void Warden." },
+        { "speaker": "narrator", "emotion": "cold", "text": "Void Warden: Valdris is pleased you reached this far. He did not think you would." },
+        { "speaker": "Ayaka", "emotion": "sharp", "text": "Then he has learned nothing about us." },
+        { "speaker": "Hutao", "emotion": "determined", "text": "Enough talk. We unmake it." }
       ]
     }
   ],

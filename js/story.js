@@ -1,5 +1,5 @@
 /**
- * story.js — Crystal Chronicles Story Engine
+ * story.js — Shattered Nexus Story Engine
  * Drives cutscenes, battles, events and arc progression from story.json
  */
 
@@ -165,7 +165,7 @@ const Story = {
   /** Called by the NEW STORY title button — slot defaults to first empty */
   begin(slot = 0) {
     this._activeSlot = slot;
-    Save.clear(slot);
+    this._newGameSlot = slot; // cleared on first _doSave() write
     this.init(() => {
       if (!this.data) { alert('Story data not found.'); return; }
       this.active = true;
@@ -246,19 +246,39 @@ const Story = {
         G.hero.exp  = s.hero.exp  || 0;
         G.hero.gold = s.hero.gold || 0;
       }
-      // Restore unlocked characters from save
-      if (s.unlockedChars) {
-        G.unlockedChars = s.unlockedChars;
+      // Restore unlocked characters and inventory from save
+      if (s.unlockedChars) G.unlockedChars = s.unlockedChars;
+      if (s.clearedMaps)   G.clearedMaps   = s.clearedMaps;
+      if (s.inventory)     G.inventory     = s.inventory;
+
+      // If saved from explore map, restore directly to that map (no overlay/selection)
+      if (s.mapId) {
+        // Find the actual explore chapter so EXIT works correctly afterward
+        const arc = this.arc;
+        const savedChap = (this.chapIdx >= 0 && arc.chapters) ? arc.chapters[this.chapIdx] : null;
+        const chap = (savedChap && savedChap.type === 'explore')
+          ? savedChap
+          : { id: '_restore', type: 'explore', map: s.mapId, pre_dialogue: [], post_dialogue: [] };
+        this._exploreChap = chap;
+        this._launchExploreRestore(chap, s.mapX, s.mapY);
+        return;
       }
-      // Resume at the saved chapter (or arc intro if chapIdx === -1)
+
+      // Resume at the saved chapter — skip arc intro/char-select on load
+      const arc = this.arc;
+      const chapters = arc.chapters || [];
       if (this.chapIdx === -1) {
-        this._showArcIntro();
-      } else {
-        const chap = this.arc.chapters[this.chapIdx];
-        this._setHeader(`Arc ${this.arc.number}: ${this.arc.name}`, chap ? chap.title : '');
-        this._setBg(chap ? chap.background : `arc${this.arc.number}_intro`);
+        // Saved at arc start: jump directly to chapter 0 (no intro or char-select)
+        this.chapIdx = 0;
+      }
+      if (this.chapIdx < chapters.length) {
+        const chap = chapters[this.chapIdx];
+        this._setHeader(`Arc ${arc.number}: ${arc.name}`, chap ? chap.title : '');
+        this._setBg(chap ? chap.background : `arc${arc.number}_intro`);
         if (chap) this._loadChapter(chap);
         else this._showBossChapter();
+      } else {
+        this._showBossChapter();
       }
       return;
     }
@@ -658,6 +678,7 @@ const Story = {
     if (!G.party || G.party.length === 0) buildParty();
 
     UI.show('explore-screen');
+    if (typeof _dockPersistentBtns === 'function') _dockPersistentBtns(true);
 
     // Double rAF: first frame applies display change, second has real layout dimensions
     requestAnimationFrame(() => requestAnimationFrame(() => {
@@ -687,6 +708,49 @@ const Story = {
       MapUI.showMsg(chap.map_hint || 'Explore the area — find your path forward.', 2000);
 
       // Update header label
+      const lbl = document.getElementById('explore-map-name');
+      const m = MapEngine.getMap();
+      if (lbl && m) lbl.textContent = `✦ ${m.name.toUpperCase()} ✦`;
+    }));
+  },
+
+  /** Restore directly to a saved map position — no pre_dialogue, no map-select overlay */
+  _launchExploreRestore(chap, restoreX, restoreY) {
+    G.mode = 'story_explore';
+    if (!G.party || G.party.length === 0) buildParty();
+
+    UI.show('explore-screen');
+    if (typeof _dockPersistentBtns === 'function') _dockPersistentBtns(true);
+
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      const wrap   = document.getElementById('explore-canvas-wrap');
+      const canvas = document.getElementById('explore-canvas');
+      if (!wrap || !canvas) return;
+
+      canvas.width  = wrap.offsetWidth  || 360;
+      canvas.height = wrap.offsetHeight || 480;
+
+      if (!canvas._mapInited) {
+        canvas._mapInited = true;
+        MapEngine.init(canvas);
+        canvas.addEventListener('touchstart', e => {
+          e.preventDefault();
+          Array.from(e.changedTouches).forEach(t => MapUI.handleTouch(t.clientX, t.clientY, canvas));
+        }, { passive: false });
+        canvas.addEventListener('mousedown', e => MapUI.handleTouch(e.clientX, e.clientY, canvas));
+      }
+
+      const overlay = document.getElementById('map-select-overlay');
+      if (overlay) overlay.style.display = 'none';
+
+      MapEngine.start(chap.map);
+
+      // Restore tile position — must use MapPlayer.reset() as tx/ty are read-only getters
+      if (restoreX != null && restoreY != null && typeof MapPlayer !== 'undefined') {
+        MapPlayer.reset(restoreX, restoreY);
+      }
+
+      MapUI.showMsg(chap.map_hint || 'Welcome back — continue your journey.', 2000);
       const lbl = document.getElementById('explore-map-name');
       const m = MapEngine.getMap();
       if (lbl && m) lbl.textContent = `✦ ${m.name.toUpperCase()} ✦`;
@@ -803,6 +867,12 @@ const Story = {
      NEXT ARC / EPILOGUE
   ════════════════════════════════════════════════════════════════════════ */
   _startNextArc() {
+    // Guard: can only advance once current arc boss is beaten (phase === 'arc_end')
+    if (this.phase !== 'arc_end' && this.phase !== 'epilogue') {
+      const lbl = this.el('map-info-loc');
+      if (lbl) { lbl.textContent = '⛔ Defeat this arc\'s boss first.'; lbl.style.color = '#ef4444'; setTimeout(() => { lbl.style.color = ''; }, 2500); }
+      return;
+    }
     this.arcIdx++;
     G.enemies = this._allEnemies.slice();
     if (this.arcIdx >= this.data.arcs.length) { this._beginEpilogue(); return; }
@@ -817,6 +887,7 @@ const Story = {
   _beginEpilogue() {
     const epi = this.data.epilogue;
     this.phase = 'epilogue';
+    this._doSave(); // save completion so CONTINUE shows the ending
 
     if (epi.scenes && epi.scenes.length) {
       this._buildSceneLines(epi.scenes);
@@ -869,6 +940,11 @@ const Story = {
   ════════════════════════════════════════════════════════════════════════ */
   _doSave() {
     if (!this.data || !G.hero) return;
+    // On first save of a new game, clear the slot first (safe: we're about to overwrite it)
+    if (this._newGameSlot !== undefined) {
+      Save.clear(this._newGameSlot);
+      delete this._newGameSlot;
+    }
     // Capture all 4 party members' current stats
     const partyStats = G.party.map(m => ({
       charId: m.charId,
@@ -877,9 +953,17 @@ const Story = {
       exp:  m.exp  || 0,
       gold: m.gold || 0,
     }));
+    // Capture current map location if saving from explore screen
+    const curMap = (typeof MapEngine !== 'undefined') ? MapEngine.getMap() : null;
+    const mapId  = curMap?.id || null;
+    const mapX   = (mapId && typeof MapPlayer !== 'undefined') ? MapPlayer.tx : null;
+    const mapY   = (mapId && typeof MapPlayer !== 'undefined') ? MapPlayer.ty : null;
+
     Save.write({
       arcIdx:        this.arcIdx,
       chapIdx:       this.chapIdx,
+      phase:         this.phase,
+      lineIdx:       this.lineIdx,
       arcName:       `Arc ${this.arc.number}: ${this.arc.name}`,
       selectedChar:  G.hero.charId  || G.selectedChar,
       selectedClass: G.hero.classId || G.selectedClass,
@@ -888,6 +972,11 @@ const Story = {
       // Keep legacy hero field for backward compat
       hero: { lv: G.hero.lv, exp: G.hero.exp, gold: G.hero.gold || 0 },
       unlockedChars: G.unlockedChars,
+      clearedMaps:   G.clearedMaps || [],
+      inventory:     G.inventory || [],
+      mapId,
+      mapX,
+      mapY,
     }, this._activeSlot !== undefined ? this._activeSlot : 0);
   },
 
@@ -944,6 +1033,12 @@ const Story = {
         node.title = 'Click to revisit';
         node.addEventListener('click', () => this._openRegionPanel(i));
       } else if (isNext) {
+        const arcComplete = this.phase === 'arc_end' || this.phase === 'epilogue';
+        if (!arcComplete) {
+          node.style.opacity = '0.4';
+          node.style.cursor  = 'not-allowed';
+          node.title = '⛔ Defeat the current arc boss first';
+        }
         node.addEventListener('click', () => this._startNextArc());
       } else if (isCur) {
         node.addEventListener('click', () => this._openRegionPanel(i));
@@ -954,8 +1049,16 @@ const Story = {
 
     /* ── Bottom info bar ── */
     const next = arcs[nextIdx];
+    const arcComplete = this.phase === 'arc_end' || this.phase === 'epilogue';
+    const proceedBtn = document.getElementById('map-proceed-btn');
+    if (proceedBtn) {
+      proceedBtn.disabled = !arcComplete;
+      proceedBtn.style.opacity = arcComplete ? '' : '0.35';
+      proceedBtn.style.cursor  = arcComplete ? '' : 'not-allowed';
+      proceedBtn.title = arcComplete ? '' : '⛔ Defeat the current arc boss first';
+    }
     this.el('map-arc-label').textContent = next
-      ? `NEXT: ${next.name.toUpperCase()}`
+      ? (arcComplete ? `NEXT: ${next.name.toUpperCase()}` : `⛔ BOSS UNDEFEATED`)
       : 'JOURNEY COMPLETE';
     this.el('map-info-name').textContent = next ? next.name        : '';
     this.el('map-info-loc').textContent  = next ? (next.location || '') : '';

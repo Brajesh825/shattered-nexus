@@ -1,5 +1,5 @@
 /**
- * bgm.js — Crystal Chronicles Background Music
+ * bgm.js — Shattered Nexus Background Music
  * Handles looping music for different game screens
  */
 const BGM = {

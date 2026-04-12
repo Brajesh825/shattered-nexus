@@ -16,6 +16,11 @@ const MapInput = (() => {
           MapEngine && MapEngine.isRunning && MapEngine.isRunning()) {
         e.preventDefault();
       }
+      // Tab — cycle active party member
+      if (e.key === 'Tab' && MapEngine && MapEngine.isRunning && MapEngine.isRunning()) {
+        e.preventDefault();
+        if (typeof MapUI !== 'undefined') MapUI.cycleCharacter();
+      }
     });
     window.addEventListener('keyup', e => { keys[e.key] = false; });
   }
@@ -54,7 +59,7 @@ const MapPlayer = (() => {
   // Sprite frame for walk cycle
   let _frame = 0;
   let _frameTimer = 0;
-  const FRAME_COUNT = 4;
+  const FRAME_COUNT = 3;
   const FRAME_DUR   = 0.12;
 
   function reset(startX, startY) {
@@ -125,57 +130,110 @@ const MapPlayer = (() => {
     _tryMove(dx, dy, map);
   }
 
-  // Cache: charId → { front, back, frontLoaded, backLoaded }
+  // Spritesheet layout — 2×2 grid of directions, 3 frames each.
+  // Supports any resolution (4K=4096×2048, 2K=2048×1024, 1K=1024×512, etc.)
+  // Dimensions are derived from the loaded image at runtime.
+  //
+  // Grid layout (column × row):
+  //   front  col:0, row:0 → [idle, walk1, walk2]   animate 0→1→2
+  //   left   col:1, row:0 → [walk2, walk1, idle]   animate REVERSED
+  //   right  col:0, row:1 → [idle, walk1, walk2]   animate 0→1→2
+  //   back   col:1, row:1 → [idle, walk1, walk2]   animate 0→1→2
+  //
+  // Computed per-sheet: frameW = imgW/6, frameH = imgH/2
+  // Strip offsets:  front=(0,0), left=(imgW/2,0), right=(0,imgH/2), back=(imgW/2,imgH/2)
+
+  function _getSheetDims(img) {
+    const w = img.naturalWidth;
+    const h = img.naturalHeight;
+    const frameW = w / 6;        // 3 frames across half the sheet width
+    const frameH = h / 2;        // strip height = half the sheet height
+    return {
+      frameW, frameH,
+      dirs: {
+        front: { cx: 0,      cy: 0,      rev: false },
+        left:  { cx: w / 2,  cy: 0,      rev: true  },
+        right: { cx: 0,      cy: h / 2,  rev: false },
+        back:  { cx: w / 2,  cy: h / 2,  rev: false },
+      },
+    };
+  }
+
+  // charId → chosen variant suffix for this map session e.g. '_3' or ''
+  const _variantMap = {};
+  const MAX_VARIANTS = 20;
+
+  // Called once per map load — picks a random variant for every party member
+  function pickVariants() {
+    Object.keys(_variantMap).forEach(k => delete _variantMap[k]);
+    // Clear cache so new variants are loaded fresh
+    Object.keys(_heroImgCache).forEach(k => delete _heroImgCache[k]);
+    if (!G || !G.party) return;
+    G.party.forEach(m => {
+      if (!m || !m.charId) return;
+      const n = Math.floor(Math.random() * MAX_VARIANTS) + 1; // 1–20
+      _variantMap[m.charId] = `_${n}`;
+    });
+  }
+
+  // Cache: charId → { sheet, loaded, staticFallback }
   const _heroImgCache = {};
 
   function _loadHeroImgs(charId, hero) {
     if (_heroImgCache[charId]) return _heroImgCache[charId];
 
-    const entry = {
-      front: null, back: null, side: null,
-      frontLoaded: false, backLoaded: false, sideLoaded: false,
-    };
+    const entry = { sheet: null, loaded: false, staticFallback: null };
     _heroImgCache[charId] = entry;
 
-    // Front sprite (down)
-    const front = new Image();
-    front.onload  = () => { entry.front = front; entry.frontLoaded = true; };
-    front.onerror = () => {
-      entry.front = SpriteRenderer.drawHeroToCanvas(charId, hero.char, hero.cls);
-      entry.frontLoaded = true;
-    };
-    front.src = `images/characters/map/${charId}.png`;
+    const suffix  = _variantMap[charId] || '';
+    const base    = `images/characters/map/sheets/${charId}_sheet`;
 
-    // Back sprite (up) — falls back to front if missing
-    const back = new Image();
-    back.onload  = () => { entry.back = back; entry.backLoaded = true; };
-    back.onerror = () => { entry.back = entry.front; entry.backLoaded = true; };
-    back.src = `images/characters/map/${charId}_back.png`;
+    // Attempt load order: variant → base sheet → static png → pixel fallback
+    function tryLoad(src, onFail) {
+      const img = new Image();
+      img.onload  = () => { entry.sheet = img; entry.loaded = true; };
+      img.onerror = onFail;
+      img.src = src;
+    }
 
-    // Side sprite (left/right) — falls back to front if missing
-    const side = new Image();
-    side.onload  = () => { entry.side = side; entry.sideLoaded = true; };
-    side.onerror = () => { entry.side = entry.front; entry.sideLoaded = true; };
-    side.src = `images/characters/map/${charId}_side.png`;
+    function loadStaticFallback() {
+      entry.loaded = true;
+      const fb = new Image();
+      fb.onload  = () => { entry.staticFallback = fb; };
+      fb.onerror = () => {
+        entry.staticFallback = SpriteRenderer.drawHeroToCanvas(charId, hero.char, hero.cls);
+      };
+      fb.src = `images/characters/map/${charId}.png`;
+    }
+
+    if (suffix) {
+      // Try variant first, fall back to base sheet, then static
+      tryLoad(`${base}${suffix}.png`, () =>
+        tryLoad(`${base}.png`, loadStaticFallback)
+      );
+    } else {
+      tryLoad(`${base}.png`, loadStaticFallback);
+    }
 
     return entry;
   }
 
-  // Returns { img, flipX } based on current facing direction
+  // Returns { sheet, dims, cx, cy, rev, flipX } — cx/cy are the top-left of the direction strip
   function _getSpriteInfo(charId, hero) {
     const c = _loadHeroImgs(charId, hero);
-    const fallback = c.frontLoaded ? c.front : null;
 
-    // Up → back sprite
-    if (_facing.dy < 0) {
-      return { img: c.backLoaded ? c.back : fallback, flipX: false };
+    if (c.sheet) {
+      const dims = _getSheetDims(c.sheet);
+      let dir;
+      if      (_facing.dy < 0) dir = dims.dirs.back;
+      else if (_facing.dx < 0) dir = dims.dirs.left;
+      else if (_facing.dx > 0) dir = dims.dirs.right;
+      else                      dir = dims.dirs.front;
+      return { sheet: c.sheet, dims, ...dir, flipX: false };
     }
-    // Left / Right → side sprite (flip for left)
-    if (_facing.dx !== 0) {
-      return { img: c.sideLoaded ? c.side : fallback, flipX: _facing.dx < 0 };
-    }
-    // Down (default) → front sprite
-    return { img: fallback, flipX: false };
+
+    // Static fallback
+    return { sheet: null, staticImg: c.staticFallback, flipX: false };
   }
 
   function render(ctx, cam, TILE) {
@@ -186,29 +244,39 @@ const MapPlayer = (() => {
     // shadow
     ctx.fillStyle = 'rgba(0,0,0,0.35)';
     ctx.beginPath();
-    ctx.ellipse(sx + TILE / 2, sy + TILE - 3, TILE * 0.25, 5, 0, 0, Math.PI * 2);
+    ctx.ellipse(sx + TILE / 2, sy + TILE - 3, TILE * 0.38, 7, 0, 0, Math.PI * 2);
     ctx.fill();
 
     const hero = G && G.hero;
-    const { img: spr, flipX } = hero ? _getSpriteInfo(hero.charId, hero) : { img: null, flipX: false };
+    const info = hero ? _getSpriteInfo(hero.charId, hero) : null;
 
-    const dw = Math.round(TILE * 0.80);
-    const dh = Math.round(TILE * 0.90);
+    const dw = Math.round(TILE * 1.2);
+    const dh = Math.round(TILE * 2.0);
     const ox = Math.round((TILE - dw) / 2);
-    const oy = Math.round((TILE - dh) / 2);
+    const oy = Math.round(TILE - dh);       // anchor bottom of sprite to tile bottom
 
-    if (spr) {
+    if (info && info.sheet) {
+      // Left strip is stored reversed (walk2,walk1,idle), so mirror the index
+      const frameIdx = info.rev ? (FRAME_COUNT - 1 - _frame) : _frame;
+      const srcX = info.cx + frameIdx * info.dims.frameW;
+      const srcY = info.cy;
+
       ctx.save();
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = 'high';
-      if (flipX) {
-        // Mirror horizontally around the sprite's center
+      if (info.flipX) {
         ctx.translate(sx + TILE / 2, sy);
         ctx.scale(-1, 1);
-        ctx.drawImage(spr, -dw / 2, oy + bounce, dw, dh);
+        ctx.drawImage(info.sheet, srcX, srcY, info.dims.frameW, info.dims.frameH, -dw / 2, oy + bounce, dw, dh);
       } else {
-        ctx.drawImage(spr, sx + ox, sy + oy + bounce, dw, dh);
+        ctx.drawImage(info.sheet, srcX, srcY, info.dims.frameW, info.dims.frameH, sx + ox, sy + oy + bounce, dw, dh);
       }
+      ctx.restore();
+    } else if (info && info.staticImg) {
+      ctx.save();
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      ctx.drawImage(info.staticImg, sx + ox, sy + oy + bounce, dw, dh);
       ctx.restore();
     } else {
       // Fallback: simple colored square
@@ -236,7 +304,7 @@ const MapPlayer = (() => {
     get px() { return px; },
     get py() { return py; },
     get moving() { return moving; },
-    reset, update, render, dpad,
+    reset, update, render, dpad, pickVariants,
   };
 })();
 
@@ -248,12 +316,26 @@ const MapEntities = (() => {
   const PATROL_SPEED = {
     horizontal: 1.5, vertical: 1.5, random: 1.2, chase: 2.0,
   };
-  const AGGRO_RANGE = 4; // tiles — chase aggro distance
+  const AGGRO_RANGE_BASE = 4; // tiles at fog=0
+  const AGGRO_RANGE_MAX  = 10; // tiles at fog=1
+
+  // Returns current aggro range scaled by fog
+  function _aggroRange() {
+    const fp = (typeof MapEngine !== 'undefined' && MapEngine.fogProgress) ? MapEngine.fogProgress() : 0;
+    return AGGRO_RANGE_BASE + (AGGRO_RANGE_MAX - AGGRO_RANGE_BASE) * fp;
+  }
+
+  // Returns speed multiplier scaled by fog (1x → 1.8x)
+  function _fogSpeedMult() {
+    const fp = (typeof MapEngine !== 'undefined' && MapEngine.fogProgress) ? MapEngine.fogProgress() : 0;
+    return 1.0 + 0.8 * fp;
+  }
 
   function init(map) {
     _enemies = (map.enemies || []).map((e, i) => ({
       id:      e.id,
       idx:     i,
+      name:    (() => { const d = G && G.enemies && G.enemies.find(r => r.id === e.id); return d ? d.name.slice(0, 8) : e.id; })(),
       tx:      e.x,  ty:    e.y,   // current tile
       ox:      e.x,  oy:    e.y,   // origin tile
       px:      e.x * MapEngine.getTile(),
@@ -294,7 +376,7 @@ const MapEntities = (() => {
     const px = MapPlayer.tx, py2 = MapPlayer.ty;
     const dist = Math.abs(enemy.tx - px) + Math.abs(enemy.ty - py2);
 
-    if (enemy.patrol === 'chase' || dist <= AGGRO_RANGE) {
+    if (enemy.patrol === 'chase' || dist <= _aggroRange()) {
       // Chase player
       const dx = Math.sign(px - enemy.tx);
       const dy = Math.sign(py2 - enemy.ty);
@@ -340,6 +422,8 @@ const MapEntities = (() => {
     const TILE = MapEngine.getTile();
     _enemies.forEach(en => {
       if (!en.alive) return;
+      // Fog scales movement speed — recalc moveDur each frame
+      en.moveDur = (1 / en.speed) / _fogSpeedMult();
       if (en.moving) {
         en.moveTimer += dt;
         const t = Math.min(en.moveTimer / en.moveDur, 1);
@@ -373,18 +457,42 @@ const MapEntities = (() => {
       if (!en.alive) continue;
       if (en.tx === ptx && en.ty === pty) {
         _encounteredIdx = i;
-        // Build encounter enemy list: the patrol enemy + maybe one extra
-        const rawEnemy = G.enemies.find(e => e.id === en.id);
-        const ids = rawEnemy ? [en.id] : [en.id];
-        // Optionally add a second enemy from same map
-        const mapEnemyIds = (map.enemies || []).map(e => e.id).filter(id => id !== en.id);
-        if (mapEnemyIds.length && Math.random() < 0.4) {
-          ids.push(mapEnemyIds[Math.floor(Math.random() * mapEnemyIds.length)]);
-        }
+        const ids = _buildEncounterGroup(en.id, map);
         return { enemies: ids };
       }
     }
     return null;
+  }
+
+  // Build a 1–4 enemy encounter group from the triggered enemy + map pool
+  function _buildEncounterGroup(triggerId, map) {
+    const mapEnemyIds = (map.encounters || map.enemies || []).map(e => e.id);
+    const pool        = mapEnemyIds.length ? mapEnemyIds : [triggerId];
+
+    // Use encounter templates if defined on the map, else roll random group size
+    if (map.encounterTemplates && map.encounterTemplates.length) {
+      // Weighted random pick of a template
+      const total  = map.encounterTemplates.reduce((s, t) => s + (t.weight || 1), 0);
+      let roll     = Math.random() * total;
+      for (const tmpl of map.encounterTemplates) {
+        roll -= (tmpl.weight || 1);
+        if (roll <= 0) return tmpl.enemies.slice(0, 4);
+      }
+    }
+
+    // Fallback: triggered enemy is always first; roll group size 1–4
+    const r = Math.random();
+    let groupSize;
+    if      (r < 0.25) groupSize = 1;   // 25% solo
+    else if (r < 0.60) groupSize = 2;   // 35% pair
+    else if (r < 0.85) groupSize = 3;   // 25% trio
+    else               groupSize = 4;   // 15% quad (horde)
+
+    const ids = [triggerId];
+    while (ids.length < groupSize) {
+      ids.push(pool[Math.floor(Math.random() * pool.length)]);
+    }
+    return ids;
   }
 
   // Sprite cache: enemyId → offscreen canvas
@@ -401,51 +509,47 @@ const MapEntities = (() => {
     return _spriteCache[id];
   }
 
-  function renderEnemies(ctx, cam, TILE, map) {
+  function renderEnemies(ctx, cam, TILE, map, inVision) {
+    const _edw = Math.round(TILE * 1.1);
+    const _edh = Math.round(TILE * 1.6);
+    const _eox = Math.round((TILE - _edw) / 2);
+    const _eoy = TILE - _edh;   // anchor bottom to tile bottom
     _enemies.forEach(en => {
       if (!en.alive) return;
+      // Hidden by fog — only render if within player vision radius
+      if (typeof inVision === 'function' && !inVision(en.tx, en.ty)) return;
       const sx = en.px - cam.x;
       const sy = en.py - cam.y;
       if (sx < -TILE || sy < -TILE || sx > ctx.canvas.width + TILE || sy > ctx.canvas.height + TILE) return;
 
-      const bounce = en.moving ? Math.sin(en.frame / 4 * Math.PI * 2) * 2 : 0;
+      const bounce = en.moving ? Math.sin(en.frame / 4 * Math.PI * 2) * 3 : 0;
 
-      // shadow
       ctx.fillStyle = 'rgba(0,0,0,0.28)';
       ctx.beginPath();
-      ctx.ellipse(sx + TILE / 2, sy + TILE - 3, TILE * 0.22, 4, 0, 0, Math.PI * 2);
+      ctx.ellipse(sx + TILE / 2, sy + TILE - 3, TILE * 0.35, 6, 0, 0, Math.PI * 2);
       ctx.fill();
 
-      // sprite (72x84 → scaled to ~26x30 in tile)
       const spr = _getEnemySprite(en.id);
       if (spr) {
-        const dw = Math.round(TILE * 0.68);
-        const dh = Math.round(TILE * 0.78);
-        const ox = Math.round((TILE - dw) / 2);
-        const oy = Math.round((TILE - dh) / 2);
         ctx.imageSmoothingEnabled = false;
-        ctx.drawImage(spr, sx + ox, sy + oy + bounce, dw, dh);
+        ctx.drawImage(spr, sx + _eox, sy + _eoy + bounce, _edw, _edh);
       }
 
-      // aggro indicator (!) if within chase range
       const dist = Math.abs(en.tx - MapPlayer.tx) + Math.abs(en.ty - MapPlayer.ty);
-      if (dist <= 3) {
+      if (dist <= _aggroRange()) {
         ctx.fillStyle = '#ffff40';
-        ctx.font = 'bold 11px monospace';
+        ctx.font = 'bold 14px monospace';
         ctx.textAlign = 'center';
-        ctx.fillText('!', sx + TILE / 2, sy + bounce - 2);
+        ctx.fillText('!', sx + TILE / 2, sy + _eoy + bounce - 4);
         ctx.textAlign = 'left';
       }
 
-      // Enemy name tag (always visible, small)
-      const raw = G && G.enemies && G.enemies.find(e => e.id === en.id);
-      const label = raw ? raw.name.slice(0, 8) : en.id;
-      ctx.fillStyle = 'rgba(0,0,0,0.5)';
-      ctx.fillRect(sx, sy + TILE + 1, TILE, 9);
+      ctx.fillStyle = 'rgba(0,0,0,0.55)';
+      ctx.fillRect(sx + _eox, sy + TILE + 2, _edw, 11);
       ctx.fillStyle = '#ff8080';
-      ctx.font = '6px monospace';
+      ctx.font = '8px monospace';
       ctx.textAlign = 'center';
-      ctx.fillText(label, sx + TILE / 2, sy + TILE + 8);
+      ctx.fillText(en.name, sx + TILE / 2, sy + TILE + 11);
       ctx.textAlign = 'left';
     });
   }
@@ -454,5 +558,9 @@ const MapEntities = (() => {
     return _enemies.length === 0 || _enemies.every(e => !e.alive);
   }
 
-  return { init, clear, updateEnemies, renderEnemies, checkEncounter, removeEncountered, allCleared };
+  function remaining() {
+    return _enemies.filter(e => e.alive).length;
+  }
+
+  return { init, clear, updateEnemies, renderEnemies, checkEncounter, removeEncountered, allCleared, remaining };
 })();

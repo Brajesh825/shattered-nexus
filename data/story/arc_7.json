@@ -32,56 +32,21 @@
     },
     {
       "id": "arc7_ch2",
-      "title": "The Echoing Halls",
-      "type": "battle",
-      "enemy_id": "dark_phoenix",
-      "background": "sanctum_chamber",
-      "cast": ["Hutao", "Nilou", "Rydia", "Lenneth"],
+      "title": "The Fortress Ramparts",
+      "type": "explore",
+      "map": "fortress_ramparts",
+      "map_hint": "Fight through the Fortress Ramparts — the Shadow Titan waits at the inner core.",
       "pre_dialogue": [
-        { "speaker": "narrator", "emotion": "eerie", "text": "From the shadows, creatures of pure corruption emerge — things that were once guardians, now twisted beyond recognition." },
-        { "speaker": "Nilou", "emotion": "determined", "text": "They were sentient once. Let us free them from this torment." }
+        { "speaker": "narrator", "emotion": "eerie", "text": "The fortress ramparts pulse like arteries — corrupted creatures emerging from every shadow, things that were once guardians now twisted beyond recognition." },
+        { "speaker": "Nilou", "emotion": "determined", "text": "They were sentient once. Let us free them from this torment." },
+        { "speaker": "Lenneth", "emotion": "commanding", "text": "I have walked between worlds for millennia. This darkness is not evil — it is grief. Infinite grief. We cut through it." },
+        { "speaker": "Kain", "emotion": "resolute", "text": "Then we show it another path. We show it that what it fears can be faced." }
       ],
       "post_dialogue": [
-        { "speaker": "Lenneth", "emotion": "solemn", "text": "They are at peace now. Their torment ends." },
-        { "speaker": "Rydia", "emotion": "mourning", "text": "The eidolons sense many such souls trapped in this darkness. We must reach the core." }
-      ]
-    },
-    {
-      "id": "arc7_ch3",
-      "title": "The Truth Revealed",
-      "type": "cutscene",
-      "background": "core_chamber",
-      "cast": ["Ayaka", "Xiao", "Hutao", "Nilou"],
-      "scenes": [
-        {
-          "narration": "In the very heart of the fortress, they find something unexpected: a scholar's chamber. Ancient texts scattered across tables. Constellations mapped on walls. And in the center — a mirror.",
-          "dialogue": [
-            { "speaker": "Ayaka", "emotion": "understanding", "text": "He built this place as a sanctuary. Before." },
-            { "speaker": "Hutao", "emotion": "sad", "text": "The Oracle was right. He was a scholar once. Curious about the stars, the cosmos, the nature of death itself." },
-            { "speaker": "Xiao", "emotion": "grave", "text": "And when he discovered he could not escape death — he tried to escape life instead." },
-            { "speaker": "Nilou", "emotion": "compassionate", "text": "He thought immortality was the answer. Instead, he found it was the question he could never answer." }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "arc7_ch4",
-      "title": "The Shadow's Hunger",
-      "type": "cutscene",
-      "background": "core_chamber",
-      "cast": ["Rydia", "Kain", "Leon", "Lenneth"],
-      "scenes": [
-        {
-          "narration": "A voice echoes through the chamber — not Valdris, but something else. Something that speaks through him."
-        },
-        {
-          "dialogue": [
-            { "speaker": "narrator", "emotion": "ancient", "text": "Valdris: You have come far. Broken through gates and destroyed guardians. But you do not understand what you face." },
-            { "speaker": "Leon", "emotion": "defiant", "text": "We understand enough. A man who became afraid of death, who consumed everything to escape it." },
-            { "speaker": "narrator", "emotion": "cold", "text": "Valdris: I consumed worlds. I am vast. I am eternal. And I will devour this one as well — slowly, so that suffering is infinite." },
-            { "speaker": "Kain", "emotion": "determined", "text": "Then we stop you. Not for ourselves — for everyone you have already consumed." }
-          ]
-        }
+        { "speaker": "narrator", "emotion": "solemn", "text": "At the core of the fortress, a scholar's chamber — ancient texts, constellations mapped on walls. And in the center, a mirror." },
+        { "speaker": "Hutao", "emotion": "sad", "text": "He was a scholar once. Curious about death. And when he could not escape it, he tried to escape life instead." },
+        { "speaker": "Xiao", "emotion": "grave", "text": "Then the darkness rises. Not Valdris himself — something he became. Vast. Immense. A titan of shadow." },
+        { "speaker": "Ayaka", "emotion": "focused", "text": "This is not him. This is what he became when he refused to let go. We break it. And free what remains." }
       ]
     }
   ],

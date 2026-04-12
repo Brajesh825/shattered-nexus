@@ -167,158 +167,21 @@
     },
     {
       "id": "arc5_ch2",
-      "title": "The Final Reckoning",
-      "type": "battle",
-      "background": "shadow_core",
+      "title": "Through the Shadow Reach",
+      "type": "explore",
+      "map": "shadow_reach",
+      "map_hint": "Cross the Shadow Reach — Valdris's sanctum lies beyond the darkness.",
       "pre_dialogue": [
-        {
-          "speaker": "narrator",
-          "emotion": "climactic",
-          "text": "The Shadow Emperor rises to his full presence \u00e2\u20ac\u201d not taller, not louder, but somehow larger, as if the room itself is contracting around him. Every shadow in the sanctum bends his direction."
-        },
-        {
-          "speaker": "narrator",
-          "emotion": "sinister",
-          "text": "Valdris: I will add your worlds to my silence. All four of them. Every person who ever knew your names. Every memory of you that exists anywhere. I will end it cleanly. That is more than most worlds receive."
-        },
-        {
-          "speaker": "Xiao",
-          "emotion": "ferocious",
-          "text": "There is nothing after you. Because you end here."
-        },
-        {
-          "speaker": "Hutao",
-          "emotion": "fierce",
-          "text": "You want to know something? I have stood at the edge of death for other people my entire career. I have been completely unafraid of it. But standing here \u00e2\u20ac\u201d I am terrified. And I am going to fight you anyway. That is the difference between you and us."
-        },
-        {
-          "speaker": "Nilou",
-          "emotion": "resolute",
-          "text": "Together."
-        },
-        {
-          "speaker": "Ayaka",
-          "emotion": "serene",
-          "text": "Together."
-        }
+        { "speaker": "narrator", "emotion": "ominous", "text": "The Shadow Reach is where Valdris's power is absolute — perpetual half-dark, where even shadows cast shadows. His voice fills the air, not through sound, but through the space between thoughts." },
+        { "speaker": "Xiao", "emotion": "cold", "text": "He speaks to distract. It will not work. Move." },
+        { "speaker": "Hutao", "emotion": "focused", "text": "Knowing someone and stopping them are very different problems. He knows us. We are about to stop him. Advantage: ours." },
+        { "speaker": "Ayaka", "emotion": "resolved", "text": "Together. That is what he cannot replicate." }
       ],
       "post_dialogue": [
-        {
-          "speaker": "narrator",
-          "emotion": "triumphant",
-          "text": "The Shadow Emperor falls. The centuries of consumed power release all at once \u00e2\u20ac\u201d flooding the sanctum with light that burns through every shadow, reaching into cracks in the stone that have not seen day in six hundred years."
-        },
-        {
-          "speaker": "narrator",
-          "emotion": "solemn",
-          "text": "The last Seal Fragment rises free. The darkness recedes. Somewhere beneath all of it \u00e2\u20ac\u201d so quiet it might be imagined \u00e2\u20ac\u201d the shape of a scholar, briefly, before it is gone."
-        },
-        {
-          "speaker": "Hutao",
-          "emotion": "breathless",
-          "text": "...We actually did it. I knew we would, but \u00e2\u20ac\u201d we actually did it."
-        },
-        {
-          "speaker": "Nilou",
-          "emotion": "tearful",
-          "text": "It is over. It is really over."
-        },
-        {
-          "speaker": "Xiao",
-          "emotion": "quiet",
-          "text": "The karmic contamination is lifting. I can feel it. The world is beginning to breathe."
-        },
-        {
-          "speaker": "Ayaka",
-          "emotion": "serene",
-          "text": "We can go home."
-        }
-      ],
-      "cast": [
-        "Ayaka",
-        "Hutao",
-        "Nilou",
-        "Xiao"
-      ],
-      "enemy_id": "void_knight"
-    },
-    {
-      "id": "arc5_ch3",
-      "title": "The Return",
-      "type": "cutscene",
-      "background": "restored_light",
-      "scenes": [
-        {
-          "narration": "The Oracle appears one last time \u00e2\u20ac\u201d fuller now, her light steady. The five Seal Fragments draw together into a single radiant whole and rise into the ceiling, sealing the last crack.",
-          "dialogue": [
-            {
-              "speaker": "narrator",
-              "emotion": "grateful",
-              "text": "Oracle: The Seals are restored. Aethoria will heal. Your worlds are safe. I cannot repay what I took from you \u00e2\u20ac\u201d your time, your peace, the days your families spent not knowing where you were."
-            },
-            {
-              "speaker": "Hutao",
-              "emotion": "breezy",
-              "text": "Repayment not necessary! This was the best adventure I have ever had. And I once followed a ghost through six layers of the afterlife on a dare."
-            },
-            {
-              "speaker": "Nilou",
-              "emotion": "sincere",
-              "text": "I would do it again. Not easily \u00e2\u20ac\u201d but again."
-            },
-            {
-              "speaker": "Ayaka",
-              "emotion": "composed",
-              "text": "It was the right thing to do. That has always been enough justification."
-            },
-            {
-              "speaker": "Xiao",
-              "emotion": "honest",
-              "text": "...I have fought alone for two thousand years. Fighting alongside others is different. Better. I did not expect that."
-            }
-          ]
-        },
-        {
-          "narration": "Four rifts open. Beyond each is something familiar: cherry blossoms drifting in cool wind, harbor lanterns reflected on dark water, festival music from a crowded bazaar, mountain peaks sharp against a dawn sky.",
-          "dialogue": [
-            {
-              "speaker": "Hutao",
-              "emotion": "warm",
-              "text": "Xiao \u00e2\u20ac\u201d if you ever find yourself near Liyue and things feel too quiet, come visit. We can discuss mortality. It will be fun."
-            },
-            {
-              "speaker": "Xiao",
-              "emotion": "quiet",
-              "text": "...Perhaps."
-            },
-            {
-              "speaker": "Nilou",
-              "emotion": "joyful",
-              "text": "Ayaka \u00e2\u20ac\u201d I will save a front row seat at the next performance. You would love the Grand Bazaar."
-            },
-            {
-              "speaker": "Ayaka",
-              "emotion": "warm",
-              "text": "I would be honored. I am glad to have known all of you."
-            }
-          ]
-        },
-        {
-          "narration": "One by one, they step through their rifts and are gone. Aethoria begins, quietly, to bloom.",
-          "dialogue": [
-            {
-              "speaker": "narrator",
-              "emotion": "peaceful",
-              "text": "The Shadow Emperor is ended. The Seals hold. Somewhere in four separate worlds, four warriors step back into their lives \u00e2\u20ac\u201d carrying the quiet memory of a world they saved together, and the faces of people they will not forget."
-            }
-          ]
-        }
-      ],
-      "cast": [
-        "Ayaka",
-        "Hutao",
-        "Nilou",
-        "Xiao"
+        { "speaker": "narrator", "emotion": "climactic", "text": "The Shadow Reach opens into the Emperor's inner sanctum. Vast. Ancient. And Valdris is here — not hiding, not watching from a distance. Present. Waiting." },
+        { "speaker": "narrator", "emotion": "sinister", "text": "Valdris: I will add your worlds to my silence. Every memory of you that exists anywhere. I will end it cleanly." },
+        { "speaker": "Xiao", "emotion": "ferocious", "text": "There is nothing after you. Because you end here." },
+        { "speaker": "Hutao", "emotion": "fierce", "text": "I am terrified. And I am going to fight you anyway. That is the difference between you and us." }
       ]
     }
   ],
