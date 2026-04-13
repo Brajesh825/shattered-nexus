@@ -2,7 +2,7 @@
 function computeStats(ch, cls) {
   const b = ch.base_stats, m = cls.stat_multipliers, bon = ch.stat_bonuses || {};
   const out = {};
-  ['hp','mp','atk','def','spd','mag'].forEach(k => {
+  ['hp','mp','atk','def','spd','mag','lck'].forEach(k => {
     out[k] = Math.floor((b[k] + (bon[k] || 0)) * (m[k] || 1));
   });
   return out;
@@ -31,7 +31,9 @@ function buildParty() {
       mp: (ch.mp !== undefined ? Math.min(ch.mp, s.mp) : s.mp), maxMp: s.mp,
       // Restore saved HP if available; otherwise start at max
       hp: (ch.hp !== undefined ? Math.min(ch.hp, s.hp) : s.hp), maxHp: s.hp,
-      atk: s.atk, def: s.def, spd: s.spd, mag: s.mag,
+      atk: s.atk, def: s.def, spd: s.spd, mag: s.mag, lck: s.lck,
+      accuracy: cls.stat_multipliers.accuracy || 0.95,
+      critRate: cls.stat_multipliers.critRate || 0.05,
       lv: ch.lv || 1, exp: ch.exp || 0, gold: ch.gold || 0,
       char: ch, cls: cls,
       passive: ch.passive,
@@ -39,6 +41,7 @@ function buildParty() {
       isPlayer,
       isKO: ch.hp === 0 || !!ch.isKO,
       buff: null, debuff: null, regenTurns: 0, stunned: false, frozen: 0,
+      statuses: [],
       cooldowns: {},
       _dragonLeapTurns: 0,
     });
@@ -57,7 +60,7 @@ function applyRelicBonuses() {
   const defs = G.relics || [];
 
   // Aggregate bonuses from all active relics
-  const bonus = { hp: 1, mp: 1, atk: 1, def: 1, spd: 1, mag: 1, healAmp: 1, mpRegen: 0, eliteResist: 0 };
+  const bonus = { hp: 1, mp: 1, atk: 1, def: 1, spd: 1, mag: 1, lck: 1, healAmp: 1, mpRegen: 0, eliteResist: 0 };
   active.forEach(id => {
     const r = defs.find(d => d.id === id);
     if (!r || !r.bonus) return;
@@ -67,6 +70,7 @@ function applyRelicBonuses() {
     if (r.bonus.def)         bonus.def         += r.bonus.def;
     if (r.bonus.spd)         bonus.spd         += r.bonus.spd;
     if (r.bonus.mag)         bonus.mag         += r.bonus.mag;
+    if (r.bonus.lck)         bonus.lck         += r.bonus.lck;
     if (r.bonus.healAmp)     bonus.healAmp     += r.bonus.healAmp;
     if (r.bonus.mpRegen)     bonus.mpRegen     += r.bonus.mpRegen;
     if (r.bonus.eliteResist) bonus.eliteResist += r.bonus.eliteResist; // Tarnished Wing
@@ -81,6 +85,7 @@ function applyRelicBonuses() {
     m.def    = Math.floor(m.def    * bonus.def);
     m.spd    = Math.floor(m.spd    * bonus.spd);
     m.mag    = Math.floor(m.mag    * bonus.mag);
+    m.lck    = Math.floor(m.lck    * bonus.lck);
     m._healAmpRelic  = bonus.healAmp;    // used by healing logic
     m._mpRegenBonus  = bonus.mpRegen;    // extra % of maxMp per turn
     m._eliteResist   = bonus.eliteResist; // fraction of damage reduction vs Corrupted/Mutant
@@ -104,6 +109,8 @@ function checkMemberLevel(m) {
   m.atk   += (g.atk || 2);
   m.def   += (g.def || 1);
   m.mag   += (g.mag || 1);
+  m.spd   += (g.spd || 1);
+  m.lck   += (g.lck || 1);
   return true;
 }
 

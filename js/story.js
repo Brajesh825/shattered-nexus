@@ -262,6 +262,17 @@ const Story = {
             m.lv   = saved.lv   || 1;
             m.exp  = saved.exp  || 0;
             m.gold = saved.gold || 0;
+            if (saved.hp !== undefined) m.hp = saved.hp;
+            if (saved.mp !== undefined) m.mp = saved.mp;
+            if (saved.maxHp !== undefined) m.maxHp = saved.maxHp;
+            if (saved.maxMp !== undefined) m.maxMp = saved.maxMp;
+            if (saved.atk !== undefined) m.atk = saved.atk;
+            if (saved.def !== undefined) m.def = saved.def;
+            if (saved.mag !== undefined) m.mag = saved.mag;
+            if (saved.spd !== undefined) m.spd = saved.spd;
+            if (saved.lck !== undefined) m.lck = saved.lck;
+            if (saved.accuracy !== undefined) m.accuracy = saved.accuracy;
+            if (saved.critRate !== undefined) m.critRate = saved.critRate;
           }
         });
       } else if (s.hero && G.hero) {
@@ -1028,9 +1039,20 @@ const Story = {
     const partyStats = G.party.map(m => ({
       charId: m.charId,
       classId: m.classId,
-      lv:   m.lv   || 1,
-      exp:  m.exp  || 0,
-      gold: m.gold || 0,
+      lv:      m.lv      || 1,
+      exp:     m.exp     || 0,
+      gold:    m.gold    || 0,
+      hp:      m.hp,
+      mp:      m.mp,
+      maxHp:   m.maxHp,
+      maxMp:   m.maxMp,
+      atk:     m.atk,
+      def:     m.def,
+      mag:     m.mag,
+      spd:     m.spd,
+      lck:     m.lck     || 0,
+      accuracy: m.accuracy || 0.95,
+      critRate: m.critRate || 0.05,
     }));
     // Capture current map location if saving from explore screen
     const curMap = (typeof MapEngine !== 'undefined') ? MapEngine.getMap() : null;

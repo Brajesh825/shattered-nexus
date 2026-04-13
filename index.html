@@ -311,6 +311,7 @@
       <span>LV <span id="stat-lv">1</span></span>
       <span>ATK <span id="stat-atk">-</span></span>
       <span>DEF <span id="stat-def">-</span></span>
+      <span>LCK <span id="stat-lck">-</span></span>
       <span>EXP <span id="stat-exp">0</span></span>
     </div>
   </div>
@@ -623,7 +624,9 @@
       }
 
       const arc  = s.arcName  || `Arc ${(s.arcIdx || 0) + 1}`;
-      const lv   = s.partyStats ? `Party LV ${Math.max(...s.partyStats.map(p => p.lv || 1))}` : `LV ${s.hero?.lv || 1}`;
+      const lv   = (s.partyStats && s.partyStats.length) 
+        ? `Party LV ${Math.max(...s.partyStats.map(p => p.lv || 1))}` 
+        : `LV ${s.hero?.lv || 1}`;
       const date = Save.dateStr(s.timestamp);
       const chars = (s.selectedChars || [s.selectedChar]).filter(Boolean).join(' · ');
 

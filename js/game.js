@@ -60,6 +60,54 @@ const Battle = {
     if (resist.includes(abilityElement)) return 0.5;
     return 1.0;
   },
+  // NEW: Dynamic Stat Resolver. Computes final combat stats by applying all active modifiers.
+  // Formula: (m[stat] + Sum(FlatModifiers)) * Product(Multipliers)
+  getStat(m, stat) {
+    let base = m[stat];
+    if (base === undefined || base === null) {
+      if (stat === 'accuracy') base = 0.95;
+      else if (stat === 'critRate') base = 0.05;
+      else base = 0;
+    }
+    
+    if (!m.statuses || !m.statuses.length) return base;
+    
+    let mult = 1.0;
+    let flat = 0;
+    m.statuses.forEach(s => {
+      if (s.stat === stat) {
+        if (s.type === 'mult') mult *= s.value;
+        else if (s.type === 'flat') flat += s.value;
+      }
+    });
+    
+    // Safety cap: stats cannot be buffed beyond 3.0x base
+    const finalMult = Math.min(3.0, mult);
+    return (stat === 'accuracy' || stat === 'critRate') 
+      ? (base + flat) * finalMult 
+      : Math.floor((base + flat) * finalMult);
+  },
+  // Adds a status to an actor, handling duration refreshing for identical IDs
+  addStatus(m, config) {
+    if (!m.statuses) m.statuses = [];
+    const existing = m.statuses.find(s => s.id === config.id);
+    if (existing) {
+      // Refresh: keep the highest duration and strongest multiplier
+      existing.turns = Math.max(existing.turns, config.turns);
+      if (config.type === 'mult') existing.value = Math.max(existing.value, config.value);
+      return;
+    }
+    m.statuses.push({
+      id: config.id,
+      label: config.label || config.id,
+      icon: config.icon || '✨',
+      stat: config.stat,
+      type: config.type || 'mult',
+      value: config.value || 1.0,
+      turns: config.turns || 3,
+      color: config.color || 'var(--amber)'
+    });
+  },
   // Returns 'weak'|'resist'|'immune'|'shatter'|null for UI display
   elemResult(abilityElement, target) {
     if (!abilityElement || abilityElement === 'physical') return null;
@@ -97,14 +145,124 @@ const Battle = {
     if (row.weak.includes(clsElem))   return 'resist';
     return null;
   },
-  physDmg(atk, def, mult = 1, atkLevel = 1, defLevel = 1, defPen = 0, source = 'Actor', target = 'Target') {
+  // Rolls for a hit based on attacker accuracy and defender evasion
+  rollHit(attacker, defender) {
+    const acc = this.getStat(attacker, 'accuracy');
+    const eva = defender.evasion || 0; // evasion is currently treated as a flat 0-1 chance
+    const chance = acc - eva;
+    if (window.LogDebug) window.LogDebug(`[HitRoll] ${attacker.displayName || attacker.name} vs ${defender.displayName || defender.name}: ${Math.round(chance*100)}% chance`, 'info');
+    return Math.random() < chance;
+  },
+  // Rolls for a critical hit based on attacker's critRate and LCK
+  // Every 10 LCK adds +1% crit rate
+  rollCrit(attacker) {
+    const baseCrit = this.getStat(attacker, 'critRate');
+    const lckBonus = (this.getStat(attacker, 'lck') || 0) * 0.001;
+    const chance = baseCrit + lckBonus;
+    const isCrit = Math.random() < chance;
+    if (isCrit && window.LogDebug) window.LogDebug(`[CritRoll] ${attacker.displayName || attacker.name} CRITICAL! (${Math.round(chance*100)}% chance)`, 'buff');
+    return isCrit;
+  },
+
+  /* ── CATALYST & SYNERGY SYSTEM (PHASE 4) ────────────────── */
+  
+  // Applies or overwrites an elemental aura on the target, respecting immunities
+  applyAura(target, element) {
+    if (!element || element === 'physical' || element === 'holy' || element === 'shadow') return;
+    
+    // Check Immunity
+    if (this.elemResult(element, target) === 'immune') {
+      if (window.LogDebug) window.LogDebug(`[Aura] ${target.displayName || target.name} is immune to ${element}; priming failed.`, 'dmg');
+      return;
+    }
+
+    // Auras last 2 turns (resisted = 1 turn)
+    const mult = this.elemMult(element, target);
+    const duration = mult < 1.0 ? 1 : 2;
+
+    const auraTable = {
+      fire:      { id: 'aura_fire',      label: 'Fire Aura',  icon: '🔥', color: '#ff4400' },
+      ice:       { id: 'aura_ice',       label: 'Ice Aura',   icon: '❄️', color: '#00ccff' },
+      water:     { id: 'aura_water',     label: 'Water Aura', icon: '💧', color: '#0066ff' },
+      nature:    { id: 'aura_nature',    label: 'Nature Aura',icon: '🌿', color: '#22cc44' },
+      lightning: { id: 'aura_lightning', label: 'Spark Aura', icon: '⚡', color: '#ffcc00' }
+    };
+
+    const config = auraTable[element];
+    if (!config) return;
+
+    // Remove any existing aura before applying new one (One Aura Rule)
+    target.statuses = (target.statuses || []).filter(s => !s.id.startsWith('aura_'));
+    
+    this.addStatus(target, {
+      ...config,
+      stat: 'aura', // placeholder stat
+      type: 'aura',
+      value: 1.0,
+      turns: duration,
+      color: config.color || '#ffcc00'
+    });
+    
+    if (window.LogDebug) window.LogDebug(`[Aura] Applied ${config.label} to ${target.displayName || target.name}`, 'buff');
+  },
+
+  // Checks for an elemental reaction based on existing aura and incoming detonator
+  // Returns reaction object or null
+  triggerReaction(target, detonator) {
+    if (!target.statuses || !target.statuses.length) return null;
+    const aura = target.statuses.find(s => s.id.startsWith('aura_'));
+    if (!aura) return null;
+
+    const auraType = aura.id.replace('aura_', '');
+    let reaction = null;
+
+    // DETERMINISTIC PRIORITY TABLE
+    // 1. Ice Aura reactions
+    if (auraType === 'ice') {
+      if (detonator === 'physical' || detonator === 'earth') reaction = { id: 'shatter', label: 'SHATTER', color: '#00ccff', dmgMult: 1.5, debuff: 'def' };
+      else if (detonator === 'fire') reaction = { id: 'melt', label: 'MELT', color: '#ffaa00', dmgMult: 2.0 };
+    }
+    // 2. Fire Aura reactions
+    else if (auraType === 'fire') {
+      if (detonator === 'nature') reaction = { id: 'conflagration', label: 'CONFLAGRATION', color: '#ff4400', dmgMult: 1.25, isAOE: true };
+      else if (detonator === 'water') reaction = { id: 'vaporize', label: 'VAPORIZE', color: '#55aaff', dmgMult: 2.0 };
+      else if (detonator === 'ice') reaction = { id: 'melt', label: 'MELT', color: '#ffaa00', dmgMult: 1.5 };
+    }
+    // 3. Water Aura reactions
+    else if (auraType === 'water') {
+      if (detonator === 'lightning') reaction = { id: 'conductive', label: 'CONDUCTIVE', color: '#ffcc00', dmgMult: 1.3, stun: true };
+    }
+    // 4. Nature Aura reactions
+    else if (auraType === 'nature') {
+      if (detonator === 'fire') reaction = { id: 'burn', label: 'BURNING', color: '#ee4400', dmgMult: 1.2, dot: true };
+    }
+
+    if (reaction) {
+      // Consume the aura upon reaction
+      target.statuses = target.statuses.filter(s => s !== aura);
+      
+      // Affect reaction effectiveness by Resist/Weakness
+      const m = this.elemMult(detonator, target);
+      if (m < 1.0) { // Resist
+        reaction.dmgMult = (reaction.dmgMult - 1) * 0.5 + 1; // Half the bonus
+        reaction.isDampened = true;
+      } else if (m > 1.0) { // Weakness
+        reaction.dmgMult *= 1.5;
+        reaction.isViolent = true;
+      }
+    }
+
+    return reaction;
+  },
+  physDmg(atk, def, mult = 1, atkLevel = 1, defLevel = 1, defPen = 0, source = 'Actor', target = 'Target', isCrit = false) {
     // NEW: heavier level-weighting + stronger defense factor (0.75x)
     const scaledAtk = atk + (atkLevel * 1.2);
     // defPen: reduces effectiveness of enemy defense (e.g. 0.2 removes 20% of DEF)
     const effectiveDef = def * (1 - Math.min(0.9, defPen));
     const scaledDef = effectiveDef + (defLevel * 0.6);
     const base = Math.max(1, scaledAtk - scaledDef * 0.75);
-    const final = Math.max(1, Math.floor(base * (0.85 + Math.random() * 0.3) * mult));
+    const critMult = isCrit ? 2.0 : 1.0;
+    const final = Math.max(1, Math.floor(base * (0.85 + Math.random() * 0.3) * mult * critMult));
     
     if (window.LogDebug) {
       window.LogDebug(`[${source} ➔ ${target}] PhysCalc: Atk(${atk})+LvBonus(${Math.round(atkLevel*1.2)}) - [Def(${def})*Pen(${Math.round(defPen*100)}%)+LvBonus(${Math.round(defLevel*0.6)})]*0.75 = ${Math.round(base)} (Final: ${final})`, 'dmg');
@@ -112,11 +270,12 @@ const Battle = {
     return final;
   },
   // targetMag / targetMagLv = Spirit Defense (SDEF) — high-MAG targets resist magic
-  magicDmg(mag, mult = 1, passiveBonus = 1, magLevel = 1, targetMag = 0, targetMagLv = 1, source = 'Actor', target = 'Target') {
+  magicDmg(mag, mult = 1, passiveBonus = 1, magLevel = 1, targetMag = 0, targetMagLv = 1, source = 'Actor', target = 'Target', isCrit = false) {
     const scaledMag      = mag + (magLevel * 0.8);
     const magMitigation  = (targetMag + targetMagLv * 0.3) * 0.4;
     const base = Math.max(1, scaledMag - magMitigation);
-    const final = Math.max(1, Math.floor(base * (0.9 + Math.random() * 0.2) * mult * passiveBonus));
+    const critMult = isCrit ? 2.0 : 1.0;
+    const final = Math.max(1, Math.floor(base * (0.9 + Math.random() * 0.2) * mult * passiveBonus * critMult));
 
     if (window.LogDebug) {
       window.LogDebug(`[${source} ➔ ${target}] MagCalc: Mag(${mag})+LvBonus(${Math.round(magLevel*0.8)}) - [T.Mag(${targetMag})+T.LvBonus(${Math.round(targetMagLv*0.3)})]*0.4 = ${Math.round(base)} (Final: ${final})`, 'dmg');
@@ -186,23 +345,19 @@ const Battle = {
       for (const id in m.cooldowns) if (m.cooldowns[id] > 0) m.cooldowns[id]--;
     }
 
-    // Buff Expiration
-    if (m.buff) {
-      m.buff.turns--;
-      if (m.buff.turns <= 0) {
-        if (window.LogDebug) window.LogDebug(`[Status] ${m.displayName || m.name}: ${m.buff.stat.toUpperCase()} buff expired`, 'info');
-        m[m.buff.stat] = m.buff.origVal;
-        m.buff = null;
-        m.dmgReduction = null;
-        m.evasion = null;
-        m.hpRegenAmt = null;
-        m.reflect = null;
-        m.fireAmp = null;
-        m.absorbElement = null;
+    // NEW: Centralized Status Ticking
+    if (m.statuses && m.statuses.length) {
+      for (let i = m.statuses.length - 1; i >= 0; i--) {
+        const s = m.statuses[i];
+        s.turns--;
+        if (s.turns <= 0) {
+          if (window.LogDebug) window.LogDebug(`[Status] ${m.displayName || m.name}: ${s.label} expired`, 'info');
+          m.statuses.splice(i, 1);
+        }
       }
     }
 
-    // Regen Ticks
+    // Regen Ticks (Consolidate into legacy check for now to avoid breaking existing logic)
     if (m.regenTurns > 0) {
       m.regenTurns--;
       const amt = m.hpRegenAmt || 8;
@@ -321,8 +476,9 @@ const UI = {
     const h = G.party[G.activeMemberIdx] || G.hero;
     if (!h) return;
     this.el('stat-lv').textContent  = h.lv;
-    this.el('stat-atk').textContent = h.atk;
-    this.el('stat-def').textContent = h.def;
+    this.el('stat-atk').textContent = Battle.getStat(h, 'atk');
+    this.el('stat-def').textContent = Battle.getStat(h, 'def');
+    this.el('stat-lck').textContent = Battle.getStat(h, 'lck');
     this.el('stat-exp').textContent = h.exp;
   },
 
@@ -331,7 +487,18 @@ const UI = {
     if (!s) return;
     const d = document.createElement('div');
     d.className = 'dmg-pop ' + type + ' element-' + element;
-    d.textContent = (type === 'heal' || type === 'regen') ? '+' + val : '-' + Math.abs(val);
+    if (type === 'crit') {
+      d.textContent = 'CRITICAL!';
+      d.style.color = '#ffbf00';
+      d.style.fontWeight = '900';
+      d.style.fontSize = '20px';
+      d.style.textShadow = '0 0 8px rgba(255,191,0,0.8)';
+    } else if (type === 'miss') {
+      d.textContent = 'MISS';
+      d.style.color = '#aaaaaa';
+    } else {
+      d.textContent = (type === 'heal' || type === 'regen') ? '+' + val : '-' + Math.abs(val);
+    }
     d.style.left = x + 'px'; d.style.top = y + 'px';
     s.appendChild(d);
     setTimeout(() => d.remove(), 1100);
@@ -569,18 +736,20 @@ const UI = {
   _renderPSCStatuses(m) {
     const tokens = [];
     const push = (icon, turns, cl = '') => {
-      if (turns === undefined || turns === null) tokens.push(`<div class="psct ${cl}">${icon}</div>`);
+      if (turns === undefined || turns === null || turns === '-') tokens.push(`<div class="psct ${cl}">${icon}</div>`);
       else tokens.push(`<div class="psct ${cl}">${icon}<span class="psct-cnt">${turns}</span></div>`);
     };
 
-    if (m.buff) {
-      const icon = m.buff.stat === 'atk' ? '⚔️' : m.buff.stat === 'def' ? '🛡️' : m.buff.stat === 'spd' ? '💨' : '🔮';
-      push(icon, m.buff.turns, 'buff');
+    // Render from the new centralized status system
+    if (m.statuses) {
+      m.statuses.forEach(s => {
+        let cls = s.id.includes('debuff') || s.type === 'debuff' ? 'debuff' : 'buff';
+        if (s.type === 'aura') cls = 'aura';
+        push(s.icon, s.turns, cls);
+      });
     }
-    if (m._atkBuffVal && (!m.buff || m.buff.stat !== 'atk')) push('⚔️', m.buff?.turns || 2, 'buff');
-    if (m._defBuffVal && (!m.buff || m.buff.stat !== 'def')) push('🛡️', m.buff?.turns || 2, 'buff');
-    if (m._magBuffVal && (!m.buff || m.buff.stat !== 'mag')) push('🔮', m.buff?.turns || 2, 'buff');
-    
+
+    // Keep legacy checks for statuses not yet migrated (frozen, stunned, etc.)
     if (m.regenTurns > 0)    push('🌿', m.regenTurns, 'regen');
     if (m.healBoostTurns > 0) push('💖', m.healBoostTurns, 'buff');
     if (m.guardMarkTurns > 0) push('🛡️', m.guardMarkTurns, 'guard');
@@ -588,7 +757,6 @@ const UI = {
     if (m.dmgReduction < 1)   push('💎', '-', 'buff');
     if (m.frozen > 0)        push('❄️', m.frozen, 'debuff');
     if (m.stunned)           push('💫', '1', 'debuff');
-    if (m.debuff)            push('🔻', m.debuff.turns, 'debuff');
 
     return tokens.join('');
   },
@@ -598,17 +766,14 @@ const UI = {
     const parts = [];
     const _fmt = v => (v >= 1) ? `+${Math.round((v-1)*100)}%` : `-${Math.round((1-v)*100)}%`;
 
-    if (m.buff) {
-      const sName = m.buff.stat.toUpperCase();
-      const mult = (m[m.buff.stat] / m.buff.origVal) || 1;
-      parts.push(`${sName} ${_fmt(mult)}`);
+    if (m.statuses) {
+      m.statuses.forEach(s => {
+        if (s.type === 'mult') parts.push(`${s.label} ${_fmt(s.value)}`);
+        else parts.push(`${s.label} +${s.value}`);
+      });
     }
-    // Secondary buffs
-    if (m._atkBuffVal && (!m.buff || m.buff.stat !== 'atk')) parts.push(`ATK ${_fmt(m._atkBuffVal)}`);
-    if (m._defBuffVal && (!m.buff || m.buff.stat !== 'def')) parts.push(`DEF ${_fmt(m._defBuffVal)}`);
-    if (m._magBuffVal && (!m.buff || m.buff.stat !== 'mag')) parts.push(`MAG ${_fmt(m._magBuffVal)}`);
-    if (m._spdBuffVal && (!m.buff || m.buff.stat !== 'spd')) parts.push(`SPD ${_fmt(m._spdBuffVal)}`);
 
+    // Keep legacy checks for non-migrated statuses
     if (m.dmgReduction < 1)   parts.push(`Shield ${Math.round((1-m.dmgReduction)*100)}%`);
     if (m.regenTurns > 0)    parts.push(`Regen`);
     if (m.guardMark)         parts.push(`Guard`);
@@ -749,6 +914,7 @@ function buildEnemyGroup(defs, spawnLevel = 1, isBoss = false) {
       resistTo: def.resistTo || [],
       tier:     tier,
       isKO: false, stunned: false, debuff: null,
+      statuses: [],
     };
   });
   G.targetEnemyIdx = 0;
@@ -913,19 +1079,17 @@ function buildAbilityMenu() {
 function processCurrentTurn() {
   // Skip dead units
   while (G.turnIdx < G.turnQueue.length) {
-    const t    = G.turnQueue[G.turnIdx];
-    const unit = t.type === 'party' ? G.party[t.idx] : G.enemyGroup[t.idx];
-    if (Battle.alive(unit)) break;
-    G.turnIdx++;
-  }
-  // New round if exhausted
-  if (G.turnIdx >= G.turnQueue.length) {
-    G.turnQueue = buildTurnQueue();
-    G.turnIdx   = 0;
-    if (!G.turnQueue.length) return;
+  const t = G.turnQueue[G.turnIdx];
+  const unit = t.type === 'party' ? G.party[t.idx] : G.enemyGroup[t.idx];
+
+  // STUN CHECK (Phase 4 Catalyst: Conductive)
+  if (unit.stunned) {
+    unit.stunned = false;
+    UI.addLog(`💫 ${unit.displayName || unit.name} is stunned and skips their turn!`, 'regen');
+    setTimeout(advanceTurn, 1000);
+    return;
   }
 
-  const t = G.turnQueue[G.turnIdx];
   UI.renderTurnBar();
   UI._highlightActiveMember();
   UI.renderActiveMemberBar();
@@ -1140,7 +1304,8 @@ function retryBattle() {
   G.party.forEach(m => {
     m.hp = m.maxHp; m.mp = m.maxMp;
     m.isKO = false;
-    m.buff = null; m.debuff = null; m.regenTurns = 0; m.stunned = false;
+    m.regenTurns = 0; m.stunned = false; m.frozen = 0;
+    m.statuses = [];
   });
   const level = G.enemyGroup[0]?.level || 1;
   const defs  = G.enemyGroup.map(e => G.enemies.find(r => r.id === e.id)).filter(Boolean);
