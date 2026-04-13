@@ -104,14 +104,24 @@ const Battle = {
     const effectiveDef = def * (1 - Math.min(0.9, defPen));
     const scaledDef = effectiveDef + (defLevel * 0.6);
     const base = Math.max(1, scaledAtk - scaledDef * 0.75);
-    return Math.max(1, Math.floor(base * (0.85 + Math.random() * 0.3) * mult));
+    const final = Math.max(1, Math.floor(base * (0.85 + Math.random() * 0.3) * mult));
+    
+    if (window.LogDebug) {
+      window.LogDebug(`PhysCalc: Atk(${atk})+LvBonus(${Math.round(atkLevel*1.2)}) - [Def(${def})*Pen(${Math.round(defPen*100)}%)+LvBonus(${Math.round(defLevel*0.6)})]*0.75 = ${Math.round(base)} (Final with rnd/mult: ${final})`, 'dmg');
+    }
+    return final;
   },
   // targetMag / targetMagLv = Spirit Defense (SDEF) — high-MAG targets resist magic
   magicDmg(mag, mult = 1, passiveBonus = 1, magLevel = 1, targetMag = 0, targetMagLv = 1) {
     const scaledMag      = mag + (magLevel * 0.8);
     const magMitigation  = (targetMag + targetMagLv * 0.3) * 0.4;
     const base = Math.max(1, scaledMag - magMitigation);
-    return Math.max(1, Math.floor(base * (0.9 + Math.random() * 0.2) * mult * passiveBonus));
+    const final = Math.max(1, Math.floor(base * (0.9 + Math.random() * 0.2) * mult * passiveBonus));
+
+    if (window.LogDebug) {
+      window.LogDebug(`MagCalc: Mag(${mag})+LvBonus(${Math.round(magLevel*0.8)}) - [T.Mag(${targetMag})+T.LvBonus(${Math.round(targetMagLv*0.3)})]*0.4 = ${Math.round(base)} (Final with rnd/mult: ${final})`, 'dmg');
+    }
+    return final;
   },
   pickAbility(abilities) {
     if (!abilities || !abilities.length) return null;

@@ -428,6 +428,10 @@ function heroAbility(ab) {
         if (e.guardMark) { m.guardMark = true; m.guardMarkTurns = e.duration || 3; }
         if (e.summonBoost) { m.summonBoost = e.summonBoost; }
 
+        if (window.LogDebug) {
+          window.LogDebug(`[Buff] ${m.displayName}: Applied ${ab.name} (Duration: ${e.duration || 2} turns)`, 'buff');
+        }
+
         createEffectOverlay(idx, element, 'party', ab.id);
       };
 
@@ -560,6 +564,10 @@ function enemyAct(enemy, enemyIdx) {
   const targetIdx = G.party.indexOf(target);
 
   const ab = Battle.pickAbility(enemy.abilityDefs);
+  if (window.LogDebug) {
+    const abName = ab ? ab.name : 'Standard Attack';
+    window.LogDebug(`[AI] ${enemy.name} selects ${abName}`, 'info');
+  }
   const element = enemy.element || ab?.effect?.element || 'physical';
 
   // Get move-specific animation config or use defaults
@@ -710,12 +718,14 @@ function enemyAct(enemy, enemyIdx) {
       m.mp = Math.min(m.maxMp, m.mp + mpRegenAmt);
       if (m.passive?.id === 'natures_grace' && m.hp < m.maxHp) {
         m.hp = Math.min(m.maxHp, m.hp + 5); UI.popParty(i, 5, 'regen');
+        if (window.LogDebug) window.LogDebug(`[Passive] ${m.displayName}: Nature's Grace (Regen 5 HP)`, 'passive');
       }
       if (m.regenTurns > 0) {
         m.regenTurns--; 
         const _amt = m.hpRegenAmt || 8;
         m.hp = Math.min(m.maxHp, m.hp + _amt); 
         UI.popParty(i, _amt, 'regen');
+        if (window.LogDebug) window.LogDebug(`[Status] ${m.displayName}: Regen tick (${_amt} HP) - ${m.regenTurns} turns left`, 'buff');
       }
       
       // Cooldown & Status decrement
@@ -741,10 +751,12 @@ function enemyAct(enemy, enemyIdx) {
         const _dbAmt = Math.max(1, Math.floor(m.maxHp * 0.15));
         m.hp = Math.min(m.maxHp, m.hp + _dbAmt);
         UI.popParty(i, _dbAmt, 'heal', 'light');
+        if (window.LogDebug) window.LogDebug(`[Passive] ${m.displayName}: Divine Blessing aura (Healed ${Math.round(m.maxHp*0.15)} HP / 15% Max)`, 'passive');
       }
       if (m.buff) { 
         m.buff.turns--; 
         if (m.buff.turns <= 0) { 
+          if (window.LogDebug) window.LogDebug(`[Status] ${m.displayName}: ${m.buff.stat.toUpperCase()} buff expired`, 'info');
           m[m.buff.stat] = m.buff.origVal; 
           m.buff = null; 
           
