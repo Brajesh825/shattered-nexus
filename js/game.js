@@ -15,9 +15,9 @@ function scaleGame() {
   const el = document.getElementById('game');
   if (!el) return;
   // Clear any stale transform from older code
-  el.style.transform       = '';
+  el.style.transform = '';
   el.style.transformOrigin = '';
-  el.style.marginLeft      = '';
+  el.style.marginLeft = '';
   document.body.style.justifyContent = '';
   // Fill the real viewport height — CSS handles width and layout
   el.style.height = `${window.innerHeight}px`;
@@ -31,14 +31,14 @@ window.addEventListener('orientationchange', () => setTimeout(scaleGame, 150));
    strong → 1.5× damage   weak → 0.5× damage   (neutral → 1.0×)
    ============================================================ */
 const TYPE_CHART = {
-  fire:     { strong: ['ice','earth'],    weak: ['water','fire']    },
-  ice:      { strong: ['water','wind'],   weak: ['fire','ice']      },
-  water:    { strong: ['fire','earth'],   weak: ['ice','water']     },
-  wind:     { strong: ['ice','earth'],    weak: ['wind']            },
-  earth:    { strong: ['water','wind'],   weak: ['earth','physical']},
-  holy:     { strong: ['shadow'],         weak: ['holy']            },
-  shadow:   { strong: ['holy'],           weak: ['shadow']          },
-  physical: { strong: [],                 weak: ['physical']        },
+  fire: { strong: ['ice', 'earth'], weak: ['water', 'fire'] },
+  ice: { strong: ['water', 'wind'], weak: ['fire', 'ice'] },
+  water: { strong: ['fire', 'earth'], weak: ['ice', 'water'] },
+  wind: { strong: ['ice', 'earth'], weak: ['wind'] },
+  earth: { strong: ['water', 'wind'], weak: ['earth', 'physical'] },
+  holy: { strong: ['shadow'], weak: ['holy'] },
+  shadow: { strong: ['holy'], weak: ['shadow'] },
+  physical: { strong: [], weak: ['physical'] },
 };
 
 /* ============================================================
@@ -51,12 +51,12 @@ const Battle = {
     // Mutant trait overrides — check immune (0×) and shatter (2.0×) first
     const traits = target?.mutantTraits || [];
     for (const t of traits) {
-      if (t.type === 'immune'  && t.element === abilityElement) return 0;
+      if (t.type === 'immune' && t.element === abilityElement) return 0;
       if (t.type === 'shatter' && t.element === abilityElement) return 2.0;
     }
-    const weak   = target?.weakTo   || [];
+    const weak = target?.weakTo || [];
     const resist = target?.resistTo || [];
-    if (weak.includes(abilityElement))   return 1.5;
+    if (weak.includes(abilityElement)) return 1.5;
     if (resist.includes(abilityElement)) return 0.5;
     return 1.0;
   },
@@ -69,9 +69,9 @@ const Battle = {
       else if (stat === 'critRate') base = 0.05;
       else base = 0;
     }
-    
+
     if (!m.statuses || !m.statuses.length) return base;
-    
+
     let mult = 1.0;
     let flat = 0;
     m.statuses.forEach(s => {
@@ -80,11 +80,11 @@ const Battle = {
         else if (s.type === 'flat') flat += s.value;
       }
     });
-    
+
     // Safety cap: stats cannot be buffed beyond 3.0x base
     const finalMult = Math.min(3.0, mult);
-    return (stat === 'accuracy' || stat === 'critRate') 
-      ? (base + flat) * finalMult 
+    return (stat === 'accuracy' || stat === 'critRate')
+      ? (base + flat) * finalMult
       : Math.floor((base + flat) * finalMult);
   },
   // Adds a status to an actor, handling duration refreshing for identical IDs
@@ -113,12 +113,12 @@ const Battle = {
     if (!abilityElement || abilityElement === 'physical') return null;
     const traits = target?.mutantTraits || [];
     for (const t of traits) {
-      if (t.type === 'immune'  && t.element === abilityElement) return 'immune';
+      if (t.type === 'immune' && t.element === abilityElement) return 'immune';
       if (t.type === 'shatter' && t.element === abilityElement) return 'shatter';
     }
-    const weak   = target?.weakTo   || [];
+    const weak = target?.weakTo || [];
     const resist = target?.resistTo || [];
-    if (weak.includes(abilityElement))   return 'weak';
+    if (weak.includes(abilityElement)) return 'weak';
     if (resist.includes(abilityElement)) return 'resist';
     return null;
   },
@@ -131,7 +131,7 @@ const Battle = {
     const row = TYPE_CHART[attackElement];
     if (!row) return 1.0;
     if (row.strong.includes(clsElem)) return 1.5;
-    if (row.weak.includes(clsElem))   return 0.5;
+    if (row.weak.includes(clsElem)) return 0.5;
     return 1.0;
   },
   // Returns 'weak'|'resist'|null for UI feedback when enemy attacks a party member
@@ -142,7 +142,7 @@ const Battle = {
     const row = TYPE_CHART[attackElement];
     if (!row) return null;
     if (row.strong.includes(clsElem)) return 'weak';
-    if (row.weak.includes(clsElem))   return 'resist';
+    if (row.weak.includes(clsElem)) return 'resist';
     return null;
   },
   // Rolls for a hit based on attacker accuracy and defender evasion
@@ -150,7 +150,7 @@ const Battle = {
     const acc = this.getStat(attacker, 'accuracy');
     const eva = defender.evasion || 0; // evasion is currently treated as a flat 0-1 chance
     const chance = acc - eva;
-    if (window.LogDebug) window.LogDebug(`[HitRoll] ${attacker.displayName || attacker.name} vs ${defender.displayName || defender.name}: ${Math.round(chance*100)}% chance`, 'info');
+    if (window.LogDebug) window.LogDebug(`[HitRoll] ${attacker.displayName || attacker.name} vs ${defender.displayName || defender.name}: ${Math.round(chance * 100)}% chance`, 'info');
     return Math.random() < chance;
   },
   // Rolls for a critical hit based on attacker's critRate and LCK
@@ -160,16 +160,16 @@ const Battle = {
     const lckBonus = (this.getStat(attacker, 'lck') || 0) * 0.001;
     const chance = baseCrit + lckBonus;
     const isCrit = Math.random() < chance;
-    if (isCrit && window.LogDebug) window.LogDebug(`[CritRoll] ${attacker.displayName || attacker.name} CRITICAL! (${Math.round(chance*100)}% chance)`, 'buff');
+    if (isCrit && window.LogDebug) window.LogDebug(`[CritRoll] ${attacker.displayName || attacker.name} CRITICAL! (${Math.round(chance * 100)}% chance)`, 'buff');
     return isCrit;
   },
 
   /* ── CATALYST & SYNERGY SYSTEM (PHASE 4) ────────────────── */
-  
+
   // Applies or overwrites an elemental aura on the target, respecting immunities
   applyAura(target, element) {
     if (!element || element === 'physical' || element === 'holy' || element === 'shadow') return;
-    
+
     // Check Immunity
     if (this.elemResult(element, target) === 'immune') {
       if (window.LogDebug) window.LogDebug(`[Aura] ${target.displayName || target.name} is immune to ${element}; priming failed.`, 'dmg');
@@ -181,10 +181,10 @@ const Battle = {
     const duration = mult < 1.0 ? 1 : 2;
 
     const auraTable = {
-      fire:      { id: 'aura_fire',      label: 'Fire Aura',  icon: '🔥', color: '#ff4400' },
-      ice:       { id: 'aura_ice',       label: 'Ice Aura',   icon: '❄️', color: '#00ccff' },
-      water:     { id: 'aura_water',     label: 'Water Aura', icon: '💧', color: '#0066ff' },
-      nature:    { id: 'aura_nature',    label: 'Nature Aura',icon: '🌿', color: '#22cc44' },
+      fire: { id: 'aura_fire', label: 'Fire Aura', icon: '🔥', color: '#ff4400' },
+      ice: { id: 'aura_ice', label: 'Ice Aura', icon: '❄️', color: '#00ccff' },
+      water: { id: 'aura_water', label: 'Water Aura', icon: '💧', color: '#0066ff' },
+      nature: { id: 'aura_nature', label: 'Nature Aura', icon: '🌿', color: '#22cc44' },
       lightning: { id: 'aura_lightning', label: 'Spark Aura', icon: '⚡', color: '#ffcc00' }
     };
 
@@ -193,7 +193,7 @@ const Battle = {
 
     // Remove any existing aura before applying new one (One Aura Rule)
     target.statuses = (target.statuses || []).filter(s => !s.id.startsWith('aura_'));
-    
+
     this.addStatus(target, {
       ...config,
       stat: 'aura', // placeholder stat
@@ -202,7 +202,7 @@ const Battle = {
       turns: duration,
       color: config.color || '#ffcc00'
     });
-    
+
     if (window.LogDebug) window.LogDebug(`[Aura] Applied ${config.label} to ${target.displayName || target.name}`, 'buff');
   },
 
@@ -240,7 +240,7 @@ const Battle = {
     if (reaction) {
       // Consume the aura upon reaction
       target.statuses = target.statuses.filter(s => s !== aura);
-      
+
       // Affect reaction effectiveness by Resist/Weakness
       const m = this.elemMult(detonator, target);
       if (m < 1.0) { // Resist
@@ -263,22 +263,22 @@ const Battle = {
     const base = Math.max(1, scaledAtk - scaledDef * 0.75);
     const critMult = isCrit ? 2.0 : 1.0;
     const final = Math.max(1, Math.floor(base * (0.85 + Math.random() * 0.3) * mult * critMult));
-    
+
     if (window.LogDebug) {
-      window.LogDebug(`[${source} ➔ ${target}] PhysCalc: Atk(${atk})+LvBonus(${Math.round(atkLevel*1.2)}) - [Def(${def})*Pen(${Math.round(defPen*100)}%)+LvBonus(${Math.round(defLevel*0.6)})]*0.75 = ${Math.round(base)} (Final: ${final})`, 'dmg');
+      window.LogDebug(`[${source} ➔ ${target}] PhysCalc: Atk(${atk})+LvBonus(${Math.round(atkLevel * 1.2)}) - [Def(${def})*Pen(${Math.round(defPen * 100)}%)+LvBonus(${Math.round(defLevel * 0.6)})]*0.75 = ${Math.round(base)} (Final: ${final})`, 'dmg');
     }
     return final;
   },
   // targetMag / targetMagLv = Spirit Defense (SDEF) — high-MAG targets resist magic
   magicDmg(mag, mult = 1, passiveBonus = 1, magLevel = 1, targetMag = 0, targetMagLv = 1, source = 'Actor', target = 'Target', isCrit = false) {
-    const scaledMag      = mag + (magLevel * 0.8);
-    const magMitigation  = (targetMag + targetMagLv * 0.3) * 0.4;
+    const scaledMag = mag + (magLevel * 0.8);
+    const magMitigation = (targetMag + targetMagLv * 0.3) * 0.4;
     const base = Math.max(1, scaledMag - magMitigation);
     const critMult = isCrit ? 2.0 : 1.0;
     const final = Math.max(1, Math.floor(base * (0.9 + Math.random() * 0.2) * mult * passiveBonus * critMult));
 
     if (window.LogDebug) {
-      window.LogDebug(`[${source} ➔ ${target}] MagCalc: Mag(${mag})+LvBonus(${Math.round(magLevel*0.8)}) - [T.Mag(${targetMag})+T.LvBonus(${Math.round(targetMagLv*0.3)})]*0.4 = ${Math.round(base)} (Final: ${final})`, 'dmg');
+      window.LogDebug(`[${source} ➔ ${target}] MagCalc: Mag(${mag})+LvBonus(${Math.round(magLevel * 0.8)}) - [T.Mag(${targetMag})+T.LvBonus(${Math.round(targetMagLv * 0.3)})]*0.4 = ${Math.round(base)} (Final: ${final})`, 'dmg');
     }
     return final;
   },
@@ -293,12 +293,12 @@ const Battle = {
     const weightedAbilities = abilities.map(ab => {
       let weight = ab.weight || 50;
       const element = ab.effect?.element || actor.element || 'physical';
-      
+
       // If we have an aura and this move triggers a reaction, boost weight significantly
       if (auraType) {
         if (this._willReact(auraType, element)) {
-           weight *= 3; // Prioritize reactions!
-           if (window.LogDebug) window.LogDebug(`[AI-Synergy] Weight boosted for ${ab.name} (Element: ${element} vs Aura: ${auraType})`, 'hi');
+          weight *= 3; // Prioritize reactions!
+          if (window.LogDebug) window.LogDebug(`[AI-Synergy] Weight boosted for ${ab.name} (Element: ${element} vs Aura: ${auraType})`, 'hi');
         }
       }
       return { ...ab, _tempWeight: weight };
@@ -306,9 +306,9 @@ const Battle = {
 
     const total = weightedAbilities.reduce((s, a) => s + a._tempWeight, 0);
     let r = Math.random() * total;
-    for (const a of weightedAbilities) { 
-      r -= a._tempWeight; 
-      if (r <= 0) return a; 
+    for (const a of weightedAbilities) {
+      r -= a._tempWeight;
+      if (r <= 0) return a;
     }
     return weightedAbilities[0];
   },
@@ -327,18 +327,10 @@ const Battle = {
   // and reporting active status to the debug log.
   tickActorStatus(m, isEnemy = false) {
     if (!m || !this.alive(m)) return;
-    
+
     // 1. Report Active Status
     if (window.LogDebug) {
       const activeEffects = [];
-      if (m.buff) activeEffects.push(`${m.buff.stat.toUpperCase()} (${m.buff.multiplier || '?'})`);
-      if (m._atkBuffVal) activeEffects.push(`ATK Boost (${Math.round(m._atkBuffVal*100)}%)`);
-      if (m._defBuffVal) activeEffects.push(`DEF Boost (${Math.round(m._defBuffVal*100)}%)`);
-      if (m.regenTurns > 0) activeEffects.push(`Regen (${m.hpRegenAmt || 8} HP)`);
-      if (m.frozen > 0) activeEffects.push('FROZEN');
-      if (m.stunned) activeEffects.push('STUNNED');
-      if (m.debuff) activeEffects.push(`${m.debuff.stat.toUpperCase()} Debuff`);
-      
       const summary = activeEffects.length > 0 ? activeEffects.join(', ') : 'None';
       window.LogDebug(`[Turn Start] ${m.displayName || m.name}: Active Status: ${summary}`, 'info');
     }
@@ -348,7 +340,7 @@ const Battle = {
       // Base MP regen + Relic bonus
       const mpRegenAmt = 3 + Math.floor((m._mpRegenBonus || 0) * m.maxMp);
       m.mp = Math.min(m.maxMp, m.mp + mpRegenAmt);
-      
+
       // Nature's Grace (Passive)
       if (m.passive?.id === 'natures_grace' && m.hp < m.maxHp) {
         m.hp = Math.min(m.maxHp, m.hp + 5);
@@ -365,14 +357,13 @@ const Battle = {
     }
 
     // 3. Status Ticks
-    if (m.frozen > 0) m.frozen--;
-    if (m.stunned && Math.random() < 0.3) m.stunned = false; 
-    
+    // (Status effects now tracked exclusively in m.statuses, ticked below)
+
     if (m.healBoostTurns > 0) {
       m.healBoostTurns--;
       if (m.healBoostTurns <= 0) m.healBoost = 1.0;
     }
-    
+
     if (m.cooldowns) {
       for (const id in m.cooldowns) if (m.cooldowns[id] > 0) m.cooldowns[id]--;
     }
@@ -403,29 +394,29 @@ const Battle = {
    GAME STATE
    ============================================================ */
 const G = {
-  chars:   [],
+  chars: [],
   classes: [],
   enemies: [],
-  items:     [],          // item definitions from ITEMS_DATA
+  items: [],          // item definitions from ITEMS_DATA
   inventory: [],          // [{ itemId, qty }] — party's bag (max 20 stacks)
-  relics:       [],       // relic definitions from RELICS_DATA
-  ownedRelics:  [],       // relic IDs the party has collected
+  relics: [],       // relic definitions from RELICS_DATA
+  ownedRelics: [],       // relic IDs the party has collected
   activeRelics: [],       // relic IDs currently equipped (max 3)
-  selectedChar:  null,
+  selectedChar: null,
   selectedClass: null,
   selectedChars: [],   // ordered array of up to 4 char IDs
   unlockedChars: ['ayaka', 'hutao', 'nilou', 'xiao'],  // Characters available for selection
-  clearedMaps:   [],   // map IDs whose objective has been completed
-  npcTalked:     {},   // { mapId: [npcId, ...] } — persisted across sessions
+  clearedMaps: [],   // map IDs whose objective has been completed
+  npcTalked: {},   // { mapId: [npcId, ...] } — persisted across sessions
 
-  party:           [],   // 4 party members (all player-controlled)
-  enemyGroup:      [],   // 1–3 enemies
-  turnQueue:       [],   // [{type:'party'|'enemy', idx, spd}]
-  turnIdx:         0,
+  party: [],   // 4 party members (all player-controlled)
+  enemyGroup: [],   // 1–3 enemies
+  turnQueue: [],   // [{type:'party'|'enemy', idx, spd}]
+  turnIdx: 0,
   activeMemberIdx: 0,    // which party member is currently acting
-  targetEnemyIdx:  0,    // which enemy is selected as attack target
-  busy:            false,
-  mode:            'free', // 'free' | 'story' | 'explore'
+  targetEnemyIdx: 0,    // which enemy is selected as attack target
+  busy: false,
+  mode: 'free', // 'free' | 'story' | 'explore'
 
   activePartyIdx: 0,   // which party member walks the map
 
@@ -445,8 +436,8 @@ const G = {
    UI HELPERS
    ============================================================ */
 const CHAR_COLOR = {
-  ayaka:'#7dd3fc', hutao:'#ef4444', nilou:'#2dd4bf', xiao:'#4ade80',
-  rydia:'#a78bfa', lenneth:'#e879f9', kain:'#0ea5e9', leon:'#fbbf24'
+  ayaka: '#7dd3fc', hutao: '#ef4444', nilou: '#2dd4bf', xiao: '#4ade80',
+  rydia: '#a78bfa', lenneth: '#e879f9', kain: '#0ea5e9', leon: '#fbbf24'
 };
 const ENEMY_POP_X = [580, 720, 860, 650]; // 4th is between 1st and 2nd for diamond layout
 const PARTY_POP_X = [42, 108, 174, 240];
@@ -477,7 +468,7 @@ const UI = {
     });
     this.el(id).classList.add('active');
     requestAnimationFrame(scaleGame); // re-measure after new screen content renders
-    const steps = { 'char-screen':1, 'battle-screen':2, 'result-screen':2 };
+    const steps = { 'char-screen': 1, 'battle-screen': 2, 'result-screen': 2 };
     const cur = steps[id] || 0;
     document.querySelectorAll('.step').forEach(s => {
       const n = +s.dataset.step;
@@ -486,11 +477,11 @@ const UI = {
     });
   },
 
-  log: ['','',''],
+  log: ['', '', ''],
   setLog(lines, cls = []) {
     this.log = [...lines].slice(-3);
     while (this.log.length < 3) this.log.unshift('');
-    ['log0','log1','log2'].forEach((id, i) => {
+    ['log0', 'log1', 'log2'].forEach((id, i) => {
       const el = this.el(id);
       el.textContent = this.log[i] || '';
       el.className = 'log-line ' + (cls[i] || '');
@@ -498,7 +489,7 @@ const UI = {
   },
   addLog(txt, cl = '') {
     this.log = [...this.log.slice(-2), txt];
-    this.setLog(this.log, ['','', cl]);
+    this.setLog(this.log, ['', '', cl]);
   },
 
   // Backward compat (story.js)
@@ -507,7 +498,7 @@ const UI = {
   updateStats() {
     const h = G.party[G.activeMemberIdx] || G.hero;
     if (!h) return;
-    this.el('stat-lv').textContent  = h.lv;
+    this.el('stat-lv').textContent = h.lv;
     this.el('stat-atk').textContent = Battle.getStat(h, 'atk');
     this.el('stat-def').textContent = Battle.getStat(h, 'def');
     this.el('stat-lck').textContent = Battle.getStat(h, 'lck');
@@ -544,8 +535,8 @@ const UI = {
     d.className = 'dmg-pop ai-pop';
     d.textContent = txt;
     // Position slightly above the enemy
-    d.style.left = (ENEMY_POP_X[idx] || 580) + 'px'; 
-    d.style.top = '30px'; 
+    d.style.left = (ENEMY_POP_X[idx] || 580) + 'px';
+    d.style.top = '30px';
     d.style.color = '#00f2ff';
     d.style.fontSize = '12px';
     d.style.fontFamily = 'var(--px)';
@@ -584,20 +575,20 @@ const UI = {
     if (!bar) return;
     bar.innerHTML = '';
     G.turnQueue.forEach((t, i) => {
-      const unit  = t.type === 'party' ? G.party[t.idx] : G.enemyGroup[t.idx];
+      const unit = t.type === 'party' ? G.party[t.idx] : G.enemyGroup[t.idx];
       if (!unit) return;
       const isEnemy = t.type === 'enemy';
-      const color   = isEnemy ? '#ff7070' : (CHAR_COLOR[unit.charId] || '#c0b8e8');
-      const label   = (unit.displayName || unit.name || '?')[0].toUpperCase();
+      const color = isEnemy ? '#ff7070' : (CHAR_COLOR[unit.charId] || '#c0b8e8');
+      const label = (unit.displayName || unit.name || '?')[0].toUpperCase();
       const tok = document.createElement('div');
       tok.className = 'tb-tok' +
-        (i === G.turnIdx    ? ' active-tok' : '') +
-        (isEnemy            ? ' enemy-tok'  : '') +
-        (!Battle.alive(unit)? ' dead-tok'   : '');
+        (i === G.turnIdx ? ' active-tok' : '') +
+        (isEnemy ? ' enemy-tok' : '') +
+        (!Battle.alive(unit) ? ' dead-tok' : '');
       tok.style.borderColor = Battle.alive(unit) ? color : '#333';
-      tok.style.color       = Battle.alive(unit) ? color : '#444';
+      tok.style.color = Battle.alive(unit) ? color : '#444';
       tok.textContent = label;
-      tok.title       = (unit.displayName || unit.name || '') + (Battle.alive(unit) ? ` (HP ${unit.hp}/${unit.maxHp})` : ' [KO]');
+      tok.title = (unit.displayName || unit.name || '') + (Battle.alive(unit) ? ` (HP ${unit.hp}/${unit.maxHp})` : ' [KO]');
       bar.appendChild(tok);
     });
   },
@@ -618,23 +609,25 @@ const UI = {
     // Viewport scale: at ≥1600px tier-1 base matches party sprite height (~180px).
     const vw = window.innerWidth;
     const VP_SCALE = vw >= 1800 ? 1.35 : 1.0;
-    const TIER_BASE_W   = { 1: Math.round(130 * VP_SCALE),
-                             2: Math.round(180 * VP_SCALE),
-                             3: Math.round(240 * VP_SCALE) };
-    const COUNT_SCALE   = { 1: 1.00, 2: 0.87, 3: 0.75, 4: 0.64 };
+    const TIER_BASE_W = {
+      1: Math.round(130 * VP_SCALE),
+      2: Math.round(180 * VP_SCALE),
+      3: Math.round(240 * VP_SCALE)
+    };
+    const COUNT_SCALE = { 1: 1.00, 2: 0.87, 3: 0.75, 4: 0.64 };
     const MUTATION_MULT = { normal: 1.00, corrupted: 1.12, mutant: 1.28 };
-    const ASPECT        = 1.23; // height = width × aspect
+    const ASPECT = 1.23; // height = width × aspect
 
     G.enemyGroup.forEach((e, i) => {
       const alive = Battle.alive(e);
-      const pct   = Math.max(0, e.hp / e.maxHp * 100);
+      const pct = Math.max(0, e.hp / e.maxHp * 100);
 
       // Compute this enemy's individual sprite size
-      const tierW  = TIER_BASE_W[e.tier || 1] || TIER_BASE_W[1];
+      const tierW = TIER_BASE_W[e.tier || 1] || TIER_BASE_W[1];
       const cScale = COUNT_SCALE[count] || COUNT_SCALE[4];
-      const mMult  = MUTATION_MULT[e.mutation || 'normal'] || 1.0;
-      const sprW   = Math.round(tierW * cScale * mMult);
-      const sprH   = Math.round(sprW * ASPECT);
+      const mMult = MUTATION_MULT[e.mutation || 'normal'] || 1.0;
+      const sprW = Math.round(tierW * cScale * mMult);
+      const sprH = Math.round(sprW * ASPECT);
 
       // Enemy wrapper
       const enemy = document.createElement('div');
@@ -646,10 +639,10 @@ const UI = {
       // Sprite — sized by tier + count + mutation
       const spr = document.createElement('img');
       const _mutCls = e.mutation === 'mutant' ? ' enemy-mutant'
-                    : e.mutation === 'corrupted' ? ' enemy-corrupted' : '';
+        : e.mutation === 'corrupted' ? ' enemy-corrupted' : '';
       spr.className = 'enemy-sprite' + _mutCls;
       spr.id = 'espr-' + i;
-      spr.style.width  = sprW + 'px';
+      spr.style.width = sprW + 'px';
       spr.style.height = sprH + 'px';
       SpriteRenderer.drawEnemy(spr, e.id, e.palette);
       enemy.appendChild(spr);
@@ -697,9 +690,9 @@ const UI = {
     container.innerHTML = '';
 
     G.party.forEach((m, i) => {
-      const col   = CHAR_COLOR[m.charId] || '#c0b8e8';
+      const col = CHAR_COLOR[m.charId] || '#c0b8e8';
       const alive = Battle.alive(m);
-      const pct   = Math.max(0, m.hp / m.maxHp * 100);
+      const pct = Math.max(0, m.hp / m.maxHp * 100);
 
       // Party member wrapper
       const member = document.createElement('div');
@@ -763,25 +756,25 @@ const UI = {
     if (!bar) return;
     bar.innerHTML = '';
     G.party.forEach((m, i) => {
-      const col   = CHAR_COLOR[m.charId] || '#c0b8e8';
+      const col = CHAR_COLOR[m.charId] || '#c0b8e8';
       const hpPct = Math.max(0, m.hp / m.maxHp * 100);
       const mpPct = Math.max(0, m.mp / m.maxMp * 100);
       const hpCol = hpPct > 50 ? 'var(--hp-hi)' : hpPct > 25 ? 'var(--hp-mid)' : 'var(--hp-lo)';
       const isActive = G.turnQueue[G.turnIdx]?.type === 'party' && G.turnQueue[G.turnIdx]?.idx === i;
-      
+
       const card = document.createElement('div');
       card.className = 'psc' + (m.isKO ? ' ko-psc' : '') + (isActive ? ' active-psc' : '');
       card.style.borderColor = isActive ? col : col + '50';
-      
+
       const statusHtml = this._renderPSCStatuses(m);
-      
+
       card.innerHTML = `
         <div class="psc-header">
           <div class="psc-name" style="color:${col}">${m.displayName} <span class="psc-lv">L${m.lv}</span></div>
           <div class="psc-statuses">${statusHtml}</div>
         </div>
         <div class="psc-hp-bg"><div class="psc-hp-bar" style="width:${hpPct}%;background:${hpCol}"></div></div>
-        <div class="psc-hp-txt">${Math.max(0,m.hp)}/${m.maxHp} HP · ${m.mp}/${m.maxMp} MP</div>
+        <div class="psc-hp-txt">${Math.max(0, m.hp)}/${m.maxHp} HP · ${m.mp}/${m.maxMp} MP</div>
         <div class="psc-mp-bg"><div class="psc-mp-bar" style="width:${mpPct}%"></div></div>`;
       bar.appendChild(card);
     });
@@ -804,13 +797,13 @@ const UI = {
     }
 
     // Keep legacy checks for statuses not yet migrated (frozen, stunned, etc.)
-    if (m.regenTurns > 0)    push('🌿', m.regenTurns, 'regen');
+    if (m.regenTurns > 0) push('🌿', m.regenTurns, 'regen');
     if (m.healBoostTurns > 0) push('💖', m.healBoostTurns, 'buff');
     if (m.guardMarkTurns > 0) push('🛡️', m.guardMarkTurns, 'guard');
-    if (m.guardianTurns > 0)  push('🛡️', m.guardianTurns, 'guard');
-    if (m.dmgReduction < 1)   push('💎', '-', 'buff');
-    if (m.frozen > 0)        push('❄️', m.frozen, 'debuff');
-    if (m.stunned)           push('💫', '1', 'debuff');
+    if (m.guardianTurns > 0) push('🛡️', m.guardianTurns, 'guard');
+    if (m.dmgReduction < 1) push('💎', '-', 'buff');
+    if (m.frozen > 0) push('❄️', m.frozen, 'debuff');
+    if (m.stunned) push('💫', '1', 'debuff');
 
     return tokens.join('');
   },
@@ -818,7 +811,7 @@ const UI = {
   _getBuffReport(m) {
     if (!m) return '';
     const parts = [];
-    const _fmt = v => (v >= 1) ? `+${Math.round((v-1)*100)}%` : `-${Math.round((1-v)*100)}%`;
+    const _fmt = v => (v >= 1) ? `+${Math.round((v - 1) * 100)}%` : `-${Math.round((1 - v) * 100)}%`;
 
     if (m.statuses) {
       m.statuses.forEach(s => {
@@ -828,12 +821,12 @@ const UI = {
     }
 
     // Keep legacy checks for non-migrated statuses
-    if (m.dmgReduction < 1)   parts.push(`Shield ${Math.round((1-m.dmgReduction)*100)}%`);
-    if (m.regenTurns > 0)    parts.push(`Regen`);
-    if (m.guardMark)         parts.push(`Guard`);
-    if (m.frozen > 0)        parts.push(`Frozen`);
-    if (m.stunned)           parts.push(`Stunned`);
-    
+    if (m.dmgReduction < 1) parts.push(`Shield ${Math.round((1 - m.dmgReduction) * 100)}%`);
+    if (m.regenTurns > 0) parts.push(`Regen`);
+    if (m.guardMark) parts.push(`Guard`);
+    if (m.frozen > 0) parts.push(`Frozen`);
+    if (m.stunned) parts.push(`Stunned`);
+
     return parts.length ? ` (${parts.join(', ')})` : '';
   },
 
@@ -846,7 +839,7 @@ const UI = {
       bar.innerHTML = '<span style="color:#5a527a">Enemy acting…</span>';
       return;
     }
-    const m   = G.party[t.idx];
+    const m = G.party[t.idx];
     const col = CHAR_COLOR[m.charId] || '#c0b8e8';
     bar.innerHTML =
       `<span class="amb-arrow" style="color:${col}">▶</span>` +
@@ -875,7 +868,7 @@ const UI = {
       SpriteRenderer.drawHero(img, m.charId, m.char, m.cls);
 
       const abHtml = (m.abilities || []).map(a =>
-        `<div class="pm-ab"><span class="pm-ab-icon">${a.icon||'⚡'}</span><span class="pm-ab-name">${a.name}</span><span class="pm-ab-mp">${a.mp}MP</span></div>`
+        `<div class="pm-ab"><span class="pm-ab-icon">${a.icon || '⚡'}</span><span class="pm-ab-name">${a.name}</span><span class="pm-ab-mp">${a.mp}MP</span></div>`
       ).join('');
 
       card.innerHTML = `
@@ -885,13 +878,13 @@ const UI = {
             <div class="pm-card-name" style="color:${col}">${m.displayName}</div>
             <div class="pm-card-class">${m.cls.name} ${m.isKO ? '<span class="pm-ko-badge">KO</span>' : ''}</div>
             <div class="pm-card-lv">LEVEL <span style="color:${col}">${m.lv}</span>
-              · EXP <span style="color:var(--gold)">${m.exp}</span>/<span style="color:var(--text-dim)">${30*m.lv}</span></div>
+              · EXP <span style="color:var(--gold)">${m.exp}</span>/<span style="color:var(--text-dim)">${30 * m.lv}</span></div>
           </div>
         </div>
         <div class="pm-bars">
           <div class="pm-bar-row">HP
             <div class="pm-bar-bg"><div class="pm-bar-fill" style="width:${hpPct}%;background:${hpCol}"></div></div>
-            <span>${Math.max(0,m.hp)}/${m.maxHp}</span>
+            <span>${Math.max(0, m.hp)}/${m.maxHp}</span>
           </div>
           <div class="pm-bar-row">MP
             <div class="pm-bar-bg"><div class="pm-bar-fill" style="width:${mpPct}%;background:#5060ff"></div></div>
@@ -920,7 +913,7 @@ function buildEnemyGroup(defs, spawnLevel = 1, isBoss = false) {
   // Tier-based growth rates
   const tierGrowth = {
     // NEW growth rates — ensures enemies scale as threats through Lv40
-    1: { hp: 5,  atk: 1.2, def: 0.5, spd: 0.5, mag: 0.3, statMult: 1.0, expMult: 1.0 },
+    1: { hp: 5, atk: 1.2, def: 0.5, spd: 0.5, mag: 0.3, statMult: 1.0, expMult: 1.0 },
     2: { hp: 10, atk: 2.5, def: 1.0, spd: 0.8, mag: 0.5, statMult: 1.3, expMult: 1.5 },
     3: { hp: 18, atk: 4.5, def: 1.8, spd: 1.2, mag: 0.8, statMult: 1.7, expMult: 2.5 },
   };
@@ -935,22 +928,22 @@ function buildEnemyGroup(defs, spawnLevel = 1, isBoss = false) {
   const hordeScale = defs.length >= 4 ? 0.65 : defs.length === 3 ? 0.78 : 1.0;
 
   G.enemyGroup = defs.slice(0, 4).map(def => {
-    const tier   = def.tier || 1;
+    const tier = def.tier || 1;
     const growth = tierGrowth[tier] || tierGrowth[1];
 
     const calcStat = (baseStat, statKey) => {
-      const base       = baseStat * growth.statMult * hordeScale * bossMult;
+      const base = baseStat * growth.statMult * hordeScale * bossMult;
       const levelBonus = growth[statKey] * (spawnLevel - 1) * hordeScale * bossMult;
       return Math.max(1, Math.floor(base + levelBonus));
     };
 
-    const finalHp   = calcStat(def.stats.hp,  'hp');
-    const finalAtk  = calcStat(def.stats.atk, 'atk');
-    const finalDef  = calcStat(def.stats.def, 'def');
-    const finalSpd  = calcStat(def.stats.spd, 'spd');
-    const finalMag  = calcStat(def.stats.mag, 'mag');
+    const finalHp = calcStat(def.stats.hp, 'hp');
+    const finalAtk = calcStat(def.stats.atk, 'atk');
+    const finalDef = calcStat(def.stats.def, 'def');
+    const finalSpd = calcStat(def.stats.spd, 'spd');
+    const finalMag = calcStat(def.stats.mag, 'mag');
     // EXP/gold scale by count so total reward is fair
-    const finalExp  = Math.floor(def.reward.exp  * growth.expMult * hordeScale);
+    const finalExp = Math.floor(def.reward.exp * growth.expMult * hordeScale);
     const finalGold = Math.floor(def.reward.gold * growth.expMult * hordeScale);
 
     return {
@@ -963,10 +956,10 @@ function buildEnemyGroup(defs, spawnLevel = 1, isBoss = false) {
       abilityDefs: def.abilities || [],
       palette: def.palette,
       subtitle: def.subtitle || '',
-      element:  def.element  || 'physical',
-      weakTo:   def.weakTo   || [],
+      element: def.element || 'physical',
+      weakTo: def.weakTo || [],
       resistTo: def.resistTo || [],
-      tier:     tier,
+      tier: tier,
       isKO: false, stunned: false, debuff: null,
       statuses: [],
     };
@@ -993,8 +986,8 @@ function unlockCharacter(charId) {
 
 function buildTurnQueue() {
   const q = [];
-  G.party.forEach((m, i)      => { if (Battle.alive(m)) q.push({ type:'party', idx:i, spd:m.spd }); });
-  G.enemyGroup.forEach((e, i) => { if (Battle.alive(e)) q.push({ type:'enemy', idx:i, spd:e.spd }); });
+  G.party.forEach((m, i) => { if (Battle.alive(m)) q.push({ type: 'party', idx: i, spd: m.spd }); });
+  G.enemyGroup.forEach((e, i) => { if (Battle.alive(e)) q.push({ type: 'enemy', idx: i, spd: e.spd }); });
   q.sort((a, b) => b.spd - a.spd);
   return q;
 }
@@ -1045,7 +1038,7 @@ function startBattle() {
   }
 
   // Free battle: 2–3 random enemies, scaled to party level
-  const pool  = G.enemies.slice();
+  const pool = G.enemies.slice();
   const count = 2 + Math.floor(Math.random() * 2);
   const picks = [];
   for (let i = 0; i < Math.min(count, pool.length); i++) {
@@ -1057,7 +1050,7 @@ function startBattle() {
   buildEnemyGroup(picks, spawnLevel);
   _initBattle();
   const names = G.enemyGroup.map(e => e.name).join(' & ');
-  UI.setLog([`${names} appear!`, `Party to battle stations!`], ['hi','']);
+  UI.setLog([`${names} appear!`, `Party to battle stations!`], ['hi', '']);
   processCurrentTurn();
 }
 
@@ -1087,10 +1080,10 @@ function _applyVampiric(enemy, dmg, enemyIdx) {
 }
 
 function _initBattle() {
-  G.turnQueue      = buildTurnQueue();
-  G.turnIdx        = 0;
+  G.turnQueue = buildTurnQueue();
+  G.turnIdx = 0;
   G.activeMemberIdx = 0;
-  G.busy           = false;
+  G.busy = false;
   buildAbilityMenu();
   UI.show('battle-screen');
   UI.renderBattleUI();
@@ -1104,9 +1097,9 @@ function buildAbilityMenu() {
   menu.innerHTML = '';
   actor.abilities.forEach(ab => {
     const b = document.createElement('button');
-    const icon   = ab.icon || '';
-    const type   = ab.type || 'physical';
-    const tIcon  = TYPE_ICONS[type] || '🗡️';
+    const icon = ab.icon || '';
+    const type = ab.type || 'physical';
+    const tIcon = TYPE_ICONS[type] || '🗡️';
 
     const mpCost = actor.passive?.id === 'eidolon_bond' ? Math.ceil(ab.mp * 0.85) : ab.mp;
 
@@ -1133,20 +1126,32 @@ function buildAbilityMenu() {
 function processCurrentTurn() {
   // Skip dead units
   while (G.turnIdx < G.turnQueue.length) {
+    const t = G.turnQueue[G.turnIdx];
+    const unit = t.type === 'party' ? G.party[t.idx] : G.enemyGroup[t.idx];
+    if (Battle.alive(unit)) break;
+    G.turnIdx++;
+  }
+
+  // New round if exhausted
+  if (G.turnIdx >= G.turnQueue.length) {
+    G.turnQueue = buildTurnQueue();
+    G.turnIdx = 0;
+    if (!G.turnQueue.length) return;
+  }
+
   const t = G.turnQueue[G.turnIdx];
   const unit = t.type === 'party' ? G.party[t.idx] : G.enemyGroup[t.idx];
 
   // CONTROL CHECK (Phase 5 Refinement: Unified Status System)
-  const stun   = unit.statuses?.find(s => s.id === 'status_stunned');
+  const stun = unit.statuses?.find(s => s.id === 'status_stunned');
   const frozen = unit.statuses?.find(s => s.id === 'status_frozen');
 
   if (stun || frozen) {
     const label = stun ? 'stunned' : 'frozen';
-    const icon  = stun ? '💫' : '❄️';
+    const icon = stun ? '💫' : '❄️';
     UI.addLog(`${icon} ${unit.displayName || unit.name} is ${label} and skips their turn!`, 'regen');
-    
-    // Remove stun immediately or let tickActorStatus handle it? 
-    // For these hard control effects, we remove them upon the turn skip.
+
+    // Remove stun/freeze immediately upon the turn skip.
     if (stun) unit.statuses = unit.statuses.filter(s => s.id !== 'status_stunned');
     if (frozen) unit.statuses = unit.statuses.filter(s => s.id !== 'status_frozen');
 
@@ -1202,7 +1207,7 @@ function heroTurn() {
   UI.renderActiveMemberBar();
   UI.btns(true);
   const actor = G.party[G.activeMemberIdx];
-  
+
   // NEW: Start-of-Turn maintenance (tick buffs/regen)
   Battle.tickActorStatus(actor);
 
@@ -1212,14 +1217,14 @@ function heroTurn() {
 
 function checkBattleEnd() {
   const allEnemiesDead = G.enemyGroup.every(e => !Battle.alive(e));
-  const allPartyDown   = G.party.every(m => !Battle.alive(m));
+  const allPartyDown = G.party.every(m => !Battle.alive(m));
 
   if (allEnemiesDead) {
     let totalExp = 0, totalGold = 0;
     const allDrops = [];
     let relicDrop = null;
     G.enemyGroup.forEach(e => {
-      totalExp  += e.exp;
+      totalExp += e.exp;
       totalGold += e.gold;
       const rawDef = G.enemies.find(r => r.id === e.id);
       if (rawDef) _awardDrops(rawDef).forEach(id => allDrops.push(id));
@@ -1238,10 +1243,10 @@ function checkBattleEnd() {
       if (!Battle.alive(m)) return;
       // Level-gap penalty: scale exp down as member outlevels enemies.
       // At +3 levels above enemy: 0 exp. Linear ramp from gap 0 → gap 3.
-      const gap       = (m.lv || 1) - avgEnemyLv;
-      const expScale  = gap >= 3 ? 0 : gap <= 0 ? 1 : 1 - (gap / 3);
+      const gap = (m.lv || 1) - avgEnemyLv;
+      const expScale = gap >= 3 ? 0 : gap <= 0 ? 1 : 1 - (gap / 3);
       const earnedExp = Math.floor(totalExp * expScale);
-      m.exp  += earnedExp;
+      m.exp += earnedExp;
       m.gold += totalGold;
       while (checkMemberLevel(m)) {
         if (!leveledNames.includes(m.displayName)) leveledNames.push(m.displayName);
@@ -1249,11 +1254,11 @@ function checkBattleEnd() {
       // Sync stats back to character data for persistence across battles
       const ch = G.chars.find(c => c.id === m.charId);
       if (ch) {
-        ch.lv   = m.lv;
-        ch.exp  = m.exp;
+        ch.lv = m.lv;
+        ch.exp = m.exp;
         ch.gold = m.gold;
-        ch.mp   = m.mp;   // persist MP so it carries between battles
-        ch.hp   = m.hp;   // persist HP
+        ch.mp = m.mp;   // persist MP so it carries between battles
+        ch.hp = m.hp;   // persist HP
         ch.isKO = m.isKO; // persist KO state
       }
     });
@@ -1264,7 +1269,7 @@ function checkBattleEnd() {
     const relicMsg = relicDrop ? `✦ Relic found: ${relicDrop.icon} ${relicDrop.name}!` : null;
     UI.setLog([
       `Enemies defeated! +${totalExp} EXP +${totalGold} Gold`,
-      dropMsg  ? `Drops: ${dropMsg}` : '',
+      dropMsg ? `Drops: ${dropMsg}` : '',
       relicMsg || ''
     ].filter(Boolean), ['hi', 'hi', 'hi']);
     UI.renderPartyStatus();
@@ -1309,18 +1314,18 @@ function checkEnd() { return checkBattleEnd(); }
 function showResult(type) {
   _clearBattleAtmosphere();
   closePartyMenu();
-  const t       = UI.el('result-title');
-  const st      = UI.el('result-stats');
-  const party   = UI.el('result-party');
+  const t = UI.el('result-title');
+  const st = UI.el('result-stats');
+  const party = UI.el('result-party');
   const retryBtn = UI.el('result-retry-btn');
   const againBtn = UI.el('result-again-btn');
 
   // Party member cards — shown on all result types
   if (party && G.party.length) {
     party.innerHTML = G.party.map(m => {
-      const col    = CHAR_COLOR[m.charId] || '#aaa';
-      const isKO   = !Battle.alive(m);
-      const hpTxt  = isKO ? '0' : m.hp;
+      const col = CHAR_COLOR[m.charId] || '#aaa';
+      const isKO = !Battle.alive(m);
+      const hpTxt = isKO ? '0' : m.hp;
       return `<div class="result-member${isKO ? ' ko' : ''}" style="border-color:${col}40">
         <div class="rm-name" style="color:${col}">${m.displayName}</div>
         <div class="rm-lv">LV ${m.lv}</div>
@@ -1336,24 +1341,24 @@ function showResult(type) {
   if (type === 'victory') {
     if (typeof SFX !== 'undefined') SFX.victory();
     t.textContent = '✨ VICTORY! ✨';
-    t.className   = 'result-title victory';
+    t.className = 'result-title victory';
     const totalGold = G.party.reduce((s, m) => s + (m.gold || 0), 0);
-    st.innerHTML  = `All enemies defeated!<br><span class="val">+Gold collected this run: ${totalGold}</span>`;
+    st.innerHTML = `All enemies defeated!<br><span class="val">+Gold collected this run: ${totalGold}</span>`;
     if (retryBtn) retryBtn.style.display = 'none';
-    if (againBtn) againBtn.textContent   = '▶ PLAY AGAIN';
+    if (againBtn) againBtn.textContent = '▶ PLAY AGAIN';
   } else if (type === 'defeat') {
     if (typeof SFX !== 'undefined') SFX.defeat();
     t.textContent = '💀 GAME OVER 💀';
-    t.className   = 'result-title defeat';
-    st.innerHTML  = `The party has fallen...`;
+    t.className = 'result-title defeat';
+    st.innerHTML = `The party has fallen...`;
     if (retryBtn) retryBtn.style.display = '';
-    if (againBtn) againBtn.textContent   = '⬅ MENU';
+    if (againBtn) againBtn.textContent = '⬅ MENU';
   } else {
     t.textContent = '💨 ESCAPED!';
-    t.className   = 'result-title escaped';
-    st.innerHTML  = `The party fled from battle!`;
+    t.className = 'result-title escaped';
+    st.innerHTML = `The party fled from battle!`;
     if (retryBtn) retryBtn.style.display = 'none';
-    if (againBtn) againBtn.textContent   = '▶ PLAY AGAIN';
+    if (againBtn) againBtn.textContent = '▶ PLAY AGAIN';
   }
   UI.show('result-screen');
 }
@@ -1372,11 +1377,11 @@ function retryBattle() {
     m.statuses = [];
   });
   const level = G.enemyGroup[0]?.level || 1;
-  const defs  = G.enemyGroup.map(e => G.enemies.find(r => r.id === e.id)).filter(Boolean);
+  const defs = G.enemyGroup.map(e => G.enemies.find(r => r.id === e.id)).filter(Boolean);
   buildEnemyGroup(defs, level);
   G.turnQueue = buildTurnQueue();
-  G.turnIdx   = 0;
-  G.busy      = false;
+  G.turnIdx = 0;
+  G.busy = false;
   UI.show('battle-screen');
   UI.renderBattleUI();
   processCurrentTurn();
@@ -1387,36 +1392,36 @@ function retryBattle() {
    ============================================================ */
 /* Move mute/TTS/zoom into the explore header so they don't clash */
 function _dockPersistentBtns(dock) {
-  const hdrRight   = document.querySelector('.explore-header-right');
-  const muteBtn    = document.getElementById('mute-btn');
-  const ttsBtn     = document.getElementById('tts-btn');
-  const zoomBtn    = document.getElementById('zoom-btn');
-  const resetBtn   = document.getElementById('reset-zoom-btn');
-  const gameEl     = document.getElementById('game');
+  const hdrRight = document.querySelector('.explore-header-right');
+  const muteBtn = document.getElementById('mute-btn');
+  const ttsBtn = document.getElementById('tts-btn');
+  const zoomBtn = document.getElementById('zoom-btn');
+  const resetBtn = document.getElementById('reset-zoom-btn');
+  const gameEl = document.getElementById('game');
 
   if (dock && hdrRight) {
     // Make them inline in the header
     [muteBtn, ttsBtn].forEach(b => {
       if (!b) return;
       b.style.position = 'static';
-      b.style.width    = '28px';
-      b.style.height   = '28px';
+      b.style.width = '28px';
+      b.style.height = '28px';
       b.style.fontSize = '13px';
       hdrRight.insertBefore(b, hdrRight.firstChild);
     });
-    if (zoomBtn)  zoomBtn.style.display  = 'none';
+    if (zoomBtn) zoomBtn.style.display = 'none';
     if (resetBtn) resetBtn.style.display = 'none';
   } else {
     // Restore to absolute positioning
     [muteBtn, ttsBtn].forEach(b => {
       if (!b) return;
       b.style.position = 'absolute';
-      b.style.width    = '';
-      b.style.height   = '';
+      b.style.width = '';
+      b.style.height = '';
       b.style.fontSize = '';
       if (gameEl) gameEl.appendChild(b);
     });
-    if (zoomBtn)  zoomBtn.style.display  = '';
+    if (zoomBtn) zoomBtn.style.display = '';
     if (resetBtn) resetBtn.style.display = '';
   }
 }
@@ -1441,7 +1446,7 @@ function startExplore() {
     }
     // Auto-select all chars (each with their own class)
     G.selectedChars = G.chars.slice(0, 4).map(c => c.id);
-    G.selectedChar  = G.selectedChars[0];
+    G.selectedChar = G.selectedChars[0];
     // Don't set selectedClass — buildParty will use each character's class_affinity
     buildParty();
   }
@@ -1450,9 +1455,9 @@ function startExplore() {
   _dockPersistentBtns(true);
 
   // Size canvas to its container
-  const wrap   = document.getElementById('explore-canvas-wrap');
+  const wrap = document.getElementById('explore-canvas-wrap');
   const canvas = document.getElementById('explore-canvas');
-  canvas.width  = wrap.clientWidth  || 360;
+  canvas.width = wrap.clientWidth || 360;
   canvas.height = wrap.clientHeight || 480;
 
   MapEngine.init(canvas);

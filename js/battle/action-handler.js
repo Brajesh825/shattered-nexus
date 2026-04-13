@@ -212,6 +212,7 @@ function heroAbility(ab) {
       // Balanced HP Scaling (10%) vs Standard Stat Scaling (50%)
       // Stat Scaling with new dynamic resolver
       const _effAtk = Battle.getStat(actor, 'atk');
+      const _scaleCoeff = (e.statScale === 'hp' || e.statScale === 'maxHp') ? 0.1 : 0.5;
       const _scaleStat = e.statScale ? Math.floor(Battle.getStat(actor, e.statScale) * _scaleCoeff) : 0;
       const _totalAtk = _effAtk + _scaleStat;
 
@@ -355,9 +356,9 @@ function heroAbility(ab) {
         UI.addLog(`${actor.displayName} ${ultimateChannels[ab.id]}`, 'magic');
         setTimeout(() => {
           if (_summonBonus > 1.0) UI.addLog('✦ Eidolon Power Boost!', 'magic');
-          if (window.LogDebug) window.LogDebug(`[Action] ${actor.displayName} ➔ ${targets.map(t=>t.name).join(', ')}: uses ${ab.name} (AOE)`, 'info');
+          if (window.LogDebug) window.LogDebug(`[Action] ${actor.displayName} ➔ All Enemies: uses ${ab.name} (AOE)`, 'info');
           // 1. Hit Check (Ultimate)
-          if (!Battle.rollHit(actor, targets[0])) { // Simplified check for ultimates
+          if (!Battle.rollHit(actor, enemy)) { // Simplified check for ultimates
              UI.addLog(`${actor.displayName}'s ultimate missed its focus!`, 'magic');
              UI.popEnemy(G.targetEnemyIdx, 0, 'miss');
              return;
@@ -423,7 +424,7 @@ function heroAbility(ab) {
             UI.popEnemy(tIdx, reaction.label, 'crit');
             // Reaction secondary effects
             if (reaction.stun) {
-              tgt.stunned = true;
+              Battle.addStatus(tgt, { id: 'status_stunned', label: 'Stunned', icon: '💫', type: 'control', turns: 1 });
               UI.addLog(`💫 ${tgt.name} is Conductive! (Stunned)`, 'magic');
             }
             if (reaction.dot) {
@@ -503,13 +504,11 @@ function heroAbility(ab) {
           window.LogDebug(`[Heal] ${actor.displayName} ➔ ${m.displayName}: ${amt} HP (Base ${base} + MagBonus ${magBonus} * Amp ${_healAmp.toFixed(2)})`, 'buff');
         }
         
-        if (e.cleanse) {
-          m.frozen = 0; m.stunned = false; m.debuff = null;
-        }
         const pIdx = G.party.indexOf(m);
         UI.popParty(pIdx, amt, 'heal', 'light');
         
         if (e.cleanse) {
+          if (!m.statuses) m.statuses = [];
           m.statuses = m.statuses.filter(s => s.id !== 'status_frozen' && s.id !== 'status_stunned' && !s.id.includes('debuff'));
           UI.addLog(`✨ ${m.displayName} Cleansed!`, 'heal');
         }
@@ -613,8 +612,12 @@ function heroAbility(ab) {
       }
 
     } else if (ab.type === 'stun') {
-      enemy.stunned = Math.random() < (e.stunChance || 0.5);
-      UI.addLog(enemy.stunned ? `${enemy.name} is stunned!` : 'Had no effect!', enemy.stunned ? 'magic' : '');
+      if (Math.random() < (e.stunChance || 0.5)) {
+        Battle.addStatus(enemy, { id: 'status_stunned', label: 'Stunned', icon: '💫', type: 'control', turns: 1 });
+        UI.addLog(`💫 ${enemy.name} is stunned!`, 'magic');
+      } else {
+        UI.addLog('Had no effect!', '');
+      }
 
     } else if (ab.type === 'steal') {
       const ok = Math.random() < (e.stealChance || 0.5);
@@ -692,8 +695,12 @@ function enemyAct(enemy, enemyIdx) {
   // (Frozen turn-skip now handled unified in processCurrentTurn)
 
   // ── TARGET SELECTION (Phase 5: Role-Based AI) ──────────────────
+  const alive = G.party.filter(m => Battle.alive(m));
+  if (!alive.length) { advanceTurn(); return; }
+
   let target;
   let targetIdx;
+  const role = enemy.aiRole || 'attacker';
 
   // 1. Forced Targeting (Taunt)
   const taunterIdx = G.party.findIndex(m => Battle.alive(m) && m.statuses?.some(s => s.id === 'status_taunt'));
@@ -705,8 +712,6 @@ function enemyAct(enemy, enemyIdx) {
   
   // 2. Role-Based Logic
   else {
-    const role = enemy.aiRole || 'attacker';
-    
     if (role === 'tactician') {
       // Find targets with an active aura
       const auratized = alive.filter(m => m.statuses?.some(s => s.id.startsWith('aura_')));
@@ -735,7 +740,6 @@ function enemyAct(enemy, enemyIdx) {
 
   // 3. Ability Selection
   let ab;
-  const role = enemy.aiRole || 'attacker';
 
   // Support logic: check for wounded allies before picking an attack
   if (role === 'support') {
