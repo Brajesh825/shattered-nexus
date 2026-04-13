@@ -108,11 +108,18 @@
       
       <div style="background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px;">
         <h4 style="color:#ef4444; margin: 0 0 10px 0;">Enemy Setup</h4>
+        <label style="color:#aaa; font-size: 13px; display:block; margin-bottom:5px;">Enemy Level: <input type="number" id="test-enemy-lv" value="10" min="1" max="99" style="width: 60px; background: #222; color: #fff; border: 1px solid #ef4444; padding: 2px 5px; border-radius: 4px;"></label>
         <div style="display: grid; grid-template-columns: 1fr; gap:5px;">
           <select id="test-e1" style="background:#221111; color:#fff; border:1px solid #aa3333; padding:5px; border-radius: 4px;"></select>
           <select id="test-e2" style="background:#221111; color:#fff; border:1px solid #772222; padding:5px; border-radius: 4px;"></select>
           <select id="test-e3" style="background:#221111; color:#fff; border:1px solid #772222; padding:5px; border-radius: 4px;"></select>
           <select id="test-e4" style="background:#221111; color:#fff; border:1px solid #772222; padding:5px; border-radius: 4px;"></select>
+        </div>
+        <div style="margin-top: 8px; color: #aaa; font-size: 13px;">
+          Mutation Mode: 
+          <label><input type="radio" name="test-mut" value="" checked> None</label>
+          <label style="margin-left:8px; color:#c060ff"><input type="radio" name="test-mut" value="corrupted"> Corrupted</label>
+          <label style="margin-left:8px; color:#60ff40"><input type="radio" name="test-mut" value="mutant"> Mutant</label>
         </div>
       </div>
 
@@ -172,7 +179,7 @@
     }
 
     if (G.enemies && G.enemies.length > 0) {
-      const enemyOptions = `<option value="">-- None --</option>` + G.enemies.map(e => `<option value="${e.id}">${e.name} (Lv.${e.lv || 1})</option>`).join('');
+      const enemyOptions = `<option value="">-- None --</option>` + G.enemies.map(e => `<option value="${e.id}">${e.name}</option>`).join('');
       ['test-e1','test-e2','test-e3','test-e4'].forEach(id => document.getElementById(id).innerHTML = enemyOptions);
       document.getElementById('test-e1').value = G.enemies[0].id;
     }
@@ -180,8 +187,10 @@
 
   window.startSandboxBattle = function() {
     const lv = parseInt(document.getElementById('test-party-lv').value, 10) || 10;
+    const enemyLv = parseInt(document.getElementById('test-enemy-lv').value, 10) || 10;
     const pIds = ['test-p1','test-p2','test-p3','test-p4'].map(id => document.getElementById(id).value);
     const eIds = ['test-e1','test-e2','test-e3','test-e4'].map(id => document.getElementById(id).value).filter(Boolean);
+    const mutation = document.querySelector('input[name="test-mut"]:checked').value || null;
 
     if (eIds.length === 0) { alert("Select at least one enemy!"); return; }
 
@@ -198,15 +207,46 @@
 
     if (typeof buildParty !== 'undefined') buildParty();
 
-    const enemyDefs = eIds.map(id => G.enemies.find(e => e.id === id)).filter(Boolean);
-    if (typeof initEnemyGroup === 'function') {
-      initEnemyGroup(enemyDefs, lv, false, lv); 
+    let enemyDefs = eIds.map(id => G.enemies.find(e => e.id === id)).filter(Boolean);
+    
+    // Apply visual mutation name changes before building
+    if (mutation) {
+       enemyDefs = enemyDefs.map(def => ({
+         ...def,
+         name: mutation === 'mutant' ? `Mutant ${def.name}` : `Corrupted ${def.name}`,
+         mutation
+       }));
+    }
+
+    if (typeof buildEnemyGroup === 'function') {
+      buildEnemyGroup(enemyDefs, enemyLv, false, mutation); 
+      
+      // Apply exact real-game multiplier bumps
+      if (mutation) {
+        const mult = mutation === 'mutant' ? 1.55 : 1.28;
+        G.enemyGroup.forEach(e => {
+          e.hp    = Math.floor(e.hp    * mult); e.maxHp = e.hp;
+          e.atk   = Math.floor(e.atk   * mult);
+          e.def   = Math.floor(e.def   * mult);
+          e.mag   = Math.floor(e.mag   * mult);
+          e.mutation = mutation;
+        });
+      }
+    }
+
+    // Apply scene visual atmospherics
+    const scene = document.getElementById('battle-scene');
+    if (scene) {
+      scene.classList.remove('battle-corrupted', 'battle-mutant');
+      if (mutation === 'corrupted') scene.classList.add('battle-corrupted');
+      if (mutation === 'mutant')    scene.classList.add('battle-mutant');
     }
 
     document.getElementById('debug-battle-overlay').style.display = 'none';
 
-    if (typeof UI !== 'undefined' && UI.initBattle) {
-      UI.initBattle();
+    // TRIGGER BATTLE using exact game load sequence
+    if (typeof _initBattle === 'function') {
+      _initBattle();
     }
   }
 </script>
