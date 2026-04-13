@@ -9,7 +9,12 @@
     "color": "#4b9fce",
     "role": "Ranger",
     "stat_multipliers": {
-      "hp": 0.95, "mp": 1.1, "atk": 1.25, "def": 0.85, "spd": 1.6, "mag": 1.0
+      "hp": 0.95,
+      "mp": 1.1,
+      "atk": 1.25,
+      "def": 0.85,
+      "spd": 1.6,
+      "mag": 1.0
     },
     "abilities": [
       {
@@ -19,7 +24,11 @@
         "mp": 0,
         "type": "physical",
         "description": "Swift ice-infused strike — 1.5x ATK damage, 40% chance to slow",
-        "effect": { "dmgMultiplier": 1.5, "element": "ice", "slowChance": 0.4 }
+        "effect": {
+          "dmgMultiplier": 1.5,
+          "element": "ice",
+          "slowChance": 0.4
+        }
       },
       {
         "id": "glacial_waltz",
@@ -28,7 +37,13 @@
         "mp": 8,
         "type": "physical",
         "description": "Spin attack dealing 2.2x physical damage to all, bonus from SPD",
-        "effect": { "dmgMultiplier": 2.2, "element": "ice", "aoe": true, "statScale": "spd", "spdBuff": 1 }
+        "effect": {
+          "dmgMultiplier": 2.2,
+          "element": "ice",
+          "aoe": true,
+          "statScale": "spd",
+          "spdBuff": 1
+        }
       },
       {
         "id": "permafrost",
@@ -37,7 +52,13 @@
         "mp": 6,
         "type": "debuff",
         "description": "60% chance to freeze enemy for 1 turn, DEF -20%",
-        "effect": { "freezeChance": 0.6, "stat": "def", "multiplier": 0.8, "duration": 2, "statScale": "spd" }
+        "effect": {
+          "freezeChance": 0.6,
+          "stat": "def",
+          "multiplier": 0.8,
+          "duration": 2,
+          "statScale": "spd"
+        }
       },
       {
         "id": "cryoclasm",
@@ -47,10 +68,22 @@
         "type": "physical",
         "isUltimate": true,
         "description": "Massive ice explosion — 3.0x physical damage, scales with SPD, resets if enemy frozen",
-        "effect": { "dmgMultiplier": 3.0, "element": "ice", "statScale": "spd", "cooldown": 2 }
+        "effect": {
+          "dmgMultiplier": 3.0,
+          "element": "ice",
+          "statScale": "spd",
+          "cooldown": 2
+        }
       }
     ],
-    "growthPerLevel": { "hp": 6, "mp": 5, "atk": 3, "def": 2, "spd": 5, "mag": 3 }
+    "growthPerLevel": {
+      "hp": 6,
+      "mp": 5,
+      "atk": 3,
+      "def": 2,
+      "spd": 5,
+      "mag": 3
+    }
   },
   {
     "id": "spirit_incinerator",
@@ -62,7 +95,12 @@
     "color": "#c03010",
     "role": "Warrior",
     "stat_multipliers": {
-      "hp": 0.85, "mp": 1.0, "atk": 1.5, "def": 0.7, "spd": 1.15, "mag": 1.1
+      "hp": 0.85,
+      "mp": 1.0,
+      "atk": 1.5,
+      "def": 0.7,
+      "spd": 1.15,
+      "mag": 1.1
     },
     "abilities": [
       {
@@ -72,7 +110,11 @@
         "mp": 0,
         "type": "physical",
         "description": "Ghost-fire spear strike — 1.6x ATK, self-heal 15% damage",
-        "effect": { "dmgMultiplier": 1.6, "element": "fire", "lifeSteal": 0.15 }
+        "effect": {
+          "dmgMultiplier": 1.6,
+          "element": "fire",
+          "lifeSteal": 0.15
+        }
       },
       {
         "id": "paramita_papilio",
@@ -81,7 +123,12 @@
         "mp": 6,
         "type": "buff",
         "description": "Enter the butterfly state — Costs 30% current HP, ATK +60% for 3 turns",
-        "effect": { "stat": "atk", "multiplier": 1.6, "hpCostPercent": 0.3, "duration": 3 }
+        "effect": {
+          "stat": "atk",
+          "multiplier": 1.6,
+          "hpCostPercent": 0.3,
+          "duration": 3
+        }
       },
       {
         "id": "sanguine_rouge",
@@ -90,7 +137,11 @@
         "mp": 4,
         "type": "buff",
         "description": "Passive empowerment — Fire damage +33% and absorb fire damage as healing, lasts 5 turns",
-        "effect": { "fireAmp": 1.33, "absorb": "fire", "duration": 5 }
+        "effect": {
+          "fireAmp": 1.33,
+          "absorb": "fire",
+          "duration": 5
+        }
       },
       {
         "id": "spirit_soother",
@@ -100,10 +151,24 @@
         "type": "physical",
         "isUltimate": true,
         "description": "Ultimate ghost strike — 4.0x dynamic damage (scales with Max HP & Loss), massive self-heal",
-        "effect": { "dmgMultiplier": 4.0, "element": "fire", "statScale": "maxHp", "lowHpDmgBonus": 1.0, "lifeSteal": 0.35, "healLowMult": 1.6 }
+        "effect": {
+          "dmgMultiplier": 4.0,
+          "element": "fire",
+          "statScale": "maxHp",
+          "lowHpDmgBonus": 1.0,
+          "lifeSteal": 0.35,
+          "healLowMult": 1.6
+        }
       }
     ],
-    "growthPerLevel": { "hp": 7, "mp": 4, "atk": 5, "def": 1, "spd": 3, "mag": 4 }
+    "growthPerLevel": {
+      "hp": 7,
+      "mp": 4,
+      "atk": 5,
+      "def": 1,
+      "spd": 3,
+      "mag": 4
+    }
   },
   {
     "id": "hydro_performer",
@@ -115,7 +180,12 @@
     "color": "#0e9080",
     "role": "Healer",
     "stat_multipliers": {
-      "hp": 1.15, "mp": 1.4, "atk": 0.8, "def": 1.0, "spd": 0.95, "mag": 1.3
+      "hp": 1.15,
+      "mp": 1.4,
+      "atk": 0.8,
+      "def": 1.0,
+      "spd": 0.95,
+      "mag": 1.3
     },
     "abilities": [
       {
@@ -125,7 +195,12 @@
         "mp": 5,
         "type": "heal",
         "description": "Graceful healing dance — restore 35-55 HP, buff own healing output by 30%",
-        "effect": { "healBase": 35, "healRandom": 20, "healBoost": 1.3, "duration": 3 }
+        "effect": {
+          "healBase": 35,
+          "healRandom": 20,
+          "healBoost": 1.3,
+          "duration": 3
+        }
       },
       {
         "id": "water_wheel",
@@ -134,7 +209,12 @@
         "mp": 8,
         "type": "magic_damage",
         "description": "Spinning water attack — 2.0x magic damage, heal all allies for 50% damage",
-        "effect": { "dmgMultiplier": 2.2, "element": "water", "lifeSteal": 0.5, "aoe": true }
+        "effect": {
+          "dmgMultiplier": 2.2,
+          "element": "water",
+          "lifeSteal": 0.5,
+          "aoe": true
+        }
       },
       {
         "id": "harmony_preservation",
@@ -143,7 +223,13 @@
         "mp": 10,
         "type": "buff",
         "description": "Party blessing — ATK +20%, DEF +20%, regen 5 HP/turn, lasts 4 turns",
-        "effect": { "aoe": true, "atkBuff": 1.2, "defBuff": 1.2, "hpRegen": 5, "duration": 4 }
+        "effect": {
+          "aoe": true,
+          "atkBuff": 1.2,
+          "defBuff": 1.2,
+          "hpRegen": 5,
+          "duration": 4
+        }
       },
       {
         "id": "hajras_hymn",
@@ -153,10 +239,22 @@
         "type": "heal",
         "isUltimate": true,
         "description": "Ultimate star dance — restore 50% max HP, cleanse all debuffs, +1 SPD",
-        "effect": { "healPercent": 0.5, "aoe": true, "cleanse": true, "spdBuff": 1.2 }
+        "effect": {
+          "healPercent": 0.5,
+          "aoe": true,
+          "cleanse": true,
+          "spdBuff": 1.2
+        }
       }
     ],
-    "growthPerLevel": { "hp": 10, "mp": 8, "atk": 1, "def": 2, "spd": 1, "mag": 5 }
+    "growthPerLevel": {
+      "hp": 10,
+      "mp": 8,
+      "atk": 1,
+      "def": 2,
+      "spd": 1,
+      "mag": 5
+    }
   },
   {
     "id": "yaksha_protector",
@@ -168,7 +266,12 @@
     "color": "#0a4030",
     "role": "Knight",
     "stat_multipliers": {
-      "hp": 1.4, "mp": 0.8, "atk": 1.1, "def": 1.4, "spd": 0.85, "mag": 0.7
+      "hp": 1.4,
+      "mp": 0.8,
+      "atk": 1.1,
+      "def": 1.4,
+      "spd": 0.85,
+      "mag": 0.7
     },
     "abilities": [
       {
@@ -178,7 +281,11 @@
         "mp": 0,
         "type": "physical",
         "description": "Polearm thrust — 1.4x ATK damage, ignore 20% of enemy DEF",
-        "effect": { "dmgMultiplier": 1.4, "element": "physical", "defPen": 0.2 }
+        "effect": {
+          "dmgMultiplier": 1.4,
+          "element": "physical",
+          "defPen": 0.2
+        }
       },
       {
         "id": "yaksha_valor_active",
@@ -187,7 +294,13 @@
         "mp": 6,
         "type": "buff",
         "description": "Enter guardian stance — take 25% less damage, reflect 15% damage back, 3 turns",
-        "effect": { "stat": "def", "multiplier": 1.3, "damageReduction": 0.25, "reflect": 0.15, "duration": 3 }
+        "effect": {
+          "stat": "def",
+          "multiplier": 1.3,
+          "damageReduction": 0.25,
+          "reflect": 0.15,
+          "duration": 3
+        }
       },
       {
         "id": "karmic_barrier",
@@ -196,7 +309,13 @@
         "mp": 8,
         "type": "buff",
         "description": "Protect all allies — DEF +40%, next ally attacked takes 10% less damage for 2 turns",
-        "effect": { "aoe": true, "stat": "def", "multiplier": 1.4, "damageReduction": 0.1, "duration": 2 }
+        "effect": {
+          "aoe": true,
+          "stat": "def",
+          "multiplier": 1.4,
+          "damageReduction": 0.1,
+          "duration": 2
+        }
       },
       {
         "id": "mastery_of_pain",
@@ -206,10 +325,23 @@
         "type": "magic_damage",
         "isUltimate": true,
         "description": "Channel karmic energy — 3.7x magic damage, scales with DEF, forces all enemies to attack Rei",
-        "effect": { "dmgMultiplier": 3.7, "statScale": "def", "element": "wind", "guardMark": true, "duration": 3 }
+        "effect": {
+          "dmgMultiplier": 3.7,
+          "statScale": "def",
+          "element": "wind",
+          "guardMark": true,
+          "duration": 3
+        }
       }
     ],
-    "growthPerLevel": { "hp": 16, "mp": 2, "atk": 3, "def": 5, "spd": 0, "mag": 1 }
+    "growthPerLevel": {
+      "hp": 16,
+      "mp": 2,
+      "atk": 3,
+      "def": 5,
+      "spd": 0,
+      "mag": 1
+    }
   },
   {
     "id": "summoner_eidolon",
@@ -221,7 +353,12 @@
     "color": "#6d28d9",
     "role": "Mage",
     "stat_multipliers": {
-      "hp": 0.95, "mp": 1.5, "atk": 0.6, "def": 0.8, "spd": 0.95, "mag": 1.6
+      "hp": 0.95,
+      "mp": 1.5,
+      "atk": 0.6,
+      "def": 0.8,
+      "spd": 0.95,
+      "mag": 1.6
     },
     "abilities": [
       {
@@ -231,7 +368,11 @@
         "mp": 8,
         "type": "magic_damage",
         "description": "Call the dragon king — 2.4x magic damage to all enemies, fire element",
-        "effect": { "dmgMultiplier": 2.4, "element": "fire", "aoe": true }
+        "effect": {
+          "dmgMultiplier": 2.4,
+          "element": "fire",
+          "aoe": true
+        }
       },
       {
         "id": "summon_syldra",
@@ -240,7 +381,12 @@
         "mp": 8,
         "type": "heal",
         "description": "Invoke the water serpent — restore 40-60 HP to all allies, cure one debuff",
-        "effect": { "healBase": 40, "healRandom": 20, "aoe": true, "cleanse": true }
+        "effect": {
+          "healBase": 40,
+          "healRandom": 20,
+          "aoe": true,
+          "cleanse": true
+        }
       },
       {
         "id": "eidolon_channel",
@@ -249,7 +395,12 @@
         "mp": 10,
         "type": "buff",
         "description": "Channel eidolon power — MAG +50%, summons gain +30% damage, 4 turns",
-        "effect": { "stat": "mag", "multiplier": 1.5, "summonBoost": 1.3, "duration": 4 }
+        "effect": {
+          "stat": "mag",
+          "multiplier": 1.5,
+          "summonBoost": 1.3,
+          "duration": 4
+        }
       },
       {
         "id": "absolute_summon",
@@ -259,10 +410,22 @@
         "type": "magic_damage",
         "isUltimate": true,
         "description": "Ultimate eidolon — 3.8x magic damage to all, summon phantom guardian for 2 turns",
-        "effect": { "dmgMultiplier": 3.8, "element": "summoning", "aoe": true, "guardian": true }
+        "effect": {
+          "dmgMultiplier": 3.8,
+          "element": "summoning",
+          "aoe": true,
+          "guardian": true
+        }
       }
     ],
-    "growthPerLevel": { "hp": 5, "mp": 10, "atk": 0, "def": 1, "spd": 1, "mag": 7 }
+    "growthPerLevel": {
+      "hp": 5,
+      "mp": 10,
+      "atk": 0,
+      "def": 1,
+      "spd": 1,
+      "mag": 7
+    }
   },
   {
     "id": "valkyrie_guardian",
@@ -274,7 +437,12 @@
     "color": "#a855f7",
     "role": "Knight",
     "stat_multipliers": {
-      "hp": 1.3, "mp": 1.1, "atk": 1.3, "def": 1.35, "spd": 1.0, "mag": 1.2
+      "hp": 1.3,
+      "mp": 1.1,
+      "atk": 1.3,
+      "def": 1.35,
+      "spd": 1.0,
+      "mag": 1.2
     },
     "abilities": [
       {
@@ -284,7 +452,11 @@
         "mp": 0,
         "type": "physical",
         "description": "Holy sword slash — 1.6x ATK damage, ignore 15% enemy DEF",
-        "effect": { "dmgMultiplier": 1.6, "element": "holy", "defPen": 0.15 }
+        "effect": {
+          "dmgMultiplier": 1.6,
+          "element": "holy",
+          "defPen": 0.15
+        }
       },
       {
         "id": "judgment_seal",
@@ -293,7 +465,12 @@
         "mp": 7,
         "type": "debuff",
         "description": "Judge the wicked — reduce enemy ATK by 30%, DEF by 20%, lasts 3 turns",
-        "effect": { "stat": "atk", "multiplier": 0.7, "defDebuff": 0.8, "duration": 3 }
+        "effect": {
+          "stat": "atk",
+          "multiplier": 0.7,
+          "defDebuff": 0.8,
+          "duration": 3
+        }
       },
       {
         "id": "transcendent_power",
@@ -302,7 +479,13 @@
         "mp": 9,
         "type": "buff",
         "description": "Divine blessing — party ATK +25%, DEF +30%, holy aura for 4 turns",
-        "effect": { "aoe": true, "stat": "atk", "multiplier": 1.25, "defBuff": 1.3, "duration": 4 }
+        "effect": {
+          "aoe": true,
+          "stat": "atk",
+          "multiplier": 1.25,
+          "defBuff": 1.3,
+          "duration": 4
+        }
       },
       {
         "id": "divine_execution",
@@ -312,10 +495,22 @@
         "type": "magic_damage",
         "isUltimate": true,
         "description": "Execute judgment — 3.6x magic damage, scales with DEF, stuns if enemy HP low",
-        "effect": { "dmgMultiplier": 3.6, "element": "holy", "statScale": "def", "stunLow": true }
+        "effect": {
+          "dmgMultiplier": 3.6,
+          "element": "holy",
+          "statScale": "def",
+          "stunLow": true
+        }
       }
     ],
-    "growthPerLevel": { "hp": 12, "mp": 4, "atk": 4, "def": 5, "spd": 2, "mag": 3 }
+    "growthPerLevel": {
+      "hp": 12,
+      "mp": 4,
+      "atk": 4,
+      "def": 5,
+      "spd": 2,
+      "mag": 3
+    }
   },
   {
     "id": "dragoon_skyward",
@@ -327,7 +522,12 @@
     "color": "#0c4a6e",
     "role": "Ranger",
     "stat_multipliers": {
-      "hp": 1.15, "mp": 0.9, "atk": 1.35, "def": 1.05, "spd": 1.25, "mag": 0.95
+      "hp": 1.15,
+      "mp": 0.9,
+      "atk": 1.35,
+      "def": 1.05,
+      "spd": 1.25,
+      "mag": 0.95
     },
     "abilities": [
       {
@@ -337,7 +537,12 @@
         "mp": 0,
         "type": "physical",
         "description": "Soaring lance thrust — 1.8x ATK damage, +1 SPD for 2 turns",
-        "effect": { "dmgMultiplier": 1.8, "element": "wind", "spdBuff": 1, "duration": 2 }
+        "effect": {
+          "dmgMultiplier": 1.8,
+          "element": "wind",
+          "spdBuff": 1,
+          "duration": 2
+        }
       },
       {
         "id": "dragon_jump",
@@ -346,7 +551,11 @@
         "mp": 6,
         "type": "physical",
         "description": "Leap skyward — 2.2x ATK damage, evasion +20% next turn",
-        "effect": { "dmgMultiplier": 2.2, "element": "wind", "evasion": 0.2 }
+        "effect": {
+          "dmgMultiplier": 2.2,
+          "element": "wind",
+          "evasion": 0.2
+        }
       },
       {
         "id": "divine_flight",
@@ -355,7 +564,13 @@
         "mp": 8,
         "type": "buff",
         "description": "Take to the skies — evasion +40%, SPD +30%, party SPD +2 for 3 turns",
-        "effect": { "stat": "spd", "multiplier": 1.3, "evasion": 0.4, "aoe": true, "duration": 3 }
+        "effect": {
+          "stat": "spd",
+          "multiplier": 1.3,
+          "evasion": 0.4,
+          "aoe": true,
+          "duration": 3
+        }
       },
       {
         "id": "heavens_fall",
@@ -365,10 +580,22 @@
         "type": "magic_damage",
         "isUltimate": true,
         "description": "Descend with divine fury — 4.0x ATK damage, scales with SPD, area strike",
-        "effect": { "dmgMultiplier": 4.0, "element": "wind", "statScale": "spd", "aoe": true }
+        "effect": {
+          "dmgMultiplier": 4.0,
+          "element": "wind",
+          "statScale": "spd",
+          "aoe": true
+        }
       }
     ],
-    "growthPerLevel": { "hp": 9, "mp": 2, "atk": 5, "def": 3, "spd": 5, "mag": 1 }
+    "growthPerLevel": {
+      "hp": 9,
+      "mp": 2,
+      "atk": 5,
+      "def": 3,
+      "spd": 5,
+      "mag": 1
+    }
   },
   {
     "id": "knight_king_divine",
@@ -380,7 +607,12 @@
     "color": "#b45309",
     "role": "Paladin",
     "stat_multipliers": {
-      "hp": 1.35, "mp": 1.15, "atk": 1.4, "def": 1.4, "spd": 0.95, "mag": 1.25
+      "hp": 1.35,
+      "mp": 1.15,
+      "atk": 1.4,
+      "def": 1.4,
+      "spd": 0.95,
+      "mag": 1.25
     },
     "abilities": [
       {
@@ -390,7 +622,10 @@
         "mp": 0,
         "type": "physical",
         "description": "Divine sword strike — 1.7x ATK damage, holy element",
-        "effect": { "dmgMultiplier": 1.7, "element": "holy" }
+        "effect": {
+          "dmgMultiplier": 1.7,
+          "element": "holy"
+        }
       },
       {
         "id": "divine_shield",
@@ -399,7 +634,12 @@
         "mp": 7,
         "type": "buff",
         "description": "Summon god's protection — DEF +45%, reduce damage taken by 20%, 3 turns",
-        "effect": { "stat": "def", "multiplier": 1.45, "damageReduction": 0.2, "duration": 3 }
+        "effect": {
+          "stat": "def",
+          "multiplier": 1.45,
+          "damageReduction": 0.2,
+          "duration": 3
+        }
       },
       {
         "id": "grail_blessing",
@@ -408,7 +648,12 @@
         "mp": 9,
         "type": "heal",
         "description": "Divine blessing of the grail — restore 50-70 HP to all allies, cleanse debuffs",
-        "effect": { "healBase": 50, "healRandom": 20, "aoe": true, "cleanse": true }
+        "effect": {
+          "healBase": 50,
+          "healRandom": 20,
+          "aoe": true,
+          "cleanse": true
+        }
       },
       {
         "id": "lionheart_ascendant",
@@ -418,9 +663,21 @@
         "type": "magic_damage",
         "isUltimate": true,
         "description": "Ascend as king eternal — 4.2x ATK damage, scales with ATK+DEF, blessing all allies",
-        "effect": { "dmgMultiplier": 4.2, "element": "holy", "statScale": "atk", "partyBuff": true }
+        "effect": {
+          "dmgMultiplier": 4.2,
+          "element": "holy",
+          "statScale": "atk",
+          "partyBuff": true
+        }
       }
     ],
-    "growthPerLevel": { "hp": 14, "mp": 5, "atk": 5, "def": 6, "spd": 1, "mag": 3 }
+    "growthPerLevel": {
+      "hp": 14,
+      "mp": 5,
+      "atk": 5,
+      "def": 6,
+      "spd": 1,
+      "mag": 3
+    }
   }
 ]

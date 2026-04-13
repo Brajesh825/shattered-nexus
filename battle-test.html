@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Sandbox Test - Shattered Nexus</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="loading-screen" style="
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: linear-gradient(135deg, #080b12 0%, #0d1220 100%);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  z-index: 9999; font-family: 'Cinzel', serif;
+">
+  <h2 style="color: #4ecfff; margin-bottom: 50px; font-size: 28px; letter-spacing: 2px;">
+    SANDBOX LOADER
+  </h2>
+  <p id="loading-text" style="color: #7a90a8; font-family: monospace; font-size: 11px;">
+    Loading game data...
+  </p>
+</div>
+
+<div id="game">
+
+  <button id="mute-btn" onclick="SFX.toggleMute()" title="Toggle sound effects">🔊</button>
+  <button id="tts-btn"  onclick="TTS.toggle()"     title="Voice: OFF (click to enable)">💬</button>
+  <button id="zoom-btn" onclick="zoomGame(1.2)" title="1.2x Fullscreen">1.2×</button>
+  <button id="reset-zoom-btn" onclick="zoomGame(1)" title="Reset Zoom">⟲</button>
+
+  <!-- IMPORTANT: Active by default! -->
+  <div id="battle-screen" class="screen active" style="opacity: 1 !important;">
+    <div class="turn-bar" id="turn-bar"></div>
+    <div id="battle-scene">
+      <svg class="bg-mts" viewBox="0 0 900 96" preserveAspectRatio="none">
+        <polygon points="0,96 120,16 245,62 355,8 465,55 585,12 705,58 820,20 900,96" fill="#0f0530" stroke="none"/>
+        <polygon points="0,96 90,40 195,72 300,26 415,66 530,20 635,60 750,30 900,96" fill="#180848" stroke="none"/>
+      </svg>
+      <div class="bg-gnd"></div>
+      <div class="party-container" id="party-container"></div>
+      <div class="enemy-container" id="enemy-container"></div>
+    </div>
+    <div class="active-member-bar" id="active-member-bar"></div>
+    <div id="menu-area">
+      <div class="battle-log">
+        <p class="log-line" id="log0"></p>
+        <p class="log-line" id="log1"></p>
+        <p class="log-line" id="log2"></p>
+      </div>
+      <div class="cmd-grid" id="cmd-grid-main">
+        <button class="cmd-btn" onclick="heroAttack()">⚔ ATTACK</button>
+        <button class="cmd-btn" onclick="UI.openSub('ability-sub')">✨ ABILITY</button>
+        <button class="cmd-btn" onclick="heroItem()">🧪 ITEM</button>
+        <button class="cmd-btn" onclick="heroRun()">💨 RUN</button>
+        <button class="cmd-btn cmd-party-btn" onclick="openPartyMenu()">👥 PARTY</button>
+      </div>
+      <div class="sub-menu" id="ability-sub"></div>
+      <div class="sub-menu" id="item-sub"></div>
+    </div>
+    <div class="party-status-bar" id="party-status-bar"></div>
+    <div class="stats-bar">
+      <span>LV <span id="stat-lv">1</span></span>
+      <span>ATK <span id="stat-atk">-</span></span>
+      <span>DEF <span id="stat-def">-</span></span>
+      <span>EXP <span id="stat-exp">0</span></span>
+    </div>
+  </div>
+
+  <div id="party-menu" style="display:none">
+    <div class="pm-header">
+      <span class="pm-title">⚔ PARTY STATUS ⚔</span>
+      <button class="pm-close-btn" onclick="closePartyMenu()">✕ CLOSE</button>
+    </div>
+    <div class="pm-cards" id="pm-cards"></div>
+  </div>
+
+  <div id="result-screen" class="screen">
+    <div class="result-title" id="result-title">VICTORY!</div>
+    <div class="result-stats" id="result-stats"></div>
+    <div class="result-party" id="result-party"></div>
+    <div class="result-btns">
+      <button class="big-btn" id="result-retry-btn" onclick="location.reload()" style="display:block">↺ NEW SANDBOX</button>
+    </div>
+  </div>
+
+</div><!-- /#game -->
+
+<div id="debug-battle-overlay" class="slot-overlay open" style="display:flex; z-index:9000; background: rgba(0,0,0,0.9); opacity: 1;">
+  <div class="slot-overlay-panel" style="max-width: 500px; padding: 20px; border: 2px solid #eab308; box-shadow: 0 0 20px rgba(234, 179, 8, 0.4); transform: translateY(0);">
+    <div class="slot-overlay-header">
+      <h3 style="color: #eab308; margin:0;">⚡ Sandbox Battle Interface</h3>
+    </div>
+    <div class="slot-grid" style="display: flex; flex-direction: column; gap: 10px;">
+      <div style="background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px;">
+        <h4 style="color:#4ade80; margin: 0 0 10px 0;">Party Setup</h4>
+        <label style="color:#aaa; font-size: 13px; display:block; margin-bottom:5px;">Party Level: <input type="number" id="test-party-lv" value="10" min="1" max="99" style="width: 60px; background: #222; color: #fff; border: 1px solid #4ade80; padding: 2px 5px; border-radius: 4px;"></label>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap:5px;">
+          <select id="test-p1" style="background:#111; color:#fff; border:1px solid #555; padding:5px; border-radius: 4px;"></select>
+          <select id="test-p2" style="background:#111; color:#fff; border:1px solid #555; padding:5px; border-radius: 4px;"></select>
+          <select id="test-p3" style="background:#111; color:#fff; border:1px solid #555; padding:5px; border-radius: 4px;"></select>
+          <select id="test-p4" style="background:#111; color:#fff; border:1px solid #555; padding:5px; border-radius: 4px;"></select>
+        </div>
+      </div>
+      
+      <div style="background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px;">
+        <h4 style="color:#ef4444; margin: 0 0 10px 0;">Enemy Setup</h4>
+        <div style="display: grid; grid-template-columns: 1fr; gap:5px;">
+          <select id="test-e1" style="background:#221111; color:#fff; border:1px solid #aa3333; padding:5px; border-radius: 4px;"></select>
+          <select id="test-e2" style="background:#221111; color:#fff; border:1px solid #772222; padding:5px; border-radius: 4px;"></select>
+          <select id="test-e3" style="background:#221111; color:#fff; border:1px solid #772222; padding:5px; border-radius: 4px;"></select>
+          <select id="test-e4" style="background:#221111; color:#fff; border:1px solid #772222; padding:5px; border-radius: 4px;"></select>
+        </div>
+      </div>
+
+      <button class="title-btn title-btn-primary" style="margin-top: 10px;" onclick="startSandboxBattle()">
+        LAUNCH BATTLE ⚔️
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Bare minimum engine scripts -->
+<script src="js/bgm.js"></script>
+<script src="js/sfx.js"></script>
+<script src="js/tts.js"></script>
+<script src="js/sprites.js"></script>
+<script src="js/data-loader.js"></script>
+<script src="js/svg-animations.js"></script>
+
+<!-- Note: Party and Inventory rely on G -->
+<script src="js/systems/party.js"></script>
+<script src="js/systems/inventory.js"></script>
+<script src="js/battle/action-handler.js"></script>
+<script src="js/game.js"></script>
+
+<script>
+  window.onload = async () => {
+    // 1. Manually fetch all game JSON
+    await loadAllGameData();
+    window.MOVE_ANIMATIONS = window.MOVE_ANIMATIONS || {};
+
+    // 2. Safely initialize the global G context without destroying other keys from game.js
+    window.G = window.G || {};
+    G.chars = window.CHARACTERS_DATA || [];
+    G.classes = window.CLASSES_DATA || [];
+    G.enemies = window.ENEMIES_DATA || [];
+    G.items = window.ITEMS_DATA || [];
+    G.relics = window.RELICS_DATA || [];
+    G.unlockedChars = G.chars.map(c => c.id);
+    G.party = [];
+
+    // 3. Make the UI scale function run (from game.js)
+    if(typeof scaleGame === 'function') scaleGame();
+
+    // 4. Hide the loading screen
+    document.getElementById('loading-screen').style.display = 'none';
+
+    // 5. Populate dropdowns safely
+    if (G.chars && G.chars.length > 0) {
+      const charOptions = G.chars.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+      ['test-p1','test-p2','test-p3','test-p4'].forEach(id => document.getElementById(id).innerHTML = charOptions);
+      
+      const defaultIds = G.chars.map(c => c.id);
+      document.getElementById('test-p1').value = defaultIds[0] || defaultIds[0];
+      document.getElementById('test-p2').value = defaultIds[1] || defaultIds[0];
+      document.getElementById('test-p3').value = defaultIds[2] || defaultIds[0];
+      document.getElementById('test-p4').value = defaultIds[3] || defaultIds[0];
+    }
+
+    if (G.enemies && G.enemies.length > 0) {
+      const enemyOptions = `<option value="">-- None --</option>` + G.enemies.map(e => `<option value="${e.id}">${e.name} (Lv.${e.lv || 1})</option>`).join('');
+      ['test-e1','test-e2','test-e3','test-e4'].forEach(id => document.getElementById(id).innerHTML = enemyOptions);
+      document.getElementById('test-e1').value = G.enemies[0].id;
+    }
+  };
+
+  window.startSandboxBattle = function() {
+    const lv = parseInt(document.getElementById('test-party-lv').value, 10) || 10;
+    const pIds = ['test-p1','test-p2','test-p3','test-p4'].map(id => document.getElementById(id).value);
+    const eIds = ['test-e1','test-e2','test-e3','test-e4'].map(id => document.getElementById(id).value).filter(Boolean);
+
+    if (eIds.length === 0) { alert("Select at least one enemy!"); return; }
+
+    G.selectedChars = pIds;
+    G.selectedChar = pIds[0];
+    
+    // Assign custom test stats
+    G.selectedChars.forEach(id => {
+      const ch = G.chars.find(c => c.id === id);
+      if (ch) {
+        ch.lv = lv; ch.hp = undefined; ch.mp = undefined; ch.exp = 0;
+      }
+    });
+
+    if (typeof buildParty !== 'undefined') buildParty();
+
+    const enemyDefs = eIds.map(id => G.enemies.find(e => e.id === id)).filter(Boolean);
+    if (typeof initEnemyGroup === 'function') {
+      initEnemyGroup(enemyDefs, lv, false, lv); 
+    }
+
+    document.getElementById('debug-battle-overlay').style.display = 'none';
+
+    if (typeof UI !== 'undefined' && UI.initBattle) {
+      UI.initBattle();
+    }
+  }
+</script>
+
+</body>
+</html>
