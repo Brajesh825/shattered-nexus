@@ -282,12 +282,44 @@ const Battle = {
     }
     return final;
   },
-  pickAbility(abilities) {
+  pickAbility(actor, target) {
+    const abilities = actor.abilities || actor.abilityDefs;
     if (!abilities || !abilities.length) return null;
-    const total = abilities.reduce((s, a) => s + (a.weight || 50), 0);
+
+    // Phase 5: Synergy-Aware Weighting
+    const aura = target?.statuses?.find(s => s.id.startsWith('aura_'));
+    const auraType = aura ? aura.id.replace('aura_', '') : null;
+
+    const weightedAbilities = abilities.map(ab => {
+      let weight = ab.weight || 50;
+      const element = ab.effect?.element || actor.element || 'physical';
+      
+      // If we have an aura and this move triggers a reaction, boost weight significantly
+      if (auraType) {
+        if (this._willReact(auraType, element)) {
+           weight *= 3; // Prioritize reactions!
+           if (window.LogDebug) window.LogDebug(`[AI-Synergy] Weight boosted for ${ab.name} (Element: ${element} vs Aura: ${auraType})`, 'hi');
+        }
+      }
+      return { ...ab, _tempWeight: weight };
+    });
+
+    const total = weightedAbilities.reduce((s, a) => s + a._tempWeight, 0);
     let r = Math.random() * total;
-    for (const a of abilities) { r -= (a.weight || 50); if (r <= 0) return a; }
-    return abilities[0];
+    for (const a of weightedAbilities) { 
+      r -= a._tempWeight; 
+      if (r <= 0) return a; 
+    }
+    return weightedAbilities[0];
+  },
+
+  // Helper for AI to check if reaction is possible
+  _willReact(auraType, detonator) {
+    if (auraType === 'ice' && (detonator === 'physical' || detonator === 'earth' || detonator === 'fire')) return true;
+    if (auraType === 'fire' && (detonator === 'nature' || detonator === 'water' || detonator === 'ice')) return true;
+    if (auraType === 'water' && detonator === 'lightning') return true;
+    if (auraType === 'nature' && detonator === 'fire') return true;
+    return false;
   },
   alive(m) { return m && !m.isKO && m.hp > 0; },
 
@@ -505,6 +537,28 @@ const UI = {
   },
   popEnemy(idx, val, type, element = 'physical') { this.pop(ENEMY_POP_X[idx] || 580, 80, val, type, element); },
   popParty(idx, val, type, element = 'light') { this.pop(PARTY_POP_X[idx] || 42, 210, val, type, element); },
+  popAI(idx, txt) {
+    const s = this.el('battle-scene');
+    if (!s) return;
+    const d = document.createElement('div');
+    d.className = 'dmg-pop ai-pop';
+    d.textContent = txt;
+    // Position slightly above the enemy
+    d.style.left = (ENEMY_POP_X[idx] || 580) + 'px'; 
+    d.style.top = '30px'; 
+    d.style.color = '#00f2ff';
+    d.style.fontSize = '12px';
+    d.style.fontFamily = 'var(--px)';
+    d.style.textShadow = '0 0 10px #00f2ff80';
+    d.style.background = 'rgba(0,30,50,0.8)';
+    d.style.padding = '4px 8px';
+    d.style.borderRadius = '5px';
+    d.style.border = '1px solid #00f2ff';
+    d.style.whiteSpace = 'nowrap';
+    d.style.zIndex = '100';
+    s.appendChild(d);
+    setTimeout(() => d.remove(), 1500);
+  },
 
   btns(on) { document.querySelectorAll('.cmd-btn').forEach(b => b.disabled = !on); },
 
@@ -1082,10 +1136,20 @@ function processCurrentTurn() {
   const t = G.turnQueue[G.turnIdx];
   const unit = t.type === 'party' ? G.party[t.idx] : G.enemyGroup[t.idx];
 
-  // STUN CHECK (Phase 4 Catalyst: Conductive)
-  if (unit.stunned) {
-    unit.stunned = false;
-    UI.addLog(`💫 ${unit.displayName || unit.name} is stunned and skips their turn!`, 'regen');
+  // CONTROL CHECK (Phase 5 Refinement: Unified Status System)
+  const stun   = unit.statuses?.find(s => s.id === 'status_stunned');
+  const frozen = unit.statuses?.find(s => s.id === 'status_frozen');
+
+  if (stun || frozen) {
+    const label = stun ? 'stunned' : 'frozen';
+    const icon  = stun ? '💫' : '❄️';
+    UI.addLog(`${icon} ${unit.displayName || unit.name} is ${label} and skips their turn!`, 'regen');
+    
+    // Remove stun immediately or let tickActorStatus handle it? 
+    // For these hard control effects, we remove them upon the turn skip.
+    if (stun) unit.statuses = unit.statuses.filter(s => s.id !== 'status_stunned');
+    if (frozen) unit.statuses = unit.statuses.filter(s => s.id !== 'status_frozen');
+
     setTimeout(advanceTurn, 1000);
     return;
   }

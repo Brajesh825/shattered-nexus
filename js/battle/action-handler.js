@@ -266,7 +266,8 @@ function heroAbility(ab) {
         totalDmg += dmg;
 
         // Cryoclasm reset logic
-        if (ab.id === 'cryoclasm' && tgt.frozen > 0) {
+        const _isFrozen = tgt.statuses?.some(s => s.id === 'status_frozen');
+        if (ab.id === 'cryoclasm' && _isFrozen) {
           actor._cryoReset = true;
         }
 
@@ -509,9 +510,7 @@ function heroAbility(ab) {
         UI.popParty(pIdx, amt, 'heal', 'light');
         
         if (e.cleanse) {
-          m.debuff = null;
-          m.stunned = false;
-          m.frozen = 0;
+          m.statuses = m.statuses.filter(s => s.id !== 'status_frozen' && s.id !== 'status_stunned' && !s.id.includes('debuff'));
           UI.addLog(`✨ ${m.displayName} Cleansed!`, 'heal');
         }
       });
@@ -573,7 +572,9 @@ function heroAbility(ab) {
         // Legacy fields preserved as properties for now (HP Regen, Guard, etc.)
         if (e.damageReduction) { m.dmgReduction = (1 - e.damageReduction); }
         if (e.hpRegen) { m.hpRegenAmt = e.hpRegen; m.regenTurns = e.duration || 3; }
-        if (e.guardMark) { m.guardMark = true; m.guardMarkTurns = e.duration || 3; }
+        if (e.guardMark) { 
+          Battle.addStatus(m, { id: 'status_taunt', label: 'Taunt', icon: '🛡️', type: 'buff', turns: e.duration || 3 });
+        }
         if (e.summonBoost) { m.summonBoost = e.summonBoost; }
 
         if (window.LogDebug) {
@@ -606,9 +607,9 @@ function heroAbility(ab) {
         UI.addLog(`${enemy.name}'s ${e.stat.toUpperCase()} lowered!`, 'magic');
       }
       // Freeze secondary effect (e.g. Permafrost)
-      if (e.freezeChance && !enemy.frozen && Math.random() < e.freezeChance) {
-        enemy.frozen = 2;
-        UI.addLog(`❄ ${enemy.name} is Frozen for 2 turns!`, 'magic');
+      if (e.freezeChance && !enemy.statuses?.some(s => s.id === 'status_frozen') && Math.random() < e.freezeChance) {
+        Battle.addStatus(enemy, { id: 'status_frozen', label: 'Frozen', icon: '❄️', type: 'control', turns: 2 });
+        UI.addLog(`❄️ ${enemy.name} is Frozen for 2 turns!`, 'magic');
       }
 
     } else if (ab.type === 'stun') {
@@ -682,38 +683,83 @@ function enemyAct(enemy, enemyIdx) {
   // NEW: Start-of-Turn maintenance (debuffs, cooldowns)
   Battle.tickActorStatus(enemy, true);
 
-  if (enemy.stunned || enemy.frozen > 0) {
-    UI.setLog([`${enemy.name} is incapacitated — skips turn!`], ['magic']);
-    setTimeout(advanceTurn, 700);
+  // CONTROL CHECK (Phase 5 Refinement: Unified Status System)
+  const isIncapacitated = enemy.statuses?.some(s => s.id === 'status_stunned' || s.id === 'status_frozen');
+  if (isIncapacitated) {
+    advanceTurn();
     return;
   }
-  if (enemy.frozen > 0) {
-    enemy.frozen--;
-    UI.setLog([`❄ ${enemy.name} is frozen — skips turn!`], ['magic']);
-    setTimeout(advanceTurn, 700);
-    return;
-  }
+  // (Frozen turn-skip now handled unified in processCurrentTurn)
 
-  const alive = G.party.filter(m => Battle.alive(m));
-  if (!alive.length) { advanceTurn(); return; }
-
-  // Taunt Check: If anyone has guardMark, they are the mandatory target
-  const taunterIdx = G.party.findIndex(m => Battle.alive(m) && m.guardMark);
+  // ── TARGET SELECTION (Phase 5: Role-Based AI) ──────────────────
   let target;
+  let targetIdx;
+
+  // 1. Forced Targeting (Taunt)
+  const taunterIdx = G.party.findIndex(m => Battle.alive(m) && m.statuses?.some(s => s.id === 'status_taunt'));
   if (taunterIdx !== -1) {
     target = G.party[taunterIdx];
-    UI.addLog(`🛡️ Enemies focused on ${target.displayName}'s Guard Mark!`, 'regen');
-  } else {
-    // Pick target — bias toward lower HP ratio
-    alive.sort((a, b) => (a.hp / a.maxHp) - (b.hp / b.maxHp));
-    target = Math.random() < 0.6 ? alive[0] : alive[Math.floor(Math.random() * alive.length)];
-  }
-  const targetIdx = G.party.indexOf(target);
+    targetIdx = taunterIdx;
+    UI.addLog(`🛡️ Enemies focused on ${target.displayName}'s Taunt!`, 'regen');
+  } 
+  
+  // 2. Role-Based Logic
+  else {
+    const role = enemy.aiRole || 'attacker';
+    
+    if (role === 'tactician') {
+      // Find targets with an active aura
+      const auratized = alive.filter(m => m.statuses?.some(s => s.id.startsWith('aura_')));
+      if (auratized.length > 0) {
+        target = auratized[Math.floor(Math.random() * auratized.length)];
+        UI.addLog(`🔍 ${enemy.name} is looking for a Synergy...`, 'hi');
+        UI.popAI(enemyIdx, '⚡ FOCUS SYNERGY!');
+      }
+    } 
+    
+    if (!target && role === 'predator') {
+      // Always target lowest HP
+      alive.sort((a, b) => a.hp - b.hp);
+      target = alive[0];
+      UI.addLog(`🐺 ${enemy.name} is hunting the weak...`, 'hi');
+      UI.popAI(enemyIdx, '🐺 TARGET WEAKNESS!');
+    }
 
-  const ab = Battle.pickAbility(enemy.abilityDefs);
+    // Default Attacker / Fallback
+    if (!target) {
+      alive.sort((a, b) => (a.hp / a.maxHp) - (b.hp / b.maxHp));
+      target = Math.random() < 0.6 ? alive[0] : alive[Math.floor(Math.random() * alive.length)];
+    }
+    targetIdx = G.party.indexOf(target);
+  }
+
+  // 3. Ability Selection
+  let ab;
+  const role = enemy.aiRole || 'attacker';
+
+  // Support logic: check for wounded allies before picking an attack
+  if (role === 'support') {
+    const woundedAlly = G.enemyGroup.filter(e => Battle.alive(e) && (e.hp / e.maxHp) < 0.5)
+                         .sort((a,b) => a.hp - b.hp)[0];
+    if (woundedAlly) {
+        const healAb = (enemy.abilities || enemy.abilityDefs || []).find(a => a.type === 'heal' || a.id?.includes('heal'));
+        if (healAb) {
+            ab = healAb;
+            target = woundedAlly; // Redirect target to ally
+            targetIdx = G.enemyGroup.indexOf(woundedAlly);
+            UI.addLog(`🩹 ${enemy.name} prioritizes healing!`, 'hi');
+            UI.popAI(enemyIdx, '🩹 HEAL ALLY!');
+        }
+    }
+  }
+
+  if (!ab) {
+    ab = Battle.pickAbility(enemy, target);
+  }
+
   if (window.LogDebug) {
     const abName = ab ? ab.name : 'Standard Attack';
-    window.LogDebug(`[AI] ${enemy.name} selects ${abName}`, 'info');
+    window.LogDebug(`[AI-${role.toUpperCase()}] ${enemy.name} selects ${abName} against ${target?.displayName || target?.name}`, 'info');
   }
   const element = enemy.element || ab?.effect?.element || 'physical';
 
@@ -867,7 +913,7 @@ function enemyAct(enemy, enemyIdx) {
         UI.addLog(`⚠️ ENEMY REACTION: ${reaction.label}!`, 'dmg');
         UI.popParty(targetIdx, reaction.label, 'crit');
         if (reaction.stun) {
-          target.stunned = true;
+          Battle.addStatus(target, { id: 'status_stunned', label: 'Stunned', icon: '💫', type: 'control', turns: 1 });
           UI.addLog(`💫 ${target.displayName} is Conductive! (Stunned)`, 'dmg');
         }
         if (reaction.dot) {
