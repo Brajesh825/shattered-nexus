@@ -19,9 +19,9 @@ const MapEngine = (() => {
   }
 
   let _canvas = null, _ctx = null;
-  let _map    = null;
-  let _rafId  = null, _lastTs = 0, _running = false;
-  let _time   = 0;
+  let _map = null;
+  let _rafId = null, _lastTs = 0, _running = false;
+  let _time = 0;
   let _campUnlocked = false, _atCamp = false;
   let _fogTime = 0;
   let _fogCanvas = null, _fogCtx = null;
@@ -45,7 +45,7 @@ const MapEngine = (() => {
   function _updateCamera(dt) {
     if (!_map) return;
     const cw = _canvas.width, ch = _canvas.height;
-    const maxX = _map.width  * TILE - cw;
+    const maxX = _map.width * TILE - cw;
     const maxY = _map.height * TILE - ch;
     cam.x = Math.max(0, Math.min(maxX || 0, MapPlayer.px - cw / 2 + TILE / 2));
     cam.y = Math.max(0, Math.min(maxY || 0, MapPlayer.py - ch / 2 + TILE / 2));
@@ -97,15 +97,15 @@ const MapEngine = (() => {
   function _renderTiles() {
     const startC = Math.max(0, Math.floor(cam.x / TILE) - 1);
     const startR = Math.max(0, Math.floor(cam.y / TILE) - 1);
-    const endC   = Math.min(_map.width  - 1, Math.ceil((cam.x + _canvas.width)  / TILE) + 1);
-    const endR   = Math.min(_map.height - 1, Math.ceil((cam.y + _canvas.height) / TILE) + 1);
+    const endC = Math.min(_map.width - 1, Math.ceil((cam.x + _canvas.width) / TILE) + 1);
+    const endR = Math.min(_map.height - 1, Math.ceil((cam.y + _canvas.height) / TILE) + 1);
 
     for (let r = startR; r <= endR; r++) {
       for (let c = startC; c <= endC; c++) {
         const tileId = _map.tiles[r]?.[c] ?? 0;
-        const def    = TILE_DEFS[tileId] || TILE_DEFS[0];
-        const sx     = c * TILE - cam.x;
-        const sy     = r * TILE - cam.y;
+        const def = TILE_DEFS[tileId] || TILE_DEFS[0];
+        const sx = c * TILE - cam.x;
+        const sy = r * TILE - cam.y;
         if (def.anim) {
           // Animated tiles painted directly each frame with current time
           _paintTile(_ctx, def, sx, sy, TILE, TILE, _time);
@@ -130,11 +130,6 @@ const MapEngine = (() => {
   function _markObjectiveCleared() {
     if (!_map || _objState.done) return;
     _objState.done = true;
-    if (G && Array.isArray(G.clearedMaps) && !G.clearedMaps.includes(_map.id)) {
-      G.clearedMaps.push(_map.id);
-    }
-    // Auto-save the cleared state
-    if (typeof Story !== 'undefined' && Story.active) Story._doSave();
   }
 
   function _checkObjective() {
@@ -229,9 +224,9 @@ const MapEngine = (() => {
   function _renderObjectiveHUD() {
     if (!_map || !_map.objective) return;
     const obj = _map.objective;
-    const w   = _canvas.width;
-    const bh  = 22, by = _canvas.height - bh - 4, bx = 8;
-    const bw  = Math.min(360, w - 16);
+    const w = _canvas.width;
+    const bh = 22, by = _canvas.height - bh - 4, bx = 8;
+    const bw = Math.min(360, w - 16);
 
     let statusText = '';
     if (_objState.done || _objAlreadyCleared()) {
@@ -242,7 +237,7 @@ const MapEngine = (() => {
     } else if (obj.type === 'reach') {
       statusText = `🎯 ${obj.label || 'Reach the destination'}`;
     } else if (obj.type === 'collect') {
-      statusText = `💎 ${obj.label || 'Collect artifacts'} — ${_objState.collected.length}/${(obj.artifacts||[]).length}`;
+      statusText = `💎 ${obj.label || 'Collect artifacts'} — ${_objState.collected.length}/${(obj.artifacts || []).length}`;
     } else if (obj.type === 'survive') {
       const left = Math.max(0, Math.ceil(obj.duration - _time));
       statusText = `⏱ ${obj.label || 'Survive'} — ${left}s remaining`;
@@ -337,11 +332,11 @@ const MapEngine = (() => {
 
     // Camera viewport rect
     mctx.strokeStyle = 'rgba(200,164,90,0.5)';
-    mctx.lineWidth   = 0.5;
+    mctx.lineWidth = 0.5;
     mctx.strokeRect(
       cam.x / TILE * tw,
       cam.y / TILE * th,
-      (_canvas.width  / TILE) * tw,
+      (_canvas.width / TILE) * tw,
       (_canvas.height / TILE) * th
     );
   }
@@ -365,7 +360,7 @@ const MapEngine = (() => {
   // Pixel radius of clear vision circle around player
   function _visionRadius() {
     const cfg = _fogCfg();
-    const t   = _fogProgress();
+    const t = _fogProgress();
     // Shrinks from vision+1.5 down to vision-0.5 as fog maxes
     return TILE * (cfg.vision + 1.5 - t * 2.0);
   }
@@ -403,10 +398,10 @@ const MapEngine = (() => {
 
     fc.globalCompositeOperation = 'destination-out';
     const grad = fc.createRadialGradient(px, py, 0, px, py, visionR);
-    grad.addColorStop(0,    'rgba(0,0,0,1)');
-    grad.addColorStop(0.5,  'rgba(0,0,0,0.95)');
+    grad.addColorStop(0, 'rgba(0,0,0,1)');
+    grad.addColorStop(0.5, 'rgba(0,0,0,0.95)');
     grad.addColorStop(0.80, 'rgba(0,0,0,0.35)');
-    grad.addColorStop(1,    'rgba(0,0,0,0)');
+    grad.addColorStop(1, 'rgba(0,0,0,0)');
     fc.fillStyle = grad;
     fc.fillRect(0, 0, w, h);
     fc.globalCompositeOperation = 'source-over';
@@ -422,8 +417,10 @@ const MapEngine = (() => {
     // Dismiss old bubble from same char if still showing
     const existing = _bubbles.findIndex(b => b.char === line.char);
     if (existing >= 0) _bubbles.splice(existing, 1);
-    _bubbles.push({ char: line.char, color: line.color, text: line.text,
-                    life: BUBBLE_LIFE, maxLife: BUBBLE_LIFE });
+    _bubbles.push({
+      char: line.char, color: line.color, text: line.text,
+      life: BUBBLE_LIFE, maxLife: BUBBLE_LIFE
+    });
   }
 
   function _randomLine(arr) {
@@ -437,9 +434,9 @@ const MapEngine = (() => {
     let y = 52; // start below the header
 
     _bubbles.forEach((b, idx) => {
-      const fadeIn  = Math.min(b.maxLife - b.life, 0.4) / 0.4;
+      const fadeIn = Math.min(b.maxLife - b.life, 0.4) / 0.4;
       const fadeOut = Math.min(b.life, 0.5) / 0.5;
-      const alpha   = fadeIn * fadeOut;
+      const alpha = fadeIn * fadeOut;
 
       const bx = 16, bw = Math.min(420, w - 32);
       const by = y;
@@ -454,7 +451,7 @@ const MapEngine = (() => {
       else _ctx.rect(bx, by, bw, bh);
       _ctx.fill();
       _ctx.strokeStyle = b.color;
-      _ctx.lineWidth   = 1;
+      _ctx.lineWidth = 1;
       _ctx.stroke();
       _ctx.globalAlpha = alpha;
 
@@ -477,7 +474,7 @@ const MapEngine = (() => {
   function _updateFogDialogue(dt) {
     if (!_map || !_map.voiceLines) return;
     const vl = _map.voiceLines;
-    const p  = _fogProgress();
+    const p = _fogProgress();
 
     // Milestone triggers at 30 / 60 / 90 %
     if (_fogMilestone < 1 && p >= 0.30) {
@@ -524,7 +521,7 @@ const MapEngine = (() => {
   /* ── Update ──────────────────────────────────────────── */
   function _update(dt) {
     if (!_map) return;
-    _time    += dt;
+    _time += dt;
     _fogTime += dt;
     MapInput.poll();
     MapPlayer.update(dt, _map);
@@ -556,9 +553,9 @@ const MapEngine = (() => {
       _lastPlayerTx = ptx; _lastPlayerTy = pty;
       // Check player tile AND all 4 adjacent tiles for an NPC
       const checks = [
-        {x: ptx,   y: pty},
-        {x: ptx+1, y: pty}, {x: ptx-1, y: pty},
-        {x: ptx,   y: pty+1}, {x: ptx,   y: pty-1},
+        { x: ptx, y: pty },
+        { x: ptx + 1, y: pty }, { x: ptx - 1, y: pty },
+        { x: ptx, y: pty + 1 }, { x: ptx, y: pty - 1 },
       ];
       for (const pos of checks) {
         const npc = MapEntities.checkNPCAt(pos.x, pos.y);
@@ -591,13 +588,13 @@ const MapEngine = (() => {
   let _shakeTime = 0; // seconds remaining for camera shake
 
   function _triggerEncounter(enc) {
-    const enemyId  = enc.enemies && enc.enemies[0];
-    const raw      = G && G.enemies && enemyId && G.enemies.find(e => e.id === enemyId);
+    const enemyId = enc.enemies && enc.enemies[0];
+    const raw = G && G.enemies && enemyId && G.enemies.find(e => e.id === enemyId);
     const baseName = raw ? raw.name : (enemyId || '?');
-    const mut      = enc.mutation;
-    const name     = mut === 'mutant'    ? `Mutant ${baseName}`
-                   : mut === 'corrupted' ? `Corrupted ${baseName}`
-                   : baseName;
+    const mut = enc.mutation;
+    const name = mut === 'mutant' ? `Mutant ${baseName}`
+      : mut === 'corrupted' ? `Corrupted ${baseName}`
+        : baseName;
     const isAmbush = _fogAlpha() > 0.15;
     enc.ambush = isAmbush;
 
@@ -626,10 +623,10 @@ const MapEngine = (() => {
 
     // 5. Banner message
     if (typeof MapUI !== 'undefined') {
-      const prefix = mut === 'mutant'    ? '☣ MUTANT — '
-                   : mut === 'corrupted' ? '✦ CORRUPTED — '
-                   : isAmbush           ? '💀 AMBUSH — '
-                   : '⚔ ';
+      const prefix = mut === 'mutant' ? '☣ MUTANT — '
+        : mut === 'corrupted' ? '✦ CORRUPTED — '
+          : isAmbush ? '💀 AMBUSH — '
+            : '⚔ ';
       const suffix = mut || isAmbush ? '!' : ' appeared!';
       MapUI.showMsg(`${prefix}${name}${suffix}`, 2200);
     }
@@ -661,7 +658,7 @@ const MapEngine = (() => {
   function _loop(ts) {
     if (!_running) return;
     const dt = Math.min((ts - _lastTs) / 1000, 0.05);
-    _lastTs  = ts;
+    _lastTs = ts;
     _update(dt);
     _render();
     _rafId = requestAnimationFrame(_loop);
@@ -670,13 +667,13 @@ const MapEngine = (() => {
   /* ── Public API ──────────────────────────────────────── */
   function init(canvasEl) {
     _canvas = canvasEl;
-    _ctx    = canvasEl.getContext('2d');
-    _canvas.width  = canvasEl.offsetWidth  || window.innerWidth;
+    _ctx = canvasEl.getContext('2d');
+    _canvas.width = canvasEl.offsetWidth || window.innerWidth;
     _canvas.height = canvasEl.offsetHeight || window.innerHeight;
     TILE = _calcTileSize();
     MapInput.init(canvasEl);
     window.addEventListener('resize', () => {
-      _canvas.width  = _canvas.offsetWidth  || window.innerWidth;
+      _canvas.width = _canvas.offsetWidth || window.innerWidth;
       _canvas.height = _canvas.offsetHeight || window.innerHeight;
       const newTile = _calcTileSize();
       if (newTile !== TILE) {
@@ -711,8 +708,8 @@ const MapEngine = (() => {
     if (mapId) loadMap(mapId);
     if (_running) return;
     _running = true;
-    _lastTs  = performance.now();
-    _rafId   = requestAnimationFrame(_loop);
+    _lastTs = performance.now();
+    _rafId = requestAnimationFrame(_loop);
   }
 
   function stop() {
@@ -723,13 +720,13 @@ const MapEngine = (() => {
   function resume() {
     if (_running) return;
     _running = true;
-    _lastTs  = performance.now();
-    _rafId   = requestAnimationFrame(_loop);
+    _lastTs = performance.now();
+    _rafId = requestAnimationFrame(_loop);
   }
 
-  function getMap()    { return _map; }
-  function getCam()    { return cam; }
-  function getTile()   { return TILE; }
+  function getMap() { return _map; }
+  function getCam() { return cam; }
+  function getTile() { return TILE; }
   function isRunning() { return _running; }
 
   function resetFog() { _fogTime = 0; _fogCanvas = null; _fogMilestone = 0; _bubbles.length = 0; }
@@ -739,7 +736,7 @@ const MapEngine = (() => {
 
   function _openNPCDialogue(npc) {
     _npcCurrent = npc;
-    _npcLines   = npc.dialogue || [];
+    _npcLines = npc.dialogue || [];
     _npcLineIdx = 0;
     _showNPCLine();
   }
@@ -754,14 +751,14 @@ const MapEngine = (() => {
     const line = _npcLines[_npcLineIdx];
     // Portrait — party speakers use face images; NPC uses sheet canvas crop
     const portrait = document.getElementById('npc-dialogue-portrait');
-    const speaker  = line.speaker || '';
+    const speaker = line.speaker || '';
     const speakerLower = speaker.toLowerCase().replace(/\s+/g, '_');
     const PARTY_IDS = ['ayaka', 'hutao', 'nilou', 'xiao', 'rydia', 'lenneth', 'kain', 'leon'];
     const isParty = PARTY_IDS.some(id => speakerLower.includes(id));
 
     if (portrait) {
       const size = 52;
-      portrait.width  = size;
+      portrait.width = size;
       portrait.height = size;
       portrait.style.display = '';
       const pctx = portrait.getContext('2d');
@@ -781,7 +778,7 @@ const MapEngine = (() => {
         img.onload = () => {
           const frameW = img.naturalWidth / 6;
           const frameH = img.naturalHeight / 2;
-          const cropH  = frameH * 0.50;
+          const cropH = frameH * 0.50;
           pctx.imageSmoothingEnabled = false;
           pctx.clearRect(0, 0, size, size);
           pctx.drawImage(img, 0, 0, frameW, cropH, 0, 0, size, size);

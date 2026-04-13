@@ -1,0 +1,101 @@
+# RPG Class and Ability Schema
+
+This document outlines the JSON schema used in `data/classes.json` to define character classes, their stat growths, and their combat abilities. It is specifically tailored to show what the `action-handler.js` currently supports.
+
+---
+
+## 1. Class Object Structure
+Each class defines the core combat identity and stat affinities for a character.
+
+```json
+{
+  "id": "spirit_incinerator",
+  "name": "Spirit Incinerator",
+  "icon": "🔥",
+  "element": "fire",          // Base elemental affinity (used for STAB calculations)
+  "tag": "Fire / Life Force", // Sub-description tag 
+  "description": "Flavor text...",
+  "color": "#c03010",         // Hex color used for UI themes
+  "role": "Warrior",          // Abstract role designation
+  "stat_multipliers": {       // Multiplies the character's base_stats
+    "hp": 0.85, "mp": 1.0, "atk": 1.5, "def": 0.7, "spd": 1.15, "mag": 1.1
+  },
+  "growthPerLevel": {         // Flat stat additions on level up
+    "hp": 6, "mp": 5, "atk": 3, "def": 2, "spd": 5, "mag": 3 
+  },
+  "abilities": [ ... ]        // Array of Ability Objects
+}
+```
+
+---
+
+## 2. Ability Object Structure
+
+Each ability represents an action the character can take in combat.
+
+```json
+{
+  "id": "paramita_papilio",
+  "name": "Paramita Papilio",
+  "icon": "🦋",
+  "mp": 6,                    // MP cost
+  "type": "buff",             // Determines the combat logic branch (see Types below)
+  "description": "Enter the butterfly state...",
+  "isUltimate": true,         // (Optional) Sets this as an ultimate skill (cinematic delay)
+  "effect": { ... }           // The payload interpreted by action-handler.js
+}
+```
+
+### Ability Types (`type`)
+The `type` key dictates which branch of logic in `action-handler.js` will process the move.
+*   `"physical"`: Standard attack scaling off ATK.
+*   `"magic_damage"`: Spell casting scaling off MAG.
+*   `"heal"`: Restores party HP.
+*   `"buff"`: Applies positive stat modifiers to the caster or party.
+*   `"debuff"`: Applies negative stat modifiers to the enemy.
+*   `"regen"`: Sets a heal-over-time effect on the party.
+*   `"stun"`: Attempts to skip the enemy's next turn.
+*   `"steal"`: Attempts to acquire gold/items.
+*   `"run"`: Attempts to flee the battle.
+
+---
+
+## 3. Effect Payload Schema (`effect`)
+
+The `effect` object is highly modular. You can mix and match properties based on the `type`.
+
+### Damage Modifiers (`physical` / `magic_damage`)
+*   `"dmgMultiplier": 1.5` — Base damage scalar.
+*   `"element": "ice"` — Overrides the attack element for this specific move.
+*   `"aoe": true` — If true, the attack hits all active enemies.
+*   `"statScale": "spd"` — Adds bonus flat damage scaling linearly with a specific stat (e.g., `spd`, `def`, `hp`, `maxHp`).
+*   `"lowHpDmgBonus": 0.5` — Damage increases as the caster's HP shrinks.
+*   `"lifeSteal": 0.15` — Heals the caster or party for X% of the damage dealt.
+*   `"hpCostPercent": 0.3` — Sacrifices X% of the caster's *current* HP to initiate the attack.
+
+### Healing Modifiers (`heal` / `regen`)
+*   `"healBase": 40` & `"healRandom": 20` — Base healing formula (40 + up to 20 variance).
+*   `"healPercent": 0.5` — Heals a strict percentage of the target's Max HP.
+*   `"cleanse": true` — Clears `stunned`, `frozen`, and `debuff` statuses from targets.
+
+### Primary Buffing & Debuffing (`buff` / `debuff`)
+*To ensure a buff/debuff expires properly, it must declare a primary `stat`.*
+*   `"stat": "atk"` — The specific stat to alter (`def`, `atk`, `mag`, `spd`).
+*   `"multiplier": 1.5` — Amplifies the primary target stat by X%. (Use `< 1.0` for debuffs).
+*   `"duration": 3` — Number of turns before the buff/debuff expires and resets.
+
+### Secondary Buff Modifiers (Can be stacked on Buffs)
+*   `"damageReduction": 0.25` — Target takes 25% less raw damage from all sources while active.
+*   `"reflect": 0.15` — 15% of damage received is dealt back to the attacker.
+*   `"evasion": 0.3` — 30% chance to flatly dodge incoming physical attacks.
+*   `"hpRegenAmt": 25` — Flat HP restored at the end of each turn.
+*   `"guardMark": true` — Taunt; forces enemies to target this character exclusively.
+*   `"guardian": true` — Spawns the "Phantom Guardian" shield for 2 turns.
+*   `"fireAmp": 1.33` — Amplifies all outgoing fire damage.
+*   `"absorb": "fire"` — Incoming damage of this element heals the character instead.
+*   `"summonBoost": 1.3` — Special multiplier applied solely to "Summon" abilities.
+
+### Status Inflictions
+*   `"slowChance": 0.4` — (Usually tied to Ice) 40% chance to temporarily reduce enemy SPD.
+*   `"freezeChance": 0.6` — 60% chance to set `enemy.frozen = true` (skips turn).
+*   `"stunChance": 0.5` — 50% chance to set `enemy.stunned = true` (skips turn).
