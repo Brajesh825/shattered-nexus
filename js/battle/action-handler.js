@@ -322,6 +322,16 @@ function heroAbility(ab) {
         }
       }
 
+      if (e.partyBuff) {
+        G.party.forEach((m, idx) => {
+          if (!Battle.alive(m)) return;
+          Battle.addStatus(m, { id: 'status_atk_boost', label: 'ATK+', icon: '⚔️', type: 'buff', stat: 'atk', multiplier: 1.3, turns: 3 });
+          Battle.addStatus(m, { id: 'status_def_boost', label: 'DEF+', icon: '🛡️', type: 'buff', stat: 'def', multiplier: 1.3, turns: 3 });
+          UI.popParty(idx, 'ATK & DEF Up!', 'buff', 'holy');
+        });
+        UI.addLog(`✨ ${ab.name}: The party is blessed! (ATK & DEF Boosted)`, 'buff');
+      }
+
       // Handle Secondary Buffs on self
       if (e.spdBuff) {
         actor.spd += e.spdBuff;

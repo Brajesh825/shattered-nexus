@@ -1,4 +1,4 @@
-﻿[
+[
     {
         "id":  "cryo_bladestorm",
         "name":  "Cryo Bladestorm",
@@ -691,13 +691,13 @@
                               "name":  "Lionheart Ascendant",
                               "icon":  "ðŸ‘‘",
                               "mp":  14,
-                              "type":  "magic_damage",
+                              "type":  "physical",
                               "isUltimate":  true,
                               "description":  "Ascend as king eternal â€” 4.2x ATK damage, scales with ATK+DEF, blessing all allies",
                               "effect":  {
                                              "dmgMultiplier":  4.2,
                                              "element":  "holy",
-                                             "statScale":  "atk",
+                                             "statScale":  "def",
                                              "partyBuff":  true
                                          }
                           }
