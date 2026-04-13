@@ -295,8 +295,9 @@ const Story = {
       const arc = this.arc;
       const chapters = arc.chapters || [];
       if (this.chapIdx === -1) {
-        // Saved at arc start: jump directly to chapter 0 (no intro or char-select)
-        this.chapIdx = 0;
+        // Saved at arc start: show arc intro instead of skipping to chapter 0
+        this._showArcIntro();
+        return;
       }
       if (this.chapIdx < chapters.length) {
         const chap = chapters[this.chapIdx];
@@ -350,6 +351,14 @@ const Story = {
     }
 
     if (this.phase === 'boss_in') {
+      // CLEAR MAP FOR THIS ARC ON BOSS DEFEAT
+      if (!Array.isArray(G.clearedMaps)) G.clearedMaps = [];
+      const mapId = ARC_MAP_ID[this.arcIdx];
+      if (mapId && !G.clearedMaps.includes(mapId)) {
+        G.clearedMaps.push(mapId);
+      }
+      this._doSave(); // Save progress after boss defeat
+      
       this.phase = 'boss_post';
       const postLines = chap.post_dialogue || [];
       if (this._pendingRelicMsg) {
@@ -481,8 +490,25 @@ const Story = {
     console.log('[Story._nextChapter] Finished');
   },
 
+  _healParty() {
+    if (G.party) {
+      G.party.forEach(m => {
+        m.hp = m.maxHp; m.mp = m.maxMp; m.isKO = false;
+        m.buff = null; m.debuff = null; m.regenTurns = 0; m.stunned = false;
+        const ch = G.chars.find(c => c.id === m.charId);
+        if (ch) { ch.hp = m.hp; ch.mp = m.mp; ch.isKO = false; }
+      });
+      if (typeof UI !== 'undefined' && typeof UI.renderPartyStatus === 'function') {
+        UI.renderPartyStatus();
+      }
+    }
+  },
+
   _loadChapter(chap) {
     console.log('[Story._loadChapter] Called with chapter:', chap.id, 'type:', chap.type);
+    if (chap.type === 'battle' || chap.type === 'boss_battle') {
+      this._healParty();
+    }
     this.currentChap = chap;
     this.sceneIdx = 0;
     this.lineIdx = 0;
@@ -641,6 +667,7 @@ const Story = {
      BOSS CHAPTER
   ════════════════════════════════════════════════════════════════════════ */
   _showBossChapter() {
+    this._healParty();
     const boss = this.arc.boss_chapter;
     this.currentChap = boss;
     this.currentBossChapter = boss;  // Store for onVictory event processing
