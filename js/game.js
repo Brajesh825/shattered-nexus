@@ -97,7 +97,7 @@ const Battle = {
     if (row.weak.includes(clsElem))   return 'resist';
     return null;
   },
-  physDmg(atk, def, mult = 1, atkLevel = 1, defLevel = 1, defPen = 0) {
+  physDmg(atk, def, mult = 1, atkLevel = 1, defLevel = 1, defPen = 0, source = 'Actor', target = 'Target') {
     // NEW: heavier level-weighting + stronger defense factor (0.75x)
     const scaledAtk = atk + (atkLevel * 1.2);
     // defPen: reduces effectiveness of enemy defense (e.g. 0.2 removes 20% of DEF)
@@ -107,19 +107,19 @@ const Battle = {
     const final = Math.max(1, Math.floor(base * (0.85 + Math.random() * 0.3) * mult));
     
     if (window.LogDebug) {
-      window.LogDebug(`PhysCalc: Atk(${atk})+LvBonus(${Math.round(atkLevel*1.2)}) - [Def(${def})*Pen(${Math.round(defPen*100)}%)+LvBonus(${Math.round(defLevel*0.6)})]*0.75 = ${Math.round(base)} (Final with rnd/mult: ${final})`, 'dmg');
+      window.LogDebug(`[${source} ➔ ${target}] PhysCalc: Atk(${atk})+LvBonus(${Math.round(atkLevel*1.2)}) - [Def(${def})*Pen(${Math.round(defPen*100)}%)+LvBonus(${Math.round(defLevel*0.6)})]*0.75 = ${Math.round(base)} (Final: ${final})`, 'dmg');
     }
     return final;
   },
   // targetMag / targetMagLv = Spirit Defense (SDEF) — high-MAG targets resist magic
-  magicDmg(mag, mult = 1, passiveBonus = 1, magLevel = 1, targetMag = 0, targetMagLv = 1) {
+  magicDmg(mag, mult = 1, passiveBonus = 1, magLevel = 1, targetMag = 0, targetMagLv = 1, source = 'Actor', target = 'Target') {
     const scaledMag      = mag + (magLevel * 0.8);
     const magMitigation  = (targetMag + targetMagLv * 0.3) * 0.4;
     const base = Math.max(1, scaledMag - magMitigation);
     const final = Math.max(1, Math.floor(base * (0.9 + Math.random() * 0.2) * mult * passiveBonus));
 
     if (window.LogDebug) {
-      window.LogDebug(`MagCalc: Mag(${mag})+LvBonus(${Math.round(magLevel*0.8)}) - [T.Mag(${targetMag})+T.LvBonus(${Math.round(targetMagLv*0.3)})]*0.4 = ${Math.round(base)} (Final with rnd/mult: ${final})`, 'dmg');
+      window.LogDebug(`[${source} ➔ ${target}] MagCalc: Mag(${mag})+LvBonus(${Math.round(magLevel*0.8)}) - [T.Mag(${targetMag})+T.LvBonus(${Math.round(targetMagLv*0.3)})]*0.4 = ${Math.round(base)} (Final: ${final})`, 'dmg');
     }
     return final;
   },
@@ -131,6 +131,85 @@ const Battle = {
     return abilities[0];
   },
   alive(m) { return m && !m.isKO && m.hp > 0; },
+
+  // Handles turn-start maintenance: ticking down buffs/debuffs/cooldowns
+  // and reporting active status to the debug log.
+  tickActorStatus(m, isEnemy = false) {
+    if (!m || !this.alive(m)) return;
+    
+    // 1. Report Active Status
+    if (window.LogDebug) {
+      const activeEffects = [];
+      if (m.buff) activeEffects.push(`${m.buff.stat.toUpperCase()} (${m.buff.multiplier || '?'})`);
+      if (m._atkBuffVal) activeEffects.push(`ATK Boost (${Math.round(m._atkBuffVal*100)}%)`);
+      if (m._defBuffVal) activeEffects.push(`DEF Boost (${Math.round(m._defBuffVal*100)}%)`);
+      if (m.regenTurns > 0) activeEffects.push(`Regen (${m.hpRegenAmt || 8} HP)`);
+      if (m.frozen > 0) activeEffects.push('FROZEN');
+      if (m.stunned) activeEffects.push('STUNNED');
+      if (m.debuff) activeEffects.push(`${m.debuff.stat.toUpperCase()} Debuff`);
+      
+      const summary = activeEffects.length > 0 ? activeEffects.join(', ') : 'None';
+      window.LogDebug(`[Turn Start] ${m.displayName || m.name}: Active Status: ${summary}`, 'info');
+    }
+
+    // 2. Resource Regen (Players only)
+    if (!isEnemy) {
+      // Base MP regen + Relic bonus
+      const mpRegenAmt = 3 + Math.floor((m._mpRegenBonus || 0) * m.maxMp);
+      m.mp = Math.min(m.maxMp, m.mp + mpRegenAmt);
+      
+      // Nature's Grace (Passive)
+      if (m.passive?.id === 'natures_grace' && m.hp < m.maxHp) {
+        m.hp = Math.min(m.maxHp, m.hp + 5);
+        if (window.LogDebug) window.LogDebug(`[Passive] ${m.displayName}: Nature's Grace (+5 HP)`, 'passive');
+      }
+
+      // Divine Blessing (Aura)
+      const _hasDivBless = G.party.some(p => this.alive(p) && p.passive?.id === 'divine_blessing');
+      if (_hasDivBless && m.hp < m.maxHp) {
+        const _dbAmt = Math.max(1, Math.floor(m.maxHp * 0.15));
+        m.hp = Math.min(m.maxHp, m.hp + _dbAmt);
+        if (window.LogDebug) window.LogDebug(`[Passive] ${m.displayName}: Divine Blessing aura (+${_dbAmt} HP)`, 'passive');
+      }
+    }
+
+    // 3. Status Ticks
+    if (m.frozen > 0) m.frozen--;
+    if (m.stunned && Math.random() < 0.3) m.stunned = false; 
+    
+    if (m.healBoostTurns > 0) {
+      m.healBoostTurns--;
+      if (m.healBoostTurns <= 0) m.healBoost = 1.0;
+    }
+    
+    if (m.cooldowns) {
+      for (const id in m.cooldowns) if (m.cooldowns[id] > 0) m.cooldowns[id]--;
+    }
+
+    // Buff Expiration
+    if (m.buff) {
+      m.buff.turns--;
+      if (m.buff.turns <= 0) {
+        if (window.LogDebug) window.LogDebug(`[Status] ${m.displayName || m.name}: ${m.buff.stat.toUpperCase()} buff expired`, 'info');
+        m[m.buff.stat] = m.buff.origVal;
+        m.buff = null;
+        m.dmgReduction = null;
+        m.evasion = null;
+        m.hpRegenAmt = null;
+        m.reflect = null;
+        m.fireAmp = null;
+        m.absorbElement = null;
+      }
+    }
+
+    // Regen Ticks
+    if (m.regenTurns > 0) {
+      m.regenTurns--;
+      const amt = m.hpRegenAmt || 8;
+      m.hp = Math.min(m.maxHp, m.hp + amt);
+      if (window.LogDebug) window.LogDebug(`[Status] ${m.displayName || m.name}: Regen tick (+${amt} HP) - ${m.regenTurns} turns left`, 'buff');
+    }
+  }
 };
 
 /* ============================================================
@@ -895,6 +974,10 @@ function heroTurn() {
   UI.renderActiveMemberBar();
   UI.btns(true);
   const actor = G.party[G.activeMemberIdx];
+  
+  // NEW: Start-of-Turn maintenance (tick buffs/regen)
+  Battle.tickActorStatus(actor);
+
   UI.addLog(`${actor?.displayName}'s turn — choose action!`, 'hi');
   UI.updateStats();
 }

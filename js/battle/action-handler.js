@@ -77,7 +77,9 @@ function heroAttack() {
     const _em   = Battle.elemMult(_atkElem, enemy);
     const _bb   = actor.passive?.id === 'blood_blossom' && actor.hp / actor.maxHp < 0.5 ? 1.35 : 1.0;
     const _stab = actor.cls?.element ? 1.25 : 1.0; // no element = no STAB on basic attack
-    const dmg   = Math.floor(Battle.physDmg(actor.atk, enemy.def, 1, actor.lv || 1, enemy.level || 1) * _em * _stab * _bb);
+    if (_bb > 1 && window.LogDebug) window.LogDebug(`[Passive] ${actor.displayName}: Blood Blossom active (1.35x DMG)`, 'passive');
+    
+    const dmg   = Math.floor(Battle.physDmg(actor.atk, enemy.def, 1, actor.lv || 1, enemy.level || 1, 0, actor.displayName, enemy.name) * _em * _stab * _bb);
     enemy.hp  = Math.max(0, enemy.hp - dmg);
     if (enemy.hp <= 0) enemy.isKO = true;
     const _er = Battle.elemResult(_atkElem, enemy);
@@ -132,6 +134,9 @@ function heroAbility(ab) {
   }
   UI.setLog([`${actor.displayName} uses ${ab.name}!`], ['magic']);
   actor.mp = Math.max(0, actor.mp - _mpCost);
+  if (window.LogDebug) {
+    window.LogDebug(`[Cost] ${actor.displayName}: Consumed ${_mpCost} MP (Remaining: ${actor.mp})`, 'info');
+  }
 
   // HP Sacrifice (Hu Tao mechanics)
   if (e.hpCostPercent) {
@@ -139,6 +144,9 @@ function heroAbility(ab) {
     actor.hp = Math.max(1, actor.hp - cost);
     UI.popParty(G.activeMemberIdx, cost, 'dmg', 'dark');
     UI.addLog(`${actor.displayName} sacrifices vitality for power!`, 'dmg');
+    if (window.LogDebug) {
+      window.LogDebug(`[Sacrifice] ${actor.displayName}: Consumed ${cost} HP (${Math.round(e.hpCostPercent*100)}% of current) for ability power`, 'dmg');
+    }
   }
 
   // Ultimates with 3-second channel animation before damage lands
@@ -185,7 +193,8 @@ function heroAbility(ab) {
         const _em = Battle.elemMult(element, tgt);
         // Elemental Amps
         const _amp = (element === 'fire' ? actor.fireAmp || 1.0 : 1.0);
-        const dmg = Math.floor(Battle.physDmg(_effectiveAtk, tgt.def, e.dmgMultiplier || 1, actor.lv || 1, tgt.level || 1, e.defPen || 0) * _em * _stab * _bb * _amp * _lowHpMult);
+        if (window.LogDebug) window.LogDebug(`[Action] ${actor.displayName} ➔ ${tgt.name}: uses ${ab.name}`, 'info');
+        const dmg = Math.floor(Battle.physDmg(_effectiveAtk, tgt.def, e.dmgMultiplier || 1, actor.lv || 1, tgt.level || 1, e.defPen || 0, actor.displayName, tgt.name) * _em * _stab * _bb * _amp * _lowHpMult);
         tgt.hp = Math.max(0, tgt.hp - dmg);
         if (tgt.hp <= 0) tgt.isKO = true;
         totalDmg += dmg;
@@ -278,7 +287,8 @@ function heroAbility(ab) {
         UI.addLog(`${actor.displayName} ${ultimateChannels[ab.id]}`, 'magic');
         setTimeout(() => {
           if (_summonBonus > 1.0) UI.addLog('✦ Eidolon Power Boost!', 'magic');
-          const dmg = Math.floor(Battle.magicDmg(_effectiveMag, e.dmgMultiplier || 1.5, passiveBonus, actor.lv || 1) * _em * _stab * _summonBonus);
+          if (window.LogDebug) window.LogDebug(`[Action] ${actor.displayName} ➔ ${targets.map(t=>t.name).join(', ')}: uses ${ab.name} (AOE)`, 'info');
+          const dmg = Math.floor(Battle.magicDmg(_effectiveMag, e.dmgMultiplier || 1.5, passiveBonus, actor.lv || 1, 0, 1, actor.displayName, 'All Enemies') * _em * _stab * _summonBonus);
           if (e.guardian) {
             G.party.forEach(m => { if (Battle.alive(m)) m.guardianTurns = 2; });
             UI.addLog('🛡️ Phantom Guardian summoned!', 'heal');
@@ -313,7 +323,8 @@ function heroAbility(ab) {
           const _summonBonus = (ab.id.startsWith('summon_') || ab.id.startsWith('absolute_')) ? (actor.summonBoost || 1.0) : 1.0;
           if (_summonBonus > 1.0) UI.addLog('✦ Eidolon Power Boost!', 'magic');
 
-          const dmg = Math.floor(Battle.magicDmg(_effectiveMag, e.dmgMultiplier || 1.5, passiveBonus, actor.lv || 1, tgt.mag, tgt.lv || 1) * _em * _stab * _amp * _lowHpMult * _summonBonus);
+          if (window.LogDebug) window.LogDebug(`[Action] ${actor.displayName} ➔ ${tgt.name}: uses ${ab.name}`, 'info');
+          const dmg = Math.floor(Battle.magicDmg(_effectiveMag, e.dmgMultiplier || 1.5, passiveBonus, actor.lv || 1, tgt.mag, tgt.lv || 1, actor.displayName, tgt.name) * _em * _stab * _amp * _lowHpMult * _summonBonus);
           tgt.hp = Math.max(0, tgt.hp - dmg);
           if (tgt.hp <= 0) tgt.isKO = true;
           totalDmg += dmg;
@@ -364,9 +375,17 @@ function heroAbility(ab) {
         if (ab.isUltimate && m.isKO) {
           m.isKO = false;
           m.hp = 1; // Start at 1 for the addition process below
+          if (window.LogDebug) window.LogDebug(`[Revive] ${actor.displayName} resurrected ${m.displayName}!`, 'buff');
         }
         const amt = getHealAmt(m);
         m.hp = Math.min(m.maxHp, m.hp + amt);
+
+        if (window.LogDebug) {
+          const base = e.healBase || 20;
+          const magBonus = Math.floor(actor.mag * 1.5);
+          window.LogDebug(`[Heal] ${actor.displayName} ➔ ${m.displayName}: ${amt} HP (Base ${base} + MagBonus ${magBonus} * Amp ${_healAmp.toFixed(2)})`, 'buff');
+        }
+        
         if (e.cleanse) {
           m.frozen = 0; m.stunned = false; m.debuff = null;
         }
@@ -525,12 +544,11 @@ function _checkDragonLeap(actor) {
    ENEMY AI
    ============================================================ */
 function enemyAct(enemy, enemyIdx) {
+  // NEW: Start-of-Turn maintenance (debuffs, cooldowns)
+  Battle.tickActorStatus(enemy, true);
+
   if (enemy.stunned || enemy.frozen > 0) {
-    const isFrozen = enemy.frozen > 0;
-    if (isFrozen) enemy.frozen--;
-    else enemy.stunned = false;
-    
-    UI.setLog([`${enemy.name} is ${isFrozen?'Frozen':'Stunned'} — skips turn!`], ['magic']);
+    UI.setLog([`${enemy.name} is incapacitated — skips turn!`], ['magic']);
     setTimeout(advanceTurn, 700);
     return;
   }
@@ -607,13 +625,14 @@ function enemyAct(enemy, enemyIdx) {
       }
 
       const _pm  = Battle.playerElemMult(element, target);
-      let dmg    = Math.floor(Battle.physDmg(enemy.atk, target.def, ab?.dmgMultiplier || 1, enemy.level || 1, target.lv || 1) * _pm);
+      let dmg    = Math.floor(Battle.physDmg(enemy.atk, target.def, ab?.dmgMultiplier || 1, enemy.level || 1, target.lv || 1, 0, enemy.name, target.displayName) * _pm);
       
       // Absorption Check
       if (target.absorbElement && target.absorbElement === element) {
         target.hp = Math.min(target.maxHp, target.hp + dmg);
         UI.popParty(targetIdx, dmg, 'heal');
         UI.addLog(`⭐ ${target.displayName} ABSORBED the attack!`, 'heal');
+        if (window.LogDebug) window.LogDebug(`[Absorb] ${target.displayName} absorbed ${dmg} from ${enemy.name}'s attack`, 'buff');
         createEffectOverlay(targetIdx, element, 'party');
         UI.renderPartyStatus();
         setTimeout(advanceTurn, 700);
@@ -660,13 +679,14 @@ function enemyAct(enemy, enemyIdx) {
       }
 
       const _pm = Battle.playerElemMult(element, target);
-      let dmg   = Math.floor(Battle.magicDmg(enemy.mag, ab.dmgMultiplier || 1.3, 1.0, enemy.level || 1, target.mag || 0, target.lv || 1) * _pm);
+      let dmg   = Math.floor(Battle.magicDmg(enemy.mag, ab.dmgMultiplier || 1.3, 1.0, enemy.level || 1, target.mag || 0, target.lv || 1, enemy.name, target.displayName) * _pm);
       
       // Absorption Check
       if (target.absorbElement && target.absorbElement === element) {
         target.hp = Math.min(target.maxHp, target.hp + dmg);
         UI.popParty(targetIdx, dmg, 'heal');
         UI.addLog(`⭐ ${target.displayName} ABSORBED the spell!`, 'heal');
+        if (window.LogDebug) window.LogDebug(`[Absorb] ${target.displayName} absorbed ${dmg} from ${enemy.name}'s spell`, 'buff');
         createEffectOverlay(targetIdx, element, 'party');
         UI.renderPartyStatus();
         setTimeout(advanceTurn, 700);
@@ -708,75 +728,7 @@ function enemyAct(enemy, enemyIdx) {
       target.def = Math.floor(target.def * 1.25);
       target.passive = { ...target.passive, triggered: true };
     }
-
-    // Regen ticks for all party members after each enemy action
-    const _hasDivBless = G.party.some(p => Battle.alive(p) && p.passive?.id === 'divine_blessing');
-    G.party.forEach((m, i) => {
-      if (!Battle.alive(m)) return;
-      // Passive MP regen: 3 MP per turn (mpRegen relic gives bonus)
-      const mpRegenAmt = 3 + Math.floor((m._mpRegenBonus || 0) * m.maxMp);
-      m.mp = Math.min(m.maxMp, m.mp + mpRegenAmt);
-      if (m.passive?.id === 'natures_grace' && m.hp < m.maxHp) {
-        m.hp = Math.min(m.maxHp, m.hp + 5); UI.popParty(i, 5, 'regen');
-        if (window.LogDebug) window.LogDebug(`[Passive] ${m.displayName}: Nature's Grace (Regen 5 HP)`, 'passive');
-      }
-      if (m.regenTurns > 0) {
-        m.regenTurns--; 
-        const _amt = m.hpRegenAmt || 8;
-        m.hp = Math.min(m.maxHp, m.hp + _amt); 
-        UI.popParty(i, _amt, 'regen');
-        if (window.LogDebug) window.LogDebug(`[Status] ${m.displayName}: Regen tick (${_amt} HP) - ${m.regenTurns} turns left`, 'buff');
-      }
       
-      // Cooldown & Status decrement
-      if (m.frozen > 0) m.frozen--;
-      if (m.healBoostTurns > 0) {
-        m.healBoostTurns--;
-        if (m.healBoostTurns <= 0) m.healBoost = null;
-      }
-      if (m.guardMarkTurns > 0) {
-        m.guardMarkTurns--;
-        if (m.guardMarkTurns <= 0) m.guardMark = null;
-      }
-      if (m.guardianTurns > 0) m.guardianTurns--;
-
-      if (m.cooldowns) {
-        for (let cid in m.cooldowns) {
-          if (m.cooldowns[cid] > 0) m.cooldowns[cid]--;
-        }
-      }
-
-      // Divine Blessing: knight king's aura grants all allies 15% max HP regen per turn
-      if (_hasDivBless && m.hp < m.maxHp) {
-        const _dbAmt = Math.max(1, Math.floor(m.maxHp * 0.15));
-        m.hp = Math.min(m.maxHp, m.hp + _dbAmt);
-        UI.popParty(i, _dbAmt, 'heal', 'light');
-        if (window.LogDebug) window.LogDebug(`[Passive] ${m.displayName}: Divine Blessing aura (Healed ${Math.round(m.maxHp*0.15)} HP / 15% Max)`, 'passive');
-      }
-      if (m.buff) { 
-        m.buff.turns--; 
-        if (m.buff.turns <= 0) { 
-          if (window.LogDebug) window.LogDebug(`[Status] ${m.displayName}: ${m.buff.stat.toUpperCase()} buff expired`, 'info');
-          m[m.buff.stat] = m.buff.origVal; 
-          m.buff = null; 
-          
-          // Multi-stat cleanup
-          if (m._atkBuffVal) { m.atk = Math.ceil(m.atk / m._atkBuffVal); delete m._atkBuffVal; }
-          if (m._defBuffVal) { m.def = Math.ceil(m.def / m._defBuffVal); delete m._defBuffVal; }
-          if (m._spdBuffVal) { m.spd = Math.ceil(m.spd / m._spdBuffVal); delete m._spdBuffVal; }
-          if (m._magBuffVal) { m.mag = Math.ceil(m.mag / m._magBuffVal); delete m._magBuffVal; }
-
-          // Reset special buff flags: Hu Tao cleanup
-          m.dmgReduction = null;
-          m.evasion = null;
-          m.hpRegenAmt = null;
-          m.reflect = null;
-          m.fireAmp = null;
-          m.absorbElement = null;
-        } 
-      }
-    });
-
     // ── Mutant trait ticks after enemy action ─────────────────
     G.enemyGroup.forEach((e, i) => {
       if (!Battle.alive(e) || !e.mutantTraits) return;
@@ -787,14 +739,16 @@ function enemyAct(enemy, enemyIdx) {
         const healAmt = Math.max(1, Math.floor(e.maxHp * 0.05));
         e.hp = Math.min(e.maxHp, e.hp + healAmt);
         UI.popEnemy(i, healAmt, 'regen');
+        if (window.LogDebug) window.LogDebug(`[Passive] ${e.name} (Regenerating): Recovered ${healAmt} HP`, 'buff');
       }
 
-      // Enraged: ATK grows +5% per turn, no cap — hard DPS timer
+      // Enraged: ATK grows +5% per turn
       if (traits.some(t => t.id === 'enraged')) {
         e._enragedTurns = (e._enragedTurns || 0) + 1;
         const gain = Math.max(1, Math.floor(e.atk * 0.05));
         e.atk += gain;
         if (e._enragedTurns === 1) UI.addLog(`⚡ ${e.name} is Enraged! ATK rising each turn!`, 'dmg');
+        if (window.LogDebug) window.LogDebug(`[Passive] ${e.name} (Enraged): ATK increased to ${e.atk}`, 'passive');
       }
     });
 
