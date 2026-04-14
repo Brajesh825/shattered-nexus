@@ -492,6 +492,7 @@
 <script src="js/systems/party.js"></script>
 <script src="js/systems/inventory.js"></script>
 <script src="js/ui/battle-ui.js"></script>
+<script src="js/ui/result-ui.js"></script>
 <script src="js/battle/status-system.js"></script>
 <script src="js/battle/turn-manager.js"></script>
 <script src="js/battle/combat-engine.js"></script>
@@ -500,35 +501,6 @@
 <script src="js/game.js"></script>
 <script src="js/story.js"></script>
 <script>
-  // Patch UI.show to manage step-bar visibility and BGM
-  const _origUIShow = UI.show.bind(UI);
-  UI.show = function(id) {
-    _origUIShow(id);
-
-    // Hide dialogue when leaving story screen
-    const dialogue = document.getElementById('s-dialogue');
-    if (id !== 'story-screen' && dialogue) {
-      dialogue.style.display = 'none';
-    }
-
-    const bar = document.getElementById('step-bar');
-    bar.style.display = ['char-screen'].includes(id) ? 'flex' : 'none';
-    SFX.click();
-
-    // Trigger BGM based on screen
-    if (id === 'title-screen') {
-      BGM.play('title');
-    } else if (id === 'battle-screen') {
-      BGM.play('battle');
-    } else if (id === 'explore-screen') {
-      BGM.play('exploration');
-    } else if (id === 'story-screen') {
-      BGM.play('story');
-    } else {
-      BGM.stop();
-    }
-  };
-
   TTS.init();
 
   // ── Fullscreen prompt for mobile ─────────────────────────

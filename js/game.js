@@ -249,112 +249,98 @@ const TYPE_ICONS = {
 // Edit timing values there, not here.
 let moveAnimations = {};
 
-const UI = {
-  el: id => document.getElementById(id),
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => {
+    s.classList.remove('active');
+    s.style.display = '';
+  });
+  document.getElementById(id).classList.add('active');
+  requestAnimationFrame(scaleGame);
+  const steps = { 'char-screen': 1, 'battle-screen': 2, 'result-screen': 2 };
+  const cur = steps[id] || 0;
+  document.querySelectorAll('.step').forEach(s => {
+    const n = +s.dataset.step;
+    s.classList.toggle('active', n === cur);
+    s.classList.toggle('done', n < cur);
+  });
 
-  show(id) {
-    document.querySelectorAll('.screen').forEach(s => {
-      s.classList.remove('active');
-      s.style.display = ''; // Clear inline display style
-    });
-    this.el(id).classList.add('active');
-    requestAnimationFrame(scaleGame); // re-measure after new screen content renders
-    const steps = { 'char-screen': 1, 'battle-screen': 2, 'result-screen': 2 };
-    const cur = steps[id] || 0;
-    document.querySelectorAll('.step').forEach(s => {
-      const n = +s.dataset.step;
-      s.classList.toggle('active', n === cur);
-      s.classList.toggle('done', n < cur);
-    });
-  },
+  // Hide story dialogue when leaving story screen
+  const dialogue = document.getElementById('s-dialogue');
+  if (id !== 'story-screen' && dialogue) dialogue.style.display = 'none';
 
-  setLog(lines, cls = []) { BattleUI.setLog(lines, cls); },
-  addLog(txt, cl = '') { BattleUI.addLog(txt, cl); },
+  // Step-bar visibility
+  const bar = document.getElementById('step-bar');
+  if (bar) bar.style.display = ['char-screen'].includes(id) ? 'flex' : 'none';
 
-  // Backward compat (story.js)
-  updateBars() { this.renderPartyStatus(); this.renderEnemyRow(); },
+  if (typeof SFX !== 'undefined') SFX.click();
 
-  updateStats() { BattleUI.updateStats(); },
+  // BGM
+  if (typeof BGM !== 'undefined') {
+    if (id === 'title-screen')       BGM.play('title');
+    else if (id === 'battle-screen') BGM.play('battle');
+    else if (id === 'explore-screen') BGM.play('exploration');
+    else if (id === 'story-screen')  BGM.play('story');
+    else BGM.stop();
+  }
+}
 
-  pop(x, y, val, type = '', element = 'physical') { BattleUI._pop(val, x, y, type, element); },
-  popEnemy(idx, val, type, element = 'physical') { BattleUI.popEnemy(idx, val, type, element); },
-  popParty(idx, val, type, element = 'light') { BattleUI.popParty(idx, val, type, element); },
-  popAI(idx, txt) { BattleUI.popAI(idx, txt); },
+function renderPartyMenu() {
+  const cards = document.getElementById('pm-cards');
+  if (!cards) return;
+  cards.innerHTML = '';
+  G.party.forEach((m, i) => {
+    const col = CHAR_COLOR[m.charId] || '#c0b8e8';
+    const hpPct = Math.max(0, m.hp / m.maxHp * 100);
+    const mpPct = Math.max(0, m.mp / m.maxMp * 100);
+    const hpCol = hpPct > 50 ? 'var(--hp-hi)' : hpPct > 25 ? 'var(--hp-mid)' : 'var(--hp-lo)';
+    const card = document.createElement('div');
+    card.className = 'pm-card';
+    card.style.borderColor = col + '80';
 
-  render() { BattleUI.render(); },
+    const img = document.createElement('img');
+    img.className = 'pm-portrait'; img.alt = m.displayName;
+    SpriteRenderer.drawHero(img, m.charId, m.char, m.cls);
 
-  btns(on) { BattleUI.btns(on); },
-  openSub(id) { BattleUI.openSub(id); },
+    const abHtml = (m.abilities || []).map(a =>
+      `<div class="pm-ab"><span class="pm-ab-icon">${a.icon || '⚡'}</span><span class="pm-ab-name">${a.name}</span><span class="pm-ab-mp">${a.mp}MP</span></div>`
+    ).join('');
 
-  renderBattleUI() { this.render(); },
-  renderTurnBar() { BattleUI.renderTurnBar(); },
-  renderEnemyRow() { BattleUI.renderEnemyRow(); },
-  renderPartyRow() { BattleUI.renderPartyRow(); },
-  _highlightActiveMember() { BattleUI.highlightActiveMember(); },
-  renderPartyStatus() { BattleUI.renderPartyStatus(); },
-  _renderPSCStatuses(m) { return BattleUI._renderPSCStatuses(m); },
-  renderActiveMemberBar() { BattleUI.renderActiveMemberBar(); },
-
-  renderPartyMenu() {
-    const cards = this.el('pm-cards');
-    if (!cards) return;
-    cards.innerHTML = '';
-    G.party.forEach((m, i) => {
-      const col = CHAR_COLOR[m.charId] || '#c0b8e8';
-      const hpPct = Math.max(0, m.hp / m.maxHp * 100);
-      const mpPct = Math.max(0, m.mp / m.maxMp * 100);
-      const hpCol = hpPct > 50 ? 'var(--hp-hi)' : hpPct > 25 ? 'var(--hp-mid)' : 'var(--hp-lo)';
-      const card = document.createElement('div');
-      card.className = 'pm-card';
-      card.style.borderColor = col + '80';
-
-      // Portrait + name header
-      const img = document.createElement('img');
-      img.className = 'pm-portrait'; img.alt = m.displayName;
-      SpriteRenderer.drawHero(img, m.charId, m.char, m.cls);
-
-      const abHtml = (m.abilities || []).map(a =>
-        `<div class="pm-ab"><span class="pm-ab-icon">${a.icon || '⚡'}</span><span class="pm-ab-name">${a.name}</span><span class="pm-ab-mp">${a.mp}MP</span></div>`
-      ).join('');
-
-      card.innerHTML = `
-        <div class="pm-card-top" style="border-bottom-color:${col}40">
-          <div class="pm-portrait-wrap"></div>
-          <div class="pm-card-head">
-            <div class="pm-card-name" style="color:${col}">${m.displayName}</div>
-            <div class="pm-card-class">${m.cls.name} ${m.isKO ? '<span class="pm-ko-badge">KO</span>' : ''}</div>
-            <div class="pm-card-lv">LEVEL <span style="color:${col}">${m.lv}</span>
-              · EXP <span style="color:var(--gold)">${m.exp}</span>/<span style="color:var(--text-dim)">${30 * m.lv}</span></div>
-          </div>
+    card.innerHTML = `
+      <div class="pm-card-top" style="border-bottom-color:${col}40">
+        <div class="pm-portrait-wrap"></div>
+        <div class="pm-card-head">
+          <div class="pm-card-name" style="color:${col}">${m.displayName}</div>
+          <div class="pm-card-class">${m.cls.name} ${m.isKO ? '<span class="pm-ko-badge">KO</span>' : ''}</div>
+          <div class="pm-card-lv">LEVEL <span style="color:${col}">${m.lv}</span>
+            · EXP <span style="color:var(--gold)">${m.exp}</span>/<span style="color:var(--text-dim)">${30 * m.lv}</span></div>
         </div>
-        <div class="pm-bars">
-          <div class="pm-bar-row">HP
-            <div class="pm-bar-bg"><div class="pm-bar-fill" style="width:${hpPct}%;background:${hpCol}"></div></div>
-            <span>${Math.max(0, m.hp)}/${m.maxHp}</span>
-          </div>
-          <div class="pm-bar-row">MP
-            <div class="pm-bar-bg"><div class="pm-bar-fill" style="width:${mpPct}%;background:#5060ff"></div></div>
-            <span>${m.mp}/${m.maxMp}</span>
-          </div>
+      </div>
+      <div class="pm-bars">
+        <div class="pm-bar-row">HP
+          <div class="pm-bar-bg"><div class="pm-bar-fill" style="width:${hpPct}%;background:${hpCol}"></div></div>
+          <span>${Math.max(0, m.hp)}/${m.maxHp}</span>
         </div>
-        <div class="pm-stats">
-          <div class="pm-stat"><span>ATK</span><span style="color:var(--gold)">${m.atk}</span></div>
-          <div class="pm-stat"><span>DEF</span><span style="color:var(--gold)">${m.def}</span></div>
-          <div class="pm-stat"><span>MAG</span><span style="color:var(--gold)">${m.mag}</span></div>
-          <div class="pm-stat"><span>SPD</span><span style="color:var(--gold)">${m.spd}</span></div>
+        <div class="pm-bar-row">MP
+          <div class="pm-bar-bg"><div class="pm-bar-fill" style="width:${mpPct}%;background:#5060ff"></div></div>
+          <span>${m.mp}/${m.maxMp}</span>
         </div>
-        <div class="pm-passive">
-          <span class="pm-passive-tag">★ ${m.passive?.name || 'Passive'}</span>
-          <span class="pm-passive-desc">${m.passive?.description || ''}</span>
-        </div>
-        <div class="pm-abilities">${abHtml}</div>`;
+      </div>
+      <div class="pm-stats">
+        <div class="pm-stat"><span>ATK</span><span style="color:var(--gold)">${m.atk}</span></div>
+        <div class="pm-stat"><span>DEF</span><span style="color:var(--gold)">${m.def}</span></div>
+        <div class="pm-stat"><span>MAG</span><span style="color:var(--gold)">${m.mag}</span></div>
+        <div class="pm-stat"><span>SPD</span><span style="color:var(--gold)">${m.spd}</span></div>
+      </div>
+      <div class="pm-passive">
+        <span class="pm-passive-tag">★ ${m.passive?.name || 'Passive'}</span>
+        <span class="pm-passive-desc">${m.passive?.description || ''}</span>
+      </div>
+      <div class="pm-abilities">${abHtml}</div>`;
 
-      // Insert portrait image
-      card.querySelector('.pm-portrait-wrap').appendChild(img);
-      cards.appendChild(card);
-    });
-  },
-};
+    card.querySelector('.pm-portrait-wrap').appendChild(img);
+    cards.appendChild(card);
+  });
+}
 function buildEnemyGroup(defs, spawnLevel = 1, isBoss = false) {
   // Tier-based growth rates
   const tierGrowth = {
@@ -439,7 +425,7 @@ function selectTarget(enemyIdx) {
   document.querySelectorAll('.enemy').forEach((e, i) => {
     e.dataset.target = i === enemyIdx ? 'true' : 'false';
   });
-  UI.renderEnemyRow();
+  BattleUI.renderEnemyRow();
   if (typeof SFX !== 'undefined') SFX.click();
 }
 
@@ -449,8 +435,8 @@ function selectTarget(enemyIdx) {
 function showPreBattle() {
   if (G.selectedChars.length < 4) return;
 
-  UI.show('pre-battle-screen');
-  const roster = UI.el('pre-battle-roster');
+  showScreen('pre-battle-screen');
+  const roster = document.getElementById('pre-battle-roster');
   roster.innerHTML = '';
 
   // Show current party
@@ -490,7 +476,7 @@ function startBattle() {
   buildEnemyGroup(picks, spawnLevel);
   _initBattle();
   const names = G.enemyGroup.map(e => e.name).join(' & ');
-  UI.setLog([`${names} appear!`, `Party to battle stations!`], ['hi', '']);
+  BattleUI.setLog([`${names} appear!`, `Party to battle stations!`], ['hi', '']);
   processCurrentTurn();
 }
 
@@ -516,7 +502,7 @@ function _applyVampiric(enemy, dmg, enemyIdx) {
   if (!isVampiric || dmg <= 0) return;
   const heal = Math.max(1, Math.floor(dmg * 0.25));
   enemy.hp = Math.min(enemy.maxHp, enemy.hp + heal);
-  UI.popEnemy(enemyIdx, heal, 'regen');
+  BattleUI.popEnemy(enemyIdx, heal, 'regen');
 }
 
 function _initBattle() {
@@ -525,14 +511,14 @@ function _initBattle() {
   G.activeMemberIdx = 0;
   G.busy = false;
   buildAbilityMenu();
-  UI.show('battle-screen');
-  UI.renderBattleUI();
+  showScreen('battle-screen');
+  BattleUI.render();
 }
 
 function buildAbilityMenu() {
   const actor = G.party[G.activeMemberIdx] || G.hero;
   if (!actor) return;
-  const menu = UI.el('ability-sub');
+  const menu = document.getElementById('ability-sub');
   if (!menu) return;
   menu.innerHTML = '';
   actor.abilities.forEach(ab => {
@@ -556,7 +542,7 @@ function buildAbilityMenu() {
   const back = document.createElement('button');
   back.className = 'cmd-btn dim';
   back.textContent = '← BACK';
-  back.onclick = () => UI.openSub(null);
+  back.onclick = () => BattleUI.openSub(null);
   menu.appendChild(back);
 }
 
@@ -574,19 +560,17 @@ function heroTurn() { TurnManager.beginHeroTurn(); }
    ============================================================ */
 function heroRun() {
   if (G.busy) return;
-  G.busy = true; UI.btns(false);
-  UI.openSub(null);
+  G.busy = true; BattleUI.btns(false);
+  BattleUI.openSub(null);
   if (Math.random() < 0.6) {
-    UI.setLog(['The party escapes!'], ['hi']);
+    BattleUI.setLog(['The party escapes!'], ['hi']);
     setTimeout(() => showResult('escaped'), 900);
   } else {
     const _isMutant = G.enemyGroup.some(e => e.mutantTraits && Battle.alive(e));
-    UI.setLog([_isMutant ? '⚠ Escape failed! The Mutant strikes!' : 'Could not escape!'], ['dmg']);
+    BattleUI.setLog([_isMutant ? '⚠ Escape failed! The Mutant strikes!' : 'Could not escape!'], ['dmg']);
     setTimeout(advanceTurn, 800);
   }
 }
-
-function heroTurn() { TurnManager.beginHeroTurn(); }
 
 function checkBattleEnd() {
   const allEnemiesDead = G.enemyGroup.every(e => !Battle.alive(e));
@@ -640,19 +624,19 @@ function checkBattleEnd() {
       ? allDrops.map(id => { const d = G.items.find(i => i.id === id); return d ? `${d.icon}${d.name}` : id; }).join(', ')
       : null;
     const relicMsg = relicDrop ? `✦ Relic found: ${relicDrop.icon} ${relicDrop.name}!` : null;
-    UI.setLog([
+    BattleUI.setLog([
       `Enemies defeated! +${totalExp} EXP +${totalGold} Gold`,
       dropMsg ? `Drops: ${dropMsg}` : '',
       relicMsg || ''
     ].filter(Boolean), ['hi', 'hi', 'hi']);
-    UI.renderPartyStatus();
-    UI.updateStats();
+    BattleUI.renderPartyStatus();
+    BattleUI.updateStats();
 
     setTimeout(() => {
       if (leveledNames.length) {
-        UI.addLog(`★ LEVEL UP: ${leveledNames.join(', ')}!`, 'hi');
+        BattleUI.addLog(`★ LEVEL UP: ${leveledNames.join(', ')}!`, 'hi');
         if (typeof SFX !== 'undefined') SFX.levelUp();
-        UI.renderPartyStatus();
+        BattleUI.renderPartyStatus();
       }
       setTimeout(() => {
         _clearBattleAtmosphere();
@@ -665,7 +649,7 @@ function checkBattleEnd() {
   }
 
   if (allPartyDown) {
-    UI.setLog(['The party has fallen...'], ['dmg']);
+    BattleUI.setLog(['The party has fallen...'], ['dmg']);
     setTimeout(() => {
       _clearBattleAtmosphere();
       if (G.mode === 'explore' || G.mode === 'story_explore') { MapEngine.onBattleComplete(false); }
@@ -687,53 +671,7 @@ function checkEnd() { return checkBattleEnd(); }
 function showResult(type) {
   _clearBattleAtmosphere();
   closePartyMenu();
-  const t = UI.el('result-title');
-  const st = UI.el('result-stats');
-  const party = UI.el('result-party');
-  const retryBtn = UI.el('result-retry-btn');
-  const againBtn = UI.el('result-again-btn');
-
-  // Party member cards — shown on all result types
-  if (party && G.party.length) {
-    party.innerHTML = G.party.map(m => {
-      const col = CHAR_COLOR[m.charId] || '#aaa';
-      const isKO = !Battle.alive(m);
-      const hpTxt = isKO ? '0' : m.hp;
-      return `<div class="result-member${isKO ? ' ko' : ''}" style="border-color:${col}40">
-        <div class="rm-name" style="color:${col}">${m.displayName}</div>
-        <div class="rm-lv">LV ${m.lv}</div>
-        <div class="rm-hp${isKO ? ' zero' : ''}">HP ${hpTxt}/${m.maxHp}</div>
-        <div class="rm-exp" style="color:#8888bb">EXP ${m.exp}</div>
-        ${isKO ? '<div style="color:var(--red);font-size:9px">FALLEN</div>' : ''}
-      </div>`;
-    }).join('');
-  } else if (party) {
-    party.innerHTML = '';
-  }
-
-  if (type === 'victory') {
-    if (typeof SFX !== 'undefined') SFX.victory();
-    t.textContent = '✨ VICTORY! ✨';
-    t.className = 'result-title victory';
-    const totalGold = G.party.reduce((s, m) => s + (m.gold || 0), 0);
-    st.innerHTML = `All enemies defeated!<br><span class="val">+Gold collected this run: ${totalGold}</span>`;
-    if (retryBtn) retryBtn.style.display = 'none';
-    if (againBtn) againBtn.textContent = '▶ PLAY AGAIN';
-  } else if (type === 'defeat') {
-    if (typeof SFX !== 'undefined') SFX.defeat();
-    t.textContent = '💀 GAME OVER 💀';
-    t.className = 'result-title defeat';
-    st.innerHTML = `The party has fallen...`;
-    if (retryBtn) retryBtn.style.display = '';
-    if (againBtn) againBtn.textContent = '⬅ MENU';
-  } else {
-    t.textContent = '💨 ESCAPED!';
-    t.className = 'result-title escaped';
-    st.innerHTML = `The party fled from battle!`;
-    if (retryBtn) retryBtn.style.display = 'none';
-    if (againBtn) againBtn.textContent = '▶ PLAY AGAIN';
-  }
-  UI.show('result-screen');
+  ResultUI.show(type, G.party);
 }
 
 function playAgain() {
@@ -754,8 +692,8 @@ function retryBattle() {
   G.turnQueue = buildTurnQueue();
   G.turnIdx = 0;
   G.busy = false;
-  UI.show('battle-screen');
-  UI.renderBattleUI();
+  showScreen('battle-screen');
+  BattleUI.render();
   processCurrentTurn();
 }
 
@@ -805,7 +743,7 @@ function leaveExplore() {
     Story.onExploreComplete();
   } else {
     G.mode = 'free';
-    UI.show('title-screen');
+    showScreen('title-screen');
   }
 }
 
@@ -823,7 +761,7 @@ function startExplore() {
     buildParty();
   }
   G.mode = 'explore';
-  UI.show('explore-screen');
+  showScreen('explore-screen');
   _dockPersistentBtns(true);
 
   // Size canvas to its container

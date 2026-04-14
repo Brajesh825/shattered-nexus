@@ -106,7 +106,7 @@ const BattleUI = {
       const pct = Math.max(0, e.hp / e.maxHp * 100);
 
       const tierW = TIER_BASE_W[e.tier || 1] || TIER_BASE_W[1];
-      const cScale = COUNT_SCALE[count] || COUNT_SCALE[count] || 0.64;
+      const cScale = COUNT_SCALE[count] ?? 0.64;
       const mMult = MUTATION_MULT[e.mutation || 'normal'] || 1.0;
       const sprW = Math.round(tierW * cScale * mMult);
       const sprH = Math.round(sprW * ASPECT);

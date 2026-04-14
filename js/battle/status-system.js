@@ -42,9 +42,9 @@ const StatusSystem = {
 
     const existing = unit.statuses.find(s => s.id === def.id);
     if (existing) {
-      existing.turns = Math.max(existing.turns, def.turns || 3);
+      existing.turns = Math.max(existing.turns ?? 0, def.turns ?? 3);
       if (def.type === 'mult') {
-        existing.value = Math.max(existing.value, def.value || 1.0);
+        existing.value = Math.max(existing.value, def.value ?? 1.0);
       }
       return;
     }
@@ -56,7 +56,7 @@ const StatusSystem = {
       stat: def.stat,
       type: def.type || 'mult',
       value: def.value !== undefined ? def.value : 1.0,
-      turns: def.turns || 3,
+      turns: def.turns ?? 3,
       color: def.color || 'var(--amber)'
     });
   },
