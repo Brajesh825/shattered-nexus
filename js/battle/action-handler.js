@@ -120,7 +120,7 @@ function heroAttack() {
     _applyVampiric(enemy, dmg, G.targetEnemyIdx);
     _checkDragonLeap(actor);
     BattleUI.renderEnemyRow();
-    setTimeout(advanceTurn, 700);
+    setTimeout((() => TurnManager.advance()), 700);
   }, 460);
 }
 
@@ -256,7 +256,7 @@ function heroAbility(ab) {
 
         _checkDragonLeap(actor);
         BattleUI.renderEnemyRow(); BattleUI.renderPartyStatus();
-        setTimeout(advanceTurn, moveConfig.isUltimate ? 900 : 750);
+        setTimeout((() => TurnManager.advance()), moveConfig.isUltimate ? 900 : 750);
       };
 
       if (isUltimate) {
@@ -320,7 +320,7 @@ function heroAbility(ab) {
       }
 
       BattleUI.renderPartyStatus();
-      setTimeout(advanceTurn, 800);
+      setTimeout((() => TurnManager.advance()), 800);
       return;
 
     } else if (ab.type === 'regen') {
@@ -434,7 +434,7 @@ function heroAbility(ab) {
       }
       BattleUI.addLog('Could not escape!', 'dmg');
       BattleUI.renderEnemyRow(); BattleUI.renderPartyStatus();
-      setTimeout(advanceTurn, 800);
+      setTimeout((() => TurnManager.advance()), 800);
       return;
     }
 
@@ -445,7 +445,7 @@ function heroAbility(ab) {
     }
 
     BattleUI.renderEnemyRow(); BattleUI.renderPartyStatus();
-    setTimeout(advanceTurn, moveConfig.isUltimate ? 900 : 750);
+    setTimeout((() => TurnManager.advance()), moveConfig.isUltimate ? 900 : 750);
   }, animDuration);
 }
 
@@ -481,14 +481,14 @@ function enemyAct(enemy, enemyIdx) {
   // CONTROL CHECK (Phase 5 Refinement: Unified Status System)
   const isIncapacitated = enemy.statuses?.some(s => s.id === 'status_stunned' || s.id === 'status_frozen');
   if (isIncapacitated) {
-    advanceTurn();
+    TurnManager.advance();
     return;
   }
   // (Frozen turn-skip now handled unified in processCurrentTurn)
 
   // ── TARGET SELECTION (Phase 5: Role-Based AI) ──────────────────
   const alive = G.party.filter(m => Battle.alive(m));
-  if (!alive.length) { advanceTurn(); return; }
+  if (!alive.length) { TurnManager.advance(); return; }
 
   let target;
   let targetIdx;
@@ -610,7 +610,7 @@ function enemyAct(enemy, enemyIdx) {
       if (target.evasion && Math.random() < (target.evasion + evaBonus)) {
         BattleUI.addLog(`💨 ${target.displayName} ${evaBonus > 0 ? '(Rearguard)' : ''} dodged the attack!`, 'hi');
         BattleUI.popParty(targetIdx, 0, 'miss');
-        setTimeout(advanceTurn, 700); // Need to advance turn on miss too
+        setTimeout((() => TurnManager.advance()), 700); // Need to advance turn on miss too
         return;
       }
 
@@ -622,7 +622,7 @@ function enemyAct(enemy, enemyIdx) {
       if (!Battle.rollHit(enemy, target)) {
         BattleUI.addLog(`${enemy.name}'s attack missed!`, 'dmg');
         BattleUI.popParty(targetIdx, 0, 'miss');
-        setTimeout(advanceTurn, 700);
+        setTimeout((() => TurnManager.advance()), 700);
         return;
       }
 
@@ -656,7 +656,7 @@ function enemyAct(enemy, enemyIdx) {
         if (window.LogDebug) window.LogDebug(`[Absorb] ${target.displayName} absorbed ${dmg} from ${enemy.name}'s attack`, 'buff');
         BattleUI.createEffectOverlay(targetIdx, element, 'party');
         BattleUI.renderPartyStatus();
-        setTimeout(advanceTurn, 700);
+        setTimeout((() => TurnManager.advance()), 700);
         return;
       }
 
@@ -713,7 +713,7 @@ function enemyAct(enemy, enemyIdx) {
       if (!Battle.rollHit(enemy, target)) {
         BattleUI.addLog(`${enemy.name}'s spell missed!`, 'magic');
         BattleUI.popParty(targetIdx, 0, 'miss');
-        setTimeout(advanceTurn, 700);
+        setTimeout((() => TurnManager.advance()), 700);
         return;
       }
 
@@ -751,7 +751,7 @@ function enemyAct(enemy, enemyIdx) {
         if (window.LogDebug) window.LogDebug(`[Absorb] ${target.displayName} absorbed ${dmg} from ${enemy.name}'s spell`, 'buff');
         BattleUI.createEffectOverlay(targetIdx, element, 'party');
         BattleUI.renderPartyStatus();
-        setTimeout(advanceTurn, 700);
+        setTimeout((() => TurnManager.advance()), 700);
         return;
       }
 
@@ -827,7 +827,7 @@ function enemyAct(enemy, enemyIdx) {
 
     BattleUI.renderPartyStatus();
     BattleUI.renderPartyRow();
-    setTimeout(advanceTurn, 760);
+    setTimeout((() => TurnManager.advance()), 760);
   }, 580);
 }
 

@@ -430,13 +430,7 @@ function unlockCharacter(charId) {
   return false;
 }
 
-function buildTurnQueue() {
-  const q = [];
-  G.party.forEach((m, i) => { if (Battle.alive(m)) q.push({ type: 'party', idx: i, spd: m.spd }); });
-  G.enemyGroup.forEach((e, i) => { if (Battle.alive(e)) q.push({ type: 'enemy', idx: i, spd: e.spd }); });
-  q.sort((a, b) => b.spd - a.spd);
-  return q;
-}
+function buildTurnQueue() { return TurnManager.buildQueue(); }
 
 function selectTarget(enemyIdx) {
   if (!Battle.alive(G.enemyGroup[enemyIdx])) return;
@@ -526,7 +520,7 @@ function _applyVampiric(enemy, dmg, enemyIdx) {
 }
 
 function _initBattle() {
-  G.turnQueue = buildTurnQueue();
+  G.turnQueue = TurnManager.buildQueue();
   G.turnIdx = 0;
   G.activeMemberIdx = 0;
   G.busy = false;
@@ -569,61 +563,11 @@ function buildAbilityMenu() {
 /* ============================================================
    TURN MANAGEMENT
    ============================================================ */
-function processCurrentTurn() {
-  // Skip dead units
-  while (G.turnIdx < G.turnQueue.length) {
-    const t = G.turnQueue[G.turnIdx];
-    const unit = t.type === 'party' ? G.party[t.idx] : G.enemyGroup[t.idx];
-    if (Battle.alive(unit)) break;
-    G.turnIdx++;
-  }
+function processCurrentTurn() { TurnManager.process(); }
 
-  // New round if exhausted
-  if (G.turnIdx >= G.turnQueue.length) {
-    G.turnQueue = buildTurnQueue();
-    G.turnIdx = 0;
-    if (!G.turnQueue.length) return;
-  }
+function advanceTurn() { TurnManager.advance(); }
 
-  const t = G.turnQueue[G.turnIdx];
-  const unit = t.type === 'party' ? G.party[t.idx] : G.enemyGroup[t.idx];
-
-  // CONTROL CHECK (Phase 5 Refinement: Unified Status System)
-  // CONTROL CHECK (Unmasking simplified checks)
-  const stun = StatusSystem.has(unit, 'status_stunned');
-  const frozen = StatusSystem.has(unit, 'status_frozen');
-
-  if (stun || frozen) {
-    const label = stun ? 'stunned' : 'frozen';
-    const icon = stun ? '💫' : '❄️';
-    UI.addLog(`${icon} ${unit.displayName || unit.name} is ${label} and skips their turn!`, 'regen');
-
-    // Removal now handled by StatusSystem.tick or manual cleanup if needed
-    if (stun) StatusSystem.remove(unit, 'status_stunned');
-    if (frozen) StatusSystem.remove(unit, 'status_frozen');
-
-    setTimeout(advanceTurn, 1000);
-    return;
-  }
-
-  UI.renderTurnBar();
-  UI._highlightActiveMember();
-  UI.renderActiveMemberBar();
-
-  if (t.type === 'party') {
-    G.activeMemberIdx = t.idx;
-    heroTurn();
-  } else {
-    G.busy = true;
-    UI.btns(false);
-    setTimeout(() => enemyAct(G.enemyGroup[t.idx], t.idx), 700);
-  }
-}
-
-function advanceTurn() {
-  G.turnIdx++;
-  if (!checkBattleEnd()) processCurrentTurn();
-}
+function heroTurn() { TurnManager.beginHeroTurn(); }
 
 /* ============================================================
    VISUAL EFFECTS
@@ -642,25 +586,7 @@ function heroRun() {
   }
 }
 
-function heroTurn() {
-  G.busy = false;
-  // Auto-select first alive enemy if current target is dead
-  if (!Battle.alive(G.enemyGroup[G.targetEnemyIdx])) {
-    const aliveIdx = G.enemyGroup.findIndex(e => Battle.alive(e));
-    if (aliveIdx >= 0) G.targetEnemyIdx = aliveIdx;
-  }
-  buildAbilityMenu();
-  UI.renderEnemyRow();    // refresh target indicator
-  UI.renderActiveMemberBar();
-  UI.btns(true);
-  const actor = G.party[G.activeMemberIdx];
-
-  // NEW: Start-of-Turn maintenance (tick buffs/regen)
-  Battle.tickActorStatus(actor);
-
-  UI.addLog(`${actor?.displayName}'s turn — choose action!`, 'hi');
-  UI.updateStats();
-}
+function heroTurn() { TurnManager.beginHeroTurn(); }
 
 function checkBattleEnd() {
   const allEnemiesDead = G.enemyGroup.every(e => !Battle.alive(e));
