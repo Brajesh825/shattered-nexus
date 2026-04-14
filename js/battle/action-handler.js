@@ -745,7 +745,6 @@ function enemyAct(enemy, enemyIdx) {
       alive.sort((a, b) => (a.hp / a.maxHp) - (b.hp / b.maxHp));
       target = Math.random() < 0.6 ? alive[0] : alive[Math.floor(Math.random() * alive.length)];
     }
-    targetIdx = G.party.indexOf(target);
   }
 
   // 3. Ability Selection
@@ -769,6 +768,21 @@ function enemyAct(enemy, enemyIdx) {
 
   if (!ab) {
     ab = Battle.pickAbility(enemy, target);
+  }
+
+  // --- DIAMOND FORMATION: VANGUARD INTERCEPTION ---
+  // If attack is physical and target is NOT the Vanguard (index 2), check for interception
+  // 0=Top, 1=Back, 2=Front(Vanguard), 3=Bottom
+  targetIdx = G.party.indexOf(target);
+  const isPhysical = !ab || ab.type === 'physical';
+  if (isPhysical && targetIdx !== -1 && targetIdx !== 2) {
+    const vanguard = G.party[2];
+    if (vanguard && Battle.alive(vanguard)) {
+      target = vanguard;
+      targetIdx = 2;
+      UI.addLog(`🛡️ Vanguard: ${target.displayName} intercepts for the party!`, 'hi');
+      UI.popParty(targetIdx, '🛡️ PROTECT!', 'buff', 'holy');
+    }
   }
 
   if (window.LogDebug) {
@@ -807,9 +821,14 @@ function enemyAct(enemy, enemyIdx) {
       if (typeof SFX !== 'undefined') { SFX.enemyHit(); setTimeout(() => SFX.attack(), 60); }
       
       // 1. Check Evasion
-      if (target.evasion && Math.random() < target.evasion) {
-        UI.addLog(`💨 ${target.displayName} dodged the attack!`, 'hi');
+      let evaBonus = 0;
+      // Diamond Formation: Rearguard (Index 1) gets +30% evasion vs physical
+      if (targetIdx === 1) evaBonus = 0.3;
+
+      if (target.evasion && Math.random() < (target.evasion + evaBonus)) {
+        UI.addLog(`💨 ${target.displayName} ${evaBonus > 0 ? '(Rearguard)' : ''} dodged the attack!`, 'hi');
         UI.popParty(targetIdx, 0, 'miss');
+        setTimeout(advanceTurn, 700); // Need to advance turn on miss too
         return;
       }
 

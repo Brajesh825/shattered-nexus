@@ -47,13 +47,23 @@ Abilities are no longer strictly locked into checking the `ATK` stat for physica
 
 ---
 
-## 5. Party Roles & Diamond Formation (Exploration)
-- **Vanguard (Taunters)**: Units with high Defense using "Guard" or "Taunt" abilities will physically draw 100% of single-target enemy attacks.
-- **Eidolon / Summoners**: Some characters possess summon abilities. These add dynamic "Phantom Guardians" that soak damage or permanently boost the party's elemental output while they remain active.
+## 5. Party Roles & Diamond Formation (Combat)
+The party is arranged in a diamond on the left side of the screen. Slots are assigned automatically based on Class Role (Paladin in front, Healer in back).
+
+- **Vanguard (Right-most / Index 2)**: The tip of the formation.
+  - **Mechanical Effect**: Automatically intercepts 100% of single-target physical attacks aimed at other party members as long as they are alive.
+- **Rearguard (Left-most / Index 1)**: The safest point in the formation.
+  - **Mechanical Effect**: Inherent **+30% Evasion bonus** against physical attacks due to the distance from the enemy.
+- **Flanks (Top & Bottom / Indices 0 & 3)**: Standard positioning for damage dealers and rangers.
 
 ---
 
-## 6. Game Loop & Persistence
+## 6. AI Targeting Hierarchy
+Enemies prioritize their logic in this order:
+1. **Taunt Override**: If a unit has a Taunt status, enemies MUST target them.
+2. **Tactical Synergy**: Tacticians will try to detonate Auras on any unit they can reach.
+3. **Formation Interception**: If the AI attempts a physical hit on a Flank/Rearguard, the **Vanguard** will move to intercept if alive.
+4. **Natural Targeting**: Role-specific logic (Predators hunting low HP, Support healing).
 - **Exploration**: Movement involves traversing map zones (Verdant Vale, Ember Wastes, Fortress Ramparts).
 - **Encounters**: Triggering battles leads to instances scaled to the party's average level.
 - **Post-Battle**: HP and MP levels persist between encounters. If the party falls, they must respawn or revive. Leveling up occurs seamlessly during the post-battle summary.

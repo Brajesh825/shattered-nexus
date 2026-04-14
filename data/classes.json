@@ -637,7 +637,7 @@
         "stat_multipliers":  {
                                  "hp":  1.35,
                                  "mp":  1.15,
-                                 "atk":  1.4,
+                                 "atk":  1.15,
                                  "def":  1.4,
                                  "spd":  0.95,
                                  "mag":  1.25,
@@ -693,9 +693,9 @@
                               "mp":  14,
                               "type":  "physical",
                               "isUltimate":  true,
-                              "description":  "Ascend as king eternal â€” 4.2x ATK damage, scales with ATK+DEF, blessing all allies",
+                              "description":  "Ascend as king eternal - 2.5x physical damage, scales with ATK+DEF, blessing all allies",
                               "effect":  {
-                                             "dmgMultiplier":  4.2,
+                                             "dmgMultiplier":  2.5,
                                              "element":  "holy",
                                              "statScale":  "def",
                                              "partyBuff":  true

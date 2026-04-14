@@ -50,6 +50,30 @@ function buildParty() {
     if (_m.passive?.id === 'divine_authority') _m.def = Math.floor(_m.def * 1.2);
     if (_m.passive?.id === 'yakshas_valor')    _m.atk = Math.floor(_m.atk * 1.15);
   });
+
+  // --- DIAMOND FORMATION AUTO-SORTING ---
+  const ROLE_WEIGHTS = { 'Paladin': 10, 'Knight': 8, 'Warrior': 6, 'Ranger': 4, 'Mage': 2, 'Healer': 0 };
+  
+  // 1. Sort by weight descending (Tankiest first)
+  const sorted = [...G.party].sort((a, b) => {
+    const wA = ROLE_WEIGHTS[a.cls.role] ?? 5;
+    const wB = ROLE_WEIGHTS[b.cls.role] ?? 5;
+    return wB - wA;
+  });
+
+  // 2. Re-map to physical Diamond slots:
+  // Slot 2: Highest weight (Front/Vanguard)
+  // Slot 1: Lowest weight (Back/Rearguard)
+  // Slot 0 & 3: The middle guys (Flanks)
+  if (sorted.length >= 4) {
+    const finalParty = [];
+    finalParty[2] = sorted[0]; // Front (highest score)
+    finalParty[1] = sorted[3]; // Back (lowest score)
+    finalParty[0] = sorted[1]; // Flank
+    finalParty[3] = sorted[2]; // Flank
+    G.party = finalParty;
+  }
+
   applyRelicBonuses();
 }
 
