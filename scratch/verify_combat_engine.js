@@ -38,7 +38,7 @@ function runTests() {
   // 2. Elemental Multipliers
   const fireMult = CombatEngine.elemMult('fire', mockEnemy);
   console.assert(fireMult === 0.5, `Expected 0.5x Fire Mult, got ${fireMult}`);
-  
+
   const iceMult = CombatEngine.elemMult('ice', mockEnemy);
   console.assert(iceMult === 2.0, `Expected 2.0x Ice Mult, got ${iceMult}`);
 
@@ -49,7 +49,7 @@ function runTests() {
 
   // 4. Critical Hits
   let critFound = false;
-  for(let i=0; i<100; i++) {
+  for (let i = 0; i < 100; i++) {
     if (CombatEngine.rollCrit({ spd: 500 })) critFound = true; // High speed to force crit
   }
   console.assert(critFound, "High speed should eventually crit");

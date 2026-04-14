@@ -54,25 +54,8 @@ const Battle = {
     return CombatEngine.getStat(m, stat);
   },
   // Adds a status to an actor, handling duration refreshing for identical IDs
-  addStatus(m, config) {
-    if (!m.statuses) m.statuses = [];
-    const existing = m.statuses.find(s => s.id === config.id);
-    if (existing) {
-      // Refresh: keep the highest duration and strongest multiplier
-      existing.turns = Math.max(existing.turns, config.turns);
-      if (config.type === 'mult') existing.value = Math.max(existing.value, config.value);
-      return;
-    }
-    m.statuses.push({
-      id: config.id,
-      label: config.label || config.id,
-      icon: config.icon || '✨',
-      stat: config.stat,
-      type: config.type || 'mult',
-      value: config.value || 1.0,
-      turns: config.turns || 3,
-      color: config.color || 'var(--amber)'
-    });
+  addStatus(m, config) { 
+    StatusSystem.add(m, config); 
   },
   // Returns 'weak'|'resist'|'immune'|'shatter'|null for UI display
   elemResult(abilityElement, target) {
@@ -133,93 +116,10 @@ const Battle = {
   /* ── CATALYST & SYNERGY SYSTEM (PHASE 4) ────────────────── */
 
   // Applies or overwrites an elemental aura on the target, respecting immunities
-  applyAura(target, element) {
-    if (!element || element === 'physical' || element === 'holy' || element === 'shadow') return;
-
-    // Check Immunity
-    if (this.elemResult(element, target) === 'immune') {
-      if (window.LogDebug) window.LogDebug(`[Aura] ${target.displayName || target.name} is immune to ${element}; priming failed.`, 'dmg');
-      return;
-    }
-
-    // Auras last 2 turns (resisted = 1 turn)
-    const mult = this.elemMult(element, target);
-    const duration = mult < 1.0 ? 1 : 2;
-
-    const auraTable = {
-      fire: { id: 'aura_fire', label: 'Fire Aura', icon: '🔥', color: '#ff4400' },
-      ice: { id: 'aura_ice', label: 'Ice Aura', icon: '❄️', color: '#00ccff' },
-      water: { id: 'aura_water', label: 'Water Aura', icon: '💧', color: '#0066ff' },
-      nature: { id: 'aura_nature', label: 'Nature Aura', icon: '🌿', color: '#22cc44' },
-      lightning: { id: 'aura_lightning', label: 'Spark Aura', icon: '⚡', color: '#ffcc00' }
-    };
-
-    const config = auraTable[element];
-    if (!config) return;
-
-    // Remove any existing aura before applying new one (One Aura Rule)
-    target.statuses = (target.statuses || []).filter(s => !s.id.startsWith('aura_'));
-
-    this.addStatus(target, {
-      ...config,
-      stat: 'aura', // placeholder stat
-      type: 'aura',
-      value: 1.0,
-      turns: duration,
-      color: config.color || '#ffcc00'
-    });
-
-    if (window.LogDebug) window.LogDebug(`[Aura] Applied ${config.label} to ${target.displayName || target.name}`, 'buff');
-  },
+  applyAura(target, element) { StatusSystem.applyAura(target, element); },
 
   // Checks for an elemental reaction based on existing aura and incoming detonator
-  // Returns reaction object or null
-  triggerReaction(target, detonator) {
-    if (!target.statuses || !target.statuses.length) return null;
-    const aura = target.statuses.find(s => s.id.startsWith('aura_'));
-    if (!aura) return null;
-
-    const auraType = aura.id.replace('aura_', '');
-    let reaction = null;
-
-    // DETERMINISTIC PRIORITY TABLE
-    // 1. Ice Aura reactions
-    if (auraType === 'ice') {
-      if (detonator === 'physical' || detonator === 'earth') reaction = { id: 'shatter', label: 'SHATTER', color: '#00ccff', dmgMult: 1.5, debuff: 'def' };
-      else if (detonator === 'fire') reaction = { id: 'melt', label: 'MELT', color: '#ffaa00', dmgMult: 2.0 };
-    }
-    // 2. Fire Aura reactions
-    else if (auraType === 'fire') {
-      if (detonator === 'nature') reaction = { id: 'conflagration', label: 'CONFLAGRATION', color: '#ff4400', dmgMult: 1.25, isAOE: true };
-      else if (detonator === 'water') reaction = { id: 'vaporize', label: 'VAPORIZE', color: '#55aaff', dmgMult: 2.0 };
-      else if (detonator === 'ice') reaction = { id: 'melt', label: 'MELT', color: '#ffaa00', dmgMult: 1.5 };
-    }
-    // 3. Water Aura reactions
-    else if (auraType === 'water') {
-      if (detonator === 'lightning') reaction = { id: 'conductive', label: 'CONDUCTIVE', color: '#ffcc00', dmgMult: 1.3, stun: true };
-    }
-    // 4. Nature Aura reactions
-    else if (auraType === 'nature') {
-      if (detonator === 'fire') reaction = { id: 'burn', label: 'BURNING', color: '#ee4400', dmgMult: 1.2, dot: true };
-    }
-
-    if (reaction) {
-      // Consume the aura upon reaction
-      target.statuses = target.statuses.filter(s => s !== aura);
-
-      // Affect reaction effectiveness by Resist/Weakness
-      const m = this.elemMult(detonator, target);
-      if (m < 1.0) { // Resist
-        reaction.dmgMult = (reaction.dmgMult - 1) * 0.5 + 1; // Half the bonus
-        reaction.isDampened = true;
-      } else if (m > 1.0) { // Weakness
-        reaction.dmgMult *= 1.5;
-        reaction.isViolent = true;
-      }
-    }
-
-    return reaction;
-  },
+  triggerReaction(target, detonator) { return StatusSystem.triggerReaction(target, detonator); },
   physDmg(atk, def, mult = 1, atkLevel = 1, defLevel = 1, defPen = 0, source = 'Actor', target = 'Target', isCrit = false) {
     const final = CombatEngine.physDmg(atk, def, { mult, atkLevel, defLevel, defPen, isCrit });
     if (window.LogDebug) {
@@ -278,71 +178,7 @@ const Battle = {
 
   // Handles turn-start maintenance: ticking down buffs/debuffs/cooldowns
   // and reporting active status to the debug log.
-  tickActorStatus(m, isEnemy = false) {
-    if (!m || !this.alive(m)) return;
-
-    // 1. Report Active Status
-    if (window.LogDebug) {
-      const activeEffects = [];
-      const summary = activeEffects.length > 0 ? activeEffects.join(', ') : 'None';
-      window.LogDebug(`[Turn Start] ${m.displayName || m.name}: Active Status: ${summary}`, 'info');
-    }
-
-    // 2. Resource Regen (Players only)
-    if (!isEnemy) {
-      // Base MP regen + Relic bonus
-      const mpRegenAmt = 3 + Math.floor((m._mpRegenBonus || 0) * m.maxMp);
-      m.mp = Math.min(m.maxMp, m.mp + mpRegenAmt);
-
-      // Nature's Grace (Passive)
-      if (m.passive?.id === 'natures_grace' && m.hp < m.maxHp) {
-        m.hp = Math.min(m.maxHp, m.hp + 5);
-        if (window.LogDebug) window.LogDebug(`[Passive] ${m.displayName}: Nature's Grace (+5 HP)`, 'passive');
-      }
-
-      // Divine Blessing (Aura)
-      const _hasDivBless = G.party.some(p => this.alive(p) && p.passive?.id === 'divine_blessing');
-      if (_hasDivBless && m.hp < m.maxHp) {
-        const _dbAmt = Math.max(1, Math.floor(m.maxHp * 0.15));
-        m.hp = Math.min(m.maxHp, m.hp + _dbAmt);
-        if (window.LogDebug) window.LogDebug(`[Passive] ${m.displayName}: Divine Blessing aura (+${_dbAmt} HP)`, 'passive');
-      }
-    }
-
-    // 3. Status Ticks
-    // (Status effects now tracked exclusively in m.statuses, ticked below)
-
-    if (m.healBoostTurns > 0) {
-      m.healBoostTurns--;
-      if (m.healBoostTurns <= 0) m.healBoost = 1.0;
-    }
-
-    if (m.cooldowns) {
-      for (const id in m.cooldowns) if (m.cooldowns[id] > 0) m.cooldowns[id]--;
-    }
-
-    // NEW: Centralized Status Ticking
-    if (m.statuses && m.statuses.length) {
-      for (let i = m.statuses.length - 1; i >= 0; i--) {
-        const s = m.statuses[i];
-        s.turns--;
-        if (s.turns <= 0) {
-          if (window.LogDebug) window.LogDebug(`[Status] ${m.displayName || m.name}: ${s.label} expired`, 'info');
-          m.statuses.splice(i, 1);
-        }
-      }
-    }
-
-    // Regen Ticks (Consolidate into legacy check for now to avoid breaking existing logic)
-    if (m.regenTurns > 0) {
-      // Safety: KO'd members should never receive regen ticks — clear their counter
-      if (!this.alive(m)) { m.regenTurns = 0; return; }
-      m.regenTurns--;
-      const amt = m.hpRegenAmt || 8;
-      m.hp = Math.min(m.maxHp, m.hp + amt);
-      if (window.LogDebug) window.LogDebug(`[Status] ${m.displayName || m.name}: Regen tick (+${amt} HP) - ${m.regenTurns} turns left`, 'buff');
-    }
-  }
+  tickActorStatus(m, isEnemy = false) { StatusSystem.tick(m, isEnemy); }
 };
 
 /* ============================================================
@@ -432,378 +268,33 @@ const UI = {
     });
   },
 
-  log: ['', '', ''],
-  setLog(lines, cls = []) {
-    this.log = [...lines].slice(-3);
-    while (this.log.length < 3) this.log.unshift('');
-    ['log0', 'log1', 'log2'].forEach((id, i) => {
-      const el = this.el(id);
-      el.textContent = this.log[i] || '';
-      el.className = 'log-line ' + (cls[i] || '');
-    });
-  },
-  addLog(txt, cl = '') {
-    this.log = [...this.log.slice(-2), txt];
-    this.setLog(this.log, ['', '', cl]);
-  },
+  setLog(lines, cls = []) { BattleUI.setLog(lines, cls); },
+  addLog(txt, cl = '') { BattleUI.addLog(txt, cl); },
 
   // Backward compat (story.js)
   updateBars() { this.renderPartyStatus(); this.renderEnemyRow(); },
 
-  updateStats() {
-    const h = G.party[G.activeMemberIdx] || G.hero;
-    if (!h) return;
-    this.el('stat-lv').textContent = h.lv;
-    this.el('stat-atk').textContent = Battle.getStat(h, 'atk');
-    this.el('stat-def').textContent = Battle.getStat(h, 'def');
-    this.el('stat-lck').textContent = Battle.getStat(h, 'lck');
-    this.el('stat-exp').textContent = h.exp;
-  },
+  updateStats() { BattleUI.updateStats(); },
 
-  pop(x, y, val, type = '', element = 'physical') {
-    const s = this.el('battle-scene');
-    if (!s) return;
-    const d = document.createElement('div');
-    d.className = 'dmg-pop ' + type + ' element-' + element;
-    if (type === 'crit') {
-      d.textContent = 'CRITICAL!';
-      d.style.color = '#ffbf00';
-      d.style.fontWeight = '900';
-      d.style.fontSize = '20px';
-      d.style.textShadow = '0 0 8px rgba(255,191,0,0.8)';
-    } else if (type === 'miss') {
-      d.textContent = 'MISS';
-      d.style.color = '#aaaaaa';
-    } else {
-      d.textContent = (type === 'heal' || type === 'regen') ? '+' + val : '-' + Math.abs(val);
-    }
-    d.style.left = x + 'px'; d.style.top = y + 'px';
-    s.appendChild(d);
-    setTimeout(() => d.remove(), 1100);
-  },
-  popEnemy(idx, val, type, element = 'physical') { this.pop(ENEMY_POP_X[idx] || 580, 80, val, type, element); },
-  popParty(idx, val, type, element = 'light') { this.pop(PARTY_POP_X[idx] || 42, 210, val, type, element); },
-  popAI(idx, txt) {
-    const s = this.el('battle-scene');
-    if (!s) return;
-    const d = document.createElement('div');
-    d.className = 'dmg-pop ai-pop';
-    d.textContent = txt;
-    // Position slightly above the enemy
-    d.style.left = (ENEMY_POP_X[idx] || 580) + 'px';
-    d.style.top = '30px';
-    d.style.color = '#00f2ff';
-    d.style.fontSize = '12px';
-    d.style.fontFamily = 'var(--px)';
-    d.style.textShadow = '0 0 10px #00f2ff80';
-    d.style.background = 'rgba(0,30,50,0.8)';
-    d.style.padding = '4px 8px';
-    d.style.borderRadius = '5px';
-    d.style.border = '1px solid #00f2ff';
-    d.style.whiteSpace = 'nowrap';
-    d.style.zIndex = '100';
-    s.appendChild(d);
-    setTimeout(() => d.remove(), 1500);
-  },
+  pop(x, y, val, type = '', element = 'physical') { BattleUI._pop(val, x, y, type, element); },
+  popEnemy(idx, val, type, element = 'physical') { BattleUI.popEnemy(idx, val, type, element); },
+  popParty(idx, val, type, element = 'light') { BattleUI.popParty(idx, val, type, element); },
+  popAI(idx, txt) { BattleUI.popAI(idx, txt); },
 
-  btns(on) { document.querySelectorAll('.cmd-btn').forEach(b => b.disabled = !on); },
+  render() { BattleUI.render(); },
 
-  openSub(id) {
-    document.querySelectorAll('.sub-menu').forEach(m => m.classList.remove('open'));
-    if (id) this.el(id).classList.add('open');
-    this.el('cmd-grid-main').style.display = id ? 'none' : 'grid';
-  },
+  btns(on) { BattleUI.btns(on); },
+  openSub(id) { BattleUI.openSub(id); },
 
-  /* ── Full battle UI render ──────────────────────────── */
-  renderBattleUI() {
-    this.renderTurnBar();
-    this.renderEnemyRow();
-    this.renderPartyRow();
-    this.renderPartyStatus();
-    this.renderActiveMemberBar();
-    this.updateStats();
-  },
+  renderBattleUI() { this.render(); },
+  renderTurnBar() { BattleUI.renderTurnBar(); },
+  renderEnemyRow() { BattleUI.renderEnemyRow(); },
+  renderPartyRow() { BattleUI.renderPartyRow(); },
+  _highlightActiveMember() { BattleUI.highlightActiveMember(); },
+  renderPartyStatus() { BattleUI.renderPartyStatus(); },
+  _renderPSCStatuses(m) { return BattleUI._renderPSCStatuses(m); },
+  renderActiveMemberBar() { BattleUI.renderActiveMemberBar(); },
 
-  /* ── Turn order tokens ──────────────────────────────── */
-  renderTurnBar() {
-    const bar = this.el('turn-bar');
-    if (!bar) return;
-    bar.innerHTML = '';
-    G.turnQueue.forEach((t, i) => {
-      const unit = t.type === 'party' ? G.party[t.idx] : G.enemyGroup[t.idx];
-      if (!unit) return;
-      const isEnemy = t.type === 'enemy';
-      const color = isEnemy ? '#ff7070' : (CHAR_COLOR[unit.charId] || '#c0b8e8');
-      const label = (unit.displayName || unit.name || '?')[0].toUpperCase();
-      const tok = document.createElement('div');
-      tok.className = 'tb-tok' +
-        (i === G.turnIdx ? ' active-tok' : '') +
-        (isEnemy ? ' enemy-tok' : '') +
-        (!Battle.alive(unit) ? ' dead-tok' : '');
-      tok.style.borderColor = Battle.alive(unit) ? color : '#333';
-      tok.style.color = Battle.alive(unit) ? color : '#444';
-      tok.textContent = label;
-      tok.title = (unit.displayName || unit.name || '') + (Battle.alive(unit) ? ` (HP ${unit.hp}/${unit.maxHp})` : ' [KO]');
-      bar.appendChild(tok);
-    });
-  },
-
-  /* ── Enemy sprites (Pyramid on RIGHT side) ─────────── */
-  renderEnemyRow() {
-    const container = this.el('enemy-container');
-    if (!container) return;
-    container.innerHTML = '';
-
-    const count = G.enemyGroup.length; // 1–4
-    container.dataset.count = count;
-
-    // ── Per-enemy sprite size: tier base × count scale × mutation bonus ──────
-    // Tier sets the "class" of the creature (goblin vs demon).
-    // Count scale keeps sprites from crushing each other in crowded groups.
-    // Mutation bonus makes corrupted/mutant visually bulkier.
-    // Viewport scale: at ≥1600px tier-1 base matches party sprite height (~180px).
-    const vw = window.innerWidth;
-    const VP_SCALE = vw >= 1800 ? 1.35 : 1.0;
-    const TIER_BASE_W = {
-      1: Math.round(130 * VP_SCALE),
-      2: Math.round(180 * VP_SCALE),
-      3: Math.round(240 * VP_SCALE)
-    };
-    const COUNT_SCALE = { 1: 1.00, 2: 0.87, 3: 0.75, 4: 0.64 };
-    const MUTATION_MULT = { normal: 1.00, corrupted: 1.12, mutant: 1.28 };
-    const ASPECT = 1.23; // height = width × aspect
-
-    G.enemyGroup.forEach((e, i) => {
-      const alive = Battle.alive(e);
-      const pct = Math.max(0, e.hp / e.maxHp * 100);
-
-      // Compute this enemy's individual sprite size
-      const tierW = TIER_BASE_W[e.tier || 1] || TIER_BASE_W[1];
-      const cScale = COUNT_SCALE[count] || COUNT_SCALE[4];
-      const mMult = MUTATION_MULT[e.mutation || 'normal'] || 1.0;
-      const sprW = Math.round(tierW * cScale * mMult);
-      const sprH = Math.round(sprW * ASPECT);
-
-      // Enemy wrapper
-      const enemy = document.createElement('div');
-      enemy.className = 'enemy' + (!alive ? ' ko-enemy' : '');
-      enemy.dataset.idx = i;
-      enemy.dataset.target = i === G.targetEnemyIdx ? 'true' : 'false';
-      enemy.onclick = () => selectTarget(i);
-
-      // Sprite — sized by tier + count + mutation
-      const spr = document.createElement('img');
-      const _mutCls = e.mutation === 'mutant' ? ' enemy-mutant'
-        : e.mutation === 'corrupted' ? ' enemy-corrupted' : '';
-      spr.className = 'enemy-sprite' + _mutCls;
-      spr.id = 'espr-' + i;
-      spr.style.width = sprW + 'px';
-      spr.style.height = sprH + 'px';
-      SpriteRenderer.drawEnemy(spr, e.id, e.palette);
-      enemy.appendChild(spr);
-
-      // HP bar background
-      const hpBg = document.createElement('div');
-      hpBg.className = 'enemy-hp-bar-bg';
-      enemy.appendChild(hpBg);
-
-      // HP bar fill
-      const hpBar = document.createElement('div');
-      hpBar.className = 'enemy-hp-bar-fill';
-      hpBar.style.width = pct + '%';
-      hpBar.style.background = pct > 50 ? '#4ade80' : pct > 25 ? '#eab308' : '#ef4444';
-      hpBg.appendChild(hpBar);
-
-      // Enemy info (name + level + mutation traits)
-      const info = document.createElement('div');
-      info.className = 'enemy-info';
-      let traitHtml = '';
-      if (e.mutantTraits?.length) {
-        traitHtml = `<div class="enemy-traits">${e.mutantTraits.map(t =>
-          `<span class="trait-pill">${t.label}</span>`
-        ).join('')}</div>`;
-      }
-      info.innerHTML = `<div class="enemy-name">${e.name}</div><div class="enemy-level">Lv ${e.level}</div>${traitHtml}`;
-      enemy.appendChild(info);
-
-      // Target indicator
-      if (i === G.targetEnemyIdx && alive) {
-        const indicator = document.createElement('div');
-        indicator.className = 'target-indicator';
-        indicator.textContent = '◀';
-        enemy.appendChild(indicator);
-      }
-
-      container.appendChild(enemy);
-    });
-  },
-
-  /* ── Party sprites (2x2 grid at bottom) ────────────── */
-  renderPartyRow() {
-    const container = this.el('party-container');
-    if (!container) return;
-    container.innerHTML = '';
-
-    G.party.forEach((m, i) => {
-      const col = CHAR_COLOR[m.charId] || '#c0b8e8';
-      const alive = Battle.alive(m);
-      const pct = Math.max(0, m.hp / m.maxHp * 100);
-
-      // Party member wrapper
-      const member = document.createElement('div');
-      member.className = 'party-member' + (!alive ? ' ko-member' : '');
-      member.dataset.idx = i;
-      member.style.color = col;
-
-      // Sprite
-      const spr = document.createElement('img');
-      spr.className = 'party-sprite';
-      spr.id = 'pspr-' + i;
-      SpriteRenderer.drawHero(spr, m.charId, m.char, m.cls);
-      member.appendChild(spr);
-
-      // HP bar background
-      const hpBg = document.createElement('div');
-      hpBg.className = 'party-hp-bar-bg';
-      member.appendChild(hpBg);
-
-      // HP bar fill
-      const hpBar = document.createElement('div');
-      hpBar.className = 'party-hp-bar-fill';
-      hpBar.style.width = pct + '%';
-      hpBar.style.background = pct > 50 ? '#4ade80' : pct > 25 ? '#eab308' : '#ef4444';
-      hpBg.appendChild(hpBar);
-
-      // Party member info (name + level)
-      const info = document.createElement('div');
-      info.className = 'party-info';
-      info.style.color = col;
-      info.innerHTML = `<div class="party-name">${m.displayName}</div><div class="party-level">Lv ${m.lv}</div>`;
-      member.appendChild(info);
-
-      // KO indicator
-      if (!alive) {
-        const koLbl = document.createElement('div');
-        koLbl.className = 'ko-badge';
-        koLbl.textContent = 'KO';
-        member.appendChild(koLbl);
-      }
-
-      container.appendChild(member);
-    });
-    this._highlightActiveMember();
-  },
-
-  _highlightActiveMember() {
-    const t = G.turnQueue[G.turnIdx];
-    document.querySelectorAll('.party-member').forEach((w, i) => {
-      const isActive = t && t.type === 'party' && t.idx === i;
-      w.classList.toggle('active-member', isActive);
-      const col = CHAR_COLOR[G.party[i]?.charId] || '#c0b8e8';
-      w.style.borderColor = isActive ? col + '50' : 'transparent';
-      w.style.filter = isActive ? `drop-shadow(0 0 6px ${col}80)` : 'none';
-    });
-  },
-
-  /* ── Party status cards (bottom bar) ────────────────── */
-  renderPartyStatus() {
-    const bar = this.el('party-status-bar');
-    if (!bar) return;
-    bar.innerHTML = '';
-    G.party.forEach((m, i) => {
-      const col = CHAR_COLOR[m.charId] || '#c0b8e8';
-      const hpPct = Math.max(0, m.hp / m.maxHp * 100);
-      const mpPct = Math.max(0, m.mp / m.maxMp * 100);
-      const hpCol = hpPct > 50 ? 'var(--hp-hi)' : hpPct > 25 ? 'var(--hp-mid)' : 'var(--hp-lo)';
-      const isActive = G.turnQueue[G.turnIdx]?.type === 'party' && G.turnQueue[G.turnIdx]?.idx === i;
-
-      const card = document.createElement('div');
-      card.className = 'psc' + (m.isKO ? ' ko-psc' : '') + (isActive ? ' active-psc' : '');
-      card.style.borderColor = isActive ? col : col + '50';
-
-      const statusHtml = this._renderPSCStatuses(m);
-
-      card.innerHTML = `
-        <div class="psc-header">
-          <div class="psc-name" style="color:${col}">${m.displayName} <span class="psc-lv">L${m.lv}</span></div>
-          <div class="psc-statuses">${statusHtml}</div>
-        </div>
-        <div class="psc-hp-bg"><div class="psc-hp-bar" style="width:${hpPct}%;background:${hpCol}"></div></div>
-        <div class="psc-hp-txt">${Math.max(0, m.hp)}/${m.maxHp} HP · ${m.mp}/${m.maxMp} MP</div>
-        <div class="psc-mp-bg"><div class="psc-mp-bar" style="width:${mpPct}%"></div></div>`;
-      bar.appendChild(card);
-    });
-  },
-
-  _renderPSCStatuses(m) {
-    const tokens = [];
-    const push = (icon, turns, cl = '') => {
-      if (turns === undefined || turns === null || turns === '-') tokens.push(`<div class="psct ${cl}">${icon}</div>`);
-      else tokens.push(`<div class="psct ${cl}">${icon}<span class="psct-cnt">${turns}</span></div>`);
-    };
-
-    // Render from the new centralized status system
-    if (m.statuses) {
-      m.statuses.forEach(s => {
-        let cls = s.id.includes('debuff') || s.type === 'debuff' ? 'debuff' : 'buff';
-        if (s.type === 'aura') cls = 'aura';
-        push(s.icon, s.turns, cls);
-      });
-    }
-
-    // Keep legacy checks for statuses not yet migrated (frozen, stunned, etc.)
-    if (m.regenTurns > 0) push('🌿', m.regenTurns, 'regen');
-    if (m.healBoostTurns > 0) push('💖', m.healBoostTurns, 'buff');
-    if (m.guardMarkTurns > 0) push('🛡️', m.guardMarkTurns, 'guard');
-    if (m.guardianTurns > 0) push('🛡️', m.guardianTurns, 'guard');
-    if (m.dmgReduction < 1) push('💎', '-', 'buff');
-    if (m.frozen > 0) push('❄️', m.frozen, 'debuff');
-    if (m.stunned) push('💫', '1', 'debuff');
-
-    return tokens.join('');
-  },
-
-  _getBuffReport(m) {
-    if (!m) return '';
-    const parts = [];
-    const _fmt = v => (v >= 1) ? `+${Math.round((v - 1) * 100)}%` : `-${Math.round((1 - v) * 100)}%`;
-
-    if (m.statuses) {
-      m.statuses.forEach(s => {
-        if (s.type === 'mult') parts.push(`${s.label} ${_fmt(s.value)}`);
-        else parts.push(`${s.label} +${s.value}`);
-      });
-    }
-
-    // Keep legacy checks for non-migrated statuses
-    if (m.dmgReduction < 1) parts.push(`Shield ${Math.round((1 - m.dmgReduction) * 100)}%`);
-    if (m.regenTurns > 0) parts.push(`Regen`);
-    if (m.guardMark) parts.push(`Guard`);
-    if (m.frozen > 0) parts.push(`Frozen`);
-    if (m.stunned) parts.push(`Stunned`);
-
-    return parts.length ? ` (${parts.join(', ')})` : '';
-  },
-
-  /* ── Active member action bar ───────────────────────── */
-  renderActiveMemberBar() {
-    const bar = this.el('active-member-bar');
-    if (!bar) return;
-    const t = G.turnQueue[G.turnIdx];
-    if (!t || t.type !== 'party') {
-      bar.innerHTML = '<span style="color:#5a527a">Enemy acting…</span>';
-      return;
-    }
-    const m = G.party[t.idx];
-    const col = CHAR_COLOR[m.charId] || '#c0b8e8';
-    bar.innerHTML =
-      `<span class="amb-arrow" style="color:${col}">▶</span>` +
-      `<span class="amb-name" style="color:${col}">${m.displayName}</span>` +
-      `<span class="amb-class">${m.cls.name} · LV ${m.lv}</span>` +
-      `<span class="amb-mp" style="color:#6080ff">MP ${m.mp}/${m.maxMp}</span>`;
-  },
-
-  /* ── Party profile menu ─────────────────────────────── */
   renderPartyMenu() {
     const cards = this.el('pm-cards');
     if (!cards) return;
@@ -915,7 +406,7 @@ function buildEnemyGroup(defs, spawnLevel = 1, isBoss = false) {
       weakTo: def.weakTo || [],
       resistTo: def.resistTo || [],
       tier: tier,
-      isKO: false, stunned: false, debuff: null,
+      isKO: false,
       statuses: [],
     };
   });
@@ -1098,17 +589,18 @@ function processCurrentTurn() {
   const unit = t.type === 'party' ? G.party[t.idx] : G.enemyGroup[t.idx];
 
   // CONTROL CHECK (Phase 5 Refinement: Unified Status System)
-  const stun = unit.statuses?.find(s => s.id === 'status_stunned');
-  const frozen = unit.statuses?.find(s => s.id === 'status_frozen');
+  // CONTROL CHECK (Unmasking simplified checks)
+  const stun = StatusSystem.has(unit, 'status_stunned');
+  const frozen = StatusSystem.has(unit, 'status_frozen');
 
   if (stun || frozen) {
     const label = stun ? 'stunned' : 'frozen';
     const icon = stun ? '💫' : '❄️';
     UI.addLog(`${icon} ${unit.displayName || unit.name} is ${label} and skips their turn!`, 'regen');
 
-    // Remove stun/freeze immediately upon the turn skip.
-    if (stun) unit.statuses = unit.statuses.filter(s => s.id !== 'status_stunned');
-    if (frozen) unit.statuses = unit.statuses.filter(s => s.id !== 'status_frozen');
+    // Removal now handled by StatusSystem.tick or manual cleanup if needed
+    if (stun) StatusSystem.remove(unit, 'status_stunned');
+    if (frozen) StatusSystem.remove(unit, 'status_frozen');
 
     setTimeout(advanceTurn, 1000);
     return;
@@ -1328,7 +820,6 @@ function retryBattle() {
   G.party.forEach(m => {
     m.hp = m.maxHp; m.mp = m.maxMp;
     m.isKO = false;
-    m.regenTurns = 0; m.stunned = false; m.frozen = 0;
     m.statuses = [];
   });
   const level = G.enemyGroup[0]?.level || 1;
