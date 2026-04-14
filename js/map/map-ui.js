@@ -370,6 +370,7 @@ const MapUI = (() => {
     MapEngine.stop();
     if (typeof _dockPersistentBtns === 'function') _dockPersistentBtns(false);
     G.mode = 'story';
+    if (typeof Story !== 'undefined' && Story._doSave) Story._doSave();
     if (typeof Story !== 'undefined' && Story._showWorldMap) Story._showWorldMap();
     else if (typeof UI !== 'undefined') UI.show('map-screen');
   }

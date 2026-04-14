@@ -2,13 +2,13 @@
    PARTY MENU
    ============================================================ */
 function openPartyMenu() {
-  const overlay = UI.el('party-menu');
+  const overlay = document.getElementById('party-menu');
   if (!overlay) return;
-  UI.renderPartyMenu();
+  renderPartyMenu();
   overlay.style.display = 'flex';
 }
 function closePartyMenu() {
-  const overlay = UI.el('party-menu');
+  const overlay = document.getElementById('party-menu');
   if (overlay) overlay.style.display = 'none';
 }
 
@@ -26,11 +26,11 @@ window.addEventListener('DOMContentLoaded', async () => {
   window._origEnemies = G.enemies.slice();
   initStars();
   scaleGame();
-  UI.show('title-screen');
+  showScreen('title-screen');
 });
 
 function initStars() {
-  const c = UI.el('stars');
+  const c = document.getElementById('stars');
   for (let i = 0; i < 70; i++) {
     const s = document.createElement('div');
     s.className = 'star';
@@ -121,7 +121,7 @@ MapEngine.onEncounterStart = (enc, map) => {
                : mutation === 'corrupted' ? '✦ CORRUPTED '
                : '';
   const names = G.enemyGroup.map(e => e.name).join(' & ');
-  UI.setLog([`${prefix}⚔ ${names} appeared!`, `Party to battle stations!`], ['hi','']);
+  BattleUI.setLog([`${prefix}⚔ ${names} appeared!`, `Party to battle stations!`], ['hi','']);
   processCurrentTurn();
 };
 
@@ -138,9 +138,9 @@ function goCharSelect() {
     G.unlockedChars = G.chars.map(c => c.id);
   }
 
-  UI.show('char-screen');
+  showScreen('char-screen');
   _renderCharGrid();
-  UI.el('char-detail').innerHTML = 'Click characters to add them to your party.';
+  document.getElementById('char-detail').innerHTML = 'Click characters to add them to your party.';
   _updateCharConfirmBtn();
 }
 
@@ -152,17 +152,17 @@ function goArcCharSelect() {
     G.mode = 'story';
 
     // Show char-screen (this will hide all other screens via CSS)
-    UI.show('char-screen');
+    showScreen('char-screen');
     _renderCharGrid();
     console.log('[goArcCharSelect] Grid rendered, available chars:', G.chars.filter(ch => G.unlockedChars.includes(ch.id)).map(c => c.name));
 
-    const detailEl = UI.el('char-detail');
+    const detailEl = document.getElementById('char-detail');
     if (detailEl) {
       detailEl.innerHTML = 'Select 4 characters for this arc. They will be your party throughout.';
     }
 
     // Change confirm button text for arc selection
-    const btn = UI.el('char-confirm');
+    const btn = document.getElementById('char-confirm');
     if (btn) {
       console.log('[goArcCharSelect] Setting up button handler');
       btn.textContent = 'LOCK IN PARTY';
@@ -275,7 +275,7 @@ function _renderPartySwapGrid() {
 }
 
 function _renderCharGrid() {
-  const grid = UI.el('char-grid');
+  const grid = document.getElementById('char-grid');
   grid.innerHTML = '';
   // Only show characters that are unlocked
   G.chars.filter(ch => G.unlockedChars.includes(ch.id)).forEach(ch => {
@@ -301,8 +301,8 @@ function _renderCharGrid() {
 
 function _updateCharConfirmBtn() {
   const n   = G.selectedChars.length;
-  const btn = UI.el('char-confirm');
-  const counter = UI.el('char-counter');
+  const btn = document.getElementById('char-confirm');
+  const counter = document.getElementById('char-counter');
   btn.disabled  = n < 4;
   btn.textContent = n < 4 ? `SELECT ${4 - n} MORE →` : '▶ ENTER BATTLE →';
   if (counter) counter.innerHTML = `Party: <span>${n}</span> / 4`;
@@ -324,7 +324,7 @@ function selectChar(id) {
   const ch = G.chars.find(c => c.id === id);
   if (!ch) return;
   const s = ch.base_stats;
-  UI.el('char-detail').innerHTML = `
+  document.getElementById('char-detail').innerHTML = `
     <strong style="color:${ch.portrait_color}">${ch.icon} ${ch.alias || ch.name}</strong> — <em style="color:var(--text-dim)">${ch.personality}</em><br>
     ${ch.description}<br>
     <div class="stat-row">
@@ -343,9 +343,9 @@ function selectChar(id) {
    ============================================================ */
 function goClassSelect() {
   if (!G.selectedChar) return;
-  UI.show('class-screen');
+  showScreen('class-screen');
   const ch   = G.chars.find(c => c.id === G.selectedChar);
-  const grid = UI.el('class-grid');
+  const grid = document.getElementById('class-grid');
   grid.innerHTML = '';
   G.classes.forEach(cls => {
     const affinity = ch.class_affinity.includes(cls.id);
@@ -363,9 +363,9 @@ function goClassSelect() {
     d.onclick = () => selectClass(cls.id);
     grid.appendChild(d);
   });
-  UI.el('class-detail').innerHTML = 'Select a class to preview combined stats.';
-  UI.el('combined-preview').style.display = 'none';
-  UI.el('class-confirm').disabled = true;
+  document.getElementById('class-detail').innerHTML = 'Select a class to preview combined stats.';
+  document.getElementById('combined-preview').style.display = 'none';
+  document.getElementById('class-confirm').disabled = true;
 }
 
 function selectClass(id) {
@@ -376,7 +376,7 @@ function selectClass(id) {
   const ch  = G.chars.find(c => c.id === G.selectedChar);
   const cls = G.classes.find(c => c.id === id);
 
-  UI.el('class-detail').innerHTML = `
+  document.getElementById('class-detail').innerHTML = `
     <strong style="color:${cls.color}">${cls.icon} ${cls.name}</strong><br>
     Abilities: ${cls.abilities.map(a => `<span style="color:var(--blue)">${a.icon} ${a.name}</span>`).join(', ')}`;
 
@@ -385,7 +385,7 @@ function selectClass(id) {
   const labels = ['HP','MP','ATK','DEF','SPD','MAG'];
   const keys   = ['hp','mp','atk','def','spd','mag'];
   const colors = ['#22cc44','#4466ff','#ff8040','#60b0ff','#50e0d0','#b070ff'];
-  UI.el('combined-bars').innerHTML = keys.map((k,i) => {
+  document.getElementById('combined-bars').innerHTML = keys.map((k,i) => {
     const val = combined[k];
     const pct = Math.min(100, val / maxStat * 100);
     return `<div class="pbar-item">
@@ -393,8 +393,8 @@ function selectClass(id) {
       <div class="pbar-bg"><div class="pbar-fill" style="width:${pct}%;background:${colors[i]}"></div></div>
     </div>`;
   }).join('');
-  UI.el('combined-preview').style.display = 'block';
-  UI.el('class-confirm').disabled = false;
+  document.getElementById('combined-preview').style.display = 'block';
+  document.getElementById('class-confirm').disabled = false;
 }
 
 /* ============================================================
@@ -473,16 +473,9 @@ window.startDebugBattle = function() {
 
   // 2. Setup Enemy Group
   const enemyDefs = enemies.map(id => G.enemies.find(e => e.id === id)).filter(Boolean);
-  if (typeof initEnemyGroup === 'function') {
-    initEnemyGroup(enemyDefs, lv, false, lv); 
-  }
+  buildEnemyGroup(enemyDefs, lv, false);
 
   // 3. Launch Battle
   closeDebugBattleMenu();
-  if (typeof UI !== 'undefined' && UI.initBattle) {
-    UI.initBattle();
-  }
-  if (typeof switchScreen === 'function') {
-    switchScreen('battle-screen');
-  }
+  if (typeof _initBattle === 'function') _initBattle();
 };

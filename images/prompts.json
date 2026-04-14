@@ -1,4 +1,4 @@
-{
+﻿{
   "meta": {
     "resolution": "1024x1024",
     "downscale_to": "256x256 (enemies) / 128x192 (heroes)",
@@ -681,55 +681,55 @@
       "files": { "front": "hutao.png", "back": "hutao_back.png", "side": "hutao_side.png" },
       "target_dir": "images/characters/map/",
       "controlnet_ref": "images/characters/map/ayaka_sheet.png",
-      "prompt_sheet":   "character sheet, turnaround, multiple views, 3 views, front view, side view facing right, back view, white background, pixel art, chibi, full body, hu tao \(genshin impact\), 1girl, dark red brown chinese funeral dress, paper talisman hat, twin braids crimson tips, polearm spear, ghost fire wisps, pyro glow, same character, consistent design, uniform scale, evenly spaced, RPG overworld sprite style, bold clean outlines",
-      "prompt":         "pixel art, chibi, full body, simple white background, hu tao \(genshin impact\), 1girl, facing viewer, dark red funeral dress, paper talisman hat, twin braids crimson tips, polearm, ghost fire, pyro glow, RPG overworld sprite style, bold outlines",
-      "prompt_back":    "pixel art, chibi, full body, simple white background, hu tao \(genshin impact\), 1girl, from behind, dark red funeral dress, twin braids crimson tips, paper talisman hat, polearm held, RPG overworld sprite style, bold outlines",
-      "prompt_side":    "pixel art, chibi, full body, simple white background, hu tao \(genshin impact\), 1girl, side view, facing right, profile, dark red funeral dress, twin braids crimson tips, paper talisman hat, polearm carried, walking pose, ghost fire, RPG overworld sprite style, bold outlines"
+      "prompt_sheet":   "character sheet, turnaround, multiple views, 3 views, front view, side view facing right, back view, white background, pixel art, chibi, full body, hu tao (genshin impact), 1girl, dark red brown chinese funeral dress, paper talisman hat, twin braids crimson tips, polearm spear, ghost fire wisps, pyro glow, same character, consistent design, uniform scale, evenly spaced, RPG overworld sprite style, bold clean outlines",
+      "prompt":         "pixel art, chibi, full body, simple white background, hu tao (genshin impact), 1girl, facing viewer, dark red funeral dress, paper talisman hat, twin braids crimson tips, polearm, ghost fire, pyro glow, RPG overworld sprite style, bold outlines",
+      "prompt_back":    "pixel art, chibi, full body, simple white background, hu tao (genshin impact), 1girl, from behind, dark red funeral dress, twin braids crimson tips, paper talisman hat, polearm held, RPG overworld sprite style, bold outlines",
+      "prompt_side":    "pixel art, chibi, full body, simple white background, hu tao (genshin impact), 1girl, side view, facing right, profile, dark red funeral dress, twin braids crimson tips, paper talisman hat, polearm carried, walking pose, ghost fire, RPG overworld sprite style, bold outlines"
     },
     {
       "id": "nilou",
       "name": "Nilou",
       "files": { "front": "nilou.png", "back": "nilou_back.png", "side": "nilou_side.png" },
       "target_dir": "images/characters/map/",
-      "prompt":      "pixel art, chibi, full body, simple white background, nilou \(genshin impact\), 1girl, facing viewer, teal hair, dancer outfit, golden headpiece, hydro water glow, RPG overworld sprite style, bold outlines",
-      "prompt_back": "pixel art, chibi, full body, simple white background, nilou \(genshin impact\), 1girl, from behind, teal hair flowing down back, layered dancer outfit, golden headpiece, hydro water glow, RPG overworld sprite style, bold outlines",
-      "prompt_side": "pixel art, chibi, full body, simple white background, nilou \(genshin impact\), 1girl, side view, facing right, profile, teal hair, layered dancer outfit, golden headpiece, walking pose, hydro water glow, RPG overworld sprite style, bold outlines"
+      "prompt":      "pixel art, chibi, full body, simple white background, nilou (genshin impact), 1girl, facing viewer, teal hair, dancer outfit, golden headpiece, hydro water glow, RPG overworld sprite style, bold outlines",
+      "prompt_back": "pixel art, chibi, full body, simple white background, nilou (genshin impact), 1girl, from behind, teal hair flowing down back, layered dancer outfit, golden headpiece, hydro water glow, RPG overworld sprite style, bold outlines",
+      "prompt_side": "pixel art, chibi, full body, simple white background, nilou (genshin impact), 1girl, side view, facing right, profile, teal hair, layered dancer outfit, golden headpiece, walking pose, hydro water glow, RPG overworld sprite style, bold outlines"
     },
     {
       "id": "xiao",
       "name": "Xiao",
       "files": { "front": "xiao.png", "back": "xiao_back.png", "side": "xiao_side.png" },
       "target_dir": "images/characters/map/",
-      "prompt":      "pixel art, chibi, full body, simple white background, xiao \(genshin impact\), 1boy, facing viewer, dark teal outfit, yaksha mask on forehead, polearm, anemo wind swirls, RPG overworld sprite style, bold outlines",
-      "prompt_back": "pixel art, chibi, full body, simple white background, xiao \(genshin impact\), 1boy, from behind, dark teal outfit, short dark hair, polearm held upright, anemo wind swirls, RPG overworld sprite style, bold outlines",
-      "prompt_side": "pixel art, chibi, full body, simple white background, xiao \(genshin impact\), 1boy, side view, facing right, profile, dark teal outfit, yaksha mask on forehead, polearm carried, walking pose, anemo wind swirls, RPG overworld sprite style, bold outlines"
+      "prompt":      "pixel art, chibi, full body, simple white background, xiao (genshin impact), 1boy, facing viewer, dark teal outfit, yaksha mask on forehead, polearm, anemo wind swirls, RPG overworld sprite style, bold outlines",
+      "prompt_back": "pixel art, chibi, full body, simple white background, xiao (genshin impact), 1boy, from behind, dark teal outfit, short dark hair, polearm held upright, anemo wind swirls, RPG overworld sprite style, bold outlines",
+      "prompt_side": "pixel art, chibi, full body, simple white background, xiao (genshin impact), 1boy, side view, facing right, profile, dark teal outfit, yaksha mask on forehead, polearm carried, walking pose, anemo wind swirls, RPG overworld sprite style, bold outlines"
     },
     {
       "id": "rydia",
       "name": "Rydia",
       "files": { "front": "rydia.png", "back": "rydia_back.png", "side": "rydia_side.png" },
       "target_dir": "images/characters/map/",
-      "prompt":      "pixel art, chibi, full body, simple white background, rydia \(ff4\), 1girl, facing viewer, long green hair, purple mage robe, glowing staff, summoner magic sparkles, RPG overworld sprite style, bold outlines",
-      "prompt_back": "pixel art, chibi, full body, simple white background, rydia \(ff4\), 1girl, from behind, long green hair flowing down, purple mage robe, glowing staff raised, summoner magic sparkles, RPG overworld sprite style, bold outlines",
-      "prompt_side": "pixel art, chibi, full body, simple white background, rydia \(ff4\), 1girl, side view, facing right, profile, long green hair, purple mage robe, glowing staff held, walking pose, summoner magic sparkles, RPG overworld sprite style, bold outlines"
+      "prompt":      "pixel art, chibi, full body, simple white background, rydia (ff4), 1girl, facing viewer, long green hair, purple mage robe, glowing staff, summoner magic sparkles, RPG overworld sprite style, bold outlines",
+      "prompt_back": "pixel art, chibi, full body, simple white background, rydia (ff4), 1girl, from behind, long green hair flowing down, purple mage robe, glowing staff raised, summoner magic sparkles, RPG overworld sprite style, bold outlines",
+      "prompt_side": "pixel art, chibi, full body, simple white background, rydia (ff4), 1girl, side view, facing right, profile, long green hair, purple mage robe, glowing staff held, walking pose, summoner magic sparkles, RPG overworld sprite style, bold outlines"
     },
     {
       "id": "lenneth",
       "name": "Lenneth",
       "files": { "front": "lenneth.png", "back": "lenneth_back.png", "side": "lenneth_side.png" },
       "target_dir": "images/characters/map/",
-      "prompt":      "pixel art, chibi, full body, simple white background, lenneth \(valkyrie profile\), 1girl, facing viewer, long blonde blue hair, silver divine armor, feathered pauldrons, divine spear, holy glow, RPG overworld sprite style, bold outlines",
-      "prompt_back": "pixel art, chibi, full body, simple white background, lenneth \(valkyrie profile\), 1girl, from behind, long blonde blue hair, silver divine armor, feathered pauldrons, divine spear upright, holy glow, RPG overworld sprite style, bold outlines",
-      "prompt_side": "pixel art, chibi, full body, simple white background, lenneth \(valkyrie profile\), 1girl, side view, facing right, profile, long blonde blue hair, silver divine armor, feathered pauldrons, divine spear carried, walking pose, holy glow, RPG overworld sprite style, bold outlines"
+      "prompt":      "pixel art, chibi, full body, simple white background, lenneth (valkyrie profile), 1girl, facing viewer, long blonde blue hair, silver divine armor, feathered pauldrons, divine spear, holy glow, RPG overworld sprite style, bold outlines",
+      "prompt_back": "pixel art, chibi, full body, simple white background, lenneth (valkyrie profile), 1girl, from behind, long blonde blue hair, silver divine armor, feathered pauldrons, divine spear upright, holy glow, RPG overworld sprite style, bold outlines",
+      "prompt_side": "pixel art, chibi, full body, simple white background, lenneth (valkyrie profile), 1girl, side view, facing right, profile, long blonde blue hair, silver divine armor, feathered pauldrons, divine spear carried, walking pose, holy glow, RPG overworld sprite style, bold outlines"
     },
     {
       "id": "kain",
       "name": "Kain",
       "files": { "front": "kain.png", "back": "kain_back.png", "side": "kain_side.png" },
       "target_dir": "images/characters/map/",
-      "prompt":      "pixel art, chibi, full body, simple white background, kain highwind \(ff4\), 1boy, facing viewer, blue silver dragoon armor, dragon horn helmet, long lance, RPG overworld sprite style, bold outlines",
-      "prompt_back": "pixel art, chibi, full body, simple white background, kain highwind \(ff4\), 1boy, from behind, blue silver dragoon armor back plate, dragon horn helmet, long lance upright, RPG overworld sprite style, bold outlines",
-      "prompt_side": "pixel art, chibi, full body, simple white background, kain highwind \(ff4\), 1boy, side view, facing right, profile, blue silver dragoon armor, dragon horn helmet, long lance carried, walking pose, RPG overworld sprite style, bold outlines"
+      "prompt":      "pixel art, chibi, full body, simple white background, kain highwind (ff4), 1boy, facing viewer, blue silver dragoon armor, dragon horn helmet, long lance, RPG overworld sprite style, bold outlines",
+      "prompt_back": "pixel art, chibi, full body, simple white background, kain highwind (ff4), 1boy, from behind, blue silver dragoon armor back plate, dragon horn helmet, long lance upright, RPG overworld sprite style, bold outlines",
+      "prompt_side": "pixel art, chibi, full body, simple white background, kain highwind (ff4), 1boy, side view, facing right, profile, blue silver dragoon armor, dragon horn helmet, long lance carried, walking pose, RPG overworld sprite style, bold outlines"
     },
     {
       "id": "leon",

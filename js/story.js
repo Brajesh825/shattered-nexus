@@ -262,6 +262,17 @@ const Story = {
             m.lv   = saved.lv   || 1;
             m.exp  = saved.exp  || 0;
             m.gold = saved.gold || 0;
+            if (saved.hp !== undefined) m.hp = saved.hp;
+            if (saved.mp !== undefined) m.mp = saved.mp;
+            if (saved.maxHp !== undefined) m.maxHp = saved.maxHp;
+            if (saved.maxMp !== undefined) m.maxMp = saved.maxMp;
+            if (saved.atk !== undefined) m.atk = saved.atk;
+            if (saved.def !== undefined) m.def = saved.def;
+            if (saved.mag !== undefined) m.mag = saved.mag;
+            if (saved.spd !== undefined) m.spd = saved.spd;
+            if (saved.lck !== undefined) m.lck = saved.lck;
+            if (saved.accuracy !== undefined) m.accuracy = saved.accuracy;
+            if (saved.critRate !== undefined) m.critRate = saved.critRate;
           }
         });
       } else if (s.hero && G.hero) {
@@ -374,7 +385,7 @@ const Story = {
       this.phase = 'post_battle';
       this._showLines(chap.post_dialogue || [], () => this._nextChapter());
     }
-    UI.show('story-screen');
+    showScreen('story-screen');
   },
 
   /** Called by game.js checkEnd() when hero dies in a story battle */
@@ -391,7 +402,7 @@ const Story = {
     const btn = this.el('s-continue');
     btn.textContent = '↺ TRY AGAIN';
     btn.style.display = 'inline-block';
-    UI.show('story-screen');
+    showScreen('story-screen');
   },
 
   /* ════════════════════════════════════════════════════════════════════════
@@ -466,7 +477,7 @@ const Story = {
     this._setHeader(`Arc ${arc.number}: ${arc.name}`, '');
     this._setBg(`arc${arc.number}_intro`);
     this._setContinue('▶ BEGIN');
-    UI.show('story-screen');
+    showScreen('story-screen');
   },
 
   /* ════════════════════════════════════════════════════════════════════════
@@ -498,9 +509,7 @@ const Story = {
         const ch = G.chars.find(c => c.id === m.charId);
         if (ch) { ch.hp = m.hp; ch.mp = m.mp; ch.isKO = false; }
       });
-      if (typeof UI !== 'undefined' && typeof UI.renderPartyStatus === 'function') {
-        UI.renderPartyStatus();
-      }
+      BattleUI.renderPartyStatus();
     }
   },
 
@@ -559,7 +568,7 @@ const Story = {
       console.log('[Story._loadChapter] Explore loaded, returning');
       return; // _launchExplore will switch screens
     }
-    UI.show('story-screen');
+    showScreen('story-screen');
     console.log('[Story._loadChapter] Finished');
   },
 
@@ -650,8 +659,8 @@ const Story = {
   _applyChoice(choice, chap) {
     const fx = choice.effect || {};
     if (G.hero) {
-      if (fx.type === 'hp') { G.hero.hp = Math.min(G.hero.maxHp, G.hero.hp + fx.value); UI.updateBars(); }
-      else if (fx.type === 'mp') { G.hero.mp = Math.max(0, Math.min(G.hero.maxMp, G.hero.mp + fx.value)); UI.updateBars(); }
+      if (fx.type === 'hp') { G.hero.hp = Math.min(G.hero.maxHp, G.hero.hp + fx.value); BattleUI.renderPartyStatus(); BattleUI.renderEnemyRow(); }
+      else if (fx.type === 'mp') { G.hero.mp = Math.max(0, Math.min(G.hero.maxMp, G.hero.mp + fx.value)); BattleUI.renderPartyStatus(); BattleUI.renderEnemyRow(); }
     }
 
     this.phase = 'post_event';
@@ -680,7 +689,7 @@ const Story = {
     this._setHeader(`Arc ${this.arc.number}: ${this.arc.name}`, `⚔ BOSS: ${boss.title}`);
     this._setBg(boss.background);
     this._showLines(boss.pre_dialogue || [], () => this._launchBoss());
-    UI.show('story-screen');
+    showScreen('story-screen');
   },
 
   _launchBoss() {
@@ -737,12 +746,12 @@ const Story = {
     G.turnIdx = 0;
     G.busy = false;
 
-    UI.show('battle-screen');
-    UI.renderBattleUI();
-    UI.el('cmd-grid-main').style.display = 'grid';
-    UI.openSub('');
+    showScreen('battle-screen');
+    BattleUI.render();
+    document.getElementById('cmd-grid-main').style.display = 'grid';
+    BattleUI.openSub('');
     const names = defs.map(d => d.name).join(' & ');
-    UI.setLog([`${names} appear!`, `${G.hero.displayName} leads the charge!`], ['hi', '']);
+    BattleUI.setLog([`${names} appear!`, `${G.hero.displayName} leads the charge!`], ['hi', '']);
     processCurrentTurn();
   },
 
@@ -756,7 +765,7 @@ const Story = {
     // Make sure party is built
     if (!G.party || G.party.length === 0) buildParty();
 
-    UI.show('explore-screen');
+    showScreen('explore-screen');
     if (typeof _dockPersistentBtns === 'function') _dockPersistentBtns(true);
 
     // Double rAF: first frame applies display change, second has real layout dimensions
@@ -798,7 +807,7 @@ const Story = {
     G.mode = 'story_explore';
     if (!G.party || G.party.length === 0) buildParty();
 
-    UI.show('explore-screen');
+    showScreen('explore-screen');
     if (typeof _dockPersistentBtns === 'function') _dockPersistentBtns(true);
 
     requestAnimationFrame(() => requestAnimationFrame(() => {
@@ -843,7 +852,7 @@ const Story = {
     const chap = this._exploreChap;
     this._exploreChap = null;
     this._showLines((chap && chap.post_dialogue) || [], () => this._nextChapter());
-    UI.show('story-screen');
+    showScreen('story-screen');
   },
 
   _retryBattle() {
@@ -854,8 +863,8 @@ const Story = {
       m.hp = m.maxHp; m.mp = m.maxMp; m.isKO = false;
       m.buff = null; m.debuff = null; m.regenTurns = 0; m.stunned = false;
     });
-    if (typeof UI.renderPartyStatus === 'function') UI.renderPartyStatus();
-    if (typeof UI.renderPartyRow   === 'function') UI.renderPartyRow();
+    BattleUI.renderPartyStatus();
+    BattleUI.renderPartyRow();
     const enemyId = isBoss ? this.arc.boss_enemy : this.currentChap.enemy_id;
     if (!enemyId) { this._nextChapter(); return; }
     this._launchStoryBattle(enemyId);
@@ -881,7 +890,7 @@ const Story = {
       }
     });
     this._showLines(lines, () => this._showOutro());
-    UI.show('story-screen');
+    showScreen('story-screen');
   },
 
   /* ════════════════════════════════════════════════════════════════════════
@@ -898,7 +907,7 @@ const Story = {
     this._onLinesDone = () => this._showArcEnd();
     this._renderActiveLine();
     this._showSection('s-dialogue');
-    UI.show('story-screen');
+    showScreen('story-screen');
   },
 
   /* ════════════════════════════════════════════════════════════════════════
@@ -938,7 +947,7 @@ const Story = {
     const isLast = this.arcIdx >= this.data.arcs.length - 1;
     this._setContinue(isLast ? '▶ EPILOGUE' : '▶ WORLD MAP');
     this._setBg(`arc${this.arc.number}_end`);
-    UI.show('story-screen');
+    showScreen('story-screen');
     if (typeof SFX !== 'undefined') SFX.shardGet();
   },
 
@@ -975,7 +984,7 @@ const Story = {
       this._showSection('s-dialogue');
       this._setHeader(epi.title || 'EPILOGUE', '');
       this._setBg('epilogue');
-      UI.show('story-screen');
+      showScreen('story-screen');
     } else {
       this._showEpilogueCards();
     }
@@ -1001,7 +1010,7 @@ const Story = {
 
     this._setContinue('▶ PLAY AGAIN');
     this._setBg('epilogue');
-    UI.show('story-screen');
+    showScreen('story-screen');
   },
 
   _endStory() {
@@ -1010,7 +1019,7 @@ const Story = {
     Save.clear(this._activeSlot !== undefined ? this._activeSlot : 0);
     G.enemies = this._allEnemies.slice();
     G.selectedChar = null; G.selectedClass = null;
-    UI.show('title-screen');
+    showScreen('title-screen');
     if (typeof refreshSaveSlots === 'function') refreshSaveSlots();
   },
 
@@ -1028,9 +1037,20 @@ const Story = {
     const partyStats = G.party.map(m => ({
       charId: m.charId,
       classId: m.classId,
-      lv:   m.lv   || 1,
-      exp:  m.exp  || 0,
-      gold: m.gold || 0,
+      lv:      m.lv      || 1,
+      exp:     m.exp     || 0,
+      gold:    m.gold    || 0,
+      hp:      m.hp,
+      mp:      m.mp,
+      maxHp:   m.maxHp,
+      maxMp:   m.maxMp,
+      atk:     m.atk,
+      def:     m.def,
+      mag:     m.mag,
+      spd:     m.spd,
+      lck:     m.lck     || 0,
+      accuracy: m.accuracy || 0.95,
+      critRate: m.critRate || 0.05,
     }));
     // Capture current map location if saving from explore screen
     const curMap = (typeof MapEngine !== 'undefined') ? MapEngine.getMap() : null;
@@ -1145,7 +1165,7 @@ const Story = {
     this.el('map-info-name').textContent = next ? next.name        : '';
     this.el('map-info-loc').textContent  = next ? (next.location || '') : '';
 
-    UI.show('map-screen');
+    showScreen('map-screen');
     if (typeof SFX !== 'undefined') SFX.mapMove();
   },
 
@@ -1230,7 +1250,7 @@ const Story = {
     /* _initBattle() is a global in game.js — wires up turn queue, menu, screen */
     _initBattle();
     const names = G.enemyGroup.map(e => e.name).join(' & ');
-    UI.setLog([`${names} appear!`, `Skirmish — no retreat!`], ['hi', '']);
+    BattleUI.setLog([`${names} appear!`, `Skirmish — no retreat!`], ['hi', '']);
     processCurrentTurn();
   },
 

@@ -28,12 +28,12 @@ function removeFromInventory(itemId, qty = 1) {
 // Open the item submenu in battle
 function heroItem() {
   if (G.busy) return;
-  UI.openSub(null);
+  BattleUI.openSub(null);
   _buildItemMenu();
 }
 
 function _buildItemMenu() {
-  const menu = UI.el('item-sub');
+  const menu = document.getElementById('item-sub');
   if (!menu) return;
   menu.innerHTML = '';
 
@@ -50,9 +50,9 @@ function _buildItemMenu() {
     const back = document.createElement('button');
     back.className = 'cmd-btn dim';
     back.textContent = '← BACK';
-    back.onclick = () => UI.openSub(null);
+    back.onclick = () => BattleUI.openSub(null);
     menu.appendChild(back);
-    UI.openSub('item-sub');
+    BattleUI.openSub('item-sub');
     return;
   }
 
@@ -77,13 +77,13 @@ function _buildItemMenu() {
   const back = document.createElement('button');
   back.className = 'cmd-btn dim';
   back.textContent = '← BACK';
-  back.onclick = () => UI.openSub(null);
+  back.onclick = () => BattleUI.openSub(null);
   menu.appendChild(back);
-  UI.openSub('item-sub');
+  BattleUI.openSub('item-sub');
 }
 
 function _buildItemTargetMenu(def) {
-  const menu = UI.el('item-sub');
+  const menu = document.getElementById('item-sub');
   menu.innerHTML = '';
 
   // Filter valid targets based on item subtype
@@ -110,15 +110,15 @@ function _buildItemTargetMenu(def) {
 
 function _useItem(def, targetIdx) {
   if (G.busy) return;
-  G.busy = true; UI.btns(false);
-  UI.openSub(null);
+  G.busy = true; BattleUI.btns(false);
+  BattleUI.openSub(null);
 
   const e = def.effect;
 
   // Escape item
   if (def.subtype === 'escape') {
     removeFromInventory(def.id);
-    UI.setLog(['The party vanishes in a cloud of smoke!'], ['hi']);
+    BattleUI.setLog(['The party vanishes in a cloud of smoke!'], ['hi']);
     setTimeout(() => showResult('escaped'), 900);
     return;
   }
@@ -133,40 +133,40 @@ function _useItem(def, targetIdx) {
     if (e.stat === 'hp') {
       const amt = e.percent ? Math.floor(m.maxHp * e.amount / 100) : e.amount;
       m.hp = Math.min(m.maxHp, m.hp + amt);
-      UI.popParty(pIdx, amt, 'heal');
+      BattleUI.popParty(pIdx, amt, 'heal');
 
     } else if (e.stat === 'mp') {
       const amt = e.percent ? Math.floor(m.maxMp * e.amount / 100) : e.amount;
       m.mp = Math.min(m.maxMp, m.mp + amt);
-      UI.popParty(pIdx, amt, 'regen');
+      BattleUI.popParty(pIdx, amt, 'regen');
 
     } else if (e.stat === 'both') {
       m.hp = m.maxHp; m.mp = m.maxMp;
-      UI.popParty(pIdx, 0, 'heal');
+      BattleUI.popParty(pIdx, 0, 'heal');
 
     } else if (e.stat === 'revive') {
       m.isKO = false;
       m.hp   = Math.max(1, Math.floor(m.maxHp * e.amount / 100));
-      UI.popParty(pIdx, m.hp, 'heal');
+      BattleUI.popParty(pIdx, m.hp, 'heal');
 
     } else if (e.stat === 'debuff') {
       if (m.debuff) { m[m.debuff.stat] = m.debuff.origVal; m.debuff = null; }
-      UI.popParty(pIdx, 0, 'regen');
+      BattleUI.popParty(pIdx, 0, 'regen');
 
     } else if (e.stat === 'atk' || e.stat === 'def') {
       const origVal = m[e.stat];
       const boost   = Math.floor(origVal * e.amount / 100);
       m[e.stat]     = origVal + boost;
       m.buff        = { stat: e.stat, origVal, turns: e.turns || 3 };
-      UI.popParty(pIdx, boost, 'hi');
+      BattleUI.popParty(pIdx, boost, 'hi');
     }
   });
 
   removeFromInventory(def.id);
 
   const tName = e.target === 'all' ? 'the party' : targets[0]?.displayName || '?';
-  UI.setLog([`Used ${def.icon} ${def.name} on ${tName}!`], ['hi']);
-  UI.renderPartyStatus();
+  BattleUI.setLog([`Used ${def.icon} ${def.name} on ${tName}!`], ['hi']);
+  BattleUI.renderPartyStatus();
 
   setTimeout(advanceTurn, 800);
 }
