@@ -185,6 +185,7 @@ function resolveEnemyOffensiveAction(actor, target, targetIdx, ab, element) {
 
   // 8. Apply damage
   target.hp = Math.max(0, target.hp - dmg);
+  if (target.hp <= 0) { target.isKO = true; BattleUI.addLog(`${target.displayName} has fallen!`, 'dmg'); }
   BattleUI.popParty(targetIdx, dmg, isMagic ? 'magic' : 'dmg', element);
 
   // 9. Aura
@@ -381,7 +382,6 @@ const ActionEngine = {
         // Iron Will (Kael): triggers below 30% HP on first hit
         const tgt = targets[0];
         if (tgt) {
-          if (tgt.hp <= 0) { tgt.isKO = true; BattleUI.addLog(`${tgt.displayName} has fallen!`, 'dmg'); }
           if (tgt.passive?.id === 'iron_will' && !tgt.passive.triggered && tgt.hp / tgt.maxHp < 0.3) {
             tgt.def = Math.floor(tgt.def * 1.25);
             tgt.passive = { ...tgt.passive, triggered: true };

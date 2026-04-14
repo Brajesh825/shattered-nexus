@@ -87,7 +87,7 @@ const StatusSystem = {
       }
 
       // Divine Blessing (Aura-based passive)
-      const _hasDivBless = G.party.some(p => (Battle.alive ? Battle.alive(p) : (p && !p.isKO && p.hp > 0)) && p.passive?.id === 'divine_blessing');
+      const _hasDivBless = G.party.some(p => Battle.alive(p) && p.passive?.id === 'divine_blessing');
       if (_hasDivBless && unit.hp < unit.maxHp) {
         const _dbAmt = Math.max(1, Math.floor(unit.maxHp * 0.15));
         unit.hp = Math.min(unit.maxHp, unit.hp + _dbAmt);
