@@ -8,6 +8,28 @@
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/animations.css">
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    #debug-log-sidebar {
+      position: fixed; top: 0; right: 0; width: 340px; height: 100%;
+      background: rgba(8, 11, 18, 0.98); border-left: 2px solid #eab308;
+      z-index: 10000; overflow-y: auto; padding: 15px; font-family: monospace;
+      font-size: 11px; display: none; color: #7a90a8; box-shadow: -10px 0 30px rgba(0,0,0,0.8);
+      transition: transform 0.3s ease;
+    }
+    #debug-toggle-btn {
+      position: fixed; top: 10px; right: 10px; z-index: 10001;
+      background: #111; border: 1px solid #eab308; color: #eab308;
+      padding: 5px 10px; border-radius: 4px; font-family: 'Cinzel';
+      font-size: 10px; cursor: pointer; display: none;
+    }
+    .debug-entry { margin-bottom: 5px; border-bottom: 1px solid #1a243a; padding-bottom: 3px; }
+    .debug-tag { display: inline-block; padding: 1px 4px; border-radius: 3px; font-weight: bold; margin-right: 5px; font-size: 9px; }
+    .tag-dmg { background: #ef4444; color: #fff; }
+    .tag-buff { background: #4ade80; color: #000; }
+    .tag-passive { background: #eab308; color: #000; }
+    .tag-info { background: #4ecfff; color: #000; }
+    .debug-math { color: #4ade80; }
+  </style>
 </head>
 <body>
 
@@ -89,12 +111,45 @@
 
 </div><!-- /#game -->
 
+<button id="debug-toggle-btn" onclick="toggleDebugLog()">LOG OFF</button>
+<div id="debug-log-sidebar">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom: 2px solid #eab308; padding-bottom:5px;">
+    <h3 style="margin:0; font-family:'Cinzel'; color:#eab308; font-size:14px;">DETAILED COMBAT LOG</h3>
+    <button onclick="document.getElementById('debug-log-entries').innerHTML = ''" style="background:none; border:none; color:#ef4444; cursor:pointer; font-size: 9px;">CLEAR</button>
+  </div>
+  <div id="debug-log-entries"></div>
+</div>
+
 <div id="debug-battle-overlay" class="slot-overlay open" style="display:flex; z-index:9000; background: rgba(0,0,0,0.9); opacity: 1;">
   <div class="slot-overlay-panel" style="max-width: 500px; padding: 20px; border: 2px solid #eab308; box-shadow: 0 0 20px rgba(234, 179, 8, 0.4); transform: translateY(0);">
     <div class="slot-overlay-header">
       <h3 style="color: #eab308; margin:0;">⚡ Sandbox Battle Interface</h3>
     </div>
     <div class="slot-grid" style="display: flex; flex-direction: column; gap: 10px;">
+      
+      <div style="background: rgba(234, 179, 8, 0.1); padding: 10px; border-radius: 8px; border: 1px dashed #eab308;">
+        <h4 style="color:#eab308; margin: 0 0 10px 0;">Simulation Templates</h4>
+        <select id="sim-template" style="width:100%; background:#222; color:#fff; border:1px solid #eab308; padding:5px; border-radius: 4px; margin-bottom:8px;">
+          <option value="">-- Select Arc Template --</option>
+          <option value="arc1">Arc 1: Void Knight (Lv. 5)</option>
+          <option value="arc2">Arc 2: Demon Lord (Lv. 12)</option>
+          <option value="arc3">Arc 3: Dark Phoenix (Lv. 20)</option>
+          <option value="arc4">Arc 4: Kraken (Lv. 28)</option>
+          <option value="arc5">Arc 5: Fallen Angel (Lv. 35)</option>
+          <option value="arc6">Arc 6: Void Warden (Lv. 42)</option>
+          <option value="arc7">Arc 7: Shadow Titan (Lv. 50)</option>
+          <option value="arc8">Arc 8: Shadow Emperor (Lv. 60)</option>
+        </select>
+        <button class="pm-close-btn" style="width:100%; border-color:#eab308; background:#111;" onclick="applyModTemplate()">APPLY TEMPLATE</button>
+      </div>
+
+      <div style="background: rgba(8, 11, 18, 0.5); padding: 10px; border-radius: 8px; border: 1px solid #4ecfff;">
+        <h4 style="color:#4ecfff; margin: 0 0 10px 0;">Active Relics (Arc Buffs)</h4>
+        <div id="test-relics-list" style="font-size: 11px; color: #fff; display: flex; flex-direction: column; gap: 4px;">
+          <div style="color:#7a90a8; font-style:italic;">No relics equipped...</div>
+        </div>
+      </div>
+
       <div style="background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px;">
         <h4 style="color:#4ade80; margin: 0 0 10px 0;">Party Setup</h4>
         <label style="color:#aaa; font-size: 13px; display:block; margin-bottom:5px;">Party Level: <input type="number" id="test-party-lv" value="10" min="1" max="99" style="width: 60px; background: #222; color: #fff; border: 1px solid #4ade80; padding: 2px 5px; border-radius: 4px;"></label>
@@ -143,6 +198,107 @@
 <script src="js/systems/inventory.js"></script>
 <script src="js/battle/action-handler.js"></script>
 <script src="js/game.js"></script>
+
+<script>
+  // DETAILED LOGGING ENGINE
+  window.LogDebug = function(msg, type = 'info') {
+    const sidebar = document.getElementById('debug-log-sidebar');
+    const container = document.getElementById('debug-log-entries');
+    const toggle    = document.getElementById('debug-toggle-btn');
+    if(!sidebar || !container) return;
+    
+    // Show toggle button on first log entry
+    if (toggle) toggle.style.display = 'block';
+
+    const entry = document.createElement('div');
+    entry.className = 'debug-entry';
+    const time = new Date().toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    
+    // Process math strings
+    const processedMsg = msg.replace(/\(([^)]+)\)/g, '<span class="debug-math">($1)</span>');
+    
+    entry.innerHTML = `
+      <span style="color:#555; margin-right:5px;">${time}</span>
+      <span class="debug-tag tag-${type}">${type.toUpperCase()}</span>
+      <span>${processedMsg}</span>
+    `;
+    container.insertBefore(entry, container.firstChild);
+  };
+
+  window.toggleDebugLog = function() {
+    const sidebar = document.getElementById('debug-log-sidebar');
+    const btn     = document.getElementById('debug-toggle-btn');
+    if (!sidebar || !btn) return;
+
+    if (sidebar.style.display === 'none' || sidebar.style.display === '') {
+      sidebar.style.display = 'block';
+      btn.innerText = 'LOG ON';
+      btn.style.background = '#eab308';
+      btn.style.color = '#000';
+    } else {
+      sidebar.style.display = 'none';
+      btn.innerText = 'LOG OFF';
+      btn.style.background = '#111';
+      btn.style.color = '#eab308';
+    }
+  };
+
+  window.applyModTemplate = function() {
+    const val = document.getElementById('sim-template').value;
+    if(!val) return;
+    
+    const templates = {
+      arc1: { lv: 5, boss: 'void_knight' },
+      arc2: { lv: 12, boss: 'demon_lord' },
+      arc3: { lv: 20, boss: 'dark_phoenix' },
+      arc4: { lv: 28, boss: 'kraken' },
+      arc5: { lv: 35, boss: 'fallen_angel' },
+      arc6: { lv: 42, boss: 'void_warden' },
+      arc7: { lv: 50, boss: 'shadow_titan' },
+      arc8: { lv: 60, boss: 'shadow_emperor' }
+    };
+    
+    const t = templates[val];
+    document.getElementById('test-party-lv').value = t.lv;
+    document.getElementById('test-enemy-lv').value = t.lv;
+    document.getElementById('test-e1').value = t.boss;
+    document.getElementById('test-e2').value = '';
+    document.getElementById('test-e3').value = '';
+    document.getElementById('test-e4').value = '';
+    
+    // Auto-equip top 3 relics from PREVIOUS arcs (since current boss drops theirs after)
+    const relicMap = {
+      arc1: [],
+      arc2: ['echo_of_the_unmade'],
+      arc3: ['echo_of_the_unmade', 'cinder_of_ashveil'],
+      arc4: ['echo_of_the_unmade', 'cinder_of_ashveil', 'scorched_core'],
+      arc5: ['cinder_of_ashveil', 'scorched_core', 'drowned_sigil'],
+      arc6: ['scorched_core', 'drowned_sigil', 'tarnished_wing'],
+      arc7: ['drowned_sigil', 'tarnished_wing', 'void_crown_shard'],
+      arc8: ['tarnished_wing', 'void_crown_shard', 'rampart_oath']
+    };
+    
+    window._selectedRelics = relicMap[val] || [];
+    renderRelicList();
+    
+    window.LogDebug(`Loaded Template: ${val} (${t.boss} at Lv.${t.lv})`, 'info');
+    window.LogDebug(`Auto-Equipped Relics: ${window._selectedRelics.join(', ')}`, 'buff');
+  };
+
+  function renderRelicList() {
+    const container = document.getElementById('test-relics-list');
+    if (!container || !G.relics) return;
+    const active = window._selectedRelics || [];
+    if (active.length === 0) {
+      container.innerHTML = '<div style="color:#7a90a8; font-style:italic;">No relics equipped...</div>';
+      return;
+    }
+    container.innerHTML = active.map(id => {
+      const r = G.relics.find(d => d.id === id);
+      return r ? `<div>${r.icon} <b>${r.name}</b>: <span style="color:#4ade80">${r.bonusText}</span></div>` : `<div>${id}</div>`;
+    }).join('');
+  }
+</script>
 
 <script>
   window.onload = async () => {
@@ -197,6 +353,12 @@
     G.selectedChars = pIds;
     G.selectedChar = pIds[0];
     
+    // Apply relics
+    G.activeRelics = window._selectedRelics || [];
+    if (G.activeRelics.length > 0) {
+      window.LogDebug(`[System] Applying Relic Buffs: ${G.activeRelics.length} active`, 'buff');
+    }
+
     // Assign custom test stats
     G.selectedChars.forEach(id => {
       const ch = G.chars.find(c => c.id === id);
@@ -209,6 +371,10 @@
 
     let enemyDefs = eIds.map(id => G.enemies.find(e => e.id === id)).filter(Boolean);
     
+    // Boss Detection: If using a template or selecting a boss enemy in E1
+    const bossList = ['void_knight','demon_lord','dark_phoenix','kraken','fallen_angel','void_warden','shadow_titan','shadow_emperor'];
+    const isBoss = bossList.includes(eIds[0]);
+
     // Apply visual mutation name changes before building
     if (mutation) {
        enemyDefs = enemyDefs.map(def => ({
@@ -219,8 +385,12 @@
     }
 
     if (typeof buildEnemyGroup === 'function') {
-      buildEnemyGroup(enemyDefs, enemyLv, false, mutation); 
+      buildEnemyGroup(enemyDefs, enemyLv, isBoss, mutation); 
       
+      if (isBoss && window.LogDebug) {
+        window.LogDebug(`[Scaling] Boss Modifier (1.3x) applied to ${enemyDefs[0].name}`, 'info');
+      }
+
       // Apply exact real-game multiplier bumps
       if (mutation) {
         const mult = mutation === 'mutant' ? 1.55 : 1.28;

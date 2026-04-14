@@ -15,9 +15,9 @@ function scaleGame() {
   const el = document.getElementById('game');
   if (!el) return;
   // Clear any stale transform from older code
-  el.style.transform       = '';
+  el.style.transform = '';
   el.style.transformOrigin = '';
-  el.style.marginLeft      = '';
+  el.style.marginLeft = '';
   document.body.style.justifyContent = '';
   // Fill the real viewport height — CSS handles width and layout
   el.style.height = `${window.innerHeight}px`;
@@ -31,14 +31,14 @@ window.addEventListener('orientationchange', () => setTimeout(scaleGame, 150));
    strong → 1.5× damage   weak → 0.5× damage   (neutral → 1.0×)
    ============================================================ */
 const TYPE_CHART = {
-  fire:     { strong: ['ice','earth'],    weak: ['water','fire']    },
-  ice:      { strong: ['water','wind'],   weak: ['fire','ice']      },
-  water:    { strong: ['fire','earth'],   weak: ['ice','water']     },
-  wind:     { strong: ['ice','earth'],    weak: ['wind']            },
-  earth:    { strong: ['water','wind'],   weak: ['earth','physical']},
-  holy:     { strong: ['shadow'],         weak: ['holy']            },
-  shadow:   { strong: ['holy'],           weak: ['shadow']          },
-  physical: { strong: [],                 weak: ['physical']        },
+  fire: { strong: ['ice', 'earth'], weak: ['water', 'fire'] },
+  ice: { strong: ['water', 'wind'], weak: ['fire', 'ice'] },
+  water: { strong: ['fire', 'earth'], weak: ['ice', 'water'] },
+  wind: { strong: ['ice', 'earth'], weak: ['wind'] },
+  earth: { strong: ['water', 'wind'], weak: ['earth', 'physical'] },
+  holy: { strong: ['shadow'], weak: ['holy'] },
+  shadow: { strong: ['holy'], weak: ['shadow'] },
+  physical: { strong: [], weak: ['physical'] },
 };
 
 /* ============================================================
@@ -47,30 +47,27 @@ const TYPE_CHART = {
 const Battle = {
   // Returns 1.5 (weak), 0.5 (resist), or 1.0 (neutral) based on ability element vs target's arrays
   elemMult(abilityElement, target) {
-    if (!abilityElement || abilityElement === 'physical') return 1.0;
-    // Mutant trait overrides — check immune (0×) and shatter (2.0×) first
-    const traits = target?.mutantTraits || [];
-    for (const t of traits) {
-      if (t.type === 'immune'  && t.element === abilityElement) return 0;
-      if (t.type === 'shatter' && t.element === abilityElement) return 2.0;
-    }
-    const weak   = target?.weakTo   || [];
-    const resist = target?.resistTo || [];
-    if (weak.includes(abilityElement))   return 1.5;
-    if (resist.includes(abilityElement)) return 0.5;
-    return 1.0;
+    return CombatEngine.elemMult(abilityElement, target, window.TYPE_CHART);
+  },
+  // NEW: Dynamic Stat Resolver. Computes final combat stats by applying all active modifiers.
+  getStat(m, stat) {
+    return CombatEngine.getStat(m, stat);
+  },
+  // Adds a status to an actor, handling duration refreshing for identical IDs
+  addStatus(m, config) { 
+    StatusSystem.add(m, config); 
   },
   // Returns 'weak'|'resist'|'immune'|'shatter'|null for UI display
   elemResult(abilityElement, target) {
     if (!abilityElement || abilityElement === 'physical') return null;
     const traits = target?.mutantTraits || [];
     for (const t of traits) {
-      if (t.type === 'immune'  && t.element === abilityElement) return 'immune';
+      if (t.type === 'immune' && t.element === abilityElement) return 'immune';
       if (t.type === 'shatter' && t.element === abilityElement) return 'shatter';
     }
-    const weak   = target?.weakTo   || [];
+    const weak = target?.weakTo || [];
     const resist = target?.resistTo || [];
-    if (weak.includes(abilityElement))   return 'weak';
+    if (weak.includes(abilityElement)) return 'weak';
     if (resist.includes(abilityElement)) return 'resist';
     return null;
   },
@@ -83,7 +80,7 @@ const Battle = {
     const row = TYPE_CHART[attackElement];
     if (!row) return 1.0;
     if (row.strong.includes(clsElem)) return 1.5;
-    if (row.weak.includes(clsElem))   return 0.5;
+    if (row.weak.includes(clsElem)) return 0.5;
     return 1.0;
   },
   // Returns 'weak'|'resist'|null for UI feedback when enemy attacks a party member
@@ -94,62 +91,123 @@ const Battle = {
     const row = TYPE_CHART[attackElement];
     if (!row) return null;
     if (row.strong.includes(clsElem)) return 'weak';
-    if (row.weak.includes(clsElem))   return 'resist';
+    if (row.weak.includes(clsElem)) return 'resist';
     return null;
   },
-  physDmg(atk, def, mult = 1, atkLevel = 1, defLevel = 1, defPen = 0) {
-    // NEW: heavier level-weighting + stronger defense factor (0.75x)
-    const scaledAtk = atk + (atkLevel * 1.2);
-    // defPen: reduces effectiveness of enemy defense (e.g. 0.2 removes 20% of DEF)
-    const effectiveDef = def * (1 - Math.min(0.9, defPen));
-    const scaledDef = effectiveDef + (defLevel * 0.6);
-    const base = Math.max(1, scaledAtk - scaledDef * 0.75);
-    return Math.max(1, Math.floor(base * (0.85 + Math.random() * 0.3) * mult));
+  // Rolls for a hit based on attacker accuracy and defender evasion
+  rollHit(attacker, defender) {
+    const acc = this.getStat(attacker, 'accuracy');
+    const eva = defender.evasion || 0; // evasion is currently treated as a flat 0-1 chance
+    const chance = acc - eva;
+    if (window.LogDebug) window.LogDebug(`[HitRoll] ${attacker.displayName || attacker.name} vs ${defender.displayName || defender.name}: ${Math.round(chance * 100)}% chance`, 'info');
+    return CombatEngine.rollHit(attacker, defender);
+  },
+  // Rolls for a critical hit based on attacker's critRate and LCK
+  // Every 10 LCK adds +1% crit rate
+  rollCrit(attacker) {
+    const baseCrit = this.getStat(attacker, 'critRate');
+    const lckBonus = (this.getStat(attacker, 'lck') || 0) * 0.001;
+    const chance = baseCrit + lckBonus;
+    const isCrit = CombatEngine.rollCrit(attacker);
+    if (isCrit && window.LogDebug) window.LogDebug(`[CritRoll] ${attacker.displayName || attacker.name} CRITICAL! (${Math.round(chance * 100)}% chance)`, 'buff');
+    return isCrit;
+  },
+
+  /* ── CATALYST & SYNERGY SYSTEM (PHASE 4) ────────────────── */
+
+  // Applies or overwrites an elemental aura on the target, respecting immunities
+  applyAura(target, element) { StatusSystem.applyAura(target, element); },
+
+  // Checks for an elemental reaction based on existing aura and incoming detonator
+  triggerReaction(target, detonator) { return StatusSystem.triggerReaction(target, detonator); },
+  physDmg(atk, def, mult = 1, atkLevel = 1, defLevel = 1, defPen = 0, source = 'Actor', target = 'Target', isCrit = false) {
+    const final = CombatEngine.physDmg(atk, def, { mult, atkLevel, defLevel, defPen, isCrit });
+    if (window.LogDebug) {
+      window.LogDebug(`[${source} ➔ ${target}] PhysCalc (Engine): Atk(${atk}) vs Def(${def}) = Final: ${final}`, 'dmg');
+    }
+    return final;
   },
   // targetMag / targetMagLv = Spirit Defense (SDEF) — high-MAG targets resist magic
-  magicDmg(mag, mult = 1, passiveBonus = 1, magLevel = 1, targetMag = 0, targetMagLv = 1) {
-    const scaledMag      = mag + (magLevel * 0.8);
-    const magMitigation  = (targetMag + targetMagLv * 0.3) * 0.4;
-    const base = Math.max(1, scaledMag - magMitigation);
-    return Math.max(1, Math.floor(base * (0.9 + Math.random() * 0.2) * mult * passiveBonus));
+  magicDmg(mag, mult = 1, passiveBonus = 1, magLevel = 1, targetMag = 0, targetMagLv = 1, source = 'Actor', target = 'Target', isCrit = false) {
+    const final = CombatEngine.magicDmg(mag, targetMag, { mult, passiveBonus, magLevel, mdefLevel: targetMagLv, isCrit });
+    if (window.LogDebug) {
+      window.LogDebug(`[${source} ➔ ${target}] MagCalc (Engine): Mag(${mag}) vs T.Mag(${targetMag}) = Final: ${final}`, 'dmg');
+    }
+    return final;
   },
-  pickAbility(abilities) {
+  pickAbility(actor, target) {
+    const abilities = actor.abilities || actor.abilityDefs;
     if (!abilities || !abilities.length) return null;
-    const total = abilities.reduce((s, a) => s + (a.weight || 50), 0);
+
+    // Phase 5: Synergy-Aware Weighting
+    const aura = target?.statuses?.find(s => s.id.startsWith('aura_'));
+    const auraType = aura ? aura.id.replace('aura_', '') : null;
+
+    const weightedAbilities = abilities.map(ab => {
+      let weight = ab.weight || 50;
+      const element = ab.effect?.element || actor.element || 'physical';
+
+      // If we have an aura and this move triggers a reaction, boost weight significantly
+      if (auraType) {
+        if (this._willReact(auraType, element)) {
+          weight *= 3; // Prioritize reactions!
+          if (window.LogDebug) window.LogDebug(`[AI-Synergy] Weight boosted for ${ab.name} (Element: ${element} vs Aura: ${auraType})`, 'hi');
+        }
+      }
+      return { ...ab, _tempWeight: weight };
+    });
+
+    const total = weightedAbilities.reduce((s, a) => s + a._tempWeight, 0);
     let r = Math.random() * total;
-    for (const a of abilities) { r -= (a.weight || 50); if (r <= 0) return a; }
-    return abilities[0];
+    for (const a of weightedAbilities) {
+      r -= a._tempWeight;
+      if (r <= 0) return a;
+    }
+    return weightedAbilities[0];
+  },
+
+  // Helper for AI to check if reaction is possible
+  _willReact(auraType, detonator) {
+    if (auraType === 'ice' && (detonator === 'physical' || detonator === 'earth' || detonator === 'fire')) return true;
+    if (auraType === 'fire' && (detonator === 'nature' || detonator === 'water' || detonator === 'ice')) return true;
+    if (auraType === 'water' && detonator === 'lightning') return true;
+    if (auraType === 'nature' && detonator === 'fire') return true;
+    return false;
   },
   alive(m) { return m && !m.isKO && m.hp > 0; },
+
+  // Handles turn-start maintenance: ticking down buffs/debuffs/cooldowns
+  // and reporting active status to the debug log.
+  tickActorStatus(m, isEnemy = false) { StatusSystem.tick(m, isEnemy); }
 };
 
 /* ============================================================
    GAME STATE
    ============================================================ */
 const G = {
-  chars:   [],
+  chars: [],
   classes: [],
   enemies: [],
-  items:     [],          // item definitions from ITEMS_DATA
+  items: [],          // item definitions from ITEMS_DATA
   inventory: [],          // [{ itemId, qty }] — party's bag (max 20 stacks)
-  relics:       [],       // relic definitions from RELICS_DATA
-  ownedRelics:  [],       // relic IDs the party has collected
+  relics: [],       // relic definitions from RELICS_DATA
+  ownedRelics: [],       // relic IDs the party has collected
   activeRelics: [],       // relic IDs currently equipped (max 3)
-  selectedChar:  null,
+  selectedChar: null,
   selectedClass: null,
   selectedChars: [],   // ordered array of up to 4 char IDs
   unlockedChars: ['ayaka', 'hutao', 'nilou', 'xiao'],  // Characters available for selection
-  clearedMaps:   [],   // map IDs whose objective has been completed
-  npcTalked:     {},   // { mapId: [npcId, ...] } — persisted across sessions
+  clearedMaps: [],   // map IDs whose objective has been completed
+  npcTalked: {},   // { mapId: [npcId, ...] } — persisted across sessions
 
-  party:           [],   // 4 party members (all player-controlled)
-  enemyGroup:      [],   // 1–3 enemies
-  turnQueue:       [],   // [{type:'party'|'enemy', idx, spd}]
-  turnIdx:         0,
+  party: [],   // 4 party members (all player-controlled)
+  enemyGroup: [],   // 1–3 enemies
+  turnQueue: [],   // [{type:'party'|'enemy', idx, spd}]
+  turnIdx: 0,
   activeMemberIdx: 0,    // which party member is currently acting
-  targetEnemyIdx:  0,    // which enemy is selected as attack target
-  busy:            false,
-  mode:            'free', // 'free' | 'story' | 'explore'
+  targetEnemyIdx: 0,    // which enemy is selected as attack target
+  busy: false,
+  mode: 'free', // 'free' | 'story' | 'explore'
 
   activePartyIdx: 0,   // which party member walks the map
 
@@ -169,8 +227,8 @@ const G = {
    UI HELPERS
    ============================================================ */
 const CHAR_COLOR = {
-  ayaka:'#7dd3fc', hutao:'#ef4444', nilou:'#2dd4bf', xiao:'#4ade80',
-  rydia:'#a78bfa', lenneth:'#e879f9', kain:'#0ea5e9', leon:'#fbbf24'
+  ayaka: '#7dd3fc', hutao: '#ef4444', nilou: '#2dd4bf', xiao: '#4ade80',
+  rydia: '#a78bfa', lenneth: '#e879f9', kain: '#0ea5e9', leon: '#fbbf24'
 };
 const ENEMY_POP_X = [580, 720, 860, 650]; // 4th is between 1st and 2nd for diamond layout
 const PARTY_POP_X = [42, 108, 174, 240];
@@ -191,428 +249,103 @@ const TYPE_ICONS = {
 // Edit timing values there, not here.
 let moveAnimations = {};
 
-const UI = {
-  el: id => document.getElementById(id),
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => {
+    s.classList.remove('active');
+    s.style.display = '';
+  });
+  document.getElementById(id).classList.add('active');
+  requestAnimationFrame(scaleGame);
+  const steps = { 'char-screen': 1, 'battle-screen': 2, 'result-screen': 2 };
+  const cur = steps[id] || 0;
+  document.querySelectorAll('.step').forEach(s => {
+    const n = +s.dataset.step;
+    s.classList.toggle('active', n === cur);
+    s.classList.toggle('done', n < cur);
+  });
 
-  show(id) {
-    document.querySelectorAll('.screen').forEach(s => {
-      s.classList.remove('active');
-      s.style.display = ''; // Clear inline display style
-    });
-    this.el(id).classList.add('active');
-    requestAnimationFrame(scaleGame); // re-measure after new screen content renders
-    const steps = { 'char-screen':1, 'battle-screen':2, 'result-screen':2 };
-    const cur = steps[id] || 0;
-    document.querySelectorAll('.step').forEach(s => {
-      const n = +s.dataset.step;
-      s.classList.toggle('active', n === cur);
-      s.classList.toggle('done', n < cur);
-    });
-  },
+  // Hide story dialogue when leaving story screen
+  const dialogue = document.getElementById('s-dialogue');
+  if (id !== 'story-screen' && dialogue) dialogue.style.display = 'none';
 
-  log: ['','',''],
-  setLog(lines, cls = []) {
-    this.log = [...lines].slice(-3);
-    while (this.log.length < 3) this.log.unshift('');
-    ['log0','log1','log2'].forEach((id, i) => {
-      const el = this.el(id);
-      el.textContent = this.log[i] || '';
-      el.className = 'log-line ' + (cls[i] || '');
-    });
-  },
-  addLog(txt, cl = '') {
-    this.log = [...this.log.slice(-2), txt];
-    this.setLog(this.log, ['','', cl]);
-  },
+  // Step-bar visibility
+  const bar = document.getElementById('step-bar');
+  if (bar) bar.style.display = ['char-screen'].includes(id) ? 'flex' : 'none';
 
-  // Backward compat (story.js)
-  updateBars() { this.renderPartyStatus(); this.renderEnemyRow(); },
+  if (typeof SFX !== 'undefined') SFX.click();
 
-  updateStats() {
-    const h = G.party[G.activeMemberIdx] || G.hero;
-    if (!h) return;
-    this.el('stat-lv').textContent  = h.lv;
-    this.el('stat-atk').textContent = h.atk;
-    this.el('stat-def').textContent = h.def;
-    this.el('stat-exp').textContent = h.exp;
-  },
+  // BGM
+  if (typeof BGM !== 'undefined') {
+    if (id === 'title-screen')       BGM.play('title');
+    else if (id === 'battle-screen') BGM.play('battle');
+    else if (id === 'explore-screen') BGM.play('exploration');
+    else if (id === 'story-screen')  BGM.play('story');
+    else BGM.stop();
+  }
+}
 
-  pop(x, y, val, type = '', element = 'physical') {
-    const s = this.el('battle-scene');
-    if (!s) return;
-    const d = document.createElement('div');
-    d.className = 'dmg-pop ' + type + ' element-' + element;
-    d.textContent = (type === 'heal' || type === 'regen') ? '+' + val : '-' + Math.abs(val);
-    d.style.left = x + 'px'; d.style.top = y + 'px';
-    s.appendChild(d);
-    setTimeout(() => d.remove(), 1100);
-  },
-  popEnemy(idx, val, type, element = 'physical') { this.pop(ENEMY_POP_X[idx] || 580, 80, val, type, element); },
-  popParty(idx, val, type, element = 'light') { this.pop(PARTY_POP_X[idx] || 42, 210, val, type, element); },
-
-  btns(on) { document.querySelectorAll('.cmd-btn').forEach(b => b.disabled = !on); },
-
-  openSub(id) {
-    document.querySelectorAll('.sub-menu').forEach(m => m.classList.remove('open'));
-    if (id) this.el(id).classList.add('open');
-    this.el('cmd-grid-main').style.display = id ? 'none' : 'grid';
-  },
-
-  /* ── Full battle UI render ──────────────────────────── */
-  renderBattleUI() {
-    this.renderTurnBar();
-    this.renderEnemyRow();
-    this.renderPartyRow();
-    this.renderPartyStatus();
-    this.renderActiveMemberBar();
-    this.updateStats();
-  },
-
-  /* ── Turn order tokens ──────────────────────────────── */
-  renderTurnBar() {
-    const bar = this.el('turn-bar');
-    if (!bar) return;
-    bar.innerHTML = '';
-    G.turnQueue.forEach((t, i) => {
-      const unit  = t.type === 'party' ? G.party[t.idx] : G.enemyGroup[t.idx];
-      if (!unit) return;
-      const isEnemy = t.type === 'enemy';
-      const color   = isEnemy ? '#ff7070' : (CHAR_COLOR[unit.charId] || '#c0b8e8');
-      const label   = (unit.displayName || unit.name || '?')[0].toUpperCase();
-      const tok = document.createElement('div');
-      tok.className = 'tb-tok' +
-        (i === G.turnIdx    ? ' active-tok' : '') +
-        (isEnemy            ? ' enemy-tok'  : '') +
-        (!Battle.alive(unit)? ' dead-tok'   : '');
-      tok.style.borderColor = Battle.alive(unit) ? color : '#333';
-      tok.style.color       = Battle.alive(unit) ? color : '#444';
-      tok.textContent = label;
-      tok.title       = (unit.displayName || unit.name || '') + (Battle.alive(unit) ? ` (HP ${unit.hp}/${unit.maxHp})` : ' [KO]');
-      bar.appendChild(tok);
-    });
-  },
-
-  /* ── Enemy sprites (Pyramid on RIGHT side) ─────────── */
-  renderEnemyRow() {
-    const container = this.el('enemy-container');
-    if (!container) return;
-    container.innerHTML = '';
-
-    const count = G.enemyGroup.length; // 1–4
-    container.dataset.count = count;
-
-    // ── Per-enemy sprite size: tier base × count scale × mutation bonus ──────
-    // Tier sets the "class" of the creature (goblin vs demon).
-    // Count scale keeps sprites from crushing each other in crowded groups.
-    // Mutation bonus makes corrupted/mutant visually bulkier.
-    // Viewport scale: at ≥1600px tier-1 base matches party sprite height (~180px).
-    const vw = window.innerWidth;
-    const VP_SCALE = vw >= 1800 ? 1.35 : 1.0;
-    const TIER_BASE_W   = { 1: Math.round(130 * VP_SCALE),
-                             2: Math.round(180 * VP_SCALE),
-                             3: Math.round(240 * VP_SCALE) };
-    const COUNT_SCALE   = { 1: 1.00, 2: 0.87, 3: 0.75, 4: 0.64 };
-    const MUTATION_MULT = { normal: 1.00, corrupted: 1.12, mutant: 1.28 };
-    const ASPECT        = 1.23; // height = width × aspect
-
-    G.enemyGroup.forEach((e, i) => {
-      const alive = Battle.alive(e);
-      const pct   = Math.max(0, e.hp / e.maxHp * 100);
-
-      // Compute this enemy's individual sprite size
-      const tierW  = TIER_BASE_W[e.tier || 1] || TIER_BASE_W[1];
-      const cScale = COUNT_SCALE[count] || COUNT_SCALE[4];
-      const mMult  = MUTATION_MULT[e.mutation || 'normal'] || 1.0;
-      const sprW   = Math.round(tierW * cScale * mMult);
-      const sprH   = Math.round(sprW * ASPECT);
-
-      // Enemy wrapper
-      const enemy = document.createElement('div');
-      enemy.className = 'enemy' + (!alive ? ' ko-enemy' : '');
-      enemy.dataset.idx = i;
-      enemy.dataset.target = i === G.targetEnemyIdx ? 'true' : 'false';
-      enemy.onclick = () => selectTarget(i);
-
-      // Sprite — sized by tier + count + mutation
-      const spr = document.createElement('img');
-      const _mutCls = e.mutation === 'mutant' ? ' enemy-mutant'
-                    : e.mutation === 'corrupted' ? ' enemy-corrupted' : '';
-      spr.className = 'enemy-sprite' + _mutCls;
-      spr.id = 'espr-' + i;
-      spr.style.width  = sprW + 'px';
-      spr.style.height = sprH + 'px';
-      SpriteRenderer.drawEnemy(spr, e.id, e.palette);
-      enemy.appendChild(spr);
-
-      // HP bar background
-      const hpBg = document.createElement('div');
-      hpBg.className = 'enemy-hp-bar-bg';
-      enemy.appendChild(hpBg);
-
-      // HP bar fill
-      const hpBar = document.createElement('div');
-      hpBar.className = 'enemy-hp-bar-fill';
-      hpBar.style.width = pct + '%';
-      hpBar.style.background = pct > 50 ? '#4ade80' : pct > 25 ? '#eab308' : '#ef4444';
-      hpBg.appendChild(hpBar);
-
-      // Enemy info (name + level + mutation traits)
-      const info = document.createElement('div');
-      info.className = 'enemy-info';
-      let traitHtml = '';
-      if (e.mutantTraits?.length) {
-        traitHtml = `<div class="enemy-traits">${e.mutantTraits.map(t =>
-          `<span class="trait-pill">${t.label}</span>`
-        ).join('')}</div>`;
-      }
-      info.innerHTML = `<div class="enemy-name">${e.name}</div><div class="enemy-level">Lv ${e.level}</div>${traitHtml}`;
-      enemy.appendChild(info);
-
-      // Target indicator
-      if (i === G.targetEnemyIdx && alive) {
-        const indicator = document.createElement('div');
-        indicator.className = 'target-indicator';
-        indicator.textContent = '◀';
-        enemy.appendChild(indicator);
-      }
-
-      container.appendChild(enemy);
-    });
-  },
-
-  /* ── Party sprites (2x2 grid at bottom) ────────────── */
-  renderPartyRow() {
-    const container = this.el('party-container');
-    if (!container) return;
-    container.innerHTML = '';
-
-    G.party.forEach((m, i) => {
-      const col   = CHAR_COLOR[m.charId] || '#c0b8e8';
-      const alive = Battle.alive(m);
-      const pct   = Math.max(0, m.hp / m.maxHp * 100);
-
-      // Party member wrapper
-      const member = document.createElement('div');
-      member.className = 'party-member' + (!alive ? ' ko-member' : '');
-      member.dataset.idx = i;
-      member.style.color = col;
-
-      // Sprite
-      const spr = document.createElement('img');
-      spr.className = 'party-sprite';
-      spr.id = 'pspr-' + i;
-      SpriteRenderer.drawHero(spr, m.charId, m.char, m.cls);
-      member.appendChild(spr);
-
-      // HP bar background
-      const hpBg = document.createElement('div');
-      hpBg.className = 'party-hp-bar-bg';
-      member.appendChild(hpBg);
-
-      // HP bar fill
-      const hpBar = document.createElement('div');
-      hpBar.className = 'party-hp-bar-fill';
-      hpBar.style.width = pct + '%';
-      hpBar.style.background = pct > 50 ? '#4ade80' : pct > 25 ? '#eab308' : '#ef4444';
-      hpBg.appendChild(hpBar);
-
-      // Party member info (name + level)
-      const info = document.createElement('div');
-      info.className = 'party-info';
-      info.style.color = col;
-      info.innerHTML = `<div class="party-name">${m.displayName}</div><div class="party-level">Lv ${m.lv}</div>`;
-      member.appendChild(info);
-
-      // KO indicator
-      if (!alive) {
-        const koLbl = document.createElement('div');
-        koLbl.className = 'ko-badge';
-        koLbl.textContent = 'KO';
-        member.appendChild(koLbl);
-      }
-
-      container.appendChild(member);
-    });
-    this._highlightActiveMember();
-  },
-
-  _highlightActiveMember() {
-    const t = G.turnQueue[G.turnIdx];
-    document.querySelectorAll('.party-member').forEach((w, i) => {
-      const isActive = t && t.type === 'party' && t.idx === i;
-      w.classList.toggle('active-member', isActive);
-      const col = CHAR_COLOR[G.party[i]?.charId] || '#c0b8e8';
-      w.style.borderColor = isActive ? col + '50' : 'transparent';
-      w.style.filter = isActive ? `drop-shadow(0 0 6px ${col}80)` : 'none';
-    });
-  },
-
-  /* ── Party status cards (bottom bar) ────────────────── */
-  renderPartyStatus() {
-    const bar = this.el('party-status-bar');
-    if (!bar) return;
-    bar.innerHTML = '';
-    G.party.forEach((m, i) => {
-      const col   = CHAR_COLOR[m.charId] || '#c0b8e8';
-      const hpPct = Math.max(0, m.hp / m.maxHp * 100);
-      const mpPct = Math.max(0, m.mp / m.maxMp * 100);
-      const hpCol = hpPct > 50 ? 'var(--hp-hi)' : hpPct > 25 ? 'var(--hp-mid)' : 'var(--hp-lo)';
-      const isActive = G.turnQueue[G.turnIdx]?.type === 'party' && G.turnQueue[G.turnIdx]?.idx === i;
-      
-      const card = document.createElement('div');
-      card.className = 'psc' + (m.isKO ? ' ko-psc' : '') + (isActive ? ' active-psc' : '');
-      card.style.borderColor = isActive ? col : col + '50';
-      
-      const statusHtml = this._renderPSCStatuses(m);
-      
-      card.innerHTML = `
-        <div class="psc-header">
-          <div class="psc-name" style="color:${col}">${m.displayName} <span class="psc-lv">L${m.lv}</span></div>
-          <div class="psc-statuses">${statusHtml}</div>
-        </div>
-        <div class="psc-hp-bg"><div class="psc-hp-bar" style="width:${hpPct}%;background:${hpCol}"></div></div>
-        <div class="psc-hp-txt">${Math.max(0,m.hp)}/${m.maxHp} HP · ${m.mp}/${m.maxMp} MP</div>
-        <div class="psc-mp-bg"><div class="psc-mp-bar" style="width:${mpPct}%"></div></div>`;
-      bar.appendChild(card);
-    });
-  },
-
-  _renderPSCStatuses(m) {
-    const tokens = [];
-    const push = (icon, turns, cl = '') => {
-      if (turns === undefined || turns === null) tokens.push(`<div class="psct ${cl}">${icon}</div>`);
-      else tokens.push(`<div class="psct ${cl}">${icon}<span class="psct-cnt">${turns}</span></div>`);
-    };
-
-    if (m.buff) {
-      const icon = m.buff.stat === 'atk' ? '⚔️' : m.buff.stat === 'def' ? '🛡️' : m.buff.stat === 'spd' ? '💨' : '🔮';
-      push(icon, m.buff.turns, 'buff');
-    }
-    if (m._atkBuffVal && (!m.buff || m.buff.stat !== 'atk')) push('⚔️', m.buff?.turns || 2, 'buff');
-    if (m._defBuffVal && (!m.buff || m.buff.stat !== 'def')) push('🛡️', m.buff?.turns || 2, 'buff');
-    if (m._magBuffVal && (!m.buff || m.buff.stat !== 'mag')) push('🔮', m.buff?.turns || 2, 'buff');
-    
-    if (m.regenTurns > 0)    push('🌿', m.regenTurns, 'regen');
-    if (m.healBoostTurns > 0) push('💖', m.healBoostTurns, 'buff');
-    if (m.guardMarkTurns > 0) push('🛡️', m.guardMarkTurns, 'guard');
-    if (m.guardianTurns > 0)  push('🛡️', m.guardianTurns, 'guard');
-    if (m.dmgReduction < 1)   push('💎', '-', 'buff');
-    if (m.frozen > 0)        push('❄️', m.frozen, 'debuff');
-    if (m.stunned)           push('💫', '1', 'debuff');
-    if (m.debuff)            push('🔻', m.debuff.turns, 'debuff');
-
-    return tokens.join('');
-  },
-
-  _getBuffReport(m) {
-    if (!m) return '';
-    const parts = [];
-    const _fmt = v => (v >= 1) ? `+${Math.round((v-1)*100)}%` : `-${Math.round((1-v)*100)}%`;
-
-    if (m.buff) {
-      const sName = m.buff.stat.toUpperCase();
-      const mult = (m[m.buff.stat] / m.buff.origVal) || 1;
-      parts.push(`${sName} ${_fmt(mult)}`);
-    }
-    // Secondary buffs
-    if (m._atkBuffVal && (!m.buff || m.buff.stat !== 'atk')) parts.push(`ATK ${_fmt(m._atkBuffVal)}`);
-    if (m._defBuffVal && (!m.buff || m.buff.stat !== 'def')) parts.push(`DEF ${_fmt(m._defBuffVal)}`);
-    if (m._magBuffVal && (!m.buff || m.buff.stat !== 'mag')) parts.push(`MAG ${_fmt(m._magBuffVal)}`);
-    if (m._spdBuffVal && (!m.buff || m.buff.stat !== 'spd')) parts.push(`SPD ${_fmt(m._spdBuffVal)}`);
-
-    if (m.dmgReduction < 1)   parts.push(`Shield ${Math.round((1-m.dmgReduction)*100)}%`);
-    if (m.regenTurns > 0)    parts.push(`Regen`);
-    if (m.guardMark)         parts.push(`Guard`);
-    if (m.frozen > 0)        parts.push(`Frozen`);
-    if (m.stunned)           parts.push(`Stunned`);
-    
-    return parts.length ? ` (${parts.join(', ')})` : '';
-  },
-
-  /* ── Active member action bar ───────────────────────── */
-  renderActiveMemberBar() {
-    const bar = this.el('active-member-bar');
-    if (!bar) return;
-    const t = G.turnQueue[G.turnIdx];
-    if (!t || t.type !== 'party') {
-      bar.innerHTML = '<span style="color:#5a527a">Enemy acting…</span>';
-      return;
-    }
-    const m   = G.party[t.idx];
+function renderPartyMenu() {
+  const cards = document.getElementById('pm-cards');
+  if (!cards) return;
+  cards.innerHTML = '';
+  G.party.forEach((m, i) => {
     const col = CHAR_COLOR[m.charId] || '#c0b8e8';
-    bar.innerHTML =
-      `<span class="amb-arrow" style="color:${col}">▶</span>` +
-      `<span class="amb-name" style="color:${col}">${m.displayName}</span>` +
-      `<span class="amb-class">${m.cls.name} · LV ${m.lv}</span>` +
-      `<span class="amb-mp" style="color:#6080ff">MP ${m.mp}/${m.maxMp}</span>`;
-  },
+    const hpPct = Math.max(0, m.hp / m.maxHp * 100);
+    const mpPct = Math.max(0, m.mp / m.maxMp * 100);
+    const hpCol = hpPct > 50 ? 'var(--hp-hi)' : hpPct > 25 ? 'var(--hp-mid)' : 'var(--hp-lo)';
+    const card = document.createElement('div');
+    card.className = 'pm-card';
+    card.style.borderColor = col + '80';
 
-  /* ── Party profile menu ─────────────────────────────── */
-  renderPartyMenu() {
-    const cards = this.el('pm-cards');
-    if (!cards) return;
-    cards.innerHTML = '';
-    G.party.forEach((m, i) => {
-      const col = CHAR_COLOR[m.charId] || '#c0b8e8';
-      const hpPct = Math.max(0, m.hp / m.maxHp * 100);
-      const mpPct = Math.max(0, m.mp / m.maxMp * 100);
-      const hpCol = hpPct > 50 ? 'var(--hp-hi)' : hpPct > 25 ? 'var(--hp-mid)' : 'var(--hp-lo)';
-      const card = document.createElement('div');
-      card.className = 'pm-card';
-      card.style.borderColor = col + '80';
+    const img = document.createElement('img');
+    img.className = 'pm-portrait'; img.alt = m.displayName;
+    SpriteRenderer.drawHero(img, m.charId, m.char, m.cls);
 
-      // Portrait + name header
-      const img = document.createElement('img');
-      img.className = 'pm-portrait'; img.alt = m.displayName;
-      SpriteRenderer.drawHero(img, m.charId, m.char, m.cls);
+    const abHtml = (m.abilities || []).map(a =>
+      `<div class="pm-ab"><span class="pm-ab-icon">${a.icon || '⚡'}</span><span class="pm-ab-name">${a.name}</span><span class="pm-ab-mp">${a.mp}MP</span></div>`
+    ).join('');
 
-      const abHtml = (m.abilities || []).map(a =>
-        `<div class="pm-ab"><span class="pm-ab-icon">${a.icon||'⚡'}</span><span class="pm-ab-name">${a.name}</span><span class="pm-ab-mp">${a.mp}MP</span></div>`
-      ).join('');
-
-      card.innerHTML = `
-        <div class="pm-card-top" style="border-bottom-color:${col}40">
-          <div class="pm-portrait-wrap"></div>
-          <div class="pm-card-head">
-            <div class="pm-card-name" style="color:${col}">${m.displayName}</div>
-            <div class="pm-card-class">${m.cls.name} ${m.isKO ? '<span class="pm-ko-badge">KO</span>' : ''}</div>
-            <div class="pm-card-lv">LEVEL <span style="color:${col}">${m.lv}</span>
-              · EXP <span style="color:var(--gold)">${m.exp}</span>/<span style="color:var(--text-dim)">${30*m.lv}</span></div>
-          </div>
+    card.innerHTML = `
+      <div class="pm-card-top" style="border-bottom-color:${col}40">
+        <div class="pm-portrait-wrap"></div>
+        <div class="pm-card-head">
+          <div class="pm-card-name" style="color:${col}">${m.displayName}</div>
+          <div class="pm-card-class">${m.cls.name} ${m.isKO ? '<span class="pm-ko-badge">KO</span>' : ''}</div>
+          <div class="pm-card-lv">LEVEL <span style="color:${col}">${m.lv}</span>
+            · EXP <span style="color:var(--gold)">${m.exp}</span>/<span style="color:var(--text-dim)">${30 * m.lv}</span></div>
         </div>
-        <div class="pm-bars">
-          <div class="pm-bar-row">HP
-            <div class="pm-bar-bg"><div class="pm-bar-fill" style="width:${hpPct}%;background:${hpCol}"></div></div>
-            <span>${Math.max(0,m.hp)}/${m.maxHp}</span>
-          </div>
-          <div class="pm-bar-row">MP
-            <div class="pm-bar-bg"><div class="pm-bar-fill" style="width:${mpPct}%;background:#5060ff"></div></div>
-            <span>${m.mp}/${m.maxMp}</span>
-          </div>
+      </div>
+      <div class="pm-bars">
+        <div class="pm-bar-row">HP
+          <div class="pm-bar-bg"><div class="pm-bar-fill" style="width:${hpPct}%;background:${hpCol}"></div></div>
+          <span>${Math.max(0, m.hp)}/${m.maxHp}</span>
         </div>
-        <div class="pm-stats">
-          <div class="pm-stat"><span>ATK</span><span style="color:var(--gold)">${m.atk}</span></div>
-          <div class="pm-stat"><span>DEF</span><span style="color:var(--gold)">${m.def}</span></div>
-          <div class="pm-stat"><span>MAG</span><span style="color:var(--gold)">${m.mag}</span></div>
-          <div class="pm-stat"><span>SPD</span><span style="color:var(--gold)">${m.spd}</span></div>
+        <div class="pm-bar-row">MP
+          <div class="pm-bar-bg"><div class="pm-bar-fill" style="width:${mpPct}%;background:#5060ff"></div></div>
+          <span>${m.mp}/${m.maxMp}</span>
         </div>
-        <div class="pm-passive">
-          <span class="pm-passive-tag">★ ${m.passive?.name || 'Passive'}</span>
-          <span class="pm-passive-desc">${m.passive?.description || ''}</span>
-        </div>
-        <div class="pm-abilities">${abHtml}</div>`;
+      </div>
+      <div class="pm-stats">
+        <div class="pm-stat"><span>ATK</span><span style="color:var(--gold)">${m.atk}</span></div>
+        <div class="pm-stat"><span>DEF</span><span style="color:var(--gold)">${m.def}</span></div>
+        <div class="pm-stat"><span>MAG</span><span style="color:var(--gold)">${m.mag}</span></div>
+        <div class="pm-stat"><span>SPD</span><span style="color:var(--gold)">${m.spd}</span></div>
+      </div>
+      <div class="pm-passive">
+        <span class="pm-passive-tag">★ ${m.passive?.name || 'Passive'}</span>
+        <span class="pm-passive-desc">${m.passive?.description || ''}</span>
+      </div>
+      <div class="pm-abilities">${abHtml}</div>`;
 
-      // Insert portrait image
-      card.querySelector('.pm-portrait-wrap').appendChild(img);
-      cards.appendChild(card);
-    });
-  },
-};
+    card.querySelector('.pm-portrait-wrap').appendChild(img);
+    cards.appendChild(card);
+  });
+}
 function buildEnemyGroup(defs, spawnLevel = 1, isBoss = false) {
   // Tier-based growth rates
   const tierGrowth = {
     // NEW growth rates — ensures enemies scale as threats through Lv40
-    1: { hp: 5,  atk: 1.2, def: 0.5, spd: 0.5, mag: 0.3, statMult: 1.0, expMult: 1.0 },
+    1: { hp: 5, atk: 1.2, def: 0.5, spd: 0.5, mag: 0.3, statMult: 1.0, expMult: 1.0 },
     2: { hp: 10, atk: 2.5, def: 1.0, spd: 0.8, mag: 0.5, statMult: 1.3, expMult: 1.5 },
     3: { hp: 18, atk: 4.5, def: 1.8, spd: 1.2, mag: 0.8, statMult: 1.7, expMult: 2.5 },
   };
@@ -627,22 +360,22 @@ function buildEnemyGroup(defs, spawnLevel = 1, isBoss = false) {
   const hordeScale = defs.length >= 4 ? 0.65 : defs.length === 3 ? 0.78 : 1.0;
 
   G.enemyGroup = defs.slice(0, 4).map(def => {
-    const tier   = def.tier || 1;
+    const tier = def.tier || 1;
     const growth = tierGrowth[tier] || tierGrowth[1];
 
     const calcStat = (baseStat, statKey) => {
-      const base       = baseStat * growth.statMult * hordeScale * bossMult;
+      const base = baseStat * growth.statMult * hordeScale * bossMult;
       const levelBonus = growth[statKey] * (spawnLevel - 1) * hordeScale * bossMult;
       return Math.max(1, Math.floor(base + levelBonus));
     };
 
-    const finalHp   = calcStat(def.stats.hp,  'hp');
-    const finalAtk  = calcStat(def.stats.atk, 'atk');
-    const finalDef  = calcStat(def.stats.def, 'def');
-    const finalSpd  = calcStat(def.stats.spd, 'spd');
-    const finalMag  = calcStat(def.stats.mag, 'mag');
+    const finalHp = calcStat(def.stats.hp, 'hp');
+    const finalAtk = calcStat(def.stats.atk, 'atk');
+    const finalDef = calcStat(def.stats.def, 'def');
+    const finalSpd = calcStat(def.stats.spd, 'spd');
+    const finalMag = calcStat(def.stats.mag, 'mag');
     // EXP/gold scale by count so total reward is fair
-    const finalExp  = Math.floor(def.reward.exp  * growth.expMult * hordeScale);
+    const finalExp = Math.floor(def.reward.exp * growth.expMult * hordeScale);
     const finalGold = Math.floor(def.reward.gold * growth.expMult * hordeScale);
 
     return {
@@ -655,11 +388,12 @@ function buildEnemyGroup(defs, spawnLevel = 1, isBoss = false) {
       abilityDefs: def.abilities || [],
       palette: def.palette,
       subtitle: def.subtitle || '',
-      element:  def.element  || 'physical',
-      weakTo:   def.weakTo   || [],
+      element: def.element || 'physical',
+      weakTo: def.weakTo || [],
       resistTo: def.resistTo || [],
-      tier:     tier,
-      isKO: false, stunned: false, debuff: null,
+      tier: tier,
+      isKO: false,
+      statuses: [],
     };
   });
   G.targetEnemyIdx = 0;
@@ -682,13 +416,7 @@ function unlockCharacter(charId) {
   return false;
 }
 
-function buildTurnQueue() {
-  const q = [];
-  G.party.forEach((m, i)      => { if (Battle.alive(m)) q.push({ type:'party', idx:i, spd:m.spd }); });
-  G.enemyGroup.forEach((e, i) => { if (Battle.alive(e)) q.push({ type:'enemy', idx:i, spd:e.spd }); });
-  q.sort((a, b) => b.spd - a.spd);
-  return q;
-}
+function buildTurnQueue() { return TurnManager.buildQueue(); }
 
 function selectTarget(enemyIdx) {
   if (!Battle.alive(G.enemyGroup[enemyIdx])) return;
@@ -697,7 +425,7 @@ function selectTarget(enemyIdx) {
   document.querySelectorAll('.enemy').forEach((e, i) => {
     e.dataset.target = i === enemyIdx ? 'true' : 'false';
   });
-  UI.renderEnemyRow();
+  BattleUI.renderEnemyRow();
   if (typeof SFX !== 'undefined') SFX.click();
 }
 
@@ -707,8 +435,8 @@ function selectTarget(enemyIdx) {
 function showPreBattle() {
   if (G.selectedChars.length < 4) return;
 
-  UI.show('pre-battle-screen');
-  const roster = UI.el('pre-battle-roster');
+  showScreen('pre-battle-screen');
+  const roster = document.getElementById('pre-battle-roster');
   roster.innerHTML = '';
 
   // Show current party
@@ -736,7 +464,7 @@ function startBattle() {
   }
 
   // Free battle: 2–3 random enemies, scaled to party level
-  const pool  = G.enemies.slice();
+  const pool = G.enemies.slice();
   const count = 2 + Math.floor(Math.random() * 2);
   const picks = [];
   for (let i = 0; i < Math.min(count, pool.length); i++) {
@@ -748,7 +476,7 @@ function startBattle() {
   buildEnemyGroup(picks, spawnLevel);
   _initBattle();
   const names = G.enemyGroup.map(e => e.name).join(' & ');
-  UI.setLog([`${names} appear!`, `Party to battle stations!`], ['hi','']);
+  BattleUI.setLog([`${names} appear!`, `Party to battle stations!`], ['hi', '']);
   processCurrentTurn();
 }
 
@@ -774,30 +502,30 @@ function _applyVampiric(enemy, dmg, enemyIdx) {
   if (!isVampiric || dmg <= 0) return;
   const heal = Math.max(1, Math.floor(dmg * 0.25));
   enemy.hp = Math.min(enemy.maxHp, enemy.hp + heal);
-  UI.popEnemy(enemyIdx, heal, 'regen');
+  BattleUI.popEnemy(enemyIdx, heal, 'regen');
 }
 
 function _initBattle() {
-  G.turnQueue      = buildTurnQueue();
-  G.turnIdx        = 0;
+  G.turnQueue = TurnManager.buildQueue();
+  G.turnIdx = 0;
   G.activeMemberIdx = 0;
-  G.busy           = false;
+  G.busy = false;
   buildAbilityMenu();
-  UI.show('battle-screen');
-  UI.renderBattleUI();
+  showScreen('battle-screen');
+  BattleUI.render();
 }
 
 function buildAbilityMenu() {
   const actor = G.party[G.activeMemberIdx] || G.hero;
   if (!actor) return;
-  const menu = UI.el('ability-sub');
+  const menu = document.getElementById('ability-sub');
   if (!menu) return;
   menu.innerHTML = '';
   actor.abilities.forEach(ab => {
     const b = document.createElement('button');
-    const icon   = ab.icon || '';
-    const type   = ab.type || 'physical';
-    const tIcon  = TYPE_ICONS[type] || '🗡️';
+    const icon = ab.icon || '';
+    const type = ab.type || 'physical';
+    const tIcon = TYPE_ICONS[type] || '🗡️';
 
     const mpCost = actor.passive?.id === 'eidolon_bond' ? Math.ceil(ab.mp * 0.85) : ab.mp;
 
@@ -814,91 +542,46 @@ function buildAbilityMenu() {
   const back = document.createElement('button');
   back.className = 'cmd-btn dim';
   back.textContent = '← BACK';
-  back.onclick = () => UI.openSub(null);
+  back.onclick = () => BattleUI.openSub(null);
   menu.appendChild(back);
 }
 
 /* ============================================================
    TURN MANAGEMENT
    ============================================================ */
-function processCurrentTurn() {
-  // Skip dead units
-  while (G.turnIdx < G.turnQueue.length) {
-    const t    = G.turnQueue[G.turnIdx];
-    const unit = t.type === 'party' ? G.party[t.idx] : G.enemyGroup[t.idx];
-    if (Battle.alive(unit)) break;
-    G.turnIdx++;
-  }
-  // New round if exhausted
-  if (G.turnIdx >= G.turnQueue.length) {
-    G.turnQueue = buildTurnQueue();
-    G.turnIdx   = 0;
-    if (!G.turnQueue.length) return;
-  }
+function processCurrentTurn() { TurnManager.process(); }
 
-  const t = G.turnQueue[G.turnIdx];
-  UI.renderTurnBar();
-  UI._highlightActiveMember();
-  UI.renderActiveMemberBar();
+function advanceTurn() { TurnManager.advance(); }
 
-  if (t.type === 'party') {
-    G.activeMemberIdx = t.idx;
-    heroTurn();
-  } else {
-    G.busy = true;
-    UI.btns(false);
-    setTimeout(() => enemyAct(G.enemyGroup[t.idx], t.idx), 700);
-  }
-}
-
-function advanceTurn() {
-  G.turnIdx++;
-  if (!checkBattleEnd()) processCurrentTurn();
-}
+function heroTurn() { TurnManager.beginHeroTurn(); }
 
 /* ============================================================
    VISUAL EFFECTS
    ============================================================ */
 function heroRun() {
   if (G.busy) return;
-  G.busy = true; UI.btns(false);
-  UI.openSub(null);
+  G.busy = true; BattleUI.btns(false);
+  BattleUI.openSub(null);
   if (Math.random() < 0.6) {
-    UI.setLog(['The party escapes!'], ['hi']);
+    BattleUI.setLog(['The party escapes!'], ['hi']);
     setTimeout(() => showResult('escaped'), 900);
   } else {
     const _isMutant = G.enemyGroup.some(e => e.mutantTraits && Battle.alive(e));
-    UI.setLog([_isMutant ? '⚠ Escape failed! The Mutant strikes!' : 'Could not escape!'], ['dmg']);
+    BattleUI.setLog([_isMutant ? '⚠ Escape failed! The Mutant strikes!' : 'Could not escape!'], ['dmg']);
     setTimeout(advanceTurn, 800);
   }
 }
 
-function heroTurn() {
-  G.busy = false;
-  // Auto-select first alive enemy if current target is dead
-  if (!Battle.alive(G.enemyGroup[G.targetEnemyIdx])) {
-    const aliveIdx = G.enemyGroup.findIndex(e => Battle.alive(e));
-    if (aliveIdx >= 0) G.targetEnemyIdx = aliveIdx;
-  }
-  buildAbilityMenu();
-  UI.renderEnemyRow();    // refresh target indicator
-  UI.renderActiveMemberBar();
-  UI.btns(true);
-  const actor = G.party[G.activeMemberIdx];
-  UI.addLog(`${actor?.displayName}'s turn — choose action!`, 'hi');
-  UI.updateStats();
-}
-
 function checkBattleEnd() {
   const allEnemiesDead = G.enemyGroup.every(e => !Battle.alive(e));
-  const allPartyDown   = G.party.every(m => !Battle.alive(m));
+  const allPartyDown = G.party.every(m => !Battle.alive(m));
 
   if (allEnemiesDead) {
     let totalExp = 0, totalGold = 0;
     const allDrops = [];
     let relicDrop = null;
     G.enemyGroup.forEach(e => {
-      totalExp  += e.exp;
+      totalExp += e.exp;
       totalGold += e.gold;
       const rawDef = G.enemies.find(r => r.id === e.id);
       if (rawDef) _awardDrops(rawDef).forEach(id => allDrops.push(id));
@@ -917,10 +600,10 @@ function checkBattleEnd() {
       if (!Battle.alive(m)) return;
       // Level-gap penalty: scale exp down as member outlevels enemies.
       // At +3 levels above enemy: 0 exp. Linear ramp from gap 0 → gap 3.
-      const gap       = (m.lv || 1) - avgEnemyLv;
-      const expScale  = gap >= 3 ? 0 : gap <= 0 ? 1 : 1 - (gap / 3);
+      const gap = (m.lv || 1) - avgEnemyLv;
+      const expScale = gap >= 3 ? 0 : gap <= 0 ? 1 : 1 - (gap / 3);
       const earnedExp = Math.floor(totalExp * expScale);
-      m.exp  += earnedExp;
+      m.exp += earnedExp;
       m.gold += totalGold;
       while (checkMemberLevel(m)) {
         if (!leveledNames.includes(m.displayName)) leveledNames.push(m.displayName);
@@ -928,11 +611,11 @@ function checkBattleEnd() {
       // Sync stats back to character data for persistence across battles
       const ch = G.chars.find(c => c.id === m.charId);
       if (ch) {
-        ch.lv   = m.lv;
-        ch.exp  = m.exp;
+        ch.lv = m.lv;
+        ch.exp = m.exp;
         ch.gold = m.gold;
-        ch.mp   = m.mp;   // persist MP so it carries between battles
-        ch.hp   = m.hp;   // persist HP
+        ch.mp = m.mp;   // persist MP so it carries between battles
+        ch.hp = m.hp;   // persist HP
         ch.isKO = m.isKO; // persist KO state
       }
     });
@@ -941,19 +624,19 @@ function checkBattleEnd() {
       ? allDrops.map(id => { const d = G.items.find(i => i.id === id); return d ? `${d.icon}${d.name}` : id; }).join(', ')
       : null;
     const relicMsg = relicDrop ? `✦ Relic found: ${relicDrop.icon} ${relicDrop.name}!` : null;
-    UI.setLog([
+    BattleUI.setLog([
       `Enemies defeated! +${totalExp} EXP +${totalGold} Gold`,
-      dropMsg  ? `Drops: ${dropMsg}` : '',
+      dropMsg ? `Drops: ${dropMsg}` : '',
       relicMsg || ''
     ].filter(Boolean), ['hi', 'hi', 'hi']);
-    UI.renderPartyStatus();
-    UI.updateStats();
+    BattleUI.renderPartyStatus();
+    BattleUI.updateStats();
 
     setTimeout(() => {
       if (leveledNames.length) {
-        UI.addLog(`★ LEVEL UP: ${leveledNames.join(', ')}!`, 'hi');
+        BattleUI.addLog(`★ LEVEL UP: ${leveledNames.join(', ')}!`, 'hi');
         if (typeof SFX !== 'undefined') SFX.levelUp();
-        UI.renderPartyStatus();
+        BattleUI.renderPartyStatus();
       }
       setTimeout(() => {
         _clearBattleAtmosphere();
@@ -966,7 +649,7 @@ function checkBattleEnd() {
   }
 
   if (allPartyDown) {
-    UI.setLog(['The party has fallen...'], ['dmg']);
+    BattleUI.setLog(['The party has fallen...'], ['dmg']);
     setTimeout(() => {
       _clearBattleAtmosphere();
       if (G.mode === 'explore' || G.mode === 'story_explore') { MapEngine.onBattleComplete(false); }
@@ -988,53 +671,7 @@ function checkEnd() { return checkBattleEnd(); }
 function showResult(type) {
   _clearBattleAtmosphere();
   closePartyMenu();
-  const t       = UI.el('result-title');
-  const st      = UI.el('result-stats');
-  const party   = UI.el('result-party');
-  const retryBtn = UI.el('result-retry-btn');
-  const againBtn = UI.el('result-again-btn');
-
-  // Party member cards — shown on all result types
-  if (party && G.party.length) {
-    party.innerHTML = G.party.map(m => {
-      const col    = CHAR_COLOR[m.charId] || '#aaa';
-      const isKO   = !Battle.alive(m);
-      const hpTxt  = isKO ? '0' : m.hp;
-      return `<div class="result-member${isKO ? ' ko' : ''}" style="border-color:${col}40">
-        <div class="rm-name" style="color:${col}">${m.displayName}</div>
-        <div class="rm-lv">LV ${m.lv}</div>
-        <div class="rm-hp${isKO ? ' zero' : ''}">HP ${hpTxt}/${m.maxHp}</div>
-        <div class="rm-exp" style="color:#8888bb">EXP ${m.exp}</div>
-        ${isKO ? '<div style="color:var(--red);font-size:9px">FALLEN</div>' : ''}
-      </div>`;
-    }).join('');
-  } else if (party) {
-    party.innerHTML = '';
-  }
-
-  if (type === 'victory') {
-    if (typeof SFX !== 'undefined') SFX.victory();
-    t.textContent = '✨ VICTORY! ✨';
-    t.className   = 'result-title victory';
-    const totalGold = G.party.reduce((s, m) => s + (m.gold || 0), 0);
-    st.innerHTML  = `All enemies defeated!<br><span class="val">+Gold collected this run: ${totalGold}</span>`;
-    if (retryBtn) retryBtn.style.display = 'none';
-    if (againBtn) againBtn.textContent   = '▶ PLAY AGAIN';
-  } else if (type === 'defeat') {
-    if (typeof SFX !== 'undefined') SFX.defeat();
-    t.textContent = '💀 GAME OVER 💀';
-    t.className   = 'result-title defeat';
-    st.innerHTML  = `The party has fallen...`;
-    if (retryBtn) retryBtn.style.display = '';
-    if (againBtn) againBtn.textContent   = '⬅ MENU';
-  } else {
-    t.textContent = '💨 ESCAPED!';
-    t.className   = 'result-title escaped';
-    st.innerHTML  = `The party fled from battle!`;
-    if (retryBtn) retryBtn.style.display = 'none';
-    if (againBtn) againBtn.textContent   = '▶ PLAY AGAIN';
-  }
-  UI.show('result-screen');
+  ResultUI.show(type, G.party);
 }
 
 function playAgain() {
@@ -1047,16 +684,16 @@ function retryBattle() {
   G.party.forEach(m => {
     m.hp = m.maxHp; m.mp = m.maxMp;
     m.isKO = false;
-    m.buff = null; m.debuff = null; m.regenTurns = 0; m.stunned = false;
+    m.statuses = [];
   });
   const level = G.enemyGroup[0]?.level || 1;
-  const defs  = G.enemyGroup.map(e => G.enemies.find(r => r.id === e.id)).filter(Boolean);
+  const defs = G.enemyGroup.map(e => G.enemies.find(r => r.id === e.id)).filter(Boolean);
   buildEnemyGroup(defs, level);
   G.turnQueue = buildTurnQueue();
-  G.turnIdx   = 0;
-  G.busy      = false;
-  UI.show('battle-screen');
-  UI.renderBattleUI();
+  G.turnIdx = 0;
+  G.busy = false;
+  showScreen('battle-screen');
+  BattleUI.render();
   processCurrentTurn();
 }
 
@@ -1065,36 +702,36 @@ function retryBattle() {
    ============================================================ */
 /* Move mute/TTS/zoom into the explore header so they don't clash */
 function _dockPersistentBtns(dock) {
-  const hdrRight   = document.querySelector('.explore-header-right');
-  const muteBtn    = document.getElementById('mute-btn');
-  const ttsBtn     = document.getElementById('tts-btn');
-  const zoomBtn    = document.getElementById('zoom-btn');
-  const resetBtn   = document.getElementById('reset-zoom-btn');
-  const gameEl     = document.getElementById('game');
+  const hdrRight = document.querySelector('.explore-header-right');
+  const muteBtn = document.getElementById('mute-btn');
+  const ttsBtn = document.getElementById('tts-btn');
+  const zoomBtn = document.getElementById('zoom-btn');
+  const resetBtn = document.getElementById('reset-zoom-btn');
+  const gameEl = document.getElementById('game');
 
   if (dock && hdrRight) {
     // Make them inline in the header
     [muteBtn, ttsBtn].forEach(b => {
       if (!b) return;
       b.style.position = 'static';
-      b.style.width    = '28px';
-      b.style.height   = '28px';
+      b.style.width = '28px';
+      b.style.height = '28px';
       b.style.fontSize = '13px';
       hdrRight.insertBefore(b, hdrRight.firstChild);
     });
-    if (zoomBtn)  zoomBtn.style.display  = 'none';
+    if (zoomBtn) zoomBtn.style.display = 'none';
     if (resetBtn) resetBtn.style.display = 'none';
   } else {
     // Restore to absolute positioning
     [muteBtn, ttsBtn].forEach(b => {
       if (!b) return;
       b.style.position = 'absolute';
-      b.style.width    = '';
-      b.style.height   = '';
+      b.style.width = '';
+      b.style.height = '';
       b.style.fontSize = '';
       if (gameEl) gameEl.appendChild(b);
     });
-    if (zoomBtn)  zoomBtn.style.display  = '';
+    if (zoomBtn) zoomBtn.style.display = '';
     if (resetBtn) resetBtn.style.display = '';
   }
 }
@@ -1106,7 +743,7 @@ function leaveExplore() {
     Story.onExploreComplete();
   } else {
     G.mode = 'free';
-    UI.show('title-screen');
+    showScreen('title-screen');
   }
 }
 
@@ -1119,18 +756,18 @@ function startExplore() {
     }
     // Auto-select all chars (each with their own class)
     G.selectedChars = G.chars.slice(0, 4).map(c => c.id);
-    G.selectedChar  = G.selectedChars[0];
+    G.selectedChar = G.selectedChars[0];
     // Don't set selectedClass — buildParty will use each character's class_affinity
     buildParty();
   }
   G.mode = 'explore';
-  UI.show('explore-screen');
+  showScreen('explore-screen');
   _dockPersistentBtns(true);
 
   // Size canvas to its container
-  const wrap   = document.getElementById('explore-canvas-wrap');
+  const wrap = document.getElementById('explore-canvas-wrap');
   const canvas = document.getElementById('explore-canvas');
-  canvas.width  = wrap.clientWidth  || 360;
+  canvas.width = wrap.clientWidth || 360;
   canvas.height = wrap.clientHeight || 480;
 
   MapEngine.init(canvas);

@@ -1,300 +1,308 @@
-[
-  {
-    "id": "ayaka",
-    "name": "Ayaka",
-    "alias": "Aya",
-    "title": "The Cryo Princess",
-    "gender": "female",
-    "age": 19,
-    "origin": "Unknown — memory lost to the Rift",
-    "description": "A noble warrior summoned mid-prayer to a world unknown. She fights with precise, frozen grace — every strike a bloom of ice.",
-    "personality": "Graceful, noble, quietly fierce",
-    "icon": "❄️",
-    "portrait_color": "#7dd3fc",
-    "hair_color": "#c0e8ff",
-    "skin_color": "#f8e8ff",
-    "armor_color": "#4b9fce",
-    "base_stats": {
-      "hp": 65,
-      "mp": 30,
-      "atk": 16,
-      "def": 12,
-      "spd": 18,
-      "mag": 14
+﻿[
+    {
+        "id":  "ayaka",
+        "name":  "Ayaka",
+        "alias":  "Aya",
+        "title":  "The Cryo Princess",
+        "gender":  "female",
+        "age":  19,
+        "origin":  "Unknown â€” memory lost to the Rift",
+        "description":  "A noble warrior summoned mid-prayer to a world unknown. She fights with precise, frozen grace â€” every strike a bloom of ice.",
+        "personality":  "Graceful, noble, quietly fierce",
+        "icon":  "â„ï¸",
+        "portrait_color":  "#7dd3fc",
+        "hair_color":  "#c0e8ff",
+        "skin_color":  "#f8e8ff",
+        "armor_color":  "#4b9fce",
+        "base_stats":  {
+                           "hp":  65,
+                           "mp":  30,
+                           "atk":  16,
+                           "def":  12,
+                           "spd":  18,
+                           "mag":  14,
+                           "lck":  10
+                       },
+        "stat_bonuses":  {
+                             "spd":  3,
+                             "atk":  2
+                         },
+        "class_affinity":  [
+                               "cryo_bladestorm"
+                           ],
+        "passive":  {
+                        "id":  "frostflake",
+                        "name":  "Frostflake Dance",
+                        "description":  "Always acts first in battle â€” +3 SPD bonus and attacks carry a cryo edge."
+                    },
+        "lore":  "Torn from her world mid-prayer at a sacred shrine. The last thing she saw was cherry blossoms â€” the first thing she felt was the cold darkness of the rift."
     },
-    "stat_bonuses": {
-      "spd": 3,
-      "atk": 2
+    {
+        "id":  "hutao",
+        "name":  "Hu Tao",
+        "alias":  "Tao",
+        "title":  "The Ghost Guide",
+        "gender":  "female",
+        "age":  20,
+        "origin":  "Unknown â€” memory lost to the Rift",
+        "description":  "A spirit guide and amateur poet. She was chasing a runaway spirit when the rift swallowed her whole â€” she considers it a professional hazard.",
+        "personality":  "Mischievous, death-obsessed, surprisingly caring",
+        "icon":  "ðŸ”¥",
+        "portrait_color":  "#ef4444",
+        "hair_color":  "#4a2020",
+        "skin_color":  "#f5c8a0",
+        "armor_color":  "#c03010",
+        "base_stats":  {
+                           "hp":  50,
+                           "mp":  22,
+                           "atk":  20,
+                           "def":  7,
+                           "spd":  14,
+                           "mag":  12,
+                           "lck":  10
+                       },
+        "stat_bonuses":  {
+                             "atk":  4,
+                             "spd":  2
+                         },
+        "class_affinity":  [
+                               "spirit_incinerator"
+                           ],
+        "passive":  {
+                        "id":  "blood_blossom",
+                        "name":  "Blood Blossom",
+                        "description":  "When HP drops below 50%, ATK increases by 35%. Life fuels the flame."
+                    },
+        "lore":  "She once wrote a poem about her own funeral â€” three stanzas in, she realized she was genuinely enjoying it. A more dedicated spirit guide has never walked these paths."
     },
-    "class_affinity": [
-      "cryo_bladestorm"
-    ],
-    "passive": {
-      "id": "frostflake",
-      "name": "Frostflake Dance",
-      "description": "Always acts first in battle — +3 SPD bonus and attacks carry a cryo edge."
+    {
+        "id":  "nilou",
+        "name":  "Nilou",
+        "alias":  "Lulu",
+        "title":  "The Star Dancer",
+        "gender":  "female",
+        "age":  18,
+        "origin":  "Unknown â€” memory lost to the Rift",
+        "description":  "A beloved dancer whose grace captivates all who witness her. She was dancing at the edge of a sacred pool when the summoning light carried her away.",
+        "personality":  "Gentle, radiant, courageous at heart",
+        "icon":  "ðŸ’§",
+        "portrait_color":  "#2dd4bf",
+        "hair_color":  "#40d0c0",
+        "skin_color":  "#f0d8c0",
+        "armor_color":  "#0e9080",
+        "base_stats":  {
+                           "hp":  72,
+                           "mp":  42,
+                           "atk":  10,
+                           "def":  13,
+                           "spd":  11,
+                           "mag":  20,
+                           "lck":  10
+                       },
+        "stat_bonuses":  {
+                             "hp":  8,
+                             "mp":  8,
+                             "mag":  4
+                         },
+        "class_affinity":  [
+                               "hydro_performer"
+                           ],
+        "passive":  {
+                        "id":  "dance_of_haftkarsvar",
+                        "name":  "Dance of Haftkarsvar",
+                        "description":  "All healing effects are amplified by 30%. Her dance brings life to all."
+                    },
+        "lore":  "She used to worry that her dancing was not grand enough for the gods. The moment she stepped through the rift, sword in hand, she stopped worrying about that."
     },
-    "lore": "Torn from her world mid-prayer at a sacred shrine. The last thing she saw was cherry blossoms — the first thing she felt was the cold darkness of the rift."
-  },
-  {
-    "id": "hutao",
-    "name": "Hu Tao",
-    "alias": "Tao",
-    "title": "The Ghost Guide",
-    "gender": "female",
-    "age": 20,
-    "origin": "Unknown — memory lost to the Rift",
-    "description": "A spirit guide and amateur poet. She was chasing a runaway spirit when the rift swallowed her whole — she considers it a professional hazard.",
-    "personality": "Mischievous, death-obsessed, surprisingly caring",
-    "icon": "🔥",
-    "portrait_color": "#ef4444",
-    "hair_color": "#4a2020",
-    "skin_color": "#f5c8a0",
-    "armor_color": "#c03010",
-    "base_stats": {
-      "hp": 50,
-      "mp": 22,
-      "atk": 20,
-      "def": 7,
-      "spd": 14,
-      "mag": 12
+    {
+        "id":  "xiao",
+        "name":  "Xiao",
+        "alias":  "Rei",
+        "title":  "The Ancient Warden",
+        "gender":  "male",
+        "age":  2000,
+        "origin":  "Unknown â€” memory lost to the Rift",
+        "description":  "An ancient warden who has carried karmic debt for two thousand years. He arrived in this world following the scent of malevolent energy â€” and stayed because the darkness called to him by name.",
+        "personality":  "Stoic, solitary, fiercely protective",
+        "icon":  "ðŸŒ€",
+        "portrait_color":  "#4ade80",
+        "hair_color":  "#1a6040",
+        "skin_color":  "#d8e8c0",
+        "armor_color":  "#0a4030",
+        "base_stats":  {
+                           "hp":  80,
+                           "mp":  18,
+                           "atk":  18,
+                           "def":  16,
+                           "spd":  13,
+                           "mag":  8,
+                           "lck":  10
+                       },
+        "stat_bonuses":  {
+                             "atk":  3,
+                             "def":  3
+                         },
+        "class_affinity":  [
+                               "yaksha_protector"
+                           ],
+        "passive":  {
+                        "id":  "yakshas_valor",
+                        "name":  "Warden\u0027s Valor",
+                        "description":  "Takes 10% reduced damage. ATK +15% from karmic resolve."
+                    },
+        "lore":  "He has slain ten thousand demons. He does not speak of it. The shadows in this new world smell the same as the ones he burned long ago â€” and that is enough to make him stay."
     },
-    "stat_bonuses": {
-      "atk": 4,
-      "spd": 2
+    {
+        "id":  "rydia",
+        "name":  "Rydia",
+        "alias":  "Ria",
+        "title":  "The Summoner",
+        "gender":  "female",
+        "age":  25,
+        "origin":  "Unknown â€” memory lost to the Rift",
+        "description":  "A powerful summoner blessed with the ability to call forth creatures from ancient realms. She channels ancient summons with graceful precision, commanding beasts of fire, ice, and thunder to do her bidding.",
+        "personality":  "Wise, compassionate, magically attuned",
+        "icon":  "âœ¨",
+        "portrait_color":  "#a78bfa",
+        "hair_color":  "#8b5cf6",
+        "skin_color":  "#fce7f3",
+        "armor_color":  "#6d28d9",
+        "base_stats":  {
+                           "hp":  58,
+                           "mp":  48,
+                           "atk":  8,
+                           "def":  9,
+                           "spd":  12,
+                           "mag":  24,
+                           "lck":  10
+                       },
+        "stat_bonuses":  {
+                             "mag":  6,
+                             "mp":  6
+                         },
+        "class_affinity":  [
+                               "summoner_eidolon"
+                           ],
+        "passive":  {
+                        "id":  "eidolon_bond",
+                        "name":  "Eidolon Bond",
+                        "description":  "Summoned creatures gain +20% stats. MP efficiency increased by 15%."
+                    },
+        "lore":  "In her world, she commanded the mightiest creatures of ancient realms. When the rift opened, her summoned eidolons followed her through â€” loyal companions across worlds."
     },
-    "class_affinity": [
-      "spirit_incinerator"
-    ],
-    "passive": {
-      "id": "blood_blossom",
-      "name": "Blood Blossom",
-      "description": "When HP drops below 50%, ATK increases by 35%. Life fuels the flame."
+    {
+        "id":  "lenneth",
+        "name":  "Lenneth",
+        "alias":  "Valka",
+        "title":  "The Valkyrie",
+        "gender":  "female",
+        "age":  1000,
+        "origin":  "Unknown â€” memory lost to the Rift",
+        "description":  "A divine Valkyrie warrior who judges souls and claims the worthy. She wields sacred power and divine authority, her blade blessed by ancient power. Ageless and formidable in combat.",
+        "personality":  "Principled, commanding, divinely righteous",
+        "icon":  "ðŸ‘‘",
+        "portrait_color":  "#e879f9",
+        "hair_color":  "#c084fc",
+        "skin_color":  "#faf5ff",
+        "armor_color":  "#a855f7",
+        "base_stats":  {
+                           "hp":  88,
+                           "mp":  28,
+                           "atk":  19,
+                           "def":  18,
+                           "spd":  15,
+                           "mag":  16,
+                           "lck":  10
+                       },
+        "stat_bonuses":  {
+                             "atk":  4,
+                             "def":  4
+                         },
+        "class_affinity":  [
+                               "valkyrie_guardian"
+                           ],
+        "passive":  {
+                        "id":  "divine_authority",
+                        "name":  "Divine Authority",
+                        "description":  "DEF increased by 20%. Reflects 10% of damage taken back to attacker."
+                    },
+        "lore":  "For millennia she walked between worlds, judging souls worthy of ascension. Now she stands in this shadowed realm, where even gods fear to tread â€” and she must decide if darkness itself can be redeemed."
     },
-    "lore": "She once wrote a poem about her own funeral — three stanzas in, she realized she was genuinely enjoying it. A more dedicated spirit guide has never walked these paths."
-  },
-  {
-    "id": "nilou",
-    "name": "Nilou",
-    "alias": "Lulu",
-    "title": "The Star Dancer",
-    "gender": "female",
-    "age": 18,
-    "origin": "Unknown — memory lost to the Rift",
-    "description": "A beloved dancer whose grace captivates all who witness her. She was dancing at the edge of a sacred pool when the summoning light carried her away.",
-    "personality": "Gentle, radiant, courageous at heart",
-    "icon": "💧",
-    "portrait_color": "#2dd4bf",
-    "hair_color": "#40d0c0",
-    "skin_color": "#f0d8c0",
-    "armor_color": "#0e9080",
-    "base_stats": {
-      "hp": 72,
-      "mp": 42,
-      "atk": 10,
-      "def": 13,
-      "spd": 11,
-      "mag": 20
+    {
+        "id":  "kain",
+        "name":  "Kain",
+        "alias":  "Drake",
+        "title":  "The Dragoon",
+        "gender":  "male",
+        "age":  28,
+        "origin":  "Unknown â€” memory lost to the Rift",
+        "description":  "A noble Dragoon knight whose lance pierces the sky. He channels the power of dragons to perform devastating aerial attacks, his spear dancing through the air with lethal grace.",
+        "personality":  "Honorable, conflicted, steadfastly loyal",
+        "icon":  "ðŸ‰",
+        "portrait_color":  "#0ea5e9",
+        "hair_color":  "#0369a1",
+        "skin_color":  "#e0f2fe",
+        "armor_color":  "#0c4a6e",
+        "base_stats":  {
+                           "hp":  75,
+                           "mp":  20,
+                           "atk":  19,
+                           "def":  14,
+                           "spd":  16,
+                           "mag":  10,
+                           "lck":  10
+                       },
+        "stat_bonuses":  {
+                             "atk":  3,
+                             "spd":  3
+                         },
+        "class_affinity":  [
+                               "dragoon_skyward"
+                           ],
+        "passive":  {
+                        "id":  "dragon_leap",
+                        "name":  "Dragon\u0027s Leap",
+                        "description":  "Every 3rd turn, perform a bonus aerial attack. SPD +2 during aerial combat."
+                    },
+        "lore":  "A Dragoon knight who swore oaths to a kingdom long since lost to the rift. But loyalties fracture when worlds collide. He came seeking redemption â€” instead, he found new purpose."
     },
-    "stat_bonuses": {
-      "hp": 8,
-      "mp": 8,
-      "mag": 4
-    },
-    "class_affinity": [
-      "hydro_performer"
-    ],
-    "passive": {
-      "id": "dance_of_haftkarsvar",
-      "name": "Dance of Haftkarsvar",
-      "description": "All healing effects are amplified by 30%. Her dance brings life to all."
-    },
-    "lore": "She used to worry that her dancing was not grand enough for the gods. The moment she stepped through the rift, sword in hand, she stopped worrying about that."
-  },
-  {
-    "id": "xiao",
-    "name": "Xiao",
-    "alias": "Rei",
-    "title": "The Ancient Warden",
-    "gender": "male",
-    "age": 2000,
-    "origin": "Unknown — memory lost to the Rift",
-    "description": "An ancient warden who has carried karmic debt for two thousand years. He arrived in this world following the scent of malevolent energy — and stayed because the darkness called to him by name.",
-    "personality": "Stoic, solitary, fiercely protective",
-    "icon": "🌀",
-    "portrait_color": "#4ade80",
-    "hair_color": "#1a6040",
-    "skin_color": "#d8e8c0",
-    "armor_color": "#0a4030",
-    "base_stats": {
-      "hp": 80,
-      "mp": 18,
-      "atk": 18,
-      "def": 16,
-      "spd": 13,
-      "mag": 8
-    },
-    "stat_bonuses": {
-      "atk": 3,
-      "def": 3
-    },
-    "class_affinity": [
-      "yaksha_protector"
-    ],
-    "passive": {
-      "id": "yakshas_valor",
-      "name": "Warden's Valor",
-      "description": "Takes 10% reduced damage. ATK +15% from karmic resolve."
-    },
-    "lore": "He has slain ten thousand demons. He does not speak of it. The shadows in this new world smell the same as the ones he burned long ago — and that is enough to make him stay."
-  },
-  {
-    "id": "rydia",
-    "name": "Rydia",
-    "alias": "Ria",
-    "title": "The Summoner",
-    "gender": "female",
-    "age": 25,
-    "origin": "Unknown — memory lost to the Rift",
-    "description": "A powerful summoner blessed with the ability to call forth creatures from ancient realms. She channels ancient summons with graceful precision, commanding beasts of fire, ice, and thunder to do her bidding.",
-    "personality": "Wise, compassionate, magically attuned",
-    "icon": "✨",
-    "portrait_color": "#a78bfa",
-    "hair_color": "#8b5cf6",
-    "skin_color": "#fce7f3",
-    "armor_color": "#6d28d9",
-    "base_stats": {
-      "hp": 58,
-      "mp": 48,
-      "atk": 8,
-      "def": 9,
-      "spd": 12,
-      "mag": 24
-    },
-    "stat_bonuses": {
-      "mag": 6,
-      "mp": 6
-    },
-    "class_affinity": [
-      "summoner_eidolon"
-    ],
-    "passive": {
-      "id": "eidolon_bond",
-      "name": "Eidolon Bond",
-      "description": "Summoned creatures gain +20% stats. MP efficiency increased by 15%."
-    },
-    "lore": "In her world, she commanded the mightiest creatures of ancient realms. When the rift opened, her summoned eidolons followed her through — loyal companions across worlds."
-  },
-  {
-    "id": "lenneth",
-    "name": "Lenneth",
-    "alias": "Valka",
-    "title": "The Valkyrie",
-    "gender": "female",
-    "age": 1000,
-    "origin": "Unknown — memory lost to the Rift",
-    "description": "A divine Valkyrie warrior who judges souls and claims the worthy. She wields sacred power and divine authority, her blade blessed by ancient power. Ageless and formidable in combat.",
-    "personality": "Principled, commanding, divinely righteous",
-    "icon": "👑",
-    "portrait_color": "#e879f9",
-    "hair_color": "#c084fc",
-    "skin_color": "#faf5ff",
-    "armor_color": "#a855f7",
-    "base_stats": {
-      "hp": 88,
-      "mp": 28,
-      "atk": 19,
-      "def": 18,
-      "spd": 15,
-      "mag": 16
-    },
-    "stat_bonuses": {
-      "atk": 4,
-      "def": 4
-    },
-    "class_affinity": [
-      "valkyrie_guardian"
-    ],
-    "passive": {
-      "id": "divine_authority",
-      "name": "Divine Authority",
-      "description": "DEF increased by 20%. Reflects 10% of damage taken back to attacker."
-    },
-    "lore": "For millennia she walked between worlds, judging souls worthy of ascension. Now she stands in this shadowed realm, where even gods fear to tread — and she must decide if darkness itself can be redeemed."
-  },
-  {
-    "id": "kain",
-    "name": "Kain",
-    "alias": "Drake",
-    "title": "The Dragoon",
-    "gender": "male",
-    "age": 28,
-    "origin": "Unknown — memory lost to the Rift",
-    "description": "A noble Dragoon knight whose lance pierces the sky. He channels the power of dragons to perform devastating aerial attacks, his spear dancing through the air with lethal grace.",
-    "personality": "Honorable, conflicted, steadfastly loyal",
-    "icon": "🐉",
-    "portrait_color": "#0ea5e9",
-    "hair_color": "#0369a1",
-    "skin_color": "#e0f2fe",
-    "armor_color": "#0c4a6e",
-    "base_stats": {
-      "hp": 75,
-      "mp": 20,
-      "atk": 19,
-      "def": 14,
-      "spd": 16,
-      "mag": 10
-    },
-    "stat_bonuses": {
-      "atk": 3,
-      "spd": 3
-    },
-    "class_affinity": [
-      "dragoon_skyward"
-    ],
-    "passive": {
-      "id": "dragon_leap",
-      "name": "Dragon's Leap",
-      "description": "Every 3rd turn, perform a bonus aerial attack. SPD +2 during aerial combat."
-    },
-    "lore": "A Dragoon knight who swore oaths to a kingdom long since lost to the rift. But loyalties fracture when worlds collide. He came seeking redemption — instead, he found new purpose."
-  },
-  {
-    "id": "leon",
-    "name": "Leon",
-    "alias": "Rex",
-    "title": "The Lionheart King",
-    "gender": "male",
-    "age": 200,
-    "origin": "Unknown — memory lost to the Rift",
-    "description": "An immortal warrior-king who ruled for two centuries, blessed by the gods themselves. He commands divine power and can summon gods through sacred rituals. His presence radiates ancient authority.",
-    "personality": "Regal, stoic, divinely resolute",
-    "icon": "⚔️",
-    "portrait_color": "#fbbf24",
-    "hair_color": "#fcd34d",
-    "skin_color": "#fef3c7",
-    "armor_color": "#b45309",
-    "base_stats": {
-      "hp": 92,
-      "mp": 32,
-      "atk": 22,
-      "def": 20,
-      "spd": 14,
-      "mag": 18
-    },
-    "stat_bonuses": {
-      "atk": 5,
-      "def": 5,
-      "hp": 4
-    },
-    "class_affinity": [
-      "knight_king_divine"
-    ],
-    "passive": {
-      "id": "divine_blessing",
-      "name": "Divine Blessing",
-      "description": "As a demi-god, grants allies +15% HP regeneration. Takes 12% reduced damage from all sources."
-    },
-    "lore": "He lived 200 years as a king, commanding gods and demons alike. When he was pulled into this shadowed realm, even he felt the weight of something beyond his ken. Yet his blade still shines with purpose."
-  }
+    {
+        "id":  "leon",
+        "name":  "Leon",
+        "alias":  "Rex",
+        "title":  "The Lionheart King",
+        "gender":  "male",
+        "age":  200,
+        "origin":  "Unknown â€” memory lost to the Rift",
+        "description":  "An immortal warrior-king who ruled for two centuries, blessed by the gods themselves. He commands divine power and can summon gods through sacred rituals. His presence radiates ancient authority.",
+        "personality":  "Regal, stoic, divinely resolute",
+        "icon":  "âš”ï¸",
+        "portrait_color":  "#fbbf24",
+        "hair_color":  "#fcd34d",
+        "skin_color":  "#fef3c7",
+        "armor_color":  "#b45309",
+        "base_stats":  {
+                           "hp":  92,
+                           "mp":  32,
+                           "atk":  22,
+                           "def":  20,
+                           "spd":  14,
+                           "mag":  18,
+                           "lck":  10
+                       },
+        "stat_bonuses":  {
+                             "atk":  5,
+                             "def":  5,
+                             "hp":  4
+                         },
+        "class_affinity":  [
+                               "knight_king_divine"
+                           ],
+        "passive":  {
+                        "id":  "divine_blessing",
+                        "name":  "Divine Blessing",
+                        "description":  "As a demi-god, grants allies +15% HP regeneration. Takes 12% reduced damage from all sources."
+                    },
+        "lore":  "He lived 200 years as a king, commanding gods and demons alike. When he was pulled into this shadowed realm, even he felt the weight of something beyond his ken. Yet his blade still shines with purpose."
+    }
 ]
