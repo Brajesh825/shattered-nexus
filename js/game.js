@@ -47,45 +47,11 @@ const TYPE_CHART = {
 const Battle = {
   // Returns 1.5 (weak), 0.5 (resist), or 1.0 (neutral) based on ability element vs target's arrays
   elemMult(abilityElement, target) {
-    if (!abilityElement || abilityElement === 'physical') return 1.0;
-    // Mutant trait overrides — check immune (0×) and shatter (2.0×) first
-    const traits = target?.mutantTraits || [];
-    for (const t of traits) {
-      if (t.type === 'immune' && t.element === abilityElement) return 0;
-      if (t.type === 'shatter' && t.element === abilityElement) return 2.0;
-    }
-    const weak = target?.weakTo || [];
-    const resist = target?.resistTo || [];
-    if (weak.includes(abilityElement)) return 1.5;
-    if (resist.includes(abilityElement)) return 0.5;
-    return 1.0;
+    return CombatEngine.elemMult(abilityElement, target, window.TYPE_CHART);
   },
   // NEW: Dynamic Stat Resolver. Computes final combat stats by applying all active modifiers.
-  // Formula: (m[stat] + Sum(FlatModifiers)) * Product(Multipliers)
   getStat(m, stat) {
-    let base = m[stat];
-    if (base === undefined || base === null) {
-      if (stat === 'accuracy') base = 0.95;
-      else if (stat === 'critRate') base = 0.05;
-      else base = 0;
-    }
-
-    if (!m.statuses || !m.statuses.length) return base;
-
-    let mult = 1.0;
-    let flat = 0;
-    m.statuses.forEach(s => {
-      if (s.stat === stat) {
-        if (s.type === 'mult') mult *= s.value;
-        else if (s.type === 'flat') flat += s.value;
-      }
-    });
-
-    // Safety cap: stats cannot be buffed beyond 3.0x base
-    const finalMult = Math.min(3.0, mult);
-    return (stat === 'accuracy' || stat === 'critRate')
-      ? (base + flat) * finalMult
-      : Math.floor((base + flat) * finalMult);
+    return CombatEngine.getStat(m, stat);
   },
   // Adds a status to an actor, handling duration refreshing for identical IDs
   addStatus(m, config) {
@@ -151,7 +117,7 @@ const Battle = {
     const eva = defender.evasion || 0; // evasion is currently treated as a flat 0-1 chance
     const chance = acc - eva;
     if (window.LogDebug) window.LogDebug(`[HitRoll] ${attacker.displayName || attacker.name} vs ${defender.displayName || defender.name}: ${Math.round(chance * 100)}% chance`, 'info');
-    return Math.random() < chance;
+    return CombatEngine.rollHit(attacker, defender);
   },
   // Rolls for a critical hit based on attacker's critRate and LCK
   // Every 10 LCK adds +1% crit rate
@@ -159,7 +125,7 @@ const Battle = {
     const baseCrit = this.getStat(attacker, 'critRate');
     const lckBonus = (this.getStat(attacker, 'lck') || 0) * 0.001;
     const chance = baseCrit + lckBonus;
-    const isCrit = Math.random() < chance;
+    const isCrit = CombatEngine.rollCrit(attacker);
     if (isCrit && window.LogDebug) window.LogDebug(`[CritRoll] ${attacker.displayName || attacker.name} CRITICAL! (${Math.round(chance * 100)}% chance)`, 'buff');
     return isCrit;
   },
@@ -255,30 +221,17 @@ const Battle = {
     return reaction;
   },
   physDmg(atk, def, mult = 1, atkLevel = 1, defLevel = 1, defPen = 0, source = 'Actor', target = 'Target', isCrit = false) {
-    // NEW: heavier level-weighting + stronger defense factor (0.75x)
-    const scaledAtk = atk + (atkLevel * 1.2);
-    // defPen: reduces effectiveness of enemy defense (e.g. 0.2 removes 20% of DEF)
-    const effectiveDef = def * (1 - Math.min(0.9, defPen));
-    const scaledDef = effectiveDef + (defLevel * 0.6);
-    const base = Math.max(1, scaledAtk - scaledDef * 0.75);
-    const critMult = isCrit ? 2.0 : 1.0;
-    const final = Math.max(1, Math.floor(base * (0.85 + Math.random() * 0.3) * mult * critMult));
-
+    const final = CombatEngine.physDmg(atk, def, { mult, atkLevel, defLevel, defPen, isCrit });
     if (window.LogDebug) {
-      window.LogDebug(`[${source} ➔ ${target}] PhysCalc: Atk(${atk})+LvBonus(${Math.round(atkLevel * 1.2)}) - [Def(${def})*Pen(${Math.round(defPen * 100)}%)+LvBonus(${Math.round(defLevel * 0.6)})]*0.75 = ${Math.round(base)} (Final: ${final})`, 'dmg');
+      window.LogDebug(`[${source} ➔ ${target}] PhysCalc (Engine): Atk(${atk}) vs Def(${def}) = Final: ${final}`, 'dmg');
     }
     return final;
   },
   // targetMag / targetMagLv = Spirit Defense (SDEF) — high-MAG targets resist magic
   magicDmg(mag, mult = 1, passiveBonus = 1, magLevel = 1, targetMag = 0, targetMagLv = 1, source = 'Actor', target = 'Target', isCrit = false) {
-    const scaledMag = mag + (magLevel * 0.8);
-    const magMitigation = (targetMag + targetMagLv * 0.3) * 0.4;
-    const base = Math.max(1, scaledMag - magMitigation);
-    const critMult = isCrit ? 2.0 : 1.0;
-    const final = Math.max(1, Math.floor(base * (0.9 + Math.random() * 0.2) * mult * passiveBonus * critMult));
-
+    const final = CombatEngine.magicDmg(mag, targetMag, { mult, passiveBonus, magLevel, mdefLevel: targetMagLv, isCrit });
     if (window.LogDebug) {
-      window.LogDebug(`[${source} ➔ ${target}] MagCalc: Mag(${mag})+LvBonus(${Math.round(magLevel * 0.8)}) - [T.Mag(${targetMag})+T.LvBonus(${Math.round(targetMagLv * 0.3)})]*0.4 = ${Math.round(base)} (Final: ${final})`, 'dmg');
+      window.LogDebug(`[${source} ➔ ${target}] MagCalc (Engine): Mag(${mag}) vs T.Mag(${targetMag}) = Final: ${final}`, 'dmg');
     }
     return final;
   },
