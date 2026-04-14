@@ -221,7 +221,7 @@ function resolveEnemyOffensiveAction(actor, target, targetIdx, ab, element) {
 
 
 /* ============================================================
-   ACTION ENGINE (Phase 5)
+   ACTION ENGINE
    Processes all ability side-effects through discrete handlers.
    ============================================================ */
 const ActionEngine = {
@@ -530,18 +530,17 @@ function _checkDragonLeap(actor) {
    ENEMY AI
    ============================================================ */
 function enemyAct(enemy, enemyIdx) {
-  // NEW: Start-of-Turn maintenance (debuffs, cooldowns)
+  // Start-of-Turn maintenance (debuffs, cooldowns)
   Battle.tickActorStatus(enemy, true);
 
-  // CONTROL CHECK (Phase 5 Refinement: Unified Status System)
+  // Control check — skip turn if stunned or frozen
   const isIncapacitated = enemy.statuses?.some(s => s.id === 'status_stunned' || s.id === 'status_frozen');
   if (isIncapacitated) {
     TurnManager.advance();
     return;
   }
-  // (Frozen turn-skip now handled unified in processCurrentTurn)
 
-  // ── TARGET SELECTION (Phase 5: Role-Based AI) ──────────────────
+  // ── TARGET SELECTION (Role-Based AI) ──────────────────
   const alive = G.party.filter(m => Battle.alive(m));
   if (!alive.length) { TurnManager.advance(); return; }
 

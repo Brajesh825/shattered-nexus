@@ -325,7 +325,7 @@ const Story = {
     this._showArcIntro();
   },
 
-  /** Called by game.js checkEnd() when enemy defeated in a story battle */
+  /** Called by checkBattleEnd() (via TurnManager) when all enemies are defeated */
   onBattleWon() {
     /* Skirmish: just return to world map after win */
     if (this._skirmishArcIdx !== undefined) {
@@ -388,7 +388,7 @@ const Story = {
     showScreen('story-screen');
   },
 
-  /** Called by game.js checkEnd() when hero dies in a story battle */
+  /** Called by checkBattleEnd() (via TurnManager) when the whole party falls */
   onBattleLost() {
     /* Skirmish defeat: just go back to map, no penalty */
     if (this._skirmishArcIdx !== undefined) {

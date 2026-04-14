@@ -49,7 +49,7 @@ const Battle = {
   elemMult(abilityElement, target) {
     return CombatEngine.elemMult(abilityElement, target, window.TYPE_CHART);
   },
-  // NEW: Dynamic Stat Resolver. Computes final combat stats by applying all active modifiers.
+  // Dynamic Stat Resolver. Computes final combat stats by applying all active modifiers.
   getStat(m, stat) {
     return CombatEngine.getStat(m, stat);
   },
@@ -139,7 +139,7 @@ const Battle = {
     const abilities = actor.abilities || actor.abilityDefs;
     if (!abilities || !abilities.length) return null;
 
-    // Phase 5: Synergy-Aware Weighting
+    // Synergy-Aware Weighting
     const aura = target?.statuses?.find(s => s.id.startsWith('aura_'));
     const auraType = aura ? aura.id.replace('aura_', '') : null;
 
@@ -299,7 +299,7 @@ function renderPartyMenu() {
 
     const img = document.createElement('img');
     img.className = 'pm-portrait'; img.alt = m.displayName;
-    SpriteRenderer.drawHero(img, m.charId, m.char, m.cls);
+    if (typeof SpriteRenderer !== 'undefined') SpriteRenderer.drawHero(img, m.charId, m.char, m.cls);
 
     const abHtml = (m.abilities || []).map(a =>
       `<div class="pm-ab"><span class="pm-ab-icon">${a.icon || '⚡'}</span><span class="pm-ab-name">${a.name}</span><span class="pm-ab-mp">${a.mp}MP</span></div>`
@@ -344,7 +344,7 @@ function renderPartyMenu() {
 function buildEnemyGroup(defs, spawnLevel = 1, isBoss = false) {
   // Tier-based growth rates
   const tierGrowth = {
-    // NEW growth rates — ensures enemies scale as threats through Lv40
+    // Growth rates — ensures enemies scale as threats through Lv40
     1: { hp: 5, atk: 1.2, def: 0.5, spd: 0.5, mag: 0.3, statMult: 1.0, expMult: 1.0 },
     2: { hp: 10, atk: 2.5, def: 1.0, spd: 0.8, mag: 0.5, statMult: 1.3, expMult: 1.5 },
     3: { hp: 18, atk: 4.5, def: 1.8, spd: 1.2, mag: 0.8, statMult: 1.7, expMult: 2.5 },
@@ -399,7 +399,6 @@ function buildEnemyGroup(defs, spawnLevel = 1, isBoss = false) {
   G.targetEnemyIdx = 0;
 }
 
-function spawnEnemy(def) { buildEnemyGroup([def]); } // legacy compat
 
 /**
  * Unlock a character for recruitment
@@ -662,9 +661,6 @@ function checkBattleEnd() {
   return false;
 }
 
-function checkBattleEnd_alias() { return checkBattleEnd(); }
-// Legacy
-function checkEnd() { return checkBattleEnd(); }
 /* ============================================================
    RESULT SCREEN
    ============================================================ */
