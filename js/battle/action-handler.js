@@ -385,7 +385,7 @@ function heroAbility(ab) {
             G.party.forEach(m => { if (Battle.alive(m)) m.guardianTurns = 2; });
             UI.addLog('🛡️ Phantom Guardian summoned!', 'heal');
           }
-          if (_scaleStat > 0) UI.addLog(`💠 Karmic scales +${_scaleStat} from ${e.statScale.toUpperCase()}!`, 'magic');
+          if (e.statScale && _magScale > 0) UI.addLog(`💠 Scales +${_magScale} from ${e.statScale.toUpperCase()}!`, 'magic');
           enemy.hp  = Math.max(0, enemy.hp - dmg);
           if (enemy.hp <= 0) enemy.isKO = true;
           if (_er === 'shatter') UI.addLog('⚡ SHATTER!', 'magic');
