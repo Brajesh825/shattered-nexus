@@ -497,7 +497,9 @@ function heroAbility(ab) {
         return Math.floor((base + Math.random() * rand + magBonus) * _healAmp);
       };
 
-      const targets = (e.aoe || ab.isUltimate) ? G.party.filter(m => (Battle.alive(m) || ab.isUltimate)) : [G.party[G.activeMemberIdx]];
+      const targets = (e.aoe || ab.isUltimate)
+        ? G.party.filter(m => Battle.alive(m) || ab.isUltimate)
+        : (() => { const self = G.party[G.activeMemberIdx]; return (!Battle.alive(self) && !ab.isUltimate) ? [] : [self]; })();
       targets.forEach(m => {
         // Revival logic for Ultimate heals (Hajra's Hymn)
         if (ab.isUltimate && m.isKO) {
@@ -517,7 +519,7 @@ function heroAbility(ab) {
         const pIdx = G.party.indexOf(m);
         UI.popParty(pIdx, amt, 'heal', 'light');
         
-        if (e.cleanse) {
+        if (e.cleanse && Battle.alive(m)) {
           if (!m.statuses) m.statuses = [];
           m.statuses = m.statuses.filter(s => s.id !== 'status_frozen' && s.id !== 'status_stunned' && !s.id.includes('debuff'));
           UI.addLog(`✨ ${m.displayName} Cleansed!`, 'heal');
@@ -548,11 +550,8 @@ function heroAbility(ab) {
     } else if (ab.type === 'buff') {
       const _fmt = v => (v > 1) ? `+${Math.round((v-1)*100)}%` : `${Math.round((v-1)*100)}%`;
       const applyBuff = (m, idx) => {
-        // Ultimate heals/buffs (like Hajra's Hymn) can target everyone
-        if (!Battle.alive(m) && !ab.isUltimate) return;
-        
-        // Revive logic for Ultimates
-        if (ab.isUltimate && m.isKO) { m.isKO = false; m.hp = 1; }
+        // NEVER apply buffs to KO'd members — revival belongs to heal-type ultimates only
+        if (!Battle.alive(m)) return;
 
         // Primary stat buff
         if (e.stat) {

@@ -382,6 +382,8 @@ const Battle = {
 
     // Regen Ticks (Consolidate into legacy check for now to avoid breaking existing logic)
     if (m.regenTurns > 0) {
+      // Safety: KO'd members should never receive regen ticks — clear their counter
+      if (!this.alive(m)) { m.regenTurns = 0; return; }
       m.regenTurns--;
       const amt = m.hpRegenAmt || 8;
       m.hp = Math.min(m.maxHp, m.hp + amt);
