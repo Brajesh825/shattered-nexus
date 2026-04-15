@@ -18,7 +18,8 @@ function buildParty() {
     : G.chars.slice(0, 4).map(c => c.id);
   charIds.forEach(charId => {
     const ch = G.chars.find(c => c.id === charId); if (!ch) return;
-    const isPlayer = charId === G.selectedChar;
+    const _resolvedLeader = G.selectedChar || G.selectedChars[0] || null;
+    const isPlayer = charId === _resolvedLeader;
     // Each character always uses their specific class affinity
     const classId = ch.class_affinity[0] || G.classes[0].id;
     const cls = G.classes.find(c => c.id === classId) || G.classes[0];

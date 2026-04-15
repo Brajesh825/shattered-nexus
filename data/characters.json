@@ -6,10 +6,10 @@
         "title":  "The Cryo Princess",
         "gender":  "female",
         "age":  19,
-        "origin":  "Unknown â€” memory lost to the Rift",
-        "description":  "A noble warrior summoned mid-prayer to a world unknown. She fights with precise, frozen grace â€” every strike a bloom of ice.",
+        "origin":  "Unknown — memory lost to the Rift",
+        "description":  "A noble warrior summoned mid-prayer to a world unknown. She fights with precise, frozen grace — every strike a bloom of ice.",
         "personality":  "Graceful, noble, quietly fierce",
-        "icon":  "â„ï¸",
+        "icon":  "❄️",
         "portrait_color":  "#7dd3fc",
         "hair_color":  "#c0e8ff",
         "skin_color":  "#f8e8ff",
@@ -33,9 +33,9 @@
         "passive":  {
                         "id":  "frostflake",
                         "name":  "Frostflake Dance",
-                        "description":  "Always acts first in battle â€” +3 SPD bonus and attacks carry a cryo edge."
+                        "description":  "Always acts first in battle — +3 SPD bonus and attacks carry a cryo edge."
                     },
-        "lore":  "Torn from her world mid-prayer at a sacred shrine. The last thing she saw was cherry blossoms â€” the first thing she felt was the cold darkness of the rift."
+        "lore":  "Torn from her world mid-prayer at a sacred shrine. The last thing she saw was cherry blossoms — the first thing she felt was the cold darkness of the rift."
     },
     {
         "id":  "hutao",
@@ -44,10 +44,10 @@
         "title":  "The Ghost Guide",
         "gender":  "female",
         "age":  20,
-        "origin":  "Unknown â€” memory lost to the Rift",
-        "description":  "A spirit guide and amateur poet. She was chasing a runaway spirit when the rift swallowed her whole â€” she considers it a professional hazard.",
+        "origin":  "Unknown — memory lost to the Rift",
+        "description":  "A spirit guide and amateur poet. She was chasing a runaway spirit when the rift swallowed her whole — she considers it a professional hazard.",
         "personality":  "Mischievous, death-obsessed, surprisingly caring",
-        "icon":  "ðŸ”¥",
+        "icon":  "🔥",
         "portrait_color":  "#ef4444",
         "hair_color":  "#4a2020",
         "skin_color":  "#f5c8a0",
@@ -73,7 +73,7 @@
                         "name":  "Blood Blossom",
                         "description":  "When HP drops below 50%, ATK increases by 35%. Life fuels the flame."
                     },
-        "lore":  "She once wrote a poem about her own funeral â€” three stanzas in, she realized she was genuinely enjoying it. A more dedicated spirit guide has never walked these paths."
+        "lore":  "She once wrote a poem about her own funeral — three stanzas in, she realized she was genuinely enjoying it. A more dedicated spirit guide has never walked these paths."
     },
     {
         "id":  "nilou",
@@ -82,10 +82,10 @@
         "title":  "The Star Dancer",
         "gender":  "female",
         "age":  18,
-        "origin":  "Unknown â€” memory lost to the Rift",
+        "origin":  "Unknown — memory lost to the Rift",
         "description":  "A beloved dancer whose grace captivates all who witness her. She was dancing at the edge of a sacred pool when the summoning light carried her away.",
         "personality":  "Gentle, radiant, courageous at heart",
-        "icon":  "ðŸ’§",
+        "icon":  "💧",
         "portrait_color":  "#2dd4bf",
         "hair_color":  "#40d0c0",
         "skin_color":  "#f0d8c0",
@@ -121,10 +121,10 @@
         "title":  "The Ancient Warden",
         "gender":  "male",
         "age":  2000,
-        "origin":  "Unknown â€” memory lost to the Rift",
-        "description":  "An ancient warden who has carried karmic debt for two thousand years. He arrived in this world following the scent of malevolent energy â€” and stayed because the darkness called to him by name.",
+        "origin":  "Unknown — memory lost to the Rift",
+        "description":  "An ancient warden who has carried karmic debt for two thousand years. He arrived in this world following the scent of malevolent energy — and stayed because the darkness called to him by name.",
         "personality":  "Stoic, solitary, fiercely protective",
-        "icon":  "ðŸŒ€",
+        "icon":  "🌀",
         "portrait_color":  "#4ade80",
         "hair_color":  "#1a6040",
         "skin_color":  "#d8e8c0",
@@ -150,7 +150,7 @@
                         "name":  "Warden\u0027s Valor",
                         "description":  "Takes 10% reduced damage. ATK +15% from karmic resolve."
                     },
-        "lore":  "He has slain ten thousand demons. He does not speak of it. The shadows in this new world smell the same as the ones he burned long ago â€” and that is enough to make him stay."
+        "lore":  "He has slain ten thousand demons. He does not speak of it. The shadows in this new world smell the same as the ones he burned long ago — and that is enough to make him stay."
     },
     {
         "id":  "rydia",
@@ -159,10 +159,10 @@
         "title":  "The Summoner",
         "gender":  "female",
         "age":  25,
-        "origin":  "Unknown â€” memory lost to the Rift",
+        "origin":  "Unknown — memory lost to the Rift",
         "description":  "A powerful summoner blessed with the ability to call forth creatures from ancient realms. She channels ancient summons with graceful precision, commanding beasts of fire, ice, and thunder to do her bidding.",
         "personality":  "Wise, compassionate, magically attuned",
-        "icon":  "âœ¨",
+        "icon":  "✨",
         "portrait_color":  "#a78bfa",
         "hair_color":  "#8b5cf6",
         "skin_color":  "#fce7f3",
@@ -188,7 +188,7 @@
                         "name":  "Eidolon Bond",
                         "description":  "Summoned creatures gain +20% stats. MP efficiency increased by 15%."
                     },
-        "lore":  "In her world, she commanded the mightiest creatures of ancient realms. When the rift opened, her summoned eidolons followed her through â€” loyal companions across worlds."
+        "lore":  "In her world, she commanded the mightiest creatures of ancient realms. When the rift opened, her summoned eidolons followed her through — loyal companions across worlds."
     },
     {
         "id":  "lenneth",
@@ -197,10 +197,10 @@
         "title":  "The Valkyrie",
         "gender":  "female",
         "age":  1000,
-        "origin":  "Unknown â€” memory lost to the Rift",
+        "origin":  "Unknown — memory lost to the Rift",
         "description":  "A divine Valkyrie warrior who judges souls and claims the worthy. She wields sacred power and divine authority, her blade blessed by ancient power. Ageless and formidable in combat.",
         "personality":  "Principled, commanding, divinely righteous",
-        "icon":  "ðŸ‘‘",
+        "icon":  "👑",
         "portrait_color":  "#e879f9",
         "hair_color":  "#c084fc",
         "skin_color":  "#faf5ff",
@@ -226,7 +226,7 @@
                         "name":  "Divine Authority",
                         "description":  "DEF increased by 20%. Reflects 10% of damage taken back to attacker."
                     },
-        "lore":  "For millennia she walked between worlds, judging souls worthy of ascension. Now she stands in this shadowed realm, where even gods fear to tread â€” and she must decide if darkness itself can be redeemed."
+        "lore":  "For millennia she walked between worlds, judging souls worthy of ascension. Now she stands in this shadowed realm, where even gods fear to tread — and she must decide if darkness itself can be redeemed."
     },
     {
         "id":  "kain",
@@ -235,10 +235,10 @@
         "title":  "The Dragoon",
         "gender":  "male",
         "age":  28,
-        "origin":  "Unknown â€” memory lost to the Rift",
+        "origin":  "Unknown — memory lost to the Rift",
         "description":  "A noble Dragoon knight whose lance pierces the sky. He channels the power of dragons to perform devastating aerial attacks, his spear dancing through the air with lethal grace.",
         "personality":  "Honorable, conflicted, steadfastly loyal",
-        "icon":  "ðŸ‰",
+        "icon":  "🐉",
         "portrait_color":  "#0ea5e9",
         "hair_color":  "#0369a1",
         "skin_color":  "#e0f2fe",
@@ -264,7 +264,7 @@
                         "name":  "Dragon\u0027s Leap",
                         "description":  "Every 3rd turn, perform a bonus aerial attack. SPD +2 during aerial combat."
                     },
-        "lore":  "A Dragoon knight who swore oaths to a kingdom long since lost to the rift. But loyalties fracture when worlds collide. He came seeking redemption â€” instead, he found new purpose."
+        "lore":  "A Dragoon knight who swore oaths to a kingdom long since lost to the rift. But loyalties fracture when worlds collide. He came seeking redemption — instead, he found new purpose."
     },
     {
         "id":  "leon",
@@ -273,10 +273,10 @@
         "title":  "The Lionheart King",
         "gender":  "male",
         "age":  200,
-        "origin":  "Unknown â€” memory lost to the Rift",
+        "origin":  "Unknown — memory lost to the Rift",
         "description":  "An immortal warrior-king who ruled for two centuries, blessed by the gods themselves. He commands divine power and can summon gods through sacred rituals. His presence radiates ancient authority.",
         "personality":  "Regal, stoic, divinely resolute",
-        "icon":  "âš”ï¸",
+        "icon":  "⚔️",
         "portrait_color":  "#fbbf24",
         "hair_color":  "#fcd34d",
         "skin_color":  "#fef3c7",
