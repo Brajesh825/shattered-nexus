@@ -383,6 +383,8 @@ const ActionEngine = {
 
     const execute = () => {
       let totalDmg = 0;
+      // For ultimates the pre-execute step already showed the overlay; suppress it for all AOE targets
+      if (moveConfig.isUltimate && !isEnemyAction) ab._ultimateOverlayShown = true;
       targets.forEach(tgt => {
         const tIdx = isEnemyAction ? G.party.indexOf(tgt) : G.enemyGroup.indexOf(tgt);
         if (!isEnemyAction) {
@@ -393,6 +395,7 @@ const ActionEngine = {
           resolveEnemyOffensiveAction(actor, tgt, tIdx, ab, element);
         }
       });
+      if (moveConfig.isUltimate && !isEnemyAction) delete ab._ultimateOverlayShown;
 
       if (!isEnemyAction) {
         if (e.lifeSteal && totalDmg > 0) {
