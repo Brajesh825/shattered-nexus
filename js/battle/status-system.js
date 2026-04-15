@@ -19,6 +19,7 @@ const StatusSystem = {
     // Control / Debuffs
     stunned: { id: 'status_stunned', label: 'Stunned', icon: '💫', type: 'control', turns: 1, color: '#ffcc00' },
     frozen: { id: 'status_frozen', label: 'Frozen', icon: '❄️', type: 'control', turns: 2, color: '#00ccff' },
+    slow: { id: 'status_slow', label: 'Slow', icon: '🐌', type: 'control', turns: 2, color: '#aa88ff' },
     burn: { id: 'status_burn', label: 'Burn', icon: '🔥', type: 'dot', color: '#ff4400' },
     poison: { id: 'status_poison', label: 'Poison', icon: '🟢', type: 'dot_percent', color: '#44cc44' },
     def_shatter: { id: 'status_def_shatter', label: 'Shattered', icon: '❄️', stat: 'def', type: 'mult', value: 0.7, color: '#00ccff' },

@@ -39,6 +39,7 @@ const TYPE_CHART = {
   holy: { strong: ['shadow'], weak: ['holy'] },
   shadow: { strong: ['holy'], weak: ['shadow'] },
   physical: { strong: [], weak: ['physical'] },
+  summoning: { strong: [], weak: [] },
 };
 
 /* ============================================================

@@ -51,6 +51,7 @@ function resolveOffensiveAction(actor, target, targetIdx, action, element) {
   const isCrit = Battle.rollCrit(actor);
   const _em = Battle.elemMult(element, target);
   const _stab = (element === actor.cls?.element) ? 1.25 : 1.0;
+  const _fireAmp = element === 'fire' ? (actor.statuses?.find(s => s.type === 'fire_amp')?.value || 1.0) : 1.0;
   const _hpPercent = actor.hp / actor.maxHp;
   const _lowHpMult = 1 + (1 - _hpPercent) * (e.lowHpDmgBonus || 0);
   
@@ -59,13 +60,13 @@ function resolveOffensiveAction(actor, target, targetIdx, action, element) {
   if (isMagic) {
     const passiveBonus = (actor.passive?.id === 'arcane_surge' || actor.passive?.id === 'eidolon_bond') ? 1.2 : 1.0;
     const _summonBonus = (action.id?.startsWith('summon_') || action.id?.startsWith('absolute_')) ? (actor.summonBoost || 1.0) : 1.0;
-    dmg = Math.floor(Battle.magicDmg(Battle.getStat(actor, 'mag'), e.dmgMultiplier || 1.5, passiveBonus, actor.lv || 1, target.mag, target.lv || 1, actor.displayName, target.name, isCrit) * _em * _stab * _lowHpMult * _summonBonus * _rxMult);
+    dmg = Math.floor(Battle.magicDmg(Battle.getStat(actor, 'mag'), e.dmgMultiplier || 1.5, passiveBonus, actor.lv || 1, target.mag, target.lv || 1, actor.displayName, target.name, isCrit) * _em * _stab * _fireAmp * _lowHpMult * _summonBonus * _rxMult);
   } else {
     const _effAtk = Battle.getStat(actor, 'atk');
     const _bb = actor.passive?.id === 'blood_blossom' && _hpPercent < 0.5 ? 1.35 : 1.0;
     const _scaleCoeff = (e.statScale === 'hp' || e.statScale === 'maxHp') ? 0.1 : 0.5;
     const _scaleStat = e.statScale ? Math.floor(Battle.getStat(actor, e.statScale) * _scaleCoeff) : 0;
-    dmg = Math.floor(Battle.physDmg(_effAtk + _scaleStat, Battle.getStat(target, 'def'), e.dmgMultiplier || 1, actor.lv || 1, target.level || 1, e.defPen || 0, actor.displayName, target.name, isCrit) * _em * _stab * _bb * _lowHpMult * _rxMult);
+    dmg = Math.floor(Battle.physDmg(_effAtk + _scaleStat, Battle.getStat(target, 'def'), e.dmgMultiplier || 1, actor.lv || 1, target.level || 1, e.defPen || 0, actor.displayName, target.name, isCrit) * _em * _stab * _fireAmp * _bb * _lowHpMult * _rxMult);
   }
 
   // 4. Process Reaction Effects
@@ -133,7 +134,8 @@ function resolveEnemyOffensiveAction(actor, target, targetIdx, ab, element) {
   // 1. Evasion Check
   let evaBonus = 0;
   if (!isMagic && targetIdx === 1) evaBonus = 0.3; // Diamond Formation: Rearguard
-  if (target.evasion && Math.random() < (target.evasion + evaBonus)) {
+  const _evasionBuff = target.statuses?.find(s => s.type === 'evasion')?.value || 0;
+  if (((target.evasion || 0) + _evasionBuff + evaBonus) > 0 && Math.random() < ((target.evasion || 0) + _evasionBuff + evaBonus)) {
     BattleUI.addLog(`💨 ${target.displayName} ${evaBonus > 0 ? '(Rearguard) ' : ''}dodged the ${isMagic ? 'spell' : 'attack'}!`, 'hi');
     BattleUI.popParty(targetIdx, 0, 'miss');
     return 'evade';
@@ -204,6 +206,15 @@ function resolveEnemyOffensiveAction(actor, target, targetIdx, ab, element) {
   }
   dmg = _applyEliteResist(dmg);
 
+  // 7b. Absorb check — fire element absorbed as healing by Sanguine Rouge buff
+  const _absorbStatus = target.statuses?.find(s => s.type === 'absorb' && s.value === element);
+  if (_absorbStatus) {
+    target.hp = Math.min(target.maxHp, target.hp + dmg);
+    BattleUI.popParty(targetIdx, dmg, 'heal', element);
+    BattleUI.addLog(`✨ ${target.displayName} absorbed ${element} damage!`, 'heal');
+    return 'absorb';
+  }
+
   // 8. Apply damage
   target.hp = Math.max(0, target.hp - dmg);
   if (target.hp <= 0) Battle.setKO(target, false);
@@ -262,6 +273,7 @@ const ActionEngine = {
 
     physical:     (a, t, ab, el, mc, ie) => ActionEngine._offensive(a, t, ab, el, mc, ie),
     magic_damage: (a, t, ab, el, mc, ie) => ActionEngine._offensive(a, t, ab, el, mc, ie),
+    buff_def:     (a, t, ab, el, mc, ie) => ActionEngine.Processors.buff(a, t, ab, el, mc, ie),
 
     heal(actor, targets, ab, element, moveConfig) {
       if (typeof SFX !== 'undefined') SFX.heal();
@@ -315,6 +327,9 @@ const ActionEngine = {
         if (e.hpRegen) Battle.addStatus(m, { ...StatusSystem.DEFS.regen, turns: e.duration || 3 });
         if (e.guardMark) Battle.addStatus(m, { id: 'status_taunt', label: 'Taunt', icon: '🛡️', type: 'buff', turns: e.duration || 3 });
         if (e.summonBoost) m.summonBoost = e.summonBoost;
+        if (e.fireAmp) Battle.addStatus(m, { id: 'buff_fire_amp', label: 'Fire Amp', icon: '🔥', type: 'fire_amp', value: e.fireAmp, turns: e.duration || 3 });
+        if (e.absorb) Battle.addStatus(m, { id: `buff_absorb_${e.absorb}`, label: `${e.absorb[0].toUpperCase() + e.absorb.slice(1)} Absorb`, icon: '💫', type: 'absorb', value: e.absorb, turns: e.duration || 3 });
+        if (e.evasion) Battle.addStatus(m, { id: 'buff_evasion', label: 'Evasion', icon: '💨', type: 'evasion', value: e.evasion, turns: e.duration || 2 });
         BattleUI.createEffectOverlay(idx, element, 'party', ab.id);
       };
       if (e.aoe) G.party.forEach(_applyBuff);
@@ -332,6 +347,7 @@ const ActionEngine = {
       if (e.defDebuff) { Battle.addStatus(enemy, { id: 'debuff_def', label: 'DEF Down', icon: '🔻', stat: 'def', type: 'mult', value: e.defDebuff, turns: e.duration || 2 }); BattleUI.addLog(`${enemy.name}'s DEF lowered!`, 'magic'); }
       if (e.stunLow && enemy.hp <= enemy.maxHp * 0.3) { Battle.addStatus(enemy, { id: 'status_stunned', label: 'Stunned', icon: '💫', type: 'control', turns: 1 }); BattleUI.addLog(`💫 ${enemy.name} is stunned! (Low HP)`, 'magic'); }
       if (e.freezeChance && !StatusSystem.has(enemy, 'status_frozen') && Math.random() < e.freezeChance) { Battle.addStatus(enemy, { id: 'status_frozen', label: 'Frozen', icon: '❄️', type: 'control', turns: 2 }); BattleUI.addLog(`❄️ ${enemy.name} is Frozen for 2 turns!`, 'magic'); }
+      if (e.slowChance && !StatusSystem.has(enemy, 'status_slow') && Math.random() < e.slowChance) { Battle.addStatus(enemy, { ...StatusSystem.DEFS.slow }); BattleUI.addLog(`🐌 ${enemy.name} is Slowed!`, 'magic'); }
       BattleUI.renderEnemyRow();
       setTimeout(() => TurnManager.advance(), 750);
     },
@@ -599,6 +615,12 @@ function enemyAct(enemy, enemyIdx) {
   // Control check — skip turn if stunned or frozen
   const isIncapacitated = enemy.statuses?.some(s => s.id === 'status_stunned' || s.id === 'status_frozen');
   if (isIncapacitated) {
+    TurnManager.advance();
+    return;
+  }
+  // Slow — 50% chance to lose turn
+  if (StatusSystem.has(enemy, 'status_slow') && Math.random() < 0.5) {
+    BattleUI.addLog(`🐌 ${enemy.name} is too slow to act!`, 'regen');
     TurnManager.advance();
     return;
   }

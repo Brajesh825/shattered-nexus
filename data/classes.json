@@ -345,6 +345,7 @@
                     "dmgMultiplier": 3.7,
                     "statScale": "def",
                     "element": "wind",
+                    "aoe": true,
                     "guardMark": true,
                     "duration": 3
                 }
