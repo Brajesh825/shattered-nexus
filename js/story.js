@@ -325,7 +325,7 @@ const Story = {
     this._showArcIntro();
   },
 
-  /** Called by game.js checkEnd() when enemy defeated in a story battle */
+  /** Called by checkBattleEnd() (via TurnManager) when all enemies are defeated */
   onBattleWon() {
     /* Skirmish: just return to world map after win */
     if (this._skirmishArcIdx !== undefined) {
@@ -388,7 +388,7 @@ const Story = {
     showScreen('story-screen');
   },
 
-  /** Called by game.js checkEnd() when hero dies in a story battle */
+  /** Called by checkBattleEnd() (via TurnManager) when the whole party falls */
   onBattleLost() {
     /* Skirmish defeat: just go back to map, no penalty */
     if (this._skirmishArcIdx !== undefined) {
@@ -505,7 +505,7 @@ const Story = {
     if (G.party) {
       G.party.forEach(m => {
         m.hp = m.maxHp; m.mp = m.maxMp; m.isKO = false;
-        m.buff = null; m.debuff = null; m.regenTurns = 0; m.stunned = false;
+        m.regenTurns = 0; m.stunned = false;
         const ch = G.chars.find(c => c.id === m.charId);
         if (ch) { ch.hp = m.hp; ch.mp = m.mp; ch.isKO = false; }
       });
@@ -739,7 +739,7 @@ const Story = {
     buildEnemyGroup(defs, spawnLevel, isBoss);
 
     // Reset per-battle state on party members (keep HP/MP/levels from prior battles)
-    G.party.forEach(m => { m.buff = null; m.debuff = null; m.regenTurns = 0; m.stunned = false; });
+    G.party.forEach(m => { m.regenTurns = 0; m.stunned = false; });
 
     buildAbilityMenu();
     G.turnQueue = buildTurnQueue();
@@ -861,7 +861,7 @@ const Story = {
     this.phase = isBoss ? 'boss_in' : 'pre_battle';
     G.party.forEach(m => {
       m.hp = m.maxHp; m.mp = m.maxMp; m.isKO = false;
-      m.buff = null; m.debuff = null; m.regenTurns = 0; m.stunned = false;
+      m.regenTurns = 0; m.stunned = false;
     });
     BattleUI.renderPartyStatus();
     BattleUI.renderPartyRow();
@@ -1027,7 +1027,7 @@ const Story = {
      SAVE HELPERS
   ════════════════════════════════════════════════════════════════════════ */
   _doSave() {
-    if (!this.data || !G.hero) return;
+    if (!this.data || !G.hero || !G.party || !G.party.length) return;
     // On first save of a new game, clear the slot first (safe: we're about to overwrite it)
     if (this._newGameSlot !== undefined) {
       Save.clear(this._newGameSlot);

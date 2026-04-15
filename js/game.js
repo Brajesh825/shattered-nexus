@@ -39,6 +39,7 @@ const TYPE_CHART = {
   holy: { strong: ['shadow'], weak: ['holy'] },
   shadow: { strong: ['holy'], weak: ['shadow'] },
   physical: { strong: [], weak: ['physical'] },
+  summoning: { strong: [], weak: [] },
 };
 
 /* ============================================================
@@ -49,13 +50,21 @@ const Battle = {
   elemMult(abilityElement, target) {
     return CombatEngine.elemMult(abilityElement, target, window.TYPE_CHART);
   },
-  // NEW: Dynamic Stat Resolver. Computes final combat stats by applying all active modifiers.
+  // Dynamic Stat Resolver. Computes final combat stats by applying all active modifiers.
   getStat(m, stat) {
     return CombatEngine.getStat(m, stat);
   },
-  // Adds a status to an actor, handling duration refreshing for identical IDs
-  addStatus(m, config) { 
-    StatusSystem.add(m, config); 
+  // Adds a status to an actor, handling duration refreshing for identical IDs.
+  // Relic: Drowned Sigil — statusResist gives a chance to block debuff/control effects.
+  addStatus(m, config) {
+    const def = typeof config === 'string' ? StatusSystem.DEFS[config] : config;
+    if (def && m._statusResist && (def.type === 'control' || def.type === 'dot' || def.type === 'dot_percent')) {
+      if (Math.random() < m._statusResist) {
+        if (typeof BattleUI !== 'undefined') BattleUI.addLog(`🌊 ${m.displayName} resisted ${def.label}!`, 'hi');
+        return;
+      }
+    }
+    StatusSystem.add(m, config);
   },
   // Returns 'weak'|'resist'|'immune'|'shatter'|null for UI display
   elemResult(abilityElement, target) {
@@ -83,6 +92,17 @@ const Battle = {
     if (row.weak.includes(clsElem)) return 0.5;
     return 1.0;
   },
+  // Mark a unit as KO. For party members, checks reviveOnce relic and logs the fall.
+  // Pass isEnemy=true to skip party-specific logic.
+  setKO(unit, isEnemy = false) {
+    unit.isKO = true;
+    if (!isEnemy) {
+      if (typeof _checkReviveOnce === 'function') _checkReviveOnce(unit);
+      if (unit.isKO && typeof BattleUI !== 'undefined')
+        BattleUI.addLog(`${unit.displayName} has fallen!`, 'dmg');
+    }
+    if (window.LogDebug) window.LogDebug(`[KO] ${unit.displayName || unit.name} knocked out`, 'dmg');
+  },
   // Returns 'weak'|'resist'|null for UI feedback when enemy attacks a party member
   playerElemResult(attackElement, partyMember) {
     if (!attackElement || attackElement === 'physical') return null;
@@ -103,13 +123,10 @@ const Battle = {
     return CombatEngine.rollHit(attacker, defender);
   },
   // Rolls for a critical hit based on attacker's critRate and LCK
-  // Every 10 LCK adds +1% crit rate
+  // Every 1 LCK adds +1% crit rate (handled inside CombatEngine.rollCrit)
   rollCrit(attacker) {
-    const baseCrit = this.getStat(attacker, 'critRate');
-    const lckBonus = (this.getStat(attacker, 'lck') || 0) * 0.001;
-    const chance = baseCrit + lckBonus;
     const isCrit = CombatEngine.rollCrit(attacker);
-    if (isCrit && window.LogDebug) window.LogDebug(`[CritRoll] ${attacker.displayName || attacker.name} CRITICAL! (${Math.round(chance * 100)}% chance)`, 'buff');
+    if (isCrit && window.LogDebug) window.LogDebug(`[CritRoll] ${attacker.displayName || attacker.name} CRITICAL!`, 'buff');
     return isCrit;
   },
 
@@ -139,7 +156,7 @@ const Battle = {
     const abilities = actor.abilities || actor.abilityDefs;
     if (!abilities || !abilities.length) return null;
 
-    // Phase 5: Synergy-Aware Weighting
+    // Synergy-Aware Weighting
     const aura = target?.statuses?.find(s => s.id.startsWith('aura_'));
     const auraType = aura ? aura.id.replace('aura_', '') : null;
 
@@ -274,13 +291,14 @@ function showScreen(id) {
 
   if (typeof SFX !== 'undefined') SFX.click();
 
-  // BGM
+  // BGM — fade out current track then play the next one
   if (typeof BGM !== 'undefined') {
-    if (id === 'title-screen')       BGM.play('title');
-    else if (id === 'battle-screen') BGM.play('battle');
-    else if (id === 'explore-screen') BGM.play('exploration');
-    else if (id === 'story-screen')  BGM.play('story');
-    else BGM.stop();
+    const _next =
+      id === 'title-screen'    ? 'title'       :
+      id === 'battle-screen'   ? 'battle'      :
+      id === 'explore-screen'  ? 'exploration' :
+      id === 'story-screen'    ? 'story'       : null;
+    BGM.fadeOut(600, () => { if (_next) BGM.play(_next); });
   }
 }
 
@@ -299,7 +317,7 @@ function renderPartyMenu() {
 
     const img = document.createElement('img');
     img.className = 'pm-portrait'; img.alt = m.displayName;
-    SpriteRenderer.drawHero(img, m.charId, m.char, m.cls);
+    if (typeof SpriteRenderer !== 'undefined') SpriteRenderer.drawHero(img, m.charId, m.char, m.cls);
 
     const abHtml = (m.abilities || []).map(a =>
       `<div class="pm-ab"><span class="pm-ab-icon">${a.icon || '⚡'}</span><span class="pm-ab-name">${a.name}</span><span class="pm-ab-mp">${a.mp}MP</span></div>`
@@ -344,7 +362,7 @@ function renderPartyMenu() {
 function buildEnemyGroup(defs, spawnLevel = 1, isBoss = false) {
   // Tier-based growth rates
   const tierGrowth = {
-    // NEW growth rates — ensures enemies scale as threats through Lv40
+    // Growth rates — ensures enemies scale as threats through Lv40
     1: { hp: 5, atk: 1.2, def: 0.5, spd: 0.5, mag: 0.3, statMult: 1.0, expMult: 1.0 },
     2: { hp: 10, atk: 2.5, def: 1.0, spd: 0.8, mag: 0.5, statMult: 1.3, expMult: 1.5 },
     3: { hp: 18, atk: 4.5, def: 1.8, spd: 1.2, mag: 0.8, statMult: 1.7, expMult: 2.5 },
@@ -399,7 +417,6 @@ function buildEnemyGroup(defs, spawnLevel = 1, isBoss = false) {
   G.targetEnemyIdx = 0;
 }
 
-function spawnEnemy(def) { buildEnemyGroup([def]); } // legacy compat
 
 /**
  * Unlock a character for recruitment
@@ -662,9 +679,6 @@ function checkBattleEnd() {
   return false;
 }
 
-function checkBattleEnd_alias() { return checkBattleEnd(); }
-// Legacy
-function checkEnd() { return checkBattleEnd(); }
 /* ============================================================
    RESULT SCREEN
    ============================================================ */

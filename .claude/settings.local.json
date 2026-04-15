@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -c \"C:\\\\Users\\\\ASUS\\\\VVI\\\\rpg+\\\\js\\\\battle\\\\action-handler.js\")",
+      "Bash(node -c \"C:\\\\Users\\\\ASUS\\\\VVI\\\\rpg+\\\\js\\\\game.js\")",
+      "Bash(node -c \"C:\\\\Users\\\\ASUS\\\\VVI\\\\rpg+\\\\js\\\\story.js\")",
+      "Bash(node -c \"C:\\\\Users\\\\ASUS\\\\VVI\\\\rpg+\\\\js\\\\ui\\\\menu-manager.js\")",
+      "Bash(node -c \"C:\\\\Users\\\\ASUS\\\\VVI\\\\rpg+\\\\js\\\\systems\\\\inventory.js\")",
+      "Bash(node -c \"C:\\\\Users\\\\ASUS\\\\VVI\\\\rpg+\\\\js\\\\map\\\\map-engine.js\")",
+      "Bash(node -c \"C:\\\\Users\\\\ASUS\\\\VVI\\\\rpg+\\\\js\\\\ui\\\\result-ui.js\")",
+      "Bash(node -c \"C:\\\\Users\\\\ASUS\\\\VVI\\\\rpg+\\\\js\\\\ui\\\\battle-ui.js\")",
+      "Bash(node -c \"C:\\\\Users\\\\ASUS\\\\VVI\\\\rpg+\\\\js\\\\battle\\\\status-system.js\")",
+      "Bash(gh pr create --title 'Phase 6: Complete migration & critical bug fixes' --body ':*)",
+      "Bash(identify \"C:\\\\Users\\\\ASUS\\\\VVI\\\\rpg+/images/characters/map/sheets/ayaka_sheet.png\")",
+      "Bash(ls -la \"C:\\\\Users\\\\ASUS\\\\VVI\\\\rpg+\\\\data\\\\story\\\\arc_\"*.json)",
+      "Bash(wc -l \"C:/Users/ASUS/VVI/rpg+/data/story/arc_\"*.json)"
+    ]
+  }
+}

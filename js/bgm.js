@@ -84,6 +84,30 @@ const BGM = {
   },
 
   /**
+   * Fade out current track then invoke callback (used for screen transitions)
+   * @param {number} duration - Fade duration in ms
+   * @param {Function} callback - Called after fade completes
+   */
+  fadeOut(duration = 800, callback) {
+    if (!this._current) { if (callback) callback(); return; }
+    const audio = this._current;
+    const startVol = audio.volume;
+    const steps = 20;
+    const stepTime = duration / steps;
+    const stepVol = startVol / steps;
+    let step = 0;
+    const fade = setInterval(() => {
+      step++;
+      audio.volume = Math.max(0, startVol - stepVol * step);
+      if (step >= steps) {
+        clearInterval(fade);
+        this.stop();
+        if (callback) callback();
+      }
+    }, stepTime);
+  },
+
+  /**
    * Toggle mute (synced with SFX mute)
    */
   toggleMute(muted) {

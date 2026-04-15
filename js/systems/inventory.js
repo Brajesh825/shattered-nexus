@@ -150,14 +150,21 @@ function _useItem(def, targetIdx) {
       BattleUI.popParty(pIdx, m.hp, 'heal');
 
     } else if (e.stat === 'debuff') {
-      if (m.debuff) { m[m.debuff.stat] = m.debuff.origVal; m.debuff = null; }
+      m.statuses = (m.statuses || []).filter(s =>
+        !s.id.includes('debuff') && s.type !== 'control' && s.type !== 'dot'
+      );
       BattleUI.popParty(pIdx, 0, 'regen');
 
     } else if (e.stat === 'atk' || e.stat === 'def') {
-      const origVal = m[e.stat];
-      const boost   = Math.floor(origVal * e.amount / 100);
-      m[e.stat]     = origVal + boost;
-      m.buff        = { stat: e.stat, origVal, turns: e.turns || 3 };
+      const boost = Math.floor(m[e.stat] * e.amount / 100);
+      Battle.addStatus(m, {
+        id: `buff_${e.stat}_item`,
+        label: `${e.stat.toUpperCase()} Up`,
+        icon: e.stat === 'atk' ? '⚔️' : '🛡️',
+        stat: e.stat, type: 'mult',
+        value: 1 + (e.amount / 100),
+        turns: e.turns || 3
+      });
       BattleUI.popParty(pIdx, boost, 'hi');
     }
   });
@@ -176,11 +183,23 @@ function _awardDrops(enemyDef) {
   if (!enemyDef.drops || !enemyDef.drops.length) return [];
   const awarded = [];
   enemyDef.drops.forEach(drop => {
-    const roll = Math.random() * 100;
-    if (roll <= (drop.chance || 20)) {
-      addToInventory(drop.itemId, drop.qty || 1);
-      awarded.push(drop.itemId);
+    // chance is stored as 0–1 fraction (e.g. 0.15 = 15%)
+    if (Math.random() > (drop.chance || 0.2)) return;
+
+    // Support both {itemId:"potion"} and legacy {item:"Potion"} formats
+    let itemId = drop.itemId;
+    if (!itemId && drop.item) {
+      // Try name-based lookup in G.items
+      const match = (G.items || []).find(i =>
+        i.name.toLowerCase() === drop.item.toLowerCase() ||
+        i.id === drop.item.toLowerCase().replace(/[- ]/g, '_')
+      );
+      itemId = match?.id;
     }
+    if (!itemId) return; // Trophy item not in items.json — skip silently
+
+    addToInventory(itemId, drop.qty || 1);
+    awarded.push(itemId);
   });
   return awarded;
 }

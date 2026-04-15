@@ -754,10 +754,10 @@ const MapEntities = (() => {
             if ((TILE_DEFS[tid] || TILE_DEFS[0]).walkable) {
               const dx = wp.x - n.x, dy = wp.y - n.y;
               n._prevTx = n.x; n._prevTy = n.y;
-              n._tx = wp.x;    n._ty = wp.y;
-              n._moveTimer = 0;
-              n._moving    = true;
-              n._facingDx  = dx; n._facingDy = dy;
+               n._tx = wp.x;    n._ty = wp.y;
+               n._moveTimer = 0;
+               n._moving    = true;
+               n._facingDx  = dx; n._facingDy = dy;
             }
           }
         }
