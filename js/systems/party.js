@@ -45,6 +45,7 @@ function buildParty() {
       statuses: [],
       cooldowns: {},
       _dragonLeapTurns: 0,
+      _reviveOnceFired: false,
     });
     // Passive stat bonuses applied at battle build
     const _m = G.party[G.party.length - 1];

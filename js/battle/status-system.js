@@ -116,8 +116,8 @@ const StatusSystem = {
       if (s.type === 'dot' || s.id === 'status_burn') {
         const amt = s.value || 10;
         unit.hp = Math.max(0, unit.hp - amt);
-        if (unit.hp <= 0) unit.isKO = true;
-        
+        if (unit.hp <= 0) { unit.isKO = true; if (!isEnemy && typeof _checkReviveOnce === 'function') _checkReviveOnce(unit); }
+
         const idx = isEnemy ? G.enemyGroup.indexOf(unit) : G.party.indexOf(unit);
         if (typeof BattleUI !== 'undefined') {
           if (isEnemy) BattleUI.popEnemy(idx, amt, 'dmg', 'fire');

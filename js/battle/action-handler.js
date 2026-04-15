@@ -5,6 +5,23 @@
 
 
 /**
+ * Check if a fallen party member should be revived by the reviveOnce relic bonus.
+ * Fires at most once per battle per member. Only applies to party members, not enemies.
+ */
+function _checkReviveOnce(member) {
+  if (member._reviveOnceFired) return;
+  const relicDef = (G.activeRelics || [])
+    .map(id => (G.relics || []).find(r => r.id === id))
+    .find(r => r?.bonus?.reviveOnce);
+  if (!relicDef) return;
+  member._reviveOnceFired = true;
+  member.isKO = false;
+  member.hp = 1;
+  BattleUI.addLog(`🛡️ ${member.displayName} revived by ${relicDef.name}!`, 'heal');
+  BattleUI.popParty(G.party.indexOf(member), 1, 'heal');
+}
+
+/**
  * Consolidated logic for offensive actions (Physical/Magic).
  * Reduces code duplication between heroAttack and heroAbility.
  */
@@ -185,7 +202,7 @@ function resolveEnemyOffensiveAction(actor, target, targetIdx, ab, element) {
 
   // 8. Apply damage
   target.hp = Math.max(0, target.hp - dmg);
-  if (target.hp <= 0) { target.isKO = true; BattleUI.addLog(`${target.displayName} has fallen!`, 'dmg'); }
+  if (target.hp <= 0) { target.isKO = true; _checkReviveOnce(target); if (target.isKO) BattleUI.addLog(`${target.displayName} has fallen!`, 'dmg'); }
   BattleUI.popParty(targetIdx, dmg, isMagic ? 'magic' : 'dmg', element);
 
   // 9. Aura

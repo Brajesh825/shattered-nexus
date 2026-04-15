@@ -106,7 +106,7 @@ const Battle = {
   // Every 10 LCK adds +1% crit rate
   rollCrit(attacker) {
     const baseCrit = this.getStat(attacker, 'critRate');
-    const lckBonus = (this.getStat(attacker, 'lck') || 0) * 0.001;
+    const lckBonus = (this.getStat(attacker, 'lck') || 0) * 0.01; // Every 10 LCK = +0.1% crit
     const chance = baseCrit + lckBonus;
     const isCrit = CombatEngine.rollCrit(attacker);
     if (isCrit && window.LogDebug) window.LogDebug(`[CritRoll] ${attacker.displayName || attacker.name} CRITICAL! (${Math.round(chance * 100)}% chance)`, 'buff');

@@ -150,14 +150,21 @@ function _useItem(def, targetIdx) {
       BattleUI.popParty(pIdx, m.hp, 'heal');
 
     } else if (e.stat === 'debuff') {
-      if (m.debuff) { m[m.debuff.stat] = m.debuff.origVal; m.debuff = null; }
+      m.statuses = (m.statuses || []).filter(s =>
+        !s.id.includes('debuff') && s.type !== 'control' && s.type !== 'dot'
+      );
       BattleUI.popParty(pIdx, 0, 'regen');
 
     } else if (e.stat === 'atk' || e.stat === 'def') {
-      const origVal = m[e.stat];
-      const boost   = Math.floor(origVal * e.amount / 100);
-      m[e.stat]     = origVal + boost;
-      m.buff        = { stat: e.stat, origVal, turns: e.turns || 3 };
+      const boost = Math.floor(m[e.stat] * e.amount / 100);
+      Battle.addStatus(m, {
+        id: `buff_${e.stat}_item`,
+        label: `${e.stat.toUpperCase()} Up`,
+        icon: e.stat === 'atk' ? '⚔️' : '🛡️',
+        stat: e.stat, type: 'mult',
+        value: 1 + (e.amount / 100),
+        turns: e.turns || 3
+      });
       BattleUI.popParty(pIdx, boost, 'hi');
     }
   });
