@@ -185,18 +185,7 @@ function resolveEnemyOffensiveAction(actor, target, targetIdx, ab, element) {
     BattleUI.popParty(targetIdx, 'CRITICAL!', 'crit');
   }
 
-  // 6. Absorption
-  if (target.absorbElement && target.absorbElement === element) {
-    target.hp = Math.min(target.maxHp, target.hp + dmg);
-    BattleUI.popParty(targetIdx, dmg, 'heal');
-    BattleUI.addLog(`⭐ ${target.displayName} ABSORBED the ${isMagic ? 'spell' : 'attack'}!`, 'heal');
-    if (window.LogDebug) window.LogDebug(`[Absorb] ${target.displayName} absorbed ${dmg} from ${actor.name}`, 'buff');
-    BattleUI.createEffectOverlay(targetIdx, element, 'party');
-    BattleUI.renderPartyStatus();
-    return 'absorb';
-  }
-
-  // 7. Passive reductions
+  // 6. Passive reductions
   if (target.passive?.id === 'yakshas_valor') dmg = Math.floor(dmg * 0.9);
   if (target.passive?.id === 'divine_authority') dmg = Math.floor(dmg * 0.85);
   if (target.passive?.id === 'divine_blessing') dmg = Math.floor(dmg * 0.88);
@@ -337,6 +326,8 @@ const ActionEngine = {
       const enemy = targets[0];
       if (!enemy) { setTimeout(() => TurnManager.advance(), 750); return; }
       if (e.stat) { Battle.addStatus(enemy, { id: `debuff_${e.stat}`, label: `${e.stat.toUpperCase()} Down`, icon: '🔻', stat: e.stat, type: 'mult', value: e.multiplier || 0.7, turns: e.duration || 2, color: 'var(--red)' }); BattleUI.addLog(`${enemy.name}'s ${e.stat.toUpperCase()} lowered!`, 'magic'); }
+      if (e.defDebuff) { Battle.addStatus(enemy, { id: 'debuff_def', label: 'DEF Down', icon: '🔻', stat: 'def', type: 'mult', value: e.defDebuff, turns: e.duration || 2 }); BattleUI.addLog(`${enemy.name}'s DEF lowered!`, 'magic'); }
+      if (e.stunLow && enemy.hp <= enemy.maxHp * 0.3) { Battle.addStatus(enemy, { id: 'status_stunned', label: 'Stunned', icon: '💫', type: 'control', turns: 1 }); BattleUI.addLog(`💫 ${enemy.name} is stunned! (Low HP)`, 'magic'); }
       if (e.freezeChance && !StatusSystem.has(enemy, 'status_frozen') && Math.random() < e.freezeChance) { Battle.addStatus(enemy, { id: 'status_frozen', label: 'Frozen', icon: '❄️', type: 'control', turns: 2 }); BattleUI.addLog(`❄️ ${enemy.name} is Frozen for 2 turns!`, 'magic'); }
       BattleUI.renderEnemyRow();
       setTimeout(() => TurnManager.advance(), 750);

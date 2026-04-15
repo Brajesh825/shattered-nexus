@@ -122,13 +122,10 @@ const Battle = {
     return CombatEngine.rollHit(attacker, defender);
   },
   // Rolls for a critical hit based on attacker's critRate and LCK
-  // Every 1 LCK adds +1% crit rate
+  // Every 1 LCK adds +1% crit rate (handled inside CombatEngine.rollCrit)
   rollCrit(attacker) {
-    const baseCrit = this.getStat(attacker, 'critRate');
-    const lckBonus = (this.getStat(attacker, 'lck') || 0) * 0.01; // Each LCK point = +1% crit
-    const chance = baseCrit + lckBonus;
     const isCrit = CombatEngine.rollCrit(attacker);
-    if (isCrit && window.LogDebug) window.LogDebug(`[CritRoll] ${attacker.displayName || attacker.name} CRITICAL! (${Math.round(chance * 100)}% chance)`, 'buff');
+    if (isCrit && window.LogDebug) window.LogDebug(`[CritRoll] ${attacker.displayName || attacker.name} CRITICAL!`, 'buff');
     return isCrit;
   },
 

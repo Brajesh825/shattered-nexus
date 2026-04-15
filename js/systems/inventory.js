@@ -183,11 +183,23 @@ function _awardDrops(enemyDef) {
   if (!enemyDef.drops || !enemyDef.drops.length) return [];
   const awarded = [];
   enemyDef.drops.forEach(drop => {
-    const roll = Math.random() * 100;
-    if (roll <= (drop.chance || 20)) {
-      addToInventory(drop.itemId, drop.qty || 1);
-      awarded.push(drop.itemId);
+    // chance is stored as 0–1 fraction (e.g. 0.15 = 15%)
+    if (Math.random() > (drop.chance || 0.2)) return;
+
+    // Support both {itemId:"potion"} and legacy {item:"Potion"} formats
+    let itemId = drop.itemId;
+    if (!itemId && drop.item) {
+      // Try name-based lookup in G.items
+      const match = (G.items || []).find(i =>
+        i.name.toLowerCase() === drop.item.toLowerCase() ||
+        i.id === drop.item.toLowerCase().replace(/[- ]/g, '_')
+      );
+      itemId = match?.id;
     }
+    if (!itemId) return; // Trophy item not in items.json — skip silently
+
+    addToInventory(itemId, drop.qty || 1);
+    awarded.push(itemId);
   });
   return awarded;
 }

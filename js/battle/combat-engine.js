@@ -128,7 +128,7 @@ const CombatEngine = (() => {
    */
   function rollCrit(attacker) {
     const baseCrit = getStat(attacker, 'critRate');
-    const lckBonus = (getStat(attacker, 'lck') || 0) * 0.001;
+    const lckBonus = (getStat(attacker, 'lck') || 0) * 0.01; // +1% crit per LCK point
     const chance = baseCrit + lckBonus;
     return Math.random() < chance;
   }
