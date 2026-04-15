@@ -553,7 +553,16 @@ function heroAbility(ab) {
       // Buff/heal ultimates show their overlay inside the action handler on the correct party target.
       const isOffensiveUlt = ab.type === 'physical' || ab.type === 'magic_damage';
       if (isOffensiveUlt) {
-        BattleUI.createEffectOverlay(G.targetEnemyIdx, element, 'enemy', ab.id);
+        const _cfg = (typeof SVGAnimations !== 'undefined') ? SVGAnimations[ab.id] : null;
+        // Fire screen shake once at the right cinematic moment
+        if (_cfg?.screenShake) {
+          setTimeout(() => BattleUI.triggerScreenShake(_cfg.screenShake), _cfg.shakeDelay || 0);
+        }
+        // Cascade overlay across each living enemy with 150ms stagger for visual impact
+        offensiveTargets.forEach((en, i) => {
+          const tIdx = G.enemyGroup.indexOf(en);
+          setTimeout(() => BattleUI.createEffectOverlay(tIdx, element, 'enemy', ab.id, { suppressShake: true }), i * 150);
+        });
         ab._ultimateOverlayShown = true;
       }
     }

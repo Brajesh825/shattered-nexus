@@ -401,14 +401,14 @@ const BattleUI = {
     setTimeout(() => scene.classList.remove('battle-scene-shake'), durationMs + 50);
   },
 
-  createEffectOverlay(targetIdx, element, targetType = 'enemy', abilityId = null) {
+  createEffectOverlay(targetIdx, element, targetType = 'enemy', abilityId = null, opts = {}) {
     if (targetIdx === undefined || targetIdx === null) return;
     let overlay = null;
     let duration = 600;
 
     if (abilityId && typeof SVGAnimations !== 'undefined' && SVGAnimations[abilityId]) {
       const _cfg = SVGAnimations[abilityId];
-      if (_cfg.screenShake) {
+      if (_cfg.screenShake && !opts.suppressShake) {
         setTimeout(() => this.triggerScreenShake(_cfg.screenShake), _cfg.shakeDelay || 0);
       }
       overlay = _cfg.create(targetIdx, targetType);
