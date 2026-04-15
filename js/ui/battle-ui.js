@@ -163,6 +163,7 @@ const BattleUI = {
     container.innerHTML = '';
 
     G.party.forEach((m, i) => {
+      if (!m) return;
       const col = CHAR_COLOR[m.charId] || '#c0b8e8';
       const alive = Battle.alive(m);
       const pct = Math.max(0, m.hp / m.maxHp * 100);
@@ -230,6 +231,7 @@ const BattleUI = {
     if (!bar) return;
     bar.innerHTML = '';
     G.party.forEach((m, i) => {
+      if (!m) return;
       const col = CHAR_COLOR[m.charId] || '#c0b8e8';
       const hpPct = Math.max(0, m.hp / m.maxHp * 100);
       const mpPct = Math.max(0, m.mp / m.maxMp * 100);

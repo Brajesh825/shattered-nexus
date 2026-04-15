@@ -187,37 +187,6 @@ const SVGAnimations = {
     return s;
   }},
 
-  // Blood Blossom
-  'blood_blossom_enhanced': { duration: 2300, create: () => {
-    const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    s.setAttribute('viewBox', '0 0 200 200');
-    s.setAttribute('width', '200');
-    s.setAttribute('height', '200');
-    s.classList.add('battle-svg-animation');
-    s.innerHTML = `<defs><style>
-      @keyframes bb-petal-spin { 0% { transform: rotate(calc(var(--pa) * 1deg)) translateX(0); opacity: 0; } 15% { opacity: 1; } 100% { transform: rotate(calc((var(--pa) + 360) * 1deg)) translateX(20px); opacity: 0; } }
-      @keyframes bb-atk-ring { 0% { stroke-dashoffset: 500; opacity: 0; } 20% { opacity: 1; } 70% { stroke-dashoffset: 0; } 100% { opacity: 0; } }
-      @keyframes pp-atk-buff-text { 0% { transform: translateY(0); opacity: 0; } 20% { opacity: 1; } 60% { transform: translateY(-28px); opacity: 1; } 100% { transform: translateY(-50px); opacity: 0; } }
-    </style></defs><defs><filter id="bb-glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><!-- petal 1 --><ellipse cx="100" cy="74" rx="9" ry="22" fill="#cc0033" fill-opacity="0.85" filter="url(#bb-glow)" style="--pa:0; transform-origin:100px 108px; animation: bb-petal-spin 2300ms ease-out forwards;"/><!-- petal 2 --><ellipse cx="100" cy="74" rx="9" ry="22" fill="#ff0044" fill-opacity="0.8" style="--pa:60; transform-origin:100px 108px; animation: bb-petal-spin 2300ms ease-out forwards 80ms;"/><!-- petal 3 --><ellipse cx="100" cy="74" rx="9" ry="22" fill="#990022" fill-opacity="0.75" style="--pa:120; transform-origin:100px 108px; animation: bb-petal-spin 2300ms ease-out forwards 160ms;"/><!-- petal 4 --><ellipse cx="100" cy="74" rx="9" ry="22" fill="#cc0033" fill-opacity="0.7" style="--pa:180; transform-origin:100px 108px; animation: bb-petal-spin 2300ms ease-out forwards 240ms;"/><!-- petal 5 --><ellipse cx="100" cy="74" rx="9" ry="22" fill="#ff0044" fill-opacity="0.75" style="--pa:240; transform-origin:100px 108px; animation: bb-petal-spin 2300ms ease-out forwards 320ms;"/><!-- petal 6 --><ellipse cx="100" cy="74" rx="9" ry="22" fill="#990022" fill-opacity="0.7" style="--pa:300; transform-origin:100px 108px; animation: bb-petal-spin 2300ms ease-out forwards 400ms;"/><!-- ATK buff ring --><circle cx="100" cy="108" r="55" fill="none" stroke="#ff1166" stroke-width="2" stroke-dasharray="500" stroke-dashoffset="500" style="animation: bb-atk-ring 2300ms ease-out forwards 300ms;"/><!-- center ATK label --><text x="78" y="112" fill="#ff9966" font-size="10" font-family="monospace" font-weight="bold" style="animation: pp-atk-buff-text 2300ms ease-out forwards 600ms;">ATK +40%</text>`;
-    return s;
-  }},
-
-  // Guide to Afterlife
-  'guide_to_afterlife': { duration: 2600, create: () => {
-    const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    s.setAttribute('viewBox', '0 0 200 200');
-    s.setAttribute('width', '200');
-    s.setAttribute('height', '200');
-    s.classList.add('battle-svg-animation');
-    s.innerHTML = `<defs><style>
-      @keyframes gta-skull-rise { 0% { transform: translateY(80px) scale(0.3); opacity: 0; filter: blur(4px); } 25% { transform: translateY(0) scale(1.1); opacity: 1; filter: blur(0); } 60% { transform: translateY(-10px) scale(1); opacity: 1; } 100% { transform: translateY(-60px) scale(0.5); opacity: 0; } }
-      @keyframes gta-drain-beam { 0% { stroke-dashoffset: 200; opacity: 0; stroke-width: 1; } 20% { opacity: 1; } 60% { stroke-dashoffset: 0; stroke-width: 4; opacity: 1; } 100% { stroke-width: 0.5; opacity: 0; stroke-dashoffset: -50; } }
-      @keyframes gta-hp-drain { 0% { transform: translateY(0) scale(1); opacity: 0; } 15% { opacity: 1; } 60% { transform: translateY(-40px) scale(1.3); opacity: 1; } 100% { transform: translateY(-70px) scale(0.5); opacity: 0; } }
-      @keyframes gta-pyro-nova { 0% { r: 3; fill-opacity: 1; opacity: 1; } 30% { r: 12; fill-opacity: 0.6; } 60% { r: 85; fill-opacity: 0; opacity: 0.3; } 100% { r: 95; opacity: 0; } }
-    </style></defs><defs><filter id="gta-glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter><radialGradient id="gta-fire-core" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ffcc00"/><stop offset="50%" stop-color="#ff3300"/><stop offset="100%" stop-color="#660000" stop-opacity="0"/></radialGradient></defs><!-- skull head --><g style="animation: gta-skull-rise 2600ms ease-out forwards;" filter="url(#gta-glow)"><ellipse cx="100" cy="88" rx="24" ry="26" fill="#440011" stroke="#ff3300" stroke-width="1.5"/><circle cx="92" cy="86" r="7" fill="#ff0000" fill-opacity="0.8"/><circle cx="108" cy="86" r="7" fill="#ff0000" fill-opacity="0.8"/><circle cx="92" cy="86" r="4" fill="#ffcc00"/><circle cx="108" cy="86" r="4" fill="#ffcc00"/><rect x="90" y="105" width="4" height="6" fill="#ff3300" rx="1"/><rect x="96" y="105" width="4" height="6" fill="#ff3300" rx="1"/><rect x="102" y="105" width="4" height="6" fill="#ff3300" rx="1"/><!-- nasal --><path d="M97,97 L100,103 L103,97" fill="none" stroke="#ff3300" stroke-width="1"/></g><!-- HP drain beam from enemy to caster --><line x1="100" y1="88" x2="100" y2="155" stroke="#ff4488" stroke-width="2" stroke-dasharray="8 4" style="animation: gta-drain-beam 2600ms ease-out forwards 400ms;"/><!-- drain orbs floating down --><circle cx="100" cy="108" r="6" fill="#ff0044" fill-opacity="0.8" filter="url(#gta-glow)" style="animation: gta-hp-drain 2600ms ease-out forwards 800ms;"/><circle cx="100" cy="108" r="4" fill="#ff4488" fill-opacity="0.7" style="animation: gta-hp-drain 2600ms ease-out forwards 1000ms;"/><!-- pyro nova --><circle cx="100" cy="108" r="3" fill="url(#gta-fire-core)" style="animation: gta-pyro-nova 2600ms ease-out forwards 1400ms;"/>`;
-    return s;
-  }},
-
   // Dance of Blessing
   'dance_of_blessing': { duration: 1900, create: () => {
     const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
