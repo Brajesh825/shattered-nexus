@@ -41,7 +41,7 @@ function buildParty() {
       abilities: cls.abilities,
       isPlayer,
       isKO: ch.hp === 0 || !!ch.isKO,
-      buff: null, debuff: null, regenTurns: 0, stunned: false, frozen: 0,
+      regenTurns: 0, stunned: false, frozen: 0,
       statuses: [],
       cooldowns: {},
       _dragonLeapTurns: 0,

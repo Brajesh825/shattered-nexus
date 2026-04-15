@@ -117,7 +117,7 @@ const StatusSystem = {
       if (s.type === 'dot' || s.id === 'status_burn') {
         const amt = s.value || 10;
         unit.hp = Math.max(0, unit.hp - amt);
-        if (unit.hp <= 0) { unit.isKO = true; if (!isEnemy && typeof _checkReviveOnce === 'function') _checkReviveOnce(unit); }
+        if (unit.hp <= 0) Battle.setKO(unit, isEnemy);
 
         const idx = isEnemy ? G.enemyGroup.indexOf(unit) : G.party.indexOf(unit);
         if (typeof BattleUI !== 'undefined') {
@@ -129,7 +129,7 @@ const StatusSystem = {
       if (s.type === 'dot_percent' || s.id === 'status_poison') {
         const amt = Math.max(1, Math.floor(unit.maxHp * 0.05));
         unit.hp = Math.max(0, unit.hp - amt);
-        if (unit.hp <= 0) { unit.isKO = true; if (!isEnemy && typeof _checkReviveOnce === 'function') _checkReviveOnce(unit); }
+        if (unit.hp <= 0) Battle.setKO(unit, isEnemy);
 
         const idx = isEnemy ? G.enemyGroup.indexOf(unit) : G.party.indexOf(unit);
         if (typeof BattleUI !== 'undefined') {

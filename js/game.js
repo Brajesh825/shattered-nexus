@@ -83,6 +83,17 @@ const Battle = {
     if (row.weak.includes(clsElem)) return 0.5;
     return 1.0;
   },
+  // Mark a unit as KO. For party members, checks reviveOnce relic and logs the fall.
+  // Pass isEnemy=true to skip party-specific logic.
+  setKO(unit, isEnemy = false) {
+    unit.isKO = true;
+    if (!isEnemy) {
+      if (typeof _checkReviveOnce === 'function') _checkReviveOnce(unit);
+      if (unit.isKO && typeof BattleUI !== 'undefined')
+        BattleUI.addLog(`${unit.displayName} has fallen!`, 'dmg');
+    }
+    if (window.LogDebug) window.LogDebug(`[KO] ${unit.displayName || unit.name} knocked out`, 'dmg');
+  },
   // Returns 'weak'|'resist'|null for UI feedback when enemy attacks a party member
   playerElemResult(attackElement, partyMember) {
     if (!attackElement || attackElement === 'physical') return null;

@@ -5,6 +5,9 @@
  */
 const CombatEngine = (() => {
 
+  // Balance constants — edit here for global tuning, not inside formulas
+  const MAG_MITIGATION_RATE = 0.55; // fraction of scaled mdef applied as magic damage reduction
+
   /**
    * Returns final combat stats by applying active modifiers.
    * Formula: (base + Sum(Flat)) * Product(Multipliers)
@@ -102,7 +105,7 @@ const CombatEngine = (() => {
     } = options;
 
     const scaledMag = mag + (magLevel * 0.8);
-    const magMitigation = (mdef + mdefLevel * 0.3) * 0.55;
+    const magMitigation = (mdef + mdefLevel * 0.3) * MAG_MITIGATION_RATE;
     
     const base = Math.max(1, scaledMag - magMitigation);
     const critMult = isCrit ? 2.0 : 1.0;

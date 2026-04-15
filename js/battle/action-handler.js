@@ -22,6 +22,13 @@ function _checkReviveOnce(member) {
 }
 
 /**
+ * Returns move animation config for the given ability ID, with safe defaults.
+ */
+function getMoveConfig(id) {
+  return moveAnimations[id] || { actorDuration: 560, overlayDuration: 600, isUltimate: false };
+}
+
+/**
  * Consolidated logic for offensive actions (Physical/Magic).
  * Reduces code duplication between heroAttack and heroAbility.
  */
@@ -86,7 +93,7 @@ function resolveOffensiveAction(actor, target, targetIdx, action, element) {
 
   // 5. Apply result
   target.hp = Math.max(0, target.hp - dmg);
-  if (target.hp <= 0) target.isKO = true;
+  if (target.hp <= 0) Battle.setKO(target, true);
   BattleUI.popEnemy(targetIdx, dmg, isMagic ? 'magic' : 'dmg', element);
   BattleUI.createEffectOverlay(targetIdx, element, 'enemy', action.id);
 
@@ -202,7 +209,7 @@ function resolveEnemyOffensiveAction(actor, target, targetIdx, ab, element) {
 
   // 8. Apply damage
   target.hp = Math.max(0, target.hp - dmg);
-  if (target.hp <= 0) { target.isKO = true; _checkReviveOnce(target); if (target.isKO) BattleUI.addLog(`${target.displayName} has fallen!`, 'dmg'); }
+  if (target.hp <= 0) Battle.setKO(target, false);
   BattleUI.popParty(targetIdx, dmg, isMagic ? 'magic' : 'dmg', element);
 
   // 9. Aura
@@ -497,7 +504,7 @@ function heroAbility(ab) {
 
   const e = ab.effect || {};
   const element = e.element || 'physical';
-  const moveConfig = moveAnimations[ab.id] || { actorDuration: 560, overlayDuration: 600, isUltimate: false };
+  const moveConfig = getMoveConfig(ab.id);
 
   // HP Sacrifice (Hu Tao)
   if (e.hpCostPercent) {
@@ -551,7 +558,7 @@ function _checkDragonLeap(actor) {
   if (!tgt || !Battle.alive(tgt)) return;
   const dmg = Math.floor(Battle.physDmg(Battle.getStat(actor, 'atk'), Battle.getStat(tgt, 'def'), 1.6, actor.lv || 1, tgt.level || 1) * Battle.elemMult('wind', tgt));
   tgt.hp = Math.max(0, tgt.hp - dmg);
-  if (tgt.hp <= 0) tgt.isKO = true;
+  if (tgt.hp <= 0) Battle.setKO(tgt, true);
   BattleUI.popEnemy(G.targetEnemyIdx, dmg, 'dmg', 'wind');
   BattleUI.addLog(`🐉 Dragon's Leap! Bonus aerial strike for ${dmg}!`, 'magic');
   BattleUI.renderEnemyRow();
@@ -659,9 +666,7 @@ function enemyAct(enemy, enemyIdx) {
   const element = enemy.element || ab?.effect?.element || 'physical';
 
   // Get move-specific animation config or use defaults
-  const moveConfig = (ab?.id && moveAnimations[ab.id])
-    ? moveAnimations[ab.id]
-    : { actorDuration: 460, overlayDuration: 600, isUltimate: false };
+  const moveConfig = getMoveConfig(ab?.id);
   const animDuration = moveConfig.actorDuration;
 
   const enemySpr = BattleUI.getSprite(enemyIdx, 'enemy');
