@@ -53,9 +53,17 @@ const Battle = {
   getStat(m, stat) {
     return CombatEngine.getStat(m, stat);
   },
-  // Adds a status to an actor, handling duration refreshing for identical IDs
-  addStatus(m, config) { 
-    StatusSystem.add(m, config); 
+  // Adds a status to an actor, handling duration refreshing for identical IDs.
+  // Relic: Drowned Sigil — statusResist gives a chance to block debuff/control effects.
+  addStatus(m, config) {
+    const def = typeof config === 'string' ? StatusSystem.DEFS[config] : config;
+    if (def && m._statusResist && (def.type === 'control' || def.type === 'dot' || def.type === 'dot_percent')) {
+      if (Math.random() < m._statusResist) {
+        if (typeof BattleUI !== 'undefined') BattleUI.addLog(`🌊 ${m.displayName} resisted ${def.label}!`, 'hi');
+        return;
+      }
+    }
+    StatusSystem.add(m, config);
   },
   // Returns 'weak'|'resist'|'immune'|'shatter'|null for UI display
   elemResult(abilityElement, target) {

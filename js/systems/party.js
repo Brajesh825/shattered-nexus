@@ -86,7 +86,7 @@ function applyRelicBonuses() {
   const defs = G.relics || [];
 
   // Aggregate bonuses from all active relics
-  const bonus = { hp: 1, mp: 1, atk: 1, def: 1, spd: 1, mag: 1, lck: 1, healAmp: 1, mpRegen: 0, eliteResist: 0 };
+  const bonus = { hp: 1, mp: 1, atk: 1, def: 1, spd: 1, mag: 1, lck: 1, healAmp: 1, mpRegen: 0, eliteResist: 0, fireResist: 0, statusResist: 0, firstStrike: false };
   active.forEach(id => {
     const r = defs.find(d => d.id === id);
     if (!r || !r.bonus) return;
@@ -99,7 +99,10 @@ function applyRelicBonuses() {
     if (r.bonus.lck) bonus.lck += r.bonus.lck;
     if (r.bonus.healAmp) bonus.healAmp += r.bonus.healAmp;
     if (r.bonus.mpRegen) bonus.mpRegen += r.bonus.mpRegen;
-    if (r.bonus.eliteResist) bonus.eliteResist += r.bonus.eliteResist; // Tarnished Wing
+    if (r.bonus.eliteResist) bonus.eliteResist += r.bonus.eliteResist;
+    if (r.bonus.fireResist) bonus.fireResist += r.bonus.fireResist;   // Cinder of Ashveil
+    if (r.bonus.statusResist) bonus.statusResist += r.bonus.statusResist; // Drowned Sigil
+    if (r.bonus.firstStrike) bonus.firstStrike = true;                // Echo of the Unmade
   });
 
   G.party.forEach(m => {
@@ -112,10 +115,16 @@ function applyRelicBonuses() {
     m.spd = Math.floor(m.spd * bonus.spd);
     m.mag = Math.floor(m.mag * bonus.mag);
     m.lck = Math.floor(m.lck * bonus.lck);
-    m._healAmpRelic = bonus.healAmp;    // used by healing logic
-    m._mpRegenBonus = bonus.mpRegen;    // extra % of maxMp per turn
-    m._eliteResist = bonus.eliteResist; // fraction of damage reduction vs Corrupted/Mutant
+    m._healAmpRelic  = bonus.healAmp;     // used by healing logic
+    m._mpRegenBonus  = bonus.mpRegen;     // extra % of maxMp per turn
+    m._eliteResist   = bonus.eliteResist; // fraction of damage reduction vs Corrupted/Mutant
+    m._fireResist    = bonus.fireResist;  // fraction of fire damage reduction
+    m._statusResist  = bonus.statusResist; // chance (0–1) to resist debuff application
   });
+
+  // firstStrike: flag on G so TurnManager can guarantee party acts first in round 1
+  G._firstStrikeRelic = bonus.firstStrike;
+  if (bonus.firstStrike) G._firstStrikeUsed = false;
 }
 
 function checkLevel() { return checkMemberLevel(G.hero); }

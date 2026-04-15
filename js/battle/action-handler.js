@@ -205,6 +205,11 @@ function resolveEnemyOffensiveAction(actor, target, targetIdx, ab, element) {
     dmg = Math.floor(dmg * 0.7);
     BattleUI.addLog(`(Guardian Mitigated -30%)`, 'hi');
   }
+  // Relic: Cinder of Ashveil — fire damage reduction
+  if (element === 'fire' && target._fireResist) {
+    dmg = Math.floor(dmg * (1 - target._fireResist));
+    BattleUI.addLog(`🔥 Fire Resist! (–${Math.round(target._fireResist * 100)}%)`, 'hi');
+  }
   dmg = _applyEliteResist(dmg);
 
   // 8. Apply damage
