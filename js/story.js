@@ -1027,7 +1027,7 @@ const Story = {
      SAVE HELPERS
   ════════════════════════════════════════════════════════════════════════ */
   _doSave() {
-    if (!this.data || !G.hero) return;
+    if (!this.data || !G.hero || !G.party || !G.party.length) return;
     // On first save of a new game, clear the slot first (safe: we're about to overwrite it)
     if (this._newGameSlot !== undefined) {
       Save.clear(this._newGameSlot);

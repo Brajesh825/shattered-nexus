@@ -102,7 +102,7 @@ const CombatEngine = (() => {
     } = options;
 
     const scaledMag = mag + (magLevel * 0.8);
-    const magMitigation = (mdef + mdefLevel * 0.3) * 0.4;
+    const magMitigation = (mdef + mdefLevel * 0.3) * 0.55;
     
     const base = Math.max(1, scaledMag - magMitigation);
     const critMult = isCrit ? 2.0 : 1.0;
