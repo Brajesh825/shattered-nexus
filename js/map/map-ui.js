@@ -315,12 +315,141 @@ const MapUI = (() => {
     G.inventory.forEach(stack => {
       const def = G.items?.find(i => i.id === stack.itemId);
       if (!def) return;
+      const isMapUsable = def.usable_in && def.usable_in.includes('map');
       const slot = document.createElement('div');
-      slot.className = 'pause-inv-slot';
+      slot.className = 'pause-inv-slot' + (isMapUsable ? ' map-usable' : '');
       slot.title = def.description;
       slot.innerHTML = `${def.icon} ${def.name} <span class="pi-qty">×${stack.qty}</span>`;
+      if (isMapUsable) {
+        slot.onclick = () => _onMapItemClick(def);
+      }
       grid.appendChild(slot);
     });
+  }
+
+  function _onMapItemClick(def) {
+    // Remove any existing picker first
+    const existing = document.getElementById('map-item-picker');
+    if (existing) existing.remove();
+
+    const effects = def.effects || [];
+    const needsTarget = effects.some(e => e.target === 'single');
+
+    if (!needsTarget) {
+      // Apply to all party members immediately
+      _applyMapItem(def, null);
+    } else {
+      _showMapItemTargetPicker(def);
+    }
+  }
+
+  function _showMapItemTargetPicker(def) {
+    const grid = document.getElementById('pause-inv-grid');
+    if (!grid) return;
+
+    const picker = document.createElement('div');
+    picker.id = 'map-item-picker';
+    picker.className = 'map-item-picker';
+    picker.innerHTML = `<div class="mip-title">Use ${def.icon} ${def.name} on:</div>`;
+
+    G.party.forEach((m, i) => {
+      if (!m) return;
+      const col = CHAR_COLOR_MAP[m.charId] || '#a090d0';
+      const isKO = !m.hp || m.isKO;
+      const hpPct = Math.max(0, m.hp / m.maxHp * 100);
+
+      // For phoenix_down-type items, only show KO'd members; for others, only alive
+      const isReviveItem = (def.effects || []).some(e => e.stat === 'revive');
+      if (isReviveItem && !isKO) return;
+      if (!isReviveItem && isKO) return;
+
+      const btn = document.createElement('button');
+      btn.className = 'mip-member-btn';
+      btn.style.borderColor = col;
+      btn.innerHTML = `<span style="color:${col}">${m.displayName}</span> <span class="mip-hp">${m.hp}/${m.maxHp} HP</span>`;
+      btn.onclick = () => {
+        picker.remove();
+        _applyMapItem(def, i);
+      };
+      picker.appendChild(btn);
+    });
+
+    const cancelBtn = document.createElement('button');
+    cancelBtn.className = 'mip-cancel';
+    cancelBtn.textContent = 'Cancel';
+    cancelBtn.onclick = () => picker.remove();
+    picker.appendChild(cancelBtn);
+
+    // Insert after the grid
+    grid.parentNode.insertBefore(picker, grid.nextSibling);
+  }
+
+  function _applyMapItem(def, memberIdx) {
+    const effects = def.effects || [];
+    const targets = memberIdx !== null
+      ? [G.party[memberIdx]]
+      : G.party.filter(m => m && !m.isKO && m.hp > 0);
+
+    let used = false;
+    effects.forEach(e => {
+      targets.forEach(m => {
+        if (!m) return;
+        if (e.stat === 'hp' && e.amount) {
+          if (m.isKO || m.hp <= 0) return; // skip KO'd for heal
+          const heal = e.percent
+            ? Math.floor(m.maxHp * e.amount / 100)
+            : e.amount;
+          m.hp = Math.min(m.maxHp, m.hp + heal);
+          used = true;
+        } else if (e.stat === 'mp' && e.amount) {
+          if (m.isKO) return;
+          const restore = e.percent
+            ? Math.floor(m.maxMp * e.amount / 100)
+            : e.amount;
+          m.mp = Math.min(m.maxMp, m.mp + restore);
+          used = true;
+        } else if (e.stat === 'revive') {
+          if (!m.isKO && m.hp > 0) return;
+          m.isKO = false;
+          m.hp = e.amount
+            ? Math.min(m.maxHp, e.percent ? Math.floor(m.maxHp * e.amount / 100) : e.amount)
+            : 1;
+          if (m.char) m.char.isKO = false;
+          used = true;
+        } else if (e.stat === 'debuff') {
+          if (m.statuses) {
+            m.statuses = m.statuses.filter(s =>
+              !s.id.includes('debuff') && s.type !== 'control' && s.type !== 'dot'
+            );
+          }
+          used = true;
+        }
+      });
+    });
+
+    if (!used) return;
+
+    // Consume one from inventory
+    const stack = G.inventory.find(s => s.itemId === def.id);
+    if (stack) {
+      stack.qty--;
+      if (stack.qty <= 0) {
+        G.inventory = G.inventory.filter(s => s.itemId !== def.id);
+      }
+    }
+
+    // Sync char HP/MP so it carries between battles
+    G.party.forEach(m => {
+      if (m && m.char) {
+        m.char.hp = m.hp;
+        m.char.mp = m.mp;
+        m.char.isKO = m.isKO;
+      }
+    });
+
+    showMsg(`Used ${def.icon} ${def.name}!`, 1400);
+    _renderPauseCards();
+    _renderPauseInventory();
   }
 
   /* ── Periodic HUD / minimap refresh (called by engine each frame) ── */
@@ -372,7 +501,7 @@ const MapUI = (() => {
     G.mode = 'story';
     if (typeof Story !== 'undefined' && Story._doSave) Story._doSave();
     if (typeof Story !== 'undefined' && Story._showWorldMap) Story._showWorldMap();
-    else if (typeof UI !== 'undefined') UI.show('map-screen');
+    else showScreen('map-screen');
   }
 
   function campChangeParty() {

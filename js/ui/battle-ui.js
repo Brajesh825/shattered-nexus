@@ -163,6 +163,7 @@ const BattleUI = {
     container.innerHTML = '';
 
     G.party.forEach((m, i) => {
+      if (!m) return;
       const col = CHAR_COLOR[m.charId] || '#c0b8e8';
       const alive = Battle.alive(m);
       const pct = Math.max(0, m.hp / m.maxHp * 100);
@@ -194,6 +195,13 @@ const BattleUI = {
       info.innerHTML = `<div class="party-name">${m.displayName}</div><div class="party-level">Lv ${m.lv}</div>`;
       member.appendChild(info);
 
+      if (m.statuses && m.statuses.length > 0) {
+        const strip = document.createElement('div');
+        strip.className = 'portrait-status-strip';
+        strip.innerHTML = this._renderPSCStatuses(m);
+        member.appendChild(strip);
+      }
+
       if (!alive) {
         const koLbl = document.createElement('div');
         koLbl.className = 'ko-badge';
@@ -223,6 +231,7 @@ const BattleUI = {
     if (!bar) return;
     bar.innerHTML = '';
     G.party.forEach((m, i) => {
+      if (!m) return;
       const col = CHAR_COLOR[m.charId] || '#c0b8e8';
       const hpPct = Math.max(0, m.hp / m.maxHp * 100);
       const mpPct = Math.max(0, m.mp / m.maxMp * 100);
@@ -387,14 +396,25 @@ const BattleUI = {
     setTimeout(() => spr.classList.remove('anim-shake'), 380);
   },
 
-  createEffectOverlay(targetIdx, element, targetType = 'enemy', abilityId = null) {
+  triggerScreenShake(durationMs = 380) {
+    const scene = this.el('battle-scene');
+    if (!scene) return;
+    scene.classList.add('battle-scene-shake');
+    setTimeout(() => scene.classList.remove('battle-scene-shake'), durationMs + 50);
+  },
+
+  createEffectOverlay(targetIdx, element, targetType = 'enemy', abilityId = null, opts = {}) {
     if (targetIdx === undefined || targetIdx === null) return;
     let overlay = null;
     let duration = 600;
 
     if (abilityId && typeof SVGAnimations !== 'undefined' && SVGAnimations[abilityId]) {
-      overlay = SVGAnimations[abilityId].create(targetIdx, targetType);
-      duration = SVGAnimations[abilityId].duration;
+      const _cfg = SVGAnimations[abilityId];
+      if (_cfg.screenShake && !opts.suppressShake) {
+        setTimeout(() => this.triggerScreenShake(_cfg.screenShake), _cfg.shakeDelay || 0);
+      }
+      overlay = _cfg.create(targetIdx, targetType);
+      duration = _cfg.duration;
     } else if (abilityId && moveAnimations[abilityId]) {
       overlay = document.createElement('div');
       overlay.className = `effect-overlay overlay-${abilityId}`;

@@ -9,15 +9,29 @@ const TurnManager = {
    */
   buildQueue() {
     const q = [];
-    G.party.forEach((m, i) => { 
-      if (Battle.alive(m)) q.push({ type: 'party', idx: i, spd: Battle.getStat(m, 'spd') }); 
+    G.party.forEach((m, i) => {
+      if (Battle.alive(m)) q.push({ type: 'party', idx: i, spd: Battle.getStat(m, 'spd') });
     });
-    G.enemyGroup.forEach((e, i) => { 
-      if (Battle.alive(e)) q.push({ type: 'enemy', idx: i, spd: Battle.getStat(e, 'spd') }); 
+    G.enemyGroup.forEach((e, i) => {
+      if (Battle.alive(e)) q.push({ type: 'enemy', idx: i, spd: Battle.getStat(e, 'spd') });
     });
-    
+
     // Higher speed units act first
     q.sort((a, b) => b.spd - a.spd);
+
+    // Relic: Echo of the Unmade — firstStrike guarantees the fastest party member
+    // acts first on the opening round of each battle (fires once per battle).
+    if (G._firstStrikeRelic && !G._firstStrikeUsed) {
+      G._firstStrikeUsed = true;
+      const partyEntries = q.filter(t => t.type === 'party');
+      if (partyEntries.length) {
+        const fastest = partyEntries.reduce((a, b) => a.spd >= b.spd ? a : b);
+        const idx = q.indexOf(fastest);
+        if (idx > 0) { q.splice(idx, 1); q.unshift(fastest); }
+        BattleUI.addLog(`🌑 First Strike! ${G.party[fastest.idx].displayName} moves first!`, 'hi');
+      }
+    }
+
     return q;
   },
 

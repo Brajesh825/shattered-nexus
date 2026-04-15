@@ -298,7 +298,7 @@
       </div>
       <div class="cmd-grid" id="cmd-grid-main">
         <button class="cmd-btn" onclick="heroAttack()">⚔ ATTACK</button>
-        <button class="cmd-btn" onclick="UI.openSub('ability-sub')">✨ ABILITY</button>
+        <button class="cmd-btn" onclick="BattleUI.openSub('ability-sub')">✨ ABILITY</button>
         <button class="cmd-btn" onclick="heroItem()">🧪 ITEM</button>
         <button class="cmd-btn" onclick="heroRun()">💨 RUN</button>
         <button class="cmd-btn cmd-party-btn" onclick="openPartyMenu()">👥 PARTY</button>
@@ -488,6 +488,7 @@
 <script src="js/data-loader.js"></script>
 <script src="js/svg-animations.js"></script>
 <script src="js/asset-preloader.js"></script>
+<script src="js/game.js"></script>
 <script src="js/ui/menu-manager.js"></script>
 <script src="js/systems/party.js"></script>
 <script src="js/systems/inventory.js"></script>
@@ -498,7 +499,6 @@
 <script src="js/battle/combat-engine.js"></script>
 
 <script src="js/battle/action-handler.js"></script>
-<script src="js/game.js"></script>
 <script src="js/story.js"></script>
 <script>
   TTS.init();

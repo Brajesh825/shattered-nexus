@@ -455,7 +455,49 @@
   gap: 5px;
 }
 .pause-inv-slot .pi-qty { color: #d8c860; font-size: var(--fs-xxs); }
+.pause-inv-slot.map-usable { cursor: pointer; border-color: #4a3880; }
+.pause-inv-slot.map-usable:hover { background: rgba(100,80,200,0.18); border-color: #9080e0; }
 .pause-inv-empty { font-size: var(--fs-xs); color: #403860; font-style: italic; }
+
+/* Map item target picker */
+.map-item-picker {
+  background: rgba(5,4,22,0.96);
+  border: 1px solid #3a2880;
+  border-radius: 6px;
+  padding: 8px;
+  margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.mip-title { font-size: var(--fs-xs); color: #9080e0; margin-bottom: 2px; }
+.mip-member-btn {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid #3a2880;
+  border-radius: 4px;
+  color: #d0c8f0;
+  font-size: var(--fs-xs);
+  padding: 4px 8px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+.mip-member-btn:hover { background: rgba(100,80,200,0.2); }
+.mip-hp { color: #6080c0; font-size: var(--fs-xxs); }
+.mip-cancel {
+  background: transparent;
+  border: 1px solid #3a1840;
+  border-radius: 4px;
+  color: #804060;
+  font-size: var(--fs-xxs);
+  padding: 3px 6px;
+  cursor: pointer;
+  align-self: flex-start;
+  margin-top: 2px;
+}
+.mip-cancel:hover { color: #ef4444; border-color: #ef4444; }
 
 /* Action buttons */
 .pause-actions {

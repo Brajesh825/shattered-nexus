@@ -68,7 +68,7 @@ MapEngine.onEncounterStart = (enc, map) => {
     mutation, // carried into the built enemy object
   })) : enemyDefs;
 
-  buildEnemyGroup(mutatedDefs, spawnLevel, false, mutation);
+  buildEnemyGroup(mutatedDefs, spawnLevel, false);
 
   // Apply mutation stat multipliers on top of built group
   if (mutation) {

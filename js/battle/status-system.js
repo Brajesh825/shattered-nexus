@@ -19,7 +19,9 @@ const StatusSystem = {
     // Control / Debuffs
     stunned: { id: 'status_stunned', label: 'Stunned', icon: '💫', type: 'control', turns: 1, color: '#ffcc00' },
     frozen: { id: 'status_frozen', label: 'Frozen', icon: '❄️', type: 'control', turns: 2, color: '#00ccff' },
+    slow: { id: 'status_slow', label: 'Slow', icon: '🐌', type: 'control', turns: 2, color: '#aa88ff' },
     burn: { id: 'status_burn', label: 'Burn', icon: '🔥', type: 'dot', color: '#ff4400' },
+    poison: { id: 'status_poison', label: 'Poison', icon: '🟢', type: 'dot_percent', color: '#44cc44' },
     def_shatter: { id: 'status_def_shatter', label: 'Shattered', icon: '❄️', stat: 'def', type: 'mult', value: 0.7, color: '#00ccff' },
     
     // Auras
@@ -86,12 +88,12 @@ const StatusSystem = {
         if (window.LogDebug) window.LogDebug(`[Passive] ${unit.displayName}: Nature's Grace (+5 HP)`, 'passive');
       }
 
-      // Divine Blessing (Aura-based passive)
-      const _hasDivBless = G.party.some(p => (Battle.alive ? Battle.alive(p) : (p && !p.isKO && p.hp > 0)) && p.passive?.id === 'divine_blessing');
+      // Divine Blessing (self-only passive — only heals the unit that has the passive)
+      const _hasDivBless = unit.passive?.id === 'divine_blessing' && Battle.alive(unit);
       if (_hasDivBless && unit.hp < unit.maxHp) {
         const _dbAmt = Math.max(1, Math.floor(unit.maxHp * 0.15));
         unit.hp = Math.min(unit.maxHp, unit.hp + _dbAmt);
-        if (window.LogDebug) window.LogDebug(`[Passive] ${unit.displayName}: Divine Blessing aura (+${_dbAmt} HP)`, 'passive');
+        if (window.LogDebug) window.LogDebug(`[Passive] ${unit.displayName}: Divine Blessing (+${_dbAmt} HP)`, 'passive');
       }
     }
 
@@ -116,13 +118,26 @@ const StatusSystem = {
       if (s.type === 'dot' || s.id === 'status_burn') {
         const amt = s.value || 10;
         unit.hp = Math.max(0, unit.hp - amt);
-        if (unit.hp <= 0) unit.isKO = true;
-        
+        if (unit.hp <= 0) Battle.setKO(unit, isEnemy);
+
         const idx = isEnemy ? G.enemyGroup.indexOf(unit) : G.party.indexOf(unit);
         if (typeof BattleUI !== 'undefined') {
           if (isEnemy) BattleUI.popEnemy(idx, amt, 'dmg', 'fire');
           else BattleUI.popParty(idx, amt, 'dmg', 'fire');
         }
+      }
+
+      if (s.type === 'dot_percent' || s.id === 'status_poison') {
+        const amt = Math.max(1, Math.floor(unit.maxHp * 0.05));
+        unit.hp = Math.max(0, unit.hp - amt);
+        if (unit.hp <= 0) Battle.setKO(unit, isEnemy);
+
+        const idx = isEnemy ? G.enemyGroup.indexOf(unit) : G.party.indexOf(unit);
+        if (typeof BattleUI !== 'undefined') {
+          if (isEnemy) BattleUI.popEnemy(idx, amt, 'dmg', 'nature');
+          else BattleUI.popParty(idx, amt, 'dmg', 'nature');
+        }
+        if (window.LogDebug) window.LogDebug(`[DoT] ${unit.displayName || unit.name}: Poison -${amt} HP`, 'dmg');
       }
 
       // Decrement duration (except for permanent or aura effects that might have special rules)
@@ -171,7 +186,7 @@ const StatusSystem = {
       if (detonator === 'physical' || detonator === 'earth') reaction = { id: 'shatter', label: 'SHATTER', color: '#00ccff', dmgMult: 1.5, debuff: 'def' };
       else if (detonator === 'fire') reaction = { id: 'melt', label: 'MELT', color: '#ffaa00', dmgMult: 2.0 };
     } else if (auraType === 'fire') {
-      if (detonator === 'nature') reaction = { id: 'conflagration', label: 'CONFLAGRATION', color: '#ff4400', dmgMult: 1.25, isAOE: true };
+      if (detonator === 'nature') reaction = { id: 'conflagration', label: 'CONFLAGRATION', color: '#ff4400', dmgMult: 1.5, isAOE: true, dot: true };
       else if (detonator === 'water') reaction = { id: 'vaporize', label: 'VAPORIZE', color: '#55aaff', dmgMult: 2.0 };
       else if (detonator === 'ice') reaction = { id: 'melt', label: 'MELT', color: '#ffaa00', dmgMult: 1.5 };
     } else if (auraType === 'water') {

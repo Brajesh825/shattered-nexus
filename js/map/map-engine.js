@@ -643,12 +643,12 @@ const MapEngine = (() => {
     if (!victory) {
       G.mode = 'free';
       if (typeof Story !== 'undefined' && Story.active) Story.onBattleLost();
-      else if (typeof UI !== 'undefined') UI.show('title-screen');
+      else showScreen('title-screen');
       MapEntities.clear();
       return;
     }
     MapEntities.removeEncountered();
-    if (typeof UI !== 'undefined') UI.show('explore-screen');
+    showScreen('explore-screen');
     resume();
     // Objective check runs next frame via _update → _checkObjective
     if (typeof MapUI !== 'undefined') MapUI.showMsg('Victory!', 1200);
