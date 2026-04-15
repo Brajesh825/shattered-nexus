@@ -533,7 +533,7 @@ function heroAbility(ab) {
   const isUltimate = ultimateChannels.hasOwnProperty(ab.id);
 
   const enemy = G.enemy;
-  const offensiveTargets = (e.aoe || isUltimate)
+  const offensiveTargets = e.aoe
     ? G.enemyGroup.filter(en => Battle.alive(en))
     : (enemy ? [enemy] : []);
 
