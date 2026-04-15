@@ -98,8 +98,6 @@ function resolveOffensiveAction(actor, target, targetIdx, action, element) {
   // Skip overlay for ultimates — heroAbility already fired it before the execute delay
   if (!action._ultimateOverlayShown) {
     BattleUI.createEffectOverlay(targetIdx, element, 'enemy', action.id);
-  } else {
-    delete action._ultimateOverlayShown; // clean up after first target processed
   }
 
   if (!reaction && element !== 'physical') {
