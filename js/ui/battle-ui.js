@@ -394,14 +394,25 @@ const BattleUI = {
     setTimeout(() => spr.classList.remove('anim-shake'), 380);
   },
 
+  triggerScreenShake(durationMs = 380) {
+    const scene = this.el('battle-scene');
+    if (!scene) return;
+    scene.classList.add('battle-scene-shake');
+    setTimeout(() => scene.classList.remove('battle-scene-shake'), durationMs + 50);
+  },
+
   createEffectOverlay(targetIdx, element, targetType = 'enemy', abilityId = null) {
     if (targetIdx === undefined || targetIdx === null) return;
     let overlay = null;
     let duration = 600;
 
     if (abilityId && typeof SVGAnimations !== 'undefined' && SVGAnimations[abilityId]) {
-      overlay = SVGAnimations[abilityId].create(targetIdx, targetType);
-      duration = SVGAnimations[abilityId].duration;
+      const _cfg = SVGAnimations[abilityId];
+      if (_cfg.screenShake) {
+        setTimeout(() => this.triggerScreenShake(_cfg.screenShake), _cfg.shakeDelay || 0);
+      }
+      overlay = _cfg.create(targetIdx, targetType);
+      duration = _cfg.duration;
     } else if (abilityId && moveAnimations[abilityId]) {
       overlay = document.createElement('div');
       overlay.className = `effect-overlay overlay-${abilityId}`;

@@ -13,7 +13,7 @@ const SVGAnimations = {
     return s;
   }},
 
-  // Glacial Waltz
+  // Glacial Waltz — Snowstorm Vortex
   'glacial_waltz': { duration: 2100, create: () => {
     const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     s.setAttribute('viewBox', '0 0 200 200');
@@ -21,10 +21,51 @@ const SVGAnimations = {
     s.setAttribute('height', '200');
     s.classList.add('battle-svg-animation');
     s.innerHTML = `<defs><style>
-      @keyframes gw-wave-ring { 0% { r: 8; opacity: 1; stroke-width: 3; } 50% { r: 45; opacity: 0.6; } 100% { r: 90; opacity: 0; stroke-width: 0.3; } }
-      @keyframes gw-spin-blade { 0% { transform: rotate(0deg); opacity: 0; } 8% { opacity: 1; } 100% { transform: rotate(720deg); opacity: 0; } }
-      @keyframes gw-spd-arrow { 0% { transform: translateY(40px); opacity: 0; } 30% { opacity: 1; } 70% { transform: translateY(-50px); opacity: 1; } 100% { transform: translateY(-80px); opacity: 0; } }
-    </style></defs><defs><filter id="gw-glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><!-- outer AOE wave ring --><circle cx="100" cy="105" r="8" fill="none" stroke="#4ecfff" stroke-width="3" style="animation: gw-wave-ring 2100ms ease-out forwards 200ms;"/><circle cx="100" cy="105" r="8" fill="none" stroke="#7dd3fc" stroke-width="1.5" style="animation: gw-wave-ring 2100ms ease-out forwards 500ms;"/><!-- spinning core --><g style="transform-origin:100px 105px; animation: gw-spin-blade 2100ms ease-out forwards;"><!-- 6 ice blades --><ellipse cx="100" cy="65" rx="5" ry="14" fill="#4ecfff" opacity="0.9" filter="url(#gw-glow)"/><ellipse cx="100" cy="65" rx="5" ry="14" fill="#4ecfff" opacity="0.9" transform="rotate(60 100 105)" filter="url(#gw-glow)"/><ellipse cx="100" cy="65" rx="5" ry="14" fill="#7dd3fc" opacity="0.8" transform="rotate(120 100 105)"/><ellipse cx="100" cy="65" rx="5" ry="14" fill="#4ecfff" opacity="0.9" transform="rotate(180 100 105)"/><ellipse cx="100" cy="65" rx="5" ry="14" fill="#7dd3fc" opacity="0.8" transform="rotate(240 100 105)"/><ellipse cx="100" cy="65" rx="5" ry="14" fill="#4ecfff" opacity="0.9" transform="rotate(300 100 105)"/></g><!-- speed arrow indicator --><g style="animation: gw-spd-arrow 2100ms ease-out forwards 800ms; transform-origin: 160px 150px;"><line x1="155" y1="155" x2="155" y2="130" stroke="#80ffcc" stroke-width="2"/><polygon points="155,125 151,133 159,133" fill="#80ffcc"/><text x="163" y="145" fill="#80ffcc" font-size="8" font-family="monospace">SPD+</text></g>`;
+      @keyframes gw-wave-ring { 0%{r:8;opacity:1;stroke-width:3} 50%{r:48;opacity:0.6} 100%{r:92;opacity:0;stroke-width:0.3} }
+      @keyframes gw-spin-blade { 0%{transform:rotate(0deg);opacity:0} 8%{opacity:1} 100%{transform:rotate(780deg);opacity:0} }
+      @keyframes gw-snow { 0%{transform:rotate(calc(var(--a)*1deg)) translateX(var(--r)) scale(1);opacity:0.9} 100%{transform:rotate(calc((var(--a)+360)*1deg)) translateX(calc(var(--r)*1.6)) scale(0.2);opacity:0} }
+      @keyframes gw-spd-arrow { 0%{transform:translateY(40px);opacity:0} 30%{opacity:1} 70%{transform:translateY(-50px);opacity:1} 100%{transform:translateY(-80px);opacity:0} }
+      @keyframes gw-vortex-fade { 0%{opacity:0} 15%{opacity:0.7} 80%{opacity:0.5} 100%{opacity:0} }
+    </style>
+    <filter id="gw-glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="gw-vortex-filter">
+      <feTurbulence type="turbulence" baseFrequency="0.04 0.02" numOctaves="2" result="turb">
+        <animate attributeName="baseFrequency" values="0.04 0.02;0.09 0.05;0.04 0.02" dur="0.7s" repeatCount="indefinite"/>
+      </feTurbulence>
+      <feDisplacementMap in="SourceGraphic" in2="turb" scale="10" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    </defs>
+    <!-- outer AOE wave rings -->
+    <circle cx="100" cy="105" r="8" fill="none" stroke="#4ecfff" stroke-width="3" style="animation:gw-wave-ring 2100ms ease-out forwards 180ms;"/>
+    <circle cx="100" cy="105" r="8" fill="none" stroke="#7dd3fc" stroke-width="1.5" style="animation:gw-wave-ring 2100ms ease-out forwards 480ms;"/>
+    <!-- spinning ice blade core — displaced by vortex turbulence filter -->
+    <g filter="url(#gw-vortex-filter)" style="animation:gw-vortex-fade 2100ms ease-out forwards;">
+      <g style="transform-origin:100px 105px; animation:gw-spin-blade 2100ms cubic-bezier(0.34,1.56,0.64,1) forwards;">
+        <ellipse cx="100" cy="65" rx="4" ry="16" fill="#4ecfff" opacity="0.92" filter="url(#gw-glow)"/>
+        <ellipse cx="100" cy="65" rx="4" ry="16" fill="#b0f0ff" opacity="0.85" transform="rotate(60 100 105)"/>
+        <ellipse cx="100" cy="65" rx="4" ry="16" fill="#7dd3fc" opacity="0.9"  transform="rotate(120 100 105)"/>
+        <ellipse cx="100" cy="65" rx="4" ry="16" fill="#4ecfff" opacity="0.92" transform="rotate(180 100 105)"/>
+        <ellipse cx="100" cy="65" rx="4" ry="16" fill="#b0f0ff" opacity="0.85" transform="rotate(240 100 105)"/>
+        <ellipse cx="100" cy="65" rx="4" ry="16" fill="#7dd3fc" opacity="0.9"  transform="rotate(300 100 105)"/>
+      </g>
+    </g>
+    <!-- snow particles orbiting in a widening spiral -->
+    <circle cx="100" cy="105" r="2"   fill="#e0f8ff" style="transform-origin:100px 105px; --a:0;   --r:22px; animation:gw-snow 2100ms linear forwards 100ms;"/>
+    <circle cx="100" cy="105" r="1.5" fill="#4ecfff" style="transform-origin:100px 105px; --a:45;  --r:28px; animation:gw-snow 2100ms linear forwards 150ms;"/>
+    <circle cx="100" cy="105" r="2"   fill="#b0f0ff" style="transform-origin:100px 105px; --a:90;  --r:18px; animation:gw-snow 2100ms linear forwards 200ms;"/>
+    <circle cx="100" cy="105" r="1.5" fill="#7dd3fc" style="transform-origin:100px 105px; --a:135; --r:32px; animation:gw-snow 2100ms linear forwards 250ms;"/>
+    <circle cx="100" cy="105" r="2"   fill="#e0f8ff" style="transform-origin:100px 105px; --a:180; --r:24px; animation:gw-snow 2100ms linear forwards 300ms;"/>
+    <circle cx="100" cy="105" r="1.5" fill="#4ecfff" style="transform-origin:100px 105px; --a:225; --r:20px; animation:gw-snow 2100ms linear forwards 350ms;"/>
+    <circle cx="100" cy="105" r="2"   fill="#b0f0ff" style="transform-origin:100px 105px; --a:270; --r:30px; animation:gw-snow 2100ms linear forwards 400ms;"/>
+    <circle cx="100" cy="105" r="1.5" fill="#7dd3fc" style="transform-origin:100px 105px; --a:315; --r:26px; animation:gw-snow 2100ms linear forwards 450ms;"/>
+    <circle cx="100" cy="105" r="1"   fill="#ffffff" style="transform-origin:100px 105px; --a:22;  --r:36px; animation:gw-snow 2100ms linear forwards 500ms;"/>
+    <circle cx="100" cy="105" r="1"   fill="#b0f0ff" style="transform-origin:100px 105px; --a:202; --r:38px; animation:gw-snow 2100ms linear forwards 550ms;"/>
+    <!-- SPD indicator -->
+    <g style="animation:gw-spd-arrow 2100ms ease-out forwards 850ms; transform-origin:160px 150px;">
+      <line x1="155" y1="155" x2="155" y2="130" stroke="#80ffcc" stroke-width="2"/>
+      <polygon points="155,125 151,133 159,133" fill="#80ffcc"/>
+      <text x="163" y="145" fill="#80ffcc" font-size="8" font-family="monospace">SPD+</text>
+    </g>`;
     return s;
   }},
 
@@ -44,23 +85,53 @@ const SVGAnimations = {
     return s;
   }},
 
-  // Cryoclasm
-  'cryoclasm': { duration: 2400, create: () => {
+  // Cryoclasm — Shattering Glass
+  'cryoclasm': { duration: 2400, screenShake: 360, shakeDelay: 670, create: () => {
     const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     s.setAttribute('viewBox', '0 0 200 200');
     s.setAttribute('width', '200');
     s.setAttribute('height', '200');
     s.classList.add('battle-svg-animation');
     s.innerHTML = `<defs><style>
-      @keyframes cc-buildup { 0% { r: 2; fill-opacity: 0.9; opacity: 1; } 40% { r: 22; fill-opacity: 0.3; } 55% { r: 18; fill-opacity: 0.7; } 65% { r: 90; fill-opacity: 0; opacity: 0; } 100% { r: 90; opacity: 0; } }
-      @keyframes cc-shockwave { 0% { r: 5; stroke-width: 8; opacity: 1; } 100% { r: 95; stroke-width: 0.3; opacity: 0; } }
-      @keyframes cc-spark { 0% { transform: translate(0,0) scale(1); opacity: 1; } 100% { transform: translate(var(--cx), var(--cy)) scale(0); opacity: 0; } }
-      @keyframes cc-frozen-flash { 0%, 60% { opacity: 0; } 65% { opacity: 0.7; } 80% { opacity: 0.3; } 100% { opacity: 0; } }
-    </style></defs><defs><radialGradient id="cc-blast-grad" cx="50%" cy="55%" r="50%"><stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/><stop offset="40%" stop-color="#4ecfff" stop-opacity="0.5"/><stop offset="100%" stop-color="#1a5a8a" stop-opacity="0"/></radialGradient><filter id="cc-glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><!-- buildup core --><circle cx="100" cy="108" r="2" fill="url(#cc-blast-grad)" style="animation: cc-buildup 2400ms ease-in-out forwards;"/><!-- shockwave rings --><circle cx="100" cy="108" r="5" fill="none" stroke="#ffffff" stroke-width="8" style="animation: cc-shockwave 2400ms ease-out forwards 700ms;"/><circle cx="100" cy="108" r="5" fill="none" stroke="#4ecfff" stroke-width="5" style="animation: cc-shockwave 2400ms ease-out forwards 900ms;"/><circle cx="100" cy="108" r="5" fill="none" stroke="#7dd3fc" stroke-width="2" style="animation: cc-shockwave 2400ms ease-out forwards 1100ms;"/><!-- ice sparks flying out --><circle cx="100" cy="108" r="3.5" fill="#b0f0ff" filter="url(#cc-glow)" style="--cx:-55px; --cy:-55px; animation: cc-spark 2400ms ease-out forwards 750ms;"/><circle cx="100" cy="108" r="3" fill="#4ecfff" style="--cx:60px; --cy:-45px; animation: cc-spark 2400ms ease-out forwards 800ms;"/><circle cx="100" cy="108" r="2.5" fill="#b0f0ff" style="--cx:-45px; --cy:55px; animation: cc-spark 2400ms ease-out forwards 820ms;"/><circle cx="100" cy="108" r="3" fill="#7dd3fc" style="--cx:50px; --cy:50px; animation: cc-spark 2400ms ease-out forwards 840ms;"/><circle cx="100" cy="108" r="2" fill="#b0f0ff" style="--cx:-65px; --cy:5px; animation: cc-spark 2400ms ease-out forwards 860ms;"/><circle cx="100" cy="108" r="2" fill="#4ecfff" style="--cx:70px; --cy:5px; animation: cc-spark 2400ms ease-out forwards 880ms;"/><!-- screen flash --><rect x="0" y="0" width="200" height="200" fill="#b0f0ff" style="animation: cc-frozen-flash 2400ms ease-out forwards;"/>`;
+      @keyframes cc-buildup { 0%{r:2;fill-opacity:0.9;opacity:1} 38%{r:20;fill-opacity:0.35} 54%{r:16;fill-opacity:0.8} 64%{r:88;fill-opacity:0;opacity:0} 100%{opacity:0} }
+      @keyframes cc-shockwave { 0%{r:5;stroke-width:8;opacity:1} 100%{r:95;stroke-width:0.3;opacity:0} }
+      @keyframes cc-shard { 0%,28%{transform:rotate(calc(var(--a)*1deg)) translateX(0) scale(0.15);opacity:0} 30%{transform:rotate(calc(var(--a)*1deg)) translateX(3px) scale(1.4);opacity:1} 100%{transform:rotate(calc(var(--a)*1deg)) translateX(var(--d)) scale(0.1) skewY(12deg);opacity:0} }
+      @keyframes cc-crack { 0%,26%{stroke-dashoffset:90;opacity:0} 28%{opacity:1;stroke-dashoffset:90} 60%{stroke-dashoffset:0;opacity:0.65} 100%{opacity:0} }
+      @keyframes cc-flash { 0%,27%{opacity:0} 30%{opacity:0.88} 54%{opacity:0.15} 100%{opacity:0} }
+    </style></defs>
+    <defs>
+      <radialGradient id="cc-bg" cx="50%" cy="55%" r="50%"><stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/><stop offset="40%" stop-color="#4ecfff" stop-opacity="0.5"/><stop offset="100%" stop-color="#1a5a8a" stop-opacity="0"/></radialGradient>
+      <filter id="cc-glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    </defs>
+    <!-- buildup core -->
+    <circle cx="100" cy="108" r="2" fill="url(#cc-bg)" style="animation:cc-buildup 2400ms ease-in-out forwards;"/>
+    <!-- fracture cracks emanating from center at impact -->
+    <line x1="100" y1="108" x2="56" y2="64" stroke="#b0f0ff" stroke-width="1.5" stroke-dasharray="90" stroke-dashoffset="90" filter="url(#cc-glow)" style="animation:cc-crack 2400ms ease-out forwards;"/>
+    <line x1="100" y1="108" x2="144" y2="64" stroke="#4ecfff" stroke-width="1.5" stroke-dasharray="90" stroke-dashoffset="90" style="animation:cc-crack 2400ms ease-out forwards 40ms;"/>
+    <line x1="100" y1="108" x2="100" y2="46" stroke="#ffffff" stroke-width="2" stroke-dasharray="65" stroke-dashoffset="65" filter="url(#cc-glow)" style="animation:cc-crack 2400ms ease-out forwards 20ms;"/>
+    <line x1="100" y1="108" x2="47" y2="114" stroke="#7dd3fc" stroke-width="1" stroke-dasharray="60" stroke-dashoffset="60" style="animation:cc-crack 2400ms ease-out forwards 65ms;"/>
+    <line x1="100" y1="108" x2="153" y2="114" stroke="#7dd3fc" stroke-width="1" stroke-dasharray="60" stroke-dashoffset="60" style="animation:cc-crack 2400ms ease-out forwards 85ms;"/>
+    <!-- triangular glass shards — each flies in a distinct radial direction -->
+    <polygon points="100,100 97,112 103,112" fill="#b0f0ff" filter="url(#cc-glow)" style="transform-origin:100px 108px; --a:-135; --d:64px; animation:cc-shard 2400ms cubic-bezier(0.15,0.85,0.2,1) forwards 668ms;"/>
+    <polygon points="100,100 96,112 104,112" fill="#4ecfff"                         style="transform-origin:100px 108px; --a:-45;  --d:60px; animation:cc-shard 2400ms cubic-bezier(0.15,0.85,0.2,1) forwards 682ms;"/>
+    <polygon points="100,99  95,112 105,112" fill="#ffffff"  filter="url(#cc-glow)" style="transform-origin:100px 108px; --a:180;  --d:72px; animation:cc-shard 2400ms cubic-bezier(0.15,0.85,0.2,1) forwards 692ms;"/>
+    <polygon points="100,99  96,112 104,112" fill="#7dd3fc"                         style="transform-origin:100px 108px; --a:0;    --d:68px; animation:cc-shard 2400ms cubic-bezier(0.15,0.85,0.2,1) forwards 704ms;"/>
+    <polygon points="100,101 97,111 103,111" fill="#b0f0ff"                         style="transform-origin:100px 108px; --a:135;  --d:62px; animation:cc-shard 2400ms cubic-bezier(0.15,0.85,0.2,1) forwards 715ms;"/>
+    <polygon points="100,101 96,111 104,111" fill="#4ecfff"                         style="transform-origin:100px 108px; --a:45;   --d:57px; animation:cc-shard 2400ms cubic-bezier(0.15,0.85,0.2,1) forwards 724ms;"/>
+    <polygon points="100,99  96,112 104,112" fill="#e0f8ff"  filter="url(#cc-glow)" style="transform-origin:100px 108px; --a:-90;  --d:70px; animation:cc-shard 2400ms cubic-bezier(0.15,0.85,0.2,1) forwards 678ms;"/>
+    <polygon points="100,100 95,113 105,113" fill="#7dd3fc"                         style="transform-origin:100px 108px; --a:90;   --d:74px; animation:cc-shard 2400ms cubic-bezier(0.15,0.85,0.2,1) forwards 708ms;"/>
+    <polygon points="100,100 96,112 104,112" fill="#b0f0ff"                         style="transform-origin:100px 108px; --a:-160; --d:54px; animation:cc-shard 2400ms cubic-bezier(0.15,0.85,0.2,1) forwards 738ms;"/>
+    <polygon points="100,100 96,112 104,112" fill="#4ecfff"                         style="transform-origin:100px 108px; --a:-20;  --d:58px; animation:cc-shard 2400ms cubic-bezier(0.15,0.85,0.2,1) forwards 748ms;"/>
+    <!-- shockwave rings with bouncy cubic-bezier -->
+    <circle cx="100" cy="108" r="5" fill="none" stroke="#ffffff" stroke-width="8" style="animation:cc-shockwave 2400ms cubic-bezier(0.1,0.8,0.3,1) forwards 700ms;"/>
+    <circle cx="100" cy="108" r="5" fill="none" stroke="#4ecfff" stroke-width="5" style="animation:cc-shockwave 2400ms cubic-bezier(0.1,0.8,0.3,1) forwards 900ms;"/>
+    <circle cx="100" cy="108" r="5" fill="none" stroke="#7dd3fc" stroke-width="2" style="animation:cc-shockwave 2400ms cubic-bezier(0.1,0.8,0.3,1) forwards 1100ms;"/>
+    <!-- blinding cryo flash -->
+    <rect x="0" y="0" width="200" height="200" fill="#d8f6ff" style="animation:cc-flash 2400ms ease-out forwards;"/>`;
     return s;
   }},
 
-  // Spirit Flame
+  // Spirit Flame — Soul Wisps Lifesteal
   'spirit_flame': { duration: 1900, create: () => {
     const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     s.setAttribute('viewBox', '0 0 200 200');
@@ -68,12 +139,34 @@ const SVGAnimations = {
     s.setAttribute('height', '200');
     s.classList.add('battle-svg-animation');
     s.innerHTML = `<defs><style>
-      @keyframes sf-ghost-flicker { 0%, 100% { opacity: 0.15; } 50% { opacity: 0.55; } }
-      @keyframes sf-thrust { 0% { transform: translateY(-90px) scaleX(0.7); opacity: 0; } 15% { opacity: 1; transform: translateY(-90px) scaleX(1); } 50% { transform: translateY(80px) scaleX(1); opacity: 1; } 70% { transform: translateY(80px) scaleX(1); opacity: 0.7; } 100% { transform: translateY(80px) scaleX(0.5); opacity: 0; } }
-      @keyframes sf-flame-wisp { 0% { transform: translate(0, 0) scale(1); opacity: 0.9; } 100% { transform: translate(var(--wx), -60px) scale(0.1); opacity: 0; } }
-      @keyframes sf-lifesteal-orb { 0% { transform: translate(60px, -60px) scale(0.3); opacity: 0; } 30% { opacity: 1; } 70% { transform: translate(0,0) scale(1); opacity: 1; } 100% { transform: translate(0,0) scale(1.4); opacity: 0; } }
-      @keyframes sf-impact-ring { 0% { r: 4; opacity: 0; } 45% { r: 4; opacity: 0; } 50% { r: 6; opacity: 1; } 100% { r: 50; opacity: 0; stroke-width: 0.5; } }
-    </style></defs><defs><filter id="sf-glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter><linearGradient id="sf-spear" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#ff9900"/><stop offset="50%" stop-color="#ff3300"/><stop offset="100%" stop-color="#ff6600" stop-opacity="0"/></linearGradient></defs><!-- ghost aura --><ellipse cx="100" cy="100" rx="40" ry="55" fill="#440022" fill-opacity="0.3" style="animation: sf-ghost-flicker 1900ms ease-in-out infinite;"/><!-- spear --><rect x="97" y="30" width="6" height="80" fill="url(#sf-spear)" rx="3" filter="url(#sf-glow)" style="animation: sf-thrust 1900ms cubic-bezier(0.1,0.8,0.3,1) forwards;"/><!-- spear tip --><polygon points="100,30 94,48 106,48" fill="#ffcc00" filter="url(#sf-glow)" style="animation: sf-thrust 1900ms cubic-bezier(0.1,0.8,0.3,1) forwards;"/><!-- fire wisps --><circle cx="100" cy="105" r="5" fill="#ff6600" filter="url(#sf-glow)" style="--wx:-30px; animation: sf-flame-wisp 1900ms ease-out forwards 300ms;"/><circle cx="100" cy="110" r="4" fill="#ff3300" style="--wx:25px; animation: sf-flame-wisp 1900ms ease-out forwards 450ms;"/><circle cx="100" cy="108" r="3" fill="#ff9900" style="--wx:-15px; animation: sf-flame-wisp 1900ms ease-out forwards 600ms;"/><!-- lifesteal orb returning to caster --><circle cx="100" cy="110" r="8" fill="#ff4488" fill-opacity="0.8" filter="url(#sf-glow)" style="animation: sf-lifesteal-orb 1900ms ease-in-out forwards 500ms;"/><!-- impact ring --><circle cx="100" cy="110" r="4" fill="none" stroke="#ff6600" stroke-width="3" style="animation: sf-impact-ring 1900ms ease-out forwards;"/>`;
+      @keyframes sf-ghost-flicker { 0%,100%{opacity:0.15} 50%{opacity:0.55} }
+      @keyframes sf-thrust { 0%{transform:translateY(-90px) scaleX(0.7);opacity:0} 15%{opacity:1;transform:translateY(-90px) scaleX(1)} 50%{transform:translateY(80px) scaleX(1);opacity:1} 70%{transform:translateY(80px) scaleX(1);opacity:0.7} 100%{transform:translateY(80px) scaleX(0.5);opacity:0} }
+      @keyframes sf-impact-ring { 0%{r:4;opacity:0} 45%{r:4;opacity:0} 50%{r:6;opacity:1} 100%{r:50;opacity:0;stroke-width:0.5} }
+      @keyframes sf-soul-wisp { 0%{transform:translate(0,0) scale(1.2);opacity:0} 12%{opacity:1} 75%{transform:translate(var(--wx),var(--wy)) scale(0.5);opacity:0.9} 100%{transform:translate(var(--wx),var(--wy)) scale(0.1);opacity:0} }
+      @keyframes sf-absorb-flash { 0%,72%{opacity:0} 75%{opacity:0.6} 85%{opacity:0.25} 100%{opacity:0} }
+      @keyframes sf-lifesteal-orb { 0%{transform:translate(60px,-60px) scale(0.3);opacity:0} 30%{opacity:1} 70%{transform:translate(0,0) scale(1);opacity:1} 100%{transform:translate(0,0) scale(1.4);opacity:0} }
+    </style>
+    <filter id="sf-glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="sf-soul-glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <linearGradient id="sf-spear" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#ff9900"/><stop offset="50%" stop-color="#ff3300"/><stop offset="100%" stop-color="#ff6600" stop-opacity="0"/></linearGradient>
+    </defs>
+    <!-- ghost aura -->
+    <ellipse cx="100" cy="100" rx="40" ry="55" fill="#440022" fill-opacity="0.3" style="animation:sf-ghost-flicker 1900ms ease-in-out infinite;"/>
+    <!-- spear thrust -->
+    <rect x="97" y="30" width="6" height="80" fill="url(#sf-spear)" rx="3" filter="url(#sf-glow)" style="animation:sf-thrust 1900ms cubic-bezier(0.1,0.8,0.3,1) forwards;"/>
+    <polygon points="100,30 94,48 106,48" fill="#ffcc00" filter="url(#sf-glow)" style="animation:sf-thrust 1900ms cubic-bezier(0.1,0.8,0.3,1) forwards;"/>
+    <!-- soul wisps — teal/violet orbs torn from enemy, arcing toward party (lower-left) -->
+    <circle cx="100" cy="108" r="5"   fill="#22ffcc" filter="url(#sf-soul-glow)" style="--wx:-58px; --wy:52px; animation:sf-soul-wisp 1900ms cubic-bezier(0.34,1.56,0.64,1) forwards 480ms;"/>
+    <circle cx="100" cy="108" r="4"   fill="#bb88ff" filter="url(#sf-soul-glow)" style="--wx:-48px; --wy:62px; animation:sf-soul-wisp 1900ms cubic-bezier(0.34,1.56,0.64,1) forwards 540ms;"/>
+    <circle cx="100" cy="108" r="3.5" fill="#22ffcc"                             style="--wx:-66px; --wy:38px; animation:sf-soul-wisp 1900ms cubic-bezier(0.34,1.56,0.64,1) forwards 600ms;"/>
+    <circle cx="100" cy="108" r="3"   fill="#88ccff"                             style="--wx:-42px; --wy:70px; animation:sf-soul-wisp 1900ms cubic-bezier(0.34,1.56,0.64,1) forwards 660ms;"/>
+    <circle cx="100" cy="108" r="2.5" fill="#bb88ff"                             style="--wx:-54px; --wy:46px; animation:sf-soul-wisp 1900ms cubic-bezier(0.34,1.56,0.64,1) forwards 720ms;"/>
+    <!-- absorb flash when wisps arrive at party -->
+    <rect x="0" y="0" width="200" height="200" fill="#22ffcc" style="animation:sf-absorb-flash 1900ms ease-out forwards;"/>
+    <!-- lifesteal orb returning to caster -->
+    <circle cx="100" cy="110" r="8" fill="#ff4488" fill-opacity="0.8" filter="url(#sf-glow)" style="animation:sf-lifesteal-orb 1900ms ease-in-out forwards 500ms;"/>
+    <!-- impact ring -->
+    <circle cx="100" cy="110" r="4" fill="none" stroke="#ff6600" stroke-width="3" style="animation:sf-impact-ring 1900ms ease-out forwards;"/>`;
     return s;
   }},
 
@@ -173,7 +266,7 @@ const SVGAnimations = {
     return s;
   }},
 
-  // Hajra's Hymn
+  // Hajra's Hymn — Light Feathers & Prismatic Lens Flare
   'hajras_hymn': { duration: 2600, create: () => {
     const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     s.setAttribute('viewBox', '0 0 200 200');
@@ -181,12 +274,56 @@ const SVGAnimations = {
     s.setAttribute('height', '200');
     s.classList.add('battle-svg-animation');
     s.innerHTML = `<defs><style>
-      @keyframes hh-star-ray { 0% { transform: rotate(calc(var(--ray) * 1deg)) scaleX(0); opacity: 0; } 30% { transform: rotate(calc(var(--ray) * 1deg)) scaleX(1); opacity: 1; } 100% { transform: rotate(calc(var(--ray) * 1deg)) scaleX(1.5); opacity: 0; } }
-      @keyframes hh-star-burst { 0% { transform: scale(0) rotate(0deg); opacity: 0; } 20% { transform: scale(1.2) rotate(30deg); opacity: 1; } 50% { transform: scale(1) rotate(60deg); } 80% { transform: scale(1.05) rotate(90deg); opacity: 0.8; } 100% { transform: scale(1.8) rotate(120deg); opacity: 0; } }
-      @keyframes hh-heal-wave { 0% { r: 5; stroke-width: 5; opacity: 1; } 100% { r: 95; stroke-width: 0.3; opacity: 0; } }
-      @keyframes hh-cleanse-bubble { 0% { transform: translate(var(--cbx), var(--cby)) scale(0.5); opacity: 0; } 30% { opacity: 1; } 70% { transform: translate(var(--cbx), calc(var(--cby) - 30px)) scale(1); opacity: 0.7; } 100% { transform: translate(var(--cbx), calc(var(--cby) - 60px)) scale(1.5); opacity: 0; } }
-      @keyframes hh-spd-streak { 0% { transform: translateX(-80px) skewX(-20deg); opacity: 0; } 20% { opacity: 1; } 100% { transform: translateX(80px) skewX(-20deg); opacity: 0; } }
-    </style></defs><defs><filter id="hh-glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><!-- star rays --><g style="transform-origin:100px 108px;"><line x1="100" y1="108" x2="100" y2="30" stroke="#80ffee" stroke-width="3" stroke-linecap="round" style="--ray:0; transform-origin:100px 108px; animation: hh-star-ray 2600ms ease-out forwards;"/><line x1="100" y1="108" x2="100" y2="30" stroke="#00d4b4" stroke-width="2.5" stroke-linecap="round" style="--ray:45; transform-origin:100px 108px; animation: hh-star-ray 2600ms ease-out forwards 100ms;"/><line x1="100" y1="108" x2="100" y2="30" stroke="#80ffee" stroke-width="3" stroke-linecap="round" style="--ray:90; transform-origin:100px 108px; animation: hh-star-ray 2600ms ease-out forwards 200ms;"/><line x1="100" y1="108" x2="100" y2="30" stroke="#00d4b4" stroke-width="2.5" stroke-linecap="round" style="--ray:135; transform-origin:100px 108px; animation: hh-star-ray 2600ms ease-out forwards 300ms;"/><line x1="100" y1="108" x2="100" y2="30" stroke="#80ffee" stroke-width="3" stroke-linecap="round" style="--ray:180; transform-origin:100px 108px; animation: hh-star-ray 2600ms ease-out forwards 400ms;"/><line x1="100" y1="108" x2="100" y2="30" stroke="#00d4b4" stroke-width="2.5" stroke-linecap="round" style="--ray:225; transform-origin:100px 108px; animation: hh-star-ray 2600ms ease-out forwards 500ms;"/><line x1="100" y1="108" x2="100" y2="30" stroke="#80ffee" stroke-width="3" stroke-linecap="round" style="--ray:270; transform-origin:100px 108px; animation: hh-star-ray 2600ms ease-out forwards 600ms;"/><line x1="100" y1="108" x2="100" y2="30" stroke="#00d4b4" stroke-width="2.5" stroke-linecap="round" style="--ray:315; transform-origin:100px 108px; animation: hh-star-ray 2600ms ease-out forwards 700ms;"/></g><!-- center star bloom --><g style="transform-origin:100px 108px; animation: hh-star-burst 2600ms ease-out forwards 200ms;" filter="url(#hh-glow)"><polygon points="100,82 104,100 122,100 108,112 113,130 100,120 87,130 92,112 78,100 96,100" fill="#80ffee" fill-opacity="0.9"/></g><!-- heal waves --><circle cx="100" cy="108" r="5" fill="none" stroke="#44ffbb" stroke-width="5" style="animation: hh-heal-wave 2600ms ease-out forwards 400ms;"/><circle cx="100" cy="108" r="5" fill="none" stroke="#00d4b4" stroke-width="3" style="animation: hh-heal-wave 2600ms ease-out forwards 700ms;"/><!-- cleanse bubbles --><circle cx="100" cy="108" r="8" fill="#80ffee" fill-opacity="0.3" stroke="#80ffee" stroke-width="1" style="--cbx:-35px; --cby:-30px; animation: hh-cleanse-bubble 2600ms ease-out forwards 600ms;"/><circle cx="100" cy="108" r="6" fill="#00d4b4" fill-opacity="0.25" stroke="#00d4b4" stroke-width="1" style="--cbx:38px; --cby:-25px; animation: hh-cleanse-bubble 2600ms ease-out forwards 750ms;"/><circle cx="100" cy="108" r="7" fill="#80ffee" fill-opacity="0.2" stroke="#80ffee" stroke-width="1" style="--cbx:-10px; --cby:-40px; animation: hh-cleanse-bubble 2600ms ease-out forwards 900ms;"/><!-- speed streaks --><line x1="40" y1="162" x2="80" y2="162" stroke="#80ffee" stroke-width="2" stroke-linecap="round" style="animation: hh-spd-streak 2600ms ease-out forwards 1100ms;"/><line x1="40" y1="168" x2="70" y2="168" stroke="#00d4b4" stroke-width="1.5" style="animation: hh-spd-streak 2600ms ease-out forwards 1200ms;"/><text x="88" y="167" fill="#80ffee" font-size="9" font-family="monospace">SPD+</text>`;
+      @keyframes hh-star-ray { 0%{transform:rotate(calc(var(--ray)*1deg)) scaleX(0);opacity:0} 30%{transform:rotate(calc(var(--ray)*1deg)) scaleX(1);opacity:1} 100%{transform:rotate(calc(var(--ray)*1deg)) scaleX(1.5);opacity:0} }
+      @keyframes hh-star-burst { 0%{transform:scale(0) rotate(0deg);opacity:0} 20%{transform:scale(1.2) rotate(30deg);opacity:1} 50%{transform:scale(1) rotate(60deg)} 80%{transform:scale(1.05) rotate(90deg);opacity:0.8} 100%{transform:scale(1.8) rotate(120deg);opacity:0} }
+      @keyframes hh-heal-wave { 0%{r:5;stroke-width:5;opacity:1} 100%{r:95;stroke-width:0.3;opacity:0} }
+      @keyframes hh-cleanse-bubble { 0%{transform:translate(var(--cbx),var(--cby)) scale(0.5);opacity:0} 30%{opacity:1} 70%{transform:translate(var(--cbx),calc(var(--cby) - 30px)) scale(1);opacity:0.7} 100%{transform:translate(var(--cbx),calc(var(--cby) - 60px)) scale(1.5);opacity:0} }
+      @keyframes hh-feather { 0%{transform:translate(var(--fx),var(--fy)) rotate(var(--fr)) scale(0.4);opacity:0} 20%{opacity:1} 80%{transform:translate(var(--fx),calc(var(--fy) - 55px)) rotate(calc(var(--fr) + 20deg)) scale(1);opacity:0.7} 100%{transform:translate(var(--fx),calc(var(--fy) - 80px)) rotate(calc(var(--fr) + 30deg)) scale(0.5);opacity:0} }
+      @keyframes hh-lens-flare { 0%{opacity:0;transform:rotate(calc(var(--lra)*1deg)) scaleX(0)} 25%{opacity:var(--lo);transform:rotate(calc(var(--lra)*1deg)) scaleX(1)} 65%{opacity:var(--lo)} 100%{opacity:0;transform:rotate(calc(var(--lra)*1deg)) scaleX(1.8)} }
+      @keyframes hh-spd-streak { 0%{transform:translateX(-80px) skewX(-20deg);opacity:0} 20%{opacity:1} 100%{transform:translateX(80px) skewX(-20deg);opacity:0} }
+    </style>
+    <filter id="hh-glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    </defs>
+    <!-- star rays -->
+    <g style="transform-origin:100px 108px;">
+      <line x1="100" y1="108" x2="100" y2="30" stroke="#80ffee" stroke-width="3" stroke-linecap="round" style="--ray:0;   transform-origin:100px 108px; animation:hh-star-ray 2600ms ease-out forwards;"/>
+      <line x1="100" y1="108" x2="100" y2="30" stroke="#00d4b4" stroke-width="2.5" stroke-linecap="round" style="--ray:45;  transform-origin:100px 108px; animation:hh-star-ray 2600ms ease-out forwards 100ms;"/>
+      <line x1="100" y1="108" x2="100" y2="30" stroke="#80ffee" stroke-width="3" stroke-linecap="round" style="--ray:90;  transform-origin:100px 108px; animation:hh-star-ray 2600ms ease-out forwards 200ms;"/>
+      <line x1="100" y1="108" x2="100" y2="30" stroke="#00d4b4" stroke-width="2.5" stroke-linecap="round" style="--ray:135; transform-origin:100px 108px; animation:hh-star-ray 2600ms ease-out forwards 300ms;"/>
+      <line x1="100" y1="108" x2="100" y2="30" stroke="#80ffee" stroke-width="3" stroke-linecap="round" style="--ray:180; transform-origin:100px 108px; animation:hh-star-ray 2600ms ease-out forwards 400ms;"/>
+      <line x1="100" y1="108" x2="100" y2="30" stroke="#00d4b4" stroke-width="2.5" stroke-linecap="round" style="--ray:225; transform-origin:100px 108px; animation:hh-star-ray 2600ms ease-out forwards 500ms;"/>
+      <line x1="100" y1="108" x2="100" y2="30" stroke="#80ffee" stroke-width="3" stroke-linecap="round" style="--ray:270; transform-origin:100px 108px; animation:hh-star-ray 2600ms ease-out forwards 600ms;"/>
+      <line x1="100" y1="108" x2="100" y2="30" stroke="#00d4b4" stroke-width="2.5" stroke-linecap="round" style="--ray:315; transform-origin:100px 108px; animation:hh-star-ray 2600ms ease-out forwards 700ms;"/>
+    </g>
+    <!-- center star bloom -->
+    <g style="transform-origin:100px 108px; animation:hh-star-burst 2600ms ease-out forwards 200ms;" filter="url(#hh-glow)">
+      <polygon points="100,82 104,100 122,100 108,112 113,130 100,120 87,130 92,112 78,100 96,100" fill="#80ffee" fill-opacity="0.9"/>
+    </g>
+    <!-- heal waves -->
+    <circle cx="100" cy="108" r="5" fill="none" stroke="#44ffbb" stroke-width="5" style="animation:hh-heal-wave 2600ms ease-out forwards 400ms;"/>
+    <circle cx="100" cy="108" r="5" fill="none" stroke="#00d4b4" stroke-width="3" style="animation:hh-heal-wave 2600ms ease-out forwards 700ms;"/>
+    <!-- cleanse bubbles -->
+    <circle cx="100" cy="108" r="8" fill="#80ffee" fill-opacity="0.3" stroke="#80ffee" stroke-width="1" style="--cbx:-35px; --cby:-30px; animation:hh-cleanse-bubble 2600ms ease-out forwards 600ms;"/>
+    <circle cx="100" cy="108" r="6" fill="#00d4b4" fill-opacity="0.25" stroke="#00d4b4" stroke-width="1" style="--cbx:38px; --cby:-25px; animation:hh-cleanse-bubble 2600ms ease-out forwards 750ms;"/>
+    <circle cx="100" cy="108" r="7" fill="#80ffee" fill-opacity="0.2" stroke="#80ffee" stroke-width="1" style="--cbx:-10px; --cby:-40px; animation:hh-cleanse-bubble 2600ms ease-out forwards 900ms;"/>
+    <!-- light feathers drifting upward (thin teardrop ellipses) -->
+    <ellipse cx="100" cy="108" rx="2" ry="9" fill="#b0fff0" filter="url(#hh-glow)" style="--fx:-32px; --fy:-20px; --fr:-25deg; animation:hh-feather 2600ms cubic-bezier(0.34,1.56,0.64,1) forwards 300ms;"/>
+    <ellipse cx="100" cy="108" rx="2" ry="9" fill="#80ffee"                         style="--fx:34px;  --fy:-18px; --fr:28deg;  animation:hh-feather 2600ms cubic-bezier(0.34,1.56,0.64,1) forwards 420ms;"/>
+    <ellipse cx="100" cy="108" rx="1.5" ry="7" fill="#44ffcc"                       style="--fx:-48px; --fy:-10px; --fr:-40deg; animation:hh-feather 2600ms cubic-bezier(0.34,1.56,0.64,1) forwards 540ms;"/>
+    <ellipse cx="100" cy="108" rx="2" ry="8" fill="#b0fff0"                         style="--fx:50px;  --fy:-8px;  --fr:42deg;  animation:hh-feather 2600ms cubic-bezier(0.34,1.56,0.64,1) forwards 660ms;"/>
+    <ellipse cx="100" cy="108" rx="1.5" ry="7" fill="#80ffee"                       style="--fx:-20px; --fy:-35px; --fr:-15deg; animation:hh-feather 2600ms cubic-bezier(0.34,1.56,0.64,1) forwards 780ms;"/>
+    <ellipse cx="100" cy="108" rx="2" ry="9" fill="#44ffcc"                         style="--fx:22px;  --fy:-32px; --fr:18deg;  animation:hh-feather 2600ms cubic-bezier(0.34,1.56,0.64,1) forwards 900ms;"/>
+    <!-- prismatic lens flare: 6 short coloured lines at 30° intervals -->
+    <line x1="100" y1="108" x2="100" y2="78" stroke="#ff6699" stroke-width="2.5" stroke-linecap="round" style="transform-origin:100px 108px; --lra:0;   --lo:0.7; animation:hh-lens-flare 2600ms ease-out forwards 800ms;"/>
+    <line x1="100" y1="108" x2="100" y2="78" stroke="#ffaa22" stroke-width="2" stroke-linecap="round"   style="transform-origin:100px 108px; --lra:60;  --lo:0.65; animation:hh-lens-flare 2600ms ease-out forwards 860ms;"/>
+    <line x1="100" y1="108" x2="100" y2="78" stroke="#ffff44" stroke-width="2" stroke-linecap="round"   style="transform-origin:100px 108px; --lra:120; --lo:0.6; animation:hh-lens-flare 2600ms ease-out forwards 920ms;"/>
+    <line x1="100" y1="108" x2="100" y2="78" stroke="#44ffaa" stroke-width="2" stroke-linecap="round"   style="transform-origin:100px 108px; --lra:180; --lo:0.65; animation:hh-lens-flare 2600ms ease-out forwards 980ms;"/>
+    <line x1="100" y1="108" x2="100" y2="78" stroke="#44aaff" stroke-width="2" stroke-linecap="round"   style="transform-origin:100px 108px; --lra:240; --lo:0.6; animation:hh-lens-flare 2600ms ease-out forwards 1040ms;"/>
+    <line x1="100" y1="108" x2="100" y2="78" stroke="#cc66ff" stroke-width="2.5" stroke-linecap="round" style="transform-origin:100px 108px; --lra:300; --lo:0.7; animation:hh-lens-flare 2600ms ease-out forwards 1100ms;"/>
+    <!-- speed streaks -->
+    <line x1="40" y1="162" x2="80" y2="162" stroke="#80ffee" stroke-width="2" stroke-linecap="round" style="animation:hh-spd-streak 2600ms ease-out forwards 1100ms;"/>
+    <line x1="40" y1="168" x2="70" y2="168" stroke="#00d4b4" stroke-width="1.5" style="animation:hh-spd-streak 2600ms ease-out forwards 1200ms;"/>
+    <text x="88" y="167" fill="#80ffee" font-size="9" font-family="monospace">SPD+</text>`;
     return s;
   }},
 
@@ -262,11 +399,53 @@ const SVGAnimations = {
   ════════════════════════════════════════════════════════════════════════ */
 
   // ─ RYDIA (SUMMONER) ─────────────────────────────────────────────────
-  'summon_bahamut': { duration: 2400, create: () => {
+  // Summon Bahamut — Shadow Passthrough + Megaflare
+  'summon_bahamut': { duration: 2600, screenShake: 380, shakeDelay: 1200, create: () => {
     const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     s.setAttribute('viewBox', '0 0 200 200'); s.setAttribute('width', '200'); s.setAttribute('height', '200');
     s.classList.add('battle-svg-animation');
-    s.innerHTML = `<defs><style>@keyframes sb-dragon-descend{0%{transform:translateY(-100px) scale(0.3);opacity:0;}20%{opacity:1;}70%{transform:translateY(0) scale(1);opacity:1;}100%{transform:translateY(20px) scale(0.95);opacity:0.6;}}@keyframes sb-fire-ring{0%{r:8;opacity:1;stroke-width:4;}100%{r:90;opacity:0;stroke-width:0.3;}}@keyframes sb-flame-burst{0%{transform:translate(0,0) scale(1);opacity:1;}100%{transform:translate(var(--fx),var(--fy)) scale(0);opacity:0;}}</style></defs><defs><filter id="sb-glow"><feGaussianBlur stdDeviation="5"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g style="animation:sb-dragon-descend 2400ms cubic-bezier(0.1,0.6,0.2,1) forwards;transform-origin:100px 100px;"><ellipse cx="100" cy="60" rx="22" ry="28" fill="#8B4513" filter="url(#sb-glow)"/><circle cx="100" cy="35" r="12" fill="#A0522D"/><circle cx="96" cy="32" r="2" fill="#ffff00"/><circle cx="104" cy="32" r="2" fill="#ffff00"/><polygon points="92,25 88,10 90,24" fill="#8B4513"/><polygon points="108,25 112,10 110,24" fill="#8B4513"/><ellipse cx="75" cy="60" rx="8" ry="18" fill="#A0522D" opacity="0.8"/><ellipse cx="125" cy="60" rx="8" ry="18" fill="#A0522D" opacity="0.8"/><path d="M 100 85 Q 130 90 140 70" stroke="#8B4513" stroke-width="6" fill="none"/><circle cx="100" cy="60" r="30" fill="#ff6600" fill-opacity="0.5"/></g><circle cx="100" cy="100" r="8" fill="none" stroke="#ff6600" stroke-width="4" style="animation:sb-fire-ring 2400ms ease-out forwards 600ms;"/><circle cx="100" cy="100" r="8" fill="none" stroke="#ff3300" stroke-width="3" style="animation:sb-fire-ring 2400ms ease-out forwards 900ms;"/><circle cx="100" cy="100" r="8" fill="none" stroke="#ffaa00" stroke-width="2" style="animation:sb-fire-ring 2400ms ease-out forwards 1200ms;"/><circle cx="100" cy="100" r="4" fill="#ffff00" filter="url(#sb-glow)" style="--fx:-40px;--fy:-50px;animation:sb-flame-burst 2400ms ease-out forwards 800ms;"/><circle cx="100" cy="100" r="3.5" fill="#ff6600" style="--fx:45px;--fy:-45px;animation:sb-flame-burst 2400ms ease-out forwards 850ms;"/><circle cx="100" cy="100" r="3" fill="#ff3300" style="--fx:-50px;--fy:45px;animation:sb-flame-burst 2400ms ease-out forwards 900ms;"/><circle cx="100" cy="100" r="3" fill="#ffaa00" style="--fx:50px;--fy:50px;animation:sb-flame-burst 2400ms ease-out forwards 950ms;"/>`;
+    s.innerHTML = `<defs><style>
+      @keyframes sb-dim{0%{opacity:0}25%{opacity:0.55}50%{opacity:0.7}58%{opacity:0}100%{opacity:0}}
+      @keyframes sb-shadow-pass{0%{transform:translateX(-160px) scaleX(0.4);opacity:0}10%{opacity:0.7}55%{transform:translateX(180px) scaleX(1);opacity:0.5}70%{opacity:0}100%{opacity:0}}
+      @keyframes sb-wing-pass{0%{transform:translateX(-180px);opacity:0}10%{opacity:0.5}55%{transform:translateX(200px);opacity:0.35}65%{opacity:0}100%{opacity:0}}
+      @keyframes sb-megaflare{0%,54%{opacity:0}56%{opacity:0.95}68%{opacity:0.4}100%{opacity:0}}
+      @keyframes sb-fire-ring{0%{r:8;opacity:1;stroke-width:4}100%{r:92;opacity:0;stroke-width:0.3}}
+      @keyframes sb-ember{0%{transform:translate(0,0) scale(1);opacity:1}100%{transform:translate(var(--fx),var(--fy)) scale(0);opacity:0}}
+    </style>
+    <filter id="sb-glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="sb-blur"><feGaussianBlur stdDeviation="3"/></filter>
+    </defs>
+    <!-- PHASE 1: screen dims as dragon shadow sweeps through -->
+    <rect x="0" y="0" width="200" height="200" fill="#1a0800" style="animation:sb-dim 2600ms ease-in-out forwards;"/>
+    <!-- dragon body silhouette sweeping left to right -->
+    <g style="animation:sb-shadow-pass 2600ms cubic-bezier(0.3,0,0.7,1) forwards;" filter="url(#sb-blur)">
+      <ellipse cx="100" cy="75" rx="32" ry="22" fill="#0d0400" opacity="0.9"/>
+      <ellipse cx="100" cy="60" rx="16" ry="12" fill="#0d0400" opacity="0.9"/>
+      <!-- head -->
+      <circle cx="100" cy="48" r="11" fill="#0d0400" opacity="0.9"/>
+      <!-- horns -->
+      <polygon points="94,40 88,22 92,38" fill="#0d0400" opacity="0.9"/>
+      <polygon points="106,40 112,22 108,38" fill="#0d0400" opacity="0.9"/>
+      <!-- tail -->
+      <path d="M 132 78 Q 158 70 168 82 Q 178 90 172 98" stroke="#0d0400" stroke-width="8" fill="none" stroke-linecap="round" opacity="0.9"/>
+    </g>
+    <!-- wing silhouettes -->
+    <ellipse cx="65" cy="72" rx="26" ry="16" fill="#0d0400" opacity="0.7" filter="url(#sb-blur)" style="animation:sb-wing-pass 2600ms cubic-bezier(0.3,0,0.7,1) forwards;"/>
+    <ellipse cx="135" cy="72" rx="26" ry="16" fill="#0d0400" opacity="0.7" filter="url(#sb-blur)" style="animation:sb-wing-pass 2600ms cubic-bezier(0.3,0,0.7,1) forwards;"/>
+    <!-- PHASE 2: Megaflare — blinding orange-white flash -->
+    <rect x="0" y="0" width="200" height="200" fill="#ff8800" style="animation:sb-megaflare 2600ms ease-out forwards;"/>
+    <!-- expanding fire rings after the flash -->
+    <circle cx="100" cy="105" r="8" fill="none" stroke="#ffffff" stroke-width="6" style="animation:sb-fire-ring 2600ms cubic-bezier(0.1,0.8,0.3,1) forwards 1250ms;"/>
+    <circle cx="100" cy="105" r="8" fill="none" stroke="#ff6600" stroke-width="4" style="animation:sb-fire-ring 2600ms cubic-bezier(0.1,0.8,0.3,1) forwards 1450ms;"/>
+    <circle cx="100" cy="105" r="8" fill="none" stroke="#ff3300" stroke-width="3" style="animation:sb-fire-ring 2600ms cubic-bezier(0.1,0.8,0.3,1) forwards 1650ms;"/>
+    <circle cx="100" cy="105" r="8" fill="none" stroke="#ffaa00" stroke-width="1.5" style="animation:sb-fire-ring 2600ms cubic-bezier(0.1,0.8,0.3,1) forwards 1850ms;"/>
+    <!-- embers scattering -->
+    <circle cx="100" cy="105" r="4" fill="#ffff00" filter="url(#sb-glow)" style="--fx:-48px;--fy:-52px; animation:sb-ember 2600ms ease-out forwards 1300ms;"/>
+    <circle cx="100" cy="105" r="3.5" fill="#ff6600"                      style="--fx:52px; --fy:-48px; animation:sb-ember 2600ms ease-out forwards 1380ms;"/>
+    <circle cx="100" cy="105" r="3"   fill="#ff3300"                      style="--fx:-55px;--fy:42px;  animation:sb-ember 2600ms ease-out forwards 1440ms;"/>
+    <circle cx="100" cy="105" r="3"   fill="#ffaa00"                      style="--fx:58px; --fy:46px;  animation:sb-ember 2600ms ease-out forwards 1500ms;"/>
+    <circle cx="100" cy="105" r="2.5" fill="#ffff00"                      style="--fx:0px;  --fy:-68px; animation:sb-ember 2600ms ease-out forwards 1560ms;"/>
+    <circle cx="100" cy="105" r="2"   fill="#ff6600"                      style="--fx:-70px;--fy:0px;   animation:sb-ember 2600ms ease-out forwards 1620ms;"/>`;
     return s;
   }},
 
@@ -303,11 +482,47 @@ const SVGAnimations = {
     return s;
   }},
 
-  'judgment_seal': { duration: 2200, create: () => {
+  // Judgment Seal — Rune Chains Vortex
+  'judgment_seal': { duration: 2200, screenShake: 300, shakeDelay: 1380, create: () => {
     const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     s.setAttribute('viewBox', '0 0 200 200'); s.setAttribute('width', '200'); s.setAttribute('height', '200');
     s.classList.add('battle-svg-animation');
-    s.innerHTML = `<defs><style>@keyframes js-seal-form{0%{transform:scale(0) rotate(0deg);opacity:0;}20%{opacity:1;}70%{transform:scale(1) rotate(360deg);opacity:1;}100%{opacity:0.5;}}@keyframes js-chain-appear{0%{stroke-dashoffset:200;opacity:0;}20%{opacity:1;}100%{stroke-dashoffset:0;opacity:0.8;}}@keyframes js-chains-bind{0%{transform:translate(0,0);}100%{transform:translate(var(--cx),var(--cy));}}@keyframes js-debuff-text{0%{transform:translateY(0) scale(0.5);opacity:0;}30%{opacity:1;}100%{transform:translateY(-40px) scale(1);opacity:0;}}</style></defs><defs><filter id="js-glow"><feGaussianBlur stdDeviation="4"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><circle cx="100" cy="100" r="35" fill="none" stroke="#aa0099" stroke-width="2" style="animation:js-seal-form 2200ms ease-out forwards;"/><circle cx="100" cy="100" r="25" fill="none" stroke="#ff0099" stroke-width="1.5" style="animation:js-seal-form 2200ms ease-out forwards 150ms;"/><circle cx="100" cy="100" r="15" fill="#dd0088" fill-opacity="0.3" filter="url(#js-glow)" style="animation:js-seal-form 2200ms ease-out forwards 300ms;"/><path d="M 65 100 Q 85 95 100 95" stroke="#ff0099" stroke-width="1.5" stroke-dasharray="50" stroke-dashoffset="50" style="animation:js-chain-appear 2200ms ease-out forwards 500ms;"/><path d="M 135 100 Q 115 95 100 95" stroke="#aa0099" stroke-width="1.5" stroke-dasharray="50" stroke-dashoffset="50" style="animation:js-chain-appear 2200ms ease-out forwards 600ms;"/><circle cx="60" cy="100" r="3" fill="#ff0099" filter="url(#js-glow)" style="--cx:-50px;--cy:0px;animation:js-chains-bind 2200ms ease-out forwards 700ms;"/><circle cx="140" cy="100" r="3" fill="#aa0099" style="--cx:50px;--cy:0px;animation:js-chains-bind 2200ms ease-out forwards 750ms;"/><text x="100" y="80" text-anchor="middle" fill="#ff0099" font-size="7" font-family="monospace" font-weight="bold" style="animation:js-debuff-text 2200ms ease-out forwards 900ms;">ATK-30%</text><text x="100" y="120" text-anchor="middle" fill="#aa0099" font-size="7" font-family="monospace" font-weight="bold" style="animation:js-debuff-text 2200ms ease-out forwards 1100ms;">DEF-20%</text>`;
+    s.innerHTML = `<defs><style>
+      @keyframes js-ring-draw{0%{stroke-dashoffset:220;opacity:0}10%{opacity:1}100%{stroke-dashoffset:0;opacity:0.8}}
+      @keyframes js-ring-spin{0%{transform:rotate(0deg);opacity:0}8%{opacity:1}100%{transform:rotate(var(--spin));opacity:0.7}}
+      @keyframes js-rune-orbit{0%{transform:rotate(calc(var(--ra)*1deg)) translateX(38px) scale(0.5);opacity:0}15%{opacity:1;transform:rotate(calc(var(--ra)*1deg)) translateX(38px) scale(1)}85%{transform:rotate(calc((var(--ra)+270)*1deg)) translateX(38px) scale(0.9);opacity:1}100%{transform:rotate(calc((var(--ra)+360)*1deg)) translateX(5px) scale(0);opacity:0}}
+      @keyframes js-chain{0%,40%{stroke-dashoffset:90;opacity:0}42%{opacity:1}85%{stroke-dashoffset:0;opacity:1}100%{opacity:0}}
+      @keyframes js-bind-flash{0%,84%{opacity:0}86%{opacity:0.8}92%{opacity:0.3}100%{opacity:0}}
+      @keyframes js-debuff-text{0%{transform:translateY(0) scale(0.5);opacity:0}30%{opacity:1}100%{transform:translateY(-40px) scale(1);opacity:0}}
+    </style>
+    <filter id="js-glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="js-rglow"><feGaussianBlur stdDeviation="6" result="b"/><feColorMatrix in="b" type="matrix" values="1 0 0 0 0.5  0 0 0 0 0  0 0 0 0 0.3  0 0 0 1 0" result="rc"/><feMerge><feMergeNode in="rc"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    </defs>
+    <!-- outer rune ring drawing itself while rotating -->
+    <g style="transform-origin:100px 108px; --spin:320deg; animation:js-ring-spin 2200ms ease-out forwards;">
+      <circle cx="100" cy="108" r="48" fill="none" stroke="#aa0099" stroke-width="1.5" stroke-dasharray="220" stroke-dashoffset="220" style="animation:js-ring-draw 2200ms ease-out forwards;"/>
+    </g>
+    <!-- inner rune ring spinning opposite direction -->
+    <g style="transform-origin:100px 108px; --spin:-240deg; animation:js-ring-spin 2200ms ease-out forwards 150ms;">
+      <circle cx="100" cy="108" r="30" fill="none" stroke="#ff0099" stroke-width="1" stroke-dasharray="220" stroke-dashoffset="220" style="animation:js-ring-draw 2200ms ease-out forwards 150ms;"/>
+    </g>
+    <!-- orbiting rune particles that spiral inward -->
+    <rect x="96" y="66" width="8" height="8" fill="#ff0099" rx="1" filter="url(#js-glow)" style="transform-origin:100px 108px; --ra:0;   animation:js-rune-orbit 2200ms cubic-bezier(0.34,1.56,0.64,1) forwards 200ms;"/>
+    <rect x="96" y="66" width="8" height="8" fill="#cc0077" rx="1"                       style="transform-origin:100px 108px; --ra:90;  animation:js-rune-orbit 2200ms cubic-bezier(0.34,1.56,0.64,1) forwards 280ms;"/>
+    <rect x="96" y="66" width="8" height="8" fill="#ff0099" rx="1" filter="url(#js-glow)" style="transform-origin:100px 108px; --ra:180; animation:js-rune-orbit 2200ms cubic-bezier(0.34,1.56,0.64,1) forwards 360ms;"/>
+    <rect x="96" y="66" width="8" height="8" fill="#cc0077" rx="1"                       style="transform-origin:100px 108px; --ra:270; animation:js-rune-orbit 2200ms cubic-bezier(0.34,1.56,0.64,1) forwards 440ms;"/>
+    <rect x="96" y="66" width="6" height="6" fill="#ff66cc" rx="1"                       style="transform-origin:100px 108px; --ra:45;  animation:js-rune-orbit 2200ms cubic-bezier(0.34,1.56,0.64,1) forwards 320ms;"/>
+    <rect x="96" y="66" width="6" height="6" fill="#ff66cc" rx="1"                       style="transform-origin:100px 108px; --ra:225; animation:js-rune-orbit 2200ms cubic-bezier(0.34,1.56,0.64,1) forwards 480ms;"/>
+    <!-- chains that emerge from 4 corners and snap to center -->
+    <path d="M 52 60 Q 76 84 100 108"  stroke="#ff0099" stroke-width="2.5" stroke-dasharray="90" stroke-dashoffset="90" stroke-linecap="round" style="animation:js-chain 2200ms ease-out forwards;"/>
+    <path d="M 148 60 Q 124 84 100 108" stroke="#aa0099" stroke-width="2.5" stroke-dasharray="90" stroke-dashoffset="90" stroke-linecap="round" style="animation:js-chain 2200ms ease-out forwards 80ms;"/>
+    <path d="M 52 156 Q 76 132 100 108" stroke="#ff0099" stroke-width="2.5" stroke-dasharray="90" stroke-dashoffset="90" stroke-linecap="round" style="animation:js-chain 2200ms ease-out forwards 120ms;"/>
+    <path d="M 148 156 Q 124 132 100 108" stroke="#aa0099" stroke-width="2.5" stroke-dasharray="90" stroke-dashoffset="90" stroke-linecap="round" style="animation:js-chain 2200ms ease-out forwards 160ms;"/>
+    <!-- bind flash — red glow burst when chains lock -->
+    <circle cx="100" cy="108" r="20" fill="#ff0099" fill-opacity="0.35" filter="url(#js-rglow)" style="animation:js-bind-flash 2200ms ease-out forwards;"/>
+    <!-- debuff labels -->
+    <text x="100" y="82" text-anchor="middle" fill="#ff66cc" font-size="7" font-family="monospace" font-weight="bold" style="animation:js-debuff-text 2200ms ease-out forwards 950ms;">ATK−30%</text>
+    <text x="100" y="136" text-anchor="middle" fill="#cc88ff" font-size="7" font-family="monospace" font-weight="bold" style="animation:js-debuff-text 2200ms ease-out forwards 1150ms;">DEF−20%</text>`;
     return s;
   }},
 
