@@ -292,7 +292,12 @@ const ActionEngine = {
       });
       BattleUI.createEffectOverlay(G.activeMemberIdx, element, 'party', ab.id);
       if (e.healBoost) Battle.addStatus(actor, { ...StatusSystem.DEFS.heal_boost, turns: e.duration || 3 });
-      if (e.spdBuff) { actor.spd = Math.floor(actor.spd * e.spdBuff); actor._spdBuffVal = e.spdBuff; BattleUI.addLog(`💨 ${actor.displayName}: SPD up!`, 'heal'); }
+      if (e.spdBuff) {
+        // spdBuff > 1 = percentage multiplier (e.g. 1.2 = +20%); spdBuff <= 1 = flat additive (e.g. 1 = +1 SPD)
+        const spdType = e.spdBuff > 1 ? 'mult' : 'flat';
+        Battle.addStatus(actor, { id: 'buff_spd_ability', label: 'SPD Up', icon: '💨', stat: 'spd', type: spdType, value: e.spdBuff, turns: e.duration || 3 });
+        BattleUI.addLog(`💨 ${actor.displayName}: SPD up!`, 'heal');
+      }
       BattleUI.renderPartyStatus();
       setTimeout(() => TurnManager.advance(), 800);
     },
