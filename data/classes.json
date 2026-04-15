@@ -75,6 +75,7 @@
                     "dmgMultiplier": 3.0,
                     "element": "ice",
                     "statScale": "spd",
+                    "aoe": true,
                     "cooldown": 2
                 }
             }
