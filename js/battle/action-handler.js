@@ -442,34 +442,42 @@ function heroAttack() {
   BattleUI.openSub(null);
   G.busy = true; BattleUI.btns(false);
 
-  const actor = G.party[G.activeMemberIdx];
-  const enemy = G.enemy;
-  if (!actor || !enemy) { G.busy = false; return; }
+  try {
+    const actor = G.party[G.activeMemberIdx];
+    const enemy = G.enemy;
+    if (!actor || !enemy) { G.busy = false; BattleUI.btns(true); return; }
 
-  // Basic attack carries the character's class element
-  const _atkElem = actor.cls?.element || 'physical';
-  const actorSpr = BattleUI.getSprite(G.activeMemberIdx, 'party');
-  if (actorSpr) {
-    actorSpr.classList.add('anim-slash');
-    actorSpr.classList.add(`element-${_atkElem}`);
+    // Basic attack carries the character's class element
+    const _atkElem = actor.cls?.element || 'physical';
+    const actorSpr = BattleUI.getSprite(G.activeMemberIdx, 'party');
+    if (actorSpr) {
+      actorSpr.classList.add('anim-slash');
+      actorSpr.classList.add(`element-${_atkElem}`);
+      setTimeout(() => {
+        actorSpr.classList.remove('anim-slash');
+        actorSpr.classList.remove(`element-${_atkElem}`);
+      }, 460);
+    }
+
+    BattleUI.setLog([`${actor.displayName} attacks ${enemy.name}!`], ['hi']);
+
     setTimeout(() => {
-      actorSpr.classList.remove('anim-slash');
-      actorSpr.classList.remove(`element-${_atkElem}`);
+      try {
+        if (typeof SFX !== 'undefined') { SFX.attack(); setTimeout(() => SFX.enemyHit(), 80); }
+        const dmg = resolveOffensiveAction(actor, enemy, G.targetEnemyIdx, { name: 'attack', type: 'physical' }, _atkElem);
+        _applyVampiric(enemy, dmg, G.targetEnemyIdx);
+        _checkDragonLeap(actor);
+        BattleUI.renderEnemyRow();
+        setTimeout((() => TurnManager.advance()), 700);
+      } catch (err) {
+        console.error('[heroAttack inner] Error:', err);
+        G.busy = false; BattleUI.btns(true);
+      }
     }, 460);
+  } catch (err) {
+    console.error('[heroAttack] Error:', err);
+    G.busy = false; BattleUI.btns(true);
   }
-
-  BattleUI.setLog([`${actor.displayName} attacks ${enemy.name}!`], ['hi']);
-
-  setTimeout(() => {
-    if (typeof SFX !== 'undefined') { SFX.attack(); setTimeout(() => SFX.enemyHit(), 80); }
-    
-    const dmg = resolveOffensiveAction(actor, enemy, G.targetEnemyIdx, { name: 'attack', type: 'physical' }, _atkElem);
-    
-    _applyVampiric(enemy, dmg, G.targetEnemyIdx);
-    _checkDragonLeap(actor);
-    BattleUI.renderEnemyRow();
-    setTimeout((() => TurnManager.advance()), 700);
-  }, 460);
 }
 
 function heroAbility(ab) {
@@ -483,6 +491,8 @@ function heroAbility(ab) {
 
   BattleUI.openSub(null);
   G.busy = true; BattleUI.btns(false);
+
+  try {
   actor.mp = Math.max(0, actor.mp - _mpCost);
 
   const e = ab.effect || {};
@@ -526,6 +536,10 @@ function heroAbility(ab) {
     if (isUltimate) { BattleUI.addLog(`${actor.displayName} ${ultimateChannels[ab.id]}`, 'magic'); BattleUI.createEffectOverlay(G.targetEnemyIdx, element, 'enemy', ab.id); }
     ActionEngine.execute(actor, targets, ab, element, { ...moveConfig, isUltimate }, false);
   }, moveConfig.actorDuration);
+  } catch (err) {
+    console.error('[heroAbility] Error:', err);
+    G.busy = false; BattleUI.btns(true);
+  }
 }
 
 

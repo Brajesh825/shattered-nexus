@@ -194,6 +194,13 @@ const BattleUI = {
       info.innerHTML = `<div class="party-name">${m.displayName}</div><div class="party-level">Lv ${m.lv}</div>`;
       member.appendChild(info);
 
+      if (m.statuses && m.statuses.length > 0) {
+        const strip = document.createElement('div');
+        strip.className = 'portrait-status-strip';
+        strip.innerHTML = this._renderPSCStatuses(m);
+        member.appendChild(strip);
+      }
+
       if (!alive) {
         const koLbl = document.createElement('div');
         koLbl.className = 'ko-badge';

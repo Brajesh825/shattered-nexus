@@ -274,13 +274,14 @@ function showScreen(id) {
 
   if (typeof SFX !== 'undefined') SFX.click();
 
-  // BGM
+  // BGM — fade out current track then play the next one
   if (typeof BGM !== 'undefined') {
-    if (id === 'title-screen')       BGM.play('title');
-    else if (id === 'battle-screen') BGM.play('battle');
-    else if (id === 'explore-screen') BGM.play('exploration');
-    else if (id === 'story-screen')  BGM.play('story');
-    else BGM.stop();
+    const _next =
+      id === 'title-screen'    ? 'title'       :
+      id === 'battle-screen'   ? 'battle'      :
+      id === 'explore-screen'  ? 'exploration' :
+      id === 'story-screen'    ? 'story'       : null;
+    BGM.fadeOut(600, () => { if (_next) BGM.play(_next); });
   }
 }
 

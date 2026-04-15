@@ -20,6 +20,7 @@ const StatusSystem = {
     stunned: { id: 'status_stunned', label: 'Stunned', icon: '💫', type: 'control', turns: 1, color: '#ffcc00' },
     frozen: { id: 'status_frozen', label: 'Frozen', icon: '❄️', type: 'control', turns: 2, color: '#00ccff' },
     burn: { id: 'status_burn', label: 'Burn', icon: '🔥', type: 'dot', color: '#ff4400' },
+    poison: { id: 'status_poison', label: 'Poison', icon: '🟢', type: 'dot_percent', color: '#44cc44' },
     def_shatter: { id: 'status_def_shatter', label: 'Shattered', icon: '❄️', stat: 'def', type: 'mult', value: 0.7, color: '#00ccff' },
     
     // Auras
@@ -123,6 +124,19 @@ const StatusSystem = {
           if (isEnemy) BattleUI.popEnemy(idx, amt, 'dmg', 'fire');
           else BattleUI.popParty(idx, amt, 'dmg', 'fire');
         }
+      }
+
+      if (s.type === 'dot_percent' || s.id === 'status_poison') {
+        const amt = Math.max(1, Math.floor(unit.maxHp * 0.05));
+        unit.hp = Math.max(0, unit.hp - amt);
+        if (unit.hp <= 0) { unit.isKO = true; if (!isEnemy && typeof _checkReviveOnce === 'function') _checkReviveOnce(unit); }
+
+        const idx = isEnemy ? G.enemyGroup.indexOf(unit) : G.party.indexOf(unit);
+        if (typeof BattleUI !== 'undefined') {
+          if (isEnemy) BattleUI.popEnemy(idx, amt, 'dmg', 'nature');
+          else BattleUI.popParty(idx, amt, 'dmg', 'nature');
+        }
+        if (window.LogDebug) window.LogDebug(`[DoT] ${unit.displayName || unit.name}: Poison -${amt} HP`, 'dmg');
       }
 
       // Decrement duration (except for permanent or aura effects that might have special rules)
