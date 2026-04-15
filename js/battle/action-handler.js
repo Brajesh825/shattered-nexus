@@ -95,7 +95,12 @@ function resolveOffensiveAction(actor, target, targetIdx, action, element) {
   target.hp = Math.max(0, target.hp - dmg);
   if (target.hp <= 0) Battle.setKO(target, true);
   BattleUI.popEnemy(targetIdx, dmg, isMagic ? 'magic' : 'dmg', element);
-  BattleUI.createEffectOverlay(targetIdx, element, 'enemy', action.id);
+  // Skip overlay for ultimates — heroAbility already fired it before the execute delay
+  if (!action._ultimateOverlayShown) {
+    BattleUI.createEffectOverlay(targetIdx, element, 'enemy', action.id);
+  } else {
+    delete action._ultimateOverlayShown; // clean up after first target processed
+  }
 
   if (!reaction && element !== 'physical') {
     Battle.applyAura(target, element);
@@ -541,7 +546,16 @@ function heroAbility(ab) {
     [];
 
   setTimeout(() => {
-    if (isUltimate) { BattleUI.addLog(`${actor.displayName} ${ultimateChannels[ab.id]}`, 'magic'); BattleUI.createEffectOverlay(G.targetEnemyIdx, element, 'enemy', ab.id); }
+    if (isUltimate) {
+      BattleUI.addLog(`${actor.displayName} ${ultimateChannels[ab.id]}`, 'magic');
+      // Only pre-show the overlay for offensive ultimates targeting enemies.
+      // Buff/heal ultimates show their overlay inside the action handler on the correct party target.
+      const isOffensiveUlt = ab.type === 'physical' || ab.type === 'magic_damage';
+      if (isOffensiveUlt) {
+        BattleUI.createEffectOverlay(G.targetEnemyIdx, element, 'enemy', ab.id);
+        ab._ultimateOverlayShown = true;
+      }
+    }
     ActionEngine.execute(actor, targets, ab, element, { ...moveConfig, isUltimate }, false);
   }, moveConfig.actorDuration);
   } catch (err) {
