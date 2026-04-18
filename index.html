@@ -62,19 +62,33 @@
   <!-- ═══════════════════════════════════════
        TITLE SCREEN
        ═══════════════════════════════════════ -->
-  <div id="title-screen" class="screen active">
-    <div class="stars" id="stars"></div>
+    <div id="title-screen" class="screen active">
+      <!-- Advanced Cinematic Backdrop -->
+      <div class="title-visual-context">
+        <div class="bg-boss-sil"></div>
+        <div class="stars-layer" id="stars-l1"></div>
+        <div class="stars-layer" id="stars-l2"></div>
+        <div class="nebula-overlay"></div>
+        <div class="title-env-debris" id="env-debris"></div>
+        <div class="hero-silhouettes">
+          <div class="hero-sil" data-hero="aya"></div>
+          <div class="hero-sil" data-hero="tao"></div>
+          <div class="hero-sil" data-hero="lulu"></div>
+          <div class="hero-sil" data-hero="rei"></div>
+        </div>
+      </div>
 
     <!-- Cinematic top border accent -->
     <div class="title-top-bar"></div>
 
     <!-- Title block -->
     <div class="title-hero">
+      <div class="nexus-crystal"></div>
       <div class="title-eyebrow">✦ &nbsp; A N   E P I C   S A G A &nbsp; ✦</div>
       <div class="game-title">SHATTERED<br>NEXUS</div>
       <div class="title-ornament"><span></span><span class="orn-gem">✦</span><span></span></div>
       <div class="subtitle">R E B O R N</div>
-      <div class="title-tagline">4 Characters &nbsp;·&nbsp; 4 Classes &nbsp;·&nbsp; 50 Enemies &nbsp;·&nbsp; 5 Arcs</div>
+      <div class="title-tagline">8 Characters &nbsp;·&nbsp; 8 Classes &nbsp;·&nbsp; 100+ Enemies &nbsp;·&nbsp; 8 Arcs</div>
     </div>
 
     <!-- CONTINUE sits above the grid — full width, hidden until save exists -->
@@ -565,6 +579,7 @@
 <script src="js/systems/archive.js"></script>
 <script src="js/ui/archive-ui.js"></script>
 <script src="js/story.js"></script>
+<script src="js/ui/home-engine.js"></script>
 <script>
   TTS.init();
 
