@@ -53,6 +53,7 @@
         "dmgMultiplier": 1.1
       }
     ],
+    "lore": "Degenerate scouts of the ruins. They speak in a rusted tongue reminiscent of the Green Emperor's old guard, suggesting they were once proud sentinels of the Vale before the Nexus shattered.",
     "drops": [
       {
         "item": "Goblin Ear",
@@ -424,6 +425,7 @@
         "dmgMultiplier": 1.2
       }
     ],
+    "lore": "Prowlers of the Twilight Groves. Their fur is unnaturally dark, woven from the literal shadows cast by the Nexus shards. They don't just hunt; they erase.",
     "drops": [
       {
         "item": "Wolf Pelt",
@@ -496,7 +498,8 @@
         "item": "Antidote",
         "chance": 0.3
       }
-    ]
+    ],
+    "lore": "Web-spinners of the Shadow Reach. Their venom isn't biological\u2014it's concentrated despair, extracted from the atmosphere of the rift."
   },
   {
     "id": "zombie",
@@ -560,7 +563,8 @@
         "item": "Potion",
         "chance": 0.15
       }
-    ]
+    ],
+    "lore": "The byproduct of a botched ritual to restart the Moonstone mines. They are empty biological shells, still trying to perform the mining labor they did in life."
   },
   {
     "id": "wisp",
@@ -624,7 +628,8 @@
         "item": "Ether",
         "chance": 0.2
       }
-    ]
+    ],
+    "lore": "Soul fragments cast adrift during the Great Shattering. They are drawn to the living, seeking the warmth and cohesion they lost when the world broke."
   },
   {
     "id": "lizardman",
@@ -688,7 +693,8 @@
         "item": "Potion",
         "chance": 0.15
       }
-    ]
+    ],
+    "lore": "Former guardians of the Sunken Temple's exterior. They have turned hostile as the waters rise, believing the 'Shattered Souls' are heralds of a second, final flood."
   },
   {
     "id": "bandit",
@@ -750,7 +756,8 @@
         "item": "Potion",
         "chance": 0.2
       }
-    ]
+    ],
+    "lore": "Survivalists who have abandoned morality in the wake of the apocalypse. They scavenge the Shadow Reach, clinging to 'Old World' gold that has lost all value in the new age."
   },
   {
     "id": "scarecrow",
@@ -813,7 +820,8 @@
         "item": "Ether",
         "chance": 0.15
       }
-    ]
+    ],
+    "lore": "Effigies built by the peasants of the Ember Wastes to ward off Fire Imps. Ironically, the lingering ash and grief have given them a vengeful, mindless life of their own."
   },
   {
     "id": "slime",
@@ -3090,7 +3098,7 @@
   {
     "id": "shadow_emperor",
     "name": "Shadow Emperor",
-    "subtitle": "The supreme ruler of all darkness — the final reckoning",
+    "subtitle": "The supreme ruler of all darkness \u2014 the final reckoning",
     "element": "void",
     "weakTo": [
       "light",

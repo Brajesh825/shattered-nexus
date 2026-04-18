@@ -10,7 +10,6 @@
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/map.css">
   <script src="js/systems/settings-manager.js"></script>
-  <script src="js/ui/joystick.js"></script>
 </head>
 <body>
 
@@ -438,14 +437,15 @@
         <div class="bestiary-bg" onclick="ArchiveUI.close()"></div>
         <div class="bestiary-panel">
           <div class="bestiary-header">
-             <div class="bestiary-title">REALM ARCHIVE</div>
-             <div class="bestiary-sub">Fallen foes and discovered secrets</div>
-             <button class="bestiary-close" onclick="ArchiveUI.close()">×</button>
+            <div class="bestiary-title">THE ARCHIVE</div>
+            <div class="bestiary-tabs">
+              <button class="b-tab active" id="tab-bestiary" onclick="ArchiveUI.setTab('bestiary')">BESTIARY</button>
+              <button class="b-tab" id="tab-story" onclick="ArchiveUI.setTab('story')">STORY & LORE</button>
+            </div>
+            <button class="bestiary-close" onclick="ArchiveUI.close()">✕</button>
           </div>
           <div class="bestiary-body">
-            <div class="bestiary-sidebar" id="bestiary-list">
-              <!-- Enemy list injected here -->
-            </div>
+            <div class="bestiary-sidebar" id="bestiary-list"></div>
             <div class="bestiary-detail" id="bestiary-detail">
               <div class="bestiary-empty-hint">Select an entry to view details</div>
             </div>
@@ -503,8 +503,8 @@
       <!-- Party HP strip (bottom-left, above loc bar) -->
       <div id="explore-party-hud"></div>
 
-      <!-- Virtual Joystick Wrapper -->
-      <div id="joystick-zone" class="joystick-zone" style="display:none">
+      <!-- Fixed Mobile Virtual Joystick -->
+      <div id="joystick-container" class="joystick-container">
         <div id="joystick-base" class="joystick-base">
           <div id="joystick-knob" class="joystick-knob"></div>
         </div>
@@ -760,20 +760,73 @@
 <div id="save-toast"></div>
 
 <script>
-/* ── D-Pad controller for explore screen ──────────────────── */
-const DPad = (() => {
-  let _iv = null;
-  function press(dx, dy, e) {
-    if (e) e.preventDefault();
-    release();
-    MapPlayer.dpad(dx, dy);
-    _iv = setInterval(() => MapPlayer.dpad(dx, dy), 160);
+/* ── Fixed Joystick controller for explore screen ────────── */
+const Joystick = (() => {
+  let _active = false;
+  let _base = null, _knob = null;
+  let _rect = null;
+  const _radius = 45;
+
+  function init() {
+    _base = document.getElementById('joystick-base');
+    _knob = document.getElementById('joystick-knob');
+    if (!_base || !_knob) return;
+
+    const container = document.getElementById('joystick-container');
+    container.addEventListener('touchstart', e => _start(e), { passive: false });
+    window.addEventListener('touchmove', e => _move(e), { passive: false });
+    window.addEventListener('touchend', () => _end(), { passive: false });
+    window.addEventListener('touchcancel', () => _end(), { passive: false });
+    
+    // Mouse fallback for testing
+    container.addEventListener('mousedown', e => _start(e), { passive: false });
+    window.addEventListener('mousemove', e => _move(e), { passive: false });
+    window.addEventListener('mouseup', () => _end(), { passive: false });
   }
-  function release() {
-    if (_iv) { clearInterval(_iv); _iv = null; }
+
+  function _start(e) {
+    if (typeof MapEngine === 'undefined' || !MapEngine.isRunning()) return;
+    _active = true;
+    _rect = _base.getBoundingClientRect();
+    _move(e);
   }
-  return { press, release };
+
+  function _move(e) {
+    if (!_active || !_rect) return;
+    if (e.type.startsWith('touch')) e.preventDefault();
+    
+    const t = e.targetTouches ? e.targetTouches[0] : e;
+    const centerX = _rect.left + _rect.width / 2;
+    const centerY = _rect.top + _rect.height / 2;
+    
+    const dx = t.clientX - centerX;
+    const dy = t.clientY - centerY;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    
+    const angle = Math.atan2(dy, dx);
+    const clampedDist = Math.min(dist, _radius);
+    const mx = Math.cos(angle) * clampedDist;
+    const my = Math.sin(angle) * clampedDist;
+
+    _knob.style.transform = `translate(calc(-50% + ${mx}px), calc(-50% + ${my}px))`;
+    
+    if (typeof MapInput !== 'undefined') {
+      MapInput.setVector(mx / _radius, my / _radius);
+    }
+  }
+
+  function _end() {
+    _active = false;
+    if (_knob) _knob.style.transform = 'translate(-50%, -50%)';
+    if (typeof MapInput !== 'undefined') MapInput.setVector(0, 0);
+  }
+
+  return { init };
 })();
+
+window.addEventListener('DOMContentLoaded', () => {
+  if (typeof Joystick !== 'undefined') Joystick.init();
+});
 </script>
 
 </body>

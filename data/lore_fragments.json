@@ -1,0 +1,26 @@
+[
+  {
+    "id": "world_nexus",
+    "title": "The Shattering of Nexus",
+    "icon": "💥",
+    "description": "Centuries ago, the Nexus was a crystalline construct that maintained the balance of all elements. When it shattered, the world was split into islands of extreme elemental energy, and the 'Shattered Souls' (the player characters) were chosen to reassemble it."
+  },
+  {
+    "id": "npc_essabela",
+    "title": "Isabela the Merchant",
+    "icon": "💎",
+    "description": "A merchant found in the Sunken Temple. She is actually a former High Priestess of the Tide, seeking a way to purify the corruption that has turned her people into Armored Crabs and Slimes."
+  },
+  {
+    "id": "region_vale",
+    "title": "The Green Emperor's Silence",
+    "icon": "🌿",
+    "description": "The Verdant Vale used to be a paradise governed by a benevolent entity known as the Green Emperor. After the Shattering, the Emperor vanished, leaving behind nothing but overgrown ruins and the Goblins—who are whispered to be his cursed children."
+  },
+  {
+    "id": "relic_origin",
+    "title": "Of Relics and Resonance",
+    "icon": "🏺",
+    "description": "Relics are not just artifacts; they are crystalline splinters of the Nexus. When equipped, they resonate with the user's soul, granting them powers once reserved for the elemental gods."
+  }
+]

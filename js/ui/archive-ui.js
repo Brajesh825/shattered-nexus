@@ -1,39 +1,96 @@
 /**
  * archive-ui.js — RPG+ Bestiary UI
- * Manages rendering and interaction for the enemy archive.
+ * Manages rendering and interaction for the enemy archive and story lore.
  */
 const ArchiveUI = {
+  activeTab: 'bestiary', // 'bestiary' | 'story'
+
   open() {
+    if (typeof MapEngine !== 'undefined' && MapEngine.isRunning()) MapEngine.stop();
     const overlay = document.getElementById('bestiary-overlay');
     if (!overlay) return;
     overlay.style.display = 'flex';
+    this.updateProgress();
     this.renderList();
+  },
+
+  updateProgress() {
+    const stats = this.getProgress();
+    const titleEl = document.querySelector('.bestiary-title');
+    if (titleEl) {
+      titleEl.innerHTML = `THE ARCHIVE <span style="font-size:10px; color:var(--text-dim); margin-left:15px; vertical-align:middle; letter-spacing:1px;">COMPLETION: ${stats.total}%</span>`;
+    }
+  },
+
+  getProgress() {
+    const enemiesDiscovered = G.enemies ? G.enemies.filter(e => Archive.getEntry(e.id)).length : 0;
+    const enemiesTotal = G.enemies ? G.enemies.length : 1;
+    const storiesDiscovered = window.LORE_FRAGMENTS ? window.LORE_FRAGMENTS.filter(f => Archive.data.story[f.id]).length : 0;
+    const storiesTotal = window.LORE_FRAGMENTS ? window.LORE_FRAGMENTS.length : 1;
+    
+    return {
+      enemies: Math.round((enemiesDiscovered / enemiesTotal) * 100),
+      stories: Math.round((storiesDiscovered / storiesTotal) * 100),
+      total: Math.round(((enemiesDiscovered + storiesDiscovered) / (enemiesTotal + storiesTotal)) * 100)
+    };
   },
 
   close() {
     const overlay = document.getElementById('bestiary-overlay');
     if (overlay) overlay.style.display = 'none';
+    if (typeof MapEngine !== 'undefined') MapEngine.resume();
+  },
+
+  setTab(tab) {
+    this.activeTab = tab;
+    document.querySelectorAll('.b-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + tab)?.classList.add('active');
+    
+    // Clear detail view on tab switch
+    const detail = document.getElementById('bestiary-detail');
+    if (detail) detail.innerHTML = `<div style="text-align:center; padding-top:100px; color:var(--text-dim); font-family:var(--vt);">Select an entry to view details</div>`;
+    
+    this.renderList();
   },
 
   renderList() {
     const list = document.getElementById('bestiary-list');
-    if (!list || !G.enemies) return;
+    if (!list) return;
     list.innerHTML = '';
 
-    G.enemies.forEach(enemy => {
-      const entry = Archive.getEntry(enemy.id);
-      const row = document.createElement('div');
-      row.className = 'bestiary-row' + (entry ? ' discovered' : ' undiscovered');
-      
-      if (entry) {
-        row.innerHTML = `<span class="br-icon">${enemy.icon || '💀'}</span> <span class="br-name">${enemy.name}</span>`;
-        row.onclick = () => this.renderDetail(enemy.id);
-      } else {
-        row.innerHTML = `<span class="br-icon">❓</span> <span class="br-name">???</span>`;
-      }
-      
-      list.appendChild(row);
-    });
+    if (this.activeTab === 'bestiary') {
+      if (!G.enemies) return;
+      G.enemies.forEach(enemy => {
+        const entry = Archive.getEntry(enemy.id);
+        const row = document.createElement('div');
+        row.className = 'bestiary-row' + (entry ? ' discovered' : ' undiscovered');
+        
+        if (entry) {
+          row.innerHTML = `<span class="br-icon">${enemy.icon || '💀'}</span> <span class="br-name">${enemy.name}</span>`;
+          row.onclick = () => this.renderDetail(enemy.id);
+        } else {
+          row.innerHTML = `<span class="br-icon">❓</span> <span class="br-name">???</span>`;
+        }
+        list.appendChild(row);
+      });
+    } else {
+      // Story Tab - Load from dynamic data
+      const fragments = window.LORE_FRAGMENTS || [];
+
+      fragments.forEach(frag => {
+        const discovered = Archive.data.story && Archive.data.story[frag.id];
+        const row = document.createElement('div');
+        row.className = 'bestiary-row' + (discovered ? ' discovered' : ' undiscovered');
+        
+        if (discovered) {
+          row.innerHTML = `<span class="br-icon">${frag.icon}</span> <span class="br-name">${frag.title || frag.name}</span>`;
+          row.onclick = () => this.renderStoryFrag(frag);
+        } else {
+          row.innerHTML = `<span class="br-icon">🔒</span> <span class="br-name">LOCKED</span>`;
+        }
+        list.appendChild(row);
+      });
+    }
   },
 
   renderDetail(enemyId) {
@@ -56,8 +113,8 @@ const ArchiveUI = {
       </div>
       
       <div class="bd-stats-grid">
-        <div class="bd-stat"><span>Kills</span> <strong>${entry.kills}</strong></div>
-        <div class="bd-stat"><span>Level Range</span> <strong>${enemy.lv || 1}+</strong></div>
+        <div class="bd-stat"><span>Found</span> <strong>${entry.kills}x</strong></div>
+        <div class="bd-stat"><span>Discovery Lv</span> <strong>${enemy.lv || 1}+</strong></div>
       </div>
 
       <div class="bd-section">
@@ -66,14 +123,35 @@ const ArchiveUI = {
       </div>
 
       <div class="bd-section">
-        <div class="bd-section-label">DESCRIPTION</div>
-        <div class="bd-desc">${enemy.description || 'A mysterious inhabitant of the realm. Little is known of its origin.'}</div>
+        <div class="bd-section-label">OBSERVATIONS & LORE</div>
+        <div class="bd-desc" style="white-space: pre-wrap; line-height:1.6; font-style:italic; color:rgba(255,255,255,0.7); font-family:var(--vt); font-size:15px; border-left: 2px solid var(--gold-dim); padding-left: 12px;">
+${enemy.lore || 'No detailed observations recorded yet.'}
+        </div>
       </div>
 
       <div class="bd-section">
-        <div class="bd-section-label">ABILITIES</div>
+        <div class="bd-section-label">NATURAL ABILITIES</div>
         <div class="bd-abilities">
           ${(enemy.abilities || []).map(a => `<div class="bd-ab"><strong>${a.name}</strong>: ${a.description || 'No data.'}</div>`).join('')}
+        </div>
+      </div>
+    `;
+  },
+
+  renderStoryFrag(frag) {
+    const detail = document.getElementById('bestiary-detail');
+    if (!detail) return;
+    detail.innerHTML = `
+      <div class="bd-header">
+        <div class="bd-icon-wrap">${frag.icon}</div>
+        <div class="bd-meta">
+          <div class="bd-name">${frag.title || frag.name}</div>
+          <div class="bd-tier">Discovered Nexus-Fragment</div>
+        </div>
+      </div>
+      <div class="bd-section" style="margin-top:20px;">
+        <div class="bd-desc" style="white-space: pre-wrap; line-height:1.8; color:var(--text); padding:16px; background:rgba(0,0,0,0.2); border-radius:8px; border:1px solid rgba(255,255,255,0.05);">
+${frag.description}
         </div>
       </div>
     `;

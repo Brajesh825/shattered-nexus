@@ -121,12 +121,27 @@ function resolveOffensiveAction(actor, target, targetIdx, action, element) {
   if (isCrit) {
     BattleUI.addLog(`⭐ ${isMagic ? 'CRITICAL MAGIC!' : 'CRITICAL HIT!'}`, 'hi');
     BattleUI.popEnemy(targetIdx, 'CRITICAL!', 'crit');
+    if (typeof SFX !== 'undefined') SFX.crit();
+    BattleUI.flash('#ffffff33', 200);
   }
 
   // 5. Apply result
   target.hp = Math.max(0, target.hp - dmg);
-  if (target.hp <= 0) Battle.setKO(target, true);
+  if (target.hp <= 0) {
+    Battle.setKO(target, true);
+    // If it was an enemy kill, record in Archive
+    if (typeof Archive !== 'undefined') Archive.recordKill(target.id);
+  }
+
   BattleUI.popEnemy(targetIdx, dmg, isMagic ? 'magic' : 'dmg', element);
+  
+  // Ultimate Impact logic
+  const isUltimate = action.id?.includes('_ult_') || action.isUltimate;
+  if (isUltimate) {
+    if (typeof SFX !== 'undefined') SFX.ultimate();
+    BattleUI.flash('#ffffff', 400);
+  }
+  
   // Skip overlay for ultimates — heroAbility already fired it before the execute delay
   if (!action._ultimateOverlayShown) {
     BattleUI.createEffectOverlay(targetIdx, element, 'enemy', action.id);

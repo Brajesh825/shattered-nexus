@@ -16,6 +16,7 @@ const MapInput = (() => {
       
       // Prevent scrolling / focus shift for game keys
       if (isMapRunning && ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Tab'].includes(e.key)) {
+        if (e.key === 'Tab' && e.repeat) return; // Prevent flickering on held Tab
         e.preventDefault();
         
         // Character cycle on Tab

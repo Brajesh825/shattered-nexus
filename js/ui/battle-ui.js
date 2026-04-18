@@ -7,6 +7,28 @@ const BattleUI = {
   el(id) { return document.getElementById(id); },
 
   /**
+   * Triggers a momentary full-screen color overlay for impact.
+   */
+  flash(color = '#ffffff', duration = 300) {
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: ${color}; z-index: 9999; pointer-events: none;
+      transition: opacity ${duration}ms ease-out;
+      opacity: 0.6;
+    `;
+    document.body.appendChild(overlay);
+    
+    // Force reflow
+    overlay.getBoundingClientRect();
+    
+    // Start fade out
+    overlay.style.opacity = '0';
+    
+    setTimeout(() => overlay.remove(), duration);
+  },
+
+  /**
    * Central helper to retrieve unit sprites by index and type.
    */
   getSprite(idx, type = 'enemy') {

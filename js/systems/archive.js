@@ -5,12 +5,15 @@
 const Archive = {
   data: {
     bestiary: {}, // { enemyId: { seen: true, kills: 0, weaknesses: [] } }
+    story: {},    // { fragmentId: { seen: true, date: Date } }
   },
 
   init() {
     // Load existing archive from global G (which loads from Save)
     if (G.archive) {
       this.data = { ...this.data, ...G.archive };
+      // Ensure story registry exists for legacy saves
+      if (!this.data.story) this.data.story = {};
     } else {
       G.archive = this.data;
     }
@@ -23,6 +26,7 @@ const Archive = {
     if (!this.data.bestiary[enemyId]) {
       this.data.bestiary[enemyId] = { seen: true, kills: 0, weaknesses: [] };
     }
+    this.sync();
   },
 
   /**
@@ -31,6 +35,7 @@ const Archive = {
   recordKill(enemyId) {
     this.recordSeen(enemyId);
     this.data.bestiary[enemyId].kills++;
+    this.sync();
   },
 
   /**
@@ -42,6 +47,17 @@ const Archive = {
     if (!entry.weaknesses.includes(element)) {
       entry.weaknesses.push(element);
     }
+    this.sync();
+  },
+
+  /**
+   * Record a story fragment or NPC interaction
+   */
+  recordStoryFragment(fragmentId) {
+    if (!this.data.story[fragmentId]) {
+      this.data.story[fragmentId] = { seen: true, date: Date.now() };
+    }
+    this.sync();
   },
 
   /**
@@ -56,6 +72,8 @@ const Archive = {
    */
   sync() {
     G.archive = this.data;
+    // Auto-save if Story system is active
+    if (typeof Story !== 'undefined' && Story._doSave) Story._doSave();
   }
 };
 

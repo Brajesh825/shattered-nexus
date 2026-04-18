@@ -2878,10 +2878,11 @@ body {
 /* ══════════════════════════════════════════════════════
    MUTE BUTTON
    ══════════════════════════════════════════════════════ */
-#mute-btn, #tts-btn {
+#mute-btn, #tts-btn, #settings-btn {
   position: absolute;
   z-index: 9999;
   background: rgba(5,4,20,0.7);
+  backdrop-filter: blur(8px);
   border: 1px solid #2a1860;
   border-radius: 4px;
   color: #6050a0;
@@ -2889,12 +2890,13 @@ body {
   width: 30px; height: 30px;
   cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  transition: color .2s, border-color .2s, background .2s;
+  transition: all .2s;
   padding: 0;
 }
-#mute-btn { top: 10px; right: 62px; }
-#tts-btn  { top: 10px; right: 98px; }
-#mute-btn:hover, #tts-btn:hover { color: #a090d0; border-color: #5040a0; }
+#settings-btn { top: 9px; left: 50%; transform: translateX(-50%); color: #a090d0; border-color: #5040a0; }
+#mute-btn     { top: 10px; right: 90px; }
+#tts-btn      { top: 10px; right: 126px; }
+#mute-btn:hover, #tts-btn:hover, #settings-btn:hover { color: #a0c8ff; border-color: #5040a0; background: rgba(80,60,150,0.2); }
 #tts-btn.tts-active {
   color: #c084fc;
   border-color: #8833cc;
@@ -2916,8 +2918,8 @@ body {
   transition: color .2s, border-color .2s, background .2s;
   padding: 0;
 }
-#zoom-btn { top: 10px; right: 134px; }
-#reset-zoom-btn { top: 10px; right: 170px; }
+#zoom-btn { top: 10px; right: 162px; }
+#reset-zoom-btn { top: 10px; right: 198px; }
 #zoom-btn:hover, #reset-zoom-btn:hover { color: #a090d0; border-color: #5040a0; }
 
 #quality-btn {
@@ -4275,10 +4277,11 @@ body {
   /* ── Global text scale ── */
   body { font-size: 16px; }
 
-  /* ── Persistent overlay buttons ── */
-  #mute-btn  { top: 6px; right: 40px; width: 26px; height: 26px; font-size: 13px; }
-  #quality-btn { top: 6px; right: 212px; height: 26px; font-size: 9px; padding: 0 6px; }
-  #tts-btn   { top: 6px; right: 70px; width: 26px; height: 26px; font-size: 13px; }
+  /* ── Persistent overlay buttons (Mobile Optimization) ── */
+  #settings-btn { top: 8px; left: 50%; transform: translateX(-50%); width: 28px; height: 28px; font-size: 14px; }
+  #mute-btn     { top: 6px; right: 80px; width: 26px; height: 26px; font-size: 13px; }
+  #tts-btn      { top: 6px; right: 110px; width: 26px; height: 26px; font-size: 13px; }
+  #quality-btn  { top: 6px; right: 140px; height: 26px; font-size: 9px; padding: 0 6px; }
   #zoom-btn, #reset-zoom-btn { display: none; }
 
   /* ── Title screen — handled by its own breakpoints in the title section ── */
@@ -4600,17 +4603,48 @@ input[type=range].setting-slider::-webkit-slider-thumb {
 }
 
 .bestiary-header {
-  padding: 20px 24px;
+  padding: 24px 30px;
   border-bottom: 1px solid var(--border);
-  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 .bestiary-title { font-family: var(--px); font-size: var(--fs-h3); color: var(--gold); letter-spacing: 2px; }
-.bestiary-sub { font-family: var(--vt); font-size: var(--fs-md); color: var(--text-dim); margin-top: 4px; }
-.bestiary-close {
-  position: absolute; top: 20px; right: 20px;
-  background: none; border: none; color: var(--text-dim);
-  font-size: 28px; cursor: pointer;
+
+.bestiary-tabs {
+  display: flex;
+  gap: 10px;
+  background: rgba(0,0,0,0.2);
+  padding: 4px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
 }
+
+.b-tab {
+  background: none;
+  border: 1px solid transparent;
+  color: var(--text-dim);
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: var(--vt);
+  font-size: 14px;
+  transition: 0.2s;
+  letter-spacing: 1px;
+}
+.b-tab:hover { color: var(--text); }
+.b-tab.active {
+  background: var(--glass-hi);
+  color: var(--gold);
+  border-color: rgba(255, 207, 92, 0.3);
+  box-shadow: 0 0 10px rgba(255, 207, 92, 0.1);
+}
+
+.bestiary-close {
+  background: none; border: none; color: var(--text-dim);
+  font-size: 28px; cursor: pointer; transition: 0.2s;
+}
+.bestiary-close:hover { color: #ff5050; }
 
 .bestiary-body {
   flex: 1;
@@ -4688,3 +4722,90 @@ input[type=range].setting-slider::-webkit-slider-thumb {
 .bd-abilities { display: flex; flex-direction: column; gap: 8px; }
 .bd-ab { font-size: 16px; color: var(--text-dim); }
 .bd-ab strong { color: var(--gold-dim); }
+
+/* ── Relic Cards (Modern Grid) ───────────────────────────────────────── */
+.relic-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+  padding: 20px 0;
+}
+
+.relic-card {
+  position: relative;
+  background: rgba(144, 128, 255, 0.04);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(144, 128, 255, 0.15);
+  border-radius: 12px;
+  padding: 16px;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  cursor: default;
+}
+
+.relic-card:hover {
+  transform: translateY(-4px);
+  background: rgba(144, 128, 255, 0.08);
+  border-color: rgba(144, 128, 255, 0.4);
+  box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+}
+
+.relic-card::before {
+  content: '';
+  position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(255,255,255,0.05), transparent);
+  transform: rotate(45deg);
+  transition: 0.5s;
+  pointer-events: none;
+}
+.relic-card:hover::before { left: 100%; }
+
+.relic-icon {
+  font-size: 32px;
+  margin-bottom: 4px;
+  filter: drop-shadow(0 0 8px rgba(0,0,0,0.3));
+}
+
+.relic-name {
+  font-family: var(--px);
+  font-size: 14px;
+  color: var(--text);
+  letter-spacing: 1px;
+}
+
+.relic-desc {
+  font-family: var(--vt);
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.4;
+  flex: 1;
+}
+
+/* Rarity Glows */
+.relic-card.legendary { border-color: #ffcf5c60; box-shadow: inset 0 0 15px #ffcf5c15; }
+.relic-card.legendary .relic-name { color: #ffcf5c; text-shadow: 0 0 8px #ffcf5c40; }
+.relic-card.legendary:hover { box-shadow: 0 0 25px #ffcf5c20; border-color: #ffcf5c; }
+
+.relic-card.epic { border-color: #a080ff60; box-shadow: inset 0 0 15px #a080ff15; }
+.relic-card.epic .relic-name { color: #a080ff; text-shadow: 0 0 8px #a080ff40; }
+.relic-card.epic:hover { box-shadow: 0 0 25px #a080ff20; border-color: #a080ff; }
+
+.relic-card.rare { border-color: #5ccfff60; box-shadow: inset 0 0 15px #5ccfff15; }
+.relic-card.rare .relic-name { color: #5ccfff; text-shadow: 0 0 8px #5ccfff40; }
+.relic-card.rare:hover { box-shadow: 0 0 25px #5ccfff20; border-color: #5ccfff; }
+
+.active-tag {
+  font-size: 10px;
+  background: var(--cyan);
+  color: #000;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: bold;
+  position: absolute; top: 12px; right: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
