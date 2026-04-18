@@ -352,7 +352,7 @@ function renderPartyMenu() {
           <div class="pm-card-name" style="color:${col}">${m.displayName}</div>
           <div class="pm-card-class">${m.cls.name} ${m.isKO ? '<span class="pm-ko-badge">KO</span>' : ''}</div>
           <div class="pm-card-lv">LEVEL <span style="color:${col}">${m.lv}</span>
-            · EXP <span style="color:var(--gold)">${m.exp}</span>/<span style="color:var(--text-dim)">${30 * m.lv}</span></div>
+            · EXP <span style="color:var(--gold)">${m.exp}</span>/<span style="color:var(--text-dim)">${getExpThreshold(m.lv)}</span></div>
         </div>
       </div>
       <div class="pm-bars">
@@ -413,9 +413,11 @@ function buildEnemyGroup(defs, spawnLevel = 1, isBoss = false) {
     const finalAtk = calcStat(def.stats.atk, 'atk');
     const finalDef = calcStat(def.stats.def, 'def');
     const finalSpd = calcStat(def.stats.spd, 'spd');
-    const finalMag = calcStat(def.stats.mag, 'mag');
-    // EXP/gold scale by count so total reward is fair
-    const finalExp = Math.floor(def.reward.exp * growth.expMult * hordeScale);
+     const finalMag = calcStat(def.stats.mag, 'mag');
+    // EXP/gold scale by count so total reward is fair.
+    // Level scaling: +10% EXP for each level above 1.
+    const levelScale = 1 + (spawnLevel - 1) * 0.1;
+    const finalExp = Math.floor(def.reward.exp * growth.expMult * hordeScale * levelScale);
     const finalGold = Math.floor(def.reward.gold * growth.expMult * hordeScale);
 
     return {

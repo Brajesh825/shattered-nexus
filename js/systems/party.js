@@ -129,8 +129,19 @@ function applyRelicBonuses() {
 
 function checkLevel() { return checkMemberLevel(G.hero); }
 
+/**
+ * Returns the EXP required to reach the next level from the current level.
+ * Uses a quadratic formula: 5 * L^2 + 25 * L
+ * @param {number} lv - Current level
+ * @returns {number} EXP threshold
+ */
+function getExpThreshold(lv) {
+  return (5 * lv * lv) + (25 * lv);
+}
+
 function checkMemberLevel(m) {
-  if (!m || m.exp < 30 * m.lv) return false;
+  const threshold = getExpThreshold(m.lv);
+  if (!m || m.exp < threshold) return false;
   m.lv++;
   const g = m.cls.growthPerLevel || {};
   const hpGain = (g.hp || 8);
