@@ -53,6 +53,18 @@ function buildParty() {
     if (_m.passive?.id === 'yakshas_valor') _m.atk = Math.floor(_m.atk * 1.15);
   });
 
+  // Apply Warden's Archive Mastery Buffs (Track 2)
+  if (typeof Archive !== 'undefined') {
+    const mastery = Archive.getMasteryBuffs();
+    G.party.forEach(m => {
+      m.atk += mastery.atk;
+      m.def += mastery.def;
+      m.mag += mastery.mag;
+      m.spd += mastery.spd;
+      m.lck += mastery.lck;
+    });
+  }
+
   // --- DIAMOND FORMATION AUTO-SORTING ---
   const ROLE_WEIGHTS = { 'Paladin': 10, 'Knight': 8, 'Warrior': 6, 'Ranger': 4, 'Mage': 2, 'Healer': 0 };
 

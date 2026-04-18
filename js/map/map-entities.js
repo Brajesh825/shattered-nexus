@@ -499,6 +499,14 @@ const MapEntities = (() => {
       en.mutationTick  += dt;
       if (en.mutationTick >= 1.0) {
         en.mutationTick -= 1.0;
+
+        // --- NO MUTATED BOSSES ---
+        const raw = (G && G.enemies) ? G.enemies.find(r => r.id === en.id) : null;
+        if (raw && (raw.isBoss || raw.tier >= 3)) {
+          en.mapTime = 0; // Bosses/Alphas don't accumulate mutation time
+          return;
+        }
+
         // Read per-map config, fall back to defaults
         const mc = map.mutationConfig || MUTATION_DEFAULTS;
         const corruptThreshold = mc.corruptThreshold ?? MUTATION_DEFAULTS.corruptThreshold;

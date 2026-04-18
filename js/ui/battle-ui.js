@@ -81,6 +81,48 @@ const BattleUI = {
     this.renderPartyStatus();
     this.renderActiveMemberBar();
     this.updateStats();
+    
+    // Apply atmosphere based on Arc
+    this._applyArcAtmosphere();
+    // Start weather loop for battle canvas if active
+    this._initBattleWeather();
+  },
+
+  _applyArcAtmosphere() {
+    const scene = this.el('battle-scene');
+    if (!scene) return;
+    // Sync parallax layers to current Arc if available
+    if (typeof Story !== 'undefined' && Story.active) {
+      scene.classList.add(`arc-bg-${Story.arcIdx % 8}`);
+    }
+  },
+
+  _initBattleWeather() {
+    if (this._weatherLoopActive) return;
+    const canvas = this.el('battle-effects-canvas');
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+    
+    this._weatherLoopActive = true;
+    let lastTs = performance.now();
+    
+    const loop = (ts) => {
+      if (!this._weatherLoopActive || !this.el('battle-screen').classList.contains('active')) return;
+      const dt = (ts - lastTs) / 1000;
+      lastTs = ts;
+      
+      if (typeof WeatherEngine !== 'undefined') {
+        WeatherEngine.update(dt);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        WeatherEngine.draw(ctx);
+      }
+      
+      requestAnimationFrame(loop);
+    };
+    requestAnimationFrame(loop);
   },
 
   updateStats() {

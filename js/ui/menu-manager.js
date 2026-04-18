@@ -30,13 +30,18 @@ window.addEventListener('DOMContentLoaded', async () => {
 });
 
 function initStars() {
-  const c = document.getElementById('stars');
-  for (let i = 0; i < 70; i++) {
-    const s = document.createElement('div');
-    s.className = 'star';
-    s.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;animation-delay:${Math.random()*2}s;animation-duration:${1+Math.random()*2}s`;
-    c.appendChild(s);
-  }
+  const containers = ['stars', 'stars-l1', 'stars-l2'].map(id => document.getElementById(id)).filter(Boolean);
+  if (containers.length === 0) return;
+
+  containers.forEach(c => {
+    const count = c.id === 'stars' ? 70 : 40; // Fewer stars for layered backgrounds
+    for (let i = 0; i < count; i++) {
+      const s = document.createElement('div');
+      s.className = 'star';
+      s.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;animation-delay:${Math.random()*2}s;animation-duration:${1+Math.random()*2}s`;
+      c.appendChild(s);
+    }
+  });
 }
 
 /* ============================================================
@@ -79,6 +84,13 @@ MapEngine.onEncounterStart = (enc, map) => {
   if (mutation) {
     const mult = mutation === 'mutant' ? 1.55 : 1.28;
     G.enemyGroup.forEach(e => {
+      // --- SAFETY CHECK: NO MUTATED BOSSES ---
+      if (e.isBoss || e.tier >= 3) {
+        e.mutation = null;
+        e.mutantTraits = null;
+        return;
+      }
+
       e.hp    = Math.floor(e.hp    * mult); e.maxHp = e.hp;
       e.atk   = Math.floor(e.atk   * mult);
       e.def   = Math.floor(e.def   * mult);

@@ -93,14 +93,29 @@ function resolveOffensiveAction(actor, target, targetIdx, action, element) {
   if (isMagic) {
     const passiveBonus = (actor.passive?.id === 'arcane_surge' || actor.passive?.id === 'eidolon_bond') ? 1.2 : 1.0;
     const _summonBonus = (action.id?.startsWith('summon_') || action.id?.startsWith('absolute_')) ? (actor.summonBoost || 1.0) : 1.0;
-    dmg = Math.floor(Battle.magicDmg(Battle.getStat(actor, 'mag'), e.dmgMultiplier || 1.5, passiveBonus, actor.lv || 1, target.mag, target.lv || 1, actor.displayName, target.name, isCrit) * _em * _stab * _fireAmp * _lowHpMult * _summonBonus * _rxMult);
+    dmg = Battle.magicDmg(Battle.getStat(actor, 'mag'), Battle.getStat(target, 'mag'), e.dmgMultiplier || 1.5, 
+      { passiveBonus, magLevel: actor.lv || 1, mdefLevel: target.level || 1, isCrit });
+    dmg = Math.floor(dmg * _em * _stab * _fireAmp * _lowHpMult * _summonBonus * _rxMult);
+    
+    if (window.LogDebug) {
+      window.LogDebug(`[MATH-MAGIC] ${actor.displayName} -> ${target.name}: BaseMag=${Battle.getStat(actor, 'mag')}, T-MDef=${Battle.getStat(target, 'mag')}, Mult=${e.dmgMultiplier || 1.5}, Stab=${_stab}, Elem=${_em}, RX=${_rxMult} -> Final=${dmg}`, 'hi');
+    }
   } else {
     const _effAtk = Battle.getStat(actor, 'atk');
     const _bb = actor.passive?.id === 'blood_blossom' && _hpPercent < 0.5 ? 1.35 : 1.0;
     const _scaleCoeff = (e.statScale === 'hp' || e.statScale === 'maxHp') ? 0.1 : 0.5;
     const _scaleStat = e.statScale ? Math.floor(Battle.getStat(actor, e.statScale) * _scaleCoeff) : 0;
-    dmg = Math.floor(Battle.physDmg(_effAtk + _scaleStat, Battle.getStat(target, 'def'), e.dmgMultiplier || 1, actor.lv || 1, target.level || 1, e.defPen || 0, actor.displayName, target.name, isCrit) * _em * _stab * _fireAmp * _bb * _lowHpMult * _rxMult);
+    dmg = Battle.physDmg(_effAtk + _scaleStat, Battle.getStat(target, 'def'), e.dmgMultiplier || 1, 
+      { atkLevel: actor.lv || 1, defLevel: target.level || 1, defPen: e.defPen || 0, isCrit });
+    dmg = Math.floor(dmg * _em * _stab * _fireAmp * _bb * _lowHpMult * _rxMult);
+
+    if (window.LogDebug) {
+      window.LogDebug(`[MATH-PHYS] ${actor.displayName} -> ${target.name}: Atk=${_effAtk + _scaleStat}, T-Def=${Battle.getStat(target, 'def')}, Mult=${e.dmgMultiplier || 1}, Stab=${_stab}, Elem=${_em}, RX=${_rxMult} -> Final=${dmg}`, 'hi');
+    }
   }
+
+  // Final floor for player attacks
+  dmg = Math.max(1, Math.floor(dmg));
 
   // 4. Process Reaction Effects
   if (reaction) {
@@ -217,11 +232,22 @@ function resolveEnemyOffensiveAction(actor, target, targetIdx, ab, element) {
   if (isMagic) {
     const _eMag = Battle.getStat(actor, 'mag');
     const _tMag = Battle.getStat(target, 'mag');
-    dmg = Math.floor(Battle.magicDmg(_eMag, ab.dmgMultiplier || 1.3, 1.0, actor.level || 1, _tMag, target.lv || 1, actor.name, target.displayName, isCrit) * _pm * _rxMult);
+    dmg = Battle.magicDmg(_eMag, _tMag, ab.dmgMultiplier || 1.3, 
+      { magLevel: actor.level || 1, mdefLevel: target.lv || 1, isCrit });
+    dmg = Math.floor(dmg * _pm * _rxMult);
+    if (window.LogDebug) {
+      window.LogDebug(`[ENEMY-MATH-MAGIC] ${actor.name} -> ${target.displayName}: BaseMag=${_eMag}, T-MDef=${_tMag}, Mult=${ab.dmgMultiplier || 1.3}, PM=${_pm}, RX=${_rxMult} -> Final=${dmg}`, 'hi');
+    }
   } else {
     const _eAtk = Battle.getStat(actor, 'atk');
     const _tDef = Battle.getStat(target, 'def');
-    dmg = Math.floor(Battle.physDmg(_eAtk, _tDef, ab?.dmgMultiplier || 1, actor.level || 1, target.lv || 1, 0, actor.name, target.displayName, isCrit) * _pm * _rxMult);
+    dmg = Battle.physDmg(_eAtk, _tDef, ab?.dmgMultiplier || 1, 
+      { atkLevel: actor.level || 1, defLevel: target.lv || 1, isCrit });
+    dmg = Math.floor(dmg * _pm * _rxMult);
+    if (window.LogDebug) {
+      window.LogDebug(`[ENEMY-MATH-PHYS] ${actor.name} -> ${target.displayName}: Atk=${_eAtk}, T-Def=${_tDef}, Mult=${ab?.dmgMultiplier || 1.4}, PM=${_pm}, RX=${_rxMult} -> Final=${dmg}`, 'hi');
+      window.LogDebug(`[STATE-DIAG] ${target.displayName} HP: ${target.hp} pre-hit. [TargetIndex: ${targetIdx}]`, 'passive');
+    }
   }
 
   // Handle post-damage reaction status effects
@@ -238,21 +264,24 @@ function resolveEnemyOffensiveAction(actor, target, targetIdx, ab, element) {
     BattleUI.popParty(targetIdx, 'CRITICAL!', 'crit');
   }
 
-  // 6. Passive reductions
-  if (target.passive?.id === 'yakshas_valor') dmg = Math.floor(dmg * 0.9);
-  if (target.passive?.id === 'divine_authority') dmg = Math.floor(dmg * 0.85);
-  if (target.passive?.id === 'divine_blessing') dmg = Math.floor(dmg * 0.88);
-  if (Battle.getStat(target, 'reduction') < 1) dmg = Math.floor(dmg * Battle.getStat(target, 'reduction'));
+  // 6. Passive reductions & Final Rounding
+  if (target.passive?.id === 'yakshas_valor') dmg *= 0.9;
+  if (target.passive?.id === 'divine_authority') dmg *= 0.85;
+  if (target.passive?.id === 'divine_blessing') dmg *= 0.88;
+  if (Battle.getStat(target, 'reduction') < 1) dmg *= Battle.getStat(target, 'reduction');
   if (StatusSystem.has(target, 'status_guardian')) {
-    dmg = Math.floor(dmg * 0.7);
+    dmg *= 0.7;
     BattleUI.addLog(`(Guardian Mitigated -30%)`, 'hi');
   }
   // Relic: Cinder of Ashveil — fire damage reduction
   if (element === 'fire' && target._fireResist) {
-    dmg = Math.floor(dmg * (1 - target._fireResist));
+    dmg *= (1 - target._fireResist);
     BattleUI.addLog(`🔥 Fire Resist! (–${Math.round(target._fireResist * 100)}%)`, 'hi');
   }
   dmg = _applyEliteResist(dmg);
+
+  // Final floor: Ensure at least 1 damage if not immune
+  dmg = Math.max(1, Math.floor(dmg));
 
   // 7b. Absorb check — fire element absorbed as healing by Sanguine Rouge buff
   const _absorbStatus = target.statuses?.find(s => s.type === 'absorb' && s.value === element);
@@ -264,7 +293,10 @@ function resolveEnemyOffensiveAction(actor, target, targetIdx, ab, element) {
   }
 
   // 8. Apply damage
+  const preHp = target.hp;
   target.hp = Math.max(0, target.hp - dmg);
+  if (window.LogDebug) window.LogDebug(`[STATE-DIAG] ${target.displayName} HP Transition: ${preHp} -> ${target.hp}`, 'dmg');
+  
   if (target.hp <= 0) Battle.setKO(target, false);
   BattleUI.popParty(targetIdx, dmg, isMagic ? 'magic' : 'dmg', element);
 
@@ -318,7 +350,7 @@ const ActionEngine = {
     const proc = this.Processors[ab.type];
     if (proc) proc(actor, targets, ab, element, moveConfig, isEnemyAction);
     else {
-      BattleUI.setLog([`${actor.displayName || actor.name} uses ${ab.name}!`], ['']);
+      BattleUI.setLog([`${actor.name || actor.displayName} uses ${ab.name}!`], ['']);
       BattleUI.renderEnemyRow(); BattleUI.renderPartyStatus();
       setTimeout(() => TurnManager.advance(), moveConfig.isUltimate ? 900 : 750);
     }
@@ -330,7 +362,7 @@ const ActionEngine = {
     magic_damage: (a, t, ab, el, mc, ie) => ActionEngine._offensive(a, t, ab, el, mc, ie),
     buff_def:     (a, t, ab, el, mc, ie) => ActionEngine.Processors.buff(a, t, ab, el, mc, ie),
 
-    heal(actor, targets, ab, element, moveConfig) {
+    heal(actor, targets, ab, element, moveConfig, isEnemyAction) {
       if (typeof SFX !== 'undefined') SFX.heal();
       const e = ab.effect || {};
       const _healAmp = (actor.passive?.id === 'dance_of_haftkarsvar' ? 1.3 : 1.0) * (actor.healBoost || 1.0);
@@ -343,13 +375,22 @@ const ActionEngine = {
         if (!Battle.alive(m) && !ab.isUltimate) return;
         const amt = _getAmt(m);
         m.hp = Math.min(m.maxHp, m.hp + amt);
-        BattleUI.popParty(G.party.indexOf(m), amt, 'heal', 'light');
+
+        const mIdx = isEnemyAction ? G.enemyGroup.indexOf(m) : G.party.indexOf(m);
+        const layer = isEnemyAction ? 'enemy' : 'party';
+        
+        if (isEnemyAction) {
+          BattleUI.popEnemy(mIdx, amt, 'heal', 'light');
+        } else {
+          BattleUI.popParty(mIdx, amt, 'heal', 'light');
+        }
+
         if (e.cleanse && Battle.alive(m)) {
           m.statuses = (m.statuses || []).filter(s => !s.id.includes('debuff') && s.id !== 'status_frozen' && s.id !== 'status_stunned');
           BattleUI.addLog(`✨ ${m.displayName} Cleansed!`, 'heal');
         }
+        BattleUI.createEffectOverlay(mIdx, element, layer, ab.id);
       });
-      BattleUI.createEffectOverlay(G.activeMemberIdx, element, 'party', ab.id);
       if (e.healBoost) Battle.addStatus(actor, { ...StatusSystem.DEFS.heal_boost, turns: e.duration || 3 });
       if (e.spdBuff) {
         // spdBuff > 1 = percentage multiplier (e.g. 1.2 = +20%); spdBuff <= 1 = flat additive (e.g. 1 = +1 SPD)
@@ -364,15 +405,15 @@ const ActionEngine = {
     regen(actor, targets, ab, element, moveConfig) {
       const e = ab.effect || {};
       targets.forEach(m => Battle.addStatus(m, { ...StatusSystem.DEFS.regen, turns: e.duration || 3 }));
-      BattleUI.createEffectOverlay(G.activeMemberIdx, element, 'party', ab.id);
-      BattleUI.addLog(`${actor.displayName}: Regen activated!`, 'regen');
+      BattleUI.createEffectOverlay(G.activeMemberIdx, element, isEnemyAction ? 'enemy' : 'party', ab.id);
+      BattleUI.addLog(`${actor.name || actor.displayName}: Regen activated!`, 'regen');
       BattleUI.renderPartyStatus();
       setTimeout(() => TurnManager.advance(), 750);
     },
 
-    buff(actor, targets, ab, element, moveConfig) {
+    buff(actor, targets, ab, element, moveConfig, isEnemyAction) {
       const e = ab.effect || {};
-      const _applyBuff = (m, idx) => {
+      const _applyBuff = (m) => {
         if (!Battle.alive(m)) return;
         if (e.stat) Battle.addStatus(m, { id: `buff_${e.stat}`, label: `${e.stat.toUpperCase()} Up`, icon: e.stat === 'atk' ? '⚔️' : e.stat === 'def' ? '🛡️' : e.stat === 'spd' ? '💨' : '🔮', stat: e.stat, type: 'mult', value: e.multiplier || 1.3, turns: e.duration || 2 });
         if (e.atkBuff) Battle.addStatus(m, { id: 'buff_atk', label: 'ATK Up', icon: '⚔️', stat: 'atk', type: 'mult', value: e.atkBuff, turns: e.duration || 3 });
@@ -385,16 +426,24 @@ const ActionEngine = {
         if (e.fireAmp) Battle.addStatus(m, { id: 'buff_fire_amp', label: 'Fire Amp', icon: '🔥', type: 'fire_amp', value: e.fireAmp, turns: e.duration || 3 });
         if (e.absorb) Battle.addStatus(m, { id: `buff_absorb_${e.absorb}`, label: `${e.absorb[0].toUpperCase() + e.absorb.slice(1)} Absorb`, icon: '💫', type: 'absorb', value: e.absorb, turns: e.duration || 3 });
         if (e.evasion) Battle.addStatus(m, { id: 'buff_evasion', label: 'Evasion', icon: '💨', type: 'evasion', value: e.evasion, turns: e.duration || 2 });
-        BattleUI.createEffectOverlay(idx, element, 'party', ab.id);
+
+        const mIdx = isEnemyAction ? G.enemyGroup.indexOf(m) : G.party.indexOf(m);
+        const layer = isEnemyAction ? 'enemy' : 'party';
+        BattleUI.createEffectOverlay(mIdx, element, layer, ab.id);
       };
-      if (e.aoe) G.party.forEach(_applyBuff);
-      else _applyBuff(actor, G.activeMemberIdx);
-      BattleUI.addLog(`${actor.displayName}: ${ab.name}!${BattleUI._getBuffReport(actor)}`, 'heal');
+
+      if (e.aoe) {
+        const pool = isEnemyAction ? G.enemyGroup : G.party;
+        pool.filter(m => Battle.alive(m)).forEach(_applyBuff);
+      } else {
+        _applyBuff(actor);
+      }
+      BattleUI.addLog(`${actor.name || actor.displayName}: ${ab.name}!${BattleUI._getBuffReport(actor)}`, 'heal');
       BattleUI.renderPartyStatus();
       setTimeout(() => TurnManager.advance(), 750);
     },
 
-    debuff(actor, targets, ab, element, moveConfig) {
+    debuff(actor, targets, ab, element, moveConfig, isEnemyAction) {
       const e = ab.effect || {};
       const enemy = targets[0];
       if (!enemy) { setTimeout(() => TurnManager.advance(), 750); return; }
@@ -703,7 +752,7 @@ function _checkDragonLeap(actor) {
   if (actor._dragonLeapTurns % 3 !== 0) return;
   const tgt = G.enemy;
   if (!tgt || !Battle.alive(tgt)) return;
-  const dmg = Math.floor(Battle.physDmg(Battle.getStat(actor, 'atk'), Battle.getStat(tgt, 'def'), 1.6, actor.lv || 1, tgt.level || 1) * Battle.elemMult('wind', tgt));
+  const dmg = Math.floor(Battle.physDmg(Battle.getStat(actor, 'atk'), Battle.getStat(tgt, 'def'), 1.6, { atkLevel: actor.lv || 1, defLevel: tgt.level || 1 }) * Battle.elemMult('wind', tgt));
   tgt.hp = Math.max(0, tgt.hp - dmg);
   if (tgt.hp <= 0) Battle.setKO(tgt, true);
   BattleUI.popEnemy(G.targetEnemyIdx, dmg, 'dmg', 'wind');
@@ -798,7 +847,6 @@ function enemyAct(enemy, enemyIdx) {
   }
 
   // --- DIAMOND FORMATION: VANGUARD INTERCEPTION ---
-  // If attack is physical and target is NOT the Vanguard (index 2), check for interception
   // 0=Top, 1=Back, 2=Front(Vanguard), 3=Bottom
   targetIdx = G.party.indexOf(target);
   const isPhysical = !ab || ab.type === 'physical';
@@ -834,8 +882,11 @@ function enemyAct(enemy, enemyIdx) {
     }, animDuration);
   }
 
+  // 4. Execution
+  const targets = (ab?.effect?.aoe) ? alive : [target];
+  
   setTimeout(() => {
-    ActionEngine.execute(enemy, [target], ab, element, moveConfig, true);
+    ActionEngine.execute(enemy, targets, ab, element, moveConfig, true);
   }, 580);
 }
 

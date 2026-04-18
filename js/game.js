@@ -1,8 +1,18 @@
 /**
  * game.js — Shattered Nexus
- * Full party battle engine: player controls all 4 members,
- * selectable enemy targets, individual levelling, party menu.
  */
+
+// --- DIAGNOSTIC LOGGING ---
+window.LogDebug = function(msg, type = 'info') {
+  const colors = {
+    hi: '#4ecfff',
+    dmg: '#ff4d4d',
+    regen: '#00ff6a',
+    passive: '#ffcf5c',
+    info: '#7a90a8'
+  };
+  console.log(`%c[DEBUG] ${msg}`, `color: ${colors[type] || colors.info}; font-weight: bold; background: #050412; padding: 2px 5px; border-radius: 3px;`);
+};
 
 /* ── Viewport height setter ──────────────────────────────────
    Sets #game height to the real viewport height on every resize
@@ -48,7 +58,12 @@ const TYPE_CHART = {
 const Battle = {
   // Returns 1.5 (weak), 0.5 (resist), or 1.0 (neutral) based on ability element vs target's arrays
   elemMult(abilityElement, target) {
-    return CombatEngine.elemMult(abilityElement, target, window.TYPE_CHART);
+    const mult = CombatEngine.elemMult(abilityElement, target, window.TYPE_CHART);
+    // Record discovered weakness in the Archive
+    if (mult > 1.0 && target && target.id && typeof Archive !== 'undefined') {
+      Archive.recordWeakness(target.id, abilityElement);
+    }
+    return mult;
   },
   // Dynamic Stat Resolver. Computes final combat stats by applying all active modifiers.
   getStat(m, stat) {
@@ -140,24 +155,37 @@ const Battle = {
 
   // Checks for an elemental reaction based on existing aura and incoming detonator
   triggerReaction(target, detonator) { return StatusSystem.triggerReaction(target, detonator); },
-  physDmg(atk, def, mult = 1, atkLevel = 1, defLevel = 1, defPen = 0, source = 'Actor', target = 'Target', isCrit = false) {
-    const final = CombatEngine.physDmg(atk, def, { mult, atkLevel, defLevel, defPen, isCrit });
+  physDmg(atk, def, mult = 1, options = {}) {
+    const final = CombatEngine.physDmg(atk, def, mult, options);
     if (window.LogDebug) {
+      const source = options.source || 'Actor';
+      const target = options.target || 'Target';
       window.LogDebug(`[${source} ➔ ${target}] PhysCalc (Engine): Atk(${atk}) vs Def(${def}) = Final: ${final}`, 'dmg');
     }
     return final;
   },
   // targetMag / targetMagLv = Spirit Defense (SDEF) — high-MAG targets resist magic
-  magicDmg(mag, mult = 1, passiveBonus = 1, magLevel = 1, targetMag = 0, targetMagLv = 1, source = 'Actor', target = 'Target', isCrit = false) {
-    const final = CombatEngine.magicDmg(mag, targetMag, { mult, passiveBonus, magLevel, mdefLevel: targetMagLv, isCrit });
+  magicDmg(mag, mdef, mult = 1, options = {}) {
+    const final = CombatEngine.magicDmg(mag, mdef, mult, options);
     if (window.LogDebug) {
-      window.LogDebug(`[${source} ➔ ${target}] MagCalc (Engine): Mag(${mag}) vs T.Mag(${targetMag}) = Final: ${final}`, 'dmg');
+      const source = options.source || 'Actor';
+      const target = options.target || 'Target';
+      window.LogDebug(`[${source} ➔ ${target}] MagCalc (Engine): Mag(${mag}) vs T.Mag(${mdef}) = Final: ${final}`, 'dmg');
     }
     return final;
   },
   pickAbility(actor, target) {
     const abilities = actor.abilities || actor.abilityDefs;
     if (!abilities || !abilities.length) return null;
+
+    // --- SEQUENCED AI (Fixed Rotation) ---
+    if (actor.aiType === 'sequenced') {
+      const step = actor.aiStep || 0;
+      const ab = abilities[step % abilities.length];
+      actor.aiStep = step + 1;
+      if (window.LogDebug) window.LogDebug(`[AI-Sequenced] ${actor.name} following rotation (Step ${step}) -> ${ab.name}`, 'hi');
+      return ab;
+    }
 
     // Synergy-Aware Weighting
     const aura = target?.statuses?.find(s => s.id.startsWith('aura_'));
@@ -401,7 +429,12 @@ function buildEnemyGroup(defs, spawnLevel = 1, isBoss = false) {
 
   G.enemyGroup = defs.slice(0, 4).map(def => {
     const tier = def.tier || 1;
-    const growth = tierGrowth[tier] || tierGrowth[1];
+    // Fallback: if Tier is higher than 3, use Tier 3 stats as the baseline. 
+    // This prevents high-tier enemies from defaulting to Tier 1 strength.
+    let growth = tierGrowth[tier];
+    if (!growth) {
+      growth = tier > 3 ? tierGrowth[3] : tierGrowth[1];
+    }
 
     const calcStat = (baseStat, statKey) => {
       const base = baseStat * growth.statMult * hordeScale * bossMult;
@@ -420,7 +453,7 @@ function buildEnemyGroup(defs, spawnLevel = 1, isBoss = false) {
     const finalExp = Math.floor(def.reward.exp * growth.expMult * hordeScale * levelScale);
     const finalGold = Math.floor(def.reward.gold * growth.expMult * hordeScale);
 
-    return {
+    const entry = {
       id: def.id, name: def.name,
       level: spawnLevel,
       hp: finalHp, maxHp: finalHp,
@@ -434,9 +467,15 @@ function buildEnemyGroup(defs, spawnLevel = 1, isBoss = false) {
       weakTo: def.weakTo || [],
       resistTo: def.resistTo || [],
       tier: tier,
+      isBoss: isBoss, // Only a boss if explicitly flagged
+      aiRole: def.aiRole || 'attacker',
+      aiType: def.aiType || 'random',
+      aiStep: 0,
       isKO: false,
       statuses: [],
     };
+    if (typeof Archive !== 'undefined') Archive.recordSeen(def.id);
+    return entry;
   });
   G.targetEnemyIdx = 0;
 }
@@ -642,6 +681,7 @@ function checkBattleEnd() {
       totalGold += e.gold;
       const rawDef = G.enemies.find(r => r.id === e.id);
       if (rawDef) _awardDrops(rawDef).forEach(id => allDrops.push(id));
+      if (typeof Archive !== 'undefined') Archive.recordKill(e.id);
       // One relic drop attempt per encounter (elite enemies have higher chance)
       if (!relicDrop) relicDrop = _tryRelicDrop(rawDef?.elite || false);
     });

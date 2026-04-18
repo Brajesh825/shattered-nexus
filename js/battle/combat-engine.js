@@ -17,6 +17,7 @@ const CombatEngine = (() => {
     if (base === undefined || base === null) {
       if (stat === 'accuracy') base = 0.95;
       else if (stat === 'critRate') base = 0.05;
+      else if (stat === 'reduction') base = 1.0;
       else base = 0;
     }
 
@@ -73,9 +74,8 @@ const CombatEngine = (() => {
   /**
    * Physical damage calculation.
    */
-  function physDmg(atk, def, options = {}) {
+  function physDmg(atk, def, mult = 1, options = {}) {
     const { 
-      mult = 1, 
       atkLevel = 1, 
       defLevel = 1, 
       defPen = 0, 
@@ -95,9 +95,8 @@ const CombatEngine = (() => {
   /**
    * Magic damage calculation.
    */
-  function magicDmg(mag, mdef, options = {}) {
+  function magicDmg(mag, mdef, mult = 1, options = {}) {
     const {
-      mult = 1,
       passiveBonus = 1,
       magLevel = 1,
       mdefLevel = 1,
