@@ -530,6 +530,22 @@ const ActionEngine = {
    ============================================================ */
 function heroAttack() {
   if (G.busy) return;
+  
+  const actor = G.party[G.activeMemberIdx];
+  const aliveEnemies = G.enemyGroup.filter(e => Battle.alive(e));
+  if (!actor || !aliveEnemies.length) return;
+
+  // Targeting Phase (Keyboard/Controller support)
+  if (aliveEnemies.length > 1 && !G.pendingAction && !G._executingPending) {
+    G.pendingAction = { type: 'attack' };
+    BattleUI.openSub(null);
+    if (typeof Focus !== 'undefined') {
+      Focus.setTargeting(true, 'enemy');
+      BattleUI.addLog(`Choose a target for ${actor.displayName}...`, 'hi');
+    }
+    return;
+  }
+
   BattleUI.openSub(null);
   G.busy = true; BattleUI.btns(false);
 
@@ -580,6 +596,26 @@ function heroAbility(ab) {
   if (G.busy) return;
   const actor = G.party[G.activeMemberIdx];
   if (!actor) return;
+
+  const e = ab.effect || {};
+  const offensive = ab.type === 'physical' || ab.type === 'magic_damage' || ab.type === 'debuff' || ab.type === 'stun';
+  const aoe = e.aoe || ab.isUltimate;
+  const aliveEnemies = G.enemyGroup.filter(en => Battle.alive(en));
+
+  // Targeting Phase (Keyboard/Controller support)
+  if (offensive && !aoe && aliveEnemies.length > 1 && !G.pendingAction && !G._executingPending) {
+    // MP check first
+    const _mpCost = actor.passive?.id === 'eidolon_bond' ? Math.ceil(ab.mp * 0.85) : ab.mp;
+    if (actor.mp < _mpCost) { BattleUI.setLog(['Not enough MP!'], ['dmg']); BattleUI.openSub(null); return; }
+
+    G.pendingAction = { type: 'ability', ab: ab };
+    BattleUI.openSub(null);
+    if (typeof Focus !== 'undefined') {
+      Focus.setTargeting(true, 'enemy');
+      BattleUI.addLog(`Choose a target for ${ab.name}...`, 'hi');
+    }
+    return;
+  }
 
   // MP Cost
   const _mpCost = actor.passive?.id === 'eidolon_bond' ? Math.ceil(ab.mp * 0.85) : ab.mp;

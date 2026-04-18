@@ -792,6 +792,10 @@ const MapEngine = (() => {
     const btn = document.getElementById('npc-dialogue-next');
     if (btn) btn.textContent = (_npcLineIdx >= _npcLines.length - 1) ? '✔ CLOSE' : '▶ CONTINUE';
     el.style.display = 'flex';
+
+    if (typeof Focus !== 'undefined') {
+      Focus.setContext('npc-dialogue');
+    }
   }
 
   function npcDialogueNext() {
@@ -806,6 +810,9 @@ const MapEngine = (() => {
   function _closeNPCDialogue() {
     const el = document.getElementById('npc-dialogue');
     if (el) el.style.display = 'none';
+    if (typeof Focus !== 'undefined') {
+      Focus.setContext(null);
+    }
     if (_npcCurrent) {
       MapEntities.markNPCTalked(_npcCurrent.id);
       _npcCurrent._dialogueOpen = false;

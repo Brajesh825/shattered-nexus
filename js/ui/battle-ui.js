@@ -108,6 +108,11 @@ const BattleUI = {
     }
     const grid = this.el('cmd-grid-main');
     if (grid) grid.style.display = id ? 'none' : 'grid';
+
+    // Switch focus context to the sub-menu or back to main
+    if (typeof Focus !== 'undefined') {
+      Focus.setContext(id || 'cmd-grid-main');
+    }
   },
 
   /* ── Turn order tokens ──────────────────────────────── */
@@ -363,6 +368,11 @@ const BattleUI = {
       `<span class="amb-name" style="color:${col}">${m.displayName}</span>` +
       `<span class="amb-class">${m.cls.name} · LV ${m.lv}</span>` +
       `<span class="amb-mp" style="color:#6080ff">MP ${m.mp}/${m.maxMp}</span>`;
+    
+    // Auto-focus the action menu for keyboard/controller
+    if (typeof Focus !== 'undefined') {
+      Focus.setContext('cmd-grid-main');
+    }
   },
 
   /* ── Floating texts & Overlays ─────────────────────── */
@@ -421,10 +431,15 @@ const BattleUI = {
     this._tutShown = true;
     
     const d = document.createElement('div');
+    d.id = 'battle-tutorial-overlay';
     d.className = 'tutorial-overlay';
-    d.innerHTML = `<div>${txt}</div><button class="tutorial-close" onclick="this.parentElement.remove()">GOT IT</button>`;
+    d.innerHTML = `<div>${txt}</div><button class="tutorial-close" onclick="document.getElementById('battle-tutorial-overlay').remove(); if(typeof Focus!=='undefined')Focus.setContext('cmd-grid-main');">GOT IT</button>`;
     s.appendChild(d);
-    setTimeout(() => d.remove(), 8000);
+    
+    if (typeof Focus !== 'undefined') {
+      Focus.setContext('battle-tutorial-overlay');
+    }
+    setTimeout(() => { if(d.parentNode) { d.remove(); if(typeof Focus!=='undefined')Focus.setContext('cmd-grid-main'); } }, 12000);
   },
 
   popAI(idx, txt) {

@@ -57,12 +57,7 @@
 
 <div id="game">
 
-  <!-- persistent overlay buttons -->
-  <button id="mute-btn" onclick="SFX.toggleMute()" title="Toggle sound effects" tabindex="-1">🔊</button>
-  <button id="tts-btn"  onclick="TTS.toggle()"     title="Voice: OFF (click to enable)" tabindex="-1">💬</button>
-  <button id="zoom-btn" onclick="zoomGame(1.2)" title="1.2x Fullscreen" tabindex="-1">1.2×</button>
-  <button id="reset-zoom-btn" onclick="zoomGame(1)" title="Reset Zoom" tabindex="-1">⟲</button>
-  <button id="settings-btn" onclick="Settings.open()" title="Open Game Settings" tabindex="-1">⚙️</button>
+  <!-- persistent overlay buttons shifted to screen-specific headers or global-actions for better focus control -->
 
   <!-- ═══════════════════════════════════════
        TITLE SCREEN
@@ -393,12 +388,15 @@
   <div id="explore-screen" class="screen">
 
     <!-- Cinematic header bar -->
-    <div class="explore-header">
+    <div id="explore-header" class="explore-header">
       <div class="explore-header-left">
         <span id="explore-map-name" class="explore-map-name">✦ EXPLORE ✦</span>
         <span class="explore-map-hint">↑↓←→ · WASD to move</span>
       </div>
       <div class="explore-header-right">
+        <button id="mute-btn" onclick="SFX.toggleMute()" title="Toggle sound effects">🔊</button>
+        <button id="tts-btn"  onclick="TTS.toggle()"     title="Voice: OFF">💬</button>
+        <button id="settings-btn" onclick="Settings.open()" title="Settings">⚙️</button>
         <button class="explore-menu-btn" onclick="MapUI.openPauseMenu()">☰ MENU</button>
       </div>
     </div>
@@ -529,6 +527,8 @@
 </div><!-- /#game -->
 
 <script src="data/npcs.js"></script>
+<script src="js/systems/input-manager.js"></script>
+<script src="js/systems/focus-manager.js"></script>
 <script src="js/map/data/tile-defs.js"></script>
 <script src="js/map/data/tile-renders.js"></script>
 <script src="js/map/map-data.js"></script>
@@ -632,12 +632,16 @@
     sub.textContent   = mode === 'load' ? 'Choose a save file to continue' : 'Choose a slot for your new adventure';
     _renderSlotCards(mode);
     overlay.style.display = 'flex';
-    requestAnimationFrame(() => overlay.classList.add('open'));
+    requestAnimationFrame(() => {
+      overlay.classList.add('open');
+      if (typeof Focus !== 'undefined') Focus.setContext('slot-overlay');
+    });
   }
 
   function closeSlotOverlay() {
     const overlay = document.getElementById('slot-overlay');
     overlay.classList.remove('open');
+    if (typeof Focus !== 'undefined') Focus.setContext(null);
     setTimeout(() => { overlay.style.display = 'none'; }, 280);
   }
 
@@ -660,7 +664,7 @@
                 ? `<span class="sc-hint">No save data</span>`
                 : `<button class="sc-action primary" onclick="closeSlotOverlay();Story.begin(${s.slot})">START HERE</button>`
               }
-              <button class="sc-icon-btn" title="Import save file" onclick="triggerImport(${s.slot})">📂</button>
+              <button class="sc-action sc-icon-btn" title="Import save file" onclick="triggerImport(${s.slot})">📂</button>
             </div>
           </div>`;
       }

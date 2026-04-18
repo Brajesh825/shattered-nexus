@@ -272,12 +272,19 @@ const MapUI = (() => {
     // Only show save button in story mode
     const saveBtn = document.querySelector('#map-pause-menu .save-btn');
     if (saveBtn) saveBtn.style.display = (typeof Story !== 'undefined' && Story.active) ? '' : 'none';
+
+    if (typeof Focus !== 'undefined') {
+      Focus.setContext('map-pause-menu');
+    }
   }
 
   function closePauseMenu() {
     const el = document.getElementById('map-pause-menu');
     if (el) el.style.display = 'none';
     _toggleDpad(true);
+    if (typeof Focus !== 'undefined') {
+      Focus.setContext(null);
+    }
     MapEngine.resume();
   }
 
@@ -523,7 +530,6 @@ const MapUI = (() => {
     // World Map locked until arc 1 boss is defeated (arcIdx > 0)
     const worldMapBtn = el.querySelector('.camp-btn-worldmap');
     if (worldMapBtn) {
-      // Unlocked once arc 1 boss is beaten: arcIdx > 0, OR arcIdx===0 but in arc_end/world_map phase
       const unlocked = typeof Story !== 'undefined' && (
         Story.arcIdx > 0 ||
         ['arc_end', 'world_map', 'epilogue'].includes(Story.phase)
@@ -534,12 +540,18 @@ const MapUI = (() => {
       worldMapBtn.style.cursor = unlocked ? '' : 'not-allowed';
     }
     el.style.display = 'flex';
+    if (typeof Focus !== 'undefined') {
+      Focus.setContext('camp-menu');
+    }
   }
 
   function closeCampMenu() {
     const el = document.getElementById('camp-menu');
     if (el) el.style.display = 'none';
     _toggleDpad(true);
+    if (typeof Focus !== 'undefined') {
+      Focus.setContext(null);
+    }
     MapEngine.resume();
   }
 
@@ -592,6 +604,9 @@ const MapUI = (() => {
     if (panel) panel.style.display = 'none';
     const campEl = document.getElementById('camp-menu');
     if (campEl) campEl.style.display = 'flex';
+    if (typeof Focus !== 'undefined') {
+      Focus.setContext('camp-menu');
+    }
   }
 
   function _renderRelicPanel() {
@@ -669,13 +684,15 @@ const MapUI = (() => {
   // Kept so any existing code calling MapUI.render() won't break.
   function render(ctx, cw, ch) { /* DOM HUD renders instead */ }
 
-  // Escape key closes pause menu
+  // Escape key handled by FocusManager/Input intents now
+  /*
   window.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
       const el = document.getElementById('map-pause-menu');
       if (el && el.style.display !== 'none') { closePauseMenu(); e.preventDefault(); }
     }
   });
+  */
 
   return {
     showMsg,

@@ -3468,6 +3468,21 @@ body {
   transform: scale(1.05);
   border-color: currentColor;
 }
+@keyframes focusPulse {
+  0%   { border-color: #8e44ad; box-shadow: 0 0 5px #8e44ad; }
+  50%  { border-color: #c0a0ff; box-shadow: 0 0 15px #c0a0ff; }
+  100% { border-color: #8e44ad; box-shadow: 0 0 5px #8e44ad; }
+}
+
+.kb-focus {
+  outline: none !important;
+  border-color: #c0a0ff !important;
+  box-shadow: 0 0 15px #c0a0ff !important;
+  animation: focusPulse 1s infinite ease-in-out;
+  transform: scale(1.03);
+  z-index: 9999;
+  position: relative;
+}
 
 .party-sprite {
   width: 96px;

@@ -34,11 +34,13 @@ const MapInput = (() => {
   }
 
   function poll() {
+    if (typeof Input === 'undefined') return { left:false, right:false, up:false, down:false };
+    const axis = Input.getAxis();
     return {
-      left:  keys['ArrowLeft']  || keys['a'] || keys['A'] || _vec.dx < -0.3,
-      right: keys['ArrowRight'] || keys['d'] || keys['D'] || _vec.dx > 0.3,
-      up:    keys['ArrowUp']    || keys['w'] || keys['W'] || _vec.dy < -0.3,
-      down:  keys['ArrowDown']  || keys['s'] || keys['S'] || _vec.dy > 0.3,
+      left:  axis.x < -0.3,
+      right: axis.x > 0.3,
+      up:    axis.y < -0.3,
+      down:  axis.y > 0.3,
     };
   }
 

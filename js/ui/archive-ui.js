@@ -12,6 +12,9 @@ const ArchiveUI = {
     overlay.style.display = 'flex';
     this.updateProgress();
     this.renderList();
+    if (typeof Focus !== 'undefined') {
+      Focus.setContext('bestiary-overlay');
+    }
   },
 
   updateProgress() {
@@ -38,6 +41,9 @@ const ArchiveUI = {
   close() {
     const overlay = document.getElementById('bestiary-overlay');
     if (overlay) overlay.style.display = 'none';
+    if (typeof Focus !== 'undefined') {
+      Focus.setContext(null);
+    }
     if (typeof MapEngine !== 'undefined') MapEngine.resume();
   },
 
@@ -51,6 +57,10 @@ const ArchiveUI = {
     if (detail) detail.innerHTML = `<div style="text-align:center; padding-top:100px; color:var(--text-dim); font-family:var(--vt);">Select an entry to view details</div>`;
     
     this.renderList();
+
+    if (typeof Focus !== 'undefined') {
+      Focus.setContext('bestiary-overlay');
+    }
   },
 
   renderList() {

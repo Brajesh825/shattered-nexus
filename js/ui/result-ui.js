@@ -64,6 +64,9 @@ const ResultUI = {
       if (againBtn) againBtn.textContent = '▶ PLAY AGAIN';
     }
 
+    if (typeof Focus !== 'undefined') {
+      Focus.setContext('result-screen');
+    }
     showScreen('result-screen');
   }
 };

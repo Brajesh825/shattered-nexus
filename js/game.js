@@ -278,6 +278,22 @@ function showScreen(id) {
     s.style.display = '';
   });
   document.getElementById(id).classList.add('active');
+  
+  // Set focus context for keyboard/controller navigation
+  if (typeof Focus !== 'undefined') {
+    // Mapping screens to their primary focus containers where needed
+    const contextMap = {
+      'title-screen': 'title-screen',
+      'battle-screen': 'cmd-grid-main',
+      'char-screen': 'char-grid',
+      'class-screen': 'class-grid',
+      'result-screen': 'result-screen',
+      'story-screen': null,
+      'explore-screen': null
+    };
+    Focus.setContext(contextMap[id] || id);
+  }
+
   requestAnimationFrame(scaleGame);
   const steps = { 'char-screen': 1, 'battle-screen': 2, 'result-screen': 2 };
   const cur = steps[id] || 0;
@@ -444,12 +460,28 @@ function buildTurnQueue() { return TurnManager.buildQueue(); }
 function selectTarget(enemyIdx) {
   if (!Battle.alive(G.enemyGroup[enemyIdx])) return;
   G.targetEnemyIdx = enemyIdx;
+  G.enemy = G.enemyGroup[enemyIdx]; // Sync global enemy reference
+  
   // Update target indicator on enemies
   document.querySelectorAll('.enemy').forEach((e, i) => {
     e.dataset.target = i === enemyIdx ? 'true' : 'false';
   });
   BattleUI.renderEnemyRow();
   if (typeof SFX !== 'undefined') SFX.click();
+
+  // If we were in a targeting phase (keyboard/controller), execute the pending action
+  if (G.pendingAction) {
+    const action = G.pendingAction;
+    G.pendingAction = null;
+    
+    if (typeof Focus !== 'undefined') Focus.setTargeting(false);
+    
+    // Set a flag so the action handler knows we are executing AFTER targeting
+    G._executingPending = true;
+    if (action.type === 'attack') heroAttack();
+    else if (action.type === 'ability') heroAbility(action.ab);
+    G._executingPending = false;
+  }
 }
 
 /* ============================================================
