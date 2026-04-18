@@ -62,7 +62,10 @@ const AssetPreloader = (() => {
     // Preload spirits
     for (const charId of ASSETS.spirits) {
       try {
-        const img = await loadImage(`images/characters/spirits/${charId.toLowerCase()}_spirit.png`);
+        const id = charId.toLowerCase();
+        // The entire roster now uses high-res sprite sheets
+        const fileName = `${id}_sprite.png`;
+        const img = await loadImage(`images/characters/spirits/${fileName}`);
         cache.images[`spirit_${charId}`] = img;
         loaded++;
         if (onProgress) onProgress(loaded, total);

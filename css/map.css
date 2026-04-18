@@ -350,25 +350,26 @@
   position: absolute;
   inset: 0;
   z-index: 80;
-  background: rgba(2,1,14,0.88);
-  backdrop-filter: blur(4px);
+  background: rgba(4, 2, 10, 0.6);
+  backdrop-filter: var(--blur);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .pause-panel {
-  background: linear-gradient(160deg, #0a0620 0%, #06030f 100%);
-  border: 1px solid #2a1860;
-  border-radius: 10px;
+  background: var(--glass);
+  backdrop-filter: var(--blur);
+  border: 1px solid var(--border-hi);
+  border-radius: var(--r);
   padding: 22px 24px;
-  width: min(540px, 94vw);
+  width: min(560px, 94vw);
   max-height: 92vh;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  box-shadow: 0 0 40px #3010a040;
+  gap: 20px;
+  box-shadow: var(--glow-soft);
 }
 
 .pause-title {
@@ -389,9 +390,9 @@
 }
 
 .pause-member {
-  background: rgba(255,255,255,0.03);
-  border: 1px solid #1a1040;
-  border-radius: 6px;
+  background: rgba(144, 128, 255, 0.04);
+  border: 1px solid rgba(144, 128, 255, 0.15);
+  border-radius: 8px;
   padding: 10px 12px;
   display: flex;
   flex-direction: column;
@@ -444,15 +445,16 @@
 }
 
 .pause-inv-slot {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid #1a1040;
-  border-radius: 4px;
-  padding: 5px 10px;
-  font-size: var(--fs-xs);
-  color: #c0b8e0;
+  background: rgba(144, 128, 255, 0.05);
+  border: 1px solid rgba(144, 128, 255, 0.12);
+  border-radius: 8px;
+  padding: 8px 10px;
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 8px;
+  font-size: var(--fs-xs);
+  color: var(--ex-text);
+  transition: all .2s;
 }
 .pause-inv-slot .pi-qty { color: #d8c860; font-size: var(--fs-xxs); }
 .pause-inv-slot.map-usable { cursor: pointer; border-color: #4a3880; }
@@ -875,10 +877,14 @@
   .map-footer      { padding: 5px 14px 4px; min-height: 0; }
 
   /* Compact explore header bar                           */
-  .explore-header   { padding: 6px 12px; }
+  .explore-header   { padding: 6px 12px; background: rgba(10, 5, 25, 0.7); backdrop-filter: blur(8px); border-bottom: 1px solid rgba(160, 140, 255, 0.2); }
   .explore-map-name { font-size: 11px; }
   .explore-map-hint { font-size: 9px; }
   .explore-menu-btn { font-size: 9px; padding: 4px 10px; }
+  
+  /* Resource bars */
+  .pm-mp-bar-bg { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
+  .pm-mp-bar-fill { background: linear-gradient(90deg, #4a90e2, #8e44ad) !important; height: 6px; transition: width 0.3s ease; }
 }
 
 /* ── Map select overlay — cinematic ──────────────────── */
@@ -1147,6 +1153,46 @@
   font-size: var(--fs-sm);
   color: rgba(160, 148, 220, 0.6);
   margin-top: 2px;
+}
+
+/* ══════════════════════════════════════════════════════
+   VIRTUAL JOYSTICK (MOBILE)
+   ══════════════════════════════════════════════════════ */
+.joystick-zone {
+  position: absolute;
+  inset: 0;
+  z-index: 1000;
+  pointer-events: auto;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+
+.joystick-base {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  background: rgba(96, 80, 184, 0.15);
+  border: 2px solid rgba(144, 128, 255, 0.4);
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0.3;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.2s ease;
+  box-shadow: 0 0 20px rgba(0,0,0,0.4);
+}
+
+.joystick-knob {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 44px;
+  height: 44px;
+  background: var(--cyan);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 15px var(--cyan);
+  border: 2px solid #fff;
 }
 
 /* ── Minimap (bottom-right of canvas wrap) ───────────── */

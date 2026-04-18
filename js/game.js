@@ -98,8 +98,11 @@ const Battle = {
     unit.isKO = true;
     if (!isEnemy) {
       if (typeof _checkReviveOnce === 'function') _checkReviveOnce(unit);
-      if (unit.isKO && typeof BattleUI !== 'undefined')
+      const idx = G.party.indexOf(unit);
+      if (unit.isKO && typeof BattleUI !== 'undefined') {
         BattleUI.addLog(`${unit.displayName} has fallen!`, 'dmg');
+        if (idx !== -1) BattleUI.setSpriteFrame(idx, 'fallen');
+      }
     }
     if (window.LogDebug) window.LogDebug(`[KO] ${unit.displayName || unit.name} knocked out`, 'dmg');
   },
@@ -227,6 +230,9 @@ const G = {
   mode: 'free', // 'free' | 'story' | 'explore'
 
   activePartyIdx: 0,   // which party member walks the map
+  settings: {
+    graphicsQuality: localStorage.getItem('sn_graphics_quality') || 'auto' // 'auto'|'high'|'low'
+  },
 
   // Backward-compat accessors for story.js
   get hero() {

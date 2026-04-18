@@ -13,6 +13,33 @@ const BattleUI = {
     return this.el((type === 'enemy' ? 'espr-' : 'pspr-') + idx);
   },
 
+  /**
+   * Switches the sprite frame for an animated unit.
+   */
+  setSpriteFrame(idx, frameName) {
+    const spr = this.getSprite(idx, 'party');
+    if (!spr || !spr.classList.contains('party-sprite-animated')) return;
+    
+    const charId = spr.dataset.charId;
+    
+    if (typeof SpriteRenderer !== 'undefined' && SpriteRenderer.setFrame) {
+      SpriteRenderer.setFrame(spr, charId, frameName, 96);
+    } else {
+      // Fallback if SpriteRenderer is not available
+      const frameMap = { 'idle': [0, 0], 'prepare': [1, 0], 'attack': [2, 0], 'magic': [0, 1], 'hurt': [1, 1], 'fallen': [2, 1] };
+      const [col, row] = frameMap[frameName] || [0, 0];
+      spr.style.width = '96px';
+      spr.style.height = '96px';
+      spr.style.backgroundSize = '300% 200%';
+      spr.style.backgroundPosition = `${col * 50}% ${row * 100}%`;
+    }
+    
+    const frames = ['frame-idle', 'frame-prepare', 'frame-attack', 'frame-magic', 'frame-hurt', 'frame-fallen'];
+    frames.forEach(f => spr.classList.remove(f));
+    spr.classList.add('frame-' + frameName);
+  },
+
+
   _getBuffReport(actor) {
     const stats = [];
     if (actor.statuses?.some(s => s.id === 'status_atk_boost' || s.id === 'buff_atk')) stats.push('ATK');
@@ -173,11 +200,28 @@ const BattleUI = {
       member.dataset.idx = i;
       member.style.color = col;
 
-      const spr = document.createElement('img');
-      spr.className = 'party-sprite';
-      spr.id = 'pspr-' + i;
-      if (typeof SpriteRenderer !== 'undefined') SpriteRenderer.drawHero(spr, m.charId, m.char, m.cls);
-      member.appendChild(spr);
+      const spId = m.charId.toLowerCase();
+      const manifest = (typeof SpriteRenderer !== 'undefined' && SpriteRenderer.SPRITE_MANIFEST) 
+        ? SpriteRenderer.SPRITE_MANIFEST[spId] : null;
+
+      if (manifest) {
+        // Create high-res div instead of img
+        const div = document.createElement('div');
+        div.id = 'pspr-' + i;
+        div.className = 'party-sprite party-sprite-animated';
+        const fileBase = manifest.baseId || spId;
+        const suffix = (typeof SpriteRenderer !== 'undefined' && SpriteRenderer.getSuffix) ? SpriteRenderer.getSuffix() : '_sprite.png';
+        div.style.backgroundImage = `url(images/characters/spirits/${fileBase}${suffix})`;
+        div.dataset.charId = spId;
+        member.appendChild(div);
+      } else {
+        // Fallback to standard spirit img
+        const spr = document.createElement('img');
+        spr.className = 'party-sprite';
+        spr.id = 'pspr-' + i;
+        if (typeof SpriteRenderer !== 'undefined') SpriteRenderer.drawHero(spr, m.charId, m.char, m.cls);
+        member.appendChild(spr);
+      }
 
       const hpBg = document.createElement('div');
       hpBg.className = 'party-hp-bar-bg';
@@ -211,6 +255,12 @@ const BattleUI = {
 
       container.appendChild(member);
     });
+
+    // Final pass: Initialize high-res frames now that elements are in the live DOM
+    G.party.forEach((m, i) => {
+      this.setSpriteFrame(i, Battle.alive(m) ? 'idle' : 'fallen');
+    });
+
     this.highlightActiveMember();
   },
 
@@ -343,6 +393,18 @@ const BattleUI = {
     );
   },
 
+  showTutorial(txt) {
+    const s = this.el('battle-scene');
+    if (!s || this._tutShown) return;
+    this._tutShown = true;
+    
+    const d = document.createElement('div');
+    d.className = 'tutorial-overlay';
+    d.innerHTML = `<div>${txt}</div><button class="tutorial-close" onclick="this.parentElement.remove()">GOT IT</button>`;
+    s.appendChild(d);
+    setTimeout(() => d.remove(), 8000);
+  },
+
   popAI(idx, txt) {
     const s = this.el('battle-scene');
     if (!s) return;
@@ -375,6 +437,28 @@ const BattleUI = {
     d.style.whiteSpace = 'nowrap';
     d.style.zIndex = '100';
     s.appendChild(d);
+    setTimeout(() => d.remove(), 1500);
+  },
+
+  popReaction(idx, label, type = 'enemy') {
+    const s = this.el('battle-scene');
+    const spr = this.el((type === 'enemy' ? 'espr-' : 'pspr-') + idx);
+    if (!s || !spr) return;
+    const rect = spr.getBoundingClientRect();
+    const sceneRect = s.getBoundingClientRect();
+    const gameEl = this.el('game');
+    const scaleMatch = gameEl?.style.transform.match(/scale\(([\d.]+)\)/);
+    const gameScale = scaleMatch ? parseFloat(scaleMatch[1]) : 1;
+    
+    const d = document.createElement('div');
+    d.className = 'pop-text reaction-pop';
+    d.innerHTML = `⚡ ${label.toUpperCase()}!`;
+    d.style.left = ((rect.left - sceneRect.left + rect.width / 2) / gameScale) + 'px';
+    d.style.top = ((rect.top - sceneRect.top + rect.height / 4) / gameScale) + 'px';
+    s.appendChild(d);
+    
+    // Add a secondary burst effect
+    setTimeout(() => d.classList.add('pop-burst'), 50);
     setTimeout(() => d.remove(), 1500);
   },
 

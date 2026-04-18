@@ -925,18 +925,17 @@ const Story = {
 
     // Face image (small icon, left)
     const faceImg = this.el('s-ae-face');
-    faceImg.src = `images/characters/faces/${heroNameLower}_face.png`;
-    faceImg.style.display = 'block';
-    faceImg.onerror = () => {
-      faceImg.style.display = 'none';
-    };
+    if (faceImg) {
+      faceImg.style.display = 'block';
+      SpriteRenderer.setFrame(faceImg, heroNameLower, 'idle', 60);
+    }
 
     // Spirit image (large, center)
     const spiritImg = this.el('s-ae-spirit');
-    spiritImg.src = `images/characters/spirits/${heroNameLower}_spirit.png`;
-    spiritImg.onerror = () => {
-      spiritImg.style.display = 'none';
-    };
+    if (spiritImg) {
+      spiritImg.style.display = 'block';
+      SpriteRenderer.setFrame(spiritImg, heroNameLower, 'idle', 280);
+    }
 
     const shard = arc.shard || {};
     const shardEl = this.el('s-ae-shard');
@@ -1327,26 +1326,22 @@ const Story = {
 
       // Get speaker character ID for face image path (alias → charId)
       const speakerCharId = _charIdForSpeaker(speaker);
-      const faceImgSrc = `images/characters/faces/${speakerCharId}_face.png`;
 
-      // Face image (left, small) — hide gracefully if file missing
+      // Face image (left, small) via SpriteRenderer
       if (imgEl) {
-        imgEl.onerror = () => {
-          imgEl.style.display = 'none';
-          if (emojiEl) { emojiEl.style.display = 'block'; emojiEl.textContent = '💬'; }
-        };
-        imgEl.src = faceImgSrc;
-        imgEl.alt = speaker;
         imgEl.style.display = 'block';
         imgEl.style.borderColor = SPEAKER_COLOR[speaker] || '#5040a0';
         imgEl.style.boxShadow = `0 0 16px ${SPEAKER_COLOR[speaker]}66`;
+        
+        // Use SpriteRenderer for consistent frames
+        SpriteRenderer.setFrame(imgEl, speakerCharId, 'idle', 80);
+
         // pop animation on each new line
         imgEl.classList.remove('new-line');
         void imgEl.offsetWidth; // reflow to retrigger
         imgEl.classList.add('new-line');
         if (emojiEl) emojiEl.style.display = 'none';
       } else {
-        if (imgEl) imgEl.style.display = 'none';
         if (emojiEl) { emojiEl.style.display = 'block'; emojiEl.textContent = '💬'; }
       }
     } else {
@@ -1374,7 +1369,7 @@ const Story = {
         clearInterval(this._tw.timer);
         this._tw.timer = null;
       }
-    }, 22);
+    }, this._twDelay || 22);
   },
 
   _skipTw() {
@@ -1409,15 +1404,16 @@ const Story = {
         charEl.className = 's-scene-char';
         charEl.id = `s-scene-char-${charName.toLowerCase()}`;
 
-        const img = document.createElement('img');
-        img.src = `images/characters/spirits/${_charIdForSpeaker(charName)}_spirit.png`;
-        img.alt = charName;
+        const spriteEl = document.createElement('div');
+        spriteEl.className = 's-scene-sprite';
+        const speakerCharId = _charIdForSpeaker(charName);
+        SpriteRenderer.setFrame(spriteEl, speakerCharId, 'idle', 160);
 
         const nameEl = document.createElement('div');
         nameEl.className = 's-scene-char-name';
         nameEl.textContent = charName;
 
-        charEl.appendChild(img);
+        charEl.appendChild(spriteEl);
         charEl.appendChild(nameEl);
         layer.appendChild(charEl);
       }

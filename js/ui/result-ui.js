@@ -11,18 +11,32 @@ const ResultUI = {
 
     // Party member cards — shown on all result types
     if (partyEl && party.length) {
-      partyEl.innerHTML = party.map(m => {
+      partyEl.innerHTML = party.map((m, i) => {
         const col   = (typeof CHAR_COLOR !== 'undefined' && CHAR_COLOR[m.charId]) || '#aaa';
         const isKO  = !Battle.alive(m);
         const hpTxt = isKO ? '0' : m.hp;
+        const spriteId = `result-sprite-${m.charId}-${i}`;
         return `<div class="result-member${isKO ? ' ko' : ''}" style="border-color:${col}40">
-          <div class="rm-name" style="color:${col}">${m.displayName}</div>
-          <div class="rm-lv">LV ${m.lv}</div>
-          <div class="rm-hp${isKO ? ' zero' : ''}">HP ${hpTxt}/${m.maxHp}</div>
-          <div class="rm-exp" style="color:#8888bb">EXP ${m.exp}</div>
-          ${isKO ? '<div style="color:var(--red);font-size:9px">FALLEN</div>' : ''}
+          <div class="result-member-visual">
+            <div id="${spriteId}" class="ui-sprite-result"></div>
+          </div>
+          <div class="result-member-content">
+            <div class="rm-name" style="color:${col}">${m.displayName}</div>
+            <div class="rm-lv">LV ${m.lv}</div>
+            <div class="rm-hp${isKO ? ' zero' : ''}">HP ${hpTxt}/${m.maxHp}</div>
+            <div class="rm-exp" style="color:#8888bb">EXP ${m.exp}</div>
+            ${isKO ? '<div style="color:var(--red);font-size:9px">FALLEN</div>' : ''}
+          </div>
         </div>`;
       }).join('');
+
+      // Initialize high-res sprites
+      if (typeof SpriteRenderer !== 'undefined') {
+        party.forEach((m, i) => {
+          const sprEl = document.getElementById(`result-sprite-${m.charId}-${i}`);
+          if (sprEl) SpriteRenderer.setFrame(sprEl, m.charId, Battle.alive(m) ? 'idle' : 'fallen', 80);
+        });
+      }
     } else if (partyEl) {
       partyEl.innerHTML = '';
     }

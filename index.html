@@ -9,6 +9,8 @@
   <link rel="stylesheet" href="css/animations.css">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/map.css">
+  <script src="js/systems/settings-manager.js"></script>
+  <script src="js/ui/joystick.js"></script>
 </head>
 <body>
 
@@ -57,10 +59,11 @@
 <div id="game">
 
   <!-- persistent overlay buttons -->
-  <button id="mute-btn" onclick="SFX.toggleMute()" title="Toggle sound effects">🔊</button>
-  <button id="tts-btn"  onclick="TTS.toggle()"     title="Voice: OFF (click to enable)">💬</button>
-  <button id="zoom-btn" onclick="zoomGame(1.2)" title="1.2x Fullscreen">1.2×</button>
-  <button id="reset-zoom-btn" onclick="zoomGame(1)" title="Reset Zoom">⟲</button>
+  <button id="mute-btn" onclick="SFX.toggleMute()" title="Toggle sound effects" tabindex="-1">🔊</button>
+  <button id="tts-btn"  onclick="TTS.toggle()"     title="Voice: OFF (click to enable)" tabindex="-1">💬</button>
+  <button id="zoom-btn" onclick="zoomGame(1.2)" title="1.2x Fullscreen" tabindex="-1">1.2×</button>
+  <button id="reset-zoom-btn" onclick="zoomGame(1)" title="Reset Zoom" tabindex="-1">⟲</button>
+  <button id="settings-btn" onclick="Settings.open()" title="Open Game Settings" tabindex="-1">⚙️</button>
 
   <!-- ═══════════════════════════════════════
        TITLE SCREEN
@@ -115,6 +118,51 @@
       <button class="slot-overlay-back" onclick="closeSlotOverlay()">← BACK</button>
     </div>
   </div>
+  <!-- ═══════════════════════════════════════
+       SETTINGS OVERLAY
+       ═══════════════════════════════════════ -->
+  <div id="settings-overlay" class="settings-overlay" style="display:none">
+    <div class="settings-panel">
+      <div class="settings-header">GAME SETTINGS</div>
+      
+      <div class="setting-row">
+        <label class="setting-label">BGM VOLUME</label>
+        <div class="setting-control">
+          <input type="range" class="setting-slider" id="settings-bgm" min="0" max="100" step="5" oninput="Settings.update('bgm', this.value)">
+        </div>
+      </div>
+      
+      <div class="setting-row">
+        <label class="setting-label">SFX VOLUME</label>
+        <div class="setting-control">
+          <input type="range" class="setting-slider" id="settings-sfx" min="0" max="100" step="5" oninput="Settings.update('sfx', this.value)">
+        </div>
+      </div>
+      
+      <div class="setting-row">
+        <label class="setting-label">TEXT SPEED</label>
+        <div class="setting-control">
+          <input type="range" class="setting-slider" id="settings-text" min="1" max="5" step="1" oninput="Settings.update('textSpeed', this.value)">
+        </div>
+      </div>
+      
+      <div class="setting-row">
+        <label class="setting-label">GRAPHICS</label>
+        <div class="setting-control">
+          <select id="settings-quality" onchange="Settings.update('quality', this.value)" style="background:var(--bg-mid); color:var(--cyan); border:1px solid var(--border); padding:4px 8px; border-radius:4px; font-family:var(--vt);">
+            <option value="auto">Auto (Balanced)</option>
+            <option value="high">High (2K/4K)</option>
+            <option value="low">Mobile (Optimized)</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="settings-footer">
+        <button class="big-btn" onclick="Settings.close()">CLOSE</button>
+      </div>
+    </div>
+  </div>
+
   <input type="file" id="save-import-input" accept=".json" style="display:none">
 
   <!-- ═══════════════════════════════════════
@@ -227,7 +275,7 @@
       <!-- Chat area (bottom: face + text) -->
       <div class="s-dialogue-chat">
         <div class="s-dialogue-portrait">
-          <img id="s-portrait-img" class="s-portrait-img" src="" alt="" style="display:none">
+          <div id="s-portrait-img" class="s-portrait-img" style="display:none"></div>
           <div id="s-portrait-emoji" class="s-portrait-emoji">📖</div>
         </div>
         <div class="s-dialogue-body">
@@ -246,12 +294,12 @@
       <div class="s-ae-container">
         <!-- Character face icon (left) -->
         <div class="s-ae-face-section">
-          <img id="s-ae-face" class="s-ae-face" src="" alt="character face" style="display:none">
+          <div id="s-ae-face" class="s-ae-face" style="display:none"></div>
         </div>
 
         <!-- Spirit portrait (center) -->
         <div class="s-ae-spirit-section">
-          <img id="s-ae-spirit" class="s-ae-spirit" src="" alt="spirit portrait">
+          <div id="s-ae-spirit" class="s-ae-spirit"></div>
         </div>
 
         <!-- Shard info (right) -->
@@ -378,8 +426,29 @@
             <div class="pause-inv-grid" id="pause-inv-grid"></div>
           </div>
           <div class="pause-actions">
+            <button class="pause-btn" onclick="ArchiveUI.open()">📖 BESTIARY</button>
             <button class="pause-btn save-btn" onclick="MapUI.pauseSave()">💾 SAVE</button>
             <button class="pause-btn" onclick="MapUI.closePauseMenu()">▶ RESUME</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bestiary Overlay -->
+      <div id="bestiary-overlay" class="bestiary-overlay" style="display:none">
+        <div class="bestiary-bg" onclick="ArchiveUI.close()"></div>
+        <div class="bestiary-panel">
+          <div class="bestiary-header">
+             <div class="bestiary-title">REALM ARCHIVE</div>
+             <div class="bestiary-sub">Fallen foes and discovered secrets</div>
+             <button class="bestiary-close" onclick="ArchiveUI.close()">×</button>
+          </div>
+          <div class="bestiary-body">
+            <div class="bestiary-sidebar" id="bestiary-list">
+              <!-- Enemy list injected here -->
+            </div>
+            <div class="bestiary-detail" id="bestiary-detail">
+              <div class="bestiary-empty-hint">Select an entry to view details</div>
+            </div>
           </div>
         </div>
       </div>
@@ -434,17 +503,11 @@
       <!-- Party HP strip (bottom-left, above loc bar) -->
       <div id="explore-party-hud"></div>
 
-      <!-- D-pad (mobile touch, bottom-right) -->
-      <div id="explore-dpad">
-        <button class="dpad-btn dpad-up"
-          ontouchstart="DPad.press(0,-1,event)" ontouchend="DPad.release()" ontouchcancel="DPad.release()">▲</button>
-        <button class="dpad-btn dpad-left"
-          ontouchstart="DPad.press(-1,0,event)" ontouchend="DPad.release()" ontouchcancel="DPad.release()">◀</button>
-        <div class="dpad-center"></div>
-        <button class="dpad-btn dpad-right"
-          ontouchstart="DPad.press(1,0,event)" ontouchend="DPad.release()" ontouchcancel="DPad.release()">▶</button>
-        <button class="dpad-btn dpad-down"
-          ontouchstart="DPad.press(0,1,event)" ontouchend="DPad.release()" ontouchcancel="DPad.release()">▼</button>
+      <!-- Virtual Joystick Wrapper -->
+      <div id="joystick-zone" class="joystick-zone" style="display:none">
+        <div id="joystick-base" class="joystick-base">
+          <div id="joystick-knob" class="joystick-knob"></div>
+        </div>
       </div>
 
       <!-- Minimap panel (bottom-right, above loc bar) -->
@@ -499,6 +562,8 @@
 <script src="js/battle/combat-engine.js"></script>
 
 <script src="js/battle/action-handler.js"></script>
+<script src="js/systems/archive.js"></script>
+<script src="js/ui/archive-ui.js"></script>
 <script src="js/story.js"></script>
 <script>
   TTS.init();
@@ -660,7 +725,35 @@
     if (btn) btn.style.display = Save.listAll().some(s => !s.empty) ? 'inline-block' : 'none';
   }
 
-  window.addEventListener('DOMContentLoaded', _updateContinueBtn);
+  function toggleQuality() {
+    const modes = ['auto', 'high', 'low'];
+    let idx = modes.indexOf(G.settings.graphicsQuality);
+    G.settings.graphicsQuality = modes[(idx + 1) % modes.length];
+    
+    // Save to localStorage
+    localStorage.setItem('sn_graphics_quality', G.settings.graphicsQuality);
+    
+    // Update button text
+    const btn = document.getElementById('quality-btn');
+    if (btn) btn.innerText = `Quality: ${G.settings.graphicsQuality.charAt(0).toUpperCase() + G.settings.graphicsQuality.slice(1)}`;
+    
+    // Re-render map if active
+    if (MapEngine && MapEngine.rescale) { MapEngine.rescale(); }
+    
+    // Log for user
+    console.log(`[Graphics] Switched to ${G.settings.graphicsQuality}`);
+  }
+
+  function _initQualityBtn() {
+    const q = G.settings.graphicsQuality || 'auto';
+    const btn = document.getElementById('quality-btn');
+    if (btn) btn.innerText = `Quality: ${q.charAt(0).toUpperCase() + q.slice(1)}`;
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    _updateContinueBtn();
+    _initQualityBtn();
+  });
 </script>
 
 <!-- Save toast notification -->

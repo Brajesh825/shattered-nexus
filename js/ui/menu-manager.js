@@ -70,6 +70,11 @@ MapEngine.onEncounterStart = (enc, map) => {
 
   buildEnemyGroup(mutatedDefs, spawnLevel, false);
 
+  // Record encountered enemies in Archive
+  if (typeof Archive !== 'undefined') {
+    enemyIds.forEach(id => Archive.recordSeen(id));
+  }
+
   // Apply mutation stat multipliers on top of built group
   if (mutation) {
     const mult = mutation === 'mutant' ? 1.55 : 1.28;
@@ -245,9 +250,12 @@ function _renderPartySwapGrid() {
     card.className = 'swap-card' + (isActive ? ' active' : '');
     card.dataset.charid = ch.id;
 
+    const spriteId = `swap-sprite-${ch.id}`;
     card.innerHTML =
       (isActive ? `<div class="swap-card-badge">${slotIdx + 1}</div>` : '') +
-      `<div class="swap-icon" style="background:${ch.portrait_color}20;border-color:${ch.portrait_color}50">${ch.icon}</div>` +
+      `<div class="swap-icon" style="background:${ch.portrait_color}20;border-color:${ch.portrait_color}50">
+        <div id="${spriteId}" class="ui-sprite-swap"></div>
+      </div>` +
       `<div class="swap-info">` +
         `<div class="swap-name">${ch.alias || ch.name}</div>` +
         `<div class="swap-title">${ch.title}</div>` +
@@ -267,6 +275,12 @@ function _renderPartySwapGrid() {
     });
 
     grid.appendChild(card);
+
+    // Initialize high-res sprite
+    if (typeof SpriteRenderer !== 'undefined') {
+      const sprEl = document.getElementById(spriteId);
+      if (sprEl) SpriteRenderer.setFrame(sprEl, ch.id, 'idle', 64);
+    }
   });
 
   const count = _partySwapSelection.length;
@@ -284,10 +298,11 @@ function _renderCharGrid() {
     const d = document.createElement('div');
     d.className = 'char-card' + (isSelected ? ' selected' : '');
     d.dataset.char = ch.id;
+    const spriteId = `char-grid-sprite-${ch.id}`;
     d.innerHTML = `
       ${isSelected ? `<div class="char-sel-badge">${selIdx + 1}</div>` : ''}
       <div class="char-portrait" style="background:${ch.portrait_color}20;border-color:${ch.portrait_color}50">
-        <span>${ch.icon}</span>
+        <div id="${spriteId}" class="ui-sprite-char-grid"></div>
       </div>
       <div class="char-info">
         <div class="char-name">${ch.alias || ch.name}</div>
@@ -296,6 +311,12 @@ function _renderCharGrid() {
       </div>`;
     d.onclick = () => selectChar(ch.id);
     grid.appendChild(d);
+
+    // Initialize high-res sprite
+    if (typeof SpriteRenderer !== 'undefined') {
+      const sprEl = document.getElementById(spriteId);
+      if (sprEl) SpriteRenderer.setFrame(sprEl, ch.id, 'idle', 72);
+    }
   });
 }
 
@@ -324,18 +345,32 @@ function selectChar(id) {
   const ch = G.chars.find(c => c.id === id);
   if (!ch) return;
   const s = ch.base_stats;
-  document.getElementById('char-detail').innerHTML = `
-    <strong style="color:${ch.portrait_color}">${ch.icon} ${ch.alias || ch.name}</strong> — <em style="color:var(--text-dim)">${ch.personality}</em><br>
-    ${ch.description}<br>
-    <div class="stat-row">
-      <span class="stat-chip">HP <span>${s.hp}</span></span>
-      <span class="stat-chip">MP <span>${s.mp}</span></span>
-      <span class="stat-chip">ATK <span>${s.atk}</span></span>
-      <span class="stat-chip">DEF <span>${s.def}</span></span>
-      <span class="stat-chip">SPD <span>${s.spd}</span></span>
-      <span class="stat-chip">MAG <span>${s.mag}</span></span>
-    </div>
-    <span class="passive-tag">★ ${ch.passive.name}: ${ch.passive.description}</span>`;
+  const detailEl = document.getElementById('char-detail');
+  const spriteId = `char-detail-sprite-${id}`;
+  detailEl.innerHTML = `
+    <div class="char-detail-layout">
+      <div class="char-detail-visual">
+         <div id="${spriteId}" class="ui-sprite-char-detail"></div>
+      </div>
+      <div class="char-detail-text">
+        <strong style="color:${ch.portrait_color}">${ch.icon} ${ch.alias || ch.name}</strong> — <em style="color:var(--text-dim)">${ch.personality}</em><br>
+        ${ch.description}<br>
+        <div class="stat-row">
+          <span class="stat-chip">HP <span>${s.hp}</span></span>
+          <span class="stat-chip">MP <span>${s.mp}</span></span>
+          <span class="stat-chip">ATK <span>${s.atk}</span></span>
+          <span class="stat-chip">DEF <span>${s.def}</span></span>
+          <span class="stat-chip">SPD <span>${s.spd}</span></span>
+          <span class="stat-chip">MAG <span>${s.mag}</span></span>
+        </div>
+        <span class="passive-tag">★ ${ch.passive.name}: ${ch.passive.description}</span>
+      </div>
+    </div>`;
+
+  if (typeof SpriteRenderer !== 'undefined') {
+    const sprEl = document.getElementById(spriteId);
+    if (sprEl) SpriteRenderer.setFrame(sprEl, id, 'idle', 140);
+  }
 }
 
 /* ============================================================

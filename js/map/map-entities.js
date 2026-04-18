@@ -6,38 +6,44 @@
 const MapInput = (() => {
   const keys = {};
   let _canvas = null;
+  let _vec = { dx: 0, dy: 0 };
 
   function init(canvasEl) {
     _canvas = canvasEl;
     window.addEventListener('keydown', e => {
       keys[e.key] = true;
-      // Suppress arrow key scrolling while map is active
-      if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key) &&
-          MapEngine && MapEngine.isRunning && MapEngine.isRunning()) {
+      const isMapRunning = (typeof MapEngine !== 'undefined' && MapEngine.isRunning && MapEngine.isRunning());
+      
+      // Prevent scrolling / focus shift for game keys
+      if (isMapRunning && ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Tab'].includes(e.key)) {
         e.preventDefault();
-      }
-      // Tab — cycle active party member
-      if (e.key === 'Tab' && MapEngine && MapEngine.isRunning && MapEngine.isRunning()) {
-        e.preventDefault();
-        if (typeof MapUI !== 'undefined') MapUI.cycleCharacter();
+        
+        // Character cycle on Tab
+        if (e.key === 'Tab' && typeof MapUI !== 'undefined') {
+          MapUI.cycleCharacter();
+        }
       }
     });
     window.addEventListener('keyup', e => { keys[e.key] = false; });
   }
 
-  // Returns {dx, dy} based on held keys — called each frame
+  function setVector(dx, dy) {
+    _vec.dx = dx;
+    _vec.dy = dy;
+  }
+
   function poll() {
     return {
-      left:  keys['ArrowLeft']  || keys['a'] || keys['A'],
-      right: keys['ArrowRight'] || keys['d'] || keys['D'],
-      up:    keys['ArrowUp']    || keys['w'] || keys['W'],
-      down:  keys['ArrowDown']  || keys['s'] || keys['S'],
+      left:  keys['ArrowLeft']  || keys['a'] || keys['A'] || _vec.dx < -0.3,
+      right: keys['ArrowRight'] || keys['d'] || keys['D'] || _vec.dx > 0.3,
+      up:    keys['ArrowUp']    || keys['w'] || keys['W'] || _vec.dy < -0.3,
+      down:  keys['ArrowDown']  || keys['s'] || keys['S'] || _vec.dy > 0.3,
     };
   }
 
   function isKey(k) { return !!keys[k]; }
 
-  return { init, poll, isKey };
+  return { init, poll, isKey, setVector };
 })();
 
 /* ── MapPlayer ───────────────────────────────────────── */
@@ -191,6 +197,9 @@ const MapPlayer = (() => {
     _heroImgCache[charId] = entry;
 
     const suffix  = _variantMap[charId] || '';
+    const isLow   = G.settings.graphicsQuality === 'low' || (G.settings.graphicsQuality === 'auto' && window.innerWidth < 800);
+    const resExt  = isLow ? '_low.webp' : '.png';
+    const variant = _variantMap[charId] || '';
     const base    = `images/characters/map/sheets/${charId}_sheet`;
 
     // Attempt load order: variant → base sheet → static png → pixel fallback
@@ -211,13 +220,12 @@ const MapPlayer = (() => {
       fb.src = `images/characters/map/${charId}.png`;
     }
 
-    if (suffix) {
-      // Try variant first, fall back to base sheet, then static
-      tryLoad(`${base}${suffix}.png`, () =>
-        tryLoad(`${base}.png`, loadStaticFallback)
+    if (variant) {
+      tryLoad(`${base}${variant}${resExt}`, () =>
+        tryLoad(`${base}${resExt}`, loadStaticFallback)
       );
     } else {
-      tryLoad(`${base}.png`, loadStaticFallback);
+      tryLoad(`${base}${resExt}`, loadStaticFallback);
     }
 
     return entry;
@@ -771,10 +779,16 @@ const MapEntities = (() => {
     }
 
     function _loadImg(src) {
-      if (_imgCache[src]) return _imgCache[src];
+      const isLow = G.settings.graphicsQuality === 'low' || (G.settings.graphicsQuality === 'auto' && window.innerWidth < 800);
+      let resSrc = src;
+      if (isLow && src.endsWith('.png')) {
+        resSrc = src.replace('.png', '_low.webp');
+      }
+
+      if (_imgCache[resSrc]) return _imgCache[resSrc];
       const img = new Image();
-      img.src = src;
-      _imgCache[src] = img;
+      img.src = resSrc;
+      _imgCache[resSrc] = img;
       return img;
     }
 
