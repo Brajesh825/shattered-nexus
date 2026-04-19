@@ -13,7 +13,15 @@ const TurnManager = {
       if (Battle.alive(m)) q.push({ type: 'party', idx: i, spd: Battle.getStat(m, 'spd') });
     });
     G.enemyGroup.forEach((e, i) => {
-      if (Battle.alive(e)) q.push({ type: 'enemy', idx: i, spd: Battle.getStat(e, 'spd') });
+      if (Battle.alive(e)) {
+        q.push({ type: 'enemy', idx: i, spd: Battle.getStat(e, 'spd') });
+        
+        // --- SOLO BOSS DOUBLE ACTION ---
+        const isSolo = G.enemyGroup.filter(en => Battle.alive(en)).length === 1;
+        if (e.isBoss && isSolo) {
+          q.push({ type: 'enemy', idx: i, spd: Math.floor(Battle.getStat(e, 'spd') * 0.6) });
+        }
+      }
     });
 
     // Higher speed units act first
@@ -64,11 +72,11 @@ const TurnManager = {
     if (stun || frozen) {
       const label = stun ? 'stunned' : 'frozen';
       const icon = stun ? '💫' : '❄️';
+      
+      // Tick statuses (decrement duration) even when incapacitated
+      StatusSystem.tick(unit, t.type === 'enemy');
+      
       BattleUI.addLog(`${icon} ${unit.displayName || unit.name} is ${label} and skips their turn!`, 'regen');
-
-      // Removal of turn-skipping effects
-      if (stun) StatusSystem.remove(unit, 'status_stunned');
-      if (frozen) StatusSystem.remove(unit, 'status_frozen');
 
       setTimeout(() => this.advance(), 1000);
       return;

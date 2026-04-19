@@ -215,7 +215,8 @@ const BattleUI = {
 
       const spr = document.createElement('img');
       const _mutCls = e.mutation === 'mutant' ? ' enemy-mutant' : e.mutation === 'corrupted' ? ' enemy-corrupted' : '';
-      spr.className = 'enemy-sprite' + _mutCls;
+      const _frozenCls = (typeof StatusSystem !== 'undefined' && StatusSystem.has(e, 'status_frozen')) ? ' frozen-sprite' : '';
+      spr.className = 'enemy-sprite' + _mutCls + _frozenCls;
       spr.id = 'espr-' + i;
       spr.style.width = sprW + 'px';
       spr.style.height = sprH + 'px';

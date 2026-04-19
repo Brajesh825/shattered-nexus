@@ -142,6 +142,14 @@ function resolveOffensiveAction(actor, target, targetIdx, action, element) {
 
   // 5. Apply result
   target.hp = Math.max(0, target.hp - dmg);
+
+  // Strategic Thaw: Attacking a frozen target breaks the ice
+  if (typeof StatusSystem !== 'undefined' && StatusSystem.has(target, 'status_frozen')) {
+    StatusSystem.remove(target, 'status_frozen');
+    BattleUI.addLog(`❄️ ${target.name} shattered! They are no longer frozen!`, 'magic');
+    BattleUI.renderEnemyRow();
+  }
+
   if (target.hp <= 0) {
     Battle.setKO(target, true);
     // If it was an enemy kill, record in Archive
@@ -371,7 +379,11 @@ const ActionEngine = {
         return Math.floor(((e.healBase || 20) + Math.random() * (e.healRandom || 15) + Math.floor(Battle.getStat(actor, 'mag') * 1.5)) * _healAmp);
       };
       targets.forEach(m => {
-        if (ab.isUltimate && m.isKO) { m.isKO = false; m.hp = 1; }
+        const _wasKO = m.isKO;
+        if (ab.isUltimate && m.isKO) { 
+          m.isKO = false; 
+          m.hp = 1; 
+        }
         if (!Battle.alive(m) && !ab.isUltimate) return;
         const amt = _getAmt(m);
         m.hp = Math.min(m.maxHp, m.hp + amt);
@@ -383,6 +395,8 @@ const ActionEngine = {
           BattleUI.popEnemy(mIdx, amt, 'heal', 'light');
         } else {
           BattleUI.popParty(mIdx, amt, 'heal', 'light');
+          // Nilou Fix: If we just revived someone, wake them up immediately
+          if (_wasKO && !m.isKO) BattleUI.setSpriteFrame(mIdx, 'idle');
         }
 
         if (e.cleanse && Battle.alive(m)) {
@@ -399,6 +413,7 @@ const ActionEngine = {
         BattleUI.addLog(`💨 ${actor.displayName}: SPD up!`, 'heal');
       }
       BattleUI.renderPartyStatus();
+      BattleUI.renderPartyRow(); // Nilou Fix: Ensure sprites/HP bars are updated
       setTimeout(() => TurnManager.advance(), 800);
     },
 
@@ -750,11 +765,21 @@ function _checkDragonLeap(actor) {
   if (actor.passive?.id !== 'dragon_leap') return;
   actor._dragonLeapTurns = (actor._dragonLeapTurns || 0) + 1;
   if (actor._dragonLeapTurns % 3 !== 0) return;
-  const tgt = G.enemy;
-  if (!tgt || !Battle.alive(tgt)) return;
-  const dmg = Math.floor(Battle.physDmg(Battle.getStat(actor, 'atk'), Battle.getStat(tgt, 'def'), 1.6, { atkLevel: actor.lv || 1, defLevel: tgt.level || 1 }) * Battle.elemMult('wind', tgt));
-  tgt.hp = Math.max(0, tgt.hp - dmg);
-  if (tgt.hp <= 0) Battle.setKO(tgt, true);
+  const target = G.enemy;
+  if (!target || !Battle.alive(target)) return;
+  const dmg = Math.floor(Battle.physDmg(Battle.getStat(actor, 'atk'), Battle.getStat(target, 'def'), 1.6, { atkLevel: actor.lv || 1, defLevel: target.level || 1 }) * Battle.elemMult('wind', target.element || 'physical'));
+  target.hp = Math.max(0, target.hp - dmg);
+
+  // Strategic Thaw: Attacking a frozen target breaks the ice
+  if (typeof StatusSystem !== 'undefined' && StatusSystem.has(target, 'status_frozen')) {
+    StatusSystem.remove(target, 'status_frozen');
+    BattleUI.addLog(`❄️ ${target.name} shattered! They are no longer frozen!`, 'regen');
+    BattleUI.renderEnemyRow();
+  }
+
+  if (target.hp <= 0) {
+    Battle.setKO(target, false);
+  }
   BattleUI.popEnemy(G.targetEnemyIdx, dmg, 'dmg', 'wind');
   BattleUI.addLog(`🐉 Dragon's Leap! Bonus aerial strike for ${dmg}!`, 'magic');
   BattleUI.renderEnemyRow();
@@ -767,9 +792,9 @@ function enemyAct(enemy, enemyIdx) {
   // Start-of-Turn maintenance (debuffs, cooldowns)
   Battle.tickActorStatus(enemy, true);
 
-  // Control check — skip turn if stunned or frozen
-  const isIncapacitated = enemy.statuses?.some(s => s.id === 'status_stunned' || s.id === 'status_frozen');
-  if (isIncapacitated) {
+  // Control check is handled at TurnManager level.
+  // This legacy check is kept simplified as a fallback.
+  if (enemy.statuses?.some(s => s.id === 'status_stunned' || s.id === 'status_frozen')) {
     TurnManager.advance();
     return;
   }

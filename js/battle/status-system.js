@@ -191,6 +191,7 @@ const StatusSystem = {
       else if (detonator === 'ice') reaction = { id: 'melt', label: 'MELT', color: '#ffaa00', dmgMult: 1.5 };
     } else if (auraType === 'water') {
       if (detonator === 'lightning') reaction = { id: 'conductive', label: 'CONDUCTIVE', color: '#ffcc00', dmgMult: 1.3, stun: true };
+      else if (detonator === 'fire') reaction = { id: 'vaporize', label: 'VAPORIZE', color: '#55aaff', dmgMult: 1.5 };
     } else if (auraType === 'nature') {
       if (detonator === 'fire') reaction = { id: 'burn', label: 'BURNING', color: '#ee4400', dmgMult: 1.2, dot: true };
     }

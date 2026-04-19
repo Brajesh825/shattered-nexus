@@ -110,3 +110,17 @@ Enemies can appear as enhanced variations of themselves:
 
 > [!CAUTION]
 > **Immunities**: Bosses and Tier 3 Alphas **CANNOT** be Corrupted or Mutant. If you encounter one, it is a logic bug.
+
+---
+
+## 📜 Boss Strategy Archive
+
+### 🌑 Boss 1: Void Knight (The Erased Warrior)
+*   **Element**: Void (Resists Physical, Void, Shadow).
+*   **Weaknesses**: Light, Holy.
+*   **Mechanics**: High damage single-target strikes and AOE `Abyssal Tide` magic.
+*   **Winning Strategy**: 
+    1.  **Vanguard Tanking**: Keep Rei in Slot 2 to intercept his heavy physical blows.
+    2.  **The Reactive Loop**: Use Nilou to apply **Water Aura**, then follow up with Hu Tao's Fire attacks for **VAPORIZE (1.5x damage)**. 
+    3.  **Frost Lockdown**: Use Ayaka's `Permafrost` to skip his turns, allowing the party to heal and buff safely.
+    4.  **Shatter Alert**: Remember that hitting him while frozen will break the ice (Shatter). Use this for a burst window when he is low on HP.
