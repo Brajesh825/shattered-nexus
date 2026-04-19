@@ -432,8 +432,9 @@ function buildEnemyGroup(defs, spawnLevel = 1, isBoss = false) {
     }
 
     const calcStat = (baseStat, statKey) => {
-      // Apply split boss multipliers if applicable
-      const bMult = isBoss ? (NexusScaling.boss[statKey] || NexusScaling.boss.atk) : 1.0;
+      // Use the boss from the map trigger OR the base definition (Arc Bosses)
+      const actualIsBoss = isBoss || def.isBoss;
+      const bMult = actualIsBoss ? (NexusScaling.boss[statKey] || NexusScaling.boss.atk) : 1.0;
 
       const base = baseStat * growth.statMult * hordeScale * bMult;
       const levelBonus = growth[statKey] * (spawnLevel - 1) * hordeScale * bMult;
@@ -448,9 +449,11 @@ function buildEnemyGroup(defs, spawnLevel = 1, isBoss = false) {
     // EXP/gold scale by count so total reward is fair.
     // Level scaling: +10% EXP for each level above 1.
     const levelScale = 1 + (spawnLevel - 1) * 0.1;
-    const bExpMult = isBoss ? NexusScaling.boss.exp : 1.0;
+    
+    const actualIsBossReward = isBoss || def.isBoss;
+    const bExpMult = actualIsBossReward ? NexusScaling.boss.exp : 1.0;
     const finalExp = Math.floor(def.reward.exp * growth.expMult * hordeScale * levelScale * bExpMult);
-    const bGoldMult = isBoss ? (NexusScaling.boss.gold || 1.0) : 1.0;
+    const bGoldMult = actualIsBossReward ? (NexusScaling.boss.gold || 1.0) : 1.0;
     const finalGold = Math.floor(def.reward.gold * growth.expMult * hordeScale * bGoldMult);
 
     const entry = {
@@ -467,7 +470,7 @@ function buildEnemyGroup(defs, spawnLevel = 1, isBoss = false) {
       weakTo: def.weakTo || [],
       resistTo: def.resistTo || [],
       tier: tier,
-      isBoss: isBoss, // Only a boss if explicitly flagged
+      isBoss: isBoss || def.isBoss, // Combined source of truth
       aiRole: def.aiRole || 'attacker',
       aiType: def.aiType || 'random',
       aiStep: 0,
