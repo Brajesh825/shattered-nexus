@@ -242,6 +242,9 @@ const BattleUI = {
       enemy.className = 'enemy' + (!alive ? ' ko-enemy' : '');
       enemy.dataset.target = i === G.targetEnemyIdx ? 'true' : 'false';
       enemy.onclick = () => typeof selectTarget === 'function' ? selectTarget(i) : null;
+      
+      // Ensure unit is anchored to DOM (Fix for disappearing units)
+      if (enemy.parentElement !== container) container.appendChild(enemy);
 
       const tierW = TIER_BASE_W[e.tier || 1] || TIER_BASE_W[1];
       const cScale = COUNT_SCALE[count] ?? 0.64;
@@ -249,11 +252,16 @@ const BattleUI = {
       const sprW = Math.round(tierW * cScale * mMult);
       const sprH = Math.round(sprW * ASPECT);
 
-      const _mutCls = e.mutation === 'mutant' ? ' enemy-mutant' : e.mutation === 'corrupted' ? ' enemy-corrupted' : '';
-      const _frozenCls = (typeof StatusSystem !== 'undefined' && StatusSystem.has(e, 'status_frozen')) ? ' frozen-sprite' : '';
-      spr.className = 'enemy-sprite' + _mutCls + _frozenCls;
+      // Animation-Safe Class Update
+      spr.classList.add('enemy-sprite');
+      spr.classList.toggle('enemy-mutant', e.mutation === 'mutant');
+      spr.classList.toggle('enemy-corrupted', e.mutation === 'corrupted');
+      const isFrozen = (typeof StatusSystem !== 'undefined' && StatusSystem.has(e, 'status_frozen'));
+      spr.classList.toggle('frozen-sprite', isFrozen);
+      
       spr.style.width = sprW + 'px';
       spr.style.height = sprH + 'px';
+      spr.id = 'espr-' + i; // Force correct ID for coordinate math
       
       // Only redraw if src is different or missing
       if (!spr.src || spr.dataset.lastId !== e.id || spr.dataset.lastPal !== JSON.stringify(e.palette)) {
@@ -337,6 +345,9 @@ const BattleUI = {
       member.className = 'party-member' + (!alive ? ' ko-member' : '');
       const col = CHAR_COLOR[m.charId] || '#c0b8e8';
       member.style.color = col;
+      
+      // Ensure member is anchored to DOM (Fix for disappearing units)
+      if (member.parentElement !== container) container.appendChild(member);
 
       // Update Info only if content changed
       const traitHtml = ''; // Reserved for future party traits
@@ -381,6 +392,10 @@ const BattleUI = {
 
       // Draw/Update Sprite
       if (spr) {
+        spr.classList.add('party-sprite', 'party-sprite-animated');
+        spr.id = 'pspr-' + i; // Force correct ID for coordinate math
+        spr.dataset.charId = m.charId;
+
         // Only redraw if character/class changed or first time
         if (spr.dataset.lastId !== m.charId || spr.dataset.lastClass !== m.classId) {
           if (typeof SpriteRenderer !== 'undefined') SpriteRenderer.drawHero(spr, m.charId, m, m.cls);
@@ -504,138 +519,63 @@ const BattleUI = {
     this.setLog(this.log, ['', '', cl]);
   },
 
-  popEnemy(idx, text, type = 'dmg', element = 'physical') {
+  /**
+   * Robust coordinate helper for combat popups.
+   * Calculates the unscaled center of a unit's container relative to the scene.
+   */
+  _getAnchor(idx, type = 'enemy') {
     const s = this.el('battle-scene');
-    const spr = this.el('espr-' + idx);
-    const gameEl = this.el('game');
-    if (!s || !gameEl) return;
+    if (!s) return { x: 200, y: 200 };
+    
+    // Find by DOM data-idx for stability
+    const selector = type === 'enemy' ? `.enemy[data-idx="${idx}"]` : `.party-member[data-idx="${idx}"]`;
+    const container = s.querySelector(selector);
+    const sprite = this.el((type === 'enemy' ? 'espr-' : 'pspr-') + idx);
+    const target = sprite || container; // Prefer sprite, fallback to slot
 
-    const scaleMatch = gameEl.style.transform.match(/scale\(([\d.]+)\)/);
-    const gameScale = scaleMatch ? parseFloat(scaleMatch[1]) : 1;
+    if (!target) return { x: type === 'enemy' ? 150 : 450, y: 150 };
+
     const sceneRect = s.getBoundingClientRect();
+    const targetRect = target.getBoundingClientRect();
+    
+    // Calculate the REAL scale applied to the scene (CSS scale or zoom)
+    const sceneScale = sceneRect.width / s.offsetWidth || 1;
 
-    let x = 100, y = 100; // Default fallbacks
+    return {
+      x: (targetRect.left - sceneRect.left + (targetRect.width / 2)) / sceneScale,
+      y: (targetRect.top - sceneRect.top + (targetRect.height / 3)) / sceneScale
+    };
+  },
 
-    if (spr) {
-      const rect = spr.getBoundingClientRect();
-      if (rect.width > 0) {
-        x = (rect.left - sceneRect.left + rect.width / 2) / gameScale;
-        y = (rect.top - sceneRect.top + rect.height / 3) / gameScale;
-      } else {
-        // Fallback to the enemy container if the sprite itself is unitialized
-        const parent = spr.parentElement?.getBoundingClientRect();
-        if (parent) {
-          x = (parent.left - sceneRect.left + parent.width / 2) / gameScale;
-          y = (parent.top - sceneRect.top + 40) / gameScale;
-        }
-      }
-    }
-
-    this._pop(text, x, y, type, element);
+  popEnemy(idx, text, type = 'dmg', element = 'physical') {
+    const pos = this._getAnchor(idx, 'enemy');
+    this._pop(text, pos.x, pos.y, type, element);
   },
 
   popParty(idx, text, type = 'dmg', element = 'physical') {
-    const s = this.el('battle-scene');
-    const spr = this.el('pspr-' + idx);
-    const gameEl = this.el('game');
-    if (!s || !gameEl) return;
-
-    const scaleMatch = gameEl.style.transform.match(/scale\(([\d.]+)\)/);
-    const gameScale = scaleMatch ? parseFloat(scaleMatch[1]) : 1;
-    const sceneRect = s.getBoundingClientRect();
-
-    let x = 400, y = 300; // Party-side fallbacks
-
-    if (spr) {
-      const rect = spr.getBoundingClientRect();
-      if (rect.width > 0) {
-        x = (rect.left - sceneRect.left + rect.width / 2) / gameScale;
-        y = (rect.top - sceneRect.top + rect.height / 3) / gameScale;
-      } else {
-        const parent = spr.parentElement?.getBoundingClientRect();
-        if (parent) {
-          x = (parent.left - sceneRect.left + parent.width / 2) / gameScale;
-          y = (parent.top - sceneRect.top + 40) / gameScale;
-        }
-      }
-    }
-
-    this._pop(text, x, y, type, element);
-  },
-
-  showTutorial(txt) {
-    const s = this.el('battle-scene');
-    if (!s || this._tutShown) return;
-    this._tutShown = true;
-    
-    const d = document.createElement('div');
-    d.id = 'battle-tutorial-overlay';
-    d.className = 'tutorial-overlay';
-    d.innerHTML = `<div>${txt}</div><button class="tutorial-close" onclick="document.getElementById('battle-tutorial-overlay').remove(); if(typeof Focus!=='undefined')Focus.setContext('cmd-grid-main');">GOT IT</button>`;
-    s.appendChild(d);
-    
-    if (typeof Focus !== 'undefined') {
-      Focus.setContext('battle-tutorial-overlay');
-    }
-    setTimeout(() => { if(d.parentNode) { d.remove(); if(typeof Focus!=='undefined')Focus.setContext('cmd-grid-main'); } }, 12000);
+    const pos = this._getAnchor(idx, 'party');
+    this._pop(text, pos.x, pos.y, type, element);
   },
 
   popAI(idx, txt) {
+    const pos = this._getAnchor(idx, 'enemy');
     const s = this.el('battle-scene');
-    const gameEl = this.el('game');
-    if (!s || !gameEl) return;
+    if (!s) return;
 
     const d = document.createElement('div');
     d.className = 'pop-text ai-pop';
     d.textContent = txt;
-
-    const scaleMatch = gameEl.style.transform.match(/scale\(([\d.]+)\)/);
-    const gameScale = scaleMatch ? parseFloat(scaleMatch[1]) : 1;
-    const sceneRect = s.getBoundingClientRect();
-
-    const spr = this.el('espr-' + idx);
-    let x = 100, y = 50;
-
-    if (spr) {
-      const rect = spr.getBoundingClientRect();
-      if (rect.width > 0) {
-        x = (rect.left - sceneRect.left + rect.width / 2) / gameScale;
-        y = (rect.top - sceneRect.top) / gameScale - 30;
-      } else {
-        const parent = spr.parentElement?.getBoundingClientRect();
-        if (parent) {
-          x = (parent.left - sceneRect.left + parent.width / 2) / gameScale;
-          y = (parent.top - sceneRect.top) / gameScale - 10;
-        }
-      }
-    }
+    d.style.left = pos.x + 'px';
+    d.style.top = (pos.y - 60) + 'px';
     
-    d.style.left = x + 'px';
-    d.style.top = y + 'px';
-    
-    d.style.color = '#00f2ff';
-    d.style.fontSize = '12px';
-    d.style.fontFamily = 'var(--px)';
-    d.style.textShadow = '0 0 10px #00f2ff80';
-    d.style.background = 'rgba(0,30,50,0.8)';
-    d.style.padding = '4px 8px';
-    d.style.borderRadius = '5px';
-    d.style.border = '1px solid #00f2ff';
-    d.style.whiteSpace = 'nowrap';
-    d.style.zIndex = '100';
     s.appendChild(d);
-    setTimeout(() => d.remove(), 1500);
+    setTimeout(() => d.remove(), 2500);
   },
 
   popReaction(idx, label, type = 'enemy') {
+    const pos = this._getAnchor(idx, type);
     const s = this.el('battle-scene');
-    const spr = this.el((type === 'enemy' ? 'espr-' : 'pspr-') + idx);
-    if (!s || !spr) return;
-    const rect = spr.getBoundingClientRect();
-    const sceneRect = s.getBoundingClientRect();
-    const gameEl = this.el('game');
-    const scaleMatch = gameEl?.style.transform.match(/scale\(([\d.]+)\)/);
-    const gameScale = scaleMatch ? parseFloat(scaleMatch[1]) : 1;
+    if (!s) return;
     
     const d = document.createElement('div');
     d.className = 'pop-text reaction-pop';
