@@ -81,20 +81,47 @@ Relic bonuses are **additive across relics, then applied once** as a single mult
 ```
 ExpNeeded(L) = 5 × L² + 25 × L
 ```
+Example thresholds: Lv1→2: 30 | Lv5→6: 250 | Lv10→11: 750 | Lv20→21: 2,280
+
+### EXP Distribution (per battle)
+EXP is **split among alive party members** — not given in full to each.
+```
+splitExp   = floor(totalEnemyExp / aliveCount)
+earnedExp  = floor(splitExp × expScale)       // per surviving member
+```
+- Dead members receive **0 EXP** but their level/exp is always synced back to `G.chars` regardless of KO state (prevents level reset on next battle).
+- Gold is split the same way.
+
+### EXP Scaling (enemy spawn formula)
+```
+finalExp = floor(baseExp × tierExpMult × hordeScale × levelScale × bossExpMult)
+```
+- `tierExpMult`: Tier 1 = 1.0 | Tier 2 = 1.5 | Tier 3 = 2.5
+- `levelScale`: `1 + (spawnLevel - 1) × 0.1`  — grows linearly, adds ~10% per level
+- `hordeScale`: 3 enemies = 0.78× each | 4+ enemies = 0.65× each
+- `bossExpMult`: 2.5× for bosses (`isBoss: true`)
 
 ### EXP Level-Gap Penalty
 ```
 expScale = clamp(1 - (memberLevel - enemyLevel) / 3,  0, 1)
-earnedExp = floor(totalExp × expScale)
 ```
 At **+3 levels above the enemy average** the member earns 0 EXP. Linear ramp between gap 0 → 3.
 
+### Archive Mastery Buffs
+Applied as **flat additions** after `computeStats()` and `applyRelicBonuses()` in all code paths: `buildParty()`, save load (`story.js`), and Gauntlet (`boss-gauntlet.js`). Must be reapplied in every path that rebuilds stats from scratch.
+
+### PassiveSystem STAT_BOOST Rules
+- `value` is a **float > 1** (e.g. `1.15`) → applied as a **multiplier** in `getStatMultiplier`
+- `value` is an **integer** (e.g. `3`) → applied as a **flat bonus** in `getStatBonus`
+- Never use integers > 1 for multiplier intent — use floats.
+
 ### Save / Load Contract
-Only `lv`, `exp`, `gold`, `hp`, `mp`, `isKO` are persisted. On load, all other stats are recomputed via `computeStats()` + `applyRelicBonuses()`. This prevents corrupted saves from permanently inflating stats.
+Only `lv`, `exp`, `gold`, `hp`, `mp`, `isKO` are persisted. On load, all other stats are recomputed via `computeStats()` + `applyRelicBonuses()` + Archive mastery buffs. This prevents corrupted saves from permanently inflating stats.
 
 ---
 
 ## 🔍 Debugging & Diagnostics
 Engine status is exposed via `window.LogDebug(msg, type)`.
-- **Reserved Tags**: `[MATH-PHYS]`, `[MATH-MAGIC]`, `[STATE-DIAG]`, `[Aura]`, `[Passive]`, `[Gauntlet]`.
-- **Gauntlet Mode**: Use for stress-testing AI and new enemy tiers.
+- **Reserved Tags**: `[MATH-PHYS]`, `[MATH-MAGIC]`, `[ENEMY-MATH-MAGIC]`, `[ENEMY-MATH-PHYS]`, `[STATE-DIAG]`, `[Aura]`, `[Passive]`, `[Gauntlet]`, `[BUFF]`, `[DEBUFF]`, `[AI-SUPPORT]`, `[HitRoll]`, `[CritRoll]`, `[KO]`.
+- **Gauntlet Mode**: Use for stress-testing AI and new enemy tiers. Accessible from the map screen. Boss list defined in `BossGauntlet.getBossIds()` — add new arc bosses here.
+- **Magic Defense Formula**: `mdef = def×0.25 + mag×0.25 + level×0.5` — both attacker and defender use this blend. Pure DEF tanks and pure MAG mages both get meaningful resistance without immunity.
