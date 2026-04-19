@@ -3191,6 +3191,7 @@
     "drops": [
       {
         "item": "Emperor's Crown",
+        "itemId": "emperors_crown",
         "chance": 0.7
       },
       {
@@ -3326,6 +3327,7 @@
     "drops": [
       {
         "item": "Warden's Key",
+        "itemId": "wardens_key",
         "chance": 0.5
       },
       {
@@ -3397,6 +3399,63 @@
         "item": "Dark Crystal",
         "chance": 0.4
       }
+    ]
+  },
+  {
+    "id": "shadow_wraith",
+    "name": "Shadow Wraith",
+    "subtitle": "A spectral horror born from the abyss between worlds",
+    "element": "shadow",
+    "weakTo": ["light", "holy", "fire"],
+    "resistTo": ["shadow", "ice", "physical"],
+    "tier": 3,
+    "stats": {
+      "hp": 130,
+      "atk": 20,
+      "def": 12,
+      "spd": 16,
+      "mag": 26
+    },
+    "reward": {
+      "exp": 60,
+      "gold": 42
+    },
+    "palette": {
+      "body": "#1a0030",
+      "dark": "#0a0018",
+      "armor": "#2a0050",
+      "eye": "#cc00ff",
+      "shine": "#8800cc"
+    },
+    "traits": [
+      { "id": "damage_reduction", "label": "👻 Ethereal", "type": "DAMAGE_REDUCTION", "value": 0.15 }
+    ],
+    "abilities": [
+      {
+        "id": "void_touch",
+        "name": "Void Touch",
+        "type": "magic_damage",
+        "weight": 40,
+        "dmgMultiplier": 1.55
+      },
+      {
+        "id": "shadow_drain",
+        "name": "Shadow Drain",
+        "type": "magic_damage",
+        "weight": 35,
+        "dmgMultiplier": 1.3,
+        "effect": { "vampiric": 0.4 }
+      },
+      {
+        "id": "spectral_shroud",
+        "name": "Spectral Shroud",
+        "type": "buff_self",
+        "weight": 25
+      }
+    ],
+    "drops": [
+      { "item": "void_shard", "itemId": "void_shard", "chance": 0.55 },
+      { "item": "phantom_dust", "itemId": "phantom_dust", "chance": 0.3 }
     ]
   }
 ]
