@@ -1,0 +1,21 @@
+{
+  "name": "rpg-plus",
+  "version": "3.0.0",
+  "description": "Shattered Nexus: A cross-world RPG saga featuring 8 heroes and 100+ enemies.",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx browser-sync start --server --files '*.html, css/*.css, js/*.js, data/*.json'",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "rpg",
+    "game",
+    "javascript",
+    "static-site"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "browser-sync": "^3.0.2"
+  }
+}
