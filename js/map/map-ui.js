@@ -326,7 +326,7 @@ const MapUI = (() => {
       const hpPct   = Math.max(0, m.hp / m.maxHp * 100);
       const mpPct   = Math.max(0, m.mp / m.maxMp * 100);
       const hpCol   = hpPct > 50 ? '#4ade80' : hpPct > 25 ? '#eab308' : '#ef4444';
-      const expNext = 30 * m.lv;
+      const expNext = typeof getExpThreshold === 'function' ? getExpThreshold(m.lv) : (5 * m.lv * m.lv + 25 * m.lv);
 
       const card = document.createElement('div');
       card.className = `pause-member${isKO ? ' ko-member' : ''}${isActive ? ' active-member' : ''}`;
@@ -336,24 +336,24 @@ const MapUI = (() => {
           <span class="pm-name" style="color:${col}">${m.displayName}</span>
           <span class="pm-lv">LV ${m.lv}</span>
         </div>
-        <div style="font-size:8px;color:#6060a0;margin-bottom:2px">
+        <div class="pm-exp-line">
           ${m.cls?.name || ''} · EXP ${m.exp}/${expNext}
         </div>
         <div class="pm-hp-bar-bg">
           <div class="pm-hp-bar-fill" style="width:${hpPct}%;background:${hpCol}"></div>
         </div>
-        <div style="font-size:8px;color:#a0a0c0;text-align:right">${m.hp}/${m.maxHp} HP</div>
+        <div class="pm-bar-label">${m.hp}/${m.maxHp} HP</div>
         <div class="pm-mp-bar-bg">
           <div class="pm-mp-bar-fill" style="width:${mpPct}%"></div>
         </div>
-        <div style="font-size:8px;color:#6080c0;text-align:right">${m.mp}/${m.maxMp} MP</div>
+        <div class="pm-bar-label mp">${m.mp}/${m.maxMp} MP</div>
         <div class="pm-stats">
           <div>ATK <span>${m.atk}</span></div>
           <div>DEF <span>${m.def}</span></div>
           <div>MAG <span>${m.mag}</span></div>
           <div>SPD <span>${m.spd}</span></div>
           <div>Gold <span>${m.gold || 0}</span></div>
-          ${isKO ? '<div style="color:#ef4444">FALLEN</div>' : '<div style="color:#4ade80">OK</div>'}
+          ${isKO ? '<div class="pm-status-ko">FALLEN</div>' : '<div class="pm-status-ok">OK</div>'}
         </div>
         ${m.passive ? `<div class="pm-passive">★ ${m.passive.name}: ${m.passive.description}</div>` : ''}
       `;

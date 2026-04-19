@@ -393,40 +393,47 @@
   background: rgba(144, 128, 255, 0.04);
   border: 1px solid rgba(144, 128, 255, 0.15);
   border-radius: 8px;
-  padding: 10px 12px;
+  padding: 12px 14px;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 7px;
 }
 .pause-member.ko-member { opacity: 0.4; filter: grayscale(0.8); }
 .pause-member.active-member { border-color: #6040c0; box-shadow: 0 0 8px #6040c040; }
 
 .pm-header { display: flex; justify-content: space-between; align-items: baseline; }
-.pm-name   { font-family: var(--px); font-size: var(--fs-xs); }
-.pm-lv     { font-size: var(--fs-xxs); color: #d8c860; }
+.pm-name   { font-family: var(--px); font-size: var(--fs-sm); }
+.pm-lv     { font-size: var(--fs-xs); color: #d8c860; }
 
-.pm-hp-bar-bg  { height: 4px; background: #1a1030; border-radius: 2px; }
+.pm-exp-line { font-size: var(--fs-xs); color: #6060a0; margin-bottom: 1px; }
+
+.pm-hp-bar-bg  { height: 7px; background: #1a1030; border-radius: 2px; }
 .pm-hp-bar-fill { height: 100%; border-radius: 2px; transition: width .3s; }
-.pm-mp-bar-bg  { height: 3px; background: #0a0820; border-radius: 2px; margin-top: 2px; }
+.pm-mp-bar-bg  { height: 5px; background: #0a0820; border-radius: 2px; margin-top: 2px; }
 .pm-mp-bar-fill { height: 100%; background: #4080e0; border-radius: 2px; }
+
+.pm-bar-label     { font-size: var(--fs-xs); color: #a0a0c0; text-align: right; }
+.pm-bar-label.mp  { color: #6080c0; }
 
 .pm-stats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 20px 6px;
-  font-size: var(--fs-xxs);
+  gap: 6px;
+  font-size: var(--fs-xs);
   color: #8888aa;
   margin-top: 2px;
 }
-.pm-stats span { color: #c0b8e0; }
+.pm-stats span { color: #c0b8e0; font-size: var(--fs-sm); }
+.pm-status-ok  { color: #4ade80; font-size: var(--fs-xs); }
+.pm-status-ko  { color: #ef4444; font-size: var(--fs-xs); }
 
 .pm-passive {
-  font-size: var(--fs-xxs);
+  font-size: var(--fs-xs);
   color: #7060a8;
   border-top: 1px solid #1a1040;
-  padding-top: 4px;
+  padding-top: 6px;
   margin-top: 2px;
-  line-height: 1.4;
+  line-height: 1.6;
 }
 
 /* Inventory section */

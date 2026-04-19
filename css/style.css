@@ -1193,9 +1193,9 @@ body {
   display: flex;
   gap: 3px;
 }
-.psct { 
-  position:relative; font-size:14px; background:rgba(0,0,0,0.6); 
-  border-radius:4px; padding:2px 4px; display:flex; align-items:center; 
+.psct {
+  position:relative; font-size:16px; background:rgba(0,0,0,0.6);
+  border-radius:4px; padding:3px 5px; display:flex; align-items:center;
   gap:2px; border:1px solid rgba(255,255,255,0.1); 
   transition: all 0.3s ease;
   min-width: 20px; height: 20px; justify-content: center;
@@ -1211,9 +1211,9 @@ body {
   from { transform: scale(1); filter: brightness(1); }
   to { transform: scale(1.2); filter: brightness(1.5); }
 }
-.psct-cnt { 
+.psct-cnt {
   position: absolute; bottom: -4px; right: -4px;
-  font-size: 9px; font-weight: bold; color: #fff; 
+  font-size: 11px; font-weight: bold; color: #fff;
   background: rgba(0,0,0,0.8); border: 1px solid #444;
   border-radius: 3px; padding: 0 2px; z-index: 2;
   line-height: 1;
@@ -1477,23 +1477,23 @@ body {
   background: linear-gradient(180deg,#06051e,#04031a);
   border:1px solid #2a1d60;
   border-radius:8px;
-  padding:10px;
+  padding:14px;
   display:flex;
   flex-direction:column;
-  gap:6px;
+  gap:10px;
   transition:border-color .2s;
 }
 
 .pm-card-top {
   display:flex;
-  gap:10px;
-  padding-bottom:8px;
+  gap:12px;
+  padding-bottom:10px;
   border-bottom:1px solid #1a1448;
   align-items:flex-start;
 }
 .pm-portrait-wrap img {
-  width:56px;
-  height:66px;
+  width:60px;
+  height:70px;
   image-rendering:auto;
   border-radius:4px;
   filter:drop-shadow(0 0 8px #20084088);
@@ -1501,66 +1501,66 @@ body {
 .pm-card-head { flex:1; }
 .pm-card-name {
   font-family:var(--px);
-  font-size:var(--fs-xs);
+  font-size:1rem;
   letter-spacing:1px;
   line-height:1.6;
 }
-.pm-card-class { font-size:var(--fs-sm); color:var(--text-dim); }
-.pm-card-lv    { font-size:var(--fs-sm); color:#7070a8; margin-top:2px; }
+.pm-card-class { font-size:0.95rem; color:var(--text-dim); margin-top:2px; }
+.pm-card-lv    { font-size:0.95rem; color:#7070a8; margin-top:3px; }
 .pm-ko-badge {
   background:#800020; color:#fff;
-  font-size:var(--fs-xxs); font-family:var(--px);
-  padding:1px 5px; border-radius:3px;
+  font-size:var(--fs-xs); font-family:var(--px);
+  padding:2px 6px; border-radius:3px;
   vertical-align:middle; margin-left:4px;
 }
 
-.pm-bars { display:flex; flex-direction:column; gap:4px; }
+.pm-bars { display:flex; flex-direction:column; gap:6px; }
 .pm-bar-row {
-  display:flex; align-items:center; gap:6px;
-  font-size:var(--fs-sm); color:var(--text-dim);
+  display:flex; align-items:center; gap:8px;
+  font-size:0.95rem; color:var(--text-dim);
 }
 .pm-bar-bg {
-  flex:1; height:6px;
+  flex:1; height:9px;
   background:#1a0010; border:1px solid #2a0020;
   border-radius:3px; overflow:hidden;
 }
 .pm-bar-fill { height:100%; border-radius:3px; transition:width .4s; }
-.pm-bar-row span:last-child { font-size:var(--fs-xs); color:#8080b0; min-width:70px; text-align:right; }
+.pm-bar-row span:last-child { font-size:0.9rem; color:#8080b0; min-width:80px; text-align:right; }
 
 .pm-stats {
   display:grid;
   grid-template-columns:repeat(4,1fr);
-  gap:4px;
+  gap:6px;
 }
 .pm-stat {
   display:flex; flex-direction:column; align-items:center;
   background:#030218; border:1px solid #1a1448;
-  border-radius:4px; padding:3px 4px;
-  font-size:var(--fs-xs);
+  border-radius:4px; padding:6px 4px;
+  font-size:0.95rem;
 }
-.pm-stat span:first-child { color:#5a527a; font-size:var(--fs-xxs); }
+.pm-stat span:first-child { color:#5a527a; font-size:0.8rem; margin-bottom:2px; }
 
 .pm-passive {
   background:#050320;
   border:1px solid #2a1860;
   border-radius:4px;
-  padding:5px 8px;
-  font-size:var(--fs-sm);
-  line-height:1.5;
+  padding:8px 10px;
+  font-size:0.9rem;
+  line-height:1.6;
 }
 .pm-passive-tag { color:var(--gold); margin-right:4px; }
 .pm-passive-desc { color:var(--text-dim); }
 
-.pm-abilities { display:flex; flex-direction:column; gap:3px; }
+.pm-abilities { display:flex; flex-direction:column; gap:5px; }
 .pm-ab {
-  display:flex; align-items:center; gap:6px;
+  display:flex; align-items:center; gap:8px;
   background:#030218; border:1px solid #1a1448;
-  border-radius:4px; padding:4px 8px;
-  font-size:var(--fs-sm);
+  border-radius:4px; padding:6px 10px;
+  font-size:0.9rem;
 }
-.pm-ab-icon { font-size:1rem; }
+.pm-ab-icon { font-size:1.1rem; }
 .pm-ab-name { flex:1; color:var(--blue); }
-.pm-ab-mp   { color:#4466ff; font-size:var(--fs-xs); }
+.pm-ab-mp   { color:#4466ff; font-size:0.85rem; }
 
 /* ── DAMAGE POPS ─────────────────────────────────────── */
 .dmg-pop {
