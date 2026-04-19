@@ -301,6 +301,11 @@ const TYPE_ICONS = {
 let moveAnimations = {};
 
 function showScreen(id) {
+  // Clear gauntlet flag when returning to title or explore
+  if (id === 'title-screen' || id === 'explore-screen') {
+    G.isGauntletMode = false;
+  }
+  
   document.querySelectorAll('.screen').forEach(s => {
     s.classList.remove('active');
     s.style.display = '';
@@ -673,59 +678,70 @@ function checkBattleEnd() {
   const allPartyDown = G.party.every(m => !Battle.alive(m));
 
   if (allEnemiesDead) {
-    let totalExp = 0, totalGold = 0;
-    const allDrops = [];
+    // Victory: calculate rewards
+    let totalExp = 0;
+    let totalGold = 0;
+    let leveledNames = [];
+    let allDrops = [];
     let relicDrop = null;
-    G.enemyGroup.forEach(e => {
-      totalExp += e.exp;
-      totalGold += e.gold;
-      const rawDef = G.enemies.find(r => r.id === e.id);
-      if (rawDef) _awardDrops(rawDef).forEach(id => allDrops.push(id));
-      if (typeof Archive !== 'undefined') Archive.recordKill(e.id);
-      // One relic drop attempt per encounter (elite enemies have higher chance)
-      if (!relicDrop) relicDrop = _tryRelicDrop(rawDef?.elite || false);
-    });
 
-    // Average enemy level for the encounter
-    const avgEnemyLv = G.enemyGroup.length
-      ? G.enemyGroup.reduce((s, e) => s + (e.level || 1), 0) / G.enemyGroup.length
-      : 1;
+    if (G.isGauntletMode) {
+      BattleUI.addLog("❄️ Simulation Complete: Stress Test finished.", "hi");
+    } else {
+      G.enemyGroup.forEach(e => {
+        totalExp += e.exp;
+        totalGold += e.gold;
+        const rawDef = G.enemies.find(r => r.id === e.id);
+        if (rawDef) _awardDrops(rawDef).forEach(id => allDrops.push(id));
+        if (typeof Archive !== 'undefined') Archive.recordKill(e.id);
+        // One relic drop attempt per encounter (elite enemies have higher chance)
+        if (!relicDrop) relicDrop = _tryRelicDrop(rawDef?.elite || false);
+      });
 
-    // Award EXP and gold to all alive members; loop level-ups until threshold not met
-    const leveledNames = [];
-    G.party.forEach(m => {
-      if (!Battle.alive(m)) return;
-      // Level-gap penalty: scale exp down as member outlevels enemies.
-      // At +3 levels above enemy: 0 exp. Linear ramp from gap 0 → gap 3.
-      const gap = (m.lv || 1) - avgEnemyLv;
-      const expScale = gap >= 3 ? 0 : gap <= 0 ? 1 : 1 - (gap / 3);
-      const earnedExp = Math.floor(totalExp * expScale);
-      m.exp += earnedExp;
-      m.gold += totalGold;
-      while (checkMemberLevel(m)) {
-        if (!leveledNames.includes(m.displayName)) leveledNames.push(m.displayName);
-      }
-      // Sync stats back to character data for persistence across battles
-      const ch = G.chars.find(c => c.id === m.charId);
-      if (ch) {
-        ch.lv = m.lv;
-        ch.exp = m.exp;
-        ch.gold = m.gold;
-        ch.mp = m.mp;   // persist MP so it carries between battles
-        ch.hp = m.hp;   // persist HP
-        ch.isKO = m.isKO; // persist KO state
-      }
-    });
+      // Average enemy level for the encounter
+      const avgEnemyLv = G.enemyGroup.length
+        ? G.enemyGroup.reduce((s, e) => s + (e.level || 1), 0) / G.enemyGroup.length
+        : 1;
 
-    const dropMsg = allDrops.length
-      ? allDrops.map(id => { const d = G.items.find(i => i.id === id); return d ? `${d.icon}${d.name}` : id; }).join(', ')
-      : null;
-    const relicMsg = relicDrop ? `✦ Relic found: ${relicDrop.icon} ${relicDrop.name}!` : null;
-    BattleUI.setLog([
-      `Enemies defeated! +${totalExp} EXP +${totalGold} Gold`,
-      dropMsg ? `Drops: ${dropMsg}` : '',
-      relicMsg || ''
-    ].filter(Boolean), ['hi', 'hi', 'hi']);
+      // Award EXP and gold to all alive members; loop level-ups until threshold not met
+      G.party.forEach(m => {
+        if (!Battle.alive(m)) return;
+        // Level-gap penalty: scale exp down as member outlevels enemies.
+        // At +3 levels above enemy: 0 exp. Linear ramp from gap 0 → gap 3.
+        const gap = (m.lv || 1) - avgEnemyLv;
+        const expScale = gap >= 3 ? 0 : gap <= 0 ? 1 : 1 - (gap / 3);
+        const earnedExp = Math.floor(totalExp * expScale);
+        m.exp += earnedExp;
+        m.gold += totalGold;
+        while (checkMemberLevel(m)) {
+          if (!leveledNames.includes(m.displayName)) leveledNames.push(m.displayName);
+        }
+        // Sync stats back to character data for persistence across battles
+        const ch = G.chars.find(c => c.id === m.charId);
+        if (ch) {
+          ch.lv = m.lv;
+          ch.exp = m.exp;
+          ch.gold = m.gold;
+          ch.mp = m.mp;   // persist MP so it carries between battles
+          ch.hp = m.hp;   // persist HP
+          ch.isKO = m.isKO; // persist KO state
+        }
+      });
+    }
+
+    // Only show reward logs if not in Gauntlet mode
+    if (!G.isGauntletMode) {
+      const dropMsg = allDrops.length
+        ? allDrops.map(id => { const d = G.items.find(i => i.id === id); return d ? `${d.icon}${d.name}` : id; }).join(', ')
+        : null;
+      const relicMsg = relicDrop ? `✦ Relic found: ${relicDrop.icon} ${relicDrop.name}!` : null;
+      BattleUI.setLog([
+        `Enemies defeated! +${totalExp} EXP +${totalGold} Gold`,
+        dropMsg ? `Drops: ${dropMsg}` : '',
+        relicMsg || ''
+      ].filter(Boolean), ['hi', 'hi', 'hi']);
+    }
+    
     BattleUI.renderPartyStatus();
     BattleUI.updateStats();
 

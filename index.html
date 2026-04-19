@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="css/animations.css">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/map.css">
+  <link rel="stylesheet" href="css/combat.css">
   <script src="js/systems/settings-manager.js"></script>
 </head>
 <body>
@@ -107,9 +108,28 @@
         <span class="tbtn-icon">🗺</span>
         <span class="tbtn-label">EXPLORE</span>
       </button>
+      <button id="gauntlet-btn" class="title-btn title-btn-secondary" onclick="typeof BossGauntlet !== 'undefined' ? BossGauntlet.open() : null" style="display:none">
+        <span class="tbtn-icon">👹</span>
+        <span class="tbtn-label">BOSS MODE</span>
+      </button>
     </div>
 
     <div class="ver-tag">v3.0</div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       BOSS GAUNTLET OVERLAY
+       ═══════════════════════════════════════ -->
+  <div id="gauntlet-overlay" class="gauntlet-overlay" style="display:none">
+    <div class="gauntlet-bg" onclick="BossGauntlet.close()"></div>
+    <div class="gauntlet-panel">
+      <div class="gauntlet-header">
+        <div class="gauntlet-title">LEGENDARY GAUNTLET</div>
+        <div class="gauntlet-sub">Defeated bosses return for a final stress test at your level</div>
+      </div>
+      <div class="gauntlet-grid" id="gauntlet-grid"></div>
+      <button class="gauntlet-back" onclick="BossGauntlet.close()">← BACK</button>
+    </div>
   </div>
 
   <!-- ═══════════════════════════════════════
@@ -333,11 +353,10 @@
   <div id="battle-screen" class="screen">
     <div class="turn-bar" id="turn-bar"></div>
     <div id="battle-scene">
-      <svg class="bg-mts" viewBox="0 0 900 96" preserveAspectRatio="none">
-        <polygon points="0,96 120,16 245,62 355,8 465,55 585,12 705,58 820,20 900,96" fill="#0f0530" stroke="none"/>
-        <polygon points="0,96 90,40 195,72 300,26 415,66 530,20 635,60 750,30 900,96" fill="#180848" stroke="none"/>
-      </svg>
-      <div class="bg-gnd"></div>
+      <div class="bg-parallax-layer layer-deep"></div>
+      <div class="bg-parallax-layer layer-mid"></div>
+      <div class="bg-parallax-layer layer-ground"></div>
+      <canvas id="battle-effects-canvas" style="position:absolute; inset:0; pointer-events:none; z-index:5;"></canvas>
 
       <!-- Party sprites (left side) -->
       <div class="party-container" id="party-container"></div>
@@ -578,6 +597,9 @@
 <script src="js/battle/action-handler.js"></script>
 <script src="js/systems/archive.js"></script>
 <script src="js/ui/archive-ui.js"></script>
+<script src="js/ui/boss-gauntlet.js"></script>
+<script src="js/ui/weather-engine.js"></script>
+<script src="js/ui/credits-screen.js"></script>
 <script src="js/story.js"></script>
 <script src="js/ui/home-engine.js"></script>
 <script>
@@ -848,5 +870,26 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
+  <!-- CREDITS OVERLAY -->
+  <div id="credits-overlay" style="display:none">
+    <div id="credits-background"></div>
+    <div id="credits-scroller">
+      <div class="credits-header">THE SHATTERED NEXUS</div>
+      <div class="credits-role">Directed by</div>
+      <div class="credits-name">Antigravity</div>
+      <div class="credits-role">Core Engine</div>
+      <div class="credits-name">Gemini-RPG Engine v3.0</div>
+      <div class="credits-role">Art Direction</div>
+      <div class="credits-name">Neural Canvas Systems</div>
+      <div class="credits-role">Sound Design</div>
+      <div class="credits-name">Resonance AI</div>
+      <div class="credits-role">Storyboarding</div>
+      <div class="credits-name">Narrative Nexus</div>
+      <div class="credits-role">Your Party</div>
+      <div id="credits-party-list"></div>
+      <div class="credits-thanks">THANK YOU FOR PLAYING</div>
+    </div>
+    <button id="credits-close-btn" style="display:none" onclick="Credits.close()">RETURN TO TITLE</button>
+  </div>
 </body>
 </html>

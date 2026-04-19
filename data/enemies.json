@@ -2980,16 +2980,17 @@
       "physical"
     ],
     "tier": 3,
+    "aiType": "sequenced",
     "stats": {
-      "hp": 120,
-      "atk": 24,
-      "def": 17,
-      "spd": 11,
-      "mag": 16
+      "hp": 240,
+      "atk": 32,
+      "def": 22,
+      "spd": 12,
+      "mag": 26
     },
     "reward": {
-      "exp": 63,
-      "gold": 45
+      "exp": 120,
+      "gold": 80
     },
     "palette": {
       "body": "#0a0a20",
@@ -3000,24 +3001,26 @@
     },
     "abilities": [
       {
-        "id": "void_slash",
-        "name": "Void Slash",
+        "id": "void_strike",
+        "name": "Void Strike",
         "type": "physical",
-        "weight": 40,
-        "dmgMultiplier": 1.6
+        "weight": 50,
+        "dmgMultiplier": 1.4
       },
       {
-        "id": "null_field",
-        "name": "Null Field",
+        "id": "abyssal_tide",
+        "name": "Abyssal Tide",
         "type": "magic_damage",
-        "weight": 35,
-        "dmgMultiplier": 1.5
+        "weight": 30,
+        "dmgMultiplier": 1.25,
+        "effect": { "aoe": true }
       },
       {
-        "id": "dark_edge",
-        "name": "Dark Edge",
-        "type": "debuff",
-        "weight": 25
+        "id": "void_echo",
+        "name": "Void Echo",
+        "type": "buff",
+        "weight": 20,
+        "effect": { "atkBuff": 1.3, "defBuff": 1.3, "duration": 3 }
       }
     ],
     "drops": [
@@ -3230,6 +3233,112 @@
         "item": "Void Sword",
         "chance": 0.05
       }
+    ]
+  },
+  {
+    "id": "void_warden",
+    "name": "Void Warden",
+    "subtitle": "The ancient gatekeeper of the starlit void",
+    "element": "void",
+    "weakTo": ["light", "fire"],
+    "resistTo": ["void", "shadow"],
+    "tier": 3,
+    "stats": {
+      "hp": 130,
+      "atk": 24,
+      "def": 16,
+      "spd": 13,
+      "mag": 23
+    },
+    "reward": {
+      "exp": 75,
+      "gold": 55
+    },
+    "palette": {
+      "body": "#1a1a3a",
+      "dark": "#0a0a20",
+      "armor": "#4a4a80",
+      "eye": "#a0e0ff",
+      "shine": "#c0f0ff"
+    },
+    "abilities": [
+      {
+        "id": "void_lash",
+        "name": "Void Lash",
+        "type": "physical",
+        "weight": 40,
+        "dmgMultiplier": 1.6
+      },
+      {
+        "id": "astral_burn",
+        "name": "Astral Burn",
+        "type": "magic_damage",
+        "weight": 40,
+        "dmgMultiplier": 1.8
+      },
+      {
+        "id": "entropic_ward",
+        "name": "Entropic Ward",
+        "type": "buff_def",
+        "weight": 20
+      }
+    ],
+    "drops": [
+      { "item": "Warden's Key", "chance": 0.5 },
+      { "item": "Void Shard", "chance": 0.3 }
+    ]
+  },
+  {
+    "id": "shadow_titan",
+    "name": "Shadow Titan",
+    "subtitle": "A primordial colossus of solidified shadow and grief",
+    "element": "shadow",
+    "weakTo": ["holy", "light"],
+    "resistTo": ["shadow", "physical"],
+    "tier": 3,
+    "stats": {
+      "hp": 155,
+      "atk": 28,
+      "def": 19,
+      "spd": 9,
+      "mag": 15
+    },
+    "reward": {
+      "exp": 78,
+      "gold": 58
+    },
+    "palette": {
+      "body": "#0a0014",
+      "dark": "#050008",
+      "stone": "#1a0a2a",
+      "eye": "#ff0044",
+      "shine": "#8000ff"
+    },
+    "abilities": [
+      {
+        "id": "shadow_stomp",
+        "name": "Shadow Stomp",
+        "type": "physical",
+        "weight": 45,
+        "dmgMultiplier": 1.9
+      },
+      {
+        "id": "oblivion_strike",
+        "name": "Oblivion Strike",
+        "type": "physical",
+        "weight": 35,
+        "dmgMultiplier": 2.2
+      },
+      {
+        "id": "fortify_shadow",
+        "name": "Fortify Shadow",
+        "type": "buff_atk",
+        "weight": 20
+      }
+    ],
+    "drops": [
+      { "item": "Titan Heart", "chance": 0.4 },
+      { "item": "Dark Crystal", "chance": 0.4 }
     ]
   }
 ]

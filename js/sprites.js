@@ -864,25 +864,41 @@ const SpriteRenderer = (() => {
     const fileName = isAnimated ? `${fileBase}_sprite.png` : `${fileBase}_spirit.png`;
     const pngPath = `images/characters/spirits/${fileName}`;
 
+    if (isAnimated) {
+      imgEl.dataset.animated = 'true';
+      imgEl.dataset.spriteSheet = pngPath;
+      imgEl.dataset.charId = id;
+      imgEl.classList.add('party-sprite-animated');
+    }
+
     const test = new Image();
     test.onload = () => {
-      if (isAnimated) {
-        imgEl.dataset.animated = 'true';
-        imgEl.dataset.spriteSheet = pngPath;
-        imgEl.dataset.charId = id;
-      } else {
-        imgEl.src = pngPath;
+      if (!isAnimated) {
+        imgEl.style.backgroundImage = `url(${pngPath})`;
+        imgEl.style.backgroundSize = 'contain';
+        imgEl.style.backgroundPosition = 'center';
+        imgEl.style.backgroundRepeat = 'no-repeat';
+        const h = imgEl.offsetHeight > 0 ? imgEl.offsetHeight : 128;
+        imgEl.style.width = h + 'px';
+        imgEl.style.height = h + 'px';
       }
     };
     test.onerror = () => {
-      // Fallback: render via canvas → dataURL
-      const canvas = document.createElement('canvas');
-      canvas.width = 48;
-      canvas.height = 57;
-      const ctx = canvas.getContext('2d');
-      const fn = HEROES[charId] || HEROES['aria'];
-      fn(ctx, charData, classData);
-      imgEl.src = canvas.toDataURL();
+      if (!isAnimated) {
+        // Fallback: render via canvas → dataURL
+        const canvas = document.createElement('canvas');
+        canvas.width = 48;
+        canvas.height = 57;
+        const ctx = canvas.getContext('2d');
+        const fn = HEROES[charId] || HEROES['aria'];
+        fn(ctx, charData, classData);
+        imgEl.style.backgroundImage = `url(${canvas.toDataURL()})`;
+        imgEl.style.backgroundSize = 'contain';
+        imgEl.style.backgroundPosition = 'center';
+        imgEl.style.backgroundRepeat = 'no-repeat';
+        imgEl.style.width = '128px';
+        imgEl.style.height = '128px';
+      }
     };
     test.src = pngPath;
   }
@@ -967,7 +983,7 @@ const SpriteRenderer = (() => {
     const posY = frameHeightPct === 1 ? 0 : (topEdge / (1 - frameHeightPct)) * 100;
     
     // Resolution-aware loading
-    const suffix = this.getSuffix();
+    const suffix = getSuffix();
     el.style.backgroundImage = `url(images/characters/spirits/${manifest.baseId}${suffix})`;
     el.style.width = `${elWidth}px`;
     el.style.height = `${baseHeight}px`;

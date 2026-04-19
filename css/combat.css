@@ -1,0 +1,45 @@
+/* ── COMBAT POPUPS (Damage/Healing) ─────────────────────── */
+.pop-text {
+  position: absolute;
+  font-family: var(--px);
+  font-size: 14px;
+  font-weight: bold;
+  pointer-events: none;
+  z-index: 1500;
+  text-align: center;
+  transform: translate(-50%, -50%);
+  animation: popUp 1.2s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+  white-space: nowrap;
+}
+
+.pop-dmg  { color: #ff4d4d; text-shadow: 0 0 10px rgba(255, 77, 77, 0.6); font-size: 20px; }
+.pop-heal { color: #00ff6a; text-shadow: 0 0 10px rgba(0, 255, 106, 0.6); }
+.pop-miss { color: #948db8; font-size: 12px; }
+.pop-crit { color: #ffcf5c; font-size: 24px; text-shadow: 0 0 15px #ffcf5c80; }
+
+.elem-fire     { color: #ff5e3a !important; text-shadow: 0 0 10px #ff5e3a80 !important; }
+.elem-ice      { color: #4ecfff !important; text-shadow: 0 0 10px #4ecfff80 !important; }
+.elem-electric { color: #f1c40f !important; text-shadow: 0 0 10px #f1c40f80 !important; }
+.elem-wind     { color: #00ffca !important; text-shadow: 0 0 10px #00ffca80 !important; }
+.elem-water    { color: #3498db !important; text-shadow: 0 0 10px #3498db80 !important; }
+.elem-holy     { color: #fff !important; text-shadow: 0 0 15px #fff !important; }
+.elem-dark     { color: #b864ff !important; text-shadow: 0 0 15px #b864ff !important; }
+
+/* AI Speech Bubbles in Battle */
+.ai-pop {
+  background: rgba(10, 15, 30, 0.85);
+  border: 1px solid var(--cyan);
+  padding: 6px 12px;
+  border-radius: 8px;
+  color: var(--cyan) !important;
+  font-size: 11px !important;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+  z-index: 1600;
+}
+
+@keyframes popUp {
+  0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+  15% { transform: translate(-50%, -100%) scale(1.2); opacity: 1; }
+  80% { transform: translate(-50%, -150%) scale(1); opacity: 1; }
+  100% { transform: translate(-50%, -200%) scale(0.8); opacity: 0; }
+}
