@@ -16,7 +16,8 @@ const PassiveSystem = (() => {
 
     unit.passive.traits.forEach(t => {
       // 1. Direct Static Boosts (e.g. STAT_BOOST: { stat: "atk", value: 1.15 })
-      if (t.type === 'STAT_BOOST' && t.stat === stat && t.value > 1) {
+      // Only treat as multiplier if it's a float (e.g. 1.15) — integers are flat bonuses handled in getStatBonus
+      if (t.type === 'STAT_BOOST' && t.stat === stat && t.value > 1 && t.value % 1 !== 0) {
         mult *= t.value;
       }
       

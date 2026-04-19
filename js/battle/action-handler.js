@@ -400,7 +400,7 @@ const ActionEngine = {
     heal(actor, targets, ab, element, moveConfig, isEnemyAction) {
       if (typeof SFX !== 'undefined') SFX.heal();
       const e = ab.effect || {};
-      const _healAmp = PassiveSystem.val(actor, 'HEAL_AMP', 1.0) * (actor.healBoost || 1.0);
+      const _healAmp = PassiveSystem.val(actor, 'HEAL_AMP', 1.0) * (actor._healAmpRelic || 1.0);
       const _getAmt = m => {
         if (e.healPercent) return Math.floor(m.maxHp * e.healPercent);
         return Math.floor(((e.healBase || 20) + Math.random() * (e.healRandom || 15) + Math.floor(Battle.getStat(actor, 'mag') * NexusScaling.healing.globalMagMult)) * _healAmp);
@@ -444,7 +444,7 @@ const ActionEngine = {
       setTimeout(() => TurnManager.advance(), 800);
     },
 
-    regen(actor, targets, ab, element, moveConfig) {
+    regen(actor, targets, ab, element, moveConfig, isEnemyAction) {
       const e = ab.effect || {};
       targets.forEach(m => Battle.addStatus(m, { ...StatusSystem.DEFS.regen, turns: e.duration || 3 }));
       BattleUI.createEffectOverlay(G.activeMemberIdx, element, isEnemyAction ? 'enemy' : 'party', ab.id);

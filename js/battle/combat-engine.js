@@ -44,7 +44,7 @@ const CombatEngine = (() => {
     const result = (base + flat) * finalMult;
 
     return (stat === 'accuracy' || stat === 'critRate')
-      ? result
+      ? Math.min(1.0, result)
       : Math.floor(result);
   }
 

@@ -282,6 +282,17 @@ const Story = {
         });
         // Re-apply relic bonuses on top of freshly computed base stats
         applyRelicBonuses();
+        // Re-apply Archive mastery buffs (flat stat bonuses from Track 2 progression)
+        if (typeof Archive !== 'undefined') {
+          const mastery = Archive.getMasteryBuffs();
+          G.party.forEach(m => {
+            m.atk += mastery.atk || 0;
+            m.def += mastery.def || 0;
+            m.mag += mastery.mag || 0;
+            m.spd += mastery.spd || 0;
+            m.lck += mastery.lck || 0;
+          });
+        }
       } else if (s.hero && G.hero) {
         // Legacy save: only hero stats were persisted
         G.hero.lv   = s.hero.lv   || 1;

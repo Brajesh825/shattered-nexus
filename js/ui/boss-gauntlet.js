@@ -153,6 +153,16 @@ const BossGauntlet = {
                         member.lck   = Math.floor(fresh.lck * relicMult.lck);
                     }
 
+                    // Re-apply Archive mastery flat buffs
+                    if (typeof Archive !== 'undefined') {
+                      const mastery = Archive.getMasteryBuffs();
+                      member.atk += mastery.atk || 0;
+                      member.def += mastery.def || 0;
+                      member.mag += mastery.mag || 0;
+                      member.spd += mastery.spd || 0;
+                      member.lck += mastery.lck || 0;
+                    }
+
                     // FORCE FULL RESTORATION FOR GAUNTLET MODE
                     member.hp = member.maxHp;
                     member.mp = member.maxMp;

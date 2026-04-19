@@ -2809,7 +2809,7 @@
       "mag": 30
     },
     "aiRole": "predator",
-    "mutantTraits": ["enraged"],
+    "mutantTraits": [{ "id": "enraged", "label": "🔥 Enraged", "type": "special" }],
     "reward": {
       "exp": 67,
       "gold": 49

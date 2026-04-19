@@ -698,6 +698,11 @@ function checkBattleEnd() {
         ? G.enemyGroup.reduce((s, e) => s + (e.level || 1), 0) / G.enemyGroup.length
         : 1;
 
+      // Split EXP among alive members — fewer survivors means more EXP each
+      const aliveCount = G.party.filter(m => Battle.alive(m)).length || 1;
+      const splitExp = Math.floor(totalExp / aliveCount);
+      const splitGold = Math.floor(totalGold / aliveCount);
+
       // Award EXP and gold to all alive members; loop level-ups until threshold not met
       G.party.forEach(m => {
         // Award EXP and gold only to surviving members
@@ -706,9 +711,9 @@ function checkBattleEnd() {
           // At +3 levels above enemy: 0 exp. Linear ramp from gap 0 → gap 3.
           const gap = (m.lv || 1) - avgEnemyLv;
           const expScale = gap >= 3 ? 0 : gap <= 0 ? 1 : 1 - (gap / 3);
-          const earnedExp = Math.floor(totalExp * expScale);
+          const earnedExp = Math.floor(splitExp * expScale);
           m.exp += earnedExp;
-          m.gold += totalGold;
+          m.gold += splitGold;
           while (checkMemberLevel(m)) {
             if (!leveledNames.includes(m.displayName)) leveledNames.push(m.displayName);
           }
