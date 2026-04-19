@@ -7,11 +7,60 @@ const BattleUI = {
   el(id) { return document.getElementById(id); },
 
   /**
+   * Triggers a momentary full-screen color overlay for impact.
+   */
+  flash(color = '#ffffff', duration = 300) {
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: ${color}; z-index: 9999; pointer-events: none;
+      transition: opacity ${duration}ms ease-out;
+      opacity: 0.6;
+    `;
+    document.body.appendChild(overlay);
+    
+    // Force reflow
+    overlay.getBoundingClientRect();
+    
+    // Start fade out
+    overlay.style.opacity = '0';
+    
+    setTimeout(() => overlay.remove(), duration);
+  },
+
+  /**
    * Central helper to retrieve unit sprites by index and type.
    */
   getSprite(idx, type = 'enemy') {
     return this.el((type === 'enemy' ? 'espr-' : 'pspr-') + idx);
   },
+
+  /**
+   * Switches the sprite frame for an animated unit.
+   */
+  setSpriteFrame(idx, frameName) {
+    const spr = this.getSprite(idx, 'party');
+    if (!spr || !spr.classList.contains('party-sprite-animated')) return;
+    
+    const charId = spr.dataset.charId;
+    
+    if (typeof SpriteRenderer !== 'undefined' && SpriteRenderer.setFrame) {
+      SpriteRenderer.setFrame(spr, charId, frameName, 96);
+    } else {
+      // Fallback if SpriteRenderer is not available
+      const frameMap = { 'idle': [0, 0], 'prepare': [1, 0], 'attack': [2, 0], 'magic': [0, 1], 'hurt': [1, 1], 'fallen': [2, 1] };
+      const [col, row] = frameMap[frameName] || [0, 0];
+      spr.style.width = '96px';
+      spr.style.height = '96px';
+      spr.style.backgroundSize = '300% 200%';
+      spr.style.backgroundPosition = `${col * 50}% ${row * 100}%`;
+    }
+    
+    const frames = ['frame-idle', 'frame-prepare', 'frame-attack', 'frame-magic', 'frame-hurt', 'frame-fallen'];
+    frames.forEach(f => spr.classList.remove(f));
+    spr.classList.add('frame-' + frameName);
+  },
+
 
   _getBuffReport(actor) {
     const stats = [];
@@ -32,6 +81,49 @@ const BattleUI = {
     this.renderPartyStatus();
     this.renderActiveMemberBar();
     this.updateStats();
+    
+    // Apply atmosphere based on Arc
+    this._applyArcAtmosphere();
+    // Start weather loop for battle canvas if active
+    this._initBattleWeather();
+  },
+
+  _applyArcAtmosphere() {
+    const scene = this.el('battle-scene');
+    if (!scene) return;
+    // Sync parallax layers to current Arc if available
+    if (typeof Story !== 'undefined' && Story.active) {
+      scene.classList.add(`arc-bg-${Story.arcIdx % 8}`);
+    }
+  },
+
+  _initBattleWeather() {
+    if (this._weatherLoopActive) return;
+    if (this._weatherLoopActive) return;
+    const canvas = this.el('battle-effects-canvas');
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+    
+    this._weatherLoopActive = true;
+    let lastTs = performance.now();
+    
+    const loop = (ts) => {
+      if (!this._weatherLoopActive || !this.el('battle-screen').classList.contains('active')) return;
+      const dt = (ts - lastTs) / 1000;
+      lastTs = ts;
+      
+      if (typeof WeatherEngine !== 'undefined') {
+        WeatherEngine.update(dt);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        WeatherEngine.draw(ctx);
+      }
+      
+      requestAnimationFrame(loop);
+    };
+    requestAnimationFrame(loop);
   },
 
   updateStats() {
@@ -59,6 +151,11 @@ const BattleUI = {
     }
     const grid = this.el('cmd-grid-main');
     if (grid) grid.style.display = id ? 'none' : 'grid';
+
+    // Switch focus context to the sub-menu or back to main
+    if (typeof Focus !== 'undefined') {
+      Focus.setContext(id || 'cmd-grid-main');
+    }
   },
 
   /* ── Turn order tokens ──────────────────────────────── */
@@ -89,7 +186,6 @@ const BattleUI = {
   renderEnemyRow() {
     const container = this.el('enemy-container');
     if (!container) return;
-    container.innerHTML = '';
 
     const count = G.enemyGroup.length;
     container.dataset.count = count;
@@ -101,9 +197,54 @@ const BattleUI = {
     const MUTATION_MULT = { normal: 1.00, corrupted: 1.12, mutant: 1.28 };
     const ASPECT = 1.23;
 
+    // Surgical update: check if we need to rebuild the entire row
+    const existingEnemies = container.querySelectorAll('.enemy');
+    if (existingEnemies.length !== count) {
+      container.innerHTML = '';
+    }
+
     G.enemyGroup.forEach((e, i) => {
       const alive = Battle.alive(e);
       const pct = Math.max(0, e.hp / e.maxHp * 100);
+      
+      let enemy = existingEnemies[i];
+      let spr, hpBar, info, indicator;
+
+      if (!enemy) {
+        enemy = document.createElement('div');
+        enemy.dataset.idx = i;
+        container.appendChild(enemy);
+
+        spr = document.createElement('img');
+        spr.id = 'espr-' + i;
+        spr.className = 'enemy-sprite';
+        enemy.appendChild(spr);
+
+        const hpBg = document.createElement('div');
+        hpBg.className = 'enemy-hp-bar-bg';
+        enemy.appendChild(hpBg);
+
+        hpBar = document.createElement('div');
+        hpBar.className = 'enemy-hp-bar-fill';
+        hpBg.appendChild(hpBar);
+
+        info = document.createElement('div');
+        info.className = 'enemy-info';
+        enemy.appendChild(info);
+      } else {
+        spr = enemy.querySelector('.enemy-sprite');
+        hpBar = enemy.querySelector('.enemy-hp-bar-fill');
+        info = enemy.querySelector('.enemy-info');
+        indicator = enemy.querySelector('.target-indicator');
+      }
+
+      // Update State
+      enemy.className = 'enemy' + (!alive ? ' ko-enemy' : '');
+      enemy.dataset.target = i === G.targetEnemyIdx ? 'true' : 'false';
+      enemy.onclick = () => typeof selectTarget === 'function' ? selectTarget(i) : null;
+      
+      // Ensure unit is anchored to DOM (Fix for disappearing units)
+      if (enemy.parentElement !== container) container.appendChild(enemy);
 
       const tierW = TIER_BASE_W[e.tier || 1] || TIER_BASE_W[1];
       const cScale = COUNT_SCALE[count] ?? 0.64;
@@ -111,48 +252,46 @@ const BattleUI = {
       const sprW = Math.round(tierW * cScale * mMult);
       const sprH = Math.round(sprW * ASPECT);
 
-      const enemy = document.createElement('div');
-      enemy.className = 'enemy' + (!alive ? ' ko-enemy' : '');
-      enemy.dataset.idx = i;
-      enemy.dataset.target = i === G.targetEnemyIdx ? 'true' : 'false';
-      enemy.onclick = () => typeof selectTarget === 'function' ? selectTarget(i) : null;
-
-      const spr = document.createElement('img');
-      const _mutCls = e.mutation === 'mutant' ? ' enemy-mutant' : e.mutation === 'corrupted' ? ' enemy-corrupted' : '';
-      spr.className = 'enemy-sprite' + _mutCls;
-      spr.id = 'espr-' + i;
+      // Animation-Safe Class Update
+      spr.classList.add('enemy-sprite');
+      spr.classList.toggle('enemy-mutant', e.mutation === 'mutant');
+      spr.classList.toggle('enemy-corrupted', e.mutation === 'corrupted');
+      const isFrozen = (typeof StatusSystem !== 'undefined' && StatusSystem.has(e, 'status_frozen'));
+      spr.classList.toggle('frozen-sprite', isFrozen);
+      
       spr.style.width = sprW + 'px';
       spr.style.height = sprH + 'px';
-      if (typeof SpriteRenderer !== 'undefined') SpriteRenderer.drawEnemy(spr, e.id, e.palette);
-      enemy.appendChild(spr);
+      spr.id = 'espr-' + i; // Force correct ID for coordinate math
+      
+      // Only redraw if src is different or missing
+      if (!spr.src || spr.dataset.lastId !== e.id || spr.dataset.lastPal !== JSON.stringify(e.palette)) {
+        if (typeof SpriteRenderer !== 'undefined') SpriteRenderer.drawEnemy(spr, e.id, e.palette);
+        spr.dataset.lastId = e.id;
+        spr.dataset.lastPal = JSON.stringify(e.palette);
+      }
 
-      const hpBg = document.createElement('div');
-      hpBg.className = 'enemy-hp-bar-bg';
-      enemy.appendChild(hpBg);
-
-      const hpBar = document.createElement('div');
-      hpBar.className = 'enemy-hp-bar-fill';
+      // HP Update (Triggers CSS transition)
       hpBar.style.width = pct + '%';
       hpBar.style.background = pct > 50 ? '#4ade80' : pct > 25 ? '#eab308' : '#ef4444';
-      hpBg.appendChild(hpBar);
 
-      const info = document.createElement('div');
-      info.className = 'enemy-info';
       let traitHtml = '';
       if (e.mutantTraits?.length) {
         traitHtml = `<div class="enemy-traits">${e.mutantTraits.map(t => `<span class="trait-pill">${t.label}</span>`).join('')}</div>`;
       }
-      info.innerHTML = `<div class="enemy-name">${e.name}</div><div class="enemy-level">Lv ${e.level}</div>${traitHtml}`;
-      enemy.appendChild(info);
+      const newInfo = `<div class="enemy-name">${e.name}</div><div class="enemy-level">Lv ${e.level}</div>${traitHtml}`;
+      if (info.innerHTML !== newInfo) info.innerHTML = newInfo;
 
+      // Indicator
       if (i === G.targetEnemyIdx && alive) {
-        const indicator = document.createElement('div');
-        indicator.className = 'target-indicator';
-        indicator.textContent = '◀';
-        enemy.appendChild(indicator);
+        if (!indicator) {
+          indicator = document.createElement('div');
+          indicator.className = 'target-indicator';
+          indicator.textContent = '◀';
+          enemy.appendChild(indicator);
+        }
+      } else if (indicator) {
+        indicator.remove();
       }
-
-      container.appendChild(enemy);
     });
   },
 
@@ -160,57 +299,121 @@ const BattleUI = {
   renderPartyRow() {
     const container = this.el('party-container');
     if (!container) return;
-    container.innerHTML = '';
+
+    const existingMembers = container.querySelectorAll('.party-member');
+    if (existingMembers.length !== G.party.length) {
+      container.innerHTML = '';
+    }
 
     G.party.forEach((m, i) => {
       if (!m) return;
-      const col = CHAR_COLOR[m.charId] || '#c0b8e8';
       const alive = Battle.alive(m);
       const pct = Math.max(0, m.hp / m.maxHp * 100);
+      
+      let member = existingMembers[i];
+      let spr, hpBar, info;
 
-      const member = document.createElement('div');
+      if (!member) {
+        member = document.createElement('div');
+        member.id = 'pmember-' + i;
+        member.dataset.idx = i;
+        container.appendChild(member);
+
+        spr = document.createElement('div');
+        spr.id = 'pspr-' + i;
+        spr.className = 'party-sprite';
+        member.appendChild(spr);
+
+        const hpBg = document.createElement('div');
+        hpBg.className = 'party-hp-bar-bg';
+        member.appendChild(hpBg);
+
+        hpBar = document.createElement('div');
+        hpBar.className = 'party-hp-bar-fill';
+        hpBg.appendChild(hpBar);
+
+        info = document.createElement('div');
+        info.className = 'party-info';
+        member.appendChild(info);
+      } else {
+        spr = member.querySelector('.party-sprite');
+        hpBar = member.querySelector('.party-hp-bar-fill');
+        info = member.querySelector('.party-info');
+      }
+
+      // Update State
       member.className = 'party-member' + (!alive ? ' ko-member' : '');
-      member.dataset.idx = i;
+      const col = CHAR_COLOR[m.charId] || '#c0b8e8';
       member.style.color = col;
+      
+      // Ensure member is anchored to DOM (Fix for disappearing units)
+      if (member.parentElement !== container) container.appendChild(member);
 
-      const spr = document.createElement('img');
-      spr.className = 'party-sprite';
-      spr.id = 'pspr-' + i;
-      if (typeof SpriteRenderer !== 'undefined') SpriteRenderer.drawHero(spr, m.charId, m.char, m.cls);
-      member.appendChild(spr);
+      // Update Info only if content changed
+      const traitHtml = ''; // Reserved for future party traits
+      const newInfo = `<div class="party-name">${m.displayName}</div><div class="party-level">Lv ${m.lv}</div>${traitHtml}`;
+      if (info.innerHTML !== newInfo) {
+        info.innerHTML = newInfo;
+        info.style.color = col;
+      }
 
-      const hpBg = document.createElement('div');
-      hpBg.className = 'party-hp-bar-bg';
-      member.appendChild(hpBg);
-
-      const hpBar = document.createElement('div');
-      hpBar.className = 'party-hp-bar-fill';
-      hpBar.style.width = pct + '%';
-      hpBar.style.background = pct > 50 ? '#4ade80' : pct > 25 ? '#eab308' : '#ef4444';
-      hpBg.appendChild(hpBar);
-
-      const info = document.createElement('div');
-      info.className = 'party-info';
-      info.style.color = col;
-      info.innerHTML = `<div class="party-name">${m.displayName}</div><div class="party-level">Lv ${m.lv}</div>`;
-      member.appendChild(info);
-
+      // Statuses (Updated surgically)
+      let strip = member.querySelector('.portrait-status-strip');
       if (m.statuses && m.statuses.length > 0) {
-        const strip = document.createElement('div');
-        strip.className = 'portrait-status-strip';
-        strip.innerHTML = this._renderPSCStatuses(m);
-        member.appendChild(strip);
+        if (!strip) {
+          strip = document.createElement('div');
+          strip.className = 'portrait-status-strip';
+          member.appendChild(strip);
+        }
+        const newStatusHtml = this._renderPSCStatuses(m);
+        if (strip.innerHTML !== newStatusHtml) strip.innerHTML = newStatusHtml;
+      } else if (strip) {
+        strip.remove();
       }
 
+      // KO Badge
+      let koBadge = member.querySelector('.ko-badge');
       if (!alive) {
-        const koLbl = document.createElement('div');
-        koLbl.className = 'ko-badge';
-        koLbl.textContent = 'KO';
-        member.appendChild(koLbl);
+        if (!koBadge) {
+          koBadge = document.createElement('div');
+          koBadge.className = 'ko-badge';
+          koBadge.textContent = 'KO';
+          member.appendChild(koBadge);
+        }
+      } else if (koBadge) {
+        koBadge.remove();
       }
 
-      container.appendChild(member);
+      // HP Update
+      if (hpBar) {
+        hpBar.style.width = pct + '%';
+        hpBar.style.background = pct > 50 ? 'var(--hp-hi)' : pct > 25 ? 'var(--hp-mid)' : 'var(--hp-lo)';
+      }
+
+      // Draw/Update Sprite
+      if (spr) {
+        spr.classList.add('party-sprite', 'party-sprite-animated');
+        spr.id = 'pspr-' + i; // Force correct ID for coordinate math
+        spr.dataset.charId = m.charId;
+
+        // Only redraw if character/class changed or first time
+        if (spr.dataset.lastId !== m.charId || spr.dataset.lastClass !== m.classId) {
+          if (typeof SpriteRenderer !== 'undefined') SpriteRenderer.drawHero(spr, m.charId, m, m.cls);
+          spr.dataset.lastId = m.charId;
+          spr.dataset.lastClass = m.classId;
+        }
+      }
     });
+
+    // Final pass: Initialize high-res frames
+    G.party.forEach((m, i) => {
+      // Frame Sticky: Only auto-set idle if not currently acting or busy
+      const isActing = G.busy && G.activeMemberIdx === i;
+      if (!isActing) {
+        this.setSpriteFrame(i, Battle.alive(m) ? 'idle' : 'fallen');
+      }
+    });
+
     this.highlightActiveMember();
   },
 
@@ -291,6 +494,11 @@ const BattleUI = {
       `<span class="amb-name" style="color:${col}">${m.displayName}</span>` +
       `<span class="amb-class">${m.cls.name} · LV ${m.lv}</span>` +
       `<span class="amb-mp" style="color:#6080ff">MP ${m.mp}/${m.maxMp}</span>`;
+    
+    // Auto-focus the action menu for keyboard/controller
+    if (typeof Focus !== 'undefined') {
+      Focus.setContext('cmd-grid-main');
+    }
   },
 
   /* ── Floating texts & Overlays ─────────────────────── */
@@ -311,70 +519,82 @@ const BattleUI = {
     this.setLog(this.log, ['', '', cl]);
   },
 
-  popEnemy(idx, text, type = 'dmg', element = 'physical') {
+  /**
+   * Robust coordinate helper for combat popups.
+   * Calculates the unscaled center of a unit's container relative to the scene.
+   */
+  _getAnchor(idx, type = 'enemy') {
     const s = this.el('battle-scene');
-    const spr = this.el('espr-' + idx);
-    if (!s || !spr) return;
-    const rect = spr.getBoundingClientRect();
+    if (!s) return { x: 200, y: 200 };
+    
+    // Find by DOM data-idx for stability
+    const selector = type === 'enemy' ? `.enemy[data-idx="${idx}"]` : `.party-member[data-idx="${idx}"]`;
+    const container = s.querySelector(selector);
+    const sprite = this.el((type === 'enemy' ? 'espr-' : 'pspr-') + idx);
+    const target = sprite || container; // Prefer sprite, fallback to slot
+
+    if (!target) return { x: type === 'enemy' ? 150 : 450, y: 150 };
+
     const sceneRect = s.getBoundingClientRect();
-    const gameEl = this.el('game');
-    const scaleMatch = gameEl?.style.transform.match(/scale\(([\d.]+)\)/);
-    const gameScale = scaleMatch ? parseFloat(scaleMatch[1]) : 1;
-    this._pop(text,
-      (rect.left - sceneRect.left + rect.width / 2) / gameScale,
-      (rect.top - sceneRect.top + rect.height / 3) / gameScale,
-      type, element
-    );
+    const targetRect = target.getBoundingClientRect();
+    
+    // Calculate the REAL scale applied to the scene (CSS scale or zoom)
+    const sceneScale = sceneRect.width / s.offsetWidth || 1;
+
+    return {
+      x: (targetRect.left - sceneRect.left + (targetRect.width / 2)) / sceneScale,
+      y: (targetRect.top - sceneRect.top + (targetRect.height / 3)) / sceneScale
+    };
+  },
+
+  popEnemy(idx, text, type = 'dmg', element = 'physical') {
+    const pos = this._getAnchor(idx, 'enemy');
+    this._pop(text, pos.x, pos.y, type, element);
   },
 
   popParty(idx, text, type = 'dmg', element = 'physical') {
+    const pos = this._getAnchor(idx, 'party');
+    this._pop(text, pos.x, pos.y, type, element);
+  },
+
+  popAI(idx, txt) {
+    const pos = this._getAnchor(idx, 'enemy');
     const s = this.el('battle-scene');
-    const spr = this.el('pspr-' + idx);
-    if (!s || !spr) return;
+    if (!s) return;
+
+    const d = document.createElement('div');
+    d.className = 'pop-text ai-pop';
+    d.textContent = txt;
+    d.style.left = pos.x + 'px';
+    d.style.top = (pos.y - 60) + 'px';
+    
+    s.appendChild(d);
+    setTimeout(() => d.remove(), 2500);
+  },
+
+  popReaction(idx, label, type = 'enemy') {
+    const pos = this._getAnchor(idx, type);
+    const s = this.el('battle-scene');
+    if (!s) return;
+    const sprId = type === 'enemy' ? `espr-${idx}` : `pspr-${idx}`;
+    const spr = this.el(sprId);
+    if (!spr) return;
+
     const rect = spr.getBoundingClientRect();
     const sceneRect = s.getBoundingClientRect();
     const gameEl = this.el('game');
     const scaleMatch = gameEl?.style.transform.match(/scale\(([\d.]+)\)/);
     const gameScale = scaleMatch ? parseFloat(scaleMatch[1]) : 1;
-    this._pop(text,
-      (rect.left - sceneRect.left + rect.width / 2) / gameScale,
-      (rect.top - sceneRect.top + rect.height / 3) / gameScale,
-      type, element
-    );
-  },
 
-  popAI(idx, txt) {
-    const s = this.el('battle-scene');
-    if (!s) return;
     const d = document.createElement('div');
-    d.className = 'pop-text ai-pop';
-    d.textContent = txt;
-    // Position slightly above the enemy
-    const spr = this.el('espr-' + idx);
-    if (spr) {
-      const rect = spr.getBoundingClientRect();
-      const sceneRect = s.getBoundingClientRect();
-      const gameEl = this.el('game');
-      const scaleMatch = gameEl?.style.transform.match(/scale\(([\d.]+)\)/);
-      const gameScale = scaleMatch ? parseFloat(scaleMatch[1]) : 1;
-      d.style.left = ((rect.left - sceneRect.left + rect.width / 2) / gameScale) + 'px';
-      d.style.top = ((rect.top - sceneRect.top) / gameScale - 30) + 'px';
-    } else {
-      d.style.left = '50%';
-      d.style.top = '100px';
-    }
-    
-    d.style.color = '#00f2ff';
-    d.style.fontSize = '12px';
-    d.style.fontFamily = 'var(--px)';
-    d.style.textShadow = '0 0 10px #00f2ff80';
-    d.style.background = 'rgba(0,30,50,0.8)';
-    d.style.padding = '4px 8px';
-    d.style.borderRadius = '5px';
-    d.style.border = '1px solid #00f2ff';
-    d.style.whiteSpace = 'nowrap';
-    d.style.zIndex = '100';
+    d.className = 'pop-text reaction-pop';
+    d.innerHTML = `⚡ ${label.toUpperCase()}!`;
+    d.style.left = ((rect.left - sceneRect.left + rect.width / 2) / gameScale) + 'px';
+    d.style.top = ((rect.top - sceneRect.top + rect.height / 4) / gameScale) + 'px';
     s.appendChild(d);
+    
+    // Add a secondary burst effect
+    setTimeout(() => d.classList.add('pop-burst'), 50);
     setTimeout(() => d.remove(), 1500);
   },
 
@@ -435,8 +655,17 @@ const BattleUI = {
       const gameEl = this.el('game');
       const scaleMatch = gameEl?.style.transform.match(/scale\(([\d.]+)\)/);
       const gameScale = scaleMatch ? parseFloat(scaleMatch[1]) : 1;
-      overlay.style.left = ((rect.left - sceneRect.left + 8) / gameScale) + 'px';
-      overlay.style.top = ((rect.top - sceneRect.top - 10) / gameScale) + 'px';
+      
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+
+      overlay.style.left = ((rect.left - sceneRect.left + centerX) / gameScale) + 'px';
+      overlay.style.top = ((rect.top - sceneRect.top + centerY) / gameScale) + 'px';
+      overlay.style.transform = 'translate(-50%, -50%)';
+    } else {
+      overlay.style.left = '50%';
+      overlay.style.top = '140px';
+      overlay.style.transform = 'translateX(-50%)';
     }
 
     this.el('battle-scene').appendChild(overlay);

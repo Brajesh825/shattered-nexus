@@ -53,6 +53,7 @@
         "dmgMultiplier": 1.1
       }
     ],
+    "lore": "Degenerate scouts of the ruins. They speak in a rusted tongue reminiscent of the Green Emperor's old guard, suggesting they were once proud sentinels of the Vale before the Nexus shattered.",
     "drops": [
       {
         "item": "Goblin Ear",
@@ -424,6 +425,7 @@
         "dmgMultiplier": 1.2
       }
     ],
+    "lore": "Prowlers of the Twilight Groves. Their fur is unnaturally dark, woven from the literal shadows cast by the Nexus shards. They don't just hunt; they erase.",
     "drops": [
       {
         "item": "Wolf Pelt",
@@ -496,7 +498,8 @@
         "item": "Antidote",
         "chance": 0.3
       }
-    ]
+    ],
+    "lore": "Web-spinners of the Shadow Reach. Their venom isn't biological\u2014it's concentrated despair, extracted from the atmosphere of the rift."
   },
   {
     "id": "zombie",
@@ -560,7 +563,8 @@
         "item": "Potion",
         "chance": 0.15
       }
-    ]
+    ],
+    "lore": "The byproduct of a botched ritual to restart the Moonstone mines. They are empty biological shells, still trying to perform the mining labor they did in life."
   },
   {
     "id": "wisp",
@@ -624,7 +628,8 @@
         "item": "Ether",
         "chance": 0.2
       }
-    ]
+    ],
+    "lore": "Soul fragments cast adrift during the Great Shattering. They are drawn to the living, seeking the warmth and cohesion they lost when the world broke."
   },
   {
     "id": "lizardman",
@@ -688,7 +693,8 @@
         "item": "Potion",
         "chance": 0.15
       }
-    ]
+    ],
+    "lore": "Former guardians of the Sunken Temple's exterior. They have turned hostile as the waters rise, believing the 'Shattered Souls' are heralds of a second, final flood."
   },
   {
     "id": "bandit",
@@ -750,7 +756,8 @@
         "item": "Potion",
         "chance": 0.2
       }
-    ]
+    ],
+    "lore": "Survivalists who have abandoned morality in the wake of the apocalypse. They scavenge the Shadow Reach, clinging to 'Old World' gold that has lost all value in the new age."
   },
   {
     "id": "scarecrow",
@@ -813,7 +820,8 @@
         "item": "Ether",
         "chance": 0.15
       }
-    ]
+    ],
+    "lore": "Effigies built by the peasants of the Ember Wastes to ward off Fire Imps. Ironically, the lingering ash and grief have given them a vengeful, mindless life of their own."
   },
   {
     "id": "slime",
@@ -2388,7 +2396,7 @@
       "atk": 18,
       "def": 11,
       "spd": 9,
-      "mag": 26
+      "mag": 24
     },
     "reward": {
       "exp": 60,
@@ -2451,9 +2459,9 @@
     "tier": 3,
     "stats": {
       "hp": 125,
-      "atk": 22,
+      "atk": 20,
       "def": 13,
-      "spd": 12,
+      "spd": 11,
       "mag": 15
     },
     "reward": {
@@ -2581,12 +2589,13 @@
       "shadow"
     ],
     "tier": 3,
+    "aiRole": "support",
     "stats": {
-      "hp": 100,
-      "atk": 20,
+      "hp": 170,
+      "atk": 18,
       "def": 10,
-      "spd": 17,
-      "mag": 22
+      "spd": 15,
+      "mag": 34
     },
     "reward": {
       "exp": 63,
@@ -2604,21 +2613,36 @@
         "id": "dark_flame_p",
         "name": "Dark Flame",
         "type": "magic_damage",
-        "weight": 45,
+        "weight": 40,
         "dmgMultiplier": 1.7
       },
       {
         "id": "ash_nova",
         "name": "Ash Nova",
         "type": "magic_damage",
-        "weight": 35,
+        "weight": 30,
         "dmgMultiplier": 1.4
       },
       {
         "id": "rebirth_aura",
         "name": "Rebirth Aura",
-        "type": "buff_self",
-        "weight": 20
+        "type": "buff",
+        "weight": 15,
+        "effect": {
+          "aoe": false,
+          "magBuff": 1.5,
+          "defBuff": 1.3,
+          "duration": 3
+        }
+      },
+      {
+        "id": "dark_renewal",
+        "name": "Dark Renewal",
+        "type": "heal",
+        "weight": 15,
+        "effect": {
+          "healPercent": 0.22
+        }
       }
     ],
     "drops": [
@@ -2646,9 +2670,9 @@
     ],
     "tier": 3,
     "stats": {
-      "hp": 140,
+      "hp": 300,
       "atk": 23,
-      "def": 15,
+      "def": 45,
       "spd": 7,
       "mag": 16
     },
@@ -2776,13 +2800,16 @@
       "shadow"
     ],
     "tier": 3,
+    "isBoss": true,
     "stats": {
-      "hp": 135,
+      "hp": 185,
       "atk": 25,
       "def": 15,
       "spd": 12,
-      "mag": 20
+      "mag": 30
     },
+    "aiRole": "predator",
+    "mutantTraits": [{ "id": "enraged", "label": "🔥 Enraged", "type": "special" }],
     "reward": {
       "exp": 67,
       "gold": 49
@@ -2807,13 +2834,22 @@
         "name": "Inferno",
         "type": "magic_damage",
         "weight": 40,
-        "dmgMultiplier": 1.8
+        "dmgMultiplier": 1.8,
+        "effect": {
+          "aoe": true,
+          "element": "fire"
+        }
       },
       {
         "id": "demon_eye",
         "name": "Demon Eye",
         "type": "debuff",
-        "weight": 20
+        "weight": 20,
+        "effect": {
+          "stat": "spd",
+          "multiplier": 0.5,
+          "duration": 2
+        }
       }
     ],
     "drops": [
@@ -2972,16 +3008,17 @@
       "physical"
     ],
     "tier": 3,
+    "aiType": "sequenced",
     "stats": {
-      "hp": 120,
-      "atk": 24,
-      "def": 17,
-      "spd": 11,
-      "mag": 16
+      "hp": 240,
+      "atk": 32,
+      "def": 22,
+      "spd": 12,
+      "mag": 26
     },
     "reward": {
-      "exp": 63,
-      "gold": 45
+      "exp": 120,
+      "gold": 80
     },
     "palette": {
       "body": "#0a0a20",
@@ -2992,24 +3029,32 @@
     },
     "abilities": [
       {
-        "id": "void_slash",
-        "name": "Void Slash",
+        "id": "void_strike",
+        "name": "Void Strike",
         "type": "physical",
-        "weight": 40,
-        "dmgMultiplier": 1.6
+        "weight": 50,
+        "dmgMultiplier": 1.4
       },
       {
-        "id": "null_field",
-        "name": "Null Field",
+        "id": "abyssal_tide",
+        "name": "Abyssal Tide",
         "type": "magic_damage",
-        "weight": 35,
-        "dmgMultiplier": 1.5
+        "weight": 30,
+        "dmgMultiplier": 1.25,
+        "effect": {
+          "aoe": true
+        }
       },
       {
-        "id": "dark_edge",
-        "name": "Dark Edge",
-        "type": "debuff",
-        "weight": 25
+        "id": "void_echo",
+        "name": "Void Echo",
+        "type": "buff",
+        "weight": 20,
+        "effect": {
+          "atkBuff": 1.3,
+          "defBuff": 1.3,
+          "duration": 3
+        }
       }
     ],
     "drops": [
@@ -3037,9 +3082,9 @@
     ],
     "tier": 3,
     "stats": {
-      "hp": 115,
+      "hp": 260,
       "atk": 22,
-      "def": 13,
+      "def": 32,
       "spd": 15,
       "mag": 20
     },
@@ -3090,7 +3135,7 @@
   {
     "id": "shadow_emperor",
     "name": "Shadow Emperor",
-    "subtitle": "The supreme ruler of all darkness — the final reckoning",
+    "subtitle": "The supreme ruler of all darkness \u2014 the final reckoning",
     "element": "void",
     "weakTo": [
       "light",
@@ -3146,6 +3191,7 @@
     "drops": [
       {
         "item": "Emperor's Crown",
+        "itemId": "emperors_crown",
         "chance": 0.7
       },
       {
@@ -3222,6 +3268,194 @@
         "item": "Void Sword",
         "chance": 0.05
       }
+    ]
+  },
+  {
+    "id": "void_warden",
+    "name": "Void Warden",
+    "subtitle": "The ancient gatekeeper of the starlit void",
+    "element": "void",
+    "weakTo": [
+      "light",
+      "fire"
+    ],
+    "resistTo": [
+      "void",
+      "shadow"
+    ],
+    "tier": 3,
+    "stats": {
+      "hp": 130,
+      "atk": 24,
+      "def": 16,
+      "spd": 13,
+      "mag": 23
+    },
+    "reward": {
+      "exp": 75,
+      "gold": 55
+    },
+    "palette": {
+      "body": "#1a1a3a",
+      "dark": "#0a0a20",
+      "armor": "#4a4a80",
+      "eye": "#a0e0ff",
+      "shine": "#c0f0ff"
+    },
+    "abilities": [
+      {
+        "id": "void_lash",
+        "name": "Void Lash",
+        "type": "physical",
+        "weight": 40,
+        "dmgMultiplier": 1.6
+      },
+      {
+        "id": "astral_burn",
+        "name": "Astral Burn",
+        "type": "magic_damage",
+        "weight": 40,
+        "dmgMultiplier": 1.8
+      },
+      {
+        "id": "entropic_ward",
+        "name": "Entropic Ward",
+        "type": "buff_def",
+        "weight": 20
+      }
+    ],
+    "drops": [
+      {
+        "item": "Warden's Key",
+        "itemId": "wardens_key",
+        "chance": 0.5
+      },
+      {
+        "item": "Void Shard",
+        "chance": 0.3
+      }
+    ]
+  },
+  {
+    "id": "shadow_titan",
+    "name": "Shadow Titan",
+    "subtitle": "A primordial colossus of solidified shadow and grief",
+    "element": "shadow",
+    "weakTo": [
+      "holy",
+      "light"
+    ],
+    "resistTo": [
+      "shadow",
+      "physical"
+    ],
+    "tier": 3,
+    "stats": {
+      "hp": 155,
+      "atk": 28,
+      "def": 19,
+      "spd": 9,
+      "mag": 15
+    },
+    "reward": {
+      "exp": 78,
+      "gold": 58
+    },
+    "palette": {
+      "body": "#0a0014",
+      "dark": "#050008",
+      "stone": "#1a0a2a",
+      "eye": "#ff0044",
+      "shine": "#8000ff"
+    },
+    "abilities": [
+      {
+        "id": "shadow_stomp",
+        "name": "Shadow Stomp",
+        "type": "physical",
+        "weight": 45,
+        "dmgMultiplier": 1.9
+      },
+      {
+        "id": "oblivion_strike",
+        "name": "Oblivion Strike",
+        "type": "physical",
+        "weight": 35,
+        "dmgMultiplier": 2.2
+      },
+      {
+        "id": "fortify_shadow",
+        "name": "Fortify Shadow",
+        "type": "buff_atk",
+        "weight": 20
+      }
+    ],
+    "drops": [
+      {
+        "item": "Titan Heart",
+        "chance": 0.4
+      },
+      {
+        "item": "Dark Crystal",
+        "chance": 0.4
+      }
+    ]
+  },
+  {
+    "id": "shadow_wraith",
+    "name": "Shadow Wraith",
+    "subtitle": "A spectral horror born from the abyss between worlds",
+    "element": "shadow",
+    "weakTo": ["light", "holy", "fire"],
+    "resistTo": ["shadow", "ice", "physical"],
+    "tier": 3,
+    "stats": {
+      "hp": 130,
+      "atk": 20,
+      "def": 12,
+      "spd": 16,
+      "mag": 26
+    },
+    "reward": {
+      "exp": 60,
+      "gold": 42
+    },
+    "palette": {
+      "body": "#1a0030",
+      "dark": "#0a0018",
+      "armor": "#2a0050",
+      "eye": "#cc00ff",
+      "shine": "#8800cc"
+    },
+    "traits": [
+      { "id": "damage_reduction", "label": "👻 Ethereal", "type": "DAMAGE_REDUCTION", "value": 0.15 }
+    ],
+    "abilities": [
+      {
+        "id": "void_touch",
+        "name": "Void Touch",
+        "type": "magic_damage",
+        "weight": 40,
+        "dmgMultiplier": 1.55
+      },
+      {
+        "id": "shadow_drain",
+        "name": "Shadow Drain",
+        "type": "magic_damage",
+        "weight": 35,
+        "dmgMultiplier": 1.3,
+        "effect": { "vampiric": 0.4 }
+      },
+      {
+        "id": "spectral_shroud",
+        "name": "Spectral Shroud",
+        "type": "buff_self",
+        "weight": 25
+      }
+    ],
+    "drops": [
+      { "item": "void_shard", "itemId": "void_shard", "chance": 0.55 },
+      { "item": "phantom_dust", "itemId": "phantom_dust", "chance": 0.3 }
     ]
   }
 ]

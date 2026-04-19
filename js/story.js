@@ -259,22 +259,40 @@ const Story = {
         G.party.forEach(m => {
           const saved = s.partyStats.find(p => p.charId === m.charId);
           if (saved) {
+            // Restore progression
             m.lv   = saved.lv   || 1;
             m.exp  = saved.exp  || 0;
             m.gold = saved.gold || 0;
-            if (saved.hp !== undefined) m.hp = saved.hp;
-            if (saved.mp !== undefined) m.mp = saved.mp;
-            if (saved.maxHp !== undefined) m.maxHp = saved.maxHp;
-            if (saved.maxMp !== undefined) m.maxMp = saved.maxMp;
-            if (saved.atk !== undefined) m.atk = saved.atk;
-            if (saved.def !== undefined) m.def = saved.def;
-            if (saved.mag !== undefined) m.mag = saved.mag;
-            if (saved.spd !== undefined) m.spd = saved.spd;
-            if (saved.lck !== undefined) m.lck = saved.lck;
-            if (saved.accuracy !== undefined) m.accuracy = saved.accuracy;
-            if (saved.critRate !== undefined) m.critRate = saved.critRate;
+            m.isKO = saved.isKO || false;
+
+            // Sync level back to source char so computeStats uses the right level
+            if (m.char) m.char.lv = m.lv;
+
+            // Recompute all combat stats from source data at the correct level
+            const fresh = computeStats(m.char, m.cls);
+            m.maxHp = fresh.hp;  m.maxMp = fresh.mp;
+            m.atk = fresh.atk;   m.def = fresh.def;
+            m.mag = fresh.mag;   m.spd = fresh.spd;
+            m.lck = fresh.lck;
+
+            // Restore current resources clamped to fresh maximums
+            m.hp = (saved.hp !== undefined) ? Math.min(Math.max(saved.hp, 0), fresh.hp) : fresh.hp;
+            m.mp = (saved.mp !== undefined) ? Math.min(Math.max(saved.mp, 0), fresh.mp) : fresh.mp;
           }
         });
+        // Re-apply relic bonuses on top of freshly computed base stats
+        applyRelicBonuses();
+        // Re-apply Archive mastery buffs (flat stat bonuses from Track 2 progression)
+        if (typeof Archive !== 'undefined') {
+          const mastery = Archive.getMasteryBuffs();
+          G.party.forEach(m => {
+            m.atk += mastery.atk || 0;
+            m.def += mastery.def || 0;
+            m.mag += mastery.mag || 0;
+            m.spd += mastery.spd || 0;
+            m.lck += mastery.lck || 0;
+          });
+        }
       } else if (s.hero && G.hero) {
         // Legacy save: only hero stats were persisted
         G.hero.lv   = s.hero.lv   || 1;
@@ -293,13 +311,19 @@ const Story = {
       if (s.mapId) {
         // Find the actual explore chapter so EXIT works correctly afterward
         const arc = this.arc;
-        const savedChap = (this.chapIdx >= 0 && arc.chapters) ? arc.chapters[this.chapIdx] : null;
-        const chap = (savedChap && savedChap.type === 'explore')
-          ? savedChap
-          : { id: '_restore', type: 'explore', map: s.mapId, pre_dialogue: [], post_dialogue: [] };
-        this._exploreChap = chap;
-        this._launchExploreRestore(chap, s.mapX, s.mapY);
-        return;
+        const chapters = arc.chapters || [];
+        const savedChap = (this.chapIdx >= 0 && this.chapIdx < chapters.length) ? chapters[this.chapIdx] : null;
+
+        // Only restore to map if the saved chapter is still an explore chapter.
+        // If chapIdx is out of bounds (boss territory) or points to a non-explore
+        // chapter, the mapId is stale — fall through to normal chapter/boss logic.
+        if (savedChap && savedChap.type === 'explore') {
+          this._exploreChap = savedChap;
+          this._launchExploreRestore(savedChap, s.mapX, s.mapY);
+          return;
+        }
+        // chapIdx has advanced past all explore chapters — mapId is stale, ignore it
+        if (window.LogDebug) window.LogDebug(`[Story] stale mapId "${s.mapId}" ignored — chapIdx ${this.chapIdx} is past explore chapters, proceeding to boss`, 'passive');
       }
 
       // Resume at the saved chapter — skip arc intro/char-select on load
@@ -390,19 +414,70 @@ const Story = {
 
   /** Called by checkBattleEnd() (via TurnManager) when the whole party falls */
   onBattleLost() {
-    /* Skirmish defeat: just go back to map, no penalty */
+    /* Skirmish defeat: just go back to world map, no penalty */
     if (this._skirmishArcIdx !== undefined) {
       this._skirmishArcIdx = undefined;
       this._showWorldMap();
       return;
     }
-    this.phase = 'retry';
-    this._renderLine(null, 'The party falls... but fate is not done with them yet.');
-    this._showSection('s-dialogue');
-    const btn = this.el('s-continue');
-    btn.textContent = '↺ TRY AGAIN';
-    btn.style.display = 'inline-block';
-    showScreen('story-screen');
+
+    // Roll the save back to the start of the explore chapter
+    this._gameOverRollback();
+
+    // Populate the game over screen
+    const partyEl = document.getElementById('go-party');
+    if (partyEl && G.party) {
+      partyEl.innerHTML = G.party.map(m =>
+        `<div class="go-member">
+          <div class="go-member-ko">💀</div>
+          <div class="go-member-name">${m.displayName || m.name || m.charId}</div>
+        </div>`
+      ).join('');
+    }
+
+    const arc = this.arc;
+    const subEl = document.getElementById('go-subtitle');
+    if (subEl) subEl.textContent = arc ? `Defeated in ${arc.name}` : 'The party has fallen...';
+
+    _clearBattleAtmosphere();
+    showScreen('game-over-screen');
+    if (window.LogDebug) window.LogDebug(`[KO] Game Over — save rolled back to start of explore chapter`, 'dmg');
+  },
+
+  /** Roll the save back to the start of the current explore chapter.
+   *  Party is fully healed. chapIdx rewinds to the explore chapter index.
+   *  Called on every story-mode party wipe. */
+  _gameOverRollback() {
+    const arc = this.arc;
+    const chapters = (arc && arc.chapters) ? arc.chapters : [];
+
+    // Find the explore chapter in this arc (or fall back to chapter 0)
+    const exploreIdx = chapters.findIndex(c => c.type === 'explore');
+    this.chapIdx = exploreIdx >= 0 ? exploreIdx : 0;
+    this.phase = null;
+
+    // Full-heal party so they're ready to re-enter the map
+    this._healParty();
+
+    // Save — _doSave() will write null mapId because chapIdx < chapters.length
+    // and MapEngine is stopped, so the player restarts from the map entrance
+    this._doSave();
+  },
+
+  /** Game Over screen button — reload the rollback save and re-enter the explore map */
+  gameOverReturnToMap() {
+    if (typeof SFX !== 'undefined' && SFX.click) SFX.click();
+    // The rollback save is already written — reload it via the normal loadSave path
+    const slot = this._activeSlot !== undefined ? this._activeSlot : 0;
+    this.loadSave(slot);
+  },
+
+  /** Game Over screen button — return to title screen */
+  gameOverTitle() {
+    if (typeof SFX !== 'undefined' && SFX.click) SFX.click();
+    G.mode = null;
+    Story.active = false;
+    showScreen('title-screen');
   },
 
   /* ════════════════════════════════════════════════════════════════════════
@@ -411,10 +486,6 @@ const Story = {
   advance() {
     // Skip typewriter first if still running
     if (!this._tw.done) { this._skipTw(); return; }
-
-    if (this.phase === 'retry') {
-      this._retryBattle(); return;
-    }
 
     if (this.phase === 'arc_intro') {
       // For Arc 1, go directly to first chapter (no character selection)
@@ -490,6 +561,7 @@ const Story = {
     this.chapIdx++;
     const arc = this.arc;
     console.log('[Story._nextChapter] After increment, chapIdx:', this.chapIdx, 'arc.chapters.length:', arc.chapters.length);
+
     this._doSave();
     if (this.chapIdx < arc.chapters.length) {
       console.log('[Story._nextChapter] Loading chapter:', this.chapIdx);
@@ -694,6 +766,7 @@ const Story = {
 
   _launchBoss() {
     this.phase = 'boss_in';
+    G.mode = 'story'; // reset from 'story_explore' so checkBattleEnd routes to Story.onBattleWon()
     this._launchStoryBattle(this.arc.boss_enemy);
   },
 
@@ -925,18 +998,17 @@ const Story = {
 
     // Face image (small icon, left)
     const faceImg = this.el('s-ae-face');
-    faceImg.src = `images/characters/faces/${heroNameLower}_face.png`;
-    faceImg.style.display = 'block';
-    faceImg.onerror = () => {
-      faceImg.style.display = 'none';
-    };
+    if (faceImg) {
+      faceImg.style.display = 'block';
+      SpriteRenderer.setFrame(faceImg, heroNameLower, 'idle', 60);
+    }
 
     // Spirit image (large, center)
     const spiritImg = this.el('s-ae-spirit');
-    spiritImg.src = `images/characters/spirits/${heroNameLower}_spirit.png`;
-    spiritImg.onerror = () => {
-      spiritImg.style.display = 'none';
-    };
+    if (spiritImg) {
+      spiritImg.style.display = 'block';
+      SpriteRenderer.setFrame(spiritImg, heroNameLower, 'idle', 280);
+    }
 
     const shard = arc.shard || {};
     const shardEl = this.el('s-ae-shard');
@@ -1016,10 +1088,15 @@ const Story = {
   _endStory() {
     this.active = false;
     if (typeof TTS !== 'undefined') TTS.stop();
-    Save.clear(this._activeSlot !== undefined ? this._activeSlot : 0);
     G.enemies = this._allEnemies.slice();
     G.selectedChar = null; G.selectedClass = null;
-    showScreen('title-screen');
+    
+    if (typeof Credits !== 'undefined') {
+      Credits.launch();
+    } else {
+      showScreen('title-screen');
+    }
+    
     if (typeof refreshSaveSlots === 'function') refreshSaveSlots();
   },
 
@@ -1033,27 +1110,24 @@ const Story = {
       Save.clear(this._newGameSlot);
       delete this._newGameSlot;
     }
-    // Capture all 4 party members' current stats
+    // Save only progression + current resources — combat stats are always recomputed on load
     const partyStats = G.party.map(m => ({
       charId: m.charId,
       classId: m.classId,
-      lv:      m.lv      || 1,
-      exp:     m.exp     || 0,
-      gold:    m.gold    || 0,
-      hp:      m.hp,
-      mp:      m.mp,
-      maxHp:   m.maxHp,
-      maxMp:   m.maxMp,
-      atk:     m.atk,
-      def:     m.def,
-      mag:     m.mag,
-      spd:     m.spd,
-      lck:     m.lck     || 0,
-      accuracy: m.accuracy || 0.95,
-      critRate: m.critRate || 0.05,
+      lv:   m.lv   || 1,
+      exp:  m.exp  || 0,
+      gold: m.gold || 0,
+      hp:   m.hp,
+      mp:   m.mp,
+      isKO: m.isKO || false,
     }));
-    // Capture current map location if saving from explore screen
-    const curMap = (typeof MapEngine !== 'undefined') ? MapEngine.getMap() : null;
+    // Capture current map location if saving from explore screen.
+    // BUT: if chapIdx has advanced past all explore chapters (boss territory),
+    // do NOT persist mapId — a stale mapId causes the loader to skip the boss trigger.
+    const _arc = this.arc;
+    const _chapters = (_arc && _arc.chapters) ? _arc.chapters : [];
+    const _inBossTerritory = this.chapIdx >= _chapters.length;
+    const curMap = (!_inBossTerritory && typeof MapEngine !== 'undefined') ? MapEngine.getMap() : null;
     const mapId  = curMap?.id || null;
     const mapX   = (mapId && typeof MapPlayer !== 'undefined') ? MapPlayer.tx : null;
     const mapY   = (mapId && typeof MapPlayer !== 'undefined') ? MapPlayer.ty : null;
@@ -1327,26 +1401,22 @@ const Story = {
 
       // Get speaker character ID for face image path (alias → charId)
       const speakerCharId = _charIdForSpeaker(speaker);
-      const faceImgSrc = `images/characters/faces/${speakerCharId}_face.png`;
 
-      // Face image (left, small) — hide gracefully if file missing
+      // Face image (left, small) via SpriteRenderer
       if (imgEl) {
-        imgEl.onerror = () => {
-          imgEl.style.display = 'none';
-          if (emojiEl) { emojiEl.style.display = 'block'; emojiEl.textContent = '💬'; }
-        };
-        imgEl.src = faceImgSrc;
-        imgEl.alt = speaker;
         imgEl.style.display = 'block';
         imgEl.style.borderColor = SPEAKER_COLOR[speaker] || '#5040a0';
         imgEl.style.boxShadow = `0 0 16px ${SPEAKER_COLOR[speaker]}66`;
+        
+        // Use SpriteRenderer for consistent frames
+        SpriteRenderer.setFrame(imgEl, speakerCharId, 'idle', 80);
+
         // pop animation on each new line
         imgEl.classList.remove('new-line');
         void imgEl.offsetWidth; // reflow to retrigger
         imgEl.classList.add('new-line');
         if (emojiEl) emojiEl.style.display = 'none';
       } else {
-        if (imgEl) imgEl.style.display = 'none';
         if (emojiEl) { emojiEl.style.display = 'block'; emojiEl.textContent = '💬'; }
       }
     } else {
@@ -1374,7 +1444,7 @@ const Story = {
         clearInterval(this._tw.timer);
         this._tw.timer = null;
       }
-    }, 22);
+    }, this._twDelay || 22);
   },
 
   _skipTw() {
@@ -1409,15 +1479,16 @@ const Story = {
         charEl.className = 's-scene-char';
         charEl.id = `s-scene-char-${charName.toLowerCase()}`;
 
-        const img = document.createElement('img');
-        img.src = `images/characters/spirits/${_charIdForSpeaker(charName)}_spirit.png`;
-        img.alt = charName;
+        const spriteEl = document.createElement('div');
+        spriteEl.className = 's-scene-sprite';
+        const speakerCharId = _charIdForSpeaker(charName);
+        SpriteRenderer.setFrame(spriteEl, speakerCharId, 'idle', 160);
 
         const nameEl = document.createElement('div');
         nameEl.className = 's-scene-char-name';
         nameEl.textContent = charName;
 
-        charEl.appendChild(img);
+        charEl.appendChild(spriteEl);
         charEl.appendChild(nameEl);
         layer.appendChild(charEl);
       }
