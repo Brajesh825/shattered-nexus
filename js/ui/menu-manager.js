@@ -345,6 +345,9 @@ function _updateCharConfirmBtn() {
 }
 
 function selectChar(id) {
+  const ch = G.chars.find(c => c.id === id);
+  if (!ch) return;
+
   const idx = G.selectedChars.indexOf(id);
   if (idx !== -1) {
     G.selectedChars.splice(idx, 1);          // deselect
@@ -356,10 +359,11 @@ function selectChar(id) {
   _renderCharGrid();
   _updateCharConfirmBtn();
 
-  // Show details for the clicked character
-  const ch = G.chars.find(c => c.id === id);
-  if (!ch) return;
-  const s = ch.base_stats;
+  // Use the master formula to show actual level-scaled stats in the details view
+  const classId = ch.class_affinity[0] || G.classes[0].id;
+  const cls = G.classes.find(c => c.id === classId) || G.classes[0];
+  const s = computeStats(ch, cls);
+
   const detailEl = document.getElementById('char-detail');
   const spriteId = `char-detail-sprite-${id}`;
   detailEl.innerHTML = `

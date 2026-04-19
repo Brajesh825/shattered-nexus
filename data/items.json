@@ -178,5 +178,29 @@
     "usable_in": ["map"],
     "description": "Restores 50% HP to all party members. Map use only.",
     "rarity": "common"
+  },
+  {
+    "id": "shadow_feather",
+    "name": "Shadow Feather",
+    "icon": "🪶",
+    "type": "consumable",
+    "subtype": "story",
+    "value": 80,
+    "effect": { "target": "none", "stat": "none", "amount": 0, "percent": false },
+    "usable_in": [],
+    "description": "A feather from a corrupted phoenix. Faintly warm.",
+    "rarity": "rare"
+  },
+  {
+    "id": "dark_crystal",
+    "name": "Dark Crystal",
+    "icon": "🔮",
+    "type": "consumable",
+    "subtype": "story",
+    "value": 120,
+    "effect": { "target": "none", "stat": "none", "amount": 0, "percent": false },
+    "usable_in": [],
+    "description": "A crystallized fragment of shadow flame. Pulses with dark energy.",
+    "rarity": "rare"
   }
 ]

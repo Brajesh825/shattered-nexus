@@ -59,6 +59,41 @@ Scaling is handled by global growth coefficients in `scaling-config.js` and mult
 
 ---
 
+## 📐 Character Stat & Growth Formulas
+All character stats are computed in `js/systems/party.js → computeStats(ch, cls)`. **Never save or restore derived combat stats — always recompute from source.**
+
+### Stat Formula (per stat: hp, mp, atk, def, spd, mag, lck)
+```
+FinalStat = floor( (BaseStat + (Level - 1) × GrowthPerLevel + StatBonus) × ClassMultiplier )
+```
+- `BaseStat` — from `characters.json → base_stats`
+- `GrowthPerLevel` — from `classes.json → growthPerLevel` (0 if absent)
+- `StatBonus` — from `characters.json → stat_bonuses` (0 if absent)
+- `ClassMultiplier` — from `classes.json → stat_multipliers`
+
+### Relic Multipliers (applied after `computeStats`, inside `applyRelicBonuses()`)
+```
+FinalStat = floor( FinalStat × RelicMultiplier )   // hp, mp, atk, def, spd, mag, lck
+```
+Relic bonuses are **additive across relics, then applied once** as a single multiplier. They are re-applied fresh every time `buildParty()` is called — never stack.
+
+### EXP Threshold (level-up gate)
+```
+ExpNeeded(L) = 5 × L² + 25 × L
+```
+
+### EXP Level-Gap Penalty
+```
+expScale = clamp(1 - (memberLevel - enemyLevel) / 3,  0, 1)
+earnedExp = floor(totalExp × expScale)
+```
+At **+3 levels above the enemy average** the member earns 0 EXP. Linear ramp between gap 0 → 3.
+
+### Save / Load Contract
+Only `lv`, `exp`, `gold`, `hp`, `mp`, `isKO` are persisted. On load, all other stats are recomputed via `computeStats()` + `applyRelicBonuses()`. This prevents corrupted saves from permanently inflating stats.
+
+---
+
 ## 🔍 Debugging & Diagnostics
 Engine status is exposed via `window.LogDebug(msg, type)`.
 - **Reserved Tags**: `[MATH-PHYS]`, `[MATH-MAGIC]`, `[STATE-DIAG]`, `[Aura]`, `[Passive]`, `[Gauntlet]`.

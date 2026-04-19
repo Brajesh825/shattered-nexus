@@ -1,9 +1,14 @@
 
 function computeStats(ch, cls) {
   const b = ch.base_stats, m = cls.stat_multipliers, bon = ch.stat_bonuses || {};
+  const g = cls.growthPerLevel || {};
+  const lv = ch.lv || 1;
   const out = {};
+
   ['hp', 'mp', 'atk', 'def', 'spd', 'mag', 'lck'].forEach(k => {
-    out[k] = Math.floor((b[k] + (bon[k] || 0)) * (m[k] || 1));
+    // Unified Formula: (Base + (Lv-1)*Growth + Bonus) * ClassMultiplier
+    const baseWithGrowth = b[k] + (lv - 1) * (g[k] || 0);
+    out[k] = Math.floor((baseWithGrowth + (bon[k] || 0)) * (m[k] || 1));
   });
   return out;
 }
@@ -153,24 +158,52 @@ function getExpThreshold(lv) {
   return (5 * lv * lv) + (25 * lv);
 }
 
+// Returns the aggregated relic stat multipliers without mutating any party member.
+function _getRelicStatMult() {
+  const mult = { hp: 1, mp: 1, atk: 1, def: 1, spd: 1, mag: 1, lck: 1 };
+  const active = G.activeRelics || [];
+  if (!active.length) return mult;
+  const defs = G.relics || [];
+  active.forEach(id => {
+    const r = defs.find(d => d.id === id);
+    if (!r || !r.bonus) return;
+    ['hp', 'mp', 'atk', 'def', 'spd', 'mag', 'lck'].forEach(k => {
+      if (r.bonus[k]) mult[k] += r.bonus[k];
+    });
+  });
+  return mult;
+}
+
 function checkMemberLevel(m) {
   const threshold = getExpThreshold(m.lv);
   if (!m || m.exp < threshold) return false;
-  m.lv++;
-  const g = m.cls.growthPerLevel || {};
-  const hpGain = (g.hp || 8);
-  const mpGain = (g.mp || 3);
-  m.maxHp += hpGain;
-  m.maxMp += mpGain;
-  // NO LONGER resetting to full HP/MP on level up per user request
-  // Only gain the raw amount of the stat increase
-  m.hp += hpGain;
-  m.mp += mpGain;
-  m.atk += (g.atk || 2);
-  m.def += (g.def || 1);
-  m.mag += (g.mag || 1);
-  m.spd += (g.spd || 1);
-  m.lck += (g.lck || 1);
+
+  // Persist level increase to the source character data
+  if (m.char) {
+    m.char.lv = (m.char.lv || 1) + 1;
+    m.lv = m.char.lv;
+  } else {
+    m.lv++;
+  }
+
+  // Recompute base stats for the new level
+  const s = computeStats(m.char, m.cls);
+
+  // Re-apply any active relic multipliers so bonuses aren't lost mid-battle
+  const relicMult = _getRelicStatMult();
+
+  const newMaxHp = Math.floor(s.hp * relicMult.hp);
+  const newMaxMp = Math.floor(s.mp * relicMult.mp);
+  m.hp    = Math.min(m.hp + (newMaxHp - m.maxHp), newMaxHp);
+  m.mp    = Math.min(m.mp + (newMaxMp - m.maxMp), newMaxMp);
+  m.maxHp = newMaxHp;
+  m.maxMp = newMaxMp;
+  m.atk   = Math.floor(s.atk * relicMult.atk);
+  m.def   = Math.floor(s.def * relicMult.def);
+  m.mag   = Math.floor(s.mag * relicMult.mag);
+  m.spd   = Math.floor(s.spd * relicMult.spd);
+  m.lck   = Math.floor(s.lck * relicMult.lck);
+
   return true;
 }
 

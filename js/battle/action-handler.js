@@ -94,7 +94,8 @@ function resolveOffensiveAction(actor, target, targetIdx, action, element) {
   if (isMagic) {
     const _pBoost = PassiveSystem.val(actor, 'MAGIC_BOOST', 1.0);
     const _summonBonus = (action.id?.startsWith('summon_') || action.id?.startsWith('absolute_')) ? PassiveSystem.val(actor, 'SUMMON_STAT_BOOST', 1.0) : 1.0;
-    dmg = Battle.magicDmg(Battle.getStat(actor, 'mag'), Battle.getStat(target, 'mag'), e.dmgMultiplier || NexusScaling.engine.magicDmgFallback,
+    const _mdef = Battle.getStat(target, 'def') * 0.25 + Battle.getStat(target, 'mag') * 0.25 + (target.lv || target.level || 1) * 0.5;
+    dmg = Battle.magicDmg(Battle.getStat(actor, 'mag'), _mdef, e.dmgMultiplier || NexusScaling.engine.magicDmgFallback,
       { passiveBonus: _pBoost, magLevel: actor.lv || 1, mdefLevel: target.level || 1, isCrit });
     dmg = Math.floor(dmg * _em * _stab * _fireAmp * _lowHpMult * _summonBonus * _rxMult);
 
@@ -264,12 +265,12 @@ function resolveEnemyOffensiveAction(actor, target, targetIdx, ab, element) {
   let dmg;
   if (isMagic) {
     const _eMag = Battle.getStat(actor, 'mag');
-    const _tMag = Battle.getStat(target, 'mag');
-    dmg = Battle.magicDmg(_eMag, _tMag, ab.dmgMultiplier || NexusScaling.engine.enemyMagicFallback,
+    const _tMdef = Battle.getStat(target, 'def') * 0.25 + Battle.getStat(target, 'mag') * 0.25 + (target.lv || target.level || 1) * 0.5;
+    dmg = Battle.magicDmg(_eMag, _tMdef, ab.dmgMultiplier || NexusScaling.engine.enemyMagicFallback,
       { magLevel: actor.level || 1, mdefLevel: target.lv || 1, isCrit });
     dmg = Math.floor(dmg * _pm * _rxMult);
     if (window.LogDebug) {
-      window.LogDebug(`[ENEMY-MATH-MAGIC] ${actor.name} -> ${target.displayName}: BaseMag=${_eMag}, T-MDef=${_tMag}, Mult=${ab.dmgMultiplier || 1.3}, PM=${_pm}, RX=${_rxMult} -> Final=${dmg}`, 'hi');
+      window.LogDebug(`[ENEMY-MATH-MAGIC] ${actor.name} -> ${target.displayName}: BaseMag=${_eMag}, T-MDef=${_tMdef.toFixed(1)}, Mult=${ab.dmgMultiplier || 1.3}, PM=${_pm}, RX=${_rxMult} -> Final=${dmg}`, 'hi');
     }
   } else {
     const _eAtk = Battle.getStat(actor, 'atk');
@@ -394,6 +395,7 @@ const ActionEngine = {
     physical: (a, t, ab, el, mc, ie) => ActionEngine._offensive(a, t, ab, el, mc, ie),
     magic_damage: (a, t, ab, el, mc, ie) => ActionEngine._offensive(a, t, ab, el, mc, ie),
     buff_def: (a, t, ab, el, mc, ie) => ActionEngine.Processors.buff(a, t, ab, el, mc, ie),
+    buff_self: (a, t, ab, el, mc, ie) => ActionEngine.Processors.buff(a, t, ab, el, mc, ie),
 
     heal(actor, targets, ab, element, moveConfig, isEnemyAction) {
       if (typeof SFX !== 'undefined') SFX.heal();
