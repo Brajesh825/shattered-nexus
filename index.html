@@ -100,6 +100,10 @@
 
     <!-- Menu button grid -->
     <div class="menu-btns">
+      <button id="gauntlet-btn" class="title-btn title-btn-secondary" onclick="typeof BossGauntlet !== 'undefined' ? BossGauntlet.open() : null">
+        <span class="tbtn-icon">👹</span>
+        <span class="tbtn-label">BOSS MODE</span>
+      </button>
       <button class="title-btn title-btn-primary" onclick="openSlotOverlay('new')">
         <span class="tbtn-icon">📖</span>
         <span class="tbtn-label">NEW STORY</span>
@@ -107,10 +111,6 @@
       <button class="title-btn title-btn-tertiary" onclick="startExplore()">
         <span class="tbtn-icon">🗺</span>
         <span class="tbtn-label">EXPLORE</span>
-      </button>
-      <button id="gauntlet-btn" class="title-btn title-btn-secondary" onclick="typeof BossGauntlet !== 'undefined' ? BossGauntlet.open() : null" style="display:none">
-        <span class="tbtn-icon">👹</span>
-        <span class="tbtn-label">BOSS MODE</span>
       </button>
     </div>
 
@@ -584,6 +584,7 @@
 <script src="js/data-loader.js"></script>
 <script src="js/svg-animations.js"></script>
 <script src="js/asset-preloader.js"></script>
+<script src="js/scaling-config.js"></script>
 <script src="js/game.js"></script>
 <script src="js/ui/menu-manager.js"></script>
 <script src="js/systems/party.js"></script>
@@ -591,6 +592,7 @@
 <script src="js/ui/battle-ui.js"></script>
 <script src="js/ui/result-ui.js"></script>
 <script src="js/battle/status-system.js"></script>
+<script src="js/battle/passive-system.js"></script>
 <script src="js/battle/turn-manager.js"></script>
 <script src="js/battle/combat-engine.js"></script>
 

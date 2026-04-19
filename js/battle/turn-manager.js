@@ -27,6 +27,22 @@ const TurnManager = {
     // Higher speed units act first
     q.sort((a, b) => b.spd - a.spd);
 
+    // --- PASSIVE TRAIT: FIRST STRIKE ---
+    if (typeof PassiveSystem !== 'undefined') {
+      G.party.forEach((m, i) => {
+        if (Battle.alive(m) && PassiveSystem.hasTrait(m, 'FIRST_STRIKE')) {
+          const entry = q.find(t => t.type === 'party' && t.idx === i);
+          if (entry) {
+            const qIdx = q.indexOf(entry);
+            if (qIdx > 0) {
+              q.splice(qIdx, 1);
+              q.unshift(entry);
+            }
+          }
+        }
+      });
+    }
+
     // Relic: Echo of the Unmade — firstStrike guarantees the fastest party member
     // acts first on the opening round of each battle (fires once per battle).
     if (G._firstStrikeRelic && !G._firstStrikeUsed) {

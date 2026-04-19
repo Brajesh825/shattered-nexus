@@ -576,7 +576,16 @@ const BattleUI = {
     const pos = this._getAnchor(idx, type);
     const s = this.el('battle-scene');
     if (!s) return;
-    
+    const sprId = type === 'enemy' ? `espr-${idx}` : `pspr-${idx}`;
+    const spr = this.el(sprId);
+    if (!spr) return;
+
+    const rect = spr.getBoundingClientRect();
+    const sceneRect = s.getBoundingClientRect();
+    const gameEl = this.el('game');
+    const scaleMatch = gameEl?.style.transform.match(/scale\(([\d.]+)\)/);
+    const gameScale = scaleMatch ? parseFloat(scaleMatch[1]) : 1;
+
     const d = document.createElement('div');
     d.className = 'pop-text reaction-pop';
     d.innerHTML = `⚡ ${label.toUpperCase()}!`;

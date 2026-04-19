@@ -1,126 +1,65 @@
-# ⚔️ Shattered Nexus - Developer & AI Knowledge Base (claude.md)
+# ⚔️ RPG+ Technical Source of Truth (claude.md)
 
-This document serves as the "Source of Truth" for the game's core architecture. Refer to this before making any changes to combat, UI, or party systems to avoid common regressions.
-
----
-
-## 🛡️ Formation & Party Indices (Diamond Formation)
-The party is arranged in a diamond shape. The indices in `G.party` map strictly to specific board positions and combat roles:
-
-| Index | Visual Position | Role | Special Logic |
-| :--- | :--- | :--- | :--- |
-| **0** | **Top Flank** | Offense | Standard targeting. |
-| **1** | **Back (Rearguard)** | Support | **30% Evasion bonus** against physical strikes. |
-| **2** | **Front (Vanguard)** | Tank | **Intercepts ALL single-target physical attacks** intended for other allies. |
-| **3** | **Bottom Flank** | Offense | Standard targeting. |
-
-> [!IMPORTANT]
-> **Vanguard Interception**: In `action-handler.js`, if a physical attack targets any ally other than Index 2, it is automatically redirected to Index 2 if they are alive.
+This document contains the essential architectural and technical rules for the RPG+ engine. Refer to this to maintain system integrity and prevent regressions.
 
 ---
 
-## 🛠️ Combat Engine Standardization
-All damage calculation functions in `js/battle/combat-engine.js` and their wrappers in `js/game.js` MUST follow this exact 4-argument signature:
+## 🛡️ Diamond Formation & Vanguard Logic
+The 4-slot diamond arrangement is the foundation of targeting logic.
+- **Slot 1 (Back)**: Grants a **30% Evasion bonus** against physical strikes.
+- **Slot 2 (Front/Vanguard)**: **Vanguard Interception** is active. ALL single-target physical attacks intended for other allies are redirected here if Slot 2 is alive.
+- **Indices**: These map strictly to `G.party` and `G.enemyGroup` indices.
 
+---
+
+## 🧬 Data-Driven Passive Trait System
+Managed via **[PassiveSystem](file:///c:/Users/ASUS/VVI/rpg+/js/battle/passive-system.js)**. 
+- **Querying**: Use `PassiveSystem.hasTrait(unit, 'TYPE')` or `PassiveSystem.val(unit, 'TYPE', fallback)`.
+- **Stat Integration**: `CombatEngine.getStat` automatically applies multipliers (e.g., `STAT_BOOST`, `LOW_HP_STAT_BOOST`) during every calculation.
+- **Key Trait Types**: `HEAL_AMP`, `MP_COST_MULT`, `DAMAGE_REDUCTION`, `REFLECT`, `FIRST_STRIKE`, `SUMMON_STAT_BOOST`.
+
+---
+
+## 🔮 Ability Framework & Composite Scaling
+Defined in **classes.json** and **enemies.json**.
+- **Signature**: Uses `dmgMultiplier` and `type` (`physical` / `magic_damage`).
+- **Composite Scaling**: Use `effect.statScale: ["stat1", "stat2"]` to pull multiple attributes into a single move's power calculation.
+- **Vampiric Logic**: `effect.vampiric` (0.0 - 1.0) determines healing-on-hit percentage.
+
+---
+
+## 🛠️ Combat Engine Math Standard
+All Core math functions in `js/battle/combat-engine.js` MUST use this signature to avoid `NaN` errors:
 ### `(PowerStat, MitigationStat, Multiplier, OptionsObject)`
 
-**Physical Example:**
-```javascript
-Battle.physDmg(atk, def, 1.5, { atkLevel: 1, defLevel: 1, defPen: 0, isCrit: false });
-```
+---
 
-**Magic Example:**
-```javascript
-Battle.magicDmg(mag, mdef, 1.25, { magLevel: 1, mdefLevel: 1, isCrit: false });
-```
-
-> [!CAUTION]
-> Passing an object as the 3rd argument (legacy style) will result in **`NaN` damage**, breaking the health bars and causing instant KO bugs.
+## 🧪 Elemental Reactions (RX) & Auras
+Elemental damage interaction is the primary multiplier in combat.
+- **Aura Application**: If no reaction occurs, the element applies an `Aura` status to the target.
+- **Reaction Matrix (RX)**:
+  - **Vaporize / Melt**: 1.5x - 2.0x Damage.
+  - **Shatter**: High damage + removes Freeze.
+  - **Conductive**: Damage + Stun chance.
+  - **Swirl**: AOE Dispersion of status.
 
 ---
 
-## 🔍 Diagnostic Logging & Debugging
-The engine includes a visual console logger. Use `window.LogDebug(msg, type)` to output information during battle.
+## 👾 Scalable Scaling: Tiers, Bosses, and Mutations
+Scaling is handled by global growth coefficients in `scaling-config.js` and multipliers.
 
-### Log Types:
-- `'hi'`: High-priority math logs (Light blue).
-- `'dmg'`: Damage/Critical notifications (Red).
-- `'passive'`: Status effect or passive triggers (Yellow).
-- `'regen'`: Healing or recovery (Green).
-
-### Active Diagnostic Tags:
-- **`[MATH-PHYS]` / `[MATH-MAGIC]`**: Shows raw stats vs resulting damage.
-- **`[STATE-DIAG]`**: Shows the "Before" and "After" HP of a unit to prove damage is applying to the correct object reference.
-
----
-
-## 🎭 Key Character Logic
-- **Rei (Xiao)**: Usually the **Vanguard (Slot 2)**. Utilizes `Iron Will` (DEF boost at low HP) and `Mastery of Pain` (Taunt + DEF Scaling).
-- **Ayaka**: Swift striker (SPD Scaling). Often placed in **Slot 0/3**.
-- **Tao (Hu Tao)**: High-risk damage dealer. Relies on **Elemental Reactions (RX)** for 2x damage multipliers.
-- **Lulu**: Primary healer. High Magic Defense (MDEF).
+- **Growth Curves**: The engine uses `atkStep`, `defStep`, and `hpStep` to control stat inflation. Adjusting these in **[scaling-config.js](file:///c:/Users/ASUS/VVI/rpg+/js/scaling-config.js)** is the correct way to fix global pacing issues.
+- **Enemy Tiers (1-3)**: Tier 3 (Alpha) has **18 HP / 4.5 ATK** per level growth.
+- **Boss Status (`isBoss: true`)**:
+  - **1.3x Final Stat Multiplier**.
+  - **Double Actions** when the unit is the last one alive.
+- **Mutations**:
+  - **Corrupted**: 1.28x Stats | 1.5x EXP.
+  - **Mutant**: 1.55x Stats | 1-3 Random Traits | 2.2x EXP.
 
 ---
 
-## 📂 Core File Roadmap
-- `js/game.js`: Global `Battle` wrappers and high-level game state (`G`).
-- `js/battle/action-handler.js`: The "brain" of combat. Handles animations, target selection, and interception.
-- `js/battle/combat-engine.js`: Pure math formulas for damage and status rolls.
-- `js/ui/battle-ui.js`: Visual representation! Renders HP bars, logs, and sprites.
-- `data/enemies.json`: Base definitions for all monsters.
-
----
-
-## 👾 Enemy Tier System
-Enemies are categorized by **Tier (1-3)**. This determines their base growth and reward scaling:
-
-| Tier | Type | Stat Mult | Level Growth (HP/ATK) | Action Speed |
-| :--- | :--- | :--- | :--- | :--- |
-| **1** | Normal | 1.0x | 5 HP / 1.2 ATK | Standard fodder. |
-| **2** | Elite | 1.3x | 10 HP / 2.5 ATK | Significant threat. |
-| **3** | Alpha | 1.7x | 18 HP / 4.5 ATK | High-stat Miniboss. |
-
-> [!IMPORTANT]
-> **Decoupling**: Tier 3 describes stat growth (Alpha strength), but it **DOES NOT** confer Boss status. Only units explicitly flagged with `isBoss: true` receive the Boss bonuses listed below.
-
----
-
-## 👑 Boss Mechanics (`isBoss: true`)
-When an enemy is tagged as a boss, several critical changes occur:
-
-1.  **Base Stat Boost**: Bosses receive a flat **1.3x multiplier** on all calculated final stats.
-2.  **Action Economy**: If a boss is the **last remaining unit** on their side, they automatically take **Double Actions** (Attack 2x per round).
-3.  **AI Rotation**: Bosses typically use a `sequenced` AI type, following a strict skill rotation rather than random attacks.
-4.  **Visual Presence**: Bosses are automatically scaled larger in the `battle-scene`.
-
----
-
-## 🧪 Mutations: Corrupt & Mutant
-Enemies can appear as enhanced variations of themselves:
-
-### 🟣 Corrupted (The Void's Touch)
-- **Effect**: **1.28x Stat Multiplier** (Math) | 1.12x Size (Visual).
-- **Rewards**: 1.5x EXP | 1.4x Gold.
-- **Lore**: Enemies consumed by the Void Citadel's influence.
-
-### 🟢 Mutant (Unstable Evolution)
-- **Effect**: **1.55x Stat Multiplier** (Math) | 1.28x Size (Visual).
-- **Rewards**: 2.2x EXP | 2.0x Gold.
-- **Mutant Traits**: Gain 1-3 random abilities (e.g., **Vampiric** - heals 25% of damage dealt).
-
-> [!CAUTION]
-> **Immunities**: Bosses and Tier 3 Alphas **CANNOT** be Corrupted or Mutant. If you encounter one, it is a logic bug.
-
----
-
-## 📜 Boss Strategy Archive
-
-### 🌑 Boss 1: Void Knight (The Erased Warrior)
-*   **Element**: Void (Resists Physical, Void, Shadow).
-*   **Weaknesses**: Light, Holy.
-*   **Mechanics**: High damage single-target strikes and AOE `Abyssal Tide` magic.
-*   **Winning Strategy**: 
-    1.  **Vanguard Tanking**: Keep Rei in Slot 2 to intercept his heavy physical blows.
-    2.  **The Reactive Loop**: Use Nilou to apply **Water Aura**, then follow up with Hu Tao's Fire attacks for **VAPORIZE (1.5x damage)**. 
-    3.  **Frost Lockdown**: Use Ayaka's `Permafrost` to skip his turns, allowing the party to heal and buff safely.
-    4.  **Shatter Alert**: Remember that hitting him while frozen will break the ice (Shatter). Use this for a burst window when he is low on HP.
+## 🔍 Debugging & Diagnostics
+Engine status is exposed via `window.LogDebug(msg, type)`.
+- **Reserved Tags**: `[MATH-PHYS]`, `[MATH-MAGIC]`, `[STATE-DIAG]`, `[Aura]`, `[Passive]`, `[Gauntlet]`.
+- **Gauntlet Mode**: Use for stress-testing AI and new enemy tiers.

@@ -47,10 +47,6 @@ function buildParty() {
       _dragonLeapTurns: 0,
       _reviveOnceFired: false,
     });
-    // Passive stat bonuses applied at battle build
-    const _m = G.party[G.party.length - 1];
-    if (_m.passive?.id === 'divine_authority') _m.def = Math.floor(_m.def * 1.2);
-    if (_m.passive?.id === 'yakshas_valor') _m.atk = Math.floor(_m.atk * 1.15);
   });
 
   // Apply Warden's Archive Mastery Buffs (Track 2)
@@ -127,11 +123,11 @@ function applyRelicBonuses() {
     m.spd = Math.floor(m.spd * bonus.spd);
     m.mag = Math.floor(m.mag * bonus.mag);
     m.lck = Math.floor(m.lck * bonus.lck);
-    m._healAmpRelic  = bonus.healAmp;     // used by healing logic
-    m._mpRegenBonus  = bonus.mpRegen;     // extra % of maxMp per turn
-    m._eliteResist   = bonus.eliteResist; // fraction of damage reduction vs Corrupted/Mutant
-    m._fireResist    = bonus.fireResist;  // fraction of fire damage reduction
-    m._statusResist  = bonus.statusResist; // chance (0–1) to resist debuff application
+    m._healAmpRelic = bonus.healAmp;     // used by healing logic
+    m._mpRegenBonus = bonus.mpRegen;     // extra % of maxMp per turn
+    m._eliteResist = bonus.eliteResist; // fraction of damage reduction vs Corrupted/Mutant
+    m._fireResist = bonus.fireResist;  // fraction of fire damage reduction
+    m._statusResist = bonus.statusResist; // chance (0–1) to resist debuff application
   });
 
   // firstStrike: flag on G so TurnManager can guarantee party acts first in round 1

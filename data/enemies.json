@@ -2396,7 +2396,7 @@
       "atk": 18,
       "def": 11,
       "spd": 9,
-      "mag": 26
+      "mag": 24
     },
     "reward": {
       "exp": 60,
@@ -2459,9 +2459,9 @@
     "tier": 3,
     "stats": {
       "hp": 125,
-      "atk": 22,
+      "atk": 20,
       "def": 13,
-      "spd": 12,
+      "spd": 11,
       "mag": 15
     },
     "reward": {
@@ -2591,9 +2591,9 @@
     "tier": 3,
     "stats": {
       "hp": 100,
-      "atk": 20,
+      "atk": 18,
       "def": 10,
-      "spd": 17,
+      "spd": 15,
       "mag": 22
     },
     "reward": {
@@ -2654,9 +2654,9 @@
     ],
     "tier": 3,
     "stats": {
-      "hp": 140,
+      "hp": 300,
       "atk": 23,
-      "def": 15,
+      "def": 45,
       "spd": 7,
       "mag": 16
     },
@@ -2784,13 +2784,16 @@
       "shadow"
     ],
     "tier": 3,
+    "isBoss": true,
     "stats": {
-      "hp": 135,
+      "hp": 185,
       "atk": 25,
       "def": 15,
       "spd": 12,
-      "mag": 20
+      "mag": 30
     },
+    "aiRole": "predator",
+    "mutantTraits": ["enraged"],
     "reward": {
       "exp": 67,
       "gold": 49
@@ -2815,13 +2818,22 @@
         "name": "Inferno",
         "type": "magic_damage",
         "weight": 40,
-        "dmgMultiplier": 1.8
+        "dmgMultiplier": 1.8,
+        "effect": {
+          "aoe": true,
+          "element": "fire"
+        }
       },
       {
         "id": "demon_eye",
         "name": "Demon Eye",
         "type": "debuff",
-        "weight": 20
+        "weight": 20,
+        "effect": {
+          "stat": "spd",
+          "multiplier": 0.5,
+          "duration": 2
+        }
       }
     ],
     "drops": [
@@ -3013,14 +3025,20 @@
         "type": "magic_damage",
         "weight": 30,
         "dmgMultiplier": 1.25,
-        "effect": { "aoe": true }
+        "effect": {
+          "aoe": true
+        }
       },
       {
         "id": "void_echo",
         "name": "Void Echo",
         "type": "buff",
         "weight": 20,
-        "effect": { "atkBuff": 1.3, "defBuff": 1.3, "duration": 3 }
+        "effect": {
+          "atkBuff": 1.3,
+          "defBuff": 1.3,
+          "duration": 3
+        }
       }
     ],
     "drops": [
@@ -3048,9 +3066,9 @@
     ],
     "tier": 3,
     "stats": {
-      "hp": 115,
+      "hp": 260,
       "atk": 22,
-      "def": 13,
+      "def": 32,
       "spd": 15,
       "mag": 20
     },
@@ -3240,8 +3258,14 @@
     "name": "Void Warden",
     "subtitle": "The ancient gatekeeper of the starlit void",
     "element": "void",
-    "weakTo": ["light", "fire"],
-    "resistTo": ["void", "shadow"],
+    "weakTo": [
+      "light",
+      "fire"
+    ],
+    "resistTo": [
+      "void",
+      "shadow"
+    ],
     "tier": 3,
     "stats": {
       "hp": 130,
@@ -3284,8 +3308,14 @@
       }
     ],
     "drops": [
-      { "item": "Warden's Key", "chance": 0.5 },
-      { "item": "Void Shard", "chance": 0.3 }
+      {
+        "item": "Warden's Key",
+        "chance": 0.5
+      },
+      {
+        "item": "Void Shard",
+        "chance": 0.3
+      }
     ]
   },
   {
@@ -3293,8 +3323,14 @@
     "name": "Shadow Titan",
     "subtitle": "A primordial colossus of solidified shadow and grief",
     "element": "shadow",
-    "weakTo": ["holy", "light"],
-    "resistTo": ["shadow", "physical"],
+    "weakTo": [
+      "holy",
+      "light"
+    ],
+    "resistTo": [
+      "shadow",
+      "physical"
+    ],
     "tier": 3,
     "stats": {
       "hp": 155,
@@ -3337,8 +3373,14 @@
       }
     ],
     "drops": [
-      { "item": "Titan Heart", "chance": 0.4 },
-      { "item": "Dark Crystal", "chance": 0.4 }
+      {
+        "item": "Titan Heart",
+        "chance": 0.4
+      },
+      {
+        "item": "Dark Crystal",
+        "chance": 0.4
+      }
     ]
   }
 ]

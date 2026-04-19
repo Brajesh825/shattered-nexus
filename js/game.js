@@ -3,7 +3,7 @@
  */
 
 // --- DIAGNOSTIC LOGGING ---
-window.LogDebug = function(msg, type = 'info') {
+window.LogDebug = function (msg, type = 'info') {
   const colors = {
     hi: '#4ecfff',
     dmg: '#ff4d4d',
@@ -305,13 +305,13 @@ function showScreen(id) {
   if (id === 'title-screen' || id === 'explore-screen') {
     G.isGauntletMode = false;
   }
-  
+
   document.querySelectorAll('.screen').forEach(s => {
     s.classList.remove('active');
     s.style.display = '';
   });
   document.getElementById(id).classList.add('active');
-  
+
   // Set focus context for keyboard/controller navigation
   if (typeof Focus !== 'undefined') {
     // Mapping screens to their primary focus containers where needed
@@ -349,10 +349,10 @@ function showScreen(id) {
   // BGM — fade out current track then play the next one
   if (typeof BGM !== 'undefined') {
     const _next =
-      id === 'title-screen'    ? 'title'       :
-      id === 'battle-screen'   ? 'battle'      :
-      id === 'explore-screen'  ? 'exploration' :
-      id === 'story-screen'    ? 'story'       : null;
+      id === 'title-screen' ? 'title' :
+        id === 'battle-screen' ? 'battle' :
+          id === 'explore-screen' ? 'exploration' :
+            id === 'story-screen' ? 'story' : null;
     BGM.fadeOut(600, () => { if (_next) BGM.play(_next); });
   }
 }
@@ -415,22 +415,11 @@ function renderPartyMenu() {
   });
 }
 function buildEnemyGroup(defs, spawnLevel = 1, isBoss = false) {
-  // Tier-based growth rates
-  const tierGrowth = {
-    // Growth rates — ensures enemies scale as threats through Lv40
-    1: { hp: 5, atk: 1.2, def: 0.5, spd: 0.5, mag: 0.3, statMult: 1.0, expMult: 1.0 },
-    2: { hp: 10, atk: 2.5, def: 1.0, spd: 0.8, mag: 0.5, statMult: 1.3, expMult: 1.5 },
-    3: { hp: 18, atk: 4.5, def: 1.8, spd: 1.2, mag: 0.8, statMult: 1.7, expMult: 2.5 },
-  };
+  // Use centralized scaling configuration
+  const tierGrowth = NexusScaling.tierGrowth;
 
-  // Boss multiplier: solo boss gets beefed-up base stats on top of higher level.
-  // 1.3x keeps bosses clearly stronger than normal T3 encounters without one-shotting
-  // glass cannons at the party level that enters each arc.
-  const bossMult = isBoss ? 1.3 : 1.0;
-
-  // Horde scaling: 3+ enemies get reduced individual stats so they're dangerous
-  // but not overwhelming. Scales down as group grows.
-  const hordeScale = defs.length >= 4 ? 0.65 : defs.length === 3 ? 0.78 : 1.0;
+  // Horde scaling: pulling from NexusScaling.horde
+  const hordeScale = defs.length >= 4 ? NexusScaling.horde[4] : defs.length === 3 ? NexusScaling.horde[3] : 1.0;
 
   G.enemyGroup = defs.slice(0, 4).map(def => {
     const tier = def.tier || 1;
@@ -442,8 +431,11 @@ function buildEnemyGroup(defs, spawnLevel = 1, isBoss = false) {
     }
 
     const calcStat = (baseStat, statKey) => {
-      const base = baseStat * growth.statMult * hordeScale * bossMult;
-      const levelBonus = growth[statKey] * (spawnLevel - 1) * hordeScale * bossMult;
+      // Apply split boss multipliers if applicable
+      const bMult = isBoss ? (NexusScaling.boss[statKey] || NexusScaling.boss.atk) : 1.0;
+
+      const base = baseStat * growth.statMult * hordeScale * bMult;
+      const levelBonus = growth[statKey] * (spawnLevel - 1) * hordeScale * bMult;
       return Math.max(1, Math.floor(base + levelBonus));
     };
 
@@ -451,12 +443,14 @@ function buildEnemyGroup(defs, spawnLevel = 1, isBoss = false) {
     const finalAtk = calcStat(def.stats.atk, 'atk');
     const finalDef = calcStat(def.stats.def, 'def');
     const finalSpd = calcStat(def.stats.spd, 'spd');
-     const finalMag = calcStat(def.stats.mag, 'mag');
+    const finalMag = calcStat(def.stats.mag, 'mag');
     // EXP/gold scale by count so total reward is fair.
     // Level scaling: +10% EXP for each level above 1.
     const levelScale = 1 + (spawnLevel - 1) * 0.1;
-    const finalExp = Math.floor(def.reward.exp * growth.expMult * hordeScale * levelScale);
-    const finalGold = Math.floor(def.reward.gold * growth.expMult * hordeScale);
+    const bExpMult = isBoss ? NexusScaling.boss.exp : 1.0;
+    const finalExp = Math.floor(def.reward.exp * growth.expMult * hordeScale * levelScale * bExpMult);
+    const bGoldMult = isBoss ? (NexusScaling.boss.gold || 1.0) : 1.0;
+    const finalGold = Math.floor(def.reward.gold * growth.expMult * hordeScale * bGoldMult);
 
     const entry = {
       id: def.id, name: def.name,
@@ -507,7 +501,7 @@ function selectTarget(enemyIdx) {
   if (!Battle.alive(G.enemyGroup[enemyIdx])) return;
   G.targetEnemyIdx = enemyIdx;
   G.enemy = G.enemyGroup[enemyIdx]; // Sync global enemy reference
-  
+
   // Update target indicator on enemies
   document.querySelectorAll('.enemy').forEach((e, i) => {
     e.dataset.target = i === enemyIdx ? 'true' : 'false';
@@ -519,9 +513,9 @@ function selectTarget(enemyIdx) {
   if (G.pendingAction) {
     const action = G.pendingAction;
     G.pendingAction = null;
-    
+
     if (typeof Focus !== 'undefined') Focus.setTargeting(false);
-    
+
     // Set a flag so the action handler knows we are executing AFTER targeting
     G._executingPending = true;
     if (action.type === 'attack') heroAttack();
@@ -628,7 +622,8 @@ function buildAbilityMenu() {
     const type = ab.type || 'physical';
     const tIcon = TYPE_ICONS[type] || '🗡️';
 
-    const mpCost = actor.passive?.id === 'eidolon_bond' ? Math.ceil(ab.mp * 0.85) : ab.mp;
+    const mpCost = Math.ceil(ab.mp * PassiveSystem.val(actor, 'MP_COST_MULT', 1.0));
+    const canAfford = actor.mp >= mpCost;
 
     b.className = `cmd-btn ability-btn ab-type-${type}`;
     b.innerHTML = `
@@ -741,7 +736,7 @@ function checkBattleEnd() {
         relicMsg || ''
       ].filter(Boolean), ['hi', 'hi', 'hi']);
     }
-    
+
     BattleUI.renderPartyStatus();
     BattleUI.updateStats();
 

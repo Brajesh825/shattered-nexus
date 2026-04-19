@@ -3,7 +3,7 @@
  * Handles application, ticking, and interaction of combat status effects.
  */
 const StatusSystem = {
-  
+
   /**
    * Status Definitions Table
    * Centralizes configuration for all combat status effects.
@@ -11,19 +11,19 @@ const StatusSystem = {
   DEFS: {
     // Buffs
     regen: { id: 'status_regen', label: 'Regen', icon: '🌿', type: 'regen', color: 'var(--hp-hi)' },
-    heal_boost: { id: 'status_heal_boost', label: 'Mend', icon: '💖', type: 'mult', stat: 'healBoost', value: 1.5, color: '#ff66aa' },
-    guardian: { id: 'status_guardian', label: 'Guardian', icon: '🛡️', type: 'reduction', value: 0.5, color: 'var(--amber)' },
-    atk_boost: { id: 'status_atk_boost', label: 'Empower', icon: '⚔️', stat: 'atk', type: 'mult', value: 1.3, color: 'var(--gold)' },
-    def_boost: { id: 'status_def_boost', label: 'Fortify', icon: '🛡️', stat: 'def', type: 'mult', value: 1.3, color: 'var(--blue)' },
-    
+    heal_boost: { id: 'status_heal_boost', label: 'Mend', icon: '💖', type: 'mult', stat: 'healBoost', value: NexusScaling.status.mendHealBoost, color: '#ff66aa' },
+    guardian: { id: 'status_guardian', label: 'Guardian', icon: '🛡️', type: 'reduction', value: NexusScaling.status.guardianReduction, color: 'var(--amber)' },
+    atk_boost: { id: 'status_atk_boost', label: 'Empower', icon: '⚔️', stat: 'atk', type: 'mult', value: NexusScaling.status.empowerAtk, color: 'var(--gold)' },
+    def_boost: { id: 'status_def_boost', label: 'Fortify', icon: '🛡️', stat: 'def', type: 'mult', value: NexusScaling.status.fortifyDef, color: 'var(--blue)' },
+
     // Control / Debuffs
     stunned: { id: 'status_stunned', label: 'Stunned', icon: '💫', type: 'control', turns: 1, color: '#ffcc00' },
     frozen: { id: 'status_frozen', label: 'Frozen', icon: '❄️', type: 'control', turns: 2, color: '#00ccff' },
     slow: { id: 'status_slow', label: 'Slow', icon: '🐌', type: 'control', turns: 2, color: '#aa88ff' },
     burn: { id: 'status_burn', label: 'Burn', icon: '🔥', type: 'dot', color: '#ff4400' },
     poison: { id: 'status_poison', label: 'Poison', icon: '🟢', type: 'dot_percent', color: '#44cc44' },
-    def_shatter: { id: 'status_def_shatter', label: 'Shattered', icon: '❄️', stat: 'def', type: 'mult', value: 0.7, color: '#00ccff' },
-    
+    def_shatter: { id: 'status_def_shatter', label: 'Shattered', icon: '❄️', stat: 'def', type: 'mult', value: NexusScaling.status.shatterDef, color: '#00ccff' },
+
     // Auras
     aura_fire: { id: 'aura_fire', label: 'Fire Aura', icon: '🔥', type: 'aura', color: '#ff4400' },
     aura_ice: { id: 'aura_ice', label: 'Ice Aura', icon: '❄️', type: 'aura', color: '#00ccff' },
@@ -37,7 +37,7 @@ const StatusSystem = {
    */
   add(unit, config) {
     if (!unit.statuses) unit.statuses = [];
-    
+
     // Support either a key from DEFS or a full config object
     const def = typeof config === 'string' ? this.DEFS[config] : config;
     if (!def) return;
@@ -82,18 +82,19 @@ const StatusSystem = {
     if (!isEnemy) {
       const mpRegenAmt = 3 + Math.floor((unit._mpRegenBonus || 0) * unit.maxMp);
       unit.mp = Math.min(unit.maxMp, unit.mp + mpRegenAmt);
-      
-      if (unit.passive?.id === 'natures_grace' && unit.hp < unit.maxHp) {
-        unit.hp = Math.min(unit.maxHp, unit.hp + 5);
-        if (window.LogDebug) window.LogDebug(`[Passive] ${unit.displayName}: Nature's Grace (+5 HP)`, 'passive');
+
+      // 1b. Passive Regen Traits
+      const flatRegen = PassiveSystem.val(unit, 'HP_REGEN_FLAT', 0);
+      if (flatRegen > 0 && unit.hp < unit.maxHp) {
+        unit.hp = Math.min(unit.maxHp, unit.hp + flatRegen);
+        if (window.LogDebug) window.LogDebug(`[Passive] ${unit.displayName}: Periodic Regen (+${flatRegen} HP)`, 'passive');
       }
 
-      // Divine Blessing (self-only passive — only heals the unit that has the passive)
-      const _hasDivBless = unit.passive?.id === 'divine_blessing' && Battle.alive(unit);
-      if (_hasDivBless && unit.hp < unit.maxHp) {
-        const _dbAmt = Math.max(1, Math.floor(unit.maxHp * 0.15));
+      const ampRegenPerc = PassiveSystem.val(unit, 'HP_REGEN_AMP', 0);
+      if (ampRegenPerc > 0 && unit.hp < unit.maxHp) {
+        const _dbAmt = Math.max(1, Math.floor(unit.maxHp * ampRegenPerc));
         unit.hp = Math.min(unit.maxHp, unit.hp + _dbAmt);
-        if (window.LogDebug) window.LogDebug(`[Passive] ${unit.displayName}: Divine Blessing (+${_dbAmt} HP)`, 'passive');
+        if (window.LogDebug) window.LogDebug(`[Passive] ${unit.displayName}: Adaptive Regen (+${_dbAmt} HP)`, 'passive');
       }
     }
 
@@ -110,11 +111,11 @@ const StatusSystem = {
     unit.statuses.forEach(s => {
       // Apply periodic effects
       if (s.type === 'regen' || s.id === 'status_regen') {
-        const amt = Math.floor(unit.maxHp * 0.08); // 8% Max HP
+        const amt = Math.floor(unit.maxHp * NexusScaling.status.regenHP);
         unit.hp = Math.min(unit.maxHp, unit.hp + amt);
         if (typeof BattleUI !== 'undefined') BattleUI.popParty(G.party.indexOf(unit), amt, 'regen');
       }
-      
+
       if (s.type === 'dot' || s.id === 'status_burn') {
         const amt = s.value || 10;
         unit.hp = Math.max(0, unit.hp - amt);
@@ -128,7 +129,7 @@ const StatusSystem = {
       }
 
       if (s.type === 'dot_percent' || s.id === 'status_poison') {
-        const amt = Math.max(1, Math.floor(unit.maxHp * 0.05));
+        const amt = Math.max(1, Math.floor(unit.maxHp * NexusScaling.status.poisonHP));
         unit.hp = Math.max(0, unit.hp - amt);
         if (unit.hp <= 0) Battle.setKO(unit, isEnemy);
 
@@ -183,26 +184,86 @@ const StatusSystem = {
     let reaction = null;
 
     if (auraType === 'ice') {
-      if (detonator === 'physical' || detonator === 'earth') reaction = { id: 'shatter', label: 'SHATTER', color: '#00ccff', dmgMult: 1.5, debuff: 'def' };
-      else if (detonator === 'fire') reaction = { id: 'melt', label: 'MELT', color: '#ffaa00', dmgMult: 2.0 };
+      if (detonator === 'physical' || detonator === 'earth') {
+        reaction = {
+          id: 'shatter',
+          label: 'SHATTER',
+          color: '#00ccff',
+          dmgMult: NexusScaling.reactions.shatter,
+          debuff: 'def'
+        };
+      } else if (detonator === 'fire') {
+        reaction = {
+          id: 'melt',
+          label: 'MELT',
+          color: '#ffaa00',
+          dmgMult: NexusScaling.reactions.melt_fire_on_ice
+        };
+      }
     } else if (auraType === 'fire') {
-      if (detonator === 'nature') reaction = { id: 'conflagration', label: 'CONFLAGRATION', color: '#ff4400', dmgMult: 1.5, isAOE: true, dot: true };
-      else if (detonator === 'water') reaction = { id: 'vaporize', label: 'VAPORIZE', color: '#55aaff', dmgMult: 2.0 };
-      else if (detonator === 'ice') reaction = { id: 'melt', label: 'MELT', color: '#ffaa00', dmgMult: 1.5 };
+      if (detonator === 'nature') {
+        reaction = {
+          id: 'conflagration',
+          label: 'CONFLAGRATION',
+          color: '#ff4400',
+          dmgMult: NexusScaling.reactions.conflagration,
+          isAOE: true,
+          dot: true
+        };
+      } else if (detonator === 'water') {
+        reaction = {
+          id: 'vaporize',
+          label: 'VAPORIZE',
+          color: '#55aaff',
+          dmgMult: NexusScaling.reactions.vaporize_water_on_fire
+        };
+      } else if (detonator === 'ice') {
+        reaction = {
+          id: 'melt',
+          label: 'MELT',
+          color: '#ffaa00',
+          dmgMult: NexusScaling.reactions.melt_ice_on_fire
+        };
+      }
     } else if (auraType === 'water') {
-      if (detonator === 'lightning') reaction = { id: 'conductive', label: 'CONDUCTIVE', color: '#ffcc00', dmgMult: 1.3, stun: true };
-      else if (detonator === 'fire') reaction = { id: 'vaporize', label: 'VAPORIZE', color: '#55aaff', dmgMult: 1.5 };
+      if (detonator === 'lightning') {
+        reaction = {
+          id: 'conductive',
+          label: 'CONDUCTIVE',
+          color: '#ffcc00',
+          dmgMult: NexusScaling.reactions.conductive,
+          stun: true
+        };
+      } else if (detonator === 'fire') {
+        reaction = {
+          id: 'vaporize',
+          label: 'VAPORIZE',
+          color: '#55aaff',
+          dmgMult: NexusScaling.reactions.vaporize_fire_on_water
+        };
+      }
     } else if (auraType === 'nature') {
-      if (detonator === 'fire') reaction = { id: 'burn', label: 'BURNING', color: '#ee4400', dmgMult: 1.2, dot: true };
+      if (detonator === 'fire') {
+        reaction = {
+          id: 'burn',
+          label: 'BURNING',
+          color: '#ee4400',
+          dmgMult: NexusScaling.reactions.burning,
+          dot: true
+        };
+      }
     }
 
     if (reaction) {
       this.remove(target, aura.id); // Consume aura
-      
+
       // Scaling by elemental affinity
       const m = typeof Battle !== 'undefined' ? Battle.elemMult(detonator, target) : 1.0;
-      if (m < 1.0) reaction.dmgMult = (reaction.dmgMult - 1) * 0.5 + 1;
-      else if (m > 1.0) reaction.dmgMult *= 1.5;
+      if (m < 1.0) {
+        reaction.dmgMult = (reaction.dmgMult - 1) * 0.5 + 1;
+      } else if (m > 1.0) {
+        reaction.dmgMult *= NexusScaling.reactions.affinityBonus;
+      }
     }
 
     return reaction;

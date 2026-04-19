@@ -4885,3 +4885,21 @@ input[type=range].setting-slider::-webkit-slider-thumb {
   grid-column: 1 / -1; text-align: center; padding: 60px;
   color: #7878a8; font-family: var(--px); font-size: var(--fs-sm);
 }
+
+/* Save Selection Styling */
+.save-select-card {
+  border-color: rgba(64, 192, 255, 0.2);
+  background: linear-gradient(135deg, rgba(20, 30, 60, 0.4), rgba(10, 15, 30, 0.4));
+}
+.save-select-card:hover {
+  border-color: rgba(64, 192, 255, 0.6);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 20px rgba(64, 192, 255, 0.2);
+}
+.save-select-card .gc-tier {
+  background: rgba(64, 192, 255, 0.1);
+  color: #40c0ff;
+}
+.save-select-card .gc-fight-btn {
+  background: #40c0ff;
+  color: #000;
+}

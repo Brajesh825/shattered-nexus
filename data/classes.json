@@ -117,7 +117,7 @@
                 "icon": "ðŸ”¥",
                 "mp": 0,
                 "type": "physical",
-                "description": "Ghost-fire spear strike â€” 1.6x ATK, self-heal 15% damage",
+                "description": "Vampiric ghost-fire strike â€” 1.6x ATK, self-heal 15% damage",
                 "effect": {
                     "dmgMultiplier": 1.6,
                     "element": "fire",
@@ -158,7 +158,7 @@
                 "mp": 12,
                 "type": "physical",
                 "isUltimate": true,
-                "description": "Ultimate ghost strike â€” 4.0x dynamic damage (scales with Max HP \u0026 Loss), massive self-heal",
+                "description": "Ultimate vampiric strike â€” 4.0x total damage (scales with Max HP \u0026 Loss), massive life-steal",
                 "effect": {
                     "dmgMultiplier": 4.0,
                     "element": "fire",
@@ -220,7 +220,7 @@
                 "icon": "ðŸ’§",
                 "mp": 8,
                 "type": "magic_damage",
-                "description": "Spinning water attack â€” 2.0x magic damage, heal all allies for 50% damage",
+                "description": "Spinning water attack â€” 2.2x magic damage, heal all allies for 50% damage",
                 "effect": {
                     "dmgMultiplier": 2.2,
                     "element": "water",
@@ -699,7 +699,7 @@
                 "effect": {
                     "dmgMultiplier": 2.5,
                     "element": "holy",
-                    "statScale": "def",
+                    "statScale": ["atk", "def"],
                     "partyBuff": true
                 }
             }

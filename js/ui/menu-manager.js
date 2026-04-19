@@ -80,23 +80,26 @@ MapEngine.onEncounterStart = (enc, map) => {
     enemyIds.forEach(id => Archive.recordSeen(id));
   }
 
-  // Apply mutation stat multipliers on top of built group
+  // Apply mutation stat multipliers on top of built group per NexusScaling
   if (mutation) {
-    const mult = mutation === 'mutant' ? 1.55 : 1.28;
+    const mutDef = NexusScaling.mutation[mutation];
+    const statMult = mutDef ? mutDef.statMult : 1.0;
+    const hpMult = mutDef ? (mutDef.hpMult || mutDef.statMult) : 1.0;
+    
     G.enemyGroup.forEach(e => {
-      // --- SAFETY CHECK: NO MUTATED BOSSES ---
-      if (e.isBoss || e.tier >= 3) {
+      // --- SAFETY CHECK: NO MUTATED BOSSES (Still enforced for Boss-flagged legends) ---
+      if (e.isBoss) {
         e.mutation = null;
         e.mutantTraits = null;
         return;
       }
 
-      e.hp    = Math.floor(e.hp    * mult); e.maxHp = e.hp;
-      e.atk   = Math.floor(e.atk   * mult);
-      e.def   = Math.floor(e.def   * mult);
-      e.mag   = Math.floor(e.mag   * mult);
-      e.exp   = Math.floor(e.exp   * (mutation === 'mutant' ? 2.2 : 1.5));
-      e.gold  = Math.floor(e.gold  * (mutation === 'mutant' ? 2.0 : 1.4));
+      e.hp    = Math.floor(e.hp    * hpMult); e.maxHp = e.hp;
+      e.atk   = Math.floor(e.atk   * statMult);
+      e.def   = Math.floor(e.def   * statMult);
+      e.mag   = Math.floor(e.mag   * statMult);
+      e.exp   = Math.floor(e.exp   * (mutation === 'mutant' ? NexusScaling.mutation.mutant.expMult : NexusScaling.mutation.corrupted.expMult));
+      e.gold  = Math.floor(e.gold  * (mutation === 'mutant' ? NexusScaling.mutation.mutant.goldMult : NexusScaling.mutation.corrupted.goldMult));
       e.mutation = mutation;
 
       // ── Apply mutant traits ──────────────────────────────
