@@ -700,18 +700,21 @@ function checkBattleEnd() {
 
       // Award EXP and gold to all alive members; loop level-ups until threshold not met
       G.party.forEach(m => {
-        if (!Battle.alive(m)) return;
-        // Level-gap penalty: scale exp down as member outlevels enemies.
-        // At +3 levels above enemy: 0 exp. Linear ramp from gap 0 → gap 3.
-        const gap = (m.lv || 1) - avgEnemyLv;
-        const expScale = gap >= 3 ? 0 : gap <= 0 ? 1 : 1 - (gap / 3);
-        const earnedExp = Math.floor(totalExp * expScale);
-        m.exp += earnedExp;
-        m.gold += totalGold;
-        while (checkMemberLevel(m)) {
-          if (!leveledNames.includes(m.displayName)) leveledNames.push(m.displayName);
+        // Award EXP and gold only to surviving members
+        if (Battle.alive(m)) {
+          // Level-gap penalty: scale exp down as member outlevels enemies.
+          // At +3 levels above enemy: 0 exp. Linear ramp from gap 0 → gap 3.
+          const gap = (m.lv || 1) - avgEnemyLv;
+          const expScale = gap >= 3 ? 0 : gap <= 0 ? 1 : 1 - (gap / 3);
+          const earnedExp = Math.floor(totalExp * expScale);
+          m.exp += earnedExp;
+          m.gold += totalGold;
+          while (checkMemberLevel(m)) {
+            if (!leveledNames.includes(m.displayName)) leveledNames.push(m.displayName);
+          }
         }
-        // Sync stats back to character data for persistence across battles
+        // Always sync progression back to G.chars regardless of KO state
+        // so level/exp are never lost between battles
         const ch = G.chars.find(c => c.id === m.charId);
         if (ch) {
           ch.lv = m.lv;

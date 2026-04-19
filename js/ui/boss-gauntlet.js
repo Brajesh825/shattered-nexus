@@ -25,7 +25,7 @@ const BossGauntlet = {
         return [
             "void_knight", "abomination", "dragon", "fallen_angel",
             "void_warden", "shadow_titan", "shadow_emperor", "kraken",
-            "demon_lord"
+            "demon_lord", "dark_phoenix"
         ];
     },
 
@@ -136,20 +136,28 @@ const BossGauntlet = {
                     member.lv = saved.lv || 1;
                     member.exp = saved.exp || 0;
                     member.gold = saved.gold || 0;
-                    if (saved.maxHp !== undefined) member.maxHp = saved.maxHp;
-                    if (saved.maxMp !== undefined) member.maxMp = saved.maxMp;
+
+                    // Sync level to char FIRST so computeStats uses the correct level
+                    if (member.char) member.char.lv = saved.lv || 1;
+
+                    // Recompute stats fresh from source so saved combat stats never inflate values
+                    if (member.char && member.cls) {
+                        const fresh = computeStats(member.char, member.cls);
+                        const relicMult = typeof _getRelicStatMult === 'function' ? _getRelicStatMult() : { hp:1, mp:1, atk:1, def:1, spd:1, mag:1, lck:1 };
+                        member.maxHp = Math.floor(fresh.hp * relicMult.hp);
+                        member.maxMp = Math.floor(fresh.mp * relicMult.mp);
+                        member.atk   = Math.floor(fresh.atk * relicMult.atk);
+                        member.def   = Math.floor(fresh.def * relicMult.def);
+                        member.mag   = Math.floor(fresh.mag * relicMult.mag);
+                        member.spd   = Math.floor(fresh.spd * relicMult.spd);
+                        member.lck   = Math.floor(fresh.lck * relicMult.lck);
+                    }
 
                     // FORCE FULL RESTORATION FOR GAUNTLET MODE
                     member.hp = member.maxHp;
                     member.mp = member.maxMp;
                     member.isKO = false;
                     member.statuses = [];
-
-                    if (saved.atk !== undefined) member.atk = saved.atk;
-                    if (saved.def !== undefined) member.def = saved.def;
-                    if (saved.mag !== undefined) member.mag = saved.mag;
-                    if (saved.spd !== undefined) member.spd = saved.spd;
-                    if (saved.lck !== undefined) member.lck = saved.lck;
                 }
 
                 // 2. Sync the base character definition in G.chars (prevents reset if party is rebuilt)

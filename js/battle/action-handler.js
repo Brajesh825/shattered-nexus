@@ -481,6 +481,20 @@ const ActionEngine = {
       } else {
         _applyBuff(actor);
       }
+
+      if (window.LogDebug) {
+        const buffParts = [];
+        if (e.atkBuff) buffParts.push(`ATK×${e.atkBuff}`);
+        if (e.defBuff) buffParts.push(`DEF×${e.defBuff}`);
+        if (e.magBuff) buffParts.push(`MAG×${e.magBuff}`);
+        if (e.stat)    buffParts.push(`${e.stat.toUpperCase()}×${e.multiplier || 1.3}`);
+        if (e.hpRegen) buffParts.push(`Regen`);
+        if (e.fireAmp) buffParts.push(`FireAmp×${e.fireAmp}`);
+        if (e.evasion) buffParts.push(`Evasion+${e.evasion}`);
+        const target = e.aoe ? 'ALL' : (actor.displayName || actor.name);
+        window.LogDebug(`[BUFF] ${actor.displayName || actor.name} uses ${ab.name} -> ${target}: ${buffParts.join(', ')} (${e.duration || 3} turns)`, 'regen');
+      }
+
       BattleUI.addLog(`${actor.name || actor.displayName}: ${ab.name}!${BattleUI._getBuffReport(actor)}`, 'heal');
       BattleUI.renderPartyStatus();
       BattleUI.renderPartyRow(); // Fix: Ensure HP sacrifice (Hu Tao) or buffs show immediately
@@ -491,11 +505,18 @@ const ActionEngine = {
       const e = ab.effect || {};
       const enemy = targets[0];
       if (!enemy) { setTimeout(() => TurnManager.advance(), 750); return; }
-      if (e.stat) { Battle.addStatus(enemy, { id: `debuff_${e.stat}`, label: `${e.stat.toUpperCase()} Down`, icon: '🔻', stat: e.stat, type: 'mult', value: e.multiplier || 0.7, turns: e.duration || 2, color: 'var(--red)' }); BattleUI.addLog(`${enemy.name}'s ${e.stat.toUpperCase()} lowered!`, 'magic'); }
-      if (e.defDebuff) { Battle.addStatus(enemy, { id: 'debuff_def', label: 'DEF Down', icon: '🔻', stat: 'def', type: 'mult', value: e.defDebuff, turns: e.duration || 2 }); BattleUI.addLog(`${enemy.name}'s DEF lowered!`, 'magic'); }
-      if (e.stunLow && enemy.hp <= enemy.maxHp * 0.3) { Battle.addStatus(enemy, { id: 'status_stunned', label: 'Stunned', icon: '💫', type: 'control', turns: 1 }); BattleUI.addLog(`💫 ${enemy.name} is stunned! (Low HP)`, 'magic'); }
-      if (e.freezeChance && !StatusSystem.has(enemy, 'status_frozen') && Math.random() < e.freezeChance) { Battle.addStatus(enemy, { id: 'status_frozen', label: 'Frozen', icon: '❄️', type: 'control', turns: 2 }); BattleUI.addLog(`❄️ ${enemy.name} is Frozen for 2 turns!`, 'magic'); }
-      if (e.slowChance && !StatusSystem.has(enemy, 'status_slow') && Math.random() < e.slowChance) { Battle.addStatus(enemy, { ...StatusSystem.DEFS.slow }); BattleUI.addLog(`🐌 ${enemy.name} is Slowed!`, 'magic'); }
+
+      const debuffParts = [];
+      if (e.stat)        { Battle.addStatus(enemy, { id: `debuff_${e.stat}`, label: `${e.stat.toUpperCase()} Down`, icon: '🔻', stat: e.stat, type: 'mult', value: e.multiplier || 0.7, turns: e.duration || 2, color: 'var(--red)' }); BattleUI.addLog(`${enemy.name}'s ${e.stat.toUpperCase()} lowered!`, 'magic'); debuffParts.push(`${e.stat.toUpperCase()}×${e.multiplier || 0.7}`); }
+      if (e.defDebuff)   { Battle.addStatus(enemy, { id: 'debuff_def', label: 'DEF Down', icon: '🔻', stat: 'def', type: 'mult', value: e.defDebuff, turns: e.duration || 2 }); BattleUI.addLog(`${enemy.name}'s DEF lowered!`, 'magic'); debuffParts.push(`DEF×${e.defDebuff}`); }
+      if (e.stunLow && enemy.hp <= enemy.maxHp * 0.3) { Battle.addStatus(enemy, { id: 'status_stunned', label: 'Stunned', icon: '💫', type: 'control', turns: 1 }); BattleUI.addLog(`💫 ${enemy.name} is stunned! (Low HP)`, 'magic'); debuffParts.push(`Stun(LowHP)`); }
+      if (e.freezeChance && !StatusSystem.has(enemy, 'status_frozen') && Math.random() < e.freezeChance) { Battle.addStatus(enemy, { id: 'status_frozen', label: 'Frozen', icon: '❄️', type: 'control', turns: 2 }); BattleUI.addLog(`❄️ ${enemy.name} is Frozen for 2 turns!`, 'magic'); debuffParts.push(`Freeze(${e.freezeChance*100}%)`); }
+      if (e.slowChance && !StatusSystem.has(enemy, 'status_slow') && Math.random() < e.slowChance) { Battle.addStatus(enemy, { ...StatusSystem.DEFS.slow }); BattleUI.addLog(`🐌 ${enemy.name} is Slowed!`, 'magic'); debuffParts.push(`Slow(${e.slowChance*100}%)`); }
+
+      if (window.LogDebug) {
+        window.LogDebug(`[DEBUFF] ${actor.displayName || actor.name} uses ${ab.name} -> ${enemy.name}: ${debuffParts.join(', ') || 'no effect'} (${e.duration || 2} turns)`, 'dmg');
+      }
+
       BattleUI.renderEnemyRow();
       setTimeout(() => TurnManager.advance(), 750);
     },
