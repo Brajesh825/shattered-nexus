@@ -73,7 +73,8 @@ MapEngine.onEncounterStart = (enc, map) => {
     mutation, // carried into the built enemy object
   })) : enemyDefs;
 
-  buildEnemyGroup(mutatedDefs, spawnLevel, false);
+  const isBossEncounter = enc.isBoss || false;
+  buildEnemyGroup(mutatedDefs, spawnLevel, isBossEncounter);
 
   // Record encountered enemies in Archive
   if (typeof Archive !== 'undefined') {

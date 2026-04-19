@@ -380,6 +380,7 @@ const MapEntities = (() => {
       mutationTick:   0,           // accumulator for per-second roll
       mutation:       null,        // null | 'corrupted' | 'mutant'
       mutationPhase:  0,           // animation phase for glow pulse
+      isBoss:         e.isBoss || e.boss || false, // Capture map-specific boss flag
     }));
     _encounteredIdx = -1;
   }
@@ -560,7 +561,12 @@ const MapEntities = (() => {
       if (en.tx === ptx && en.ty === pty) {
         _encounteredIdx = i;
         const ids = _buildEncounterGroup(en.id, map);
-        return { enemies: ids, mutation: en.mutation || null, mutantTraits: en.mutantTraits || null };
+        return { 
+          enemies: ids, 
+          mutation: en.mutation || null, 
+          mutantTraits: en.mutantTraits || null,
+          isBoss: en.isBoss || false // Pass through the map-level boss flag
+        };
       }
     }
     return null;
@@ -570,6 +576,12 @@ const MapEntities = (() => {
   function _buildEncounterGroup(triggerId, map) {
     const mapEnemyIds = (map.encounters || map.enemies || []).map(e => e.id);
     const pool        = mapEnemyIds.length ? mapEnemyIds : [triggerId];
+
+    // --- LOGIC FIX: Respect Bosses and Tier 3 Alphas ---
+    const raw = (G && G.enemies) ? G.enemies.find(r => r.id === triggerId) : null;
+    if (raw && (raw.isBoss || raw.tier >= 3)) {
+        return [triggerId]; // Bosses/Alphas always fight solo or as defined by trigger
+    }
 
     // Use encounter templates if defined on the map, else roll random group size
     if (map.encounterTemplates && map.encounterTemplates.length) {
