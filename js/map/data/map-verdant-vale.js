@@ -7,53 +7,63 @@
  */
 
 MAP_DEFS.verdant_vale = {
-    id:          'verdant_vale',
-    name:        'Verdant Vale',
-    arcId:       1,
-    width:       60,
-    height:      40,
-    playerStart: { x: 7, y: 10 }, 
-    bgColor:     '#0a1a05',
-    ambientLight:'rgba(60,180,60,0.04)',
+    id: 'verdant_vale',
+    name: 'Verdant Vale',
+    arcId: 1,
+    width: 60,
+    height: 40,
+    playerStart: { x: 7, y: 10 },
+    bgColor: '#0a1a05',
+    ambientLight: 'rgba(60,180,60,0.04)',
     enemyLevelRange: [1, 3],
     // Arc 1 — very lenient. Player is still learning the game.
     mutationConfig: {
-      corruptThreshold: 90,   // 90s before corruption rolls begin
-      mutantThreshold:  180,  // 3 min before mutant possible
-      corruptChance:    0.020, // 2%/s — slow creep
-      mutantChance:     0.010, // 1%/s — rare
+        corruptThreshold: 90,   // 90s before corruption rolls begin
+        mutantThreshold: 180,  // 3 min before mutant possible
+        corruptChance: 0.020, // 2%/s — slow creep
+        mutantChance: 0.010, // 1%/s — rare
     },
 
     encounterTemplates: [
-      { weight: 3, enemies: ['goblin'] },
-      { weight: 3, enemies: ['wolf'] },
-      { weight: 2, enemies: ['goblin', 'goblin'] },
-      { weight: 2, enemies: ['bat', 'bat'] },
-      { weight: 2, enemies: ['goblin', 'wolf'] },
-      { weight: 2, enemies: ['spider', 'spider'] },
-      { weight: 1, enemies: ['goblin', 'goblin', 'bat'] },
-      { weight: 1, enemies: ['wolf', 'spider', 'bat'] },
-      { weight: 1, enemies: ['goblin', 'goblin', 'wolf', 'spider'] },
+        { weight: 3, enemies: ['goblin'] },
+        { weight: 3, enemies: ['wolf'] },
+        { weight: 2, enemies: ['goblin', 'goblin'] },
+        { weight: 2, enemies: ['bat', 'bat'] },
+        { weight: 2, enemies: ['goblin', 'wolf'] },
+        { weight: 2, enemies: ['spider', 'spider'] },
+        { weight: 1, enemies: ['goblin', 'goblin', 'bat'] },
+        { weight: 1, enemies: ['wolf', 'spider', 'bat'] },
+        { weight: 1, enemies: ['goblin', 'goblin', 'wolf', 'spider'] },
     ],
 
     enemies: [
         // --- WEST SIDE (Lower Level) ---
-        { id:'goblin', x:8,  y:15, patrol:'horizontal', range:3, speed:1.0 },
-        { id:'goblin', x:18, y:8,  patrol:'random',     range:2, speed:1.1 },
-        { id:'wolf',   x:22, y:25, patrol:'random',     range:4, speed:1.4 },
-        
-        // --- THE BRIDGE GUARDS ---
-        { id:'bat',    x:26, y:14, patrol:'vertical',   range:2, speed:1.8 },
-        { id:'bat',    x:34, y:14, patrol:'vertical',   range:2, speed:1.8 },
+        { id: 'goblin', x: 8, y: 15, patrol: 'horizontal', range: 3, speed: 1.0 },
+        { id: 'goblin', x: 18, y: 8, patrol: 'random', range: 2, speed: 1.1 },
+        { id: 'wolf', x: 22, y: 25, patrol: 'random', range: 4, speed: 1.4 },
+        { id: 'goblin', x: 10, y: 8, patrol: 'horizontal', range: 2, speed: 0.9 }, // Near Town
+        { id: 'goblin', x: 15, y: 12, patrol: 'vertical', range: 2, speed: 1.0 }, // Orchard Gate
+        { id: 'wolf', x: 5, y: 20, patrol: 'random', range: 3, speed: 1.2 }, // South Orchard
+
+        // --- THE BRIDGE GUARDS & RIVER PATROL ---
+        { id: 'bat', x: 26, y: 14, patrol: 'vertical', range: 2, speed: 1.8 },
+        { id: 'bat', x: 34, y: 14, patrol: 'vertical', range: 2, speed: 1.8 },
+        { id: 'bat', x: 27, y: 5, patrol: 'horizontal', range: 4, speed: 1.5 }, // North West Riverbank
+        { id: 'bat', x: 33, y: 25, patrol: 'horizontal', range: 3, speed: 1.6 }, // South East Riverbank
+        { id: 'rat', x: 27, y: 10, patrol: 'random', range: 2, speed: 1.2 }, // West Riverbank
 
         // --- EAST SIDE (The Wilds) ---
-        { id:'spider', x:40, y:22, patrol:'random',     range:3, speed:0.9 }, // In flower meadow
-        { id:'spider', x:48, y:28, patrol:'random',     range:3, speed:0.9 }, // Near sandy bank
-        { id:'wolf',   x:45, y:10, patrol:'horizontal', range:5, speed:1.5 }, // North plateau
-        { id:'goblin', x:54, y:28, patrol:'vertical',   range:2, speed:1.2 }  // Cave entrance guard
+        { id: 'spider', x: 40, y: 22, patrol: 'random', range: 3, speed: 0.9 }, // In flower meadow
+        { id: 'spider', x: 48, y: 28, patrol: 'random', range: 3, speed: 0.9 }, // Near sandy bank
+        { id: 'wolf', x: 45, y: 10, patrol: 'horizontal', range: 5, speed: 1.5 }, // North plateau
+        { id: 'goblin', x: 54, y: 28, patrol: 'vertical', range: 2, speed: 1.2 }, // Cave entrance guard
+        { id: 'wolf', x: 42, y: 5, patrol: 'random', range: 3, speed: 1.4 }, // Mountain pass
+        { id: 'spider', x: 45, y: 25, patrol: 'vertical', range: 3, speed: 1.0 }, // Meadow deeps
+        { id: 'spider', x: 50, y: 15, patrol: 'horizontal', range: 4, speed: 1.1 }, // Ruin approach
+        { id: 'goblin', x: 56, y: 12, patrol: 'random', range: 2, speed: 1.1 }  // High plateau
     ],
 
-    tiles: (function() {
+    tiles: (function () {
         const rows = [];
         for (let y = 0; y < 40; y++) {
             let row = new Array(60).fill(1); // Default to Grass (1)
@@ -69,7 +79,7 @@ MAP_DEFS.verdant_vale = {
                 if (x >= 28 && x <= 32) {
                     // Place the Bridge (4) at y13-y15 across the river
                     if (y >= 13 && y <= 15) {
-                        row[x] = 4; 
+                        row[x] = 4;
                     } else {
                         row[x] = 3; // Water
                     }
@@ -111,7 +121,7 @@ MAP_DEFS.verdant_vale = {
                         row[x] = 7; // Cave Floor (The Entrance)
                     }
                 }
-                
+
                 // 9. Side Borders (Deep Forest)
                 if (x < 3 || x > 57) {
                     // Ensure the Cave and Path can still exist
@@ -126,7 +136,7 @@ MAP_DEFS.verdant_vale = {
     })(),
 
     npcs: [
-      { id: 'essabella', x: 44, y: 22, dialogueKey: 'verdant_vale' },
+        { id: 'essabella', x: 44, y: 22, dialogueKey: 'verdant_vale' },
     ],
 
     objective: {
@@ -139,23 +149,23 @@ MAP_DEFS.verdant_vale = {
     fog: { delay: 30, peak: 150, max: 0.72, vision: 3.8 },
 
     voiceLines: {
-      ambient: [
-        { char:'Aya',  color:'#7dd3fc', text:'The vale feels larger at dusk.' },
-        { char:'Tao',  color:'#ef4444', text:'Something rustles. Maybe just the wind.' },
-        { char:'Lulu',  color:'#2dd4bf', text:'I can hear the river somewhere ahead.' },
-        { char:'Rei',   color:'#4ade80', text:'Stay alert. This place is not as peaceful as it looks.' },
-      ],
-      fogRising: [
-        { char:'Rei',   color:'#4ade80', text:'A mist is rising. Keep moving.' },
-        { char:'Tao',  color:'#ef4444', text:'Oh good, ominous fog. My favorite.' },
-        { char:'Aya',  color:'#7dd3fc', text:'The light is fading. Stay together.' },
-        { char:'Lulu',  color:'#2dd4bf', text:'I can barely see past the treeline.' },
-      ],
-      encounter: [
-        { char:'Rei',   color:'#4ade80', text:'Enemy — don\'t let them surround us!' },
-        { char:'Tao',  color:'#ef4444', text:'They came out of nowhere!' },
-        { char:'Aya',  color:'#7dd3fc', text:'Ambush — form up!' },
-        { char:'Lulu',  color:'#2dd4bf', text:'The fog — they were hiding in it!' },
-      ],
+        ambient: [
+            { char: 'Aya', color: '#7dd3fc', text: 'The vale feels larger at dusk.' },
+            { char: 'Tao', color: '#ef4444', text: 'Something rustles. Maybe just the wind.' },
+            { char: 'Lulu', color: '#2dd4bf', text: 'I can hear the river somewhere ahead.' },
+            { char: 'Rei', color: '#4ade80', text: 'Stay alert. This place is not as peaceful as it looks.' },
+        ],
+        fogRising: [
+            { char: 'Rei', color: '#4ade80', text: 'A mist is rising. Keep moving.' },
+            { char: 'Tao', color: '#ef4444', text: 'Oh good, ominous fog. My favorite.' },
+            { char: 'Aya', color: '#7dd3fc', text: 'The light is fading. Stay together.' },
+            { char: 'Lulu', color: '#2dd4bf', text: 'I can barely see past the treeline.' },
+        ],
+        encounter: [
+            { char: 'Rei', color: '#4ade80', text: 'Enemy — don\'t let them surround us!' },
+            { char: 'Tao', color: '#ef4444', text: 'They came out of nowhere!' },
+            { char: 'Aya', color: '#7dd3fc', text: 'Ambush — form up!' },
+            { char: 'Lulu', color: '#2dd4bf', text: 'The fog — they were hiding in it!' },
+        ],
     },
 };
