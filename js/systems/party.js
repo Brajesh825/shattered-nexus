@@ -94,7 +94,11 @@ function applyRelicBonuses() {
   const defs = G.relics || [];
 
   // Aggregate bonuses from all active relics
-  const bonus = { hp: 1, mp: 1, atk: 1, def: 1, spd: 1, mag: 1, lck: 1, healAmp: 1, mpRegen: 0, eliteResist: 0, fireResist: 0, statusResist: 0, firstStrike: false };
+  const bonus = { 
+    hp: 1, mp: 1, atk: 1, def: 1, spd: 1, mag: 1, lck: 1, 
+    healAmp: 1, mpRegen: 0, eliteResist: 0, fireResist: 0, 
+    statusResist: 0, firstStrike: false, reviveOnce: false 
+  };
   active.forEach(id => {
     const r = defs.find(d => d.id === id);
     if (!r || !r.bonus) return;
@@ -111,6 +115,7 @@ function applyRelicBonuses() {
     if (r.bonus.fireResist) bonus.fireResist += r.bonus.fireResist;   // Cinder of Ashveil
     if (r.bonus.statusResist) bonus.statusResist += r.bonus.statusResist; // Drowned Sigil
     if (r.bonus.firstStrike) bonus.firstStrike = true;                // Echo of the Unmade
+    if (r.bonus.reviveOnce) bonus.reviveOnce = true;                  // Rampart Oath
   });
 
   G.party.forEach(m => {
@@ -128,6 +133,7 @@ function applyRelicBonuses() {
     m._eliteResist = bonus.eliteResist; // fraction of damage reduction vs Corrupted/Mutant
     m._fireResist = bonus.fireResist;  // fraction of fire damage reduction
     m._statusResist = bonus.statusResist; // chance (0–1) to resist debuff application
+    m._reviveOnceRelic = bonus.reviveOnce; // flag for Rampart Oath
   });
 
   // firstStrike: flag on G so TurnManager can guarantee party acts first in round 1

@@ -26,15 +26,16 @@ const ActionHandler = {
  * Fires at most once per battle per member. Only applies to party members, not enemies.
  */
 function _checkReviveOnce(member) {
-  if (member._reviveOnceFired) return;
-  const relicDef = (G.activeRelics || [])
-    .map(id => (G.relics || []).find(r => r.id === id))
-    .find(r => r?.bonus?.reviveOnce);
-  if (!relicDef) return;
+  if (member._reviveOnceFired || !member._reviveOnceRelic) return;
+  
+  // Find name for log (optional but nice)
+  const relicDef = (G.relics || []).find(r => r.id === 'rampart_oath');
+  const relicName = relicDef ? relicDef.name : 'Rampart Oath';
+  
   member._reviveOnceFired = true;
   member.isKO = false;
   member.hp = 1;
-  BattleUI.addLog(`🛡️ ${member.displayName} revived by ${relicDef.name}!`, 'heal');
+  BattleUI.addLog(`🛡️ ${member.displayName} revived by ${relicName}!`, 'heal');
   BattleUI.popParty(G.party.indexOf(member), 1, 'heal');
 }
 
@@ -187,6 +188,26 @@ function resolveOffensiveAction(actor, target, targetIdx, action, element) {
   return dmg;
 }
 
+/**
+ * Maps enemy specific move IDs to existing SVG animations or generic variants.
+ */
+function mapEnemyAnimation(moveId) {
+  if (!moveId) return null;
+  const registry = {
+    'inferno': 'inferno',
+    'hell_strike': 'hell_strike',
+    'demon_eye': 'demon_eye',
+    'quick_slash': 'generic_slash',
+    'slimy_strike': 'generic_slam',
+    'stone_throw': 'generic_slam',
+    'dirty_trick': 'generic_bash',
+    'bite': 'generic_slash',
+    'dark_pulse': 'generic_dark',
+    'shadow_web': 'generic_dark'
+  };
+  return registry[moveId] || moveId;
+}
+
 
 
 /**
@@ -315,7 +336,8 @@ function resolveEnemyOffensiveAction(actor, target, targetIdx, ab, element) {
   if (!reaction && element !== 'physical') Battle.applyAura(target, element);
 
   // 10. Effects overlay + party sprite shake
-  BattleUI.createEffectOverlay(targetIdx, element, 'party');
+  const animId = mapEnemyAnimation(ab?.id);
+  BattleUI.createEffectOverlay(targetIdx, element, 'party', animId);
   if (!isMagic) {
     const pspr = BattleUI.getSprite(targetIdx, 'party');
     if (pspr) {

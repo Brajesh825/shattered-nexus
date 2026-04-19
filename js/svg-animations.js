@@ -575,6 +575,103 @@ const SVGAnimations = {
     s.classList.add('battle-svg-animation');
     s.innerHTML = `<defs><style>@keyframes la-seal-slam{0%{transform:translateY(-120px) scale(1.5);opacity:0;}15%{opacity:1;}35%{transform:translateY(10px) scale(1);opacity:1;}45%{transform:translateY(0px) scale(1);opacity:1;}85%{transform:translateY(0px) scale(1);opacity:1;}100%{transform:translateY(20px) scale(0.9);opacity:0;}}@keyframes la-chains{0%{stroke-dashoffset:200;opacity:0;}35%{opacity:0;}45%{opacity:1;stroke-dashoffset:0;}85%{opacity:1;stroke-dashoffset:0;}100%{opacity:0;}}@keyframes la-royal-ring{0%{r:8;opacity:0;stroke-width:8;}35%{r:8;opacity:0;}40%{r:8;opacity:1;stroke-width:6;}100%{r:120;opacity:0;stroke-width:0.5;}}@keyframes la-blessing-cascade{0%{transform:translateY(0) scale(1);opacity:0;}35%{opacity:0;}45%{opacity:1;}100%{transform:translateY(80px) scale(0.3);opacity:0;}}</style></defs><defs><filter id="la-glow"><feGaussianBlur stdDeviation="5"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g style="transform-origin:100px 100px; animation:la-seal-slam 2900ms cubic-bezier(0.1,0.8,0.2,1) forwards;"><polygon points="100,20 130,50 100,80 70,50" fill="#ffd700" fill-opacity="0.8" stroke="#ffffff" stroke-width="2" filter="url(#la-glow)"/><polygon points="100,30 120,50 100,70 80,50" fill="#ffaa00" opacity="0.9"/><circle cx="100" cy="50" r="8" fill="#ffffff" filter="url(#la-glow)"/></g><g style="animation:la-chains 2900ms ease-out forwards;"><path d="M 0 120 L 80 80" stroke="#ffd700" stroke-width="4" stroke-dasharray="200" stroke-dashoffset="200" stroke-linecap="round"/><path d="M 200 120 L 120 80" stroke="#ffd700" stroke-width="4" stroke-dasharray="200" stroke-dashoffset="200" stroke-linecap="round"/><path d="M 100 0 L 100 60" stroke="#ffff99" stroke-width="6" stroke-dasharray="200" stroke-dashoffset="200" stroke-linecap="round"/></g><circle cx="100" cy="75" r="8" fill="none" stroke="#ffd700" stroke-width="6" style="animation:la-royal-ring 2900ms ease-out forwards;"/><circle cx="100" cy="75" r="8" fill="none" stroke="#ffff99" stroke-width="3" style="animation:la-royal-ring 2900ms ease-out forwards 200ms;"/><circle cx="100" cy="100" r="3" fill="#ffd700" filter="url(#la-glow)" style="--bcx:-30px; animation:la-blessing-cascade 2900ms ease-in forwards;"/><circle cx="80" cy="105" r="2" fill="#ffff99" style="--bcx:30px; animation:la-blessing-cascade 2900ms ease-in forwards 100ms;"/><circle cx="120" cy="105" r="2.5" fill="#ffaa00" style="--bcx:-10px; animation:la-blessing-cascade 2900ms ease-in forwards 200ms;"/><circle cx="100" cy="110" r="1.5" fill="#ffd700" style="--bcx:15px; animation:la-blessing-cascade 2900ms ease-in forwards 300ms;"/>`;
     return s;
-  }}
+  }},
+  
+  /* ════════════════════════════════════════════════════════════════════════
+     ENEMY & BOSS ANIMATIONS
+     ════════════════════════════════════════════════════════════════════════ */
 
+  // INFERNO — Demon Lord Signature Fire AOE
+  'inferno': { duration: 2500, screenShake: 450, shakeDelay: 300, create: () => {
+    const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    s.setAttribute('viewBox', '0 0 200 200'); s.setAttribute('width', '200'); s.setAttribute('height', '200');
+    s.classList.add('battle-svg-animation');
+    s.innerHTML = `<defs><style>
+      @keyframes inf-core { 0%{transform:scale(0);opacity:0} 20%{transform:scale(1.2);opacity:1} 50%{transform:scale(1)} 100%{transform:scale(1.8);opacity:0} }
+      @keyframes inf-spark { 0%{transform:translate(0,0) scale(1);opacity:1} 100%{transform:translate(var(--tx),var(--ty)) scale(0);opacity:0} }
+      @keyframes inf-ring { 0%{r:10;stroke-width:15;opacity:1} 100%{r:95;stroke-width:0.5;opacity:0} }
+      @keyframes inf-vortex {
+        0% { transform: rotate(0deg) scale(0); opacity: 0; }
+        15% { transform: rotate(180deg) scale(1.2); opacity: 0.8; }
+        35% { transform: rotate(360deg) scale(1.5); opacity: 1; }
+        100% { transform: rotate(1080deg) scale(4); opacity: 0; }
+      }
+    </style>
+    <filter id="inf-glow"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <radialGradient id="inf-grad" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#fff"/><stop offset="30%" stop-color="#ffcc00"/><stop offset="60%" stop-color="#ff3300"/><stop offset="100%" stop-color="#440000" stop-opacity="0"/></radialGradient>
+    </defs>
+    <circle cx="100" cy="110" r="40" fill="url(#inf-grad)" style="animation:inf-core 2500ms ease-out forwards;"/>
+    
+    <!-- Cinematic Fire Hurricane (Vortex) Components -->
+    <path d="M100,110 m-40,0 a40,40 0 1,0 80,0 a40,40 0 1,0 -80,0" fill="none" stroke="#ff3300" stroke-width="2" stroke-dasharray="15 30" style="transform-origin:100px 110px;animation:inf-vortex 2500ms cubic-bezier(0.4,0,0.2,1) forwards;"/>
+    <path d="M100,110 m-60,0 a60,60 0 1,0 120,0 a60,60 0 1,0 -120,0" fill="none" stroke="#ffaa00" stroke-width="1.5" stroke-dasharray="25 45" style="transform-origin:100px 110px;animation:inf-vortex 2500ms cubic-bezier(0.4,0,0.2,1) forwards 100ms;"/>
+    <path d="M100,110 m-85,0 a85,85 0 1,0 170,0 a85,85 0 1,0 -170,0" fill="none" stroke="#ffff00" stroke-width="1" stroke-dasharray="35 55" style="transform-origin:100px 110px;animation:inf-vortex 2500ms cubic-bezier(0.4,0,0.2,1) forwards 200ms;"/>
+    
+    <circle cx="100" cy="110" r="10" fill="none" stroke="#ffaa00" stroke-width="8" style="animation:inf-ring 2500ms cubic-bezier(0.1,0.8,0.3,1) forwards 200ms;"/>
+    <circle cx="100" cy="110" r="10" fill="#ffaa00" filter="url(#inf-glow)" style="--tx:50px;--ty:-80px;animation:inf-spark 2500ms ease-out forwards 400ms;"/>
+    <circle cx="100" cy="110" r="8" fill="#ff3300" style="--tx:-60px;--ty:-70px;animation:inf-spark 2500ms ease-out forwards 600ms;"/>`;
+    return s;
+  }},
+
+  // HELL STRIKE — High-Impact Dark Physical
+  'hell_strike': { duration: 1800, screenShake: 280, create: () => {
+    const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    s.setAttribute('viewBox', '0 0 200 200'); s.setAttribute('width', '200'); s.setAttribute('height', '200');
+    s.classList.add('battle-svg-animation');
+    s.innerHTML = `<defs><style>@keyframes hs-spike{0%{transform:scaleY(0);opacity:0}20%{transform:scaleY(1);opacity:1}100%{transform:scaleY(1.2);opacity:0}}@keyframes hs-blast{0%{r:5;opacity:1}100%{r:80;opacity:0}}</style></defs>
+    <polyline points="100,20 110,140 100,160 90,140 100,20" fill="#440022" stroke="#ff0044" stroke-width="2" style="animation:hs-spike 1800ms cubic-bezier(0.2,0.8,0.3,1) forwards;"/>
+    <circle cx="100" cy="140" r="5" fill="none" stroke="#ff0044" stroke-width="4" style="animation:hs-blast 1800ms ease-out forwards 300ms;"/>`;
+    return s;
+  }},
+
+  // DEMON EYE — Boss Debuff
+  'demon_eye': { duration: 2000, create: () => {
+    const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    s.setAttribute('viewBox', '0 0 200 200'); s.setAttribute('width', '200'); s.setAttribute('height', '200');
+    s.classList.add('battle-svg-animation');
+    s.innerHTML = `<defs><style>@keyframes de-iris{0%{transform:scaleX(0) rotate(90deg);opacity:0}30%{transform:scaleX(1) rotate(0deg);opacity:1}70%{opacity:1}100%{transform:scaleX(1.5);opacity:0}}</style></defs>
+    <ellipse cx="100" cy="100" rx="60" ry="25" fill="none" stroke="#cc00ff" stroke-width="2" style="animation:de-iris 2000ms ease-in-out forwards;"/>
+    <circle cx="100" cy="100" r="18" fill="#440066" stroke="#cc00ff" style="animation:de-iris 2000ms ease-in-out forwards;"/>`;
+    return s;
+  }},
+
+  // GENERIC SLASH — Common enemy melee
+  'generic_slash': { duration: 1500, create: () => {
+    const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    s.setAttribute('viewBox', '0 0 200 200'); s.setAttribute('width', '200'); s.setAttribute('height', '200');
+    s.classList.add('battle-svg-animation');
+    s.innerHTML = `<defs><style>@keyframes gsl-slash{0%{stroke-dashoffset:150;opacity:0}25%{opacity:1}100%{stroke-dashoffset:0;opacity:0}}</style></defs>
+    <path d="M 40 60 Q 100 140 160 60" fill="none" stroke="#ddd" stroke-width="5" stroke-linecap="round" stroke-dasharray="150" stroke-dashoffset="150" style="animation:gsl-slash 1500ms ease-out forwards;"/>`;
+    return s;
+  }},
+
+  // GENERIC SLAM — Impact heavy
+  'generic_slam': { duration: 1600, screenShake: 180, create: () => {
+    const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    s.setAttribute('viewBox', '0 0 200 200'); s.setAttribute('width', '200'); s.setAttribute('height', '200');
+    s.classList.add('battle-svg-animation');
+    s.innerHTML = `<defs><style>@keyframes gsm-ring{0%{r:5;opacity:1;stroke-width:12}100%{r:90;opacity:0;stroke-width:1}}</style></defs>
+    <circle cx="100" cy="120" r="5" fill="none" stroke="#aaa" stroke-dasharray="10 5" style="animation:gsm-ring 1600ms ease-out forwards;"/>`;
+    return s;
+  }},
+
+  // GENERIC DARK — Magic surge
+  'generic_dark': { duration: 1800, create: () => {
+    const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    s.setAttribute('viewBox', '0 0 200 200'); s.setAttribute('width', '200'); s.setAttribute('height', '200');
+    s.classList.add('battle-svg-animation');
+    s.innerHTML = `<defs><style>@keyframes gdk-pulse{0%{transform:scale(0);opacity:0.8}60%{transform:scale(2.2);opacity:0.4}100%{transform:scale(3);opacity:0}}</style></defs>
+    <circle cx="100" cy="100" r="25" fill="#220033" stroke="#aa00ff" stroke-width="1" style="animation:gdk-pulse 1800ms ease-out forwards;"/>`;
+    return s;
+  }},
+
+  // GENERIC BASH — Physical blunt
+  'generic_bash': { duration: 1400, create: () => {
+    const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    s.setAttribute('viewBox', '0 0 200 200'); s.setAttribute('width', '200'); s.setAttribute('height', '200');
+    s.classList.add('battle-svg-animation');
+    s.innerHTML = `<defs><style>@keyframes gbh-impact{0%{transform:scale(0.5);opacity:1}100%{transform:scale(1.8);opacity:0}}</style></defs>
+    <circle cx="100" cy="100" r="30" fill="none" stroke="#ffcc88" stroke-width="10" stroke-dasharray="15 5" style="animation:gbh-impact 1400ms ease-out forwards;"/>`;
+    return s;
+  }}
 };

@@ -656,22 +656,16 @@ const BattleUI = {
       const scaleMatch = gameEl?.style.transform.match(/scale\(([\d.]+)\)/);
       const gameScale = scaleMatch ? parseFloat(scaleMatch[1]) : 1;
       
-      let xOffset = targetType === 'party' ? -20 : 8;
-      let yOffset = targetType === 'party' ? -40 : -10;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
 
-      if (rect.width > 0) {
-        overlay.style.left = ((rect.left - sceneRect.left + xOffset) / gameScale) + 'px';
-        overlay.style.top = ((rect.top - sceneRect.top + yOffset) / gameScale) + 'px';
-      } else {
-        const parent = spr.parentElement?.getBoundingClientRect();
-        if (parent) {
-          overlay.style.left = ((parent.left - sceneRect.left + xOffset) / gameScale) + 'px';
-          overlay.style.top = ((parent.top - sceneRect.top + yOffset) / gameScale) + 'px';
-        } else {
-          overlay.style.left = '50%';
-          overlay.style.top = '100px';
-        }
-      }
+      overlay.style.left = ((rect.left - sceneRect.left + centerX) / gameScale) + 'px';
+      overlay.style.top = ((rect.top - sceneRect.top + centerY) / gameScale) + 'px';
+      overlay.style.transform = 'translate(-50%, -50%)';
+    } else {
+      overlay.style.left = '50%';
+      overlay.style.top = '140px';
+      overlay.style.transform = 'translateX(-50%)';
     }
 
     this.el('battle-scene').appendChild(overlay);
