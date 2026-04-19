@@ -37,5 +37,9 @@
   "holy_strike":          { "actorDuration": 560, "overlayDuration": 1850, "isUltimate": false },
   "divine_shield":        { "actorDuration": 560, "overlayDuration": 2200, "isUltimate": false },
   "grail_blessing":       { "actorDuration": 560, "overlayDuration": 2300, "isUltimate": false },
-  "lionheart_ascendant":  { "actorDuration": 850, "overlayDuration": 2900, "isUltimate": true  }
+  "lionheart_ascendant":  { "actorDuration": 850, "overlayDuration": 2900, "isUltimate": true  },
+
+  "void_strike":   { "actorDuration": 560, "overlayDuration": 600, "isUltimate": false },
+  "abyssal_tide":  { "actorDuration": 560, "overlayDuration": 800, "isUltimate": false },
+  "void_echo":     { "actorDuration": 560, "overlayDuration": 600, "isUltimate": false }
 }

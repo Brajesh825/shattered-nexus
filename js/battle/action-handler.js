@@ -142,6 +142,7 @@ function resolveOffensiveAction(actor, target, targetIdx, action, element) {
 
   // 5. Apply result
   target.hp = Math.max(0, target.hp - dmg);
+  BattleUI.renderEnemyRow(); // Immediate refresh for boss/enemy bars
 
   // Strategic Thaw: Attacking a frozen target breaks the ice
   if (typeof StatusSystem !== 'undefined' && StatusSystem.has(target, 'status_frozen')) {
@@ -423,6 +424,7 @@ const ActionEngine = {
       BattleUI.createEffectOverlay(G.activeMemberIdx, element, isEnemyAction ? 'enemy' : 'party', ab.id);
       BattleUI.addLog(`${actor.name || actor.displayName}: Regen activated!`, 'regen');
       BattleUI.renderPartyStatus();
+      BattleUI.renderPartyRow(); // Sync update
       setTimeout(() => TurnManager.advance(), 750);
     },
 
@@ -455,6 +457,7 @@ const ActionEngine = {
       }
       BattleUI.addLog(`${actor.name || actor.displayName}: ${ab.name}!${BattleUI._getBuffReport(actor)}`, 'heal');
       BattleUI.renderPartyStatus();
+      BattleUI.renderPartyRow(); // Fix: Ensure HP sacrifice (Hu Tao) or buffs show immediately
       setTimeout(() => TurnManager.advance(), 750);
     },
 
@@ -474,8 +477,13 @@ const ActionEngine = {
     stun(actor, targets, ab, element, moveConfig) {
       const e = ab.effect || {};
       const enemy = targets[0];
-      if (enemy && Math.random() < (e.stunChance || 0.5)) { Battle.addStatus(enemy, { id: 'status_stunned', label: 'Stunned', icon: '💫', type: 'control', turns: 1 }); BattleUI.addLog(`💫 ${enemy.name} is stunned!`, 'magic'); }
-      else BattleUI.addLog('Had no effect!', '');
+      if (enemy && Math.random() < (e.stunChance || 0.5)) { 
+        Battle.addStatus(enemy, { id: 'status_stunned', label: 'Stunned', icon: '💫', type: 'control', turns: 1 }); 
+        BattleUI.addLog(`💫 ${enemy.name} is stunned!`, 'magic'); 
+      } else {
+        BattleUI.addLog('Had no effect!', '');
+      }
+      BattleUI.renderEnemyRow(); // Sync update
       setTimeout(() => TurnManager.advance(), 750);
     },
 
@@ -524,6 +532,8 @@ const ActionEngine = {
           const dmg = resolveOffensiveAction(actor, tgt, tIdx, ab, element);
           totalDmg += dmg;
           if (ab.id === 'cryoclasm' && StatusSystem.has(tgt, 'status_frozen')) actor._cryoReset = true;
+          // Apply vampiric effect if enemy survives and has the trait (logic from heroAttack)
+          if (!isEnemyAction && Battle.alive(tgt)) _applyVampiric(tgt, dmg, tIdx);
         } else {
           resolveEnemyOffensiveAction(actor, tgt, tIdx, ab, element);
         }
@@ -538,12 +548,14 @@ const ActionEngine = {
           const healTargets = e.aoe ? G.party.filter(m => Battle.alive(m)) : [actor];
           healTargets.forEach(m => { const idx = G.party.indexOf(m); m.hp = Math.min(m.maxHp, m.hp + healAmt); BattleUI.popParty(idx, healAmt, 'heal', 'light'); });
           BattleUI.addLog(`💖 ${ab.name}: Restored ${healAmt} HP!`, 'heal');
+          BattleUI.renderPartyRow(); // Fix: Update HP bars for lifesteal
         }
         if (e.guardian) { G.party.forEach(m => { if (Battle.alive(m)) Battle.addStatus(m, StatusSystem.DEFS.guardian); }); BattleUI.addLog('🛡️ Phantom Guardian summoned!', 'heal'); }
         if (e.partyBuff) { G.party.forEach((m, idx) => { if (!Battle.alive(m)) return; Battle.addStatus(m, { id: 'status_atk_boost', label: 'ATK+', icon: '⚔️', type: 'mult', stat: 'atk', value: 1.3, turns: 3 }); Battle.addStatus(m, { id: 'status_def_boost', label: 'DEF+', icon: '🛡️', type: 'mult', stat: 'def', value: 1.3, turns: 3 }); BattleUI.popParty(idx, 'ATK & DEF Up!', 'buff', 'holy'); }); BattleUI.addLog(`✨ ${ab.name}: The party is blessed!`, 'buff'); }
         if (e.cooldown) actor.cooldowns[ab.id] = e.cooldown + 1;
         if (actor._cryoReset) { actor.cooldowns[ab.id] = 0; BattleUI.addLog('❄ Cryoclasm Reset!', 'regen'); delete actor._cryoReset; }
         _checkDragonLeap(actor);
+        BattleUI.renderPartyRow(); // Final catch-all refresh
       } else {
         // Iron Will (Kael): triggers below 30% HP on first hit
         const tgt = targets[0];

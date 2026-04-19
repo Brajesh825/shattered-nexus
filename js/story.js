@@ -1015,10 +1015,15 @@ const Story = {
   _endStory() {
     this.active = false;
     if (typeof TTS !== 'undefined') TTS.stop();
-    Save.clear(this._activeSlot !== undefined ? this._activeSlot : 0);
     G.enemies = this._allEnemies.slice();
     G.selectedChar = null; G.selectedClass = null;
-    showScreen('title-screen');
+    
+    if (typeof Credits !== 'undefined') {
+      Credits.launch();
+    } else {
+      showScreen('title-screen');
+    }
+    
     if (typeof refreshSaveSlots === 'function') refreshSaveSlots();
   },
 

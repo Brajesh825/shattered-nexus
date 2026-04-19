@@ -63,6 +63,26 @@ const BGM = {
   },
 
   /**
+   * Play a theme based on current arc
+   * @param {string} category - 'battle' | 'explore'
+   */
+  playArcTheme(category) {
+    if (typeof Story === 'undefined' || !Story.active) {
+      this.play(category === 'battle' ? 'battle' : 'exploration');
+      return;
+    }
+    const arc = Story.arcIdx % 8;
+    // Map existing generic tracks for now, can be expanded with arc-specific naming if files exist
+    const tracks = {
+      'battle': ['battle', 'battle_arc_1', 'battle_arc_2', 'battle_arc_3', 'battle_arc_4', 'battle_arc_5', 'battle_arc_6', 'battle_final'],
+      'explore': ['exploration', 'explore_arc_1', 'explore_arc_2', 'explore_arc_3', 'explore_arc_4', 'explore_arc_5', 'explore_arc_6', 'explore_final']
+    };
+    
+    const track = tracks[category] ? (tracks[category][arc] || tracks[category][0]) : category;
+    this.play(track);
+  },
+
+  /**
    * Stop current BGM
    */
   stop() {

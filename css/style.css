@@ -3479,8 +3479,9 @@ body {
 }
 
 .party-hp-bar-fill {
-  height: 100%;
-  transition: width 0.3s ease, background 0.3s ease;
+  height:100%; width:0%;
+  transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 0 4px rgba(0,0,0,0.3) inset;
   border-radius: 1px;
 }
 
@@ -3756,8 +3757,9 @@ body {
 }
 
 .enemy-hp-bar-fill {
-  height: 100%;
-  transition: width 0.3s ease, background 0.3s ease;
+  height:100%; width:0%;
+  transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 0 4px rgba(0,0,0,0.3) inset;
   border-radius: 1px;
 }
 
@@ -4789,3 +4791,97 @@ input[type=range].setting-slider::-webkit-slider-thumb {
 .credits-thanks { font-size: 40px; margin-top: 300px; margin-bottom: 50vh; color: white; text-shadow: 0 0 20px rgba(255,255,255,0.5); }
 #credits-close-btn { position: absolute; bottom: 40px; z-index: 3; background: transparent; border: 1px solid white; color: white; padding: 10px 30px; cursor: pointer; font-family: var(--px); }
 #credits-close-btn:hover { background: white; color: black; }
+
+/* ══════════════════════════════════════════════════════
+   BOSS GAUNTLET (BOSS MODE)
+   ══════════════════════════════════════════════════════ */
+.gauntlet-overlay {
+  position: absolute; inset: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(4, 0, 12, 0.92); backdrop-filter: blur(8px);
+  animation: fadeIn 0.3s ease;
+}
+.gauntlet-bg { position: absolute; inset: 0; }
+.gauntlet-panel {
+  position: relative; width: 90%; max-width: 1000px; max-height: 85vh;
+  background: linear-gradient(135deg, #100a20, #0a0614);
+  border: 1px solid rgba(245, 208, 96, 0.2); border-radius: 12px;
+  display: flex; flex-direction: column; overflow: hidden;
+  box-shadow: 0 0 50px rgba(0,0,0,0.8), 0 0 20px rgba(245, 208, 96, 0.1);
+}
+.gauntlet-header {
+  padding: 24px; border-bottom: 2px solid rgba(255,255,255,0.05);
+  background: rgba(0,0,0,0.2); text-align: center;
+}
+.gauntlet-title {
+  font-family: var(--px); font-size: var(--fs-h2);
+  color: var(--gold); text-shadow: 0 0 10px rgba(245, 208, 96, 0.4);
+}
+.gauntlet-sub {
+  font-family: var(--px); font-size: var(--fs-xs);
+  color: #7878a8; margin-top: 4px; letter-spacing: 1px;
+}
+.gauntlet-grid {
+  flex: 1; overflow-y: auto; padding: 24px;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+.gauntlet-grid::-webkit-scrollbar { width: 6px; }
+.gauntlet-grid::-webkit-scrollbar-thumb { background: rgba(245, 208, 96, 0.2); border-radius: 3px; }
+
+.gauntlet-card {
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px; padding: 16px; display: flex; flex-direction: column;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  position: relative; overflow: hidden;
+}
+.gauntlet-card:hover {
+  transform: translateY(-4px); border-color: rgba(245, 208, 96, 0.4);
+  background: rgba(255,255,255,0.05);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3), 0 0 15px rgba(245, 208, 96, 0.1);
+}
+.gc-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 12px; font-family: var(--px); font-size: var(--fs-xxs);
+}
+.gc-tier { color: var(--gold); background: rgba(245, 208, 96, 0.1); padding: 2px 6px; border-radius: 4px; }
+.gc-element { color: #fff; text-shadow: 0 0 8px currentColor; }
+
+.gc-body { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-bottom: 16px; }
+.gc-sprite-container {
+  width: 140px; height: 160px; display: flex; align-items: center; justify-content: center;
+  background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
+}
+.gauntlet-sprite { max-width: 100%; max-height: 100%; filter: drop-shadow(0 0 10px rgba(0,0,0,0.5)); }
+.gc-name { font-family: var(--px); font-size: var(--fs-h3); color: #fff; }
+.gc-subtitle { font-family: var(--px); font-size: var(--fs-xxs); color: #7878a8; text-align: center; font-style: italic; }
+
+.gc-footer { display: flex; flex-direction: column; gap: 6px; margin-top: auto; }
+.gc-stat { display: flex; justify-content: space-between; font-family: var(--px); font-size: var(--fs-xs); color: #aaa; }
+.gc-stat span { color: #fff; }
+
+.gc-fight-btn {
+  margin-top: 10px; height: 36px; border: none; border-radius: 6px;
+  background: var(--gold); color: #000; font-family: var(--px); font-weight: bold;
+  cursor: pointer; transition: filter 0.2s ease;
+}
+.gc-fight-btn:hover { filter: brightness(1.2); }
+
+.gauntlet-back {
+  padding: 16px; background: rgba(0,0,0,0.3); border: none; border-top: 2px solid rgba(255,255,255,0.05);
+  color: #7878a8; font-family: var(--px); cursor: pointer; transition: color 0.2s ease;
+}
+.gauntlet-back:hover { color: #fff; }
+
+/* Element Borders */
+.element-fire { border-left: 4px solid #ff440050; }
+.element-water { border-left: 4px solid #0088ff50; }
+.element-ice { border-left: 4px solid #00ffff50; }
+.element-wind { border-left: 4px solid #00ff8850; }
+.element-holy { border-left: 4px solid #ffff0050; }
+.element-dark { border-left: 4px solid #aa00ff50; }
+
+.gauntlet-empty {
+  grid-column: 1 / -1; text-align: center; padding: 60px;
+  color: #7878a8; font-family: var(--px); font-size: var(--fs-sm);
+}

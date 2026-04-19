@@ -43,10 +43,14 @@ const ResultUI = {
 
     if (type === 'victory') {
       if (typeof SFX !== 'undefined') SFX.victory();
-      t.textContent = '✨ VICTORY! ✨';
+      t.textContent = G.isGauntletMode ? '🔥 STRESS TEST COMPLETE 🔥' : '✨ VICTORY! ✨';
       t.className = 'result-title victory';
       const totalGold = party.reduce((s, m) => s + (m.gold || 0), 0);
-      st.innerHTML = `All enemies defeated!<br><span class="val">+Gold collected this run: ${totalGold}</span>`;
+      if (G.isGauntletMode) {
+        st.innerHTML = `Legendary Boss feasibility test successful!<br><span class="val">Results uploaded to battle archive.</span>`;
+      } else {
+        st.innerHTML = `All enemies defeated!<br><span class="val">+Gold collected this run: ${totalGold}</span>`;
+      }
       if (retryBtn) retryBtn.style.display = 'none';
       if (againBtn) againBtn.textContent = '▶ PLAY AGAIN';
     } else if (type === 'defeat') {

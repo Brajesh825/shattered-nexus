@@ -515,6 +515,9 @@ const MapEngine = (() => {
     _renderFog();
     _renderObjectiveHUD();
     _renderBubbles();
+    
+    if (typeof WeatherEngine !== 'undefined') WeatherEngine.draw(_ctx);
+    
     _renderMinimap();
   }
 
@@ -579,6 +582,8 @@ const MapEngine = (() => {
       _bubbles[i].life -= dt;
       if (_bubbles[i].life <= 0) _bubbles.splice(i, 1);
     }
+
+    if (typeof WeatherEngine !== 'undefined') WeatherEngine.update(dt);
 
     // Delegate HUD + minimap refresh to MapUI
     if (typeof MapUI !== 'undefined') MapUI.update(dt);
@@ -702,6 +707,10 @@ const MapEngine = (() => {
     MapEntities.initNPCs(_map);
     cam.x = 0; cam.y = 0;
     _updateCamera();
+    
+    if (typeof WeatherEngine !== 'undefined') {
+      WeatherEngine.setWeather(_map.weather || null);
+    }
   }
 
   function start(mapId) {

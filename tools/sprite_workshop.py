@@ -92,8 +92,11 @@ HTML_CONTENT = r"""
         .btn:hover { background: #3a2a7e; border-color: var(--cyan); }
         .btn-save { background: #004d40; border-color: #00897b; }
         .btn-delete { background: #b71c1c; border-color: #f44336; }
+        .btn-eraser.active { background: #e91e63; border-color: #f06292; box-shadow: 0 0 10px rgba(233, 30, 99, 0.4); }
+        .btn-move.active { background: #673ab7; border-color: #9575cd; box-shadow: 0 0 10px rgba(103, 58, 183, 0.4); }
         .rect-tool { color: var(--gold); font-size: 13px; font-weight: bold; margin-bottom: 10px; display: block; }
         input[type=range] { width: 100%; accent-color: var(--cyan); }
+        .zoom-controls { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--cyan); }
     </style>
 </head>
 <body>
@@ -102,15 +105,33 @@ HTML_CONTENT = r"""
         <div class="sprite-list" id="sprite-list"></div>
     </aside>
     <main>
-        <div class="toolbar"><div id="status">Ready</div><div style="flex:1"></div><button class="btn btn-save" id="btn-save">💾 OVERWRITE ORIGINAL</button></div>
-        <div class="editor-container"><div class="canvas-stack"><canvas id="canvas"></canvas><canvas id="overlay-canvas"></canvas></div></div>
+        <div class="toolbar">
+            <div id="status">Ready</div>
+            <div style="flex:1"></div>
+            <div class="zoom-controls">
+                <span>Zoom:</span>
+                <input type="range" id="zoom-range" min="0.1" max="8" step="0.1" value="1" style="width:120px">
+                <span id="zoom-val">100%</span>
+            </div>
+            <div class="zoom-controls" style="margin-left:10px; color:var(--gold)">
+                <input type="checkbox" id="chk-grid"> <span>6x2 Grid</span>
+            </div>
+            <button class="btn btn-save" id="btn-save">💾 OVERWRITE ORIGINAL</button>
+        </div>
+        <div class="editor-container"><div class="canvas-stack" id="canvas-stack"><canvas id="canvas"></canvas><canvas id="overlay-canvas"></canvas></div></div>
     </main>
     <div class="controls">
         <label class="rect-tool">1. Select Region</label>
-        <div style="display:flex; gap:5px; margin-bottom:10px">
-            <button class="btn" id="btn-copy" style="flex:1; padding:8px">📋 Copy</button>
-            <button class="btn" id="btn-flip" style="flex:1; padding:8px">↔ Flip</button>
-            <button class="btn btn-delete" id="btn-delete" style="flex:1; padding:8px">🗑 Del</button>
+        <div style="display:flex; gap:5px; margin-bottom:10px; flex-wrap: wrap;">
+            <button class="btn" id="btn-copy" style="flex:1; padding:8px 4px; font-size:12px">📋 Copy</button>
+            <button class="btn" id="btn-flip" style="flex:1; padding:8px 4px; font-size:12px">↔ Flip</button>
+            <button class="btn btn-delete" id="btn-delete" style="flex:1; padding:8px 4px; font-size:12px">🗑 Del</button>
+            <button class="btn btn-eraser" id="btn-eraser" style="flex:1; padding:8px 4px; font-size:12px">🧹 Erase</button>
+            <button class="btn btn-move" id="btn-move" style="flex:1; padding:8px 4px; font-size:12px">🎯 Move</button>
+        </div>
+        <div id="eraser-controls" style="display:none; margin-bottom: 20px;">
+            <label class="rect-tool">Eraser Size: <span id="val-ers">1</span>px</label>
+            <input type="range" id="eraser-size" min="1" max="20" step="1" value="1">
         </div>
         <div id="transform-controls">
             <label class="rect-tool">2. Scale / Offset</label>
@@ -128,7 +149,7 @@ HTML_CONTENT = r"""
         let sprites = [], activeSprite = null, img = new Image();
         let canvas = document.getElementById('canvas'), ctx = canvas.getContext('2d');
         let overlay = document.getElementById('overlay-canvas'), octx = overlay.getContext('2d');
-        let selection = null, isSelecting = false, history = [], buffer = null, isStampMode = false;
+        let selection = null, isSelecting = false, history = [], buffer = null, isStampMode = false, isEraserMode = false, isMoveMode = false, isMouseDown = false, moveBuffer = null, dragOffset = null;
 
         async function init() {
             const res = await fetch('/api/list');
@@ -151,7 +172,11 @@ HTML_CONTENT = r"""
 
         function getMousePos(e) {
             const r = canvas.getBoundingClientRect();
-            return { x: (e.clientX - r.left) * (canvas.width / r.width), y: (e.clientY - r.top) * (canvas.height / r.height) };
+            const zoom = parseFloat(document.getElementById('zoom-range').value);
+            return { 
+                x: (e.clientX - r.left) * (canvas.width / r.width), 
+                y: (e.clientY - r.top) * (canvas.height / r.height) 
+            };
         }
 
         function toggleStampMode(on) {
@@ -163,21 +188,99 @@ HTML_CONTENT = r"""
 
         canvas.onmousedown = (e) => {
             if (!activeSprite) return;
+            isMouseDown = true;
             const p = getMousePos(e);
+            
+            if (isMoveMode && selection && p.x >= selection.x && p.x <= selection.x + selection.w && p.y >= selection.y && p.y <= selection.y + selection.h) {
+                // Lift selection for moving
+                moveBuffer = document.createElement('canvas');
+                moveBuffer.width = Math.abs(selection.w); moveBuffer.height = Math.abs(selection.h);
+                moveBuffer.getContext('2d').drawImage(canvas, selection.x, selection.y, selection.w, selection.h, 0, 0, moveBuffer.width, moveBuffer.height);
+                ctx.clearRect(selection.x, selection.y, selection.w, selection.h);
+                dragOffset = { x: p.x - selection.x, y: p.y - selection.y };
+                return;
+            }
+
+            if (isEraserMode) { applyEraser(p); return; }
             if (isStampMode) { applyStamp(p.x, p.y); return; }
             isSelecting = true; selection = { x: p.x, y: p.y, w: 0, h: 0 };
         };
 
         window.onmousemove = (e) => {
+            if (!activeSprite) return;
             const p = getMousePos(e);
-            if (isSelecting) { selection.w = p.x - selection.x; selection.h = p.y - selection.y; redrawOverlay(p); }
-            else if (isStampMode) { redrawOverlay(p); }
+            
+            if (moveBuffer && isMouseDown) {
+                selection.x = p.x - dragOffset.x;
+                selection.y = p.y - dragOffset.y;
+                redrawOverlay(p);
+            }
+            else if (isEraserMode && isMouseDown) { applyEraser(p); }
+            else if (isSelecting) { selection.w = p.x - selection.x; selection.h = p.y - selection.y; redrawOverlay(p); }
+            else { redrawOverlay(p); }
         };
 
-        window.onmouseup = () => { if(isSelecting) { isSelecting = false; redrawOverlay(); } };
+        window.onmouseup = () => { 
+            if (moveBuffer) {
+                ctx.drawImage(moveBuffer, selection.x, selection.y);
+                history.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+                moveBuffer = null;
+                redrawOverlay();
+            }
+            if(isSelecting) { isSelecting = false; redrawOverlay(); } 
+            if(isEraserMode && isMouseDown) { 
+                isMouseDown = false; 
+                history.push(ctx.getImageData(0, 0, canvas.width, canvas.height)); 
+            }
+            isMouseDown = false;
+        };
+
+        function applyEraser(p) {
+            const size = parseInt(document.getElementById('eraser-size').value);
+            ctx.clearRect(p.x - size/2, p.y - size/2, size, size);
+            redrawOverlay(p);
+        }
 
         function redrawOverlay(mousePos) {
             octx.clearRect(0, 0, overlay.width, overlay.height);
+            
+            // ─── 6x2 ALIGNMENT GRID ─────────────────
+            if (document.getElementById('chk-grid').checked) {
+                octx.strokeStyle = 'rgba(0, 242, 255, 0.4)';
+                octx.lineWidth = 1;
+                octx.setLineDash([10, 5]);
+                
+                const stepX = overlay.width / 6;
+                const stepY = overlay.height / 2;
+                
+                // Vertical Lines (6 Columns)
+                for (let i = 1; i < 6; i++) {
+                    octx.beginPath();
+                    octx.moveTo(i * stepX, 0); octx.lineTo(i * stepX, overlay.height);
+                    octx.stroke();
+                }
+
+                // Horizontal Line (Center Row)
+                octx.beginPath();
+                octx.moveTo(0, stepY); octx.lineTo(overlay.width, stepY);
+                octx.stroke();
+                
+                octx.setLineDash([]);
+            }
+
+            if (moveBuffer && selection) {
+                octx.globalAlpha = 0.7;
+                octx.drawImage(moveBuffer, selection.x, selection.y);
+                octx.globalAlpha = 1.0;
+                octx.strokeStyle = '#673ab7';
+                octx.strokeRect(selection.x, selection.y, selection.w, selection.h);
+            }
+            else if (isEraserMode && mousePos) {
+                const size = parseInt(document.getElementById('eraser-size').value);
+                octx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+                octx.lineWidth = 1;
+                octx.strokeRect(mousePos.x - size/2, mousePos.y - size/2, size, size);
+            }
             if (selection && (Math.abs(selection.w) > 1 || Math.abs(selection.h) > 1)) {
                 octx.strokeStyle = '#00f2ff'; octx.setLineDash([4, 4]); octx.strokeRect(selection.x, selection.y, selection.w, selection.h); octx.setLineDash([]);
             }
@@ -195,10 +298,23 @@ HTML_CONTENT = r"""
         };
 
         document.getElementById('btn-flip').onclick = () => {
-            if (!buffer) return;
-            const t = document.createElement('canvas'); t.width = buffer.width; t.height = buffer.height;
-            const tc = t.getContext('2d'); tc.translate(t.width, 0); tc.scale(-1, 1); tc.drawImage(buffer, 0, 0);
-            buffer = t; redrawOverlay();
+            if (selection && (Math.abs(selection.w) > 1 || Math.abs(selection.h) > 1)) {
+                // Case A: Flip the pixels currently selected on the canvas
+                const t = document.createElement('canvas');
+                t.width = Math.abs(selection.w); t.height = Math.abs(selection.h);
+                const tc = t.getContext('2d');
+                tc.translate(t.width, 0); tc.scale(-1, 1);
+                tc.drawImage(canvas, selection.x, selection.y, selection.w, selection.h, 0, 0, t.width, t.height);
+                ctx.clearRect(selection.x, selection.y, selection.w, selection.h);
+                ctx.drawImage(t, selection.x, selection.y);
+                history.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+            } else if (buffer) {
+                // Case B: Flip the stamp in the brush buffer
+                const t = document.createElement('canvas'); t.width = buffer.width; t.height = buffer.height;
+                const tc = t.getContext('2d'); tc.translate(t.width, 0); tc.scale(-1, 1); tc.drawImage(buffer, 0, 0);
+                buffer = t;
+            }
+            redrawOverlay();
         };
 
         document.getElementById('btn-delete').onclick = () => {
@@ -229,6 +345,32 @@ HTML_CONTENT = r"""
         document.getElementById('scale-y').oninput = (e) => document.getElementById('val-sy').textContent = e.target.value;
         document.getElementById('off-y').oninput = (e) => document.getElementById('val-oy').textContent = e.target.value;
         document.getElementById('btn-cancel-stamp').onclick = () => toggleStampMode(false);
+        
+        document.getElementById('zoom-range').oninput = (e) => {
+            const z = parseFloat(e.target.value);
+            document.getElementById('zoom-val').textContent = Math.round(z * 100) + "%";
+            document.getElementById('canvas-stack').style.transform = `scale(${z})`;
+        };
+
+        document.getElementById('btn-eraser').onclick = () => {
+            isEraserMode = !isEraserMode;
+            document.getElementById('btn-eraser').classList.toggle('active', isEraserMode);
+            document.getElementById('eraser-controls').style.display = isEraserMode ? 'block' : 'none';
+            if (isEraserMode) { isStampMode = false; isMoveMode = false; document.getElementById('btn-move').classList.remove('active'); toggleStampMode(false); selection = null; redrawOverlay(); }
+        };
+
+        document.getElementById('btn-move').onclick = () => {
+            isMoveMode = !isMoveMode;
+            document.getElementById('btn-move').classList.toggle('active', isMoveMode);
+            if (isMoveMode) { isEraserMode = false; isStampMode = false; document.getElementById('btn-eraser').classList.remove('active'); document.getElementById('eraser-controls').style.display = 'none'; toggleStampMode(false); redrawOverlay(); }
+        };
+
+        document.getElementById('eraser-size').oninput = (e) => {
+            document.getElementById('val-ers').textContent = e.target.value;
+        };
+
+        document.getElementById('chk-grid').onchange = () => redrawOverlay();
+
         document.getElementById('btn-save').onclick = async () => {
             if (!activeSprite) return;
             const res = await fetch('/api/save', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ path: activeSprite.path, image: canvas.toDataURL('image/png') }) });

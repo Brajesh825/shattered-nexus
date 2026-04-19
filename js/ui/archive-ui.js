@@ -76,7 +76,10 @@ const ArchiveUI = {
         row.className = 'bestiary-row' + (entry ? ' discovered' : ' undiscovered');
         
         if (entry) {
-          row.innerHTML = `<span class="br-icon">${enemy.icon || '💀'}</span> <span class="br-name">${enemy.name}</span>`;
+          const isMastered = entry.kills >= 5;
+          row.innerHTML = `<span class="br-icon">${enemy.icon || '💀'}</span>` +
+                          `<span class="br-name">${enemy.name}</span>` +
+                          (isMastered ? `<span class="br-mastery-tag" title="Target Mastered">★</span>` : '');
           row.onclick = () => this.renderDetail(enemy.id);
         } else {
           row.innerHTML = `<span class="br-icon">❓</span> <span class="br-name">???</span>`;
@@ -123,8 +126,8 @@ const ArchiveUI = {
       </div>
       
       <div class="bd-stats-grid">
-        <div class="bd-stat"><span>Found</span> <strong>${entry.kills}x</strong></div>
-        <div class="bd-stat"><span>Discovery Lv</span> <strong>${enemy.lv || 1}+</strong></div>
+        <div class="bd-stat"><span>Eliminated</span> <strong style="color:${entry.kills >= 5 ? 'var(--gold)' : ''}">${entry.kills}x</strong></div>
+        <div class="bd-stat"><span>Status</span> <strong>${entry.kills >= 5 ? '<span style="color:var(--gold)">MASTERED</span>' : 'HUNTING'}</strong></div>
       </div>
 
       <div class="bd-section">
