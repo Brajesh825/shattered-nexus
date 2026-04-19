@@ -719,6 +719,7 @@ const Story = {
 
   _launchBoss() {
     this.phase = 'boss_in';
+    G.mode = 'story'; // reset from 'story_explore' so checkBattleEnd routes to Story.onBattleWon()
     this._launchStoryBattle(this.arc.boss_enemy);
   },
 
