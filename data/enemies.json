@@ -13,14 +13,14 @@
     ],
     "tier": 1,
     "stats": {
-      "hp": 32,
-      "atk": 8,
+      "hp": 60,
+      "atk": 14,
       "def": 4,
       "spd": 13,
       "mag": 3
     },
     "reward": {
-      "exp": 12,
+      "exp": 26,
       "gold": 8
     },
     "aiRole": "predator",
@@ -79,14 +79,14 @@
     ],
     "tier": 1,
     "stats": {
-      "hp": 28,
-      "atk": 7,
+      "hp": 55,
+      "atk": 12,
       "def": 3,
       "spd": 16,
       "mag": 5
     },
     "reward": {
-      "exp": 11,
+      "exp": 24,
       "gold": 6
     },
     "palette": {
@@ -148,7 +148,7 @@
       "mag": 2
     },
     "reward": {
-      "exp": 8,
+      "exp": 18,
       "gold": 5
     },
     "palette": {
@@ -260,14 +260,14 @@
     ],
     "tier": 1,
     "stats": {
-      "hp": 30,
+      "hp": 110,
       "atk": 9,
       "def": 4,
       "spd": 12,
-      "mag": 9
+      "mag": 24
     },
     "reward": {
-      "exp": 13,
+      "exp": 150,
       "gold": 9
     },
     "palette": {
@@ -393,7 +393,7 @@
       "mag": 3
     },
     "reward": {
-      "exp": 16,
+      "exp": 36,
       "gold": 10
     },
     "palette": {
@@ -451,14 +451,14 @@
     ],
     "tier": 1,
     "stats": {
-      "hp": 32,
-      "atk": 8,
+      "hp": 125,
+      "atk": 14,
       "def": 5,
       "spd": 11,
-      "mag": 6
+      "mag": 18
     },
     "reward": {
-      "exp": 14,
+      "exp": 160,
       "gold": 9
     },
     "palette": {
@@ -903,15 +903,15 @@
     ],
     "tier": 1,
     "stats": {
-      "hp": 52,
-      "atk": 13,
-      "def": 8,
+      "hp": 150,
+      "atk": 20,
+      "def": 16,
       "spd": 8,
       "mag": 5
     },
     "reward": {
-      "exp": 22,
-      "gold": 15
+      "exp": 110,
+      "gold": 45
     },
     "palette": {
       "bone": "#e8dfc0",
@@ -1032,14 +1032,14 @@
     ],
     "tier": 2,
     "stats": {
-      "hp": 58,
-      "atk": 12,
+      "hp": 140,
+      "atk": 22,
       "def": 6,
       "spd": 14,
       "mag": 17
     },
     "reward": {
-      "exp": 29,
+      "exp": 180,
       "gold": 18
     },
     "palette": {
@@ -1095,14 +1095,14 @@
     ],
     "tier": 2,
     "stats": {
-      "hp": 70,
+      "hp": 160,
       "atk": 14,
-      "def": 9,
+      "def": 18,
       "spd": 12,
       "mag": 13
     },
     "reward": {
-      "exp": 31,
+      "exp": 190,
       "gold": 20
     },
     "palette": {
@@ -1159,14 +1159,14 @@
     ],
     "tier": 2,
     "stats": {
-      "hp": 65,
+      "hp": 130,
       "atk": 11,
       "def": 8,
       "spd": 10,
-      "mag": 20
+      "mag": 28
     },
     "reward": {
-      "exp": 32,
+      "exp": 210,
       "gold": 21
     },
     "palette": {
@@ -1223,14 +1223,14 @@
     ],
     "tier": 2,
     "stats": {
-      "hp": 80,
-      "atk": 18,
+      "hp": 190,
+      "atk": 28,
       "def": 9,
       "spd": 16,
       "mag": 7
     },
     "reward": {
-      "exp": 36,
+      "exp": 230,
       "gold": 23
     },
     "palette": {
@@ -1612,14 +1612,14 @@
     ],
     "tier": 2,
     "stats": {
-      "hp": 85,
+      "hp": 240,
       "atk": 16,
-      "def": 17,
+      "def": 28,
       "spd": 7,
       "mag": 8
     },
     "reward": {
-      "exp": 36,
+      "exp": 220,
       "gold": 24
     },
     "palette": {
@@ -1677,14 +1677,14 @@
     ],
     "tier": 2,
     "stats": {
-      "hp": 95,
-      "atk": 19,
+      "hp": 280,
+      "atk": 32,
       "def": 14,
       "spd": 5,
       "mag": 5
     },
     "reward": {
-      "exp": 39,
+      "exp": 250,
       "gold": 26
     },
     "palette": {
@@ -1742,14 +1742,14 @@
     ],
     "tier": 2,
     "stats": {
-      "hp": 88,
+      "hp": 260,
       "atk": 20,
-      "def": 15,
+      "def": 25,
       "spd": 7,
       "mag": 4
     },
     "reward": {
-      "exp": 37,
+      "exp": 240,
       "gold": 24
     },
     "palette": {
@@ -2809,7 +2809,13 @@
       "mag": 30
     },
     "aiRole": "predator",
-    "mutantTraits": [{ "id": "enraged", "label": "🔥 Enraged", "type": "special" }],
+    "mutantTraits": [
+      {
+        "id": "enraged",
+        "label": "\ud83d\udd25 Enraged",
+        "type": "special"
+      }
+    ],
     "reward": {
       "exp": 67,
       "gold": 49
@@ -3017,8 +3023,8 @@
       "mag": 26
     },
     "reward": {
-      "exp": 120,
-      "gold": 80
+      "exp": 1200,
+      "gold": 150
     },
     "palette": {
       "body": "#0a0a20",
@@ -3406,8 +3412,16 @@
     "name": "Shadow Wraith",
     "subtitle": "A spectral horror born from the abyss between worlds",
     "element": "shadow",
-    "weakTo": ["light", "holy", "fire"],
-    "resistTo": ["shadow", "ice", "physical"],
+    "weakTo": [
+      "light",
+      "holy",
+      "fire"
+    ],
+    "resistTo": [
+      "shadow",
+      "ice",
+      "physical"
+    ],
     "tier": 3,
     "stats": {
       "hp": 130,
@@ -3428,7 +3442,12 @@
       "shine": "#8800cc"
     },
     "traits": [
-      { "id": "damage_reduction", "label": "👻 Ethereal", "type": "DAMAGE_REDUCTION", "value": 0.15 }
+      {
+        "id": "damage_reduction",
+        "label": "\ud83d\udc7b Ethereal",
+        "type": "DAMAGE_REDUCTION",
+        "value": 0.15
+      }
     ],
     "abilities": [
       {
@@ -3444,7 +3463,9 @@
         "type": "magic_damage",
         "weight": 35,
         "dmgMultiplier": 1.3,
-        "effect": { "vampiric": 0.4 }
+        "effect": {
+          "vampiric": 0.4
+        }
       },
       {
         "id": "spectral_shroud",
@@ -3454,8 +3475,207 @@
       }
     ],
     "drops": [
-      { "item": "void_shard", "itemId": "void_shard", "chance": 0.55 },
-      { "item": "phantom_dust", "itemId": "phantom_dust", "chance": 0.3 }
+      {
+        "item": "void_shard",
+        "itemId": "void_shard",
+        "chance": 0.55
+      },
+      {
+        "item": "phantom_dust",
+        "itemId": "phantom_dust",
+        "chance": 0.3
+      }
+    ]
+  },
+  {
+    "id": "crystal_shard",
+    "name": "Prismatic Shard",
+    "subtitle": "A razor-sharp refraction of concentrated light",
+    "element": "light",
+    "weakTo": [
+      "dark",
+      "shadow"
+    ],
+    "tier": 2,
+    "stats": {
+      "hp": 85,
+      "atk": 18,
+      "def": 12,
+      "spd": 25,
+      "mag": 42
+    },
+    "reward": {
+      "exp": 220,
+      "gold": 45
+    },
+    "palette": {
+      "body": "#e0c0ff",
+      "dark": "#8040a0",
+      "shine": "#ffffff",
+      "glow": "#c080ff"
+    },
+    "abilities": [
+      {
+        "id": "refraction_beam",
+        "name": "Refraction Beam",
+        "type": "magic_damage",
+        "weight": 60,
+        "dmgMultiplier": 1.6
+      },
+      {
+        "id": "shatter_burst",
+        "name": "Shatter Burst",
+        "type": "magic_damage",
+        "weight": 40,
+        "dmgMultiplier": 1.4,
+        "effect": {
+          "aoe": true
+        }
+      }
+    ]
+  },
+  {
+    "id": "crystal_golem",
+    "name": "Luminous Golem",
+    "subtitle": "A massive sentinel carved from living quartz",
+    "element": "earth",
+    "weakTo": [
+      "water",
+      "wind"
+    ],
+    "tier": 2,
+    "stats": {
+      "hp": 480,
+      "atk": 36,
+      "def": 45,
+      "spd": 6,
+      "mag": 10
+    },
+    "reward": {
+      "exp": 210,
+      "gold": 80
+    },
+    "palette": {
+      "body": "#a0e0ff",
+      "dark": "#4080a0",
+      "shine": "#d0f0ff",
+      "glow": "#80c0ff"
+    },
+    "abilities": [
+      {
+        "id": "quartz_hammer",
+        "name": "Quartz Hammer",
+        "type": "physical",
+        "weight": 60,
+        "dmgMultiplier": 1.7
+      },
+      {
+        "id": "crystal_guard",
+        "name": "Crystal Guard",
+        "type": "buff_def",
+        "weight": 40
+      }
+    ]
+  },
+  {
+    "id": "gem_mimic",
+    "name": "Gemstone Mimic",
+    "subtitle": "A greedy spirit masquerading as a cluster of gems",
+    "element": "physical",
+    "weakTo": [
+      "fire"
+    ],
+    "tier": 2,
+    "stats": {
+      "hp": 160,
+      "atk": 28,
+      "def": 18,
+      "spd": 22,
+      "mag": 20
+    },
+    "reward": {
+      "exp": 400,
+      "gold": 450
+    },
+    "palette": {
+      "body": "#80ffcc",
+      "dark": "#008060",
+      "shine": "#ccffee",
+      "glow": "#40ffaa"
+    },
+    "abilities": [
+      {
+        "id": "greed_strike",
+        "name": "Greed Strike",
+        "type": "physical",
+        "weight": 70,
+        "dmgMultiplier": 1.5
+      },
+      {
+        "id": "gem_spray",
+        "name": "Gem Spray",
+        "type": "magic_damage",
+        "weight": 30,
+        "dmgMultiplier": 1.2,
+        "effect": {
+          "aoe": true
+        }
+      }
+    ]
+  },
+  {
+    "id": "spectral_guardian",
+    "name": "Spectral Guardian",
+    "subtitle": "The ancient gatekeeper of the starlit void",
+    "element": "void",
+    "weakTo": [
+      "light",
+      "fire"
+    ],
+    "resistTo": [
+      "void",
+      "shadow"
+    ],
+    "tier": 3,
+    "stats": {
+      "hp": 480,
+      "atk": 18,
+      "def": 60,
+      "spd": 12,
+      "mag": 15
+    },
+    "reward": {
+      "exp": 700,
+      "gold": 150
+    },
+    "palette": {
+      "body": "#ffffff",
+      "dark": "#1a1a40",
+      "shine": "#e0e0ff",
+      "glow": "#8080ff"
+    },
+    "abilities": [
+      {
+        "id": "spectral_slash",
+        "name": "Spectral Slash",
+        "type": "physical",
+        "weight": 50,
+        "dmgMultiplier": 1.5
+      },
+      {
+        "id": "void_pulse",
+        "name": "Void Pulse",
+        "type": "magic_damage",
+        "weight": 30,
+        "dmgMultiplier": 1.2,
+        "effect": { "aoe": true }
+      },
+      {
+        "id": "starlit_shield",
+        "name": "Starlit Shield",
+        "type": "buff_def",
+        "weight": 20
+      }
     ]
   }
 ]
