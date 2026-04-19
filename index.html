@@ -403,6 +403,24 @@
   </div>
 
   <!-- ═══════════════════════════════════════
+       GAME OVER SCREEN
+       ═══════════════════════════════════════ -->
+  <div id="game-over-screen" class="screen">
+    <div class="go-bg-overlay"></div>
+    <div class="go-content">
+      <div class="go-skull">💀</div>
+      <div class="go-title">GAME OVER</div>
+      <div class="go-subtitle" id="go-subtitle">The party has fallen...</div>
+      <div class="go-party" id="go-party"></div>
+      <div class="go-msg" id="go-msg">Your progress has been saved at the start of the map.</div>
+      <div class="go-btns">
+        <button class="go-btn go-btn-primary" onclick="Story.gameOverReturnToMap()">↩ RETURN TO MAP</button>
+        <button class="go-btn go-btn-secondary" onclick="Story.gameOverTitle()">⌂ TITLE SCREEN</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
        RESULT SCREEN
        ═══════════════════════════════════════ -->
   <div id="result-screen" class="screen">

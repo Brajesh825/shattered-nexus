@@ -321,6 +321,7 @@ function showScreen(id) {
       'char-screen': 'char-grid',
       'class-screen': 'class-grid',
       'result-screen': 'result-screen',
+      'game-over-screen': 'game-over-screen',
       'story-screen': null,
       'explore-screen': null
     };

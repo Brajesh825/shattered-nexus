@@ -414,19 +414,70 @@ const Story = {
 
   /** Called by checkBattleEnd() (via TurnManager) when the whole party falls */
   onBattleLost() {
-    /* Skirmish defeat: just go back to map, no penalty */
+    /* Skirmish defeat: just go back to world map, no penalty */
     if (this._skirmishArcIdx !== undefined) {
       this._skirmishArcIdx = undefined;
       this._showWorldMap();
       return;
     }
-    this.phase = 'retry';
-    this._renderLine(null, 'The party falls... but fate is not done with them yet.');
-    this._showSection('s-dialogue');
-    const btn = this.el('s-continue');
-    btn.textContent = '↺ TRY AGAIN';
-    btn.style.display = 'inline-block';
-    showScreen('story-screen');
+
+    // Roll the save back to the start of the explore chapter
+    this._gameOverRollback();
+
+    // Populate the game over screen
+    const partyEl = document.getElementById('go-party');
+    if (partyEl && G.party) {
+      partyEl.innerHTML = G.party.map(m =>
+        `<div class="go-member">
+          <div class="go-member-ko">💀</div>
+          <div class="go-member-name">${m.displayName || m.name || m.charId}</div>
+        </div>`
+      ).join('');
+    }
+
+    const arc = this.arc;
+    const subEl = document.getElementById('go-subtitle');
+    if (subEl) subEl.textContent = arc ? `Defeated in ${arc.name}` : 'The party has fallen...';
+
+    _clearBattleAtmosphere();
+    showScreen('game-over-screen');
+    if (window.LogDebug) window.LogDebug(`[KO] Game Over — save rolled back to start of explore chapter`, 'dmg');
+  },
+
+  /** Roll the save back to the start of the current explore chapter.
+   *  Party is fully healed. chapIdx rewinds to the explore chapter index.
+   *  Called on every story-mode party wipe. */
+  _gameOverRollback() {
+    const arc = this.arc;
+    const chapters = (arc && arc.chapters) ? arc.chapters : [];
+
+    // Find the explore chapter in this arc (or fall back to chapter 0)
+    const exploreIdx = chapters.findIndex(c => c.type === 'explore');
+    this.chapIdx = exploreIdx >= 0 ? exploreIdx : 0;
+    this.phase = null;
+
+    // Full-heal party so they're ready to re-enter the map
+    this._healParty();
+
+    // Save — _doSave() will write null mapId because chapIdx < chapters.length
+    // and MapEngine is stopped, so the player restarts from the map entrance
+    this._doSave();
+  },
+
+  /** Game Over screen button — reload the rollback save and re-enter the explore map */
+  gameOverReturnToMap() {
+    if (typeof SFX !== 'undefined' && SFX.click) SFX.click();
+    // The rollback save is already written — reload it via the normal loadSave path
+    const slot = this._activeSlot !== undefined ? this._activeSlot : 0;
+    this.loadSave(slot);
+  },
+
+  /** Game Over screen button — return to title screen */
+  gameOverTitle() {
+    if (typeof SFX !== 'undefined' && SFX.click) SFX.click();
+    G.mode = null;
+    Story.active = false;
+    showScreen('title-screen');
   },
 
   /* ════════════════════════════════════════════════════════════════════════
@@ -435,10 +486,6 @@ const Story = {
   advance() {
     // Skip typewriter first if still running
     if (!this._tw.done) { this._skipTw(); return; }
-
-    if (this.phase === 'retry') {
-      this._retryBattle(); return;
-    }
 
     if (this.phase === 'arc_intro') {
       // For Arc 1, go directly to first chapter (no character selection)
