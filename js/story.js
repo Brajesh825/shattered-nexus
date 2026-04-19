@@ -311,13 +311,19 @@ const Story = {
       if (s.mapId) {
         // Find the actual explore chapter so EXIT works correctly afterward
         const arc = this.arc;
-        const savedChap = (this.chapIdx >= 0 && arc.chapters) ? arc.chapters[this.chapIdx] : null;
-        const chap = (savedChap && savedChap.type === 'explore')
-          ? savedChap
-          : { id: '_restore', type: 'explore', map: s.mapId, pre_dialogue: [], post_dialogue: [] };
-        this._exploreChap = chap;
-        this._launchExploreRestore(chap, s.mapX, s.mapY);
-        return;
+        const chapters = arc.chapters || [];
+        const savedChap = (this.chapIdx >= 0 && this.chapIdx < chapters.length) ? chapters[this.chapIdx] : null;
+
+        // Only restore to map if the saved chapter is still an explore chapter.
+        // If chapIdx is out of bounds (boss territory) or points to a non-explore
+        // chapter, the mapId is stale — fall through to normal chapter/boss logic.
+        if (savedChap && savedChap.type === 'explore') {
+          this._exploreChap = savedChap;
+          this._launchExploreRestore(savedChap, s.mapX, s.mapY);
+          return;
+        }
+        // chapIdx has advanced past all explore chapters — mapId is stale, ignore it
+        if (window.LogDebug) window.LogDebug(`[Story] stale mapId "${s.mapId}" ignored — chapIdx ${this.chapIdx} is past explore chapters, proceeding to boss`, 'passive');
       }
 
       // Resume at the saved chapter — skip arc intro/char-select on load
@@ -508,6 +514,7 @@ const Story = {
     this.chapIdx++;
     const arc = this.arc;
     console.log('[Story._nextChapter] After increment, chapIdx:', this.chapIdx, 'arc.chapters.length:', arc.chapters.length);
+
     this._doSave();
     if (this.chapIdx < arc.chapters.length) {
       console.log('[Story._nextChapter] Loading chapter:', this.chapIdx);
@@ -1066,8 +1073,13 @@ const Story = {
       mp:   m.mp,
       isKO: m.isKO || false,
     }));
-    // Capture current map location if saving from explore screen
-    const curMap = (typeof MapEngine !== 'undefined') ? MapEngine.getMap() : null;
+    // Capture current map location if saving from explore screen.
+    // BUT: if chapIdx has advanced past all explore chapters (boss territory),
+    // do NOT persist mapId — a stale mapId causes the loader to skip the boss trigger.
+    const _arc = this.arc;
+    const _chapters = (_arc && _arc.chapters) ? _arc.chapters : [];
+    const _inBossTerritory = this.chapIdx >= _chapters.length;
+    const curMap = (!_inBossTerritory && typeof MapEngine !== 'undefined') ? MapEngine.getMap() : null;
     const mapId  = curMap?.id || null;
     const mapX   = (mapId && typeof MapPlayer !== 'undefined') ? MapPlayer.tx : null;
     const mapY   = (mapId && typeof MapPlayer !== 'undefined') ? MapPlayer.ty : null;
