@@ -343,3 +343,15 @@
 .anim-cast { animation: castAnim 560ms ease-out; }
 .anim-ultimate { animation: ultimateCast 800ms ease-out; }
 .anim-shake { animation: shakeAnim 380ms ease-out; }
+
+/* ========== ANIMATED SPRITE SHEET SUPPORT ========== */
+
+.party-sprite-animated {
+  background-repeat: no-repeat;
+  image-rendering: auto;
+  overflow: hidden; /* Prevent background bleed */
+  /* Dimensions are set dynamically in setSpriteFrame() to maintain aspect ratio */
+  margin-top: -30px;
+  border-radius: 4px;
+  flex-shrink: 0; /* Prevent squishing in flex containers */
+}

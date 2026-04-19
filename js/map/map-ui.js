@@ -20,6 +20,17 @@ const MapUI = (() => {
   /* ── Notification banner ─────────────────────────────── */
   let _notifTimer = null;
 
+  function _toggleDpad(show) {
+    const dpad = document.getElementById('joystick-container');
+    if (!dpad) return;
+    // Only toggle if we are actually on a touch device
+    if (show) {
+      dpad.style.removeProperty('display');
+    } else {
+      dpad.style.display = 'none';
+    }
+  }
+
   function showMsg(text, durationMs, cb) {
     // Prefer the explore-screen banner; fall back to canvas overlay
     const el = document.getElementById('explore-notif');
@@ -57,12 +68,50 @@ const MapUI = (() => {
 
   /* ── Party HUD ───────────────────────────────────────── */
   const _avatarMap = { Mage:'🧙', Knight:'🛡', Ranger:'🏹', Warrior:'⚔', Healer:'💚' };
+  let _lastHUDState = '';
 
   function _updatePartyHUD() {
     const hud = document.getElementById('explore-party-hud');
     if (!hud || !G || !G.party || !G.party.length) return;
-    hud.innerHTML = '';
+    
+    // Generate a lightweight "hash" of the party state to see if we NEED to re-render
+    const currentState = G.party.map((m, i) => 
+      `${m.charId}-${m.hp}-${m.maxHp}-${i === G.activePartyIdx}`
+    ).join('|');
 
+    if (currentState === _lastHUDState) return;
+    
+    // Check if we can just update existing bars instead of full innerHTML replacement
+    const members = hud.querySelectorAll('.ex-hud-member');
+    if (members.length === G.party.length && currentState.split('|').length === _lastHUDState.split('|').length) {
+      // Partial update (much smoother, no animation restarts)
+      G.party.forEach((m, i) => {
+        const isActive = i === G.activePartyIdx;
+        const ratio = Math.max(0, m.hp / m.maxHp);
+        const col = ratio > 0.5 ? '#40d870' : ratio > 0.25 ? '#e8b030' : '#e04040';
+        
+        const card = members[i];
+        if (card.classList.contains('ex-hud-active') !== isActive) {
+           card.classList.toggle('ex-hud-active', isActive);
+           const nameEl = card.querySelector('.ex-hud-name');
+           if (nameEl) nameEl.innerHTML = `${(m.displayName || m.charId || '?').slice(0,8)}${isActive ? ' ◀' : ''}`;
+        }
+        
+        const bar = card.querySelector('.ex-hud-bar-fill');
+        if (bar) {
+          bar.style.width = `${ratio * 100}%`;
+          bar.style.background = col;
+        }
+        
+        const text = card.querySelector('.ex-hud-hp');
+        if (text) text.textContent = `${m.hp} / ${m.maxHp} HP`;
+      });
+      _lastHUDState = currentState;
+      return;
+    }
+
+    // Full render only if composition changed (number of members or IDs)
+    hud.innerHTML = '';
     G.party.forEach((m, i) => {
       if (!m) return;
       const isActive = i === G.activePartyIdx;
@@ -88,6 +137,7 @@ const MapUI = (() => {
       });
       hud.appendChild(el);
     });
+    _lastHUDState = currentState;
   }
 
   /* ── Minimap ─────────────────────────────────────────── */
@@ -214,6 +264,7 @@ const MapUI = (() => {
 
   function openPauseMenu() {
     if (MapEngine.isRunning()) MapEngine.stop();
+    _toggleDpad(false);
     _renderPauseCards();
     _renderPauseInventory();
     const el = document.getElementById('map-pause-menu');
@@ -221,11 +272,19 @@ const MapUI = (() => {
     // Only show save button in story mode
     const saveBtn = document.querySelector('#map-pause-menu .save-btn');
     if (saveBtn) saveBtn.style.display = (typeof Story !== 'undefined' && Story.active) ? '' : 'none';
+
+    if (typeof Focus !== 'undefined') {
+      Focus.setContext('map-pause-menu');
+    }
   }
 
   function closePauseMenu() {
     const el = document.getElementById('map-pause-menu');
     if (el) el.style.display = 'none';
+    _toggleDpad(true);
+    if (typeof Focus !== 'undefined') {
+      Focus.setContext(null);
+    }
     MapEngine.resume();
   }
 
@@ -267,7 +326,7 @@ const MapUI = (() => {
       const hpPct   = Math.max(0, m.hp / m.maxHp * 100);
       const mpPct   = Math.max(0, m.mp / m.maxMp * 100);
       const hpCol   = hpPct > 50 ? '#4ade80' : hpPct > 25 ? '#eab308' : '#ef4444';
-      const expNext = 30 * m.lv;
+      const expNext = typeof getExpThreshold === 'function' ? getExpThreshold(m.lv) : (5 * m.lv * m.lv + 25 * m.lv);
 
       const card = document.createElement('div');
       card.className = `pause-member${isKO ? ' ko-member' : ''}${isActive ? ' active-member' : ''}`;
@@ -277,24 +336,24 @@ const MapUI = (() => {
           <span class="pm-name" style="color:${col}">${m.displayName}</span>
           <span class="pm-lv">LV ${m.lv}</span>
         </div>
-        <div style="font-size:8px;color:#6060a0;margin-bottom:2px">
+        <div class="pm-exp-line">
           ${m.cls?.name || ''} · EXP ${m.exp}/${expNext}
         </div>
         <div class="pm-hp-bar-bg">
           <div class="pm-hp-bar-fill" style="width:${hpPct}%;background:${hpCol}"></div>
         </div>
-        <div style="font-size:8px;color:#a0a0c0;text-align:right">${m.hp}/${m.maxHp} HP</div>
+        <div class="pm-bar-label">${m.hp}/${m.maxHp} HP</div>
         <div class="pm-mp-bar-bg">
           <div class="pm-mp-bar-fill" style="width:${mpPct}%"></div>
         </div>
-        <div style="font-size:8px;color:#6080c0;text-align:right">${m.mp}/${m.maxMp} MP</div>
+        <div class="pm-bar-label mp">${m.mp}/${m.maxMp} MP</div>
         <div class="pm-stats">
           <div>ATK <span>${m.atk}</span></div>
           <div>DEF <span>${m.def}</span></div>
           <div>MAG <span>${m.mag}</span></div>
           <div>SPD <span>${m.spd}</span></div>
           <div>Gold <span>${m.gold || 0}</span></div>
-          ${isKO ? '<div style="color:#ef4444">FALLEN</div>' : '<div style="color:#4ade80">OK</div>'}
+          ${isKO ? '<div class="pm-status-ko">FALLEN</div>' : '<div class="pm-status-ok">OK</div>'}
         </div>
         ${m.passive ? `<div class="pm-passive">★ ${m.passive.name}: ${m.passive.description}</div>` : ''}
       `;
@@ -465,12 +524,12 @@ const MapUI = (() => {
   /* ── Camp Menu ──────────────────────────────────────── */
   function openCampMenu() {
     if (MapEngine.isRunning()) MapEngine.stop();
+    _toggleDpad(false);
     const el = document.getElementById('camp-menu');
     if (!el) return;
     // World Map locked until arc 1 boss is defeated (arcIdx > 0)
     const worldMapBtn = el.querySelector('.camp-btn-worldmap');
     if (worldMapBtn) {
-      // Unlocked once arc 1 boss is beaten: arcIdx > 0, OR arcIdx===0 but in arc_end/world_map phase
       const unlocked = typeof Story !== 'undefined' && (
         Story.arcIdx > 0 ||
         ['arc_end', 'world_map', 'epilogue'].includes(Story.phase)
@@ -481,11 +540,18 @@ const MapUI = (() => {
       worldMapBtn.style.cursor = unlocked ? '' : 'not-allowed';
     }
     el.style.display = 'flex';
+    if (typeof Focus !== 'undefined') {
+      Focus.setContext('camp-menu');
+    }
   }
 
   function closeCampMenu() {
     const el = document.getElementById('camp-menu');
     if (el) el.style.display = 'none';
+    _toggleDpad(true);
+    if (typeof Focus !== 'undefined') {
+      Focus.setContext(null);
+    }
     MapEngine.resume();
   }
 
@@ -538,6 +604,9 @@ const MapUI = (() => {
     if (panel) panel.style.display = 'none';
     const campEl = document.getElementById('camp-menu');
     if (campEl) campEl.style.display = 'flex';
+    if (typeof Focus !== 'undefined') {
+      Focus.setContext('camp-menu');
+    }
   }
 
   function _renderRelicPanel() {
@@ -569,33 +638,37 @@ const MapUI = (() => {
     const listEl = document.getElementById('relic-list');
     if (!listEl) return;
     listEl.innerHTML = '';
+    listEl.className = 'relic-grid'; // Use the new grid layout
+
     if (!owned.length) {
-      listEl.innerHTML = '<div style="font-size:9px;color:#3a2860;text-align:center;padding:12px">No relics found yet — defeat bosses and explore.</div>';
+      listEl.innerHTML = '<div style="font-size:11px;color:rgba(144,128,255,0.4);text-align:center;padding:40px;grid-column:1/-1">No relics found yet — defeat bosses and explore.</div>';
       return;
     }
+
     owned.forEach(id => {
       const def = defs.find(r => r.id === id);
       if (!def) return;
       const isEquipped = active.includes(id);
+      const rarityClass = def.rarity || 'common';
+      
       const card = document.createElement('div');
-      card.className = `relic-card${isEquipped ? ' equipped' : ''}${def.rarity === 'boss' ? ' boss-relic' : ''}`;
+      card.className = `relic-card ${rarityClass}${isEquipped ? ' equipped' : ''}`;
+      
       card.innerHTML = `
-        <div class="relic-card-icon">${def.icon}</div>
-        <div class="relic-card-info">
-          <div class="relic-card-name">${def.name}</div>
-          <div class="relic-card-bonus">${def.bonusText}</div>
-          <div class="relic-card-desc">${def.flavour}</div>
-        </div>
-        ${isEquipped
-          ? '<div class="relic-card-badge">ON</div>'
-          : active.length < 3
-            ? '<div class="relic-card-badge" style="background:#3a2870;color:#c0b0e8">+</div>'
-            : '<div class="relic-card-badge" style="background:#1a0d30;color:#4a3880">FULL</div>'
-        }
+        ${isEquipped ? '<div class="active-tag">Active</div>' : ''}
+        <div class="relic-icon">${def.icon}</div>
+        <div class="relic-name">${def.name}</div>
+        <div class="relic-desc">${def.bonusText || ''}<br><small style="opacity:0.5; font-style:italic; margin-top:4px; display:block">${def.flavour || ''}</small></div>
+        ${!isEquipped && active.length < 3 ? '<div style="font-size:10px; color:var(--gold); border-top:1px solid rgba(255,255,255,0.1); padding-top:8px; margin-top:4px; cursor:pointer">Click to Equip</div>' : ''}
       `;
+      
       card.addEventListener('click', () => {
-        if (isEquipped) _unequipRelic(id);
-        else if (active.length < 3) G.activeRelics.push(id);
+        if (isEquipped) {
+          _unequipRelic(id);
+        } else if (active.length < 3) {
+          G.activeRelics.push(id);
+          if (typeof SFX !== 'undefined') SFX.click();
+        }
         _renderRelicPanel();
         if (typeof Story !== 'undefined' && Story._doSave) Story._doSave();
       });
@@ -611,13 +684,15 @@ const MapUI = (() => {
   // Kept so any existing code calling MapUI.render() won't break.
   function render(ctx, cw, ch) { /* DOM HUD renders instead */ }
 
-  // Escape key closes pause menu
+  // Escape key handled by FocusManager/Input intents now
+  /*
   window.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
       const el = document.getElementById('map-pause-menu');
       if (el && el.style.display !== 'none') { closePauseMenu(); e.preventDefault(); }
     }
   });
+  */
 
   return {
     showMsg,

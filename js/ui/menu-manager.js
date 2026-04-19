@@ -30,13 +30,18 @@ window.addEventListener('DOMContentLoaded', async () => {
 });
 
 function initStars() {
-  const c = document.getElementById('stars');
-  for (let i = 0; i < 70; i++) {
-    const s = document.createElement('div');
-    s.className = 'star';
-    s.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;animation-delay:${Math.random()*2}s;animation-duration:${1+Math.random()*2}s`;
-    c.appendChild(s);
-  }
+  const containers = ['stars', 'stars-l1', 'stars-l2'].map(id => document.getElementById(id)).filter(Boolean);
+  if (containers.length === 0) return;
+
+  containers.forEach(c => {
+    const count = c.id === 'stars' ? 70 : 40; // Fewer stars for layered backgrounds
+    for (let i = 0; i < count; i++) {
+      const s = document.createElement('div');
+      s.className = 'star';
+      s.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;animation-delay:${Math.random()*2}s;animation-duration:${1+Math.random()*2}s`;
+      c.appendChild(s);
+    }
+  });
 }
 
 /* ============================================================
@@ -70,16 +75,31 @@ MapEngine.onEncounterStart = (enc, map) => {
 
   buildEnemyGroup(mutatedDefs, spawnLevel, false);
 
-  // Apply mutation stat multipliers on top of built group
+  // Record encountered enemies in Archive
+  if (typeof Archive !== 'undefined') {
+    enemyIds.forEach(id => Archive.recordSeen(id));
+  }
+
+  // Apply mutation stat multipliers on top of built group per NexusScaling
   if (mutation) {
-    const mult = mutation === 'mutant' ? 1.55 : 1.28;
+    const mutDef = NexusScaling.mutation[mutation];
+    const statMult = mutDef ? mutDef.statMult : 1.0;
+    const hpMult = mutDef ? (mutDef.hpMult || mutDef.statMult) : 1.0;
+    
     G.enemyGroup.forEach(e => {
-      e.hp    = Math.floor(e.hp    * mult); e.maxHp = e.hp;
-      e.atk   = Math.floor(e.atk   * mult);
-      e.def   = Math.floor(e.def   * mult);
-      e.mag   = Math.floor(e.mag   * mult);
-      e.exp   = Math.floor(e.exp   * (mutation === 'mutant' ? 2.2 : 1.5));
-      e.gold  = Math.floor(e.gold  * (mutation === 'mutant' ? 2.0 : 1.4));
+      // --- SAFETY CHECK: NO MUTATED BOSSES (Still enforced for Boss-flagged legends) ---
+      if (e.isBoss) {
+        e.mutation = null;
+        e.mutantTraits = null;
+        return;
+      }
+
+      e.hp    = Math.floor(e.hp    * hpMult); e.maxHp = e.hp;
+      e.atk   = Math.floor(e.atk   * statMult);
+      e.def   = Math.floor(e.def   * statMult);
+      e.mag   = Math.floor(e.mag   * statMult);
+      e.exp   = Math.floor(e.exp   * (mutation === 'mutant' ? NexusScaling.mutation.mutant.expMult : NexusScaling.mutation.corrupted.expMult));
+      e.gold  = Math.floor(e.gold  * (mutation === 'mutant' ? NexusScaling.mutation.mutant.goldMult : NexusScaling.mutation.corrupted.goldMult));
       e.mutation = mutation;
 
       // ── Apply mutant traits ──────────────────────────────
@@ -245,9 +265,12 @@ function _renderPartySwapGrid() {
     card.className = 'swap-card' + (isActive ? ' active' : '');
     card.dataset.charid = ch.id;
 
+    const spriteId = `swap-sprite-${ch.id}`;
     card.innerHTML =
       (isActive ? `<div class="swap-card-badge">${slotIdx + 1}</div>` : '') +
-      `<div class="swap-icon" style="background:${ch.portrait_color}20;border-color:${ch.portrait_color}50">${ch.icon}</div>` +
+      `<div class="swap-icon" style="background:${ch.portrait_color}20;border-color:${ch.portrait_color}50">
+        <div id="${spriteId}" class="ui-sprite-swap"></div>
+      </div>` +
       `<div class="swap-info">` +
         `<div class="swap-name">${ch.alias || ch.name}</div>` +
         `<div class="swap-title">${ch.title}</div>` +
@@ -267,6 +290,12 @@ function _renderPartySwapGrid() {
     });
 
     grid.appendChild(card);
+
+    // Initialize high-res sprite
+    if (typeof SpriteRenderer !== 'undefined') {
+      const sprEl = document.getElementById(spriteId);
+      if (sprEl) SpriteRenderer.setFrame(sprEl, ch.id, 'idle', 64);
+    }
   });
 
   const count = _partySwapSelection.length;
@@ -284,10 +313,11 @@ function _renderCharGrid() {
     const d = document.createElement('div');
     d.className = 'char-card' + (isSelected ? ' selected' : '');
     d.dataset.char = ch.id;
+    const spriteId = `char-grid-sprite-${ch.id}`;
     d.innerHTML = `
       ${isSelected ? `<div class="char-sel-badge">${selIdx + 1}</div>` : ''}
       <div class="char-portrait" style="background:${ch.portrait_color}20;border-color:${ch.portrait_color}50">
-        <span>${ch.icon}</span>
+        <div id="${spriteId}" class="ui-sprite-char-grid"></div>
       </div>
       <div class="char-info">
         <div class="char-name">${ch.alias || ch.name}</div>
@@ -296,6 +326,12 @@ function _renderCharGrid() {
       </div>`;
     d.onclick = () => selectChar(ch.id);
     grid.appendChild(d);
+
+    // Initialize high-res sprite
+    if (typeof SpriteRenderer !== 'undefined') {
+      const sprEl = document.getElementById(spriteId);
+      if (sprEl) SpriteRenderer.setFrame(sprEl, ch.id, 'idle', 72);
+    }
   });
 }
 
@@ -309,6 +345,9 @@ function _updateCharConfirmBtn() {
 }
 
 function selectChar(id) {
+  const ch = G.chars.find(c => c.id === id);
+  if (!ch) return;
+
   const idx = G.selectedChars.indexOf(id);
   if (idx !== -1) {
     G.selectedChars.splice(idx, 1);          // deselect
@@ -320,22 +359,37 @@ function selectChar(id) {
   _renderCharGrid();
   _updateCharConfirmBtn();
 
-  // Show details for the clicked character
-  const ch = G.chars.find(c => c.id === id);
-  if (!ch) return;
-  const s = ch.base_stats;
-  document.getElementById('char-detail').innerHTML = `
-    <strong style="color:${ch.portrait_color}">${ch.icon} ${ch.alias || ch.name}</strong> — <em style="color:var(--text-dim)">${ch.personality}</em><br>
-    ${ch.description}<br>
-    <div class="stat-row">
-      <span class="stat-chip">HP <span>${s.hp}</span></span>
-      <span class="stat-chip">MP <span>${s.mp}</span></span>
-      <span class="stat-chip">ATK <span>${s.atk}</span></span>
-      <span class="stat-chip">DEF <span>${s.def}</span></span>
-      <span class="stat-chip">SPD <span>${s.spd}</span></span>
-      <span class="stat-chip">MAG <span>${s.mag}</span></span>
-    </div>
-    <span class="passive-tag">★ ${ch.passive.name}: ${ch.passive.description}</span>`;
+  // Use the master formula to show actual level-scaled stats in the details view
+  const classId = ch.class_affinity[0] || G.classes[0].id;
+  const cls = G.classes.find(c => c.id === classId) || G.classes[0];
+  const s = computeStats(ch, cls);
+
+  const detailEl = document.getElementById('char-detail');
+  const spriteId = `char-detail-sprite-${id}`;
+  detailEl.innerHTML = `
+    <div class="char-detail-layout">
+      <div class="char-detail-visual">
+         <div id="${spriteId}" class="ui-sprite-char-detail"></div>
+      </div>
+      <div class="char-detail-text">
+        <strong style="color:${ch.portrait_color}">${ch.icon} ${ch.alias || ch.name}</strong> — <em style="color:var(--text-dim)">${ch.personality}</em><br>
+        ${ch.description}<br>
+        <div class="stat-row">
+          <span class="stat-chip">HP <span>${s.hp}</span></span>
+          <span class="stat-chip">MP <span>${s.mp}</span></span>
+          <span class="stat-chip">ATK <span>${s.atk}</span></span>
+          <span class="stat-chip">DEF <span>${s.def}</span></span>
+          <span class="stat-chip">SPD <span>${s.spd}</span></span>
+          <span class="stat-chip">MAG <span>${s.mag}</span></span>
+        </div>
+        <span class="passive-tag">★ ${ch.passive.name}: ${ch.passive.description}</span>
+      </div>
+    </div>`;
+
+  if (typeof SpriteRenderer !== 'undefined') {
+    const sprEl = document.getElementById(spriteId);
+    if (sprEl) SpriteRenderer.setFrame(sprEl, id, 'idle', 140);
+  }
 }
 
 /* ============================================================

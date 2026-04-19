@@ -5,10 +5,17 @@
 const SFX = {
   _ctx:   null,
   _muted: false,
+  _volume: 0.5,
+  _masterGain: null,
 
   _get() {
     if (!this._ctx) {
-      try { this._ctx = new (window.AudioContext || window.webkitAudioContext)(); }
+      try {
+        this._ctx = new (window.AudioContext || window.webkitAudioContext)();
+        this._masterGain = this._ctx.createGain();
+        this._masterGain.connect(this._ctx.destination);
+        this._masterGain.gain.value = this._volume;
+      }
       catch(e) { return null; }
     }
     if (this._ctx.state === 'suspended') this._ctx.resume();
@@ -143,15 +150,76 @@ const SFX = {
   /* ── Victory fanfare ─────────────────────────────────────────────────── */
   victory() {
     this._run(ctx => {
-      [523, 659, 784, 1047, 1319].forEach((freq, i) => {
+      [523, 659, 784, 1046].forEach((f, i) => {
         const o = ctx.createOscillator(), g = ctx.createGain();
         o.connect(g); g.connect(ctx.destination);
-        o.type = 'sine'; o.frequency.value = freq;
-        const t = ctx.currentTime + i * 0.1;
-        g.gain.setValueAtTime(0.18, t);
-        g.gain.exponentialRampToValueAtTime(0.001, t + 0.48);
-        o.start(t); o.stop(t + 0.48);
+        o.type = 'triangle'; o.frequency.value = f;
+        const t = ctx.currentTime + i * 0.15;
+        g.gain.setValueAtTime(0.12, t);
+        g.gain.exponentialRampToValueAtTime(0.001, t + 0.6);
+        o.start(t); o.stop(t + 0.6);
       });
+    });
+  },
+
+  /* ── Ultimate Impact (Booms & Crashes) ────────────────────────────────── */
+  ultimate() {
+    this._run(ctx => {
+      const now = ctx.currentTime;
+      // 1. Deep Sub Thud
+      const sub = ctx.createOscillator(), subG = ctx.createGain();
+      sub.connect(subG); subG.connect(ctx.destination);
+      sub.type = 'sine';
+      sub.frequency.setValueAtTime(100, now);
+      sub.frequency.exponentialRampToValueAtTime(30, now + 0.5);
+      subG.gain.setValueAtTime(0.8, now);
+      subG.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+      sub.start(); sub.stop(now + 0.6);
+
+      // 2. White Noise Crash
+      const len = Math.floor(ctx.sampleRate * 1.5);
+      const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+      const d   = buf.getChannelData(0);
+      for (let i = 0; i < len; i++) d[i] = (Math.random()*2-1) * Math.pow(1 - i/len, 3);
+      const src = ctx.createBufferSource(), ng = ctx.createGain();
+      src.buffer = buf; src.connect(ng); ng.connect(ctx.destination);
+      ng.gain.setValueAtTime(0.3, now);
+      ng.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+      src.start(now);
+
+      // 3. High Shimmer Ring
+      const ring = ctx.createOscillator(), ringG = ctx.createGain();
+      ring.connect(ringG); ringG.connect(ctx.destination);
+      ring.type = 'triangle';
+      ring.frequency.setValueAtTime(2000, now);
+      ringG.gain.setValueAtTime(0.05, now);
+      ringG.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+      ring.start(); ring.stop(now + 0.4);
+    });
+  },
+
+  /* ── Critical Hit (Metallic Ring) ────────────────────────────────────── */
+  crit() {
+    this._run(ctx => {
+      const now = ctx.currentTime;
+      // High-pitched "Ting"
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.type = 'sine';
+      o.frequency.setValueAtTime(3500, now);
+      o.frequency.exponentialRampToValueAtTime(2500, now + 0.1);
+      g.gain.setValueAtTime(0.15, now);
+      g.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+      o.start(); o.stop(now + 0.25);
+
+      // Secondary metallic harmonic
+      const o2 = ctx.createOscillator(), g2 = ctx.createGain();
+      o2.connect(g2); g2.connect(ctx.destination);
+      o2.type = 'triangle';
+      o2.frequency.setValueAtTime(5200, now);
+      g2.gain.setValueAtTime(0.05, now);
+      g2.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+      o2.start(); o2.stop(now + 0.1);
     });
   },
 
@@ -200,6 +268,86 @@ const SFX = {
     });
   },
 
+  /* ── Elemental Reactions ─────────────────────────────────────────────── */
+  shatter() {
+    this._run(ctx => {
+      // High-frequency "glass crack" noise burst
+      const len = Math.floor(ctx.sampleRate * 0.15);
+      const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+      const d = buf.getChannelData(0);
+      for (let i = 0; i < len; i++) {
+        const env = Math.pow(1 - i/len, 4);
+        d[i] = (Math.random()*2-1) * env * (Math.sin(i*0.1) * 0.5 + 0.5);
+      }
+      const src = ctx.createBufferSource(), g = ctx.createGain();
+      src.buffer = buf; src.connect(g); g.connect(ctx.destination);
+      g.gain.value = 0.35; src.start();
+
+      // Crystalline pings
+      [1200, 1800, 2400].forEach((f, i) => {
+        const o = ctx.createOscillator(), og = ctx.createGain();
+        o.connect(og); og.connect(ctx.destination);
+        o.type = 'sine'; o.frequency.value = f;
+        const t = ctx.currentTime + i * 0.02;
+        og.gain.setValueAtTime(0, t);
+        og.gain.linearRampToValueAtTime(0.08, t + 0.01);
+        og.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
+        o.start(t); o.stop(t + 0.1);
+      });
+    });
+  },
+
+  melt() {
+    this._run(ctx => {
+      // Sizzling low-pass noise
+      const len = Math.floor(ctx.sampleRate * 0.4);
+      const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+      const d = buf.getChannelData(0);
+      for (let i = 0; i < len; i++) d[i] = (Math.random()*2-1) * Math.pow(1 - i/len, 2);
+      
+      const src = ctx.createBufferSource(), g = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'lowpass'; filter.frequency.value = 800;
+      
+      src.buffer = buf; src.connect(filter); filter.connect(g); g.connect(ctx.destination);
+      g.gain.setValueAtTime(0, ctx.currentTime);
+      g.gain.linearRampToValueAtTime(0.2, ctx.currentTime + 0.05);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      src.start();
+    });
+  },
+
+  swirl() {
+    this._run(ctx => {
+      // Gusty resonant sweep
+      const len = Math.floor(ctx.sampleRate * 0.5);
+      const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+      const d = buf.getChannelData(0);
+      for (let i = 0; i < len; i++) d[i] = (Math.random()*2-1);
+      
+      const src = ctx.createBufferSource(), g = ctx.createGain(), f = ctx.createBiquadFilter();
+      f.type = 'bandpass'; f.Q.value = 8;
+      f.frequency.setValueAtTime(400, ctx.currentTime);
+      f.frequency.exponentialRampToValueAtTime(1400, ctx.currentTime + 0.4);
+      
+      src.buffer = buf; src.connect(f); f.connect(g); g.connect(ctx.destination);
+      g.gain.setValueAtTime(0, ctx.currentTime);
+      g.gain.linearRampToValueAtTime(0.18, ctx.currentTime + 0.1);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+      src.start();
+    });
+  },
+
+  /**
+   * Set global SFX volume
+   */
+  setVolume(vol) {
+    this._volume = Math.max(0, Math.min(1, vol));
+    if (this._masterGain) {
+      this._masterGain.gain.value = this._volume;
+    }
+  },
+
   /* ── Toggle mute — returns new muted state ───────────────────────────── */
   toggleMute() {
     this._muted = !this._muted;
@@ -209,6 +357,14 @@ const SFX = {
     // Sync BGM mute
     if (typeof BGM !== 'undefined') {
       BGM.toggleMute(this._muted);
+    }
+    
+    // Sync UI settings if open
+    if (typeof Settings !== 'undefined') {
+      const bgmS = document.getElementById('settings-bgm');
+      const sfxS = document.getElementById('settings-sfx');
+      if (bgmS) bgmS.value = this._muted ? 0 : BGM._volume * 100;
+      if (sfxS) sfxS.value = this._muted ? 0 : this._volume * 100;
     }
 
     return this._muted;

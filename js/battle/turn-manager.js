@@ -13,11 +13,35 @@ const TurnManager = {
       if (Battle.alive(m)) q.push({ type: 'party', idx: i, spd: Battle.getStat(m, 'spd') });
     });
     G.enemyGroup.forEach((e, i) => {
-      if (Battle.alive(e)) q.push({ type: 'enemy', idx: i, spd: Battle.getStat(e, 'spd') });
+      if (Battle.alive(e)) {
+        q.push({ type: 'enemy', idx: i, spd: Battle.getStat(e, 'spd') });
+        
+        // --- SOLO BOSS DOUBLE ACTION ---
+        const isSolo = G.enemyGroup.filter(en => Battle.alive(en)).length === 1;
+        if (e.isBoss && isSolo) {
+          q.push({ type: 'enemy', idx: i, spd: Math.floor(Battle.getStat(e, 'spd') * 0.6) });
+        }
+      }
     });
 
     // Higher speed units act first
     q.sort((a, b) => b.spd - a.spd);
+
+    // --- PASSIVE TRAIT: FIRST STRIKE ---
+    if (typeof PassiveSystem !== 'undefined') {
+      G.party.forEach((m, i) => {
+        if (Battle.alive(m) && PassiveSystem.hasTrait(m, 'FIRST_STRIKE')) {
+          const entry = q.find(t => t.type === 'party' && t.idx === i);
+          if (entry) {
+            const qIdx = q.indexOf(entry);
+            if (qIdx > 0) {
+              q.splice(qIdx, 1);
+              q.unshift(entry);
+            }
+          }
+        }
+      });
+    }
 
     // Relic: Echo of the Unmade — firstStrike guarantees the fastest party member
     // acts first on the opening round of each battle (fires once per battle).
@@ -64,11 +88,11 @@ const TurnManager = {
     if (stun || frozen) {
       const label = stun ? 'stunned' : 'frozen';
       const icon = stun ? '💫' : '❄️';
+      
+      // Tick statuses (decrement duration) even when incapacitated
+      StatusSystem.tick(unit, t.type === 'enemy');
+      
       BattleUI.addLog(`${icon} ${unit.displayName || unit.name} is ${label} and skips their turn!`, 'regen');
-
-      // Removal of turn-skipping effects
-      if (stun) StatusSystem.remove(unit, 'status_stunned');
-      if (frozen) StatusSystem.remove(unit, 'status_frozen');
 
       setTimeout(() => this.advance(), 1000);
       return;

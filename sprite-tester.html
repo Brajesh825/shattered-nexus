@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPG+ Sprite Inspector</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <style>
+        :root {
+            --sidebar-w: 320px;
+        }
+
+        body {
+            overflow: hidden;
+            background: #020108;
+            height: 100vh;
+            display: flex;
+            margin: 0;
+            font-family: var(--vt);
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            width: var(--sidebar-w);
+            background: var(--bg-panel);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            backdrop-filter: var(--blur);
+            z-index: 10;
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .sidebar-header h1 {
+            font-family: var(--px);
+            font-size: 1rem;
+            color: var(--gold);
+            margin: 0;
+            letter-spacing: 2px;
+        }
+
+        .search-box {
+            margin-top: 1rem;
+            width: 100%;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--border);
+            padding: 8px 12px;
+            color: var(--text);
+            border-radius: 4px;
+            font-family: var(--vt);
+        }
+
+        .list-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        .list-section {
+            margin-bottom: 2rem;
+        }
+
+        .list-section h3 {
+            font-family: var(--px);
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .list-item {
+            padding: 10px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 4px;
+            border: 1px solid transparent;
+        }
+
+        .list-item:hover {
+            background: rgba(96, 80, 184, 0.15);
+            border-color: var(--border);
+        }
+
+        .list-item.active {
+            background: rgba(96, 80, 184, 0.3);
+            border-color: var(--purple);
+            color: var(--gold);
+        }
+
+        .item-icon {
+            width: 24px;
+            height: 24px;
+            background: rgba(0,0,0,0.4);
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* --- MAIN INSPECTOR --- */
+        .inspector {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background: radial-gradient(circle at center, #100830 0%, #020108 80%);
+        }
+
+        .stage {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            perspective: 1000px;
+        }
+
+        .stage-backdrop {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: repeating-linear-gradient(45deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 20px, transparent 20px, transparent 40px);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 50%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* The actual sprite box in the stage */
+        #active-sprite-container {
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* Large preview override */
+        #active-sprite-container .party-sprite-animated,
+        #active-sprite-container img {
+            filter: drop-shadow(0 0 30px rgba(118, 72, 255, 0.3));
+        }
+
+        /* --- PANELS --- */
+        .panel {
+            background: var(--glass-str);
+            border-top: 1px solid var(--border);
+            padding: 1.5rem;
+            display: flex;
+            gap: 2rem;
+            backdrop-filter: var(--blur);
+        }
+
+        .info-panel {
+            flex: 1;
+        }
+
+        .info-title {
+            font-family: var(--px);
+            font-size: 1.4rem;
+            color: var(--gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .info-subtitle {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+        }
+
+        .control-panel {
+            width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .control-group h4 {
+            font-family: var(--px);
+            font-size: 0.7rem;
+            color: var(--purple);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .btn-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .btn {
+            background: var(--bg-mid);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: var(--vt);
+            font-size: 1.1rem;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .btn:hover:not(:disabled) {
+            background: var(--purple);
+            border-color: var(--purple);
+        }
+
+        .btn.active {
+            background: var(--gold);
+            color: #000;
+            border-color: var(--gold);
+            font-weight: bold;
+        }
+
+        .btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .debug-box {
+            background: rgba(0,0,0,0.5);
+            border-radius: 8px;
+            padding: 12px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: var(--cyan);
+            line-height: 1.4;
+        }
+
+        .placeholder {
+            color: var(--text-dim);
+            font-family: var(--px);
+            font-size: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Responsive spacing fix for larger inspector */
+        .party-sprite-animated {
+            margin-top: 0 !important; /* Reset battle position for inspector */
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <header class="sidebar-header">
+            <h1>Sprite Inspector</h1>
+            <input type="text" class="search-box" placeholder="Search sprites..." id="search">
+        </header>
+
+        <div class="list-container">
+            <div class="list-section">
+                <h3>Heroes</h3>
+                <div id="hero-list"></div>
+            </div>
+            <div class="list-section">
+                <h3>Enemies</h3>
+                <div id="enemy-list"></div>
+            </div>
+        </div>
+    </aside>
+
+    <main class="inspector">
+        <div class="stage" id="stage">
+            <div class="stage-backdrop"></div>
+            <div id="placeholder" class="placeholder">Select a Sprite to Inspect</div>
+            <div id="active-sprite-container"></div>
+        </div>
+
+        <section class="panel" id="ui-panel" style="display: none;">
+            <div class="info-panel">
+                <div id="char-name" class="info-title">Ayaka</div>
+                <div id="char-id" class="info-subtitle">ID: ayaka</div>
+                <div style="margin-top:1.5rem">
+                    <div class="debug-box" id="debug-metrics">
+                        Waiting for selection...
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-panel">
+                <div class="control-group">
+                    <h4>Animation States</h4>
+                    <div class="btn-grid" id="anim-btns">
+                        <button class="btn" data-frame="idle">Idle</button>
+                        <button class="btn" data-frame="prepare">Prepare</button>
+                        <button class="btn" data-frame="attack">Attack</button>
+                        <button class="btn" data-frame="magic">Magic</button>
+                        <button class="btn" data-frame="hurt">Hurt</button>
+                        <button class="btn" data-frame="fallen">Fallen</button>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <h4>Inspector Zoom</h4>
+                    <div class="btn-grid">
+                        <button class="btn" onclick="SpriteInspector.setZoom(1)">1x</button>
+                        <button class="btn active" id="zoom2x" onclick="SpriteInspector.setZoom(2)">2x</button>
+                        <button class="btn" onclick="SpriteInspector.setZoom(4)">4x</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/sprites.js"></script>
+    <script>
+        const SpriteInspector = {
+            activeId: null,
+            activeData: null,
+            activeFrame: 'idle',
+            zoom: 2,
+            
+            async init() {
+                try {
+                    const hRes = await fetch('data/characters.json');
+                    const heroes = await hRes.json();
+                    const eRes = await fetch('data/enemies.json');
+                    const enemiesRaw = await eRes.json();
+                    
+                    // Filter unique enemy IDs
+                    const enemies = Array.from(new Set(enemiesRaw.map(e => e.id)))
+                                         .map(id => enemiesRaw.find(e => e.id === id));
+
+                    this.renderList(heroes, 'hero-list', 'hero');
+                    this.renderList(enemies, 'enemy-list', 'enemy');
+
+                    // Setup search
+                    document.getElementById('search').oninput = (ev) => {
+                        const q = ev.target.value.toLowerCase();
+                        document.querySelectorAll('.list-item').forEach(item => {
+                            const match = item.textContent.toLowerCase().includes(q);
+                            item.style.display = match ? 'flex' : 'none';
+                        });
+                    };
+
+                    // Setup animation buttons
+                    document.querySelectorAll('#anim-btns .btn').forEach(btn => {
+                        btn.onclick = () => {
+                            this.setFrame(btn.dataset.frame);
+                        };
+                    });
+
+                } catch (e) {
+                    console.error("Initialization failed", e);
+                }
+            },
+
+            renderList(data, containerId, type) {
+                const container = document.getElementById(containerId);
+                data.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'list-item';
+                    div.innerHTML = `
+                        <div class="item-icon"></div>
+                        <span>${item.name}</span>
+                    `;
+                    div.onclick = () => this.select(item, type);
+                    container.appendChild(div);
+                });
+            },
+
+            select(data, type) {
+                this.activeId = data.id;
+                this.activeData = data;
+                this.activeType = type;
+                this.activeFrame = 'idle';
+
+                // Update UI active state
+                document.querySelectorAll('.list-item').forEach(li => li.classList.remove('active'));
+                event.currentTarget.classList.add('active');
+
+                // Show panel
+                document.getElementById('ui-panel').style.display = 'flex';
+                document.getElementById('placeholder').style.display = 'none';
+                
+                document.getElementById('char-name').textContent = data.name;
+                document.getElementById('char-id').textContent = `ID: ${data.id} (${type})`;
+
+                this.renderActive();
+            },
+
+            renderActive() {
+                const container = document.getElementById('active-sprite-container');
+                container.innerHTML = '';
+
+                const spr = document.createElement('img');
+                spr.style.transform = `scale(${this.zoom})`;
+                spr.style.transformOrigin = 'center';
+
+                if (this.activeType === 'hero') {
+                    SpriteRenderer.drawHero(spr, this.activeId, this.activeData, { color: '#fff' });
+                } else {
+                    SpriteRenderer.drawEnemy(spr, this.activeId, this.activeData.palette);
+                    // Force size for enemies to be consistent
+                    spr.style.width = '72px';
+                    spr.style.height = '84px';
+                }
+
+                container.appendChild(spr);
+
+                // Handle animation swap
+                setTimeout(() => {
+                    const isAnimated = spr.dataset.animated === 'true';
+                    
+                    // Toggle buttons
+                    document.querySelectorAll('#anim-btns .btn').forEach(b => b.disabled = !isAnimated);
+
+                    if (isAnimated) {
+                        const sheet = spr.dataset.spriteSheet;
+                        const div = document.createElement('div');
+                        div.className = 'party-sprite party-sprite-animated';
+                        div.style.backgroundImage = `url(${sheet})`;
+                        div.style.transform = `scale(${this.zoom})`;
+                        div.style.transformOrigin = 'center';
+                        div.dataset.charId = spr.dataset.charId;
+                        spr.replaceWith(div);
+                        this.applyFrame(div, this.activeId, this.activeFrame);
+                    } else {
+                        document.getElementById('debug-metrics').innerHTML = "Static Sprite (Canvas/PNG Renderer)";
+                    }
+                }, 50);
+            },
+
+            setFrame(frame) {
+                this.activeFrame = frame;
+                document.querySelectorAll('#anim-btns .btn').forEach(b => {
+                    b.classList.toggle('active', b.dataset.frame === frame);
+                });
+                const div = document.querySelector('.party-sprite-animated');
+                if (div) this.applyFrame(div, this.activeId, frame);
+            },
+
+            setZoom(z) {
+                this.zoom = z;
+                document.querySelectorAll('.control-panel .btn').forEach(b => {
+                    if (b.textContent === z+'x') b.classList.add('active');
+                    else if (b.textContent.includes('x')) b.classList.remove('active');
+                });
+                this.renderActive();
+            },
+
+            applyFrame(el, charId, frameName) {
+                const manifest = (typeof SpriteRenderer !== 'undefined' && SpriteRenderer.SPRITE_MANIFEST) 
+                  ? SpriteRenderer.SPRITE_MANIFEST[charId] : null;
+                
+                const frameMap = {
+                    'idle': [0, 0], 'prepare': [1, 0], 'attack': [2, 0],
+                    'magic': [0, 1], 'hurt': [1, 1], 'fallen': [2, 1]
+                };
+                
+                const [col, row] = frameMap[frameName] || [0, 0];
+                const baseHeight = 120; // Slightly larger for inspector
+
+                if (manifest) {
+                    const cwRaw = manifest.cols; 
+                    const rh = manifest.rows;
+                    
+                    // Support for irregular grids: cols can be a flat array or [[row0], [row1]]
+                    const cw = Array.isArray(cwRaw[0]) ? cwRaw[row] : cwRaw;
+                    
+                    const frameWidthPct = cw[col];
+                    const frameHeightPct = rh[row];
+                    const leftEdge = cw.slice(0, col).reduce((a, b) => a + b, 0);
+                    const topEdge = rh.slice(0, row).reduce((a, b) => a + b, 0);
+                    
+                    const elWidth = (baseHeight / frameHeightPct) * frameWidthPct;
+                    const elHeight = baseHeight;
+                    
+                    const sizeX = (1 / frameWidthPct) * 100;
+                    const sizeY = (1 / frameHeightPct) * 100;
+                    const posX = frameWidthPct === 1 ? 0 : (leftEdge / (1 - frameWidthPct)) * 100;
+                    const posY = frameHeightPct === 1 ? 0 : (topEdge / (1 - frameHeightPct)) * 100;
+                    
+                    el.style.width = `${elWidth}px`;
+                    el.style.height = `${baseHeight}px`;
+                    el.style.backgroundSize = `${sizeX}% ${sizeY}%`;
+                    el.style.backgroundPosition = `${posX}% ${posY}%`;
+                    
+                    document.getElementById('debug-metrics').innerHTML = `
+                        <b>Proper Crop: ENABLED</b><br>
+                        Frame: ${frameName} [${col},${row}]<br>
+                        Box: ${elWidth.toFixed(1)}x${baseHeight}px<br>
+                        BgSize: ${sizeX.toFixed(1)}% ${sizeY.toFixed(1)}%<br>
+                        BgPos: ${posX.toFixed(1)}% ${posY.toFixed(1)}%
+                    `;
+                } else {
+                    el.style.width = `${baseHeight}px`;
+                    el.style.height = `${baseHeight}px`;
+                    el.style.backgroundSize = '300% 200%';
+                    el.style.backgroundPosition = `${col * 50}% ${row * 100}%`;
+                    document.getElementById('debug-metrics').innerHTML = `
+                        <b>Manifest Mode: OFF (Uniform 3x2)</b><br>
+                        Frame: ${frameName}<br>
+                        Grid Pos: ${col * 50}% ${row * 100}%
+                    `;
+                }
+            }
+        };
+
+        window.onload = () => SpriteInspector.init();
+    </script>
+</body>
+</html>

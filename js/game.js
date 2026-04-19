@@ -1,8 +1,18 @@
 /**
  * game.js — Shattered Nexus
- * Full party battle engine: player controls all 4 members,
- * selectable enemy targets, individual levelling, party menu.
  */
+
+// --- DIAGNOSTIC LOGGING ---
+window.LogDebug = function (msg, type = 'info') {
+  const colors = {
+    hi: '#4ecfff',
+    dmg: '#ff4d4d',
+    regen: '#00ff6a',
+    passive: '#ffcf5c',
+    info: '#7a90a8'
+  };
+  console.log(`%c[DEBUG] ${msg}`, `color: ${colors[type] || colors.info}; font-weight: bold; background: #050412; padding: 2px 5px; border-radius: 3px;`);
+};
 
 /* ── Viewport height setter ──────────────────────────────────
    Sets #game height to the real viewport height on every resize
@@ -48,7 +58,12 @@ const TYPE_CHART = {
 const Battle = {
   // Returns 1.5 (weak), 0.5 (resist), or 1.0 (neutral) based on ability element vs target's arrays
   elemMult(abilityElement, target) {
-    return CombatEngine.elemMult(abilityElement, target, window.TYPE_CHART);
+    const mult = CombatEngine.elemMult(abilityElement, target, window.TYPE_CHART);
+    // Record discovered weakness in the Archive
+    if (mult > 1.0 && target && target.id && typeof Archive !== 'undefined') {
+      Archive.recordWeakness(target.id, abilityElement);
+    }
+    return mult;
   },
   // Dynamic Stat Resolver. Computes final combat stats by applying all active modifiers.
   getStat(m, stat) {
@@ -98,8 +113,11 @@ const Battle = {
     unit.isKO = true;
     if (!isEnemy) {
       if (typeof _checkReviveOnce === 'function') _checkReviveOnce(unit);
-      if (unit.isKO && typeof BattleUI !== 'undefined')
+      const idx = G.party.indexOf(unit);
+      if (unit.isKO && typeof BattleUI !== 'undefined') {
         BattleUI.addLog(`${unit.displayName} has fallen!`, 'dmg');
+        if (idx !== -1) BattleUI.setSpriteFrame(idx, 'fallen');
+      }
     }
     if (window.LogDebug) window.LogDebug(`[KO] ${unit.displayName || unit.name} knocked out`, 'dmg');
   },
@@ -137,24 +155,37 @@ const Battle = {
 
   // Checks for an elemental reaction based on existing aura and incoming detonator
   triggerReaction(target, detonator) { return StatusSystem.triggerReaction(target, detonator); },
-  physDmg(atk, def, mult = 1, atkLevel = 1, defLevel = 1, defPen = 0, source = 'Actor', target = 'Target', isCrit = false) {
-    const final = CombatEngine.physDmg(atk, def, { mult, atkLevel, defLevel, defPen, isCrit });
+  physDmg(atk, def, mult = 1, options = {}) {
+    const final = CombatEngine.physDmg(atk, def, mult, options);
     if (window.LogDebug) {
+      const source = options.source || 'Actor';
+      const target = options.target || 'Target';
       window.LogDebug(`[${source} ➔ ${target}] PhysCalc (Engine): Atk(${atk}) vs Def(${def}) = Final: ${final}`, 'dmg');
     }
     return final;
   },
   // targetMag / targetMagLv = Spirit Defense (SDEF) — high-MAG targets resist magic
-  magicDmg(mag, mult = 1, passiveBonus = 1, magLevel = 1, targetMag = 0, targetMagLv = 1, source = 'Actor', target = 'Target', isCrit = false) {
-    const final = CombatEngine.magicDmg(mag, targetMag, { mult, passiveBonus, magLevel, mdefLevel: targetMagLv, isCrit });
+  magicDmg(mag, mdef, mult = 1, options = {}) {
+    const final = CombatEngine.magicDmg(mag, mdef, mult, options);
     if (window.LogDebug) {
-      window.LogDebug(`[${source} ➔ ${target}] MagCalc (Engine): Mag(${mag}) vs T.Mag(${targetMag}) = Final: ${final}`, 'dmg');
+      const source = options.source || 'Actor';
+      const target = options.target || 'Target';
+      window.LogDebug(`[${source} ➔ ${target}] MagCalc (Engine): Mag(${mag}) vs T.Mag(${mdef}) = Final: ${final}`, 'dmg');
     }
     return final;
   },
   pickAbility(actor, target) {
     const abilities = actor.abilities || actor.abilityDefs;
     if (!abilities || !abilities.length) return null;
+
+    // --- SEQUENCED AI (Fixed Rotation) ---
+    if (actor.aiType === 'sequenced') {
+      const step = actor.aiStep || 0;
+      const ab = abilities[step % abilities.length];
+      actor.aiStep = step + 1;
+      if (window.LogDebug) window.LogDebug(`[AI-Sequenced] ${actor.name} following rotation (Step ${step}) -> ${ab.name}`, 'hi');
+      return ab;
+    }
 
     // Synergy-Aware Weighting
     const aura = target?.statuses?.find(s => s.id.startsWith('aura_'));
@@ -227,6 +258,9 @@ const G = {
   mode: 'free', // 'free' | 'story' | 'explore'
 
   activePartyIdx: 0,   // which party member walks the map
+  settings: {
+    graphicsQuality: localStorage.getItem('sn_graphics_quality') || 'auto' // 'auto'|'high'|'low'
+  },
 
   // Backward-compat accessors for story.js
   get hero() {
@@ -267,11 +301,33 @@ const TYPE_ICONS = {
 let moveAnimations = {};
 
 function showScreen(id) {
+  // Clear gauntlet flag when returning to title or explore
+  if (id === 'title-screen' || id === 'explore-screen') {
+    G.isGauntletMode = false;
+  }
+
   document.querySelectorAll('.screen').forEach(s => {
     s.classList.remove('active');
     s.style.display = '';
   });
   document.getElementById(id).classList.add('active');
+
+  // Set focus context for keyboard/controller navigation
+  if (typeof Focus !== 'undefined') {
+    // Mapping screens to their primary focus containers where needed
+    const contextMap = {
+      'title-screen': 'title-screen',
+      'battle-screen': 'cmd-grid-main',
+      'char-screen': 'char-grid',
+      'class-screen': 'class-grid',
+      'result-screen': 'result-screen',
+      'game-over-screen': 'game-over-screen',
+      'story-screen': null,
+      'explore-screen': null
+    };
+    Focus.setContext(contextMap[id] || id);
+  }
+
   requestAnimationFrame(scaleGame);
   const steps = { 'char-screen': 1, 'battle-screen': 2, 'result-screen': 2 };
   const cur = steps[id] || 0;
@@ -294,10 +350,10 @@ function showScreen(id) {
   // BGM — fade out current track then play the next one
   if (typeof BGM !== 'undefined') {
     const _next =
-      id === 'title-screen'    ? 'title'       :
-      id === 'battle-screen'   ? 'battle'      :
-      id === 'explore-screen'  ? 'exploration' :
-      id === 'story-screen'    ? 'story'       : null;
+      id === 'title-screen' ? 'title' :
+        id === 'battle-screen' ? 'battle' :
+          id === 'explore-screen' ? 'exploration' :
+            id === 'story-screen' ? 'story' : null;
     BGM.fadeOut(600, () => { if (_next) BGM.play(_next); });
   }
 }
@@ -330,7 +386,7 @@ function renderPartyMenu() {
           <div class="pm-card-name" style="color:${col}">${m.displayName}</div>
           <div class="pm-card-class">${m.cls.name} ${m.isKO ? '<span class="pm-ko-badge">KO</span>' : ''}</div>
           <div class="pm-card-lv">LEVEL <span style="color:${col}">${m.lv}</span>
-            · EXP <span style="color:var(--gold)">${m.exp}</span>/<span style="color:var(--text-dim)">${30 * m.lv}</span></div>
+            · EXP <span style="color:var(--gold)">${m.exp}</span>/<span style="color:var(--text-dim)">${getExpThreshold(m.lv)}</span></div>
         </div>
       </div>
       <div class="pm-bars">
@@ -360,30 +416,27 @@ function renderPartyMenu() {
   });
 }
 function buildEnemyGroup(defs, spawnLevel = 1, isBoss = false) {
-  // Tier-based growth rates
-  const tierGrowth = {
-    // Growth rates — ensures enemies scale as threats through Lv40
-    1: { hp: 5, atk: 1.2, def: 0.5, spd: 0.5, mag: 0.3, statMult: 1.0, expMult: 1.0 },
-    2: { hp: 10, atk: 2.5, def: 1.0, spd: 0.8, mag: 0.5, statMult: 1.3, expMult: 1.5 },
-    3: { hp: 18, atk: 4.5, def: 1.8, spd: 1.2, mag: 0.8, statMult: 1.7, expMult: 2.5 },
-  };
+  // Use centralized scaling configuration
+  const tierGrowth = NexusScaling.tierGrowth;
 
-  // Boss multiplier: solo boss gets beefed-up base stats on top of higher level.
-  // 1.3x keeps bosses clearly stronger than normal T3 encounters without one-shotting
-  // glass cannons at the party level that enters each arc.
-  const bossMult = isBoss ? 1.3 : 1.0;
-
-  // Horde scaling: 3+ enemies get reduced individual stats so they're dangerous
-  // but not overwhelming. Scales down as group grows.
-  const hordeScale = defs.length >= 4 ? 0.65 : defs.length === 3 ? 0.78 : 1.0;
+  // Horde scaling: pulling from NexusScaling.horde
+  const hordeScale = defs.length >= 4 ? NexusScaling.horde[4] : defs.length === 3 ? NexusScaling.horde[3] : 1.0;
 
   G.enemyGroup = defs.slice(0, 4).map(def => {
     const tier = def.tier || 1;
-    const growth = tierGrowth[tier] || tierGrowth[1];
+    // Fallback: if Tier is higher than 3, use Tier 3 stats as the baseline. 
+    // This prevents high-tier enemies from defaulting to Tier 1 strength.
+    let growth = tierGrowth[tier];
+    if (!growth) {
+      growth = tier > 3 ? tierGrowth[3] : tierGrowth[1];
+    }
 
     const calcStat = (baseStat, statKey) => {
-      const base = baseStat * growth.statMult * hordeScale * bossMult;
-      const levelBonus = growth[statKey] * (spawnLevel - 1) * hordeScale * bossMult;
+      // Apply split boss multipliers if applicable
+      const bMult = isBoss ? (NexusScaling.boss[statKey] || NexusScaling.boss.atk) : 1.0;
+
+      const base = baseStat * growth.statMult * hordeScale * bMult;
+      const levelBonus = growth[statKey] * (spawnLevel - 1) * hordeScale * bMult;
       return Math.max(1, Math.floor(base + levelBonus));
     };
 
@@ -392,11 +445,15 @@ function buildEnemyGroup(defs, spawnLevel = 1, isBoss = false) {
     const finalDef = calcStat(def.stats.def, 'def');
     const finalSpd = calcStat(def.stats.spd, 'spd');
     const finalMag = calcStat(def.stats.mag, 'mag');
-    // EXP/gold scale by count so total reward is fair
-    const finalExp = Math.floor(def.reward.exp * growth.expMult * hordeScale);
-    const finalGold = Math.floor(def.reward.gold * growth.expMult * hordeScale);
+    // EXP/gold scale by count so total reward is fair.
+    // Level scaling: +10% EXP for each level above 1.
+    const levelScale = 1 + (spawnLevel - 1) * 0.1;
+    const bExpMult = isBoss ? NexusScaling.boss.exp : 1.0;
+    const finalExp = Math.floor(def.reward.exp * growth.expMult * hordeScale * levelScale * bExpMult);
+    const bGoldMult = isBoss ? (NexusScaling.boss.gold || 1.0) : 1.0;
+    const finalGold = Math.floor(def.reward.gold * growth.expMult * hordeScale * bGoldMult);
 
-    return {
+    const entry = {
       id: def.id, name: def.name,
       level: spawnLevel,
       hp: finalHp, maxHp: finalHp,
@@ -410,9 +467,15 @@ function buildEnemyGroup(defs, spawnLevel = 1, isBoss = false) {
       weakTo: def.weakTo || [],
       resistTo: def.resistTo || [],
       tier: tier,
+      isBoss: isBoss, // Only a boss if explicitly flagged
+      aiRole: def.aiRole || 'attacker',
+      aiType: def.aiType || 'random',
+      aiStep: 0,
       isKO: false,
       statuses: [],
     };
+    if (typeof Archive !== 'undefined') Archive.recordSeen(def.id);
+    return entry;
   });
   G.targetEnemyIdx = 0;
 }
@@ -438,12 +501,28 @@ function buildTurnQueue() { return TurnManager.buildQueue(); }
 function selectTarget(enemyIdx) {
   if (!Battle.alive(G.enemyGroup[enemyIdx])) return;
   G.targetEnemyIdx = enemyIdx;
+  G.enemy = G.enemyGroup[enemyIdx]; // Sync global enemy reference
+
   // Update target indicator on enemies
   document.querySelectorAll('.enemy').forEach((e, i) => {
     e.dataset.target = i === enemyIdx ? 'true' : 'false';
   });
   BattleUI.renderEnemyRow();
   if (typeof SFX !== 'undefined') SFX.click();
+
+  // If we were in a targeting phase (keyboard/controller), execute the pending action
+  if (G.pendingAction) {
+    const action = G.pendingAction;
+    G.pendingAction = null;
+
+    if (typeof Focus !== 'undefined') Focus.setTargeting(false);
+
+    // Set a flag so the action handler knows we are executing AFTER targeting
+    G._executingPending = true;
+    if (action.type === 'attack') heroAttack();
+    else if (action.type === 'ability') heroAbility(action.ab);
+    G._executingPending = false;
+  }
 }
 
 /* ============================================================
@@ -544,7 +623,8 @@ function buildAbilityMenu() {
     const type = ab.type || 'physical';
     const tIcon = TYPE_ICONS[type] || '🗡️';
 
-    const mpCost = actor.passive?.id === 'eidolon_bond' ? Math.ceil(ab.mp * 0.85) : ab.mp;
+    const mpCost = Math.ceil(ab.mp * PassiveSystem.val(actor, 'MP_COST_MULT', 1.0));
+    const canAfford = actor.mp >= mpCost;
 
     b.className = `cmd-btn ability-btn ab-type-${type}`;
     b.innerHTML = `
@@ -594,58 +674,78 @@ function checkBattleEnd() {
   const allPartyDown = G.party.every(m => !Battle.alive(m));
 
   if (allEnemiesDead) {
-    let totalExp = 0, totalGold = 0;
-    const allDrops = [];
+    // Victory: calculate rewards
+    let totalExp = 0;
+    let totalGold = 0;
+    let leveledNames = [];
+    let allDrops = [];
     let relicDrop = null;
-    G.enemyGroup.forEach(e => {
-      totalExp += e.exp;
-      totalGold += e.gold;
-      const rawDef = G.enemies.find(r => r.id === e.id);
-      if (rawDef) _awardDrops(rawDef).forEach(id => allDrops.push(id));
-      // One relic drop attempt per encounter (elite enemies have higher chance)
-      if (!relicDrop) relicDrop = _tryRelicDrop(rawDef?.elite || false);
-    });
 
-    // Average enemy level for the encounter
-    const avgEnemyLv = G.enemyGroup.length
-      ? G.enemyGroup.reduce((s, e) => s + (e.level || 1), 0) / G.enemyGroup.length
-      : 1;
+    if (G.isGauntletMode) {
+      BattleUI.addLog("❄️ Simulation Complete: Stress Test finished.", "hi");
+    } else {
+      G.enemyGroup.forEach(e => {
+        totalExp += e.exp;
+        totalGold += e.gold;
+        const rawDef = G.enemies.find(r => r.id === e.id);
+        if (rawDef) _awardDrops(rawDef).forEach(id => allDrops.push(id));
+        if (typeof Archive !== 'undefined') Archive.recordKill(e.id);
+        // One relic drop attempt per encounter (elite enemies have higher chance)
+        if (!relicDrop) relicDrop = _tryRelicDrop(rawDef?.elite || false);
+      });
 
-    // Award EXP and gold to all alive members; loop level-ups until threshold not met
-    const leveledNames = [];
-    G.party.forEach(m => {
-      if (!Battle.alive(m)) return;
-      // Level-gap penalty: scale exp down as member outlevels enemies.
-      // At +3 levels above enemy: 0 exp. Linear ramp from gap 0 → gap 3.
-      const gap = (m.lv || 1) - avgEnemyLv;
-      const expScale = gap >= 3 ? 0 : gap <= 0 ? 1 : 1 - (gap / 3);
-      const earnedExp = Math.floor(totalExp * expScale);
-      m.exp += earnedExp;
-      m.gold += totalGold;
-      while (checkMemberLevel(m)) {
-        if (!leveledNames.includes(m.displayName)) leveledNames.push(m.displayName);
-      }
-      // Sync stats back to character data for persistence across battles
-      const ch = G.chars.find(c => c.id === m.charId);
-      if (ch) {
-        ch.lv = m.lv;
-        ch.exp = m.exp;
-        ch.gold = m.gold;
-        ch.mp = m.mp;   // persist MP so it carries between battles
-        ch.hp = m.hp;   // persist HP
-        ch.isKO = m.isKO; // persist KO state
-      }
-    });
+      // Average enemy level for the encounter
+      const avgEnemyLv = G.enemyGroup.length
+        ? G.enemyGroup.reduce((s, e) => s + (e.level || 1), 0) / G.enemyGroup.length
+        : 1;
 
-    const dropMsg = allDrops.length
-      ? allDrops.map(id => { const d = G.items.find(i => i.id === id); return d ? `${d.icon}${d.name}` : id; }).join(', ')
-      : null;
-    const relicMsg = relicDrop ? `✦ Relic found: ${relicDrop.icon} ${relicDrop.name}!` : null;
-    BattleUI.setLog([
-      `Enemies defeated! +${totalExp} EXP +${totalGold} Gold`,
-      dropMsg ? `Drops: ${dropMsg}` : '',
-      relicMsg || ''
-    ].filter(Boolean), ['hi', 'hi', 'hi']);
+      // Split EXP among alive members — fewer survivors means more EXP each
+      const aliveCount = G.party.filter(m => Battle.alive(m)).length || 1;
+      const splitExp = Math.floor(totalExp / aliveCount);
+      const splitGold = Math.floor(totalGold / aliveCount);
+
+      // Award EXP and gold to all alive members; loop level-ups until threshold not met
+      G.party.forEach(m => {
+        // Award EXP and gold only to surviving members
+        if (Battle.alive(m)) {
+          // Level-gap penalty: scale exp down as member outlevels enemies.
+          // At +3 levels above enemy: 0 exp. Linear ramp from gap 0 → gap 3.
+          const gap = (m.lv || 1) - avgEnemyLv;
+          const expScale = gap >= 3 ? 0 : gap <= 0 ? 1 : 1 - (gap / 3);
+          const earnedExp = Math.floor(splitExp * expScale);
+          m.exp += earnedExp;
+          m.gold += splitGold;
+          while (checkMemberLevel(m)) {
+            if (!leveledNames.includes(m.displayName)) leveledNames.push(m.displayName);
+          }
+        }
+        // Always sync progression back to G.chars regardless of KO state
+        // so level/exp are never lost between battles
+        const ch = G.chars.find(c => c.id === m.charId);
+        if (ch) {
+          ch.lv = m.lv;
+          ch.exp = m.exp;
+          ch.gold = m.gold;
+          ch.mp = m.mp;   // persist MP so it carries between battles
+          ch.hp = m.hp;   // persist HP
+          ch.isKO = m.isKO; // persist KO state
+        }
+      });
+    }
+
+    // Only show reward logs if not in Gauntlet mode
+    if (!G.isGauntletMode) {
+      const dropMsg = allDrops.length
+        ? allDrops.map(id => { const d = G.items.find(i => i.id === id); return d ? `${d.icon}${d.name}` : id; }).join(', ')
+        : null;
+      const relicMsg = relicDrop ? `✦ Relic found: ${relicDrop.icon} ${relicDrop.name}!` : null;
+      BattleUI.setLog([
+        `Enemies defeated! +${totalExp} EXP +${totalGold} Gold`,
+        dropMsg ? `Drops: ${dropMsg}` : '',
+        relicMsg || ''
+      ].filter(Boolean), ['hi', 'hi', 'hi']);
+    }
+
     BattleUI.renderPartyStatus();
     BattleUI.updateStats();
 
