@@ -4908,12 +4908,15 @@ input[type=range].setting-slider::-webkit-slider-thumb {
    GAME OVER SCREEN
    ═══════════════════════════════════════ */
 #game-over-screen {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   background: #000;
   position: relative;
   overflow: hidden;
+}
+
+#game-over-screen.active {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .go-bg-overlay {
