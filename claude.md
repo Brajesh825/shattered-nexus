@@ -45,17 +45,27 @@ Elemental damage interaction is the primary multiplier in combat.
 
 ---
 
-## 👾 Scalable Scaling: Tiers, Bosses, and Mutations
-Scaling is handled by global growth coefficients in `scaling-config.js` and multipliers.
+## 👾 Elite & Boss Scaling Formula
+All enemies in `enemies.json` use **Level 1 baseline stats**. The engine projects these to their spawn level using this formula:
 
-- **Growth Curves**: The engine uses `atkStep`, `defStep`, and `hpStep` to control stat inflation. Adjusting these in **[scaling-config.js](file:///c:/Users/ASUS/VVI/rpg+/js/scaling-config.js)** is the correct way to fix global pacing issues.
-- **Enemy Tiers (1-3)**: Tier 3 (Alpha) has **18 HP / 4.5 ATK** per level growth.
-- **Boss Status (`isBoss: true`)**:
-  - **1.3x Final Stat Multiplier**.
-  - **Double Actions** when the unit is the last one alive.
-- **Mutations**:
-  - **Corrupted**: 1.28x Stats | 1.5x EXP.
-  - **Mutant**: 1.55x Stats | 1-3 Random Traits | 2.2x EXP.
+```
+Final_Stat = floor( ( (Base_Stat × Tier_Mult) + (SpawnLevel - 1) × Tier_Growth ) × Boss_Mult )
+```
+
+### 📊 Baseline Coefficients (The Sacred Standard)
+- **Boss Multiplier (HP)**: 4.5x
+- **Boss Multiplier (ATK/DEF/MAG)**: 1.3x
+- **Tier 3 Growth Multiplier**: 1.3x
+- **Tier 3 Growth (per level)**: HP: 22 | ATK: 3.0 | DEF: 2.0 | SPD: 1.0 | MAG: 0.6
+
+> [!CAUTION]
+> **HANDS-OFF DIRECTIVE**: The `Base_Stats` for Story Bosses in `enemies.json` are primary gameplay anchors. Antigravity is **NOT permitted** to tweak these values or the multipliers above without explicit user approval. 
+
+### 🛡️ Boss Archetypes (Reference)
+- **Void Knight (Arc 1)**: 240 HP / 22 DEF (The Balanced Start)
+- **Demon Lord (Arc 2)**: 185 HP / 15 DEF (The Magic Menace)
+- **Spectral Guardian (Sideboss)**: 480 HP / 60 DEF (The Wall)
+- **Dark Phoenix (Arc 3)**: 170 HP / 10 DEF (The Self-Healer)
 
 ---
 
