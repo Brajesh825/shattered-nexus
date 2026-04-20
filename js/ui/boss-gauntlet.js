@@ -164,24 +164,24 @@ const BossGauntlet = {
                     // Recompute stats fresh from source so saved combat stats never inflate values
                     if (member.char && member.cls) {
                         const fresh = computeStats(member.char, member.cls);
-                        const relicMult = typeof _getRelicStatMult === 'function' ? _getRelicStatMult() : { hp:1, mp:1, atk:1, def:1, spd:1, mag:1, lck:1 };
+                        const relicMult = typeof _getRelicStatMult === 'function' ? _getRelicStatMult() : { hp: 1, mp: 1, atk: 1, def: 1, spd: 1, mag: 1, lck: 1 };
                         member.maxHp = Math.floor(fresh.hp * relicMult.hp);
                         member.maxMp = Math.floor(fresh.mp * relicMult.mp);
-                        member.atk   = Math.floor(fresh.atk * relicMult.atk);
-                        member.def   = Math.floor(fresh.def * relicMult.def);
-                        member.mag   = Math.floor(fresh.mag * relicMult.mag);
-                        member.spd   = Math.floor(fresh.spd * relicMult.spd);
-                        member.lck   = Math.floor(fresh.lck * relicMult.lck);
+                        member.atk = Math.floor(fresh.atk * relicMult.atk);
+                        member.def = Math.floor(fresh.def * relicMult.def);
+                        member.mag = Math.floor(fresh.mag * relicMult.mag);
+                        member.spd = Math.floor(fresh.spd * relicMult.spd);
+                        member.lck = Math.floor(fresh.lck * relicMult.lck);
                     }
 
                     // Re-apply Archive mastery flat buffs
                     if (typeof Archive !== 'undefined') {
-                      const mastery = Archive.getMasteryBuffs();
-                      member.atk += mastery.atk || 0;
-                      member.def += mastery.def || 0;
-                      member.mag += mastery.mag || 0;
-                      member.spd += mastery.spd || 0;
-                      member.lck += mastery.lck || 0;
+                        const mastery = Archive.getMasteryBuffs();
+                        member.atk += mastery.atk || 0;
+                        member.def += mastery.def || 0;
+                        member.mag += mastery.mag || 0;
+                        member.spd += mastery.spd || 0;
+                        member.lck += mastery.lck || 0;
                     }
 
                     // FORCE FULL RESTORATION FOR GAUNTLET MODE

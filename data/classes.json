@@ -165,7 +165,8 @@
                     "statScale": "maxHp",
                     "lowHpDmgBonus": 1.0,
                     "lifeSteal": 0.35,
-                    "healLowMult": 1.6
+                    "healLowMult": 1.6,
+                    "cooldown": 2
                 }
             }
         ],
@@ -255,7 +256,8 @@
                     "healPercent": 0.5,
                     "aoe": true,
                     "cleanse": true,
-                    "spdBuff": 1.2
+                    "spdBuff": 1.2,
+                    "cooldown": 2
                 }
             }
         ],
@@ -347,7 +349,8 @@
                     "element": "wind",
                     "aoe": true,
                     "guardMark": true,
-                    "duration": 3
+                    "duration": 3,
+                    "cooldown": 2
                 }
             }
         ],
@@ -435,7 +438,8 @@
                     "dmgMultiplier": 3.8,
                     "element": "summoning",
                     "aoe": true,
-                    "guardian": true
+                    "guardian": true,
+                    "cooldown": 2
                 }
             }
         ],
@@ -524,7 +528,8 @@
                     "dmgMultiplier": 3.6,
                     "element": "holy",
                     "statScale": "def",
-                    "stunLow": true
+                    "stunLow": true,
+                    "cooldown": 2
                 }
             }
         ],
@@ -613,7 +618,8 @@
                     "dmgMultiplier": 4.0,
                     "element": "wind",
                     "statScale": "spd",
-                    "aoe": true
+                    "aoe": true,
+                    "cooldown": 2
                 }
             }
         ],
@@ -700,7 +706,8 @@
                     "dmgMultiplier": 2.5,
                     "element": "holy",
                     "statScale": ["atk", "def"],
-                    "partyBuff": true
+                    "partyBuff": true,
+                    "cooldown": 2
                 }
             }
         ],
