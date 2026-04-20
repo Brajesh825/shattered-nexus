@@ -1,0 +1,1005 @@
+﻿/* ============================================================
+   story-ui.css — Shattered Nexus
+   Story/cutscene screen, dialogue boxes, event choices,
+   arc-end shard reveal, epilogue cards, and continue button.
+   ============================================================ */
+/* ══════════════════════════════════════════════════════
+   STORY SCREEN
+   ══════════════════════════════════════════════════════ */
+
+#story-screen {
+  position: relative;
+  overflow: hidden;
+  flex-direction: column;
+  flex: 1;
+}
+
+/* ── Background layer ──────────────────────────────── */
+.story-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  transition: background 1s ease;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Background themes - Images (primary) */
+.bg--summoning_ruins {
+  background-image: url('../images/backgrounds/summoning_ruins.png');
+}
+
+.bg--shattered_ruins {
+  background-image: url('../images/backgrounds/shattered_ruins.png');
+}
+
+.bg--oracle_chamber {
+  background-image: url('../images/backgrounds/oracle_chamber.png');
+}
+
+.bg--sacred_ruins_boss {
+  background-image: url('../images/backgrounds/sacred_ruins_boss.png');
+}
+
+/* Background themes - Fallback gradients */
+.bg--default {
+  background: radial-gradient(ellipse 60% 50% at 50% 30%, #0d0830 0%, #03020c 100%);
+}
+
+.bg--arc1_intro {
+  background: radial-gradient(ellipse at 50% 30%, #0d2a12 0%, #040c06 60%, #030208 100%);
+}
+
+.bg--arc1_end {
+  background: radial-gradient(ellipse at 50% 40%, #0a2a10 0%, #030a05 70%);
+}
+
+.bg--verdant_forest_night {
+  background: linear-gradient(180deg, #030d04 0%, #0b2010 50%, #020804 100%);
+}
+
+.bg--verdant_forest_path_night {
+  background: linear-gradient(180deg, #030905 0%, #091808 60%, #030604 100%);
+}
+
+.bg--crystalhaven_burning {
+  background: linear-gradient(180deg, #1e0800 0%, #2e1200 30%, #0e0400 100%);
+}
+
+.bg--crystalhaven_graveyard_night {
+  background: linear-gradient(180deg, #03040e 0%, #080620 55%, #040312 100%);
+}
+
+.bg--crystalhaven_mausoleum {
+  background: linear-gradient(180deg, #060418 0%, #0e0628 60%, #04030e 100%);
+}
+
+.bg--crystalhaven_ruins_dawn {
+  background: linear-gradient(180deg, #0e0902 0%, #1a0e06 40%, #0c0c1e 100%);
+}
+
+.bg--verdant_forest_dawn_road {
+  background: linear-gradient(180deg, #0c1806 0%, #142010 50%, #070c05 100%);
+}
+
+.bg--arc2_intro {
+  background: radial-gradient(ellipse at 50% 60%, #180828 0%, #03030e 70%);
+}
+
+.bg--arc2_end {
+  background: radial-gradient(ellipse at 50% 60%, #180828 0%, #03030e 70%);
+}
+
+.bg--swamp_road_fog {
+  background: linear-gradient(180deg, #040b06 0%, #0a1610 40%, #040806 100%);
+}
+
+.bg--blackwater_swamp_deep {
+  background: linear-gradient(180deg, #020608 0%, #060e0c 60%, #030607 100%);
+}
+
+.bg--sunken_ruins_fog {
+  background: linear-gradient(180deg, #040610 0%, #080c18 60%, #030507 100%);
+}
+
+.bg--swamp_witch_lair {
+  background: linear-gradient(180deg, #08031e 0%, #12062c 60%, #060313 100%);
+}
+
+.bg--swamp_ruins_aftermath {
+  background: linear-gradient(180deg, #06080f 0%, #0a0e16 60%, #050708 100%);
+}
+
+.bg--swamp_edge_dawn {
+  background: linear-gradient(180deg, #080a06 0%, #12180e 50%, #060805 100%);
+}
+
+.bg--arc3_intro {
+  background: radial-gradient(ellipse at 50% 40%, #280806 0%, #0d0404 70%);
+}
+
+.bg--arc3_end {
+  background: radial-gradient(ellipse at 50% 40%, #280806 0%, #0d0404 70%);
+}
+
+.bg--broken_kingdom_road {
+  background: linear-gradient(180deg, #0e0606 0%, #180c0c 60%, #070505 100%);
+}
+
+.bg--fort_ardenmoor_gate {
+  background: linear-gradient(180deg, #0b0606 0%, #160a0a 60%, #080505 100%);
+}
+
+.bg--fort_ardenmoor_yard {
+  background: linear-gradient(180deg, #0d0707 0%, #1a0e0e 50%, #090606 100%);
+}
+
+.bg--fort_ardenmoor_hall {
+  background: linear-gradient(180deg, #0c0806 0%, #160c0a 60%, #080608 100%);
+}
+
+.bg--ardenmoor_aftermath {
+  background: linear-gradient(180deg, #0d0a06 0%, #161206 60%, #090805 100%);
+}
+
+.bg--ardenmoor_dawn_road {
+  background: linear-gradient(180deg, #0e0a06 0%, #181206 60%, #090905 100%);
+}
+
+.bg--arc4_intro {
+  background: radial-gradient(ellipse at 50% 60%, #060828 0%, #020310 70%);
+}
+
+.bg--arc4_end {
+  background: radial-gradient(ellipse at 50% 60%, #060828 0%, #020310 70%);
+}
+
+.bg--void_sea_shore {
+  background: linear-gradient(180deg, #030710 0%, #060e16 60%, #030507 100%);
+}
+
+.bg--void_sea_deep {
+  background: linear-gradient(180deg, #020510 0%, #050a14 60%, #020408 100%);
+}
+
+.bg--temple_entrance {
+  background: linear-gradient(180deg, #03050e 0%, #06081a 60%, #030407 100%);
+}
+
+.bg--temple_inner {
+  background: linear-gradient(180deg, #040510 0%, #08091a 60%, #030408 100%);
+}
+
+.bg--temple_vault {
+  background: linear-gradient(180deg, #060418 0%, #0e0626 60%, #04030e 100%);
+}
+
+.bg--void_sea_aftermath {
+  background: linear-gradient(180deg, #04060f 0%, #0a0e16 60%, #030506 100%);
+}
+
+.bg--void_sea_night_voyage {
+  background: linear-gradient(180deg, #03050e 0%, #060e18 60%, #030407 100%);
+}
+
+.bg--arc5_intro {
+  background: radial-gradient(ellipse at 50% 40%, #180828 0%, #030305 70%);
+}
+
+.bg--arc5_end {
+  background: radial-gradient(ellipse at 50% 40%, #180828 0%, #030305 70%);
+}
+
+.bg--void_sky_approach {
+  background: linear-gradient(180deg, #04020e 0%, #08051a 60%, #030307 100%);
+}
+
+.bg--voidspire_gate {
+  background: linear-gradient(180deg, #060512 0%, #0e0820 60%, #04040e 100%);
+}
+
+.bg--shadow_throne {
+  background: radial-gradient(ellipse at 50% 30%, #12061e 0%, #020206 70%);
+}
+
+.bg--shadow_throne_center {
+  background: radial-gradient(ellipse at 50% 30%, #1e082e 0%, #020206 70%);
+}
+
+.bg--voidspire_collapse {
+  background: linear-gradient(180deg, #0e0612 0%, #050310 60%, #020206 100%);
+}
+
+.bg--epilogue {
+  background: radial-gradient(ellipse at 50% 60%, #090b1c 0%, #03030e 70%);
+}
+
+/* ── Story Arc Backgrounds ──────────────── */
+.bg--burning_kingdom {
+  background: linear-gradient(180deg, #1e0800 0%, #2e1200 40%, #0e0400 100%);
+}
+
+.bg--deep_citadel {
+  background: linear-gradient(180deg, #040610 0%, #080c18 60%, #030507 100%);
+}
+
+.bg--emperor_sanctum {
+  background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2a 50%, #0a0a1a 100%);
+}
+
+.bg--fortress_gate {
+  background: linear-gradient(180deg, #0b0606 0%, #160a0a 60%, #080505 100%);
+}
+
+.bg--emperor_throne {
+  background: radial-gradient(ellipse at 50% 30%, #12061e 0%, #020206 70%);
+}
+
+.bg--fortress_throne {
+  background: radial-gradient(ellipse at 50% 30%, #1a0a1e 0%, #020206 70%);
+}
+
+.bg--inner_gate {
+  background: linear-gradient(180deg, #0c0806 0%, #160c0a 60%, #080608 100%);
+}
+
+.bg--restored_light {
+  background: radial-gradient(ellipse at 50% 50%, #2a1a4a 0%, #0a0a1a 70%);
+}
+
+.bg--scorched_wastes {
+  background: linear-gradient(180deg, #0e0606 0%, #180c0c 60%, #070505 100%);
+}
+
+.bg--shadow_citadel {
+  background: linear-gradient(180deg, #020510 0%, #050a14 60%, #020408 100%);
+}
+
+.bg--shadow_citadel_inner {
+  background: linear-gradient(180deg, #030510 0%, #060e16 60%, #030407 100%);
+}
+
+.bg--shadow_core {
+  background: radial-gradient(ellipse at 50% 50%, #0a0520 0%, #020206 70%);
+}
+
+.bg--sunken_ruins {
+  background: linear-gradient(180deg, #040610 0%, #080c18 60%, #030507 100%);
+}
+
+.bg--sunken_surface {
+  background: linear-gradient(180deg, #060810 0%, #0a0e18 60%, #040608 100%);
+}
+
+.bg--throne_room {
+  background: radial-gradient(ellipse at 50% 30%, #12061e 0%, #020206 70%);
+}
+
+.bg--underwater_ruins {
+  background: linear-gradient(180deg, #030810 0%, #0a0e20 60%, #030508 100%);
+}
+
+/* ── Scene layer (character positioning) ──────────────── */
+.s-scene-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 20px;
+  padding: 0 20px 200px;
+  pointer-events: none;
+}
+
+.s-scene-char {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  opacity: 0.5;
+  transition: opacity 0.4s ease;
+  flex-shrink: 0;
+}
+
+.s-scene-char .s-scene-sprite {
+  height: 160px;
+  width: auto;
+  background-size: contain;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
+}
+
+.s-scene-char.active {
+  opacity: 1;
+}
+
+.s-scene-char.active .s-scene-sprite {
+  filter: drop-shadow(0 0 20px rgba(160, 144, 208, 0.6)) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
+}
+
+.s-scene-char-name {
+  font-size: 11px;
+  color: #a090d0;
+  font-family: var(--px);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  opacity: 0.7;
+}
+
+.s-scene-char.active .s-scene-char-name {
+  opacity: 1;
+  color: #d0b8f0;
+  text-shadow: 0 0 12px rgba(160, 144, 208, 0.6);
+}
+
+/* ── Header ──────────────────────────────────────────── */
+.s-header {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 10px 18px 9px;
+  background: rgba(3, 2, 16, 0.88);
+  border-bottom: 1px solid #22146050;
+  backdrop-filter: blur(8px);
+}
+
+.s-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.s-header-arc {
+  font-size: 9px;
+  color: #4830a0;
+  letter-spacing: 3px;
+  font-family: var(--px);
+}
+
+.s-header-chap {
+  font-size: 14px;
+  color: #9080c8;
+  font-family: var(--vt);
+  letter-spacing: 1px;
+}
+
+.s-skip-btn {
+  font-size: 10px;
+  color: #342860;
+  background: transparent;
+  border: 1px solid #22146050;
+  border-radius: 3px;
+  padding: 4px 12px;
+  cursor: pointer;
+  font-family: var(--px);
+  transition: color .2s, border-color .2s;
+}
+
+.s-skip-btn:hover {
+  color: #6050a8;
+  border-color: #5040a0;
+}
+
+/* ── Arc Intro Card ──────────────────────────────────── */
+.s-card {
+  position: relative;
+  z-index: 5;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 36px 48px;
+  gap: 14px;
+}
+
+/* Decorative corner lines */
+.s-card::before,
+.s-card::after {
+  content: '';
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  pointer-events: none;
+}
+
+.s-card::before {
+  top: 20px;
+  left: 24px;
+  border-top: 2px solid #3a2870;
+  border-left: 2px solid #3a2870;
+}
+
+.s-card::after {
+  bottom: 20px;
+  right: 24px;
+  border-bottom: 2px solid #3a2870;
+  border-right: 2px solid #3a2870;
+}
+
+.s-arc-intro {
+  animation: fadeIn .7s ease;
+}
+
+.s-arc-num {
+  font-family: var(--px);
+  font-size: 9px;
+  color: #4830a0;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+}
+
+.s-arc-name {
+  font-family: var(--px);
+  font-size: 16px;
+  color: #dcd8f8;
+  line-height: 1.5;
+  text-shadow: 0 0 24px #7050c880, 0 0 8px #5040b040;
+}
+
+.s-arc-sub {
+  font-family: var(--vt);
+  font-size: 24px;
+  color: #7060a8;
+  font-style: italic;
+  letter-spacing: 2px;
+}
+
+.s-arc-theme {
+  font-family: var(--vt);
+  font-size: 16px;
+  color: #403870;
+  margin-top: 2px;
+}
+
+.s-arc-shard {
+  margin-top: 18px;
+  font-family: var(--px);
+  font-size: 13px;
+  text-shadow: 0 0 20px currentColor;
+  letter-spacing: 2px;
+  animation: float 3.2s ease-in-out infinite;
+  padding: 8px 20px;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, .4);
+}
+
+/* ── Dialogue Box ─────────────────────────────────────── */
+.s-dialogue {
+  position: relative;
+  z-index: 5;
+  margin-top: auto;
+  background: rgba(3, 2, 18, 0.94);
+  border-top: 2px solid #3a2880;
+  backdrop-filter: blur(8px);
+  min-height: 128px;
+  display: flex;
+  flex-direction: row;
+  gap: 0;
+  animation: fadeIn .28s ease;
+  overflow: hidden;
+}
+
+/* Speaker colour accent on left edge */
+.s-dialogue::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 3px;
+  background: #3a2880;
+  transition: background .3s;
+}
+
+.s-dialogue[data-speaker="narrator"]::before {
+  background: #2a1e70;
+}
+
+.s-dialogue[data-speaker="ayaka"]::before {
+  background: var(--c-aya);
+  box-shadow: 0 0 12px var(--c-aya);
+}
+
+.s-dialogue[data-speaker="hutao"]::before {
+  background: var(--c-tao);
+  box-shadow: 0 0 12px var(--c-tao);
+}
+
+.s-dialogue[data-speaker="nilou"]::before {
+  background: var(--c-lulu);
+  box-shadow: 0 0 12px var(--c-lulu);
+}
+
+.s-dialogue[data-speaker="xiao"]::before {
+  background: var(--c-rei);
+  box-shadow: 0 0 12px var(--c-rei);
+}
+
+/* Character spirits lineup (top) */
+.s-dialogue-spirits-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 12px 20px;
+  background: rgba(96, 80, 160, 0.06);
+  border-bottom: 2px solid #2a1860;
+  min-height: 100px;
+  overflow-x: auto;
+}
+
+.s-spirit-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  transition: transform .3s, filter .3s;
+}
+
+.s-spirit-item img {
+  height: 80px;
+  width: auto;
+  object-fit: contain;
+  image-rendering: pixelated;
+  border: 1px solid #5040a0;
+  border-radius: 4px;
+  opacity: 0.7;
+  transition: opacity .2s, border-color .2s, filter .2s;
+}
+
+.s-spirit-item.active img {
+  opacity: 1;
+  border-color: #a090d0;
+  filter: drop-shadow(0 0 12px rgba(160, 144, 208, 0.6));
+  height: 100px;
+}
+
+.s-spirit-item.active {
+  transform: scale(1.1);
+}
+
+.s-spirit-name {
+  font-family: var(--px);
+  font-size: 7px;
+  color: #8070b0;
+  text-align: center;
+  max-width: 60px;
+  line-height: 1.2;
+  opacity: 0.6;
+}
+
+.s-spirit-item.active .s-spirit-name {
+  opacity: 1;
+  color: #a090d0;
+}
+
+/* Chat area (bottom: face + text) */
+.s-dialogue-chat {
+  display: flex;
+  flex: 1;
+}
+
+/* Speaker portrait */
+.s-dialogue-portrait {
+  width: 96px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 10px 8px 10px;
+  border-right: 1px solid #1a1260;
+  background: rgba(0, 0, 0, .25);
+  position: relative;
+  overflow: hidden;
+}
+
+/* subtle vignette on the portrait column */
+.s-dialogue-portrait::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 60%, rgba(0, 0, 0, .35));
+  pointer-events: none;
+}
+
+.s-portrait-img {
+  width: 80px;
+  height: 80px;
+  border: 1px solid #5040a0;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, .4);
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: border-color .3s, box-shadow .3s;
+  box-shadow: 0 0 12px rgba(80, 60, 160, .4);
+}
+
+/* glow pulse when a new line appears */
+.s-portrait-img.new-line {
+  animation: portraitPop .35s ease;
+}
+
+.s-portrait-emoji {
+  font-size: 38px;
+  line-height: 1;
+  filter: drop-shadow(0 2px 8px #0008);
+  padding-bottom: 4px;
+}
+
+.s-dialogue-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 20px 14px 18px;
+}
+
+.s-speaker {
+  font-family: var(--px);
+  font-size: 10px;
+  letter-spacing: 2px;
+  margin-bottom: 0;
+  transition: color .2s;
+}
+
+/* Speaker name colours */
+.s-dialogue[data-speaker="ayaka"] .s-speaker {
+  color: var(--c-aya);
+}
+
+.s-dialogue[data-speaker="hutao"] .s-speaker {
+  color: var(--c-tao);
+}
+
+.s-dialogue[data-speaker="nilou"] .s-speaker {
+  color: var(--c-lulu);
+}
+
+.s-dialogue[data-speaker="xiao"] .s-speaker {
+  color: var(--c-rei);
+}
+
+.s-dialogue[data-speaker="narrator"] .s-speaker {
+  color: #5a4888;
+  font-style: italic;
+}
+
+.s-text {
+  font-family: var(--vt);
+  font-size: 22px;
+  color: #ddd8f4;
+  line-height: 1.55;
+  min-height: 64px;
+}
+
+/* ── Event / Choice Box ──────────────────────────────── */
+.s-event {
+  position: relative;
+  z-index: 5;
+  margin: auto 20px 0;
+  padding: 18px 22px 18px;
+  background: rgba(4, 3, 20, 0.96);
+  border: 1px solid #3a2870;
+  border-left: 3px solid #f0a030;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: fadeIn .3s ease;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 8px 32px #00000080;
+}
+
+.s-event-header {
+  font-family: var(--px);
+  font-size: 9px;
+  color: #f0a030;
+  letter-spacing: 4px;
+  text-shadow: 0 0 12px #f0a03060;
+}
+
+.s-event-title {
+  font-family: var(--px);
+  font-size: 11px;
+  color: #d0c0ec;
+}
+
+.s-event-desc {
+  font-family: var(--vt);
+  font-size: 19px;
+  color: #a090c0;
+  line-height: 1.5;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #221860;
+}
+
+.s-choice-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.story-choice-btn {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  background: rgba(24, 16, 56, 0.6);
+  border: 1px solid #3a2868;
+  border-radius: 4px;
+  padding: 9px 14px;
+  color: #c0b8e8;
+  font-family: var(--vt);
+  font-size: 19px;
+  cursor: pointer;
+  text-align: left;
+  transition: background .18s, border-color .18s, transform .12s;
+}
+
+.story-choice-btn:hover {
+  background: rgba(80, 50, 170, 0.45);
+  border-color: #7060c0;
+  color: #f0e8ff;
+  transform: translateX(3px);
+}
+
+.choice-letter {
+  font-family: var(--px);
+  font-size: 9px;
+  color: #f0a030;
+  min-width: 14px;
+}
+
+.choice-body {
+  flex: 1;
+}
+
+.choice-tag {
+  font-family: var(--px);
+  font-size: 9px;
+  color: #40e890;
+  white-space: nowrap;
+  margin-left: auto;
+}
+
+/* ── Arc End / Shard Card ────────────────────────────── */
+.s-arc-end {
+  animation: fadeIn .8s ease;
+  gap: 18px;
+  background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(100, 60, 200, .08) 0%, transparent 70%);
+}
+
+/* Spirit Channeling Layout */
+.s-ae-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  padding: 20px;
+  height: 100%;
+}
+
+.s-ae-face-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.s-ae-face {
+  width: 60px;
+  height: 60px;
+  border: 2px solid #6050a0;
+  border-radius: 4px;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  box-shadow: 0 0 12px #6050a088;
+}
+
+.s-ae-spirit-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.s-ae-spirit {
+  width: 220px;
+  height: 280px;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: drop-shadow(0 0 20px #9070ff88) drop-shadow(0 0 40px #6050a044);
+  animation: float 3s ease-in-out infinite;
+}
+
+.s-ae-info-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.s-ae-label {
+  font-family: var(--px);
+  font-size: 9px;
+  color: #4830a0;
+  letter-spacing: 4px;
+}
+
+.s-ae-shard {
+  font-family: var(--px);
+  font-size: 22px;
+  text-shadow: 0 0 40px currentColor, 0 0 80px currentColor;
+  animation: float 3s ease-in-out infinite;
+}
+
+.s-ae-desc {
+  font-family: var(--vt);
+  font-size: 18px;
+  color: #8070b0;
+  line-height: 1.4;
+  max-width: 280px;
+  text-align: center;
+}
+
+/* ── Epilogue ─────────────────────────────────────────── */
+.s-epilogue {
+  position: relative;
+  z-index: 5;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28px 32px;
+  gap: 16px;
+  animation: fadeIn .6s ease;
+}
+
+.s-epi-title {
+  font-family: var(--px);
+  font-size: 10px;
+  color: #4830a0;
+  letter-spacing: 5px;
+  text-shadow: 0 0 20px #6040c060;
+}
+
+.s-epi-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  width: 100%;
+}
+
+.epi-card {
+  background: linear-gradient(135deg, rgba(10, 6, 28, .9), rgba(6, 4, 18, .9));
+  border: 1px solid #221660;
+  border-radius: 6px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: border-color .2s;
+}
+
+.epi-card:hover {
+  border-color: #3a2880;
+}
+
+.epi-name {
+  font-family: var(--px);
+  font-size: 9px;
+  letter-spacing: 2px;
+}
+
+.epi-text {
+  font-family: var(--vt);
+  font-size: 18px;
+  color: #9080b8;
+  line-height: 1.55;
+}
+
+/* Character colours on epilogue cards */
+.epi-card[data-char="aya"] .epi-name {
+  color: var(--c-aya);
+}
+
+.epi-card[data-char="tao"] .epi-name {
+  color: var(--c-tao);
+}
+
+.epi-card[data-char="lulu"] .epi-name {
+  color: var(--c-lulu);
+}
+
+.epi-card[data-char="rei"] .epi-name {
+  color: var(--c-rei);
+}
+
+/* ── Continue button ──────────────────────────────────── */
+.s-continue-btn {
+  position: relative;
+  z-index: 10;
+  align-self: flex-end;
+  margin: 10px 20px 14px;
+  padding: 8px 26px;
+  background: rgba(80, 52, 180, .15);
+  border: 1px solid #5040a0;
+  border-radius: 4px;
+  color: #a090d0;
+  font-family: var(--px);
+  font-size: 10px;
+  letter-spacing: 3px;
+  cursor: pointer;
+  transition: background .2s, color .2s, border-color .2s, box-shadow .2s;
+  animation: blink 1.8s step-end infinite;
+}
+
+.s-continue-btn:hover {
+  background: rgba(90, 60, 200, .35);
+  border-color: #9070e0;
+  color: #e0d8ff;
+  box-shadow: 0 0 16px #7050c040;
+  animation: none;
+}
+
+/* ── Spacer so dialogue sits at bottom when alone ─────── */
+#story-screen>.s-dialogue,
+#story-screen>.s-event {
+  margin-top: auto;
+}
+
+/* ══════════════════════════════════════════════════════
+   MUTE BUTTON
+   ══════════════════════════════════════════════════════ */
+#mute-btn,
+#tts-btn,
+#settings-btn {
+  position: absolute;
+  z-index: 9999;
+  background: rgba(5, 4, 20, 0.7);
+  backdrop-filter: blur(8px);
+  border: 1px solid #2a1860;
+  border-radius: 4px;
+  color: #6050a0;
+  font-size: 16px;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .2s;
+  padding: 0;
+}
+
+#settings-btn {
+  top: 9px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #a090d0;
+  border-color: #5040a0;
+}
+
+#mute-btn {
+  top: 10px;
+  right: 90px;
+}
+
+#tts-btn {
+  top: 10px;
+  right: 126px;
+}
+
