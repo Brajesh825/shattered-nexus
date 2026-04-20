@@ -641,15 +641,25 @@ function buildAbilityMenu() {
     const type = ab.type || 'physical';
     const tIcon = TYPE_ICONS[type] || '🗡️';
 
-    const mpCost = Math.ceil(ab.mp * PassiveSystem.val(actor, 'MP_COST_MULT', 1.0));
+    const mpCost   = Math.ceil(ab.mp * PassiveSystem.val(actor, 'MP_COST_MULT', 1.0));
     const canAfford = actor.mp >= mpCost;
+    const cdLeft   = (actor.cooldowns || {})[ab.id] || 0;
+    const onCD     = cdLeft > 0;
+    const disabled = !canAfford || onCD;
 
-    b.className = `cmd-btn ability-btn ab-type-${type}`;
+    b.className = `cmd-btn ability-btn ab-type-${type}${disabled ? ' disabled' : ''}`;
+    b.disabled  = disabled;
+
+    const cdBadge = onCD
+      ? `<span class="ab-cd-badge">⏳ ${cdLeft}t</span>`
+      : '';
+
     b.innerHTML = `
       <span class="ab-type-icon">${tIcon}</span>
       <span class="ab-icon">${icon}</span>
       <span class="ab-name">${ab.name}</span>
       <span class="ab-cost">(${mpCost}MP)</span>
+      ${cdBadge}
     `;
     b.onclick = () => heroAbility(ab);
     menu.appendChild(b);
@@ -660,6 +670,7 @@ function buildAbilityMenu() {
   back.onclick = () => BattleUI.openSub(null);
   menu.appendChild(back);
 }
+
 
 /* ============================================================
    TURN MANAGEMENT
