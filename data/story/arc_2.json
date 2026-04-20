@@ -30,7 +30,7 @@
           "dialogue": []
         },
         {
-          "narration": "Nilou kneels beside the remains of a public garden — flowers reduced to ash, a fountain cracked and dry.",
+          "narration": "Lulu kneels beside the remains of a public garden — flowers reduced to ash, a fountain cracked and dry.",
           "dialogue": [
             { "speaker": "Lulu", "emotion": "sorrowful", "text": "There were people here. Families. There is a child's shoe by that wall." },
             { "speaker": "Tao", "emotion": "quiet", "text": "...There is no one left to guide them across. That bothers me more than it should." },
@@ -117,8 +117,8 @@
       { "speaker": "Aya", "emotion": "resolute", "text": "Forward. That is all there is now." }
     ],
     "onVictory": [
-      { "type": "recruit", "charId": "rydia" },
-      { "type": "recruit", "charId": "lenneth" }
+      { "type": "recruit", "charId": "ria" },
+      { "type": "recruit", "charId": "valka" }
     ],
     "character_moment": {
       "background": "throne_room",
@@ -139,3 +139,4 @@
     }
   }
 }
+

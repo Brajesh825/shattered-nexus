@@ -178,6 +178,9 @@ function checkMemberLevel(m) {
   const threshold = getExpThreshold(m.lv);
   if (!m || m.exp < threshold) return false;
 
+  // Subtract the 'spent' experience points
+  m.exp -= threshold;
+
   // Persist level increase to the source character data
   if (m.char) {
     m.char.lv = (m.char.lv || 1) + 1;

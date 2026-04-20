@@ -244,7 +244,7 @@ const G = {
   selectedChar: null,
   selectedClass: null,
   selectedChars: [],   // ordered array of up to 4 char IDs
-  unlockedChars: ['ayaka', 'hutao', 'nilou', 'xiao'],  // Characters available for selection
+  unlockedChars: ['aya', 'tao', 'lulu', 'rei'],  // Characters available for selection
   clearedMaps: [],   // map IDs whose objective has been completed
   npcTalked: {},   // { mapId: [npcId, ...] } — persisted across sessions
 
@@ -278,9 +278,24 @@ const G = {
    UI HELPERS
    ============================================================ */
 const CHAR_COLOR = {
-  ayaka: '#7dd3fc', hutao: '#ef4444', nilou: '#2dd4bf', xiao: '#4ade80',
-  rydia: '#a78bfa', lenneth: '#e879f9', kain: '#0ea5e9', leon: '#fbbf24'
+  aya: '#7dd3fc', tao: '#ef4444', lulu: '#2dd4bf', rei: '#4ade80',
+  ria: '#a78bfa', valka: '#e879f9', drake: '#0ea5e9', rex: '#fbbf24'
 };
+
+/** Character ID Migration Mapping */
+const LEGACY_ID_MAP = {
+  ayaka: 'aya',
+  hutao: 'tao',
+  nilou: 'lulu',
+  xiao: 'rei',
+  aria: 'ria'
+};
+
+function migrateCharId(id) {
+  if (!id) return id;
+  const lower = id.toLowerCase();
+  return LEGACY_ID_MAP[lower] || lower;
+}
 const ENEMY_POP_X = [580, 720, 860, 650]; // 4th is between 1st and 2nd for diamond layout
 const PARTY_POP_X = [42, 108, 174, 240];
 const TYPE_ICONS = {

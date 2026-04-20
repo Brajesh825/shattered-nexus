@@ -20,7 +20,7 @@ const TTS = {
 
   /* ── Voice profiles per speaker ─────────────────────────────────────── */
   PROFILES: {
-    Ayaka: {
+    Aya: {
       pitch: 1.08, rate: 0.90,
       // Calm, elegant, soft feminine voice
       prefer: [
@@ -36,7 +36,7 @@ const TTS = {
       wantFem: true,
     },
 
-    Hutao: {
+    Tao: {
       pitch: 1.22, rate: 1.06,
       // Energetic, slightly higher, playful feminine voice
       prefer: [
@@ -50,7 +50,7 @@ const TTS = {
       wantFem: true,
     },
 
-    Nilou: {
+    Lulu: {
       pitch: 1.14, rate: 0.86,
       // Gentle, warm, slightly breathy feminine voice
       prefer: [
@@ -64,7 +64,7 @@ const TTS = {
       wantFem: true,
     },
 
-    Xiao: {
+    Rei: {
       pitch: 0.80, rate: 0.84,
       // Low, quiet, serious masculine voice
       prefer: [
