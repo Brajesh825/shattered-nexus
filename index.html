@@ -9,8 +9,16 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap"
     rel="stylesheet">
+  <!-- CSS Modules — load order: base → feature sheets → map → combat -->
   <link rel="stylesheet" href="css/animations.css">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/loader.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/title.css">
+  <link rel="stylesheet" href="css/battle-screens.css">
+  <link rel="stylesheet" href="css/sprite-battle-ui.css">
+  <link rel="stylesheet" href="css/story-ui.css">
+  <link rel="stylesheet" href="css/ui-overlays.css">
+  <link rel="stylesheet" href="css/end-screens.css">
   <link rel="stylesheet" href="css/map.css">
   <link rel="stylesheet" href="css/combat.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚔️</text></svg>">
@@ -43,43 +51,12 @@
   <!-- ═══════════════════════════════════════
      LOADING SCREEN
      ═══════════════════════════════════════ -->
-  <div id="loading-screen" style="
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, #080b12 0%, #0d1220 100%);
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-  font-family: 'Cinzel', serif;
-">
-    <h2 style="color: #4ecfff; margin-bottom: 50px; font-size: 28px; letter-spacing: 2px;">
-      ⚔️ SHATTERED NEXUS
-    </h2>
-    <div style="
-    width: 320px;
-    height: 8px;
-    background: rgba(255,255,255,0.08);
-    border-radius: 4px;
-    overflow: hidden;
-    margin-bottom: 30px;
-    border: 1px solid rgba(78,207,255,0.2);
-  ">
-      <div id="loading-bar" style="
-      width: 0%;
-      height: 100%;
-      background: linear-gradient(90deg, #4ecfff, #00d4b4);
-      transition: width 0.2s ease;
-      box-shadow: 0 0 12px rgba(78,207,255,0.6);
-    "></div>
+  <div id="loading-screen">
+    <h2>⚔️ SHATTERED NEXUS</h2>
+    <div class="loading-bar-wrap">
+      <div id="loading-bar"></div>
     </div>
-    <p id="loading-text" style="color: #7a90a8; font-family: monospace; font-size: 11px; letter-spacing: 1px;">
-      Loading assets... 0%
-    </p>
+    <p id="loading-text">Loading assets... 0%</p>
   </div>
 
   <div id="game">
