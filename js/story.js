@@ -1026,6 +1026,12 @@ const Story = {
       if (lbl) { lbl.textContent = '⛔ Defeat this arc\'s boss first.'; lbl.style.color = '#ef4444'; setTimeout(() => { lbl.style.color = ''; }, 2500); }
       return;
     }
+    // Intercept if next arc is not released yet
+    if (!isArcReleased(this.arcIdx + 1)) {
+      this._showBetaEndScreen();
+      return;
+    }
+
     this.arcIdx++;
     G.enemies = this._allEnemies.slice();
     if (this.arcIdx >= this.data.arcs.length) { this._beginEpilogue(); return; }
@@ -1035,6 +1041,24 @@ const Story = {
     this.phase = null;
     this._doSave();
     this._showArcIntro();
+  },
+
+  /** Handles the 'Coming Soon' state for beta releases */
+  _showBetaEndScreen() {
+    this.active = false;
+    if (typeof TTS !== 'undefined') TTS.stop();
+    G.mode = 'story_end';
+
+    const beTitle = this.el('be-title');
+    const beSub = this.el('be-subtitle');
+    const beText = this.el('be-text');
+
+    if (beTitle) beTitle.textContent = ReleaseConfig.BETA_END_TITLE || 'VERSION COMPLETE';
+    if (beSub) beSub.textContent = ReleaseConfig.BETA_END_SUBTITLE || 'CONTINUING SOON';
+    if (beText) beText.textContent = ReleaseConfig.BETA_END_TEXT || 'Thanks for playing!';
+
+    showScreen('beta-end-screen');
+    if (typeof SFX !== 'undefined') SFX.shardGet();
   },
 
   _beginEpilogue() {
@@ -1163,7 +1187,8 @@ const Story = {
 
     /* ── SVG path layer (820×300 viewBox) ── */
     let svgLines = '';
-    for (let i = 0; i < MAP_POSITIONS.length - 1; i++) {
+    // Only render lines between released arcs
+    for (let i = 0; i < Math.min(MAP_POSITIONS.length - 1, ReleaseConfig.MAX_REACHABLE_ARC); i++) {
       const a = MAP_POSITIONS[i], b = MAP_POSITIONS[i + 1];
       const done  = i < this.arcIdx;
       const color = done ? '#4a3898' : '#1a1060';
@@ -1178,6 +1203,9 @@ const Story = {
 
     /* ── Node elements ── */
     arcs.forEach((arc, i) => {
+      // Release Filter: Skip nodes that are completely locked in this release
+      if (!isArcReleased(i)) return;
+
       const pos    = MAP_POSITIONS[i];
       const isDone = i < this.arcIdx;
       const isCur  = i === this.arcIdx;
@@ -1494,3 +1522,27 @@ const Story = {
 function startStoryMode() {
   Story.begin();
 }
+
+/** Initial Release UI Setup */
+window.addEventListener('DOMContentLoaded', () => {
+  if (typeof ReleaseConfig !== 'undefined') {
+    const tag = document.getElementById('game-version-tag');
+    if (tag) tag.textContent = ReleaseConfig.VERSION || 'v3.0';
+    
+    const arcCount = document.querySelector('.title-tagline');
+    if (arcCount) {
+        const releasedCount = ReleaseConfig.MAX_REACHABLE_ARC + 1;
+        const arcLabel = releasedCount === 1 ? 'Released Arc' : 'Released Arcs';
+        if (releasedCount < 8) {
+            arcCount.innerHTML = arcCount.innerHTML.replace('8 Arcs', `${releasedCount} ${arcLabel}`);
+        }
+    }
+
+    const itchBtn = document.getElementById('be-itch-btn');
+    if (itchBtn) {
+      itchBtn.addEventListener('click', () => {
+        window.open(ReleaseConfig.ITCH_URL || 'https://itch.io', '_blank');
+      });
+    }
+  }
+});
