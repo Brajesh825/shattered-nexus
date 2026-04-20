@@ -2680,3 +2680,155 @@
   }
 }
 
+
+/* ══════════════════════════════════════════════════════════════
+   ULTIMATE COUNTDOWN OVERLAY  (universal 3→2→1 for all chars)
+   Appended to battle-screens.css
+   ══════════════════════════════════════════════════════════════ */
+
+#ult-countdown-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 8000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  animation: ult-cd-appear 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+#ult-countdown-overlay.ult-cd-exit {
+  animation: ult-cd-fade-out 0.4s ease forwards;
+}
+
+@keyframes ult-cd-appear {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes ult-cd-fade-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+.ult-cd-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 50%, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.6) 60%, transparent 100%);
+  backdrop-filter: blur(2px);
+}
+
+.ult-cd-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+  padding: 20px 40px;
+}
+
+/* Character name (dim, above ability name) */
+.ult-cd-actor {
+  font-family: var(--px);
+  font-size: 10px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+/* Ability name */
+.ult-cd-name {
+  font-family: var(--px);
+  font-size: clamp(18px, 4vw, 28px);
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  animation: ult-cd-glow-pulse 1s ease-in-out infinite alternate;
+}
+
+@keyframes ult-cd-glow-pulse {
+  from { filter: brightness(1); }
+  to   { filter: brightness(1.3); }
+}
+
+/* Flavour channel text */
+.ult-cd-channel {
+  font-family: var(--vt);
+  font-size: clamp(14px, 2.5vw, 18px);
+  color: rgba(200, 190, 240, 0.6);
+  letter-spacing: 2px;
+  font-style: italic;
+}
+
+/* Big countdown digit */
+.ult-cd-number {
+  font-family: var(--px);
+  font-size: clamp(72px, 16vw, 120px);
+  line-height: 1;
+  letter-spacing: -4px;
+  margin: 8px 0 4px;
+}
+
+.ult-cd-number.ult-cd-pop {
+  animation: ult-cd-pop 0.55s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes ult-cd-pop {
+  0%   { transform: scale(1.6); opacity: 0.4; filter: blur(8px); }
+  40%  { transform: scale(0.9); opacity: 1;   filter: blur(0);   }
+  65%  { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+/* Progress bar */
+.ult-cd-bar-wrap {
+  width: min(280px, 70vw);
+  height: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 6px;
+}
+
+.ult-cd-bar {
+  width: 100%;
+  height: 100%;
+  border-radius: 2px;
+  box-shadow: 0 0 8px currentColor;
+  transition: none; /* JS sets transition after reflow */
+}
+
+/* Mobile tweaks */
+@media (max-width: 600px) {
+  .ult-cd-name { font-size: 16px; letter-spacing: 3px; }
+  .ult-cd-number { font-size: 72px; }
+  .ult-cd-actor { font-size: 9px; }
+}
+
+/* ── ULTIMATE COOLDOWN BADGE ─────────────────────────── */
+.ab-cd-badge {
+  font-size: var(--fs-xxs);
+  color: #ffaa22;
+  background: rgba(255, 170, 34, 0.12);
+  border: 1px solid rgba(255, 170, 34, 0.35);
+  border-radius: 4px;
+  padding: 1px 5px;
+  margin-left: auto;
+  white-space: nowrap;
+  font-family: var(--px);
+  animation: cdPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes cdPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+
+.ability-btn.disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  border-color: #2a2050;
+  background: linear-gradient(180deg, #0a0920, #060518);
+}
