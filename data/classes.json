@@ -617,7 +617,10 @@
                 "effect": {
                     "dmgMultiplier": 4.0,
                     "element": "wind",
-                    "statScale": "spd",`r`n                    "aoe": true,`r`n                    "cooldown": 2`r`n                }
+                    "statScale": "spd",
+                    "aoe": true,
+                    "cooldown": 2
+                }
             }
         ],
         "growthPerLevel": {
