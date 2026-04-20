@@ -903,6 +903,25 @@ function startExplore() {
     // Don't set selectedClass — buildParty will use each character's class_affinity
     buildParty();
   }
+
+  // ── Guard: if ALL party members are KO'd (e.g. lost a battle),
+  //    revive them all to full HP so the map always has a walker.
+  const allKO = G.party.length > 0 && G.party.every(m => m.isKO || m.hp <= 0);
+  if (allKO) {
+    G.party.forEach(m => {
+      m.hp = m.maxHp;
+      m.mp = m.maxMp;
+      m.isKO = false;
+      m.statuses = [];
+      m.cooldowns = {};
+    });
+    // Sync back to G.chars so the revive persists
+    G.party.forEach(m => {
+      const ch = G.chars.find(c => c.id === m.charId);
+      if (ch) { ch.hp = m.hp; ch.mp = m.mp; ch.isKO = false; }
+    });
+  }
+
   G.mode = 'explore';
   showScreen('explore-screen');
   _dockPersistentBtns(true);
