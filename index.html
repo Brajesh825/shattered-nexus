@@ -142,7 +142,7 @@
         </button>
       </div>
 
-      <div class="ver-tag">v3.0</div>
+      <div class="ver-tag" id="game-version-tag">v3.0</div>
     </div>
 
     <!-- ═══════════════════════════════════════
@@ -470,6 +470,23 @@
     </div>
 
     <!-- ═══════════════════════════════════════
+       BETA END / COMING SOON SCREEN
+       ═══════════════════════════════════════ -->
+    <div id="beta-end-screen" class="screen">
+      <div class="be-overlay"></div>
+      <div class="be-content">
+        <div class="be-crest">✦</div>
+        <div class="be-title" id="be-title">ARC COMPLETE</div>
+        <div class="be-subtitle" id="be-subtitle">THE ADVENTURE CONTINUES</div>
+        <div class="be-text" id="be-text"></div>
+        <div class="be-footer">
+          <button class="big-btn" onclick="Story.gameOverTitle()">⌂ TITLE SCREEN</button>
+          <button class="big-btn be-btn-itch" id="be-itch-btn">🌐 FOLLOW ON ITCH.IO</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
        EXPLORE SCREEN (tile map)
        ═══════════════════════════════════════ -->
     <div id="explore-screen" class="screen">
@@ -641,6 +658,7 @@
   <script src="js/svg-animations.js"></script>
   <script src="js/asset-preloader.js"></script>
   <script src="js/scaling-config.js"></script>
+  <script src="js/release-config.js"></script>
   <script src="js/game.js"></script>
   <script src="js/ui/menu-manager.js"></script>
   <script src="js/systems/party.js"></script>
