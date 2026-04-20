@@ -17,14 +17,14 @@ const SPEAKER_COLOR = {
 
 /* ── Alias → charId mapping for image file lookups ──────────────────────── */
 const ALIAS_TO_CHARID = {
-  aya:   'ayaka',
-  tao:   'hutao',
-  lulu:  'nilou',
-  rei:   'xiao',
-  ria:   'rydia',
-  valka: 'lenneth',
-  drake: 'kain',
-  rex:   'leon',
+  aya:   'aya',
+  tao:   'tao',
+  lulu:  'lulu',
+  rei:   'rei',
+  ria:   'ria',
+  valka: 'valka',
+  drake: 'drake',
+  rex:   'rex',
 };
 
 function _charIdForSpeaker(name) {
@@ -33,14 +33,14 @@ function _charIdForSpeaker(name) {
 
 /* ── Speaker portrait images ─────────────────────────────────────────────── */
 const SPEAKER_IMG = {
-  Aya:   'images/characters/spirits/ayaka_spirit.png',
-  Tao:   'images/characters/spirits/hutao_spirit.png',
-  Lulu:  'images/characters/spirits/nilou_spirit.png',
-  Rei:   'images/characters/spirits/xiao_spirit.png',
-  Ria:   'images/characters/spirits/rydia_spirit.png',
-  Valka: 'images/characters/spirits/lenneth_spirit.png',
-  Drake: 'images/characters/spirits/kain_spirit.png',
-  Rex:   'images/characters/spirits/leon_spirit.png',
+  Aya:   'images/characters/spirits/aya_sprite.png',
+  Tao:   'images/characters/spirits/tao_sprite.png',
+  Lulu:  'images/characters/spirits/lulu_sprite.png',
+  Rei:   'images/characters/spirits/rei_sprite.png',
+  Ria:   'images/characters/spirits/ria_sprite.png',
+  Valka: 'images/characters/spirits/valka_sprite.png',
+  Drake: 'images/characters/spirits/drake_sprite.png',
+  Rex:   'images/characters/spirits/rex_sprite.png',
 };
 
 /* ── Speaker portrait emojis (narrator fallback) ────────────────────────── */
@@ -110,8 +110,8 @@ const Story = {
   _retrying: false,
 
   // Scene character management
-  _charAppeared: {},  // tracks which characters have appeared: { "Ayaka": true, ... }
-  _charPositions: {}, // character positions: { "Ayaka": "left", "Hutao": "center", ... }
+  _charAppeared: {},  // tracks which characters have appeared: { "Aya": true, ... }
+  _charPositions: {}, // character positions: { "Aya": "left", "Tao": "center", ... }
   _posCounter: 0,     // counter for distributing positions
 
   // Typewriter
@@ -206,7 +206,7 @@ const Story = {
       }
 
       // Set default 4 characters for story start (no selection screen)
-      const defaultChars = ['ayaka', 'hutao', 'nilou', 'xiao'];
+      const defaultChars = ['aya', 'tao', 'lulu', 'rei'];
       G.selectedChar = defaultChars[0];
       G.selectedChars = defaultChars;
       G.unlockedChars = defaultChars;
@@ -604,7 +604,7 @@ const Story = {
       dialogue.style.display = 'none';
       this.el('s-speaker').textContent = '';
       this.el('s-text').textContent = '';
-      this.el('s-portrait-img').style.display = 'none';
+      // s-portrait-img (img tag) removed in favor of spirit-based rendering
     }
 
     this._setHeader(`Arc ${this.arc.number}: ${this.arc.name}`, chap.title || '');
@@ -992,16 +992,9 @@ const Story = {
 
     this._showSection('s-arc-end');
 
-    // Load face and spirit images
-    const heroName = G.hero?.id || 'ayaka';
-    const heroNameLower = heroName.toLowerCase();
-
-    // Face image (small icon, left)
-    const faceImg = this.el('s-ae-face');
-    if (faceImg) {
-      faceImg.style.display = 'block';
-      SpriteRenderer.setFrame(faceImg, heroNameLower, 'idle', 60);
-    }
+    // Load spirit images
+    const heroName = G.hero?.id || 'aya';
+    const heroNameLower = (heroName || '').toLowerCase();
 
     // Spirit image (large, center)
     const spiritImg = this.el('s-ae-spirit');
@@ -1379,7 +1372,6 @@ const Story = {
     const box = this.el('s-dialogue');
     const spkEl = this.el('s-speaker');
     const txtEl = this.el('s-text');
-    const imgEl = this.el('s-portrait-img');
     const emojiEl = this.el('s-portrait-emoji');
     const spiritsRow = this.el('s-dialogue-spirits-row');
     if (!box) return;
@@ -1402,28 +1394,18 @@ const Story = {
       // Get speaker character ID for face image path (alias → charId)
       const speakerCharId = _charIdForSpeaker(speaker);
 
-      // Face image (left, small) via SpriteRenderer
-      if (imgEl) {
-        imgEl.style.display = 'block';
-        imgEl.style.borderColor = SPEAKER_COLOR[speaker] || '#5040a0';
-        imgEl.style.boxShadow = `0 0 16px ${SPEAKER_COLOR[speaker]}66`;
-        
-        // Use SpriteRenderer for consistent frames
-        SpriteRenderer.setFrame(imgEl, speakerCharId, 'idle', 80);
-
-        // pop animation on each new line
-        imgEl.classList.remove('new-line');
-        void imgEl.offsetWidth; // reflow to retrigger
-        imgEl.classList.add('new-line');
-        if (emojiEl) emojiEl.style.display = 'none';
-      } else {
-        if (emojiEl) { emojiEl.style.display = 'block'; emojiEl.textContent = '💬'; }
+      // Use emoji fallback only (face images removed)
+      if (emojiEl) {
+        emojiEl.style.display = 'block';
+        emojiEl.textContent = '💬';
       }
     } else {
       spkEl.style.display = 'none';
       box.dataset.speaker = 'narrator';
-      if (imgEl) imgEl.style.display = 'none';
-      if (emojiEl) { emojiEl.style.display = 'block'; emojiEl.textContent = SPEAKER_PORTRAIT.narrator; }
+      if (emojiEl) {
+        emojiEl.style.display = 'block';
+        emojiEl.textContent = SPEAKER_PORTRAIT.narrator;
+      }
     }
     // TTS speaks full text; typewriter shows it character-by-character in parallel
     if (typeof TTS !== 'undefined') TTS.speak(speaker || 'narrator', text || '');

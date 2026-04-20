@@ -258,7 +258,7 @@ const MapUI = (() => {
 
   /* ── Pause Menu ─────────────────────────────────────── */
   const CHAR_COLOR_MAP = {
-    ayaka:'#7dd3fc', hutao:'#ef4444', nilou:'#2dd4bf', xiao:'#4ade80',
+    aya:'#7dd3fc', tao:'#ef4444', lulu:'#2dd4bf', rei:'#4ade80',
     rydia:'#a78bfa', lenneth:'#e879f9', kain:'#0ea5e9', leon:'#fbbf24'
   };
 

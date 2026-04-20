@@ -35,15 +35,13 @@ const HomeEngine = {
     if (typeof SpriteRenderer === 'undefined') return;
 
     const sils = document.querySelectorAll('.hero-sil');
-    const heroMap = { 'aya': 'ayaka', 'tao': 'hutao', 'lulu': 'nilou', 'rei': 'xiao' };
 
     // Dynamic height based on viewport (matching 55vh in CSS)
     const targetH = Math.max(300, window.innerHeight * 0.55);
 
     sils.forEach(el => {
       if (window.getComputedStyle(el).display === 'none') return;
-      const alias = el.dataset.hero;
-      const id = heroMap[alias] || alias;
+      const id = el.dataset.hero;
       SpriteRenderer.setFrame(el, id, 'idle', targetH);
     });
   },

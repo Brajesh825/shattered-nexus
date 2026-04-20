@@ -11,13 +11,8 @@ const AssetPreloader = (() => {
   const ASSETS = {
     // Character spirit portraits
     spirits: [
-      'ayaka', 'hutao', 'nilou', 'xiao',
-      'rydia', 'lenneth', 'kain', 'leon'
-    ],
-    // Character faces
-    faces: [
-      'ayaka', 'hutao', 'nilou', 'xiao',
-      'rydia', 'lenneth', 'kain', 'leon'
+      'aya', 'tao', 'lulu', 'rei',
+      'ria', 'valka', 'drake', 'rex'
     ],
     // Enemies (prioritize common/boss enemies)
     enemies: [
@@ -53,7 +48,6 @@ const AssetPreloader = (() => {
   async function preloadAssets(onProgress) {
     const total =
       ASSETS.spirits.length +
-      ASSETS.faces.length +
       ASSETS.enemies.length +
       ASSETS.bgm.length;
 
@@ -71,20 +65,6 @@ const AssetPreloader = (() => {
         if (onProgress) onProgress(loaded, total);
       } catch (e) {
         console.warn(`⚠️ Failed to preload spirit: ${charId}`, e);
-        loaded++;
-        if (onProgress) onProgress(loaded, total);
-      }
-    }
-
-    // Preload faces
-    for (const charId of ASSETS.faces) {
-      try {
-        const img = await loadImage(`images/characters/faces/${charId.toLowerCase()}_face.png`);
-        cache.images[`face_${charId}`] = img;
-        loaded++;
-        if (onProgress) onProgress(loaded, total);
-      } catch (e) {
-        console.warn(`⚠️ Failed to preload face: ${charId}`, e);
         loaded++;
         if (onProgress) onProgress(loaded, total);
       }

@@ -20,7 +20,7 @@
           "narration": "The deeper passages of the fortress are not halls — they are arteries. The stone pulses with something that might be blood, might be power. The air tastes of fear and ancient memory."
         },
         {
-          "narration": "Lenneth walks ahead, her sword blazing with divine light. The darkness recoils from her presence.",
+          "narration": "Valka walks ahead, her sword blazing with divine light. The darkness recoils from her presence.",
           "dialogue": [
             { "speaker": "Valka", "emotion": "commanding", "text": "I have walked between worlds for millennia. I have never felt a darkness like this. It is not evil — it is grief. Infinite, absolute, all-consuming grief." },
             { "speaker": "Rex", "emotion": "somber", "text": "A being that became everything it feared. That is a tragedy I understand all too well." },
@@ -83,3 +83,4 @@
     ]
   }
 }
+

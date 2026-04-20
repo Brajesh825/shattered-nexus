@@ -16,7 +16,7 @@ const SpriteRenderer = (() => {
 
   const HEROES = {
 
-    aria(ctx, char, cls) {
+    aya(ctx, char, cls) {
       const sc = char.skin_color, hc = char.hair_color, ac = cls ? cls.color : char.armor_color;
       // Hair (long, flowing)
       p(ctx, 4, 0, 8, 4, hc);
@@ -60,7 +60,7 @@ const SpriteRenderer = (() => {
       p(ctx, 13, 9, 1, 2, '#e0e0e0');
     },
 
-    kael(ctx, char, cls) {
+    tao(ctx, char, cls) {
       const sc = char.skin_color, hc = char.hair_color, ac = cls ? cls.color : char.armor_color;
       // Helmet (full plate)
       p(ctx, 3, 0, 10, 7, ac);
@@ -102,7 +102,7 @@ const SpriteRenderer = (() => {
       p(ctx, 13, 11, 4, 1, '#c09040');
     },
 
-    sera(ctx, char, cls) {
+    lulu(ctx, char, cls) {
       const sc = char.skin_color, hc = char.hair_color, ac = cls ? cls.color : char.armor_color;
       // Tall mage hat
       p(ctx, 6, 0, 4, 2, ac);
@@ -149,7 +149,7 @@ const SpriteRenderer = (() => {
       p(ctx, 15, 1, 1, 1, '#ffffff');
     },
 
-    torin(ctx, char, cls) {
+    rei(ctx, char, cls) {
       const sc = char.skin_color, hc = char.hair_color, ac = cls ? cls.color : char.armor_color;
       // Hood (druid)
       p(ctx, 3, 0, 10, 5, ac);
@@ -823,14 +823,14 @@ const SpriteRenderer = (() => {
   // ─── PUBLIC API ────────────────────────────────────────────────
 
   const ROSTER_CONFIG = {
-    ayaka: { forms: ['ayaka', 'aya'], cols: [0.28, 0.32, 0.40] },
-    hutao: { forms: ['hutao', 'tao'], cols: [[0.28, 0.32, 0.40], [0.34, 0.26, 0.40]] },
-    nilou: ['nilou', 'lulu'],
-    xiao: ['xiao', 'rei'],
-    rydia: ['rydia', 'ria'],
-    lenneth: ['lenneth', 'valka'],
-    kain: ['kain', 'drake'],
-    leon: ['leon', 'rex']
+    aya: { forms: ['aya'], cols: [0.28, 0.32, 0.40] },
+    tao: { forms: ['tao'], cols: [[0.28, 0.32, 0.40], [0.34, 0.26, 0.40]] },
+    lulu: ['lulu'],
+    rei: ['rei'],
+    ria: ['ria'],
+    valka: ['valka'],
+    drake: ['drake'],
+    rex: ['rex']
   };
 
   const SPRITE_MANIFEST = {};
@@ -926,7 +926,7 @@ const SpriteRenderer = (() => {
     const canvas = document.createElement('canvas');
     canvas.width = 48; canvas.height = 57;
     const ctx = canvas.getContext('2d');
-    const fn = HEROES[charId] || HEROES['aria'];
+    const fn = HEROES[charId] || HEROES['aya'];
     fn(ctx, charData, classData);
     return canvas;
   }
@@ -946,8 +946,8 @@ const SpriteRenderer = (() => {
     const manifest = SPRITE_MANIFEST[id];
     
     if (!manifest) {
-      // Fallback for non-animated or unknown sprites
-      el.style.backgroundImage = `url(images/characters/faces/${id}_face.png)`;
+      // Fallback for non-animated or unknown sprites (use spirit portrait if face removed)
+      el.style.backgroundImage = `url(images/characters/spirits/${id}_sprite.png)`;
       el.style.backgroundSize = 'contain';
       el.style.backgroundPosition = 'center';
       el.style.backgroundRepeat = 'no-repeat';
