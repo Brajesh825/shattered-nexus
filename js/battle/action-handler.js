@@ -555,11 +555,6 @@ const ActionEngine = {
   _offensive(actor, targets, ab, element, moveConfig, isEnemyAction) {
     const e = ab.effect || {};
 
-    // Cooldown guard (hero actions only)
-    if (!isEnemyAction && actor.cooldowns?.[ab.id] > 0) {
-      BattleUI.addLog(`${ab.name} is on cooldown for ${actor.cooldowns[ab.id]} turns!`, 'dmg');
-      G.busy = false; BattleUI.btns(true); return;
-    }
     if (typeof SFX !== 'undefined') {
       if (!isEnemyAction) {
         if (ab.type === 'physical') SFX.attack(); else SFX.magic();
@@ -599,7 +594,6 @@ const ActionEngine = {
         }
         if (e.guardian) { G.party.forEach(m => { if (Battle.alive(m)) Battle.addStatus(m, StatusSystem.DEFS.guardian); }); BattleUI.addLog('🛡️ Phantom Guardian summoned!', 'heal'); }
         if (e.partyBuff) { G.party.forEach((m, idx) => { if (!Battle.alive(m)) return; Battle.addStatus(m, { id: 'status_atk_boost', label: 'ATK+', icon: '⚔️', type: 'mult', stat: 'atk', value: 1.3, turns: 3 }); Battle.addStatus(m, { id: 'status_def_boost', label: 'DEF+', icon: '🛡️', type: 'mult', stat: 'def', value: 1.3, turns: 3 }); BattleUI.popParty(idx, 'ATK & DEF Up!', 'buff', 'holy'); }); BattleUI.addLog(`✨ ${ab.name}: The party is blessed!`, 'buff'); }
-        if (e.cooldown) actor.cooldowns[ab.id] = e.cooldown + 1;
         if (actor._cryoReset) { actor.cooldowns[ab.id] = 0; BattleUI.addLog('❄ Cryoclasm Reset!', 'regen'); delete actor._cryoReset; }
         _checkDragonLeap(actor);
         BattleUI.renderPartyRow(); // Final catch-all refresh
@@ -732,6 +726,13 @@ function heroAbility(ab) {
     return;
   }
 
+  // Cooldown check
+  const cdInfo = (actor.cooldowns || {})[ab.id] || 0;
+  if (cdInfo > 0) {
+    BattleUI.addLog(ab.name + ' is on cooldown!', 'dmg');
+    return;
+  }
+
   // MP Cost
   const _mpCost = Math.ceil(ab.mp * PassiveSystem.val(actor, 'MP_COST_MULT', 1.0));
   if (actor.mp < _mpCost) { BattleUI.setLog(['Not enough MP!'], ['dmg']); BattleUI.openSub(null); return; }
@@ -741,6 +742,13 @@ function heroAbility(ab) {
 
   try {
     actor.mp = Math.max(0, actor.mp - _mpCost);
+
+    // ── Set ultimate cooldown ──
+    const abilityCD = ab.effect?.cooldown ?? (ab.isUltimate ? 2 : 0);
+    if (abilityCD > 0) {
+      if (!actor.cooldowns) actor.cooldowns = {};
+      actor.cooldowns[ab.id] = abilityCD + 1;
+    }
 
     const e = ab.effect || {};
     const element = e.element || 'physical';

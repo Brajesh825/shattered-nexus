@@ -28,6 +28,12 @@ const HomeEngine = {
     
     // 5. Subtle drift for hero silhouettes
     this._startSilhouetteDrift();
+
+    // 6. Inject version from ReleaseConfig
+    const vTag = document.getElementById('game-version-tag');
+    if (vTag && typeof ReleaseConfig !== 'undefined') {
+      vTag.textContent = ReleaseConfig.VERSION;
+    }
   },
 
   /** Uses SpriteRenderer to extract iconic Idle poses */
@@ -74,19 +80,7 @@ const HomeEngine = {
       `;
       container.appendChild(shard);
     }
-
-    if (!document.getElementById('debris-style')) {
-      const style = document.createElement('style');
-      style.id = 'debris-style';
-      style.textContent = `
-        @keyframes debrisFloat {
-          0% { transform: translateY(0) rotate(0deg); }
-          50% { transform: translateY(-40px) rotate(180deg); }
-          100% { transform: translateY(0) rotate(360deg); }
-        }
-      `;
-      document.head.appendChild(style);
-    }
+    // Note: debrisFloat keyframes are defined in title.css
   },
 
   /** Creates floating 'essence' motes that drift upward */
@@ -124,17 +118,7 @@ const HomeEngine = {
       container.appendChild(mote);
       setTimeout(() => mote.remove(), duration * 1000);
     }, 800);
-
-    // Inject the keyframes dynamically
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes essenceFloat {
-        0% { transform: translateY(0) translateX(0); opacity: 0; }
-        10% { opacity: 0.5; }
-        100% { transform: translateY(-110vh) translateX(${Math.random() * 100 - 50}px); opacity: 0; }
-      }
-    `;
-    document.head.appendChild(style);
+    // Note: essenceFloat keyframes are defined in title.css
   },
 
   /** Handles subtle mouse parallax for depth */

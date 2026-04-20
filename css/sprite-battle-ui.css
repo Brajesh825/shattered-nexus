@@ -1,0 +1,2170 @@
+﻿/* ============================================================
+   sprite-battle-ui.css — Shattered Nexus
+   Sprite-based battle UI: party/enemy containers, adaptive
+   enemy grid, large-screen and mobile responsive layouts.
+   ============================================================ */
+/* ════════════════════════════════════════════════════════════
+   SPRITE-BASED BATTLE UI
+   ════════════════════════════════════════════════════════════ */
+
+/* Party sprite container — LEFT BOTTOM */
+.party-container {
+  position: absolute;
+  left: 0;
+  bottom: 56px;
+  /* sits just above the ground strip */
+  top: auto;
+  transform: none;
+  width: 420px;
+  height: 380px;
+}
+
+.party-member {
+  position: absolute;
+  width: 140px;
+  height: 185px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  padding: 4px;
+  background: rgba(0, 0, 20, 0.3);
+  transition: transform 0.2s ease, filter 0.2s ease, border-color 0.2s ease;
+  cursor: default;
+}
+
+.party-member.ko-member {
+  opacity: 0.3;
+  filter: grayscale(100%);
+}
+
+.party-member.active-member {
+  transform: scale(1.05);
+  border-color: currentColor;
+}
+
+@keyframes focusPulse {
+  0% {
+    border-color: #8e44ad;
+    box-shadow: 0 0 5px #8e44ad;
+  }
+
+  50% {
+    border-color: #c0a0ff;
+    box-shadow: 0 0 15px #c0a0ff;
+  }
+
+  100% {
+    border-color: #8e44ad;
+    box-shadow: 0 0 5px #8e44ad;
+  }
+}
+
+.kb-focus {
+  outline: none !important;
+  border-color: #c0a0ff !important;
+  box-shadow: 0 0 15px #c0a0ff !important;
+  animation: focusPulse 1s infinite ease-in-out;
+  transform: scale(1.03);
+  z-index: 9999;
+  position: relative;
+}
+
+.party-sprite {
+  width: 96px;
+  height: 96px;
+  object-fit: contain;
+  image-rendering: auto;
+  transform: scaleX(1);
+  filter: drop-shadow(0 0 10px rgba(100, 60, 200, 0.6));
+}
+
+.party-info {
+  width: 100%;
+  text-align: center;
+  margin-top: 2px;
+  font-size: 9px;
+}
+
+.party-name {
+  color: inherit;
+  font-size: 10px;
+  font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.party-level {
+  font-size: 9px;
+  color: #8080c0;
+  font-weight: bold;
+}
+
+.party-hp-bar-bg {
+  width: 140px;
+  height: 6px;
+  background: #1a0010;
+  border: 1px solid #400030;
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 3px;
+}
+
+.party-hp-bar-fill {
+  height: 100%;
+  width: 0%;
+  transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.3) inset;
+  border-radius: 1px;
+}
+
+.portrait-status-strip {
+  display: flex;
+  gap: 2px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 2px;
+  z-index: 5;
+}
+
+.portrait-status-strip .psct {
+  font-size: 10px;
+  min-width: 16px;
+  height: 16px;
+  padding: 1px 2px;
+}
+
+.portrait-status-strip .psct-cnt {
+  font-size: 7px;
+}
+
+.ko-badge {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.9);
+  color: #ff4d4d;
+  padding: 3px 6px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: bold;
+  z-index: 30;
+}
+
+/* Pyramid layout with aggressive overlap (160×160 sprites) */
+/* Party pyramid — 140×185px cards, 380px formation, 420px container wide */
+.party-member:nth-child(1) {
+  left: 142px;
+  /* center: (420-140)/2 */
+  top: 0px;
+  z-index: 14;
+}
+
+.party-member:nth-child(2) {
+  left: 30px;
+  top: 98px;
+  z-index: 16;
+}
+
+.party-member:nth-child(3) {
+  left: 252px;
+  top: 98px;
+  z-index: 16;
+}
+
+.party-member:nth-child(4) {
+  left: 142px;
+  top: 193px;
+  z-index: 18;
+}
+
+/* Hide party member names (keep level) */
+.party-name {
+  display: none;
+}
+
+/* Enemy sprite container — RIGHT BOTTOM */
+.enemy-container {
+  position: absolute;
+  right: 0;
+  bottom: 56px;
+  /* above ground strip, same anchor as party */
+  top: auto;
+  transform: none;
+  width: 580px;
+  height: 500px;
+}
+
+.enemy {
+  position: absolute;
+  /* width/height set per data-count below — card scales with group size */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  padding: 6px;
+  background: transparent;
+  cursor: pointer;
+  transition: transform 0.2s ease, filter 0.2s ease, opacity 0.2s ease, border-color 0.2s ease;
+}
+
+.enemy:hover {
+  transform: scale(1.06);
+  filter: brightness(1.15);
+}
+
+.enemy.ko-enemy {
+  opacity: 0.25;
+  filter: grayscale(100%);
+  cursor: default;
+}
+
+.enemy[data-idx="0"],
+.enemy[data-idx="1"],
+.enemy[data-idx="2"],
+.enemy[data-idx="3"] {
+  /* Target indicator will add the border via JS */
+}
+
+/* Show border only on targeted enemy */
+.enemy-container .enemy {
+  border-color: transparent;
+}
+
+.enemy-container .enemy[data-target="true"] {
+  border-color: #ff6060;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ADAPTIVE ENEMY GRID — card size + position + HP bar per group count
+   ───────────────────────────────────────────────────────────────────
+   Container: 580px wide × 500px tall, right-anchored, v-centered.
+   Each count gets its own card dimensions and formation layout.
+   Sprites are sized inline by JS (tier × count × mutation multiplier).
+
+   Count  Card W×H      Formation
+   ─────  ─────────     ───────────────────────────────────────────
+     1    260 × 400     Centered boss — single large frame
+     2    200 × 310     Diagonal stagger — edge-to-edge, no overlap
+     3    160 × 245     Triangle — apex top, base flanks, edge-touch
+     4    130 × 200     Diamond — top/bottom center + two flanks,
+                        45px intentional overlap (z-sorted)
+═══════════════════════════════════════════════════════════════════ */
+
+/* ── COUNT = 1 — solo boss, large frame, centered ─────────────────── */
+.enemy-container[data-count="1"] .enemy {
+  width: 260px;
+  height: 400px;
+}
+
+.enemy-container[data-count="1"] .enemy-hp-bar-bg {
+  width: 210px;
+}
+
+.enemy-container[data-count="1"] .enemy:nth-child(1) {
+  right: 160px;
+  top: 50px;
+  z-index: 14;
+  /* center: (580-260)/2=160  bottom: 50+400=450 ✓ */
+}
+
+/* ── COUNT = 2 — diagonal stagger, edge-to-edge ───────────────────── */
+.enemy-container[data-count="2"] .enemy {
+  width: 200px;
+  height: 310px;
+}
+
+.enemy-container[data-count="2"] .enemy-hp-bar-bg {
+  width: 160px;
+}
+
+.enemy-container[data-count="2"] .enemy:nth-child(1) {
+  right: 30px;
+  top: 20px;
+  z-index: 14;
+  /* left-edge: 350px — upper-right, background */
+}
+
+.enemy-container[data-count="2"] .enemy:nth-child(2) {
+  right: 230px;
+  top: 140px;
+  z-index: 16;
+  /* left-edge: 150px — lower-left, foreground; right-edge=350 ← edge-touch with #1 */
+}
+
+/* ── COUNT = 3 — triangle, apex + two flanks ──────────────────────── */
+.enemy-container[data-count="3"] .enemy {
+  width: 160px;
+  height: 245px;
+}
+
+.enemy-container[data-count="3"] .enemy-hp-bar-bg {
+  width: 120px;
+}
+
+.enemy-container[data-count="3"] .enemy:nth-child(1) {
+  right: 210px;
+  top: 5px;
+  z-index: 14;
+  /* center at x=290 — apex, background; bottom=250px */
+}
+
+.enemy-container[data-count="3"] .enemy:nth-child(2) {
+  right: 90px;
+  top: 160px;
+  z-index: 16;
+  /* left-edge: 330px — front-right; edge-touches apex at x=370 */
+}
+
+.enemy-container[data-count="3"] .enemy:nth-child(3) {
+  right: 330px;
+  top: 160px;
+  z-index: 16;
+  /* left-edge:  90px — front-left; edge-touches apex at x=250; gap between 2&3=80px */
+}
+
+/* ── COUNT = 4 — diamond pyramid ─────────────────────────────────── */
+.enemy-container[data-count="4"] .enemy {
+  width: 130px;
+  height: 200px;
+}
+
+.enemy-container[data-count="4"] .enemy-hp-bar-bg {
+  width: 100px;
+}
+
+.enemy-container[data-count="4"] .enemy:nth-child(1) {
+  right: 225px;
+  top: 0px;
+  z-index: 14;
+  /* center x=290 — top, back;   225→355 */
+}
+
+.enemy-container[data-count="4"] .enemy:nth-child(2) {
+  right: 140px;
+  top: 170px;
+  z-index: 16;
+  /* center x=355 — mid-right;   140→270 … 45px horiz overlap with 1&4, z-sorted */
+}
+
+.enemy-container[data-count="4"] .enemy:nth-child(3) {
+  right: 310px;
+  top: 170px;
+  z-index: 16;
+  /* center x=205 — mid-left;    310→440 … 45px horiz overlap, z-sorted; gap vs #2=40px */
+}
+
+.enemy-container[data-count="4"] .enemy:nth-child(4) {
+  right: 225px;
+  top: 340px;
+  z-index: 18;
+  /* center x=290 — bottom, front; bottom=540 (40px overflow, container overflow:visible) */
+}
+
+/* ── Fallback (data-count not set yet) — same as count=4 ─────────── */
+.enemy-container:not([data-count]) .enemy {
+  width: 130px;
+  height: 200px;
+}
+
+.enemy-container:not([data-count]) .enemy-hp-bar-bg {
+  width: 100px;
+}
+
+.enemy-container:not([data-count]) .enemy:nth-child(1) {
+  right: 225px;
+  top: 0px;
+  z-index: 14;
+}
+
+.enemy-container:not([data-count]) .enemy:nth-child(2) {
+  right: 140px;
+  top: 170px;
+  z-index: 16;
+}
+
+.enemy-container:not([data-count]) .enemy:nth-child(3) {
+  right: 310px;
+  top: 170px;
+  z-index: 16;
+}
+
+.enemy-container:not([data-count]) .enemy:nth-child(4) {
+  right: 225px;
+  top: 340px;
+  z-index: 18;
+}
+
+.target-indicator {
+  position: absolute;
+  right: -16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #ffd060;
+  font-size: 18px;
+  text-shadow: 0 0 10px #ffd06088;
+  animation: targetPulse 1s ease-in-out infinite;
+  z-index: 50;
+}
+
+@keyframes targetPulse {
+
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+.enemy-sprite {
+  /* width/height set inline by renderEnemyRow based on enemy count */
+  object-fit: contain;
+  image-rendering: auto;
+  transform: scaleX(-1);
+  filter: drop-shadow(0 0 12px rgba(200, 60, 100, 0.6));
+  transition: width 0.2s ease, height 0.2s ease;
+}
+
+.enemy-info {
+  width: 100%;
+  text-align: center;
+  margin-top: 2px;
+  font-size: 9px;
+}
+
+.enemy-name {
+  color: #ff8888;
+  font-size: 10px;
+  font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.enemy-level {
+  font-size: 9px;
+  color: #c08080;
+  font-weight: bold;
+}
+
+/* ── Mutant trait pills ── */
+.enemy-traits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-top: 3px;
+  max-width: 200px;
+}
+
+.trait-pill {
+  font-size: 8px;
+  font-weight: bold;
+  padding: 1px 4px;
+  border-radius: 3px;
+  background: rgba(80, 255, 80, 0.15);
+  border: 1px solid rgba(80, 255, 80, 0.5);
+  color: #80ff80;
+  white-space: nowrap;
+  letter-spacing: 0.2px;
+}
+
+
+.enemy-hp-bar-bg {
+  width: 180px;
+  height: 7px;
+  background: #2a0a00;
+  border: 1px solid #603000;
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.enemy-hp-bar-fill {
+  height: 100%;
+  width: 0%;
+  transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.3) inset;
+  border-radius: 1px;
+}
+
+
+/* ══════════════════════════════════════════════════════
+   ZOOM CONTROLS
+   ══════════════════════════════════════════════════════ */
+.zoom-controls {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  gap: 6px;
+  z-index: 100;
+}
+
+.zoom-btn {
+  width: 36px;
+  height: 36px;
+  border: 1px solid #4a3080;
+  border-radius: 3px;
+  background: rgba(10, 5, 30, 0.8);
+  color: #a080d0;
+  font-size: 12px;
+  font-weight: bold;
+  font-family: var(--vt);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.zoom-btn:hover {
+  background: rgba(20, 10, 50, 0.95);
+  border-color: #6a5aaa;
+  color: #c0a0ff;
+  box-shadow: 0 0 8px #4a3080;
+}
+
+.zoom-btn:active {
+  transform: scale(0.95);
+}
+
+/* Damage numbers (float up and fade) */
+.dmg-pop {
+  position: absolute;
+  font-family: var(--px);
+  font-size: 13px;
+  font-weight: bold;
+  color: #ff4d4d;
+  text-shadow: 0 0 6px #ff000088, 0 0 3px #ff0000;
+  pointer-events: none;
+  animation: floatUp 1.2s ease-out forwards;
+  z-index: 200;
+  line-height: 1;
+}
+
+.dmg-pop.heal {
+  color: #22d44a;
+  text-shadow: 0 0 6px #00ff0088, 0 0 3px #00ff00;
+}
+
+.dmg-pop.magic {
+  color: #6ea8ff;
+  text-shadow: 0 0 6px #6ea8ff88, 0 0 3px #6ea8ff;
+}
+
+.dmg-pop.regen {
+  color: #22d44a;
+  text-shadow: 0 0 6px #00ff0088, 0 0 3px #00ff00;
+}
+
+@keyframes floatUp {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-50px) scale(0.7);
+  }
+}
+
+/* Attack animation on party sprites */
+.anim-slash {
+  animation: slashAnim 0.46s ease-out !important;
+}
+
+@keyframes slashAnim {
+  0% {
+    transform: scaleX(1) translateX(0);
+    filter: drop-shadow(0 0 8px rgba(255, 100, 100, 0.8));
+  }
+
+  50% {
+    transform: scaleX(1) translateX(15px);
+    filter: drop-shadow(0 0 12px rgba(255, 150, 100, 1));
+  }
+
+  100% {
+    transform: scaleX(1) translateX(0);
+    filter: drop-shadow(0 0 6px rgba(100, 60, 200, 0.6));
+  }
+}
+
+/* Cast animation on party sprites */
+.anim-cast {
+  animation: castAnim 0.56s ease-out !important;
+}
+
+@keyframes castAnim {
+  0% {
+    transform: scaleX(1) scaleY(1);
+    filter: drop-shadow(0 0 4px rgba(100, 100, 255, 0.4));
+  }
+
+  25% {
+    transform: scaleX(0.95) scaleY(1.1);
+    filter: drop-shadow(0 0 12px rgba(100, 200, 255, 0.8));
+  }
+
+  50% {
+    transform: scaleX(1) scaleY(0.95);
+    filter: drop-shadow(0 0 16px rgba(150, 150, 255, 1));
+  }
+
+  100% {
+    transform: scaleX(1) scaleY(1);
+    filter: drop-shadow(0 0 6px rgba(100, 60, 200, 0.6));
+  }
+}
+
+/* Sprite damage flash effect */
+.sprite-damage-flash {
+  animation: spriteFlash 0.2s ease-out;
+}
+
+@keyframes spriteFlash {
+  0% {
+    filter: brightness(1.6) drop-shadow(0 0 12px #ff5544);
+  }
+
+  100% {
+    filter: brightness(1);
+  }
+}
+
+/* ── UI Sprite Containers ────────────────────────────── */
+.ui-sprite-swap,
+.ui-sprite-char-grid,
+.ui-sprite-char-detail,
+.ui-sprite-result {
+  width: 100%;
+  height: 100%;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  pointer-events: none;
+}
+
+/* Character Selection Detail Layout */
+.char-detail-layout {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  min-height: 160px;
+}
+
+.char-detail-visual {
+  width: 140px;
+  height: 180px;
+  flex-shrink: 0;
+  background: rgba(100, 80, 200, 0.05);
+  border: 1px solid rgba(100, 80, 200, 0.2);
+  border-radius: 8px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+.char-detail-text {
+  flex: 1;
+}
+
+/* Result Screen Sprite Styling */
+.result-member {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.result-member-visual {
+  width: 80px;
+  height: 80px;
+  flex-shrink: 0;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.result-member-content {
+  flex: 1;
+}
+
+.result-member.ko .result-member-visual {
+  filter: grayscale(1) sepia(0.5);
+  opacity: 0.6;
+}
+
+/* ── MOBILE LANDSCAPE: sprite + layout overrides (must be after sprite rules) ── */
+@media (orientation:landscape) and (max-height:500px) {
+
+  /* Sprite sizes — party fixed; enemy sprites use inline size from JS, capped via max */
+  .party-sprite {
+    width: 72px !important;
+    height: 72px !important;
+  }
+
+  .enemy-sprite {
+    max-width: 80px !important;
+    max-height: 96px !important;
+  }
+
+  /* Party container — left bottom, above 26px ground strip */
+  .party-container {
+    width: 300px;
+    height: 240px;
+    bottom: 26px;
+  }
+
+  /* Party member cards */
+  .party-member {
+    width: 110px;
+    height: 130px;
+    padding: 3px;
+  }
+
+  .party-hp-bar-bg {
+    width: 80px;
+  }
+
+  /* Party pyramid positions (scaled ~57% from original 420px layout) */
+  .party-member:nth-child(1) {
+    left: 100px;
+    top: 0px;
+  }
+
+  .party-member:nth-child(2) {
+    left: 43px;
+    top: 54px;
+  }
+
+  .party-member:nth-child(3) {
+    left: 163px;
+    top: 54px;
+  }
+
+  .party-member:nth-child(4) {
+    left: 100px;
+    top: 103px;
+  }
+
+  /* Enemy container — right bottom, above 26px ground strip */
+  .enemy-container {
+    width: 300px;
+    height: 240px;
+    bottom: 26px;
+  }
+
+  /* Per-count card sizes (scaled ~55% of desktop) */
+  .enemy-container[data-count="1"] .enemy {
+    width: 145px;
+    height: 220px;
+  }
+
+  .enemy-container[data-count="1"] .enemy-hp-bar-bg {
+    width: 115px;
+  }
+
+  .enemy-container[data-count="2"] .enemy {
+    width: 110px;
+    height: 170px;
+  }
+
+  .enemy-container[data-count="2"] .enemy-hp-bar-bg {
+    width: 88px;
+  }
+
+  .enemy-container[data-count="3"] .enemy {
+    width: 88px;
+    height: 135px;
+  }
+
+  .enemy-container[data-count="3"] .enemy-hp-bar-bg {
+    width: 66px;
+  }
+
+  .enemy-container[data-count="4"] .enemy {
+    width: 72px;
+    height: 110px;
+  }
+
+  .enemy-container[data-count="4"] .enemy-hp-bar-bg {
+    width: 55px;
+  }
+
+  /* Enemy pyramid positions (mobile landscape — 300px container) */
+  /* count=1: center=(300-145)/2=77 */
+  .enemy-container[data-count="1"] .enemy:nth-child(1) {
+    right: 77px;
+    top: 30px;
+  }
+
+  /* count=2: stagger edge-to-edge, card=110 */
+  .enemy-container[data-count="2"] .enemy:nth-child(1) {
+    right: 15px;
+    top: 10px;
+  }
+
+  .enemy-container[data-count="2"] .enemy:nth-child(2) {
+    right: 130px;
+    top: 70px;
+  }
+
+  /* count=3: triangle, card=88; apex center=(300-88)/2=106 */
+  .enemy-container[data-count="3"] .enemy:nth-child(1) {
+    right: 106px;
+    top: 0px;
+  }
+
+  .enemy-container[data-count="3"] .enemy:nth-child(2) {
+    right: 15px;
+    top: 80px;
+  }
+
+  .enemy-container[data-count="3"] .enemy:nth-child(3) {
+    right: 197px;
+    top: 80px;
+  }
+
+  /* count=4: diamond, card=72; center=(300-72)/2=114; 3 rows × 60px = 180+110=fits 240 */
+  .enemy-container[data-count="4"] .enemy:nth-child(1) {
+    right: 114px;
+    top: 0px;
+    z-index: 14;
+  }
+
+  .enemy-container[data-count="4"] .enemy:nth-child(2) {
+    right: 70px;
+    top: 60px;
+    z-index: 16;
+  }
+
+  .enemy-container[data-count="4"] .enemy:nth-child(3) {
+    right: 158px;
+    top: 60px;
+    z-index: 16;
+  }
+
+  .enemy-container[data-count="4"] .enemy:nth-child(4) {
+    right: 114px;
+    top: 120px;
+    z-index: 18;
+  }
+
+  .enemy-name {
+    font-size: 9px;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   RESPONSIVE — TABLET  (≤ 1000px)
+   ══════════════════════════════════════════════════════════════ */
+@media (max-width: 1000px) {
+  #game {
+    border-left: none;
+    border-right: none;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   RESPONSIVE — LARGE DESKTOP  (≥ 1200px)
+   Full-width, 2-column battle. party 380 + enemy 520 = 900px.
+   Mobile max-width breakpoints are unaffected.
+   ══════════════════════════════════════════════════════════════ */
+@media (min-width: 1200px) {
+
+  /* ── Battle: 2-column grid (scene | panel) ──────────────────── */
+  #battle-screen.active {
+    display: grid !important;
+    grid-template-columns: 1fr 440px;
+    grid-template-rows: auto auto 1fr auto auto;
+    overflow: hidden;
+    justify-content: initial;
+  }
+
+  /* Column placements */
+  #battle-screen .turn-bar {
+    grid-column: 2;
+    grid-row: 1;
+    height: auto;
+    padding: 8px 14px;
+    border-bottom: 1px solid #1a1448;
+    overflow: hidden;
+  }
+
+  #battle-screen #battle-scene {
+    grid-column: 1;
+    grid-row: 1 / 6;
+    min-height: 0;
+    border-bottom: none;
+    max-height: none;
+  }
+
+  #battle-screen .active-member-bar {
+    grid-column: 2;
+    grid-row: 2;
+    min-height: 0;
+    height: auto;
+    padding: 10px 14px;
+    border-bottom: 1px solid #1a1448;
+  }
+
+  #battle-screen #menu-area {
+    grid-column: 2;
+    grid-row: 3;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px 14px;
+    overflow: hidden;
+  }
+
+  #battle-screen .party-status-bar {
+    grid-column: 2;
+    grid-row: 4;
+    padding: 6px 14px;
+    border-top: 1px solid #1a1448;
+  }
+
+  #battle-screen .stats-bar {
+    grid-column: 2;
+    grid-row: 5;
+    padding: 6px 14px;
+    font-size: 13px;
+    border-top: 1px solid #1a1448;
+  }
+
+  /* Panel internals — log fills gap, buttons anchored at bottom */
+  #battle-screen .battle-log {
+    flex: 1;
+    max-height: none;
+    overflow-y: auto;
+    padding: 8px 10px;
+    font-size: 13px;
+    min-height: 60px;
+  }
+
+  #battle-screen .cmd-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  #battle-screen .cmd-btn {
+    padding: 16px 8px;
+    font-size: 13px;
+  }
+
+  /* Party name visible at large screens */
+  .party-name {
+    display: block;
+    font-size: 12px;
+  }
+
+  /* ── Party: 380px wide, 380px tall ──────────────────────────── */
+  .party-container {
+    width: 380px;
+    height: 380px;
+    bottom: 56px;
+  }
+
+  .party-member {
+    width: 128px;
+    height: 168px;
+    padding: 3px;
+  }
+
+  .party-sprite {
+    width: 88px !important;
+    height: 88px !important;
+  }
+
+  .party-hp-bar-bg {
+    width: 122px;
+  }
+
+  /* center=(380-128)/2=126 */
+  .party-member:nth-child(1) {
+    left: 126px;
+    top: 0px;
+  }
+
+  .party-member:nth-child(2) {
+    left: 30px;
+    top: 84px;
+  }
+
+  .party-member:nth-child(3) {
+    left: 222px;
+    top: 84px;
+  }
+
+  .party-member:nth-child(4) {
+    left: 126px;
+    top: 168px;
+  }
+
+  /* ── Enemy: 520px wide, 440px tall ──────────────────────────── */
+  .enemy-container {
+    width: 520px;
+    height: 440px;
+    bottom: 56px;
+  }
+
+  /* count=1: center=(520-230)/2=145 */
+  .enemy-container[data-count="1"] .enemy {
+    width: 230px;
+    height: 355px;
+  }
+
+  .enemy-container[data-count="1"] .enemy-hp-bar-bg {
+    width: 185px;
+  }
+
+  .enemy-container[data-count="1"] .enemy:nth-child(1) {
+    right: 145px;
+    top: 42px;
+  }
+
+  /* count=2 */
+  .enemy-container[data-count="2"] .enemy {
+    width: 178px;
+    height: 276px;
+  }
+
+  .enemy-container[data-count="2"] .enemy-hp-bar-bg {
+    width: 142px;
+  }
+
+  .enemy-container[data-count="2"] .enemy:nth-child(1) {
+    right: 26px;
+    top: 18px;
+  }
+
+  .enemy-container[data-count="2"] .enemy:nth-child(2) {
+    right: 206px;
+    top: 125px;
+  }
+
+  /* count=3 */
+  .enemy-container[data-count="3"] .enemy {
+    width: 142px;
+    height: 220px;
+  }
+
+  .enemy-container[data-count="3"] .enemy-hp-bar-bg {
+    width: 107px;
+  }
+
+  .enemy-container[data-count="3"] .enemy:nth-child(1) {
+    right: 189px;
+    top: 4px;
+  }
+
+  .enemy-container[data-count="3"] .enemy:nth-child(2) {
+    right: 80px;
+    top: 143px;
+  }
+
+  .enemy-container[data-count="3"] .enemy:nth-child(3) {
+    right: 298px;
+    top: 143px;
+  }
+
+  /* count=4 */
+  .enemy-container[data-count="4"] .enemy {
+    width: 116px;
+    height: 178px;
+  }
+
+  .enemy-container[data-count="4"] .enemy-hp-bar-bg {
+    width: 88px;
+  }
+
+  .enemy-container[data-count="4"] .enemy:nth-child(1) {
+    right: 202px;
+    top: 0px;
+    z-index: 14;
+  }
+
+  .enemy-container[data-count="4"] .enemy:nth-child(2) {
+    right: 125px;
+    top: 152px;
+    z-index: 16;
+  }
+
+  .enemy-container[data-count="4"] .enemy:nth-child(3) {
+    right: 279px;
+    top: 152px;
+    z-index: 16;
+  }
+
+  .enemy-container[data-count="4"] .enemy:nth-child(4) {
+    right: 202px;
+    top: 260px;
+    z-index: 18;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   RESPONSIVE — MEDIUM DESKTOP  (≥ 1440px)
+   panel 460px. party 460 + enemy 620 = 1080px.
+   Scene at 1440px = 980px → containers fit with ~100px breathing room.
+   Scene at 1799px = 1339px → containers leave wide battlefield gap.
+   ══════════════════════════════════════════════════════════════ */
+@media (min-width: 1440px) {
+
+  #battle-screen.active {
+    grid-template-columns: 1fr 460px;
+  }
+
+  #battle-screen .turn-bar {
+    padding: 9px 16px;
+  }
+
+  #battle-screen .active-member-bar {
+    padding: 12px 16px;
+  }
+
+  #battle-screen #menu-area {
+    padding: 14px 16px;
+    gap: 12px;
+  }
+
+  #battle-screen .party-status-bar {
+    padding: 7px 16px;
+  }
+
+  #battle-screen .stats-bar {
+    padding: 7px 16px;
+    font-size: 14px;
+  }
+
+  #battle-screen .cmd-grid {
+    gap: 9px;
+  }
+
+  #battle-screen .cmd-btn {
+    padding: 18px 9px;
+    font-size: 14px;
+  }
+
+  #battle-screen .battle-log {
+    font-size: 14px;
+  }
+
+  .bg-gnd {
+    height: 62px;
+  }
+
+  /* ── Party: 460px wide, 500px tall, 108px sprites ───────────── */
+  .party-container {
+    width: 460px;
+    height: 500px;
+    bottom: 62px;
+  }
+
+  .party-member {
+    width: 155px;
+    height: 205px;
+    padding: 4px;
+  }
+
+  .party-sprite {
+    width: 108px !important;
+    height: 108px !important;
+  }
+
+  .party-hp-bar-bg {
+    width: 147px;
+  }
+
+  /* center=(460-155)/2=152 */
+  .party-member:nth-child(1) {
+    left: 152px;
+    top: 0px;
+  }
+
+  .party-member:nth-child(2) {
+    left: 30px;
+    top: 107px;
+  }
+
+  .party-member:nth-child(3) {
+    left: 275px;
+    top: 107px;
+  }
+
+  .party-member:nth-child(4) {
+    left: 152px;
+    top: 211px;
+  }
+
+  /* ── Enemy: 620px wide, 560px tall (≈1.07× base) ───────────── */
+  .enemy-container {
+    width: 620px;
+    height: 560px;
+    bottom: 62px;
+  }
+
+  .enemy-container[data-count="1"] .enemy {
+    width: 278px;
+    height: 428px;
+  }
+
+  .enemy-container[data-count="1"] .enemy-hp-bar-bg {
+    width: 224px;
+  }
+
+  .enemy-container[data-count="1"] .enemy:nth-child(1) {
+    right: 171px;
+    top: 53px;
+  }
+
+  .enemy-container[data-count="2"] .enemy {
+    width: 214px;
+    height: 331px;
+  }
+
+  .enemy-container[data-count="2"] .enemy-hp-bar-bg {
+    width: 171px;
+  }
+
+  .enemy-container[data-count="2"] .enemy:nth-child(1) {
+    right: 32px;
+    top: 21px;
+  }
+
+  .enemy-container[data-count="2"] .enemy:nth-child(2) {
+    right: 246px;
+    top: 150px;
+  }
+
+  .enemy-container[data-count="3"] .enemy {
+    width: 171px;
+    height: 262px;
+  }
+
+  .enemy-container[data-count="3"] .enemy-hp-bar-bg {
+    width: 128px;
+  }
+
+  .enemy-container[data-count="3"] .enemy:nth-child(1) {
+    right: 224px;
+    top: 5px;
+  }
+
+  .enemy-container[data-count="3"] .enemy:nth-child(2) {
+    right: 96px;
+    top: 171px;
+  }
+
+  .enemy-container[data-count="3"] .enemy:nth-child(3) {
+    right: 353px;
+    top: 171px;
+  }
+
+  .enemy-container[data-count="4"] .enemy {
+    width: 139px;
+    height: 214px;
+  }
+
+  .enemy-container[data-count="4"] .enemy-hp-bar-bg {
+    width: 107px;
+  }
+
+  .enemy-container[data-count="4"] .enemy:nth-child(1) {
+    right: 240px;
+    top: 0px;
+    z-index: 14;
+  }
+
+  .enemy-container[data-count="4"] .enemy:nth-child(2) {
+    right: 150px;
+    top: 182px;
+    z-index: 16;
+  }
+
+  .enemy-container[data-count="4"] .enemy:nth-child(3) {
+    right: 331px;
+    top: 182px;
+    z-index: 16;
+  }
+
+  .enemy-container[data-count="4"] .enemy:nth-child(4) {
+    right: 240px;
+    top: 320px;
+    z-index: 18;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   RESPONSIVE — WIDE DESKTOP  (≥ 1800px)
+   Bigger panel. party 640 + enemy 860 = 1500px.
+   Party sprites 180px. Enemy sprites capped to prevent mutant
+   blowout. Containers use vertical space of 1080px screens.
+   ══════════════════════════════════════════════════════════════ */
+@media (min-width: 1800px) {
+
+  /* ── Wider panel ─────────────────────────────────────────────── */
+  #battle-screen.active {
+    grid-template-columns: 1fr 500px;
+  }
+
+  #battle-screen .turn-bar {
+    padding: 10px 18px;
+  }
+
+  #battle-screen .active-member-bar {
+    padding: 14px 18px;
+  }
+
+  #battle-screen #menu-area {
+    padding: 16px 18px;
+    gap: 14px;
+  }
+
+  #battle-screen .party-status-bar {
+    padding: 8px 18px;
+  }
+
+  #battle-screen .stats-bar {
+    padding: 8px 18px;
+    font-size: 15px;
+  }
+
+  #battle-screen .cmd-grid {
+    gap: 10px;
+  }
+
+  #battle-screen .cmd-btn {
+    padding: 20px 10px;
+    font-size: 15px;
+  }
+
+  #battle-screen .battle-log {
+    font-size: 15px;
+    padding: 10px 12px;
+  }
+
+  /* Taller ground strip */
+  .bg-gnd {
+    height: 80px;
+  }
+
+  /* ── Party: 640px wide, 660px tall, 180px sprites ───────────── */
+  .party-container {
+    width: 640px;
+    height: 660px;
+    bottom: 80px;
+  }
+
+  .party-member {
+    width: 210px;
+    height: 285px;
+    padding: 5px;
+  }
+
+  .party-sprite {
+    width: 180px !important;
+    height: 180px !important;
+  }
+
+  .party-hp-bar-bg {
+    width: 198px;
+  }
+
+  /* center=(640-210)/2=215 */
+  .party-member:nth-child(1) {
+    left: 215px;
+    top: 0px;
+  }
+
+  .party-member:nth-child(2) {
+    left: 30px;
+    top: 150px;
+  }
+
+  .party-member:nth-child(3) {
+    left: 400px;
+    top: 150px;
+  }
+
+  .party-member:nth-child(4) {
+    left: 215px;
+    top: 295px;
+  }
+
+  /* ── Enemy: 860px wide, 760px tall ──────────────────────────── */
+  /* Sprite cap: tier3 count=1 normal = 324×399px — allow that, cap mutant extremes */
+  .enemy-sprite {
+    max-width: 340px !important;
+    max-height: 420px !important;
+  }
+
+  .enemy-container {
+    width: 860px;
+    height: 760px;
+    bottom: 80px;
+  }
+
+  /* count=1: center=(860-440)/2=210 */
+  .enemy-container[data-count="1"] .enemy {
+    width: 440px;
+    height: 660px;
+  }
+
+  .enemy-container[data-count="1"] .enemy-hp-bar-bg {
+    width: 355px;
+  }
+
+  .enemy-container[data-count="1"] .enemy:nth-child(1) {
+    right: 210px;
+    top: 50px;
+  }
+
+  /* count=2 */
+  .enemy-container[data-count="2"] .enemy {
+    width: 340px;
+    height: 526px;
+  }
+
+  .enemy-container[data-count="2"] .enemy-hp-bar-bg {
+    width: 272px;
+  }
+
+  .enemy-container[data-count="2"] .enemy:nth-child(1) {
+    right: 44px;
+    top: 30px;
+  }
+
+  .enemy-container[data-count="2"] .enemy:nth-child(2) {
+    right: 340px;
+    top: 207px;
+  }
+
+  /* count=3 */
+  .enemy-container[data-count="3"] .enemy {
+    width: 240px;
+    height: 365px;
+  }
+
+  .enemy-container[data-count="3"] .enemy-hp-bar-bg {
+    width: 180px;
+  }
+
+  .enemy-container[data-count="3"] .enemy:nth-child(1) {
+    right: 311px;
+    top: 7px;
+  }
+
+  .enemy-container[data-count="3"] .enemy:nth-child(2) {
+    right: 133px;
+    top: 237px;
+  }
+
+  .enemy-container[data-count="3"] .enemy:nth-child(3) {
+    right: 489px;
+    top: 237px;
+  }
+
+  /* count=4 */
+  .enemy-container[data-count="4"] .enemy {
+    width: 193px;
+    height: 297px;
+  }
+
+  .enemy-container[data-count="4"] .enemy-hp-bar-bg {
+    width: 153px;
+  }
+
+  .enemy-container[data-count="4"] .enemy:nth-child(1) {
+    right: 334px;
+    top: 0px;
+    z-index: 14;
+  }
+
+  .enemy-container[data-count="4"] .enemy:nth-child(2) {
+    right: 208px;
+    top: 252px;
+    z-index: 16;
+  }
+
+  .enemy-container[data-count="4"] .enemy:nth-child(3) {
+    right: 460px;
+    top: 252px;
+    z-index: 16;
+  }
+
+  .enemy-container[data-count="4"] .enemy:nth-child(4) {
+    right: 334px;
+    top: 460px;
+    z-index: 18;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   RESPONSIVE — MOBILE  (≤ 600px)
+   ══════════════════════════════════════════════════════════════ */
+@media (max-width: 600px) {
+
+  /* ── Global text scale ── */
+  body {
+    font-size: 16px;
+  }
+
+  /* ── Persistent overlay buttons (Mobile Optimization) ── */
+  #settings-btn {
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+  }
+
+  #mute-btn {
+    top: 6px;
+    right: 80px;
+    width: 26px;
+    height: 26px;
+    font-size: 13px;
+  }
+
+  #tts-btn {
+    top: 6px;
+    right: 110px;
+    width: 26px;
+    height: 26px;
+    font-size: 13px;
+  }
+
+  #quality-btn {
+    top: 6px;
+    right: 140px;
+    height: 26px;
+    font-size: 9px;
+    padding: 0 6px;
+  }
+
+  #zoom-btn,
+  #reset-zoom-btn {
+    display: none;
+  }
+
+  /* ── Title screen — handled by its own breakpoints in the title section ── */
+
+  /* ── Char / class select ── */
+  #char-screen,
+  #class-screen {
+    padding: 10px 8px;
+  }
+
+  .char-grid,
+  .class-grid {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .ecrd {
+    padding: 8px 10px;
+  }
+
+  .ecrd-spr {
+    width: 48px;
+    height: 56px;
+  }
+
+  .pmb-spr {
+    width: 36px;
+    height: 42px;
+  }
+
+  .step-header {
+    font-size: 10px;
+    padding: 8px 12px;
+  }
+
+  .step-count {
+    font-size: 9px;
+  }
+
+  /* ── Battle scene ── */
+  #battle-scene {
+    min-height: 180px;
+  }
+
+  .bg-mts {
+    height: 50px;
+  }
+
+  .bg-gnd {
+    height: 28px;
+  }
+
+  /* Party — LEFT BOTTOM, 170px wide, above 28px ground */
+  .party-container {
+    width: 170px;
+    height: 200px;
+    bottom: 28px;
+  }
+
+  .party-sprite {
+    width: 56px !important;
+    height: 56px !important;
+  }
+
+  .party-member {
+    width: 80px;
+    height: 98px;
+    padding: 2px;
+  }
+
+  /* Pyramid: centre = (170-80)/2 = 45 */
+  .party-member:nth-child(1) {
+    left: 45px;
+    top: 0px;
+  }
+
+  .party-member:nth-child(2) {
+    left: 5px;
+    top: 46px;
+  }
+
+  .party-member:nth-child(3) {
+    left: 85px;
+    top: 46px;
+  }
+
+  .party-member:nth-child(4) {
+    left: 45px;
+    top: 92px;
+  }
+
+  .party-hp-bar-bg {
+    width: 62px;
+  }
+
+  /* Enemy — RIGHT BOTTOM, 180px wide, above 28px ground */
+  .enemy-container {
+    width: 180px;
+    height: 200px;
+    bottom: 28px;
+  }
+
+  .enemy-sprite {
+    max-width: 70px !important;
+    max-height: 100px !important;
+  }
+
+  .enemy-name {
+    font-size: 8px;
+  }
+
+  /* Per-count card sizes (180px container, aspect ~1.52) */
+  .enemy-container[data-count="1"] .enemy {
+    width: 90px;
+    height: 137px;
+    padding: 3px;
+  }
+
+  .enemy-container[data-count="1"] .enemy-hp-bar-bg {
+    width: 71px;
+  }
+
+  .enemy-container[data-count="2"] .enemy {
+    width: 71px;
+    height: 108px;
+    padding: 2px;
+  }
+
+  .enemy-container[data-count="2"] .enemy-hp-bar-bg {
+    width: 56px;
+  }
+
+  .enemy-container[data-count="3"] .enemy {
+    width: 57px;
+    height: 87px;
+    padding: 2px;
+  }
+
+  .enemy-container[data-count="3"] .enemy-hp-bar-bg {
+    width: 44px;
+  }
+
+  .enemy-container[data-count="4"] .enemy {
+    width: 47px;
+    height: 71px;
+    padding: 2px;
+  }
+
+  .enemy-container[data-count="4"] .enemy-hp-bar-bg {
+    width: 36px;
+  }
+
+  /* Positions — 180px container */
+  /* count=1: centre=(180-90)/2=45 */
+  .enemy-container[data-count="1"] .enemy:nth-child(1) {
+    right: 45px;
+    top: 15px;
+  }
+
+  /* count=2: card=71; child2 left-edge=180-90-71=19 ✓ */
+  .enemy-container[data-count="2"] .enemy:nth-child(1) {
+    right: 8px;
+    top: 6px;
+    z-index: 14;
+  }
+
+  .enemy-container[data-count="2"] .enemy:nth-child(2) {
+    right: 90px;
+    top: 41px;
+    z-index: 16;
+  }
+
+  /* count=3: card=57; centre=(180-57)/2=62 */
+  .enemy-container[data-count="3"] .enemy:nth-child(1) {
+    right: 62px;
+    top: 0px;
+    z-index: 14;
+  }
+
+  .enemy-container[data-count="3"] .enemy:nth-child(2) {
+    right: 8px;
+    top: 47px;
+    z-index: 16;
+  }
+
+  .enemy-container[data-count="3"] .enemy:nth-child(3) {
+    right: 115px;
+    top: 47px;
+    z-index: 16;
+  }
+
+  /* count=4: card=47; centre=(180-47)/2=67 */
+  .enemy-container[data-count="4"] .enemy:nth-child(1) {
+    right: 67px;
+    top: 0px;
+    z-index: 14;
+  }
+
+  .enemy-container[data-count="4"] .enemy:nth-child(2) {
+    right: 41px;
+    top: 41px;
+    z-index: 16;
+  }
+
+  .enemy-container[data-count="4"] .enemy:nth-child(3) {
+    right: 92px;
+    top: 41px;
+    z-index: 16;
+  }
+
+  .enemy-container[data-count="4"] .enemy:nth-child(4) {
+    right: 67px;
+    top: 83px;
+    z-index: 18;
+  }
+
+  /* Turn bar */
+  .turn-bar {
+    height: 30px;
+    padding: 2px 8px;
+    font-size: 10px;
+  }
+
+  .turn-icon {
+    width: 22px;
+    height: 22px;
+    font-size: 10px;
+  }
+
+  /* Active member bar */
+  .active-member-bar {
+    min-height: 0;
+    height: 32px;
+    padding: 4px 10px;
+    font-size: 11px;
+  }
+
+  /* Battle log */
+  .battle-log {
+    min-height: 0;
+    max-height: 60px;
+    font-size: 12px;
+    padding: 4px 10px;
+  }
+
+  /* Action buttons — 2×3 grid on mobile */
+  .battle-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 4px;
+    padding: 4px 6px;
+  }
+
+  .action-btn {
+    font-size: 8px;
+    padding: 8px 4px;
+  }
+
+  /* Party status bar */
+  .pm-wrap {
+    gap: 4px;
+    padding: 4px 6px;
+  }
+
+  .pm-card {
+    font-size: 10px;
+    padding: 4px 6px;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .pm-name {
+    font-size: 10px;
+  }
+
+  .pm-bar-bg {
+    height: 4px;
+  }
+
+  .pm-stat-row {
+    font-size: 9px;
+    gap: 6px;
+  }
+
+  /* ── Story / cutscene screen ── */
+  .s-header {
+    padding: 6px 10px;
+  }
+
+  .s-header-chap {
+    font-size: 11px;
+  }
+
+  /* Scene standing chars — smaller on mobile */
+  .s-scene-char img {
+    height: 100px;
+  }
+
+  .s-scene-char.active img {
+    filter: drop-shadow(0 0 10px rgba(160, 144, 208, .5)) drop-shadow(0 3px 6px rgba(0, 0, 0, .4));
+  }
+
+  .s-scene-char-name {
+    font-size: 8px;
+  }
+
+  /* Spirits row — compact */
+  .s-dialogue-spirits-row {
+    min-height: 70px;
+    padding: 6px 10px;
+    gap: 8px;
+  }
+
+  .s-spirit-item img {
+    height: 52px;
+  }
+
+  .s-spirit-item.active img {
+    height: 64px;
+  }
+
+  .s-spirit-name {
+    font-size: 6px;
+    max-width: 46px;
+  }
+
+  /* Portrait sidebar — hide on small screens */
+  .s-dialogue-portrait {
+    display: none;
+  }
+
+  /* Dialogue text */
+  .s-dialogue {
+    min-height: 90px;
+  }
+
+  .s-dialogue-body {
+    padding: 10px 14px 10px 12px;
+    gap: 4px;
+  }
+
+  .s-speaker {
+    font-size: 8px;
+    letter-spacing: 1px;
+  }
+
+  .s-text {
+    font-size: 16px;
+    line-height: 1.45;
+    min-height: 48px;
+  }
+
+  .s-continue-hint {
+    font-size: 9px;
+  }
+
+  /* Choices */
+  .s-choice-btn {
+    font-size: 11px;
+    padding: 8px 12px;
+  }
+
+  .s-cast-row {
+    gap: 6px;
+    padding: 4px 10px;
+  }
+
+  .s-cast-face {
+    width: 30px;
+    height: 30px;
+  }
+
+  /* ── Result screen ── */
+  #result-screen {
+    padding: 20px 12px;
+    gap: 14px;
+  }
+
+  .result-title {
+    font-size: 13px;
+  }
+
+  .result-stats {
+    font-size: 14px;
+    line-height: 2;
+  }
+
+  .result-party {
+    gap: 6px;
+  }
+
+  .result-member {
+    font-size: 10px;
+    padding: 6px 8px;
+  }
+
+  .result-btns {
+    gap: 8px;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .result-btns button {
+    font-size: 9px;
+    padding: 10px 20px;
+    width: 180px;
+  }
+
+  /* ── Pause menu ── */
+  .pause-panel {
+    padding: 14px 10px;
+    gap: 10px;
+    max-height: 95vh;
+    overflow-y: auto;
+  }
+
+  .pause-title {
+    font-size: 11px;
+  }
+
+  .pause-party {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .pause-member {
+    padding: 8px;
+  }
+
+  .pm-header {
+    gap: 4px;
+  }
+
+  .pm-name {
+    font-size: 11px;
+  }
+
+  .pm-lv {
+    font-size: 9px;
+  }
+
+  .pause-btn {
+    font-size: 9px;
+    padding: 8px 16px;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   RESPONSIVE — SMALL MOBILE  (≤ 400px)
+   ══════════════════════════════════════════════════════════════ */
+@media (max-width: 400px) {
+
+  /* .game-title and menu buttons handled by title section breakpoints */
+  #battle-scene {
+    min-height: 140px;
+  }
+
+  /* Party — LEFT BOTTOM, 150px fits ≤375px screen */
+  .party-container {
+    width: 150px;
+    height: 180px;
+    bottom: 28px;
+  }
+
+  .party-member {
+    width: 75px;
+    height: 92px;
+  }
+
+  /* Pyramid: centre=(150-75)/2=38 */
+  .party-member:nth-child(1) {
+    left: 38px;
+    top: 0px;
+  }
+
+  .party-member:nth-child(2) {
+    left: 5px;
+    top: 44px;
+  }
+
+  .party-member:nth-child(3) {
+    left: 70px;
+    top: 44px;
+  }
+
+  .party-member:nth-child(4) {
+    left: 38px;
+    top: 88px;
+  }
+
+  .party-hp-bar-bg {
+    width: 58px;
+  }
+
+  /* Enemy — RIGHT BOTTOM, 155px */
+  .enemy-container {
+    width: 155px;
+    height: 180px;
+    bottom: 28px;
+  }
+
+  /* Per-count card sizes (≤400px, 155px container) */
+  .enemy-container[data-count="1"] .enemy {
+    width: 77px;
+    height: 117px;
+    padding: 2px;
+  }
+
+  .enemy-container[data-count="1"] .enemy-hp-bar-bg {
+    width: 61px;
+  }
+
+  .enemy-container[data-count="2"] .enemy {
+    width: 61px;
+    height: 93px;
+    padding: 2px;
+  }
+
+  .enemy-container[data-count="2"] .enemy-hp-bar-bg {
+    width: 48px;
+  }
+
+  .enemy-container[data-count="3"] .enemy {
+    width: 49px;
+    height: 75px;
+    padding: 2px;
+  }
+
+  .enemy-container[data-count="3"] .enemy-hp-bar-bg {
+    width: 38px;
+  }
+
+  .enemy-container[data-count="4"] .enemy {
+    width: 40px;
+    height: 61px;
+    padding: 1px;
+  }
+
+  .enemy-container[data-count="4"] .enemy-hp-bar-bg {
+    width: 31px;
+  }
+
+  /* Positions — 155px container */
+  .enemy-container[data-count="1"] .enemy:nth-child(1) {
+    right: 39px;
+    top: 13px;
+  }
+
+  .enemy-container[data-count="2"] .enemy:nth-child(1) {
+    right: 7px;
+    top: 5px;
+    z-index: 14;
+  }
+
+  .enemy-container[data-count="2"] .enemy:nth-child(2) {
+    right: 87px;
+    top: 35px;
+    z-index: 16;
+  }
+
+  .enemy-container[data-count="3"] .enemy:nth-child(1) {
+    right: 53px;
+    top: 0px;
+    z-index: 14;
+  }
+
+  .enemy-container[data-count="3"] .enemy:nth-child(2) {
+    right: 7px;
+    top: 41px;
+    z-index: 16;
+  }
+
+  .enemy-container[data-count="3"] .enemy:nth-child(3) {
+    right: 99px;
+    top: 41px;
+    z-index: 16;
+  }
+
+  .enemy-container[data-count="4"] .enemy:nth-child(1) {
+    right: 57px;
+    top: 0px;
+    z-index: 14;
+  }
+
+  .enemy-container[data-count="4"] .enemy:nth-child(2) {
+    right: 35px;
+    top: 35px;
+    z-index: 16;
+  }
+
+  .enemy-container[data-count="4"] .enemy:nth-child(3) {
+    right: 80px;
+    top: 35px;
+    z-index: 16;
+  }
+
+  .enemy-container[data-count="4"] .enemy:nth-child(4) {
+    right: 57px;
+    top: 71px;
+    z-index: 18;
+  }
+
+  .battle-actions {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
