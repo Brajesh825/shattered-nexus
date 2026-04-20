@@ -81,7 +81,7 @@
       { "speaker": "Aya", "emotion": "gentle", "text": "So do I. Whatever waits in the sunken temple — we face it the same way we faced this. Together." }
     ],
     "onVictory": [
-      { "type": "recruit", "charId": "kain" }
+      { "type": "recruit", "charId": "drake" }
     ],
     "character_moment": {
       "background": "ember_wastes",
@@ -97,3 +97,4 @@
     }
   }
 }
+

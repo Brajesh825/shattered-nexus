@@ -97,7 +97,7 @@
           ]
         },
         {
-          "narration": "The voice pulls back \u00e2\u20ac\u201d not gone, just watching from a greater distance. Nilou lets out a slow, controlled breath.",
+          "narration": "The voice pulls back \u00e2\u20ac\u201d not gone, just watching from a greater distance. Lulu lets out a slow, controlled breath.",
           "dialogue": [
             {
               "speaker": "Lulu",
@@ -168,13 +168,13 @@
       { "speaker": "Tao", "emotion": "solemn", "text": "Four Fragments. One more. And then we face him directly." }
     ],
     "onVictory": [
-      { "type": "recruit", "charId": "leon" }
+      { "type": "recruit", "charId": "rex" }
     ],
     "character_moment": {
       "background": "sunken_temple",
       "dialogue": [
         { "speaker": null, "text": "As the water stills, a figure steps from the flooded alcove at the chamber's edge — draped in gold and ancient authority, armor marked with a crest that predates every kingdom any of them have heard of." },
-        { "speaker": "Rex", "emotion": "commanding", "text": "I have been held in these depths longer than I can account for. The moment the guardian fell — a chain snapped. I could breathe again. I am Leon, a king from an age before this war. I will not stand still while darkness finishes what it started." },
+        { "speaker": "Rex", "emotion": "commanding", "text": "I have been held in these depths longer than I can account for. The moment the guardian fell — a chain snapped. I could breathe again. I am Rex, a king from an age before this war. I will not stand still while darkness finishes what it started." },
         { "speaker": "Aya", "emotion": "awed", "text": "An immortal king, kept prisoner in a sunken temple. You have borne witness to ages. Why stand with us now?" },
         { "speaker": "Rex", "emotion": "resolute", "text": "Because you are the first ones in two centuries who came here to free something rather than take something. I would follow that." },
         { "speaker": "Tao", "emotion": "respectful", "text": "From warden to dragoon to immortal king. We gather well." },
@@ -184,3 +184,4 @@
     }
   }
 }
+

@@ -43,10 +43,10 @@ canvas { image-rendering:pixelated; }
   --vt: 'VT323', monospace;
 
   /* Character accents */
-  --c-ayaka: #00d2ff;
-  --c-hutao: #ff4d4d;
-  --c-nilou: #00ffcc;
-  --c-xiao:  #00ffa2;
+  --c-aya: #00d2ff;
+  --c-tao: #ff4d4d;
+  --c-lulu: #00ffcc;
+  --c-rei:  #00ffa2;
 
   /* Status badge colours */
   --amber:      #ffa94d;
@@ -686,10 +686,10 @@ body {
 }
 
 /* Colored left accent bar per character */
-.char-card[data-char="ayaka"] { border-left:3px solid var(--c-ayaka); }
-.char-card[data-char="hutao"] { border-left:3px solid var(--c-hutao); }
-.char-card[data-char="nilou"] { border-left:3px solid var(--c-nilou); }
-.char-card[data-char="xiao"]  { border-left:3px solid var(--c-xiao);  }
+.char-card[data-char="aya"] { border-left:3px solid var(--c-aya); }
+.char-card[data-char="tao"] { border-left:3px solid var(--c-tao); }
+.char-card[data-char="lulu"] { border-left:3px solid var(--c-lulu); }
+.char-card[data-char="rei"]  { border-left:3px solid var(--c-rei);  }
 
 /* Selection order badge */
 .char-sel-badge {
@@ -2462,10 +2462,10 @@ body {
   transition:background .3s;
 }
 .s-dialogue[data-speaker="narrator"]::before { background:#2a1e70; }
-.s-dialogue[data-speaker="ayaka"]::before    { background:var(--c-ayaka); box-shadow:0 0 12px var(--c-ayaka); }
-.s-dialogue[data-speaker="hutao"]::before    { background:var(--c-hutao); box-shadow:0 0 12px var(--c-hutao); }
-.s-dialogue[data-speaker="nilou"]::before    { background:var(--c-nilou); box-shadow:0 0 12px var(--c-nilou); }
-.s-dialogue[data-speaker="xiao"]::before     { background:var(--c-xiao);  box-shadow:0 0 12px var(--c-xiao);  }
+.s-dialogue[data-speaker="ayaka"]::before    { background:var(--c-aya); box-shadow:0 0 12px var(--c-aya); }
+.s-dialogue[data-speaker="hutao"]::before    { background:var(--c-tao); box-shadow:0 0 12px var(--c-tao); }
+.s-dialogue[data-speaker="nilou"]::before    { background:var(--c-lulu); box-shadow:0 0 12px var(--c-lulu); }
+.s-dialogue[data-speaker="xiao"]::before     { background:var(--c-rei);  box-shadow:0 0 12px var(--c-rei);  }
 
 /* Character spirits lineup (top) */
 .s-dialogue-spirits-row {
@@ -2597,10 +2597,10 @@ body {
 }
 
 /* Speaker name colours */
-.s-dialogue[data-speaker="ayaka"]  .s-speaker { color:var(--c-ayaka); }
-.s-dialogue[data-speaker="hutao"]  .s-speaker { color:var(--c-hutao); }
-.s-dialogue[data-speaker="nilou"]  .s-speaker { color:var(--c-nilou); }
-.s-dialogue[data-speaker="xiao"]   .s-speaker { color:var(--c-xiao);  }
+.s-dialogue[data-speaker="ayaka"]  .s-speaker { color:var(--c-aya); }
+.s-dialogue[data-speaker="hutao"]  .s-speaker { color:var(--c-tao); }
+.s-dialogue[data-speaker="nilou"]  .s-speaker { color:var(--c-lulu); }
+.s-dialogue[data-speaker="xiao"]   .s-speaker { color:var(--c-rei);  }
 .s-dialogue[data-speaker="narrator"] .s-speaker { color:#5a4888; font-style:italic; }
 
 .s-text {
@@ -2791,10 +2791,10 @@ body {
 }
 
 /* Character colours on epilogue cards */
-.epi-card[data-char="ayaka"] .epi-name { color:var(--c-ayaka); }
-.epi-card[data-char="hutao"] .epi-name { color:var(--c-hutao); }
-.epi-card[data-char="nilou"] .epi-name { color:var(--c-nilou); }
-.epi-card[data-char="xiao"]  .epi-name { color:var(--c-xiao);  }
+.epi-card[data-char="aya"] .epi-name { color:var(--c-aya); }
+.epi-card[data-char="tao"] .epi-name { color:var(--c-tao); }
+.epi-card[data-char="lulu"] .epi-name { color:var(--c-lulu); }
+.epi-card[data-char="rei"]  .epi-name { color:var(--c-rei);  }
 
 /* ── Continue button ──────────────────────────────────── */
 .s-continue-btn {
@@ -5064,3 +5064,4 @@ input[type=range].setting-slider::-webkit-slider-thumb {
   color: #aab;
   border-color: rgba(100, 100, 160, 0.5);
 }
+

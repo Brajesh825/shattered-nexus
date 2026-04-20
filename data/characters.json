@@ -1,7 +1,7 @@
 [
     {
-        "id": "ayaka",
-        "name": "Ayaka",
+        "id": "aya",
+        "name": "Aya",
         "alias": "Aya",
         "title": "The Cryo Princess",
         "gender": "female",
@@ -48,8 +48,8 @@
         "lore": "Torn from her world mid-prayer at a sacred shrine. The last thing she saw was cherry blossoms — the first thing she felt was the cold darkness of the rift."
     },
     {
-        "id": "hutao",
-        "name": "Hu Tao",
+        "id": "tao",
+        "name": "Tao",
         "alias": "Tao",
         "title": "The Ghost Guide",
         "gender": "female",
@@ -94,8 +94,8 @@
         "lore": "She once wrote a poem about her own funeral — three stanzas in, she realized she was genuinely enjoying it. A more dedicated spirit guide has never walked these paths."
     },
     {
-        "id": "nilou",
-        "name": "Nilou",
+        "id": "lulu",
+        "name": "Lulu",
         "alias": "Lulu",
         "title": "The Star Dancer",
         "gender": "female",
@@ -139,8 +139,8 @@
         "lore": "She used to worry that her dancing was not grand enough for the gods. The moment she stepped through the rift, sword in hand, she stopped worrying about that."
     },
     {
-        "id": "xiao",
-        "name": "Xiao",
+        "id": "rei",
+        "name": "Rei",
         "alias": "Rei",
         "title": "The Ancient Warden",
         "gender": "male",
@@ -195,8 +195,8 @@
         "lore": "He has slain ten thousand demons. He does not speak of it. The shadows in this new world smell the same as the ones he burned long ago — and that is enough to make him stay."
     },
     {
-        "id": "rydia",
-        "name": "Rydia",
+        "id": "ria",
+        "name": "Ria",
         "alias": "Ria",
         "title": "The Summoner",
         "gender": "female",
@@ -243,8 +243,8 @@
         "lore": "In her world, she commanded the mightiest creatures of ancient realms. When the rift opened, her summoned eidolons followed her through — loyal companions across worlds."
     },
     {
-        "id": "lenneth",
-        "name": "Lenneth",
+        "id": "valka",
+        "name": "Valka",
         "alias": "Valka",
         "title": "The Valkyrie",
         "gender": "female",
@@ -292,8 +292,8 @@
         "lore": "For millennia she walked between worlds, judging souls worthy of ascension. Now she stands in this shadowed realm, where even gods fear to tread — and she must decide if darkness itself can be redeemed."
     },
     {
-        "id": "kain",
-        "name": "Kain",
+        "id": "drake",
+        "name": "Drake",
         "alias": "Drake",
         "title": "The Dragoon",
         "gender": "male",
@@ -341,8 +341,8 @@
         "lore": "A Dragoon knight who swore oaths to a kingdom long since lost to the rift. But loyalties fracture when worlds collide. He came seeking redemption — instead, he found new purpose."
     },
     {
-        "id": "leon",
-        "name": "Leon",
+        "id": "rex",
+        "name": "Rex",
         "alias": "Rex",
         "title": "The Lionheart King",
         "gender": "male",
