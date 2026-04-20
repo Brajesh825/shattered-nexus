@@ -762,7 +762,7 @@ const MapEngine = (() => {
     const portrait = document.getElementById('npc-dialogue-portrait');
     const speaker = line.speaker || '';
     const speakerLower = speaker.toLowerCase().replace(/\s+/g, '_');
-    const PARTY_IDS = ['ayaka', 'hutao', 'nilou', 'xiao', 'rydia', 'lenneth', 'kain', 'leon'];
+    const PARTY_IDS = ['aya', 'tao', 'lulu', 'rei', 'ria', 'rydia', 'lenneth', 'kain', 'leon'];
     const isParty = PARTY_IDS.some(id => speakerLower.includes(id));
 
     if (portrait) {

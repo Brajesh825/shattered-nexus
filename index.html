@@ -1,23 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Shattered Nexus</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="css/animations.css">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/map.css">
   <link rel="stylesheet" href="css/combat.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚔️</text></svg>">
+  <script>
+    /** Cold Migration: Maps legacy IDs in LocalStorage BEFORE any other scripts run. */
+    (function() {
+      const MAP = { 'ayaka': 'aya', 'hutao': 'tao', 'nilou': 'lulu', 'xiao': 'rei', 'aria': 'ria' };
+      const KEYS = ['cc_save_v1', 'cc_save_v2_s0', 'cc_save_v2_s1', 'cc_save_v2_s2'];
+      KEYS.forEach(k => {
+        const raw = localStorage.getItem(k);
+        if (!raw) return;
+        try {
+          let str = raw;
+          for (let [old, ali] in Object.entries(MAP)) {
+            // Precise replacement for "id":"ayaka" or "charId":"ayaka"
+            str = str.replace(new RegExp(':"' + old + '"', 'gi'), ':"' + ali + '"');
+            // Compatibility for array strings ["ayaka", ...]
+            str = str.replace(new RegExp('"' + old + '"', 'gi'), '"' + ali + '"');
+          }
+          localStorage.setItem(k, str);
+        } catch(e) {}
+      });
+    })();
+  </script>
   <script src="js/systems/settings-manager.js"></script>
 </head>
+
 <body>
 
-<!-- ═══════════════════════════════════════
+  <!-- ═══════════════════════════════════════
      LOADING SCREEN
      ═══════════════════════════════════════ -->
-<div id="loading-screen" style="
+  <div id="loading-screen" style="
   position: fixed;
   top: 0;
   left: 0;
@@ -31,10 +57,10 @@
   z-index: 9999;
   font-family: 'Cinzel', serif;
 ">
-  <h2 style="color: #4ecfff; margin-bottom: 50px; font-size: 28px; letter-spacing: 2px;">
-    ⚔️ SHATTERED NEXUS
-  </h2>
-  <div style="
+    <h2 style="color: #4ecfff; margin-bottom: 50px; font-size: 28px; letter-spacing: 2px;">
+      ⚔️ SHATTERED NEXUS
+    </h2>
+    <div style="
     width: 320px;
     height: 8px;
     background: rgba(255,255,255,0.08);
@@ -43,24 +69,24 @@
     margin-bottom: 30px;
     border: 1px solid rgba(78,207,255,0.2);
   ">
-    <div id="loading-bar" style="
+      <div id="loading-bar" style="
       width: 0%;
       height: 100%;
       background: linear-gradient(90deg, #4ecfff, #00d4b4);
       transition: width 0.2s ease;
       box-shadow: 0 0 12px rgba(78,207,255,0.6);
     "></div>
+    </div>
+    <p id="loading-text" style="color: #7a90a8; font-family: monospace; font-size: 11px; letter-spacing: 1px;">
+      Loading assets... 0%
+    </p>
   </div>
-  <p id="loading-text" style="color: #7a90a8; font-family: monospace; font-size: 11px; letter-spacing: 1px;">
-    Loading assets... 0%
-  </p>
-</div>
 
-<div id="game">
+  <div id="game">
 
-  <!-- persistent overlay buttons shifted to screen-specific headers or global-actions for better focus control -->
+    <!-- persistent overlay buttons shifted to screen-specific headers or global-actions for better focus control -->
 
-  <!-- ═══════════════════════════════════════
+    <!-- ═══════════════════════════════════════
        TITLE SCREEN
        ═══════════════════════════════════════ -->
     <div id="title-screen" class="screen active">
@@ -79,567 +105,579 @@
         </div>
       </div>
 
-    <!-- Cinematic top border accent -->
-    <div class="title-top-bar"></div>
+      <!-- Cinematic top border accent -->
+      <div class="title-top-bar"></div>
 
-    <!-- Title block -->
-    <div class="title-hero">
-      <div class="nexus-crystal"></div>
-      <div class="title-eyebrow">✦ &nbsp; A N   E P I C   S A G A &nbsp; ✦</div>
-      <div class="game-title">SHATTERED<br>NEXUS</div>
-      <div class="title-ornament"><span></span><span class="orn-gem">✦</span><span></span></div>
-      <div class="subtitle">R E B O R N</div>
-      <div class="title-tagline">8 Characters &nbsp;·&nbsp; 8 Classes &nbsp;·&nbsp; 100+ Enemies &nbsp;·&nbsp; 8 Arcs</div>
+      <!-- Title block -->
+      <div class="title-hero">
+        <div class="nexus-crystal"></div>
+        <div class="title-eyebrow">✦ &nbsp; A N E P I C S A G A &nbsp; ✦</div>
+        <div class="game-title">SHATTERED<br>NEXUS</div>
+        <div class="title-ornament"><span></span><span class="orn-gem">✦</span><span></span></div>
+        <div class="subtitle">R E B O R N</div>
+        <div class="title-tagline">8 Characters &nbsp;·&nbsp; 8 Classes &nbsp;·&nbsp; 100+ Enemies &nbsp;·&nbsp; 8 Arcs
+        </div>
+      </div>
+
+      <!-- CONTINUE sits above the grid — full width, hidden until save exists -->
+      <button class="big-btn title-continue-btn blink" id="title-continue-btn" onclick="openSlotOverlay('load')"
+        style="display:none">
+        ▶ &nbsp; CONTINUE
+      </button>
+
+      <!-- Menu button grid -->
+      <div class="menu-btns">
+        <button id="gauntlet-btn" class="title-btn title-btn-secondary"
+          onclick="typeof BossGauntlet !== 'undefined' ? BossGauntlet.open() : null">
+          <span class="tbtn-icon">👹</span>
+          <span class="tbtn-label">BOSS MODE</span>
+        </button>
+        <button class="title-btn title-btn-primary" onclick="openSlotOverlay('new')">
+          <span class="tbtn-icon">📖</span>
+          <span class="tbtn-label">NEW STORY</span>
+        </button>
+        <button class="title-btn title-btn-tertiary" onclick="startExplore()">
+          <span class="tbtn-icon">🗺</span>
+          <span class="tbtn-label">EXPLORE</span>
+        </button>
+      </div>
+
+      <div class="ver-tag">v3.0</div>
     </div>
 
-    <!-- CONTINUE sits above the grid — full width, hidden until save exists -->
-    <button class="big-btn title-continue-btn blink" id="title-continue-btn"
-            onclick="openSlotOverlay('load')" style="display:none">
-      ▶ &nbsp; CONTINUE
-    </button>
-
-    <!-- Menu button grid -->
-    <div class="menu-btns">
-      <button id="gauntlet-btn" class="title-btn title-btn-secondary" onclick="typeof BossGauntlet !== 'undefined' ? BossGauntlet.open() : null">
-        <span class="tbtn-icon">👹</span>
-        <span class="tbtn-label">BOSS MODE</span>
-      </button>
-      <button class="title-btn title-btn-primary" onclick="openSlotOverlay('new')">
-        <span class="tbtn-icon">📖</span>
-        <span class="tbtn-label">NEW STORY</span>
-      </button>
-      <button class="title-btn title-btn-tertiary" onclick="startExplore()">
-        <span class="tbtn-icon">🗺</span>
-        <span class="tbtn-label">EXPLORE</span>
-      </button>
-    </div>
-
-    <div class="ver-tag">v3.0</div>
-  </div>
-
-  <!-- ═══════════════════════════════════════
+    <!-- ═══════════════════════════════════════
        BOSS GAUNTLET OVERLAY
        ═══════════════════════════════════════ -->
-  <div id="gauntlet-overlay" class="gauntlet-overlay" style="display:none">
-    <div class="gauntlet-bg" onclick="BossGauntlet.close()"></div>
-    <div class="gauntlet-panel">
-      <div class="gauntlet-header">
-        <div class="gauntlet-title">LEGENDARY GAUNTLET</div>
-        <div class="gauntlet-sub">Defeated bosses return for a final stress test at your level</div>
+    <div id="gauntlet-overlay" class="gauntlet-overlay" style="display:none">
+      <div class="gauntlet-bg" onclick="BossGauntlet.close()"></div>
+      <div class="gauntlet-panel">
+        <div class="gauntlet-header">
+          <div class="gauntlet-title">LEGENDARY GAUNTLET</div>
+          <div class="gauntlet-sub">Defeated bosses return for a final stress test at your level</div>
+        </div>
+        <div class="gauntlet-grid" id="gauntlet-grid"></div>
+        <button class="gauntlet-back" onclick="BossGauntlet.close()">← BACK</button>
       </div>
-      <div class="gauntlet-grid" id="gauntlet-grid"></div>
-      <button class="gauntlet-back" onclick="BossGauntlet.close()">← BACK</button>
     </div>
-  </div>
 
-  <!-- ═══════════════════════════════════════
+    <!-- ═══════════════════════════════════════
        SAVE SLOT OVERLAY
        ═══════════════════════════════════════ -->
-  <div id="slot-overlay" class="slot-overlay" style="display:none">
-    <div class="slot-overlay-bg" onclick="closeSlotOverlay()"></div>
-    <div class="slot-overlay-panel">
-      <div class="slot-overlay-header">
-        <div class="slot-overlay-title" id="slot-overlay-title">LOAD GAME</div>
-        <div class="slot-overlay-sub" id="slot-overlay-sub">Choose a save file</div>
+    <div id="slot-overlay" class="slot-overlay" style="display:none">
+      <div class="slot-overlay-bg" onclick="closeSlotOverlay()"></div>
+      <div class="slot-overlay-panel">
+        <div class="slot-overlay-header">
+          <div class="slot-overlay-title" id="slot-overlay-title">LOAD GAME</div>
+          <div class="slot-overlay-sub" id="slot-overlay-sub">Choose a save file</div>
+        </div>
+        <div class="slot-overlay-cards" id="slot-overlay-cards"></div>
+        <button class="slot-overlay-back" onclick="closeSlotOverlay()">← BACK</button>
       </div>
-      <div class="slot-overlay-cards" id="slot-overlay-cards"></div>
-      <button class="slot-overlay-back" onclick="closeSlotOverlay()">← BACK</button>
     </div>
-  </div>
-  <!-- ═══════════════════════════════════════
+    <!-- ═══════════════════════════════════════
        SETTINGS OVERLAY
        ═══════════════════════════════════════ -->
-  <div id="settings-overlay" class="settings-overlay" style="display:none">
-    <div class="settings-panel">
-      <div class="settings-header">GAME SETTINGS</div>
-      
-      <div class="setting-row">
-        <label class="setting-label">BGM VOLUME</label>
-        <div class="setting-control">
-          <input type="range" class="setting-slider" id="settings-bgm" min="0" max="100" step="5" oninput="Settings.update('bgm', this.value)">
+    <div id="settings-overlay" class="settings-overlay" style="display:none">
+      <div class="settings-panel">
+        <div class="settings-header">GAME SETTINGS</div>
+
+        <div class="setting-row">
+          <label class="setting-label">BGM VOLUME</label>
+          <div class="setting-control">
+            <input type="range" class="setting-slider" id="settings-bgm" min="0" max="100" step="5"
+              oninput="Settings.update('bgm', this.value)">
+          </div>
         </div>
-      </div>
-      
-      <div class="setting-row">
-        <label class="setting-label">SFX VOLUME</label>
-        <div class="setting-control">
-          <input type="range" class="setting-slider" id="settings-sfx" min="0" max="100" step="5" oninput="Settings.update('sfx', this.value)">
+
+        <div class="setting-row">
+          <label class="setting-label">SFX VOLUME</label>
+          <div class="setting-control">
+            <input type="range" class="setting-slider" id="settings-sfx" min="0" max="100" step="5"
+              oninput="Settings.update('sfx', this.value)">
+          </div>
         </div>
-      </div>
-      
-      <div class="setting-row">
-        <label class="setting-label">TEXT SPEED</label>
-        <div class="setting-control">
-          <input type="range" class="setting-slider" id="settings-text" min="1" max="5" step="1" oninput="Settings.update('textSpeed', this.value)">
+
+        <div class="setting-row">
+          <label class="setting-label">TEXT SPEED</label>
+          <div class="setting-control">
+            <input type="range" class="setting-slider" id="settings-text" min="1" max="5" step="1"
+              oninput="Settings.update('textSpeed', this.value)">
+          </div>
         </div>
-      </div>
-      
-      <div class="setting-row">
-        <label class="setting-label">GRAPHICS</label>
-        <div class="setting-control">
-          <select id="settings-quality" onchange="Settings.update('quality', this.value)" style="background:var(--bg-mid); color:var(--cyan); border:1px solid var(--border); padding:4px 8px; border-radius:4px; font-family:var(--vt);">
-            <option value="auto">Auto (Balanced)</option>
-            <option value="high">High (2K/4K)</option>
-            <option value="low">Mobile (Optimized)</option>
-          </select>
+
+        <div class="setting-row">
+          <label class="setting-label">GRAPHICS</label>
+          <div class="setting-control">
+            <select id="settings-quality" onchange="Settings.update('quality', this.value)"
+              style="background:var(--bg-mid); color:var(--cyan); border:1px solid var(--border); padding:4px 8px; border-radius:4px; font-family:var(--vt);">
+              <option value="auto">Auto (Balanced)</option>
+              <option value="high">High (2K/4K)</option>
+              <option value="low">Mobile (Optimized)</option>
+            </select>
+          </div>
         </div>
-      </div>
-      
-      <div class="settings-footer">
-        <button class="big-btn" onclick="Settings.close()">CLOSE</button>
+
+        <div class="settings-footer">
+          <button class="big-btn" onclick="Settings.close()">CLOSE</button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <input type="file" id="save-import-input" accept=".json" style="display:none">
+    <input type="file" id="save-import-input" accept=".json" style="display:none">
 
-  <!-- ═══════════════════════════════════════
+    <!-- ═══════════════════════════════════════
        STEP BAR
        ═══════════════════════════════════════ -->
-  <div class="step-bar" id="step-bar" style="display:none">
-    <div class="step" data-step="1"><div class="step-num">1</div> PARTY</div>
-    <div class="step-arrow">▶</div>
-    <div class="step" data-step="2"><div class="step-num">2</div> BATTLE</div>
-  </div>
+    <div class="step-bar" id="step-bar" style="display:none">
+      <div class="step" data-step="1">
+        <div class="step-num">1</div> PARTY
+      </div>
+      <div class="step-arrow">▶</div>
+      <div class="step" data-step="2">
+        <div class="step-num">2</div> BATTLE
+      </div>
+    </div>
 
-  <!-- ═══════════════════════════════════════
+    <!-- ═══════════════════════════════════════
        CHARACTER SELECT
        ═══════════════════════════════════════ -->
-  <div id="char-screen" class="screen">
-    <div class="screen-title">⚔ SELECT YOUR PARTY ⚔</div>
-    <div class="char-counter" id="char-counter">Party: <span>0</span> / 4</div>
-    <div class="char-grid" id="char-grid"></div>
-    <div class="detail-panel" id="char-detail">Click characters to add them to your party.</div>
-    <div style="padding:10px 12px 12px">
-      <button class="big-btn" id="char-confirm" onclick="showPreBattle()" disabled style="margin:0;width:100%">
-        SELECT 4 MORE →
-      </button>
+    <div id="char-screen" class="screen">
+      <div class="screen-title">⚔ SELECT YOUR PARTY ⚔</div>
+      <div class="char-counter" id="char-counter">Party: <span>0</span> / 4</div>
+      <div class="char-grid" id="char-grid"></div>
+      <div class="detail-panel" id="char-detail">Click characters to add them to your party.</div>
+      <div style="padding:10px 12px 12px">
+        <button class="big-btn" id="char-confirm" onclick="showPreBattle()" disabled style="margin:0;width:100%">
+          SELECT 4 MORE →
+        </button>
+      </div>
     </div>
-  </div>
 
-  <!-- ═══════════════════════════════════════
+    <!-- ═══════════════════════════════════════
        PRE-BATTLE SCREEN (Party Confirmation)
        ═══════════════════════════════════════ -->
-  <div id="pre-battle-screen" class="screen" style="flex-direction:column;justify-content:center;align-items:center;gap:20px;padding:20px">
-    <div style="text-align:center">
-      <div style="font-size:24px;font-weight:bold;margin-bottom:10px">READY FOR BATTLE</div>
-      <div style="font-size:14px;color:var(--text-dim);margin-bottom:20px">Your party stands ready</div>
+    <div id="pre-battle-screen" class="screen"
+      style="flex-direction:column;justify-content:center;align-items:center;gap:20px;padding:20px">
+      <div style="text-align:center">
+        <div style="font-size:24px;font-weight:bold;margin-bottom:10px">READY FOR BATTLE</div>
+        <div style="font-size:14px;color:var(--text-dim);margin-bottom:20px">Your party stands ready</div>
+      </div>
+      <div id="pre-battle-roster"
+        style="display:grid;grid-template-columns:repeat(4,1fr);gap:15px;padding:20px;background:rgba(0,0,0,0.3);border-radius:8px">
+      </div>
+      <div style="display:flex;gap:15px">
+        <button class="big-btn" onclick="goCharSelect()"
+          style="background:transparent;border-color:#4a4080;color:#8080c0">
+          ⚙ CHANGE PARTY
+        </button>
+        <button class="big-btn" onclick="startBattle()">
+          ▶ BATTLE START
+        </button>
+      </div>
     </div>
-    <div id="pre-battle-roster" style="display:grid;grid-template-columns:repeat(4,1fr);gap:15px;padding:20px;background:rgba(0,0,0,0.3);border-radius:8px"></div>
-    <div style="display:flex;gap:15px">
-      <button class="big-btn" onclick="goCharSelect()" style="background:transparent;border-color:#4a4080;color:#8080c0">
-        ⚙ CHANGE PARTY
-      </button>
-      <button class="big-btn" onclick="startBattle()">
-        ▶ BATTLE START
-      </button>
-    </div>
-  </div>
 
-  <!-- ═══════════════════════════════════════
+    <!-- ═══════════════════════════════════════
        WORLD MAP SCREEN
        ═══════════════════════════════════════ -->
-  <div id="map-screen" class="screen">
-    <div class="map-header">
-      <div class="map-title-label">✦ WORLD MAP ✦</div>
-      <div class="map-arc-label" id="map-arc-label"></div>
-    </div>
-    <div class="map-area" id="map-area"></div>
-    <div class="map-info-bar">
-      <div class="map-info-name" id="map-info-name"></div>
-      <div class="map-info-loc"  id="map-info-loc"></div>
-    </div>
-    <div class="map-bottom-bar">
-      <button class="map-party-btn" onclick="openPartySwap()">👥 PARTY</button>
-      <button class="big-btn" id="map-proceed-btn" onclick="Story.proceedFromMap()">▶ TRAVEL THERE</button>
-    </div>
-
-    <!-- Region revisit panel (slides up when a completed node is clicked) -->
-    <div id="map-region-panel" class="map-region-panel"></div>
-
-  </div>
-
-  <!-- Party swap overlay — global, works from any screen -->
-  <div id="party-swap-overlay" class="party-swap-overlay" onclick="if(event.target===this)closePartySwap()">
-    <div class="party-swap-panel">
-      <div class="party-swap-header">
-        <span class="party-swap-title">⚔ ACTIVE PARTY</span>
-        <span class="party-swap-counter" id="party-swap-counter">0 / 4 selected</span>
-        <button class="party-swap-close" onclick="closePartySwap()">✕</button>
+    <div id="map-screen" class="screen">
+      <div class="map-header">
+        <div class="map-title-label">✦ WORLD MAP ✦</div>
+        <div class="map-arc-label" id="map-arc-label"></div>
       </div>
-      <div class="party-swap-hint">Select exactly 4 characters. Tap again to deselect.</div>
-      <div class="party-swap-grid" id="party-swap-grid"></div>
-      <div class="party-swap-footer">
-        <button class="big-btn" id="party-swap-confirm" onclick="confirmPartySwap()" disabled>CONFIRM PARTY</button>
+      <div class="map-area" id="map-area"></div>
+      <div class="map-info-bar">
+        <div class="map-info-name" id="map-info-name"></div>
+        <div class="map-info-loc" id="map-info-loc"></div>
+      </div>
+      <div class="map-bottom-bar">
+        <button class="map-party-btn" onclick="openPartySwap()">👥 PARTY</button>
+        <button class="big-btn" id="map-proceed-btn" onclick="Story.proceedFromMap()">▶ TRAVEL THERE</button>
+      </div>
+
+      <!-- Region revisit panel (slides up when a completed node is clicked) -->
+      <div id="map-region-panel" class="map-region-panel"></div>
+
+    </div>
+
+    <!-- Party swap overlay — global, works from any screen -->
+    <div id="party-swap-overlay" class="party-swap-overlay" onclick="if(event.target===this)closePartySwap()">
+      <div class="party-swap-panel">
+        <div class="party-swap-header">
+          <span class="party-swap-title">⚔ ACTIVE PARTY</span>
+          <span class="party-swap-counter" id="party-swap-counter">0 / 4 selected</span>
+          <button class="party-swap-close" onclick="closePartySwap()">✕</button>
+        </div>
+        <div class="party-swap-hint">Select exactly 4 characters. Tap again to deselect.</div>
+        <div class="party-swap-grid" id="party-swap-grid"></div>
+        <div class="party-swap-footer">
+          <button class="big-btn" id="party-swap-confirm" onclick="confirmPartySwap()" disabled>CONFIRM PARTY</button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- ═══════════════════════════════════════
+    <!-- ═══════════════════════════════════════
        STORY SCREEN
        ═══════════════════════════════════════ -->
-  <div id="story-screen" class="screen">
-    <div id="story-bg" class="story-bg bg--default">
-      <!-- Character scene layer -->
-      <div class="s-scene-layer" id="s-scene-layer"></div>
-    </div>
-    <div class="s-header">
-      <div class="s-header-left">
-        <div id="s-header-arc"  class="s-header-arc"></div>
-        <div id="s-header-chap" class="s-header-chap"></div>
+    <div id="story-screen" class="screen">
+      <div id="story-bg" class="story-bg bg--default">
+        <!-- Character scene layer -->
+        <div class="s-scene-layer" id="s-scene-layer"></div>
       </div>
-      <button class="s-skip-btn" onclick="Story.skip()">⏭ SKIP</button>
-    </div>
-    <div id="s-arc-intro" class="s-card s-arc-intro" style="display:none">
-      <div id="s-arc-num"   class="s-arc-num"></div>
-      <div id="s-arc-name"  class="s-arc-name"></div>
-      <div id="s-arc-sub"   class="s-arc-sub"></div>
-      <div id="s-arc-theme" class="s-arc-theme"></div>
-      <div id="s-arc-shard" class="s-arc-shard" style="display:none">
-        <div id="s-arc-shard-name"></div>
-      </div>
-    </div>
-    <div id="s-dialogue" class="s-dialogue" style="display:none">
-      <!-- Chat area (bottom: face + text) -->
-      <div class="s-dialogue-chat">
-        <div class="s-dialogue-portrait">
-          <div id="s-portrait-img" class="s-portrait-img" style="display:none"></div>
-          <div id="s-portrait-emoji" class="s-portrait-emoji">📖</div>
+      <div class="s-header">
+        <div class="s-header-left">
+          <div id="s-header-arc" class="s-header-arc"></div>
+          <div id="s-header-chap" class="s-header-chap"></div>
         </div>
-        <div class="s-dialogue-body">
-          <div id="s-speaker" class="s-speaker"></div>
-          <div id="s-text"    class="s-text"></div>
+        <button class="s-skip-btn" onclick="Story.skip()">⏭ SKIP</button>
+      </div>
+      <div id="s-arc-intro" class="s-card s-arc-intro" style="display:none">
+        <div id="s-arc-num" class="s-arc-num"></div>
+        <div id="s-arc-name" class="s-arc-name"></div>
+        <div id="s-arc-sub" class="s-arc-sub"></div>
+        <div id="s-arc-theme" class="s-arc-theme"></div>
+        <div id="s-arc-shard" class="s-arc-shard" style="display:none">
+          <div id="s-arc-shard-name"></div>
         </div>
       </div>
-    </div>
-    <div id="s-event" class="s-event" style="display:none">
-      <div class="s-event-header">🎭 CHOICE</div>
-      <div id="s-event-title" class="s-event-title"></div>
-      <div id="s-event-desc"  class="s-event-desc"></div>
-      <div id="s-choice-btns" class="s-choice-btns"></div>
-    </div>
-    <div id="s-arc-end" class="s-card s-arc-end" style="display:none">
-      <div class="s-ae-container">
-        <!-- Character face icon (left) -->
-        <div class="s-ae-face-section">
-          <div id="s-ae-face" class="s-ae-face" style="display:none"></div>
+      <div id="s-dialogue" class="s-dialogue" style="display:none">
+        <!-- Chat area (bottom: face + text) -->
+        <div class="s-dialogue-chat">
+          <div class="s-dialogue-portrait">
+            <div id="s-portrait-emoji" class="s-portrait-emoji">📖</div>
+          </div>
+          <div class="s-dialogue-body">
+            <div id="s-speaker" class="s-speaker"></div>
+            <div id="s-text" class="s-text"></div>
+          </div>
         </div>
+      </div>
+      <div id="s-event" class="s-event" style="display:none">
+        <div class="s-event-header">🎭 CHOICE</div>
+        <div id="s-event-title" class="s-event-title"></div>
+        <div id="s-event-desc" class="s-event-desc"></div>
+        <div id="s-choice-btns" class="s-choice-btns"></div>
+      </div>
+      <div id="s-arc-end" class="s-card s-arc-end" style="display:none">
+        <div class="s-ae-container">
+          <!-- Spirit portrait (center) -->
 
-        <!-- Spirit portrait (center) -->
-        <div class="s-ae-spirit-section">
-          <div id="s-ae-spirit" class="s-ae-spirit"></div>
-        </div>
+          <!-- Spirit portrait (center) -->
+          <div class="s-ae-spirit-section">
+            <div id="s-ae-spirit" class="s-ae-spirit"></div>
+          </div>
 
-        <!-- Shard info (right) -->
-        <div class="s-ae-info-section">
-          <div class="s-ae-label">SHARD OBTAINED</div>
-          <div id="s-ae-shard" class="s-ae-shard"></div>
-          <div id="s-ae-desc"  class="s-ae-desc"></div>
+          <!-- Shard info (right) -->
+          <div class="s-ae-info-section">
+            <div class="s-ae-label">SHARD OBTAINED</div>
+            <div id="s-ae-shard" class="s-ae-shard"></div>
+            <div id="s-ae-desc" class="s-ae-desc"></div>
+          </div>
         </div>
       </div>
+      <div id="s-epilogue" class="s-epilogue" style="display:none">
+        <div class="s-epi-title">EPILOGUE</div>
+        <div id="s-epi-cards" class="s-epi-cards"></div>
+      </div>
+      <button id="s-continue" class="s-continue-btn" onclick="Story.advance()" style="display:none">
+        ▶ CONTINUE
+      </button>
     </div>
-    <div id="s-epilogue" class="s-epilogue" style="display:none">
-      <div class="s-epi-title">EPILOGUE</div>
-      <div id="s-epi-cards" class="s-epi-cards"></div>
-    </div>
-    <button id="s-continue" class="s-continue-btn" onclick="Story.advance()" style="display:none">
-      ▶ CONTINUE
-    </button>
-  </div>
 
-  <!-- ═══════════════════════════════════════
+    <!-- ═══════════════════════════════════════
        BATTLE SCREEN
        ═══════════════════════════════════════ -->
-  <div id="battle-screen" class="screen">
-    <div class="turn-bar" id="turn-bar"></div>
-    <div id="battle-scene">
-      <div class="bg-parallax-layer layer-deep"></div>
-      <div class="bg-parallax-layer layer-mid"></div>
-      <div class="bg-parallax-layer layer-ground"></div>
-      <canvas id="battle-effects-canvas" style="position:absolute; inset:0; pointer-events:none; z-index:5;"></canvas>
+    <div id="battle-screen" class="screen">
+      <div class="turn-bar" id="turn-bar"></div>
+      <div id="battle-scene">
+        <div class="bg-parallax-layer layer-deep"></div>
+        <div class="bg-parallax-layer layer-mid"></div>
+        <div class="bg-parallax-layer layer-ground"></div>
+        <canvas id="battle-effects-canvas" style="position:absolute; inset:0; pointer-events:none; z-index:5;"></canvas>
 
-      <!-- Party sprites (left side) -->
-      <div class="party-container" id="party-container"></div>
+        <!-- Party sprites (left side) -->
+        <div class="party-container" id="party-container"></div>
 
-      <!-- Enemy sprites (right side) -->
-      <div class="enemy-container" id="enemy-container"></div>
-    </div>
-    <div class="active-member-bar" id="active-member-bar"></div>
-    <div id="menu-area">
-      <div class="battle-log">
-        <p class="log-line" id="log0"></p>
-        <p class="log-line" id="log1"></p>
-        <p class="log-line" id="log2"></p>
+        <!-- Enemy sprites (right side) -->
+        <div class="enemy-container" id="enemy-container"></div>
       </div>
-      <div class="cmd-grid" id="cmd-grid-main">
-        <button class="cmd-btn" onclick="heroAttack()">⚔ ATTACK</button>
-        <button class="cmd-btn" onclick="BattleUI.openSub('ability-sub')">✨ ABILITY</button>
-        <button class="cmd-btn" onclick="heroItem()">🧪 ITEM</button>
-        <button class="cmd-btn" onclick="heroRun()">💨 RUN</button>
-        <button class="cmd-btn cmd-party-btn" onclick="openPartyMenu()">👥 PARTY</button>
+      <div class="active-member-bar" id="active-member-bar"></div>
+      <div id="menu-area">
+        <div class="battle-log">
+          <p class="log-line" id="log0"></p>
+          <p class="log-line" id="log1"></p>
+          <p class="log-line" id="log2"></p>
+        </div>
+        <div class="cmd-grid" id="cmd-grid-main">
+          <button class="cmd-btn" onclick="heroAttack()">⚔ ATTACK</button>
+          <button class="cmd-btn" onclick="BattleUI.openSub('ability-sub')">✨ ABILITY</button>
+          <button class="cmd-btn" onclick="heroItem()">🧪 ITEM</button>
+          <button class="cmd-btn" onclick="heroRun()">💨 RUN</button>
+          <button class="cmd-btn cmd-party-btn" onclick="openPartyMenu()">👥 PARTY</button>
+        </div>
+        <div class="sub-menu" id="ability-sub"></div>
+        <div class="sub-menu" id="item-sub"></div>
       </div>
-      <div class="sub-menu" id="ability-sub"></div>
-      <div class="sub-menu" id="item-sub"></div>
+      <div class="party-status-bar" id="party-status-bar"></div>
+      <div class="stats-bar">
+        <span>LV <span id="stat-lv">1</span></span>
+        <span>ATK <span id="stat-atk">-</span></span>
+        <span>DEF <span id="stat-def">-</span></span>
+        <span>LCK <span id="stat-lck">-</span></span>
+        <span>EXP <span id="stat-exp">0</span></span>
+      </div>
     </div>
-    <div class="party-status-bar" id="party-status-bar"></div>
-    <div class="stats-bar">
-      <span>LV <span id="stat-lv">1</span></span>
-      <span>ATK <span id="stat-atk">-</span></span>
-      <span>DEF <span id="stat-def">-</span></span>
-      <span>LCK <span id="stat-lck">-</span></span>
-      <span>EXP <span id="stat-exp">0</span></span>
-    </div>
-  </div>
 
-  <!-- ═══════════════════════════════════════
+    <!-- ═══════════════════════════════════════
        PARTY MENU OVERLAY
        ═══════════════════════════════════════ -->
-  <div id="party-menu" style="display:none">
-    <div class="pm-header">
-      <span class="pm-title">⚔ PARTY STATUS ⚔</span>
-      <button class="pm-close-btn" onclick="closePartyMenu()">✕ CLOSE</button>
+    <div id="party-menu" style="display:none">
+      <div class="pm-header">
+        <span class="pm-title">⚔ PARTY STATUS ⚔</span>
+        <button class="pm-close-btn" onclick="closePartyMenu()">✕ CLOSE</button>
+      </div>
+      <div class="pm-cards" id="pm-cards"></div>
     </div>
-    <div class="pm-cards" id="pm-cards"></div>
-  </div>
 
-  <!-- ═══════════════════════════════════════
+    <!-- ═══════════════════════════════════════
        GAME OVER SCREEN
        ═══════════════════════════════════════ -->
-  <div id="game-over-screen" class="screen">
-    <div class="go-bg-overlay"></div>
-    <div class="go-content">
-      <div class="go-skull">💀</div>
-      <div class="go-title">GAME OVER</div>
-      <div class="go-subtitle" id="go-subtitle">The party has fallen...</div>
-      <div class="go-party" id="go-party"></div>
-      <div class="go-msg" id="go-msg">Your progress has been saved at the start of the map.</div>
-      <div class="go-btns">
-        <button class="go-btn go-btn-primary" onclick="Story.gameOverReturnToMap()">↩ RETURN TO MAP</button>
-        <button class="go-btn go-btn-secondary" onclick="Story.gameOverTitle()">⌂ TITLE SCREEN</button>
+    <div id="game-over-screen" class="screen">
+      <div class="go-bg-overlay"></div>
+      <div class="go-content">
+        <div class="go-skull">💀</div>
+        <div class="go-title">GAME OVER</div>
+        <div class="go-subtitle" id="go-subtitle">The party has fallen...</div>
+        <div class="go-party" id="go-party"></div>
+        <div class="go-msg" id="go-msg">Your progress has been saved at the start of the map.</div>
+        <div class="go-btns">
+          <button class="go-btn go-btn-primary" onclick="Story.gameOverReturnToMap()">↩ RETURN TO MAP</button>
+          <button class="go-btn go-btn-secondary" onclick="Story.gameOverTitle()">⌂ TITLE SCREEN</button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- ═══════════════════════════════════════
+    <!-- ═══════════════════════════════════════
        RESULT SCREEN
        ═══════════════════════════════════════ -->
-  <div id="result-screen" class="screen">
-    <div class="result-title" id="result-title">VICTORY!</div>
-    <div class="result-stats" id="result-stats"></div>
-    <div class="result-party" id="result-party"></div>
-    <div class="result-btns">
-      <button class="big-btn" id="result-retry-btn" onclick="retryBattle()" style="display:none">↺ RETRY</button>
-      <button class="big-btn" id="result-again-btn" onclick="playAgain()">▶ PLAY AGAIN</button>
+    <div id="result-screen" class="screen">
+      <div class="result-title" id="result-title">VICTORY!</div>
+      <div class="result-stats" id="result-stats"></div>
+      <div class="result-party" id="result-party"></div>
+      <div class="result-btns">
+        <button class="big-btn" id="result-retry-btn" onclick="retryBattle()" style="display:none">↺ RETRY</button>
+        <button class="big-btn" id="result-again-btn" onclick="playAgain()">▶ PLAY AGAIN</button>
+      </div>
     </div>
-  </div>
 
-  <!-- ═══════════════════════════════════════
+    <!-- ═══════════════════════════════════════
        EXPLORE SCREEN (tile map)
        ═══════════════════════════════════════ -->
-  <div id="explore-screen" class="screen">
+    <div id="explore-screen" class="screen">
 
-    <!-- Cinematic header bar -->
-    <div id="explore-header" class="explore-header">
-      <div class="explore-header-left">
-        <span id="explore-map-name" class="explore-map-name">✦ EXPLORE ✦</span>
-        <span class="explore-map-hint">↑↓←→ · WASD to move</span>
-      </div>
-      <div class="explore-header-right">
-        <button id="mute-btn" onclick="SFX.toggleMute()" title="Toggle sound effects">🔊</button>
-        <button id="tts-btn"  onclick="TTS.toggle()"     title="Voice: OFF">💬</button>
-        <button id="settings-btn" onclick="Settings.open()" title="Settings">⚙️</button>
-        <button class="explore-menu-btn" onclick="MapUI.openPauseMenu()">☰ MENU</button>
-      </div>
-    </div>
-
-    <!-- Canvas fills all remaining height -->
-    <div id="explore-canvas-wrap">
-
-      <!-- Map select overlay — cinematic style -->
-      <div id="map-select-overlay" style="display:none">
-        <div class="map-sel-inner">
-          <div class="map-sel-crest">⚔</div>
-          <div class="map-sel-title">REALM OF ECHOES</div>
-          <div class="map-sel-sub">Choose your destination</div>
+      <!-- Cinematic header bar -->
+      <div id="explore-header" class="explore-header">
+        <div class="explore-header-left">
+          <span id="explore-map-name" class="explore-map-name">✦ EXPLORE ✦</span>
+          <span class="explore-map-hint">↑↓←→ · WASD to move</span>
+        </div>
+        <div class="explore-header-right">
+          <button id="mute-btn" onclick="SFX.toggleMute()" title="Toggle sound effects">🔊</button>
+          <button id="tts-btn" onclick="TTS.toggle()" title="Voice: OFF">💬</button>
+          <button id="settings-btn" onclick="Settings.open()" title="Settings">⚙️</button>
+          <button class="explore-menu-btn" onclick="MapUI.openPauseMenu()">☰ MENU</button>
         </div>
       </div>
 
-      <!-- Pause menu overlay -->
-      <div id="map-pause-menu" style="display:none">
-        <div class="pause-panel">
-          <div class="pause-title">⚔ PARTY STATUS</div>
-          <div class="pause-party" id="pause-party-cards"></div>
-          <div class="pause-inventory" id="pause-inventory-section">
-            <div class="pause-section-label">INVENTORY</div>
-            <div class="pause-inv-grid" id="pause-inv-grid"></div>
-          </div>
-          <div class="pause-actions">
-            <button class="pause-btn" onclick="ArchiveUI.open()">📖 BESTIARY</button>
-            <button class="pause-btn save-btn" onclick="MapUI.pauseSave()">💾 SAVE</button>
-            <button class="pause-btn" onclick="MapUI.closePauseMenu()">▶ RESUME</button>
+      <!-- Canvas fills all remaining height -->
+      <div id="explore-canvas-wrap">
+
+        <!-- Map select overlay — cinematic style -->
+        <div id="map-select-overlay" style="display:none">
+          <div class="map-sel-inner">
+            <div class="map-sel-crest">⚔</div>
+            <div class="map-sel-title">REALM OF ECHOES</div>
+            <div class="map-sel-sub">Choose your destination</div>
           </div>
         </div>
-      </div>
 
-      <!-- Bestiary Overlay -->
-      <div id="bestiary-overlay" class="bestiary-overlay" style="display:none">
-        <div class="bestiary-bg" onclick="ArchiveUI.close()"></div>
-        <div class="bestiary-panel">
-          <div class="bestiary-header">
-            <div class="bestiary-title">THE ARCHIVE</div>
-            <div class="bestiary-tabs">
-              <button class="b-tab active" id="tab-bestiary" onclick="ArchiveUI.setTab('bestiary')">BESTIARY</button>
-              <button class="b-tab" id="tab-story" onclick="ArchiveUI.setTab('story')">STORY & LORE</button>
+        <!-- Pause menu overlay -->
+        <div id="map-pause-menu" style="display:none">
+          <div class="pause-panel">
+            <div class="pause-title">⚔ PARTY STATUS</div>
+            <div class="pause-party" id="pause-party-cards"></div>
+            <div class="pause-inventory" id="pause-inventory-section">
+              <div class="pause-section-label">INVENTORY</div>
+              <div class="pause-inv-grid" id="pause-inv-grid"></div>
             </div>
-            <button class="bestiary-close" onclick="ArchiveUI.close()">✕</button>
-          </div>
-          <div class="bestiary-body">
-            <div class="bestiary-sidebar" id="bestiary-list"></div>
-            <div class="bestiary-detail" id="bestiary-detail">
-              <div class="bestiary-empty-hint">Select an entry to view details</div>
+            <div class="pause-actions">
+              <button class="pause-btn" onclick="ArchiveUI.open()">📖 BESTIARY</button>
+              <button class="pause-btn save-btn" onclick="MapUI.pauseSave()">💾 SAVE</button>
+              <button class="pause-btn" onclick="MapUI.closePauseMenu()">▶ RESUME</button>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Camp menu overlay (triggered when player returns to start tile) -->
-      <div id="camp-menu" style="display:none">
-        <div class="camp-panel">
-          <div class="camp-title">⛺ CAMP</div>
-          <div class="camp-subtitle">Rest, regroup, or move on.</div>
-          <div class="camp-actions">
-            <button class="camp-btn camp-btn-worldmap" onclick="MapUI.campWorldMap()">🗺 WORLD MAP</button>
-            <button class="camp-btn" onclick="MapUI.campChangeParty()">👥 CHANGE PARTY</button>
-            <button class="camp-btn" onclick="MapUI.campHeal()">💊 HEAL PARTY</button>
-            <button class="camp-btn" onclick="MapUI.campRelics()">✦ RELICS</button>
-            <button class="camp-btn camp-btn-minor" onclick="MapUI.closeCampMenu()">▶ CONTINUE</button>
+        <!-- Bestiary Overlay -->
+        <div id="bestiary-overlay" class="bestiary-overlay" style="display:none">
+          <div class="bestiary-bg" onclick="ArchiveUI.close()"></div>
+          <div class="bestiary-panel">
+            <div class="bestiary-header">
+              <div class="bestiary-title">THE ARCHIVE</div>
+              <div class="bestiary-tabs">
+                <button class="b-tab active" id="tab-bestiary" onclick="ArchiveUI.setTab('bestiary')">BESTIARY</button>
+                <button class="b-tab" id="tab-story" onclick="ArchiveUI.setTab('story')">STORY & LORE</button>
+              </div>
+              <button class="bestiary-close" onclick="ArchiveUI.close()">✕</button>
+            </div>
+            <div class="bestiary-body">
+              <div class="bestiary-sidebar" id="bestiary-list"></div>
+              <div class="bestiary-detail" id="bestiary-detail">
+                <div class="bestiary-empty-hint">Select an entry to view details</div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Relic management panel -->
-      <div id="relic-panel" style="display:none">
-        <div class="relic-panel-inner">
-          <div class="relic-panel-title">✦ RELICS</div>
-          <div class="relic-panel-subtitle">Equip up to 3 relics. Bonuses apply to all party members.</div>
-          <div class="relic-slots-row" id="relic-slots"></div>
-          <div class="relic-panel-label">OWNED RELICS</div>
-          <div class="relic-list" id="relic-list"></div>
-          <button class="camp-btn camp-btn-minor" onclick="MapUI.closeRelics()" style="margin-top:12px">◀ BACK TO CAMP</button>
-        </div>
-      </div>
-
-      <!-- NPC dialogue overlay -->
-      <div id="npc-dialogue" style="display:none">
-        <div class="npc-dialogue-panel">
-          <div class="npc-dialogue-header">
-            <canvas id="npc-dialogue-portrait" class="npc-portrait" style="display:none"></canvas>
-            <div class="npc-dialogue-name" id="npc-dialogue-name"></div>
-          </div>
-          <div class="npc-dialogue-text" id="npc-dialogue-text"></div>
-          <div class="npc-dialogue-footer">
-            <button class="npc-dialogue-next" id="npc-dialogue-next" onclick="MapEngine.npcDialogueNext()">▶ CONTINUE</button>
+        <!-- Camp menu overlay (triggered when player returns to start tile) -->
+        <div id="camp-menu" style="display:none">
+          <div class="camp-panel">
+            <div class="camp-title">⛺ CAMP</div>
+            <div class="camp-subtitle">Rest, regroup, or move on.</div>
+            <div class="camp-actions">
+              <button class="camp-btn camp-btn-worldmap" onclick="MapUI.campWorldMap()">🗺 WORLD MAP</button>
+              <button class="camp-btn" onclick="MapUI.campChangeParty()">👥 CHANGE PARTY</button>
+              <button class="camp-btn" onclick="MapUI.campHeal()">💊 HEAL PARTY</button>
+              <button class="camp-btn" onclick="MapUI.campRelics()">✦ RELICS</button>
+              <button class="camp-btn camp-btn-minor" onclick="MapUI.closeCampMenu()">▶ CONTINUE</button>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Encounter ember flash -->
-      <div id="explore-flash"></div>
-
-      <!-- Gold notification banner -->
-      <div id="explore-notif"></div>
-
-      <!-- Party HP strip (bottom-left, above loc bar) -->
-      <div id="explore-party-hud"></div>
-
-      <!-- Fixed Mobile Virtual Joystick -->
-      <div id="joystick-container" class="joystick-container">
-        <div id="joystick-base" class="joystick-base">
-          <div id="joystick-knob" class="joystick-knob"></div>
+        <!-- Relic management panel -->
+        <div id="relic-panel" style="display:none">
+          <div class="relic-panel-inner">
+            <div class="relic-panel-title">✦ RELICS</div>
+            <div class="relic-panel-subtitle">Equip up to 3 relics. Bonuses apply to all party members.</div>
+            <div class="relic-slots-row" id="relic-slots"></div>
+            <div class="relic-panel-label">OWNED RELICS</div>
+            <div class="relic-list" id="relic-list"></div>
+            <button class="camp-btn camp-btn-minor" onclick="MapUI.closeRelics()" style="margin-top:12px">◀ BACK TO
+              CAMP</button>
+          </div>
         </div>
+
+        <!-- NPC dialogue overlay -->
+        <div id="npc-dialogue" style="display:none">
+          <div class="npc-dialogue-panel">
+            <div class="npc-dialogue-header">
+              <canvas id="npc-dialogue-portrait" class="npc-portrait" style="display:none"></canvas>
+              <div class="npc-dialogue-name" id="npc-dialogue-name"></div>
+            </div>
+            <div class="npc-dialogue-text" id="npc-dialogue-text"></div>
+            <div class="npc-dialogue-footer">
+              <button class="npc-dialogue-next" id="npc-dialogue-next" onclick="MapEngine.npcDialogueNext()">▶
+                CONTINUE</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Encounter ember flash -->
+        <div id="explore-flash"></div>
+
+        <!-- Gold notification banner -->
+        <div id="explore-notif"></div>
+
+        <!-- Party HP strip (bottom-left, above loc bar) -->
+        <div id="explore-party-hud"></div>
+
+        <!-- Fixed Mobile Virtual Joystick -->
+        <div id="joystick-container" class="joystick-container">
+          <div id="joystick-base" class="joystick-base">
+            <div id="joystick-knob" class="joystick-knob"></div>
+          </div>
+        </div>
+
+        <!-- Minimap panel (bottom-right, above loc bar) -->
+        <div id="explore-minimap-wrap">
+          <div class="ex-minimap-label">Overworld</div>
+          <canvas id="explore-minimap" width="96" height="60"></canvas>
+        </div>
+
+        <canvas id="explore-canvas"></canvas>
       </div>
 
-      <!-- Minimap panel (bottom-right, above loc bar) -->
-      <div id="explore-minimap-wrap">
-        <div class="ex-minimap-label">Overworld</div>
-        <canvas id="explore-minimap" width="96" height="60"></canvas>
+      <!-- Slim location hint bar -->
+      <div class="explore-loc-bar">
+        <span id="explore-loc">Use WASD / arrow keys or the d-pad to move</span>
       </div>
 
-      <canvas id="explore-canvas"></canvas>
     </div>
 
-    <!-- Slim location hint bar -->
-    <div class="explore-loc-bar">
-      <span id="explore-loc">Use WASD / arrow keys or the d-pad to move</span>
-    </div>
+  </div><!-- /#game -->
 
-  </div>
+  <script src="data/npcs.js"></script>
+  <script src="js/systems/input-manager.js"></script>
+  <script src="js/systems/focus-manager.js"></script>
+  <script src="js/map/data/tile-defs.js"></script>
+  <script src="js/map/data/tile-renders.js"></script>
+  <script src="js/map/map-data.js"></script>
+  <script src="js/map/data/map-verdant-vale.js"></script>
+  <script src="js/map/data/map-crystal-cavern.js"></script>
+  <script src="js/map/data/map-ember-wastes.js"></script>
+  <script src="js/map/data/map-sunken-temple.js"></script>
+  <script src="js/map/data/map-shadow-reach.js"></script>
+  <script src="js/map/data/map-void-citadel.js"></script>
+  <script src="js/map/data/map-fortress-ramparts.js"></script>
+  <script src="js/map/data/map-eternal-void.js"></script>
+  <script src="js/map/map-entities.js"></script>
+  <script src="js/map/map-ui.js"></script>
+  <script src="js/map/map-engine.js"></script>
+  <script src="js/bgm.js"></script>
+  <script src="js/sfx.js"></script>
+  <script src="js/tts.js"></script>
+  <script src="js/save.js"></script>
+  <script src="js/sprites.js"></script>
+  <script src="js/data-loader.js"></script>
+  <script src="js/svg-animations.js"></script>
+  <script src="js/asset-preloader.js"></script>
+  <script src="js/scaling-config.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/ui/menu-manager.js"></script>
+  <script src="js/systems/party.js"></script>
+  <script src="js/systems/inventory.js"></script>
+  <script src="js/ui/battle-ui.js"></script>
+  <script src="js/ui/result-ui.js"></script>
+  <script src="js/battle/status-system.js"></script>
+  <script src="js/battle/passive-system.js"></script>
+  <script src="js/battle/turn-manager.js"></script>
+  <script src="js/battle/combat-engine.js"></script>
 
-</div><!-- /#game -->
+  <script src="js/battle/action-handler.js"></script>
+  <script src="js/systems/archive.js"></script>
+  <script src="js/ui/archive-ui.js"></script>
+  <script src="js/ui/boss-gauntlet.js"></script>
+  <script src="js/ui/weather-engine.js"></script>
+  <script src="js/ui/credits-screen.js"></script>
+  <script src="js/story.js"></script>
+  <script src="js/ui/home-engine.js"></script>
+  <script>
+    TTS.init();
 
-<script src="data/npcs.js"></script>
-<script src="js/systems/input-manager.js"></script>
-<script src="js/systems/focus-manager.js"></script>
-<script src="js/map/data/tile-defs.js"></script>
-<script src="js/map/data/tile-renders.js"></script>
-<script src="js/map/map-data.js"></script>
-<script src="js/map/data/map-verdant-vale.js"></script>
-<script src="js/map/data/map-crystal-cavern.js"></script>
-<script src="js/map/data/map-ember-wastes.js"></script>
-<script src="js/map/data/map-sunken-temple.js"></script>
-<script src="js/map/data/map-shadow-reach.js"></script>
-<script src="js/map/data/map-void-citadel.js"></script>
-<script src="js/map/data/map-fortress-ramparts.js"></script>
-<script src="js/map/data/map-eternal-void.js"></script>
-<script src="js/map/map-entities.js"></script>
-<script src="js/map/map-ui.js"></script>
-<script src="js/map/map-engine.js"></script>
-<script src="js/bgm.js"></script>
-<script src="js/sfx.js"></script>
-<script src="js/tts.js"></script>
-<script src="js/save.js"></script>
-<script src="js/sprites.js"></script>
-<script src="js/data-loader.js"></script>
-<script src="js/svg-animations.js"></script>
-<script src="js/asset-preloader.js"></script>
-<script src="js/scaling-config.js"></script>
-<script src="js/game.js"></script>
-<script src="js/ui/menu-manager.js"></script>
-<script src="js/systems/party.js"></script>
-<script src="js/systems/inventory.js"></script>
-<script src="js/ui/battle-ui.js"></script>
-<script src="js/ui/result-ui.js"></script>
-<script src="js/battle/status-system.js"></script>
-<script src="js/battle/passive-system.js"></script>
-<script src="js/battle/turn-manager.js"></script>
-<script src="js/battle/combat-engine.js"></script>
+    // ── Fullscreen prompt for mobile ─────────────────────────
+    (function () {
+      const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+        || (navigator.maxTouchPoints > 1 && window.innerWidth < 1024);
+      if (!isMobile) return;
 
-<script src="js/battle/action-handler.js"></script>
-<script src="js/systems/archive.js"></script>
-<script src="js/ui/archive-ui.js"></script>
-<script src="js/ui/boss-gauntlet.js"></script>
-<script src="js/ui/weather-engine.js"></script>
-<script src="js/ui/credits-screen.js"></script>
-<script src="js/story.js"></script>
-<script src="js/ui/home-engine.js"></script>
-<script>
-  TTS.init();
+      // Don't show if already fullscreen or iOS (no API support)
+      const fsSupported = document.documentElement.requestFullscreen
+        || document.documentElement.webkitRequestFullscreen;
+      if (!fsSupported) return;
 
-  // ── Fullscreen prompt for mobile ─────────────────────────
-  (function() {
-    const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
-                  || (navigator.maxTouchPoints > 1 && window.innerWidth < 1024);
-    if (!isMobile) return;
-
-    // Don't show if already fullscreen or iOS (no API support)
-    const fsSupported = document.documentElement.requestFullscreen
-                     || document.documentElement.webkitRequestFullscreen;
-    if (!fsSupported) return;
-
-    const banner = document.createElement('div');
-    banner.id = 'fs-banner';
-    banner.innerHTML = '⛶ Tap for fullscreen';
-    banner.style.cssText = `
+      const banner = document.createElement('div');
+      banner.id = 'fs-banner';
+      banner.innerHTML = '⛶ Tap for fullscreen';
+      banner.style.cssText = `
       position:fixed; bottom:16px; left:50%; transform:translateX(-50%);
       background:#1a1040ee; border:1px solid #6050b8; color:#d0c8f0;
       font-family:'VT323',monospace; font-size:18px;
@@ -647,70 +685,70 @@
       cursor:pointer; pointer-events:all;
       box-shadow:0 0 16px #6050b840;
     `;
-    document.body.appendChild(banner);
+      document.body.appendChild(banner);
 
-    function requestFS() {
-      const el = document.documentElement;
-      (el.requestFullscreen || el.webkitRequestFullscreen).call(el);
-      banner.remove();
+      function requestFS() {
+        const el = document.documentElement;
+        (el.requestFullscreen || el.webkitRequestFullscreen).call(el);
+        banner.remove();
+      }
+
+      banner.addEventListener('click', requestFS);
+
+      // Auto-dismiss if they go fullscreen another way
+      document.addEventListener('fullscreenchange', () => {
+        if (document.fullscreenElement) banner.remove();
+      });
+    })();
+    if (!TTS.supported) {
+      const b = document.getElementById('tts-btn');
+      if (b) b.style.display = 'none';
     }
 
-    banner.addEventListener('click', requestFS);
+    // Initialize asset preloader and BGM on page load
+    window.addEventListener('DOMContentLoaded', async () => {
+      // Preload assets (shows loading screen)
+      await AssetPreloader.init();
 
-    // Auto-dismiss if they go fullscreen another way
-    document.addEventListener('fullscreenchange', () => {
-      if (document.fullscreenElement) banner.remove();
+      // Play title screen BGM
+      BGM.play('title');
     });
-  })();
-  if (!TTS.supported) {
-    const b = document.getElementById('tts-btn');
-    if (b) b.style.display = 'none';
-  }
 
-  // Initialize asset preloader and BGM on page load
-  window.addEventListener('DOMContentLoaded', async () => {
-    // Preload assets (shows loading screen)
-    await AssetPreloader.init();
+    /* ── Save Slot Overlay ───────────────────────────────────────── */
 
-    // Play title screen BGM
-    BGM.play('title');
-  });
+    let _slotMode = 'load'; // 'load' | 'new'
 
-  /* ── Save Slot Overlay ───────────────────────────────────────── */
+    function openSlotOverlay(mode) {
+      _slotMode = mode;
+      const overlay = document.getElementById('slot-overlay');
+      const title = document.getElementById('slot-overlay-title');
+      const sub = document.getElementById('slot-overlay-sub');
+      title.textContent = mode === 'load' ? 'LOAD GAME' : 'NEW STORY';
+      sub.textContent = mode === 'load' ? 'Choose a save file to continue' : 'Choose a slot for your new adventure';
+      _renderSlotCards(mode);
+      overlay.style.display = 'flex';
+      requestAnimationFrame(() => {
+        overlay.classList.add('open');
+        if (typeof Focus !== 'undefined') Focus.setContext('slot-overlay');
+      });
+    }
 
-  let _slotMode = 'load'; // 'load' | 'new'
+    function closeSlotOverlay() {
+      const overlay = document.getElementById('slot-overlay');
+      overlay.classList.remove('open');
+      if (typeof Focus !== 'undefined') Focus.setContext(null);
+      setTimeout(() => { overlay.style.display = 'none'; }, 280);
+    }
 
-  function openSlotOverlay(mode) {
-    _slotMode = mode;
-    const overlay = document.getElementById('slot-overlay');
-    const title   = document.getElementById('slot-overlay-title');
-    const sub     = document.getElementById('slot-overlay-sub');
-    title.textContent = mode === 'load' ? 'LOAD GAME' : 'NEW STORY';
-    sub.textContent   = mode === 'load' ? 'Choose a save file to continue' : 'Choose a slot for your new adventure';
-    _renderSlotCards(mode);
-    overlay.style.display = 'flex';
-    requestAnimationFrame(() => {
-      overlay.classList.add('open');
-      if (typeof Focus !== 'undefined') Focus.setContext('slot-overlay');
-    });
-  }
+    function _renderSlotCards(mode) {
+      const container = document.getElementById('slot-overlay-cards');
+      const slots = Save.listAll();
+      container.innerHTML = slots.map(s => {
+        const num = s.slot + 1;
 
-  function closeSlotOverlay() {
-    const overlay = document.getElementById('slot-overlay');
-    overlay.classList.remove('open');
-    if (typeof Focus !== 'undefined') Focus.setContext(null);
-    setTimeout(() => { overlay.style.display = 'none'; }, 280);
-  }
-
-  function _renderSlotCards(mode) {
-    const container = document.getElementById('slot-overlay-cards');
-    const slots = Save.listAll();
-    container.innerHTML = slots.map(s => {
-      const num = s.slot + 1;
-
-      if (s.empty) {
-        const canLoad = mode === 'load';
-        return `
+        if (s.empty) {
+          const canLoad = mode === 'load';
+          return `
           <div class="sc sc-empty">
             <div class="sc-num">0${num}</div>
             <div class="sc-body">
@@ -718,22 +756,22 @@
             </div>
             <div class="sc-footer">
               ${canLoad
-                ? `<span class="sc-hint">No save data</span>`
-                : `<button class="sc-action primary" onclick="closeSlotOverlay();Story.begin(${s.slot})">START HERE</button>`
-              }
+              ? `<span class="sc-hint">No save data</span>`
+              : `<button class="sc-action primary" onclick="closeSlotOverlay();Story.begin(${s.slot})">START HERE</button>`
+            }
               <button class="sc-action sc-icon-btn" title="Import save file" onclick="triggerImport(${s.slot})">📂</button>
             </div>
           </div>`;
-      }
+        }
 
-      const arc  = s.arcName  || `Arc ${(s.arcIdx || 0) + 1}`;
-      const lv   = (s.partyStats && s.partyStats.length) 
-        ? `Party LV ${Math.max(...s.partyStats.map(p => p.lv || 1))}` 
-        : `LV ${s.hero?.lv || 1}`;
-      const date = Save.dateStr(s.timestamp);
-      const chars = (s.selectedChars || [s.selectedChar]).filter(Boolean).join(' · ');
+        const arc = s.arcName || `Arc ${(s.arcIdx || 0) + 1}`;
+        const lv = (s.partyStats && s.partyStats.length)
+          ? `Party LV ${Math.max(...s.partyStats.map(p => p.lv || 1))}`
+          : `LV ${s.hero?.lv || 1}`;
+        const date = Save.dateStr(s.timestamp);
+        const chars = (s.selectedChars || [s.selectedChar]).filter(Boolean).join(' · ');
 
-      return `
+        return `
         <div class="sc sc-filled">
           <div class="sc-num">0${num}</div>
           <div class="sc-body">
@@ -743,152 +781,152 @@
           </div>
           <div class="sc-footer">
             ${mode === 'load'
-              ? `<button class="sc-action primary" onclick="closeSlotOverlay();Story.loadSave(${s.slot})">▶ CONTINUE</button>`
-              : `<button class="sc-action warn" onclick="_confirmOverwrite(${s.slot})">⚠ OVERWRITE</button>`
-            }
+            ? `<button class="sc-action primary" onclick="closeSlotOverlay();Story.loadSave(${s.slot})">▶ CONTINUE</button>`
+            : `<button class="sc-action warn" onclick="_confirmOverwrite(${s.slot})">⚠ OVERWRITE</button>`
+          }
             <button class="sc-icon-btn" title="Export save" onclick="Save.exportSlot(${s.slot})">⬇</button>
             <button class="sc-icon-btn" title="Import save" onclick="triggerImport(${s.slot})">📂</button>
             <button class="sc-icon-btn danger" title="Delete save" onclick="deleteSlot(${s.slot})">✕</button>
           </div>
         </div>`;
-    }).join('');
-  }
-
-  function _confirmOverwrite(slot) {
-    if (!confirm(`Overwrite Slot ${slot + 1}? Your existing save will be lost.`)) return;
-    closeSlotOverlay();
-    Story.begin(slot);
-  }
-
-  function deleteSlot(slot) {
-    if (!confirm(`Delete Slot ${slot + 1}? This cannot be undone.`)) return;
-    Save.clear(slot);
-    _renderSlotCards(_slotMode);
-    _updateContinueBtn();
-  }
-
-  function triggerImport(slot) {
-    const input = document.getElementById('save-import-input');
-    input.onchange = (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-      Save.importSlot(file, slot, () => {
-        _renderSlotCards(_slotMode);
-        _updateContinueBtn();
-      });
-      input.value = '';
-    };
-    input.click();
-  }
-
-  function _updateContinueBtn() {
-    const btn = document.getElementById('title-continue-btn');
-    if (btn) btn.style.display = Save.listAll().some(s => !s.empty) ? 'inline-block' : 'none';
-  }
-
-  function toggleQuality() {
-    const modes = ['auto', 'high', 'low'];
-    let idx = modes.indexOf(G.settings.graphicsQuality);
-    G.settings.graphicsQuality = modes[(idx + 1) % modes.length];
-    
-    // Save to localStorage
-    localStorage.setItem('sn_graphics_quality', G.settings.graphicsQuality);
-    
-    // Update button text
-    const btn = document.getElementById('quality-btn');
-    if (btn) btn.innerText = `Quality: ${G.settings.graphicsQuality.charAt(0).toUpperCase() + G.settings.graphicsQuality.slice(1)}`;
-    
-    // Re-render map if active
-    if (MapEngine && MapEngine.rescale) { MapEngine.rescale(); }
-    
-    // Log for user
-    console.log(`[Graphics] Switched to ${G.settings.graphicsQuality}`);
-  }
-
-  function _initQualityBtn() {
-    const q = G.settings.graphicsQuality || 'auto';
-    const btn = document.getElementById('quality-btn');
-    if (btn) btn.innerText = `Quality: ${q.charAt(0).toUpperCase() + q.slice(1)}`;
-  }
-
-  window.addEventListener('DOMContentLoaded', () => {
-    _updateContinueBtn();
-    _initQualityBtn();
-  });
-</script>
-
-<!-- Save toast notification -->
-<div id="save-toast"></div>
-
-<script>
-/* ── Fixed Joystick controller for explore screen ────────── */
-const Joystick = (() => {
-  let _active = false;
-  let _base = null, _knob = null;
-  let _rect = null;
-  const _radius = 45;
-
-  function init() {
-    _base = document.getElementById('joystick-base');
-    _knob = document.getElementById('joystick-knob');
-    if (!_base || !_knob) return;
-
-    const container = document.getElementById('joystick-container');
-    container.addEventListener('touchstart', e => _start(e), { passive: false });
-    window.addEventListener('touchmove', e => _move(e), { passive: false });
-    window.addEventListener('touchend', () => _end(), { passive: false });
-    window.addEventListener('touchcancel', () => _end(), { passive: false });
-    
-    // Mouse fallback for testing
-    container.addEventListener('mousedown', e => _start(e), { passive: false });
-    window.addEventListener('mousemove', e => _move(e), { passive: false });
-    window.addEventListener('mouseup', () => _end(), { passive: false });
-  }
-
-  function _start(e) {
-    if (typeof MapEngine === 'undefined' || !MapEngine.isRunning()) return;
-    _active = true;
-    _rect = _base.getBoundingClientRect();
-    _move(e);
-  }
-
-  function _move(e) {
-    if (!_active || !_rect) return;
-    if (e.type.startsWith('touch')) e.preventDefault();
-    
-    const t = e.targetTouches ? e.targetTouches[0] : e;
-    const centerX = _rect.left + _rect.width / 2;
-    const centerY = _rect.top + _rect.height / 2;
-    
-    const dx = t.clientX - centerX;
-    const dy = t.clientY - centerY;
-    const dist = Math.sqrt(dx * dx + dy * dy);
-    
-    const angle = Math.atan2(dy, dx);
-    const clampedDist = Math.min(dist, _radius);
-    const mx = Math.cos(angle) * clampedDist;
-    const my = Math.sin(angle) * clampedDist;
-
-    _knob.style.transform = `translate(calc(-50% + ${mx}px), calc(-50% + ${my}px))`;
-    
-    if (typeof MapInput !== 'undefined') {
-      MapInput.setVector(mx / _radius, my / _radius);
+      }).join('');
     }
-  }
 
-  function _end() {
-    _active = false;
-    if (_knob) _knob.style.transform = 'translate(-50%, -50%)';
-    if (typeof MapInput !== 'undefined') MapInput.setVector(0, 0);
-  }
+    function _confirmOverwrite(slot) {
+      if (!confirm(`Overwrite Slot ${slot + 1}? Your existing save will be lost.`)) return;
+      closeSlotOverlay();
+      Story.begin(slot);
+    }
 
-  return { init };
-})();
+    function deleteSlot(slot) {
+      if (!confirm(`Delete Slot ${slot + 1}? This cannot be undone.`)) return;
+      Save.clear(slot);
+      _renderSlotCards(_slotMode);
+      _updateContinueBtn();
+    }
 
-window.addEventListener('DOMContentLoaded', () => {
-  if (typeof Joystick !== 'undefined') Joystick.init();
-});
-</script>
+    function triggerImport(slot) {
+      const input = document.getElementById('save-import-input');
+      input.onchange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        Save.importSlot(file, slot, () => {
+          _renderSlotCards(_slotMode);
+          _updateContinueBtn();
+        });
+        input.value = '';
+      };
+      input.click();
+    }
+
+    function _updateContinueBtn() {
+      const btn = document.getElementById('title-continue-btn');
+      if (btn) btn.style.display = Save.listAll().some(s => !s.empty) ? 'inline-block' : 'none';
+    }
+
+    function toggleQuality() {
+      const modes = ['auto', 'high', 'low'];
+      let idx = modes.indexOf(G.settings.graphicsQuality);
+      G.settings.graphicsQuality = modes[(idx + 1) % modes.length];
+
+      // Save to localStorage
+      localStorage.setItem('sn_graphics_quality', G.settings.graphicsQuality);
+
+      // Update button text
+      const btn = document.getElementById('quality-btn');
+      if (btn) btn.innerText = `Quality: ${G.settings.graphicsQuality.charAt(0).toUpperCase() + G.settings.graphicsQuality.slice(1)}`;
+
+      // Re-render map if active
+      if (MapEngine && MapEngine.rescale) { MapEngine.rescale(); }
+
+      // Log for user
+      console.log(`[Graphics] Switched to ${G.settings.graphicsQuality}`);
+    }
+
+    function _initQualityBtn() {
+      const q = G.settings.graphicsQuality || 'auto';
+      const btn = document.getElementById('quality-btn');
+      if (btn) btn.innerText = `Quality: ${q.charAt(0).toUpperCase() + q.slice(1)}`;
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      _updateContinueBtn();
+      _initQualityBtn();
+    });
+  </script>
+
+  <!-- Save toast notification -->
+  <div id="save-toast"></div>
+
+  <script>
+    /* ── Fixed Joystick controller for explore screen ────────── */
+    const Joystick = (() => {
+      let _active = false;
+      let _base = null, _knob = null;
+      let _rect = null;
+      const _radius = 45;
+
+      function init() {
+        _base = document.getElementById('joystick-base');
+        _knob = document.getElementById('joystick-knob');
+        if (!_base || !_knob) return;
+
+        const container = document.getElementById('joystick-container');
+        container.addEventListener('touchstart', e => _start(e), { passive: false });
+        window.addEventListener('touchmove', e => _move(e), { passive: false });
+        window.addEventListener('touchend', () => _end(), { passive: false });
+        window.addEventListener('touchcancel', () => _end(), { passive: false });
+
+        // Mouse fallback for testing
+        container.addEventListener('mousedown', e => _start(e), { passive: false });
+        window.addEventListener('mousemove', e => _move(e), { passive: false });
+        window.addEventListener('mouseup', () => _end(), { passive: false });
+      }
+
+      function _start(e) {
+        if (typeof MapEngine === 'undefined' || !MapEngine.isRunning()) return;
+        _active = true;
+        _rect = _base.getBoundingClientRect();
+        _move(e);
+      }
+
+      function _move(e) {
+        if (!_active || !_rect) return;
+        if (e.type.startsWith('touch')) e.preventDefault();
+
+        const t = e.targetTouches ? e.targetTouches[0] : e;
+        const centerX = _rect.left + _rect.width / 2;
+        const centerY = _rect.top + _rect.height / 2;
+
+        const dx = t.clientX - centerX;
+        const dy = t.clientY - centerY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        const angle = Math.atan2(dy, dx);
+        const clampedDist = Math.min(dist, _radius);
+        const mx = Math.cos(angle) * clampedDist;
+        const my = Math.sin(angle) * clampedDist;
+
+        _knob.style.transform = `translate(calc(-50% + ${mx}px), calc(-50% + ${my}px))`;
+
+        if (typeof MapInput !== 'undefined') {
+          MapInput.setVector(mx / _radius, my / _radius);
+        }
+      }
+
+      function _end() {
+        _active = false;
+        if (_knob) _knob.style.transform = 'translate(-50%, -50%)';
+        if (typeof MapInput !== 'undefined') MapInput.setVector(0, 0);
+      }
+
+      return { init };
+    })();
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if (typeof Joystick !== 'undefined') Joystick.init();
+    });
+  </script>
 
   <!-- CREDITS OVERLAY -->
   <div id="credits-overlay" style="display:none">
@@ -912,4 +950,5 @@ window.addEventListener('DOMContentLoaded', () => {
     <button id="credits-close-btn" style="display:none" onclick="Credits.close()">RETURN TO TITLE</button>
   </div>
 </body>
+
 </html>

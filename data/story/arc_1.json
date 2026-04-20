@@ -41,7 +41,7 @@
 
   "chapters": [
     {
-      "id": "arc1_prologue_xiao",
+      "id": "arc1_prologue_rei",
       "title": "The Warden's Arrival",
       "type": "cutscene",
       "background": "summoning_ruins",
@@ -77,7 +77,7 @@
       ]
     },
     {
-      "id": "arc1_prologue_ayaka",
+      "id": "arc1_prologue_aya",
       "title": "The Blade's Duty",
       "type": "cutscene",
       "background": "summoning_ruins",
@@ -116,14 +116,14 @@
       ]
     },
     {
-      "id": "arc1_prologue_nilou",
+      "id": "arc1_prologue_lulu",
       "title": "The Dancer's New Song",
       "type": "cutscene",
       "background": "summoning_ruins",
       "cast": ["Lulu"],
       "scenes": [
         {
-          "narration": "Water cascades through a rift in the world. Nilou emerges not with violence but with grace, her dancer's instincts translating the chaos into something resembling a step. She lands on fractured stone, and the first thing she notices is the stars.",
+          "narration": "Water cascades through a rift in the world. Lulu emerges not with violence but with grace, her dancer's instincts translating the chaos into something resembling a step. She lands on fractured stone, and the first thing she notices is the stars.",
           "dialogue": [
             { "speaker": "Lulu", "emotion": "awed", "text": "The constellations... they are wrong. Or perhaps I have never seen them at all." }
           ]
@@ -155,14 +155,14 @@
       ]
     },
     {
-      "id": "arc1_prologue_hutao",
+      "id": "arc1_prologue_tao",
       "title": "The Funeral Director's Calling",
       "type": "cutscene",
       "background": "summoning_ruins",
       "cast": ["Tao"],
       "scenes": [
         {
-          "narration": "A burst of flame, then laughter. Hu Tao tumbles through a rift in the world like it is the most natural thing, landing on broken stone with a grin that does not quite reach her eyes.",
+          "narration": "A burst of flame, then laughter. Tao tumbles through a rift in the world like it is the most natural thing, landing on broken stone with a grin that does not quite reach her eyes.",
           "dialogue": [
             { "speaker": "Tao", "emotion": "delighted", "text": "Well! This is far more interesting than yesterday's paperwork~ Where am I this time?" }
           ]
@@ -211,7 +211,7 @@
           ]
         },
         {
-          "narration": "A burst of flame ignites nearby as Hu Tao tumbles through a crackling rift, already grinning.",
+          "narration": "A burst of flame ignites nearby as Tao tumbles through a crackling rift, already grinning.",
           "dialogue": [
             { "speaker": "Tao", "emotion": "delighted", "text": "Ohoho~! Now THIS is the most interesting thing that has happened to me all week, and I was chasing a malevolent spirit this morning!" },
             { "speaker": "Aya", "emotion": "surprised", "text": "...You seem remarkably calm for someone who just fell out of thin air." },
@@ -219,7 +219,7 @@
           ]
         },
         {
-          "narration": "Water cascades from a second rift as Nilou steps through, her dancer instincts keeping her upright.",
+          "narration": "Water cascades from a second rift as Lulu steps through, her dancer instincts keeping her upright.",
           "dialogue": [
             { "speaker": "Lulu", "emotion": "awed", "text": "Oh... the stars here are a different color. Did we cross worlds?" },
             { "speaker": "Tao", "emotion": "philosophical", "text": "The boundary between worlds is thinner than people think. I have always suspected as much." },
@@ -227,7 +227,7 @@
           ]
         },
         {
-          "narration": "He does not fall through the rift. He steps through it. Xiao surveys the ruins with eyes that have seen the end of things before.",
+          "narration": "He does not fall through the rift. He steps through it. Rei surveys the ruins with eyes that have seen the end of things before.",
           "dialogue": [
             { "speaker": "Rei", "emotion": "grim", "text": "This place reeks of karmic weight. Something ancient has been wounded here." },
             { "speaker": "Lulu", "emotion": "gentle", "text": "You can sense that? Are you a guardian spirit?" },

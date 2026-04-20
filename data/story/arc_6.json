@@ -20,7 +20,7 @@
           "narration": "The fortress materializes before them like a wound in the sky — black stone that seems to swallow light, towers that twist in ways that hurt to look at. It is not built. It is grown. Fed. Alive."
         },
         {
-          "narration": "Ayaka stands at the front, the four Seal Fragments held in her hands. They pulse with light — answering each other, drawing closer to completion.",
+          "narration": "Aya stands at the front, the four Seal Fragments held in her hands. They pulse with light — answering each other, drawing closer to completion.",
           "dialogue": [
             { "speaker": "Aya", "emotion": "resolute", "text": "Four pieces broken and reclaimed. One fragment remains — inside that darkness. And one more answer: why." },
             { "speaker": "Tao", "emotion": "focused", "text": "I have guided the dead across the veil for so long. I can feel the weight of souls trapped in that place. Screaming." },
@@ -71,7 +71,7 @@
     "cast": ["Aya", "Tao", "Lulu", "Rei", "Ria", "Drake"],
     "scenes": [
       {
-        "narration": "As the Void Warden falls, Kain emerges from the shadow, his dragoon armor gleaming with aerial energy. Behind him, the sky itself seems to brighten.",
+        "narration": "As the Void Warden falls, Drake emerges from the shadow, his dragoon armor gleaming with aerial energy. Behind him, the sky itself seems to brighten.",
         "dialogue": [
           { "speaker": "Drake", "emotion": "strong", "text": "The barrier that bound me — it shattered the moment your light broke through. I am free. And I stand with you." },
           { "speaker": "Aya", "emotion": "welcoming", "text": "The Dragoon of the Sky. You have come far to find this purpose." },
@@ -81,3 +81,4 @@
     ]
   }
 }
+

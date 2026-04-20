@@ -33,7 +33,19 @@ const Save = {
         }
       }
       const raw = localStorage.getItem(this._key(slot));
-      return raw ? JSON.parse(raw) : null;
+      if (!raw) return null;
+      
+      const s = JSON.parse(raw);
+      // Migration: Map old character IDs to new ones
+      if (typeof migrateCharId === 'function') {
+        if (s.selectedChar) s.selectedChar = migrateCharId(s.selectedChar);
+        if (s.selectedChars) s.selectedChars = s.selectedChars.map(migrateCharId);
+        if (s.unlockedChars) s.unlockedChars = s.unlockedChars.map(migrateCharId);
+        if (s.partyStats) {
+          s.partyStats.forEach(p => { if (p.charId) p.charId = migrateCharId(p.charId); });
+        }
+      }
+      return s;
     } catch(e) { return null; }
   },
 
