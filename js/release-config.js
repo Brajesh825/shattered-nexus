@@ -4,7 +4,7 @@
  */
 const ReleaseConfig = {
   // Current release version string
-  VERSION: "v1.0.0-alpha",
+  VERSION: "v1.0.0-beta",
 
   // The index of the last reachable arc in this specific build.
   // 0 = Arc 1 (Verdant Vale)
@@ -14,6 +14,13 @@ const ReleaseConfig = {
 
   // Toggle for demo/beta specific UI behavior
   IS_BETA: true,
+
+  // Toggle for the "Boss Mode" (Gauntlet) button on the title screen
+  ENABLE_BOSS_MODE: false,
+
+  // Development mode: set to false for production
+  // Can be overridden via ?debug=true URL parameter
+  IS_DEV: false,
 
   // UI Strings for the "End of Version" screen
   BETA_END_TITLE: "ARC 1 COMPLETE",

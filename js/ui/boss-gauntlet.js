@@ -14,10 +14,31 @@ const BossGauntlet = {
         const btn = document.getElementById('gauntlet-btn');
         if (!btn) return;
 
-        // DEBUG: Force button visibility for testing
-        btn.style.display = 'flex';
+        // Check for debug/dev override
+        const urlParams = new URLSearchParams(window.location.search);
+        const isDebug = urlParams.get('debug') === 'true' || urlParams.get('dev') === 'true' || (typeof ReleaseConfig !== 'undefined' && ReleaseConfig.IS_DEV);
 
-        if (window.LogDebug) window.LogDebug(`[Gauntlet] Mode unlocked for testing`, 'passive');
+        const isEnabled = (typeof ReleaseConfig !== 'undefined' && ReleaseConfig.ENABLE_BOSS_MODE) || isDebug;
+
+        btn.style.display = isEnabled ? 'flex' : 'none';
+
+        if (isEnabled && window.LogDebug) window.LogDebug(`[Gauntlet] Mode unlocked ${isDebug ? '(DEV)' : ''}`, 'passive');
+    },
+
+    // Map of Boss IDs to their corresponding Arc Index (0-based)
+    getBossArcMap() {
+        return {
+            "void_knight": 0,    // Arc 1
+            "abomination": 1,    // Arc 2
+            "dragon": 2,         // Arc 3
+            "fallen_angel": 3,   // Arc 4
+            "void_warden": 4,    // Arc 5
+            "shadow_titan": 5,   // Arc 6
+            "shadow_emperor": 6, // Arc 7
+            "kraken": 7,         // Arc 8
+            "demon_lord": 8,
+            "dark_phoenix": 9
+        };
     },
 
     // Definitive list of Story Bosses (Arc Guardians)
@@ -205,7 +226,16 @@ const BossGauntlet = {
 
         // Ensure we handle both cases where ENEMIES_DATA is global or localized
         const data = window.ENEMIES_DATA || (typeof G !== 'undefined' ? G.enemies : []);
-        const bosses = data.filter(e => allBossIds.includes(e.id));
+        let bosses = data.filter(e => allBossIds.includes(e.id));
+
+        // Release Filter: Only show bosses from released arcs
+        if (typeof ReleaseConfig !== 'undefined') {
+            const arcMap = this.getBossArcMap();
+            bosses = bosses.filter(b => {
+                const bossArc = arcMap[b.id] ?? 99; // Default to locked if unknown
+                return bossArc <= ReleaseConfig.MAX_REACHABLE_ARC;
+            });
+        }
 
         if (bosses.length === 0) {
             grid.innerHTML = '<div class="gauntlet-empty">Loading Boss Data...<br><span style="font-size:12px;color:#666">If this persists, ensuring enemies.json is loaded</span></div>';
