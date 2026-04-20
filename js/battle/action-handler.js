@@ -555,11 +555,6 @@ const ActionEngine = {
   _offensive(actor, targets, ab, element, moveConfig, isEnemyAction) {
     const e = ab.effect || {};
 
-    // Cooldown guard (hero actions only)
-    if (!isEnemyAction && actor.cooldowns?.[ab.id] > 0) {
-      BattleUI.addLog(`${ab.name} is on cooldown for ${actor.cooldowns[ab.id]} turns!`, 'dmg');
-      G.busy = false; BattleUI.btns(true); return;
-    }
     if (typeof SFX !== 'undefined') {
       if (!isEnemyAction) {
         if (ab.type === 'physical') SFX.attack(); else SFX.magic();
