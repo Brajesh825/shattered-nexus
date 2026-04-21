@@ -196,4 +196,129 @@ const NPC_DEFS = {
     },
   },
 
+  // ─── Arc 1 — Verdant Vale ────────────────────────────────────────────────
+
+  elder_maren: {
+    name:   'Elder Maren',
+    color:  '#fbbf24',
+    sprite: 'images/characters/map/sheets/npc/essabela_sheet.png',
+    dialogues: {
+      verdant_vale: [
+        { speaker: 'Elder Maren', text: 'The shrine has not pulsed like this in forty years. Not since a scholar from the capital came through with questions about the Sealing Rites.' },
+        { speaker: 'Aya',         text: 'A scholar? Do you remember his name?' },
+        { speaker: 'Elder Maren', text: 'Valdris. Quiet man. Careful with his words. He spent three days copying the inscriptions, then left without a goodbye.' },
+        { speaker: 'Tao',         text: 'Sounds like a charming sort.' },
+        { speaker: 'Elder Maren', text: 'He was not unkind. Just… focused. As if something weighed on him already then.' },
+        { speaker: 'Lulu',        text: 'What did the inscriptions say?' },
+        { speaker: 'Elder Maren', text: '"What was sealed with memory cannot be undone without sacrifice." We never understood it fully. Perhaps he did.' },
+        { speaker: 'Rei',         text: 'The Void Knight came from the east. Did Valdris go east?' },
+        { speaker: 'Elder Maren', text: 'He did. Into the caverns. I told him it was dangerous. He said danger was a fair trade for answers.' },
+        { speaker: 'Aya',         text: 'Then we follow the same road.' },
+        { speaker: 'Elder Maren', text: 'Take this with you — my blessing and my worry. The shrine chose to pulse again when you arrived. That is not coincidence.' },
+      ],
+    },
+  },
+
+  soldier_davan: {
+    name:   'Soldier Davan',
+    color:  '#94a3b8',
+    sprite: 'images/characters/map/sheets/npc/essabela_sheet.png',
+    dialogues: {
+      verdant_vale: [
+        { speaker: 'Soldier Davan', text: '…Don\'t. Don\'t come closer. I need a moment.' },
+        { speaker: 'Rei',           text: 'We mean no harm. What happened here?' },
+        { speaker: 'Soldier Davan', text: 'The Void Knight came through three nights ago. My unit — eight men — we tried to hold the bridge.' },
+        { speaker: 'Tao',           text: 'You\'re the only one standing.' },
+        { speaker: 'Soldier Davan', text: 'He didn\'t kill them. That\'s what you need to understand. He emptied them. They\'re still there. Still breathing. But when you look in their eyes, there\'s nothing left.' },
+        { speaker: 'Aya',           text: 'Void consumption. He is absorbing something from them.' },
+        { speaker: 'Soldier Davan', text: 'One of them was my brother. He looked right through me. No recognition. Nothing.' },
+        { speaker: 'Lulu',          text: 'I\'m so sorry.' },
+        { speaker: 'Soldier Davan', text: 'Don\'t be sorry. Just stop him. Whatever he is taking from people — don\'t let him take more. Promise me that.' },
+        { speaker: 'Rei',           text: 'We will stop him. You have my word.' },
+        { speaker: 'Soldier Davan', text: '…Good. That\'s good. I\'ll hold the road here. In case my brother wakes up.' },
+      ],
+    },
+  },
+
+  lira: {
+    name:   'Lira',
+    color:  '#86efac',
+    sprite: 'images/characters/map/sheets/npc/essabela_sheet.png',
+    dialogues: {
+      verdant_vale: [
+        { speaker: 'Lira', text: '…Hello? Are you the ones the elder said were coming?' },
+        { speaker: 'Tao',  text: 'Depends on what the elder said. How old are you, kid?' },
+        { speaker: 'Lira', text: 'Eight. My name is Lira. I\'ve been hiding here since the scary man walked through.' },
+        { speaker: 'Aya',  text: 'You stayed safe. That was the right thing to do.' },
+        { speaker: 'Lira', text: 'The trees were shaking. Not from wind — from him. Like they were scared too.' },
+        { speaker: 'Tao',  text: '…Even trees have instincts.' },
+        { speaker: 'Lira', text: 'Are you going to fight him? The scary man?' },
+        { speaker: 'Rei',  text: 'Yes.' },
+        { speaker: 'Lira', text: 'Will you come back after?' },
+        { speaker: 'Tao',  text: 'Hey — of course we will. Someone has to make sure you stop hiding in orchards.' },
+        { speaker: 'Lira', text: 'Promise?' },
+        { speaker: 'Tao',  text: '…Yeah. Promise.' },
+        { speaker: 'Lira', text: 'Okay. I\'ll wait here. The apples are good. I saved some.' },
+        { speaker: 'Aya',  text: 'Thank you, Lira. Stay out of sight until it is over.' },
+      ],
+    },
+  },
+
+  // ─── Arc 2 — Crystal Cavern ──────────────────────────────────────────────
+
+  the_archivist: {
+    name:   'The Archivist',
+    color:  '#7dd3fc',
+    sprite: 'images/characters/map/sheets/npc/essabela_sheet.png',
+    dialogues: {
+      crystal_cavern: [
+        { speaker: 'The Archivist', text: 'Visitors. How unexpected. How… inconvenient.' },
+        { speaker: 'Tao',           text: 'Great. An undead librarian. My absolute favourite.' },
+        { speaker: 'The Archivist', text: 'I am not undead. I am persistent. There is a distinction I take personally.' },
+        { speaker: 'Aya',           text: 'You knew Valdris.' },
+        { speaker: 'The Archivist', text: 'A statement, not a question. Good. Valdris was a student of mine, many decades ago. Brilliant. Unsettlingly so.' },
+        { speaker: 'Lulu',          text: 'Unsettling how?' },
+        { speaker: 'The Archivist', text: 'Most scholars ask questions and accept the limits of an answer. Valdris could not. He needed to understand everything — the Sealing Rites, the original Void, the nature of sacrifice.' },
+        { speaker: 'Rei',           text: 'Did he find his answers?' },
+        { speaker: 'The Archivist', text: 'He found one. That was the problem. A single answer that explained everything. Those are the most dangerous kind.' },
+        { speaker: 'Aya',           text: 'What did he find?' },
+        { speaker: 'The Archivist', text: 'That the Void was never sealed. It was bargained with. And the bargain — whoever struck it — is coming due.' },
+        { speaker: 'Tao',           text: 'So Valdris knew this and still went looking for it.' },
+        { speaker: 'The Archivist', text: 'He thought he could renegotiate. He was brilliant. That was the problem. He could not accept that some things are beyond revision.' },
+        { speaker: 'Aya',           text: 'Where did he go from here?' },
+        { speaker: 'The Archivist', text: 'The eastern tunnels. Toward the Seal itself. I could not follow — this cavern is the limit of my… persistence.' },
+        { speaker: 'Lulu',          text: 'We will find him.' },
+        { speaker: 'The Archivist', text: 'Do. And when you do — if he is still Valdris — tell him his teacher waited. And that he was still wrong about chapter seven.' },
+      ],
+    },
+  },
+
+  ghost_knight: {
+    name:   'Knight of the Vale',
+    color:  '#a5f3fc',
+    sprite: 'images/characters/map/sheets/npc/essabela_sheet.png',
+    dialogues: {
+      crystal_cavern: [
+        { speaker: 'Knight of the Vale', text: 'Halt. State your allegiance and reason for passage through the Seal Corridor.' },
+        { speaker: 'Rei',                text: 'We are not enemies. We travel to—' },
+        { speaker: 'Knight of the Vale', text: 'Protocol requires identification. The third gate must be verified before dawn patrol ends.' },
+        { speaker: 'Tao',                text: 'Rei. Something is wrong. His feet.' },
+        { speaker: 'Rei',                text: '…He is not touching the ground.' },
+        { speaker: 'Knight of the Vale', text: 'Third rotation. No anomalies. Reporting clear passage on the western tunnel.' },
+        { speaker: 'Lulu',               text: 'He does not know.' },
+        { speaker: 'Aya',                text: 'The patrol is a memory. He is reliving the last moment he understood.' },
+        { speaker: 'Knight of the Vale', text: 'Something moved in the deep corridor. Investigating. …Strange. The crystals are brighter tonight.' },
+        { speaker: 'Rei',                text: '…When did you last see the sky, soldier?' },
+        { speaker: 'Knight of the Vale', text: 'The sky?' },
+        { speaker: 'Knight of the Vale', text: '…I do not — I cannot—' },
+        { speaker: 'Knight of the Vale', text: 'How long have I been walking this hall?' },
+        { speaker: 'Lulu',               text: 'I think… a very long time.' },
+        { speaker: 'Knight of the Vale', text: 'The others. My unit. Are they—' },
+        { speaker: 'Rei',                text: 'They are at rest. I believe that now.' },
+        { speaker: 'Knight of the Vale', text: 'Then I may rest as well.' },
+        { speaker: 'Knight of the Vale', text: 'Tell the Lord Commander… the corridor is clear. No anomalies.' },
+      ],
+    },
+  },
+
 };
