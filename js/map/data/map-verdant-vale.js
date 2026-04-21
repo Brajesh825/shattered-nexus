@@ -15,6 +15,7 @@ MAP_DEFS.verdant_vale = {
     playerStart: { x: 7, y: 10 },
     bgColor: '#0a1a05',
     ambientLight: 'rgba(60,180,60,0.04)',
+    weather: 'leaves',
     enemyLevelRange: [1, 3],
     // Arc 1 — very lenient. Player is still learning the game.
     mutationConfig: {

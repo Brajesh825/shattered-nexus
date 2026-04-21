@@ -67,20 +67,41 @@ const TILE_RENDERS = (() => {
   }
 
   function water(ctx, def, sx, sy, tw, th, t) {
-    ctx.fillStyle = '#081828';
+    // Deep base
+    ctx.fillStyle = '#060e1c';
     ctx.fillRect(sx, sy, tw, th);
-    const s = (Math.sin(t * 1.8 + sx * 0.04) + 1) * 0.5;
-    const r = (8  + s * 6)  | 0;
-    const g = (40 + s * 30) | 0;
-    ctx.fillStyle = `rgba(${r},${g},160,0.35)`;
+
+    // Animated depth colour wash
+    const s = (Math.sin(t * 1.8) + 1) * 0.5;
+    const ri = (8  + s * 6)  | 0;
+    const gi = (40 + s * 30) | 0;
+    ctx.fillStyle = `rgba(${ri},${gi},160,0.38)`;
     ctx.fillRect(sx, sy, tw, th);
+
+    // Horizontal ripple bands
     for (let i = 0; i < 3; i++) {
-      const wy = sy + th * 0.2 + i * (th * 0.25) + Math.sin(t * 1.1 + sx * 0.08 + i) * 3;
-      ctx.fillStyle = `rgba(60,120,220,${0.15 + s * 0.2})`;
-      ctx.fillRect(sx + 3, wy, tw - 6, 2);
+      const wy = sy + th * 0.15 + i * (th * 0.28) + Math.sin(t * 1.1 + i * 0.9) * 3.5;
+      const alpha = (0.12 + s * 0.18) * (1 - i * 0.18);
+      ctx.fillStyle = `rgba(60,130,230,${alpha})`;
+      ctx.fillRect(sx + 3, wy, tw - 6, 1.5);
     }
-    ctx.fillStyle = `rgba(180,220,255,${0.3 * s})`;
-    ctx.beginPath(); ctx.arc(sx + tw * 0.3, sy + th * 0.3, 2, 0, Math.PI * 2); ctx.fill();
+
+    // Caustic light dots
+    const causticPts = [[0.28,0.28],[0.68,0.48],[0.18,0.72],[0.78,0.22],[0.52,0.62]];
+    causticPts.forEach(([fx, fy], i) => {
+      const brightness = (Math.sin(t * 2.6 + i * 1.4) + 1) * 0.5;
+      const cx = sx + tw * fx + Math.sin(t * 1.9 + i * 2.3) * 4;
+      const cy = sy + th * fy + Math.cos(t * 2.1 + i * 1.8) * 3;
+      ctx.fillStyle = `rgba(180,225,255,${0.10 + brightness * 0.28})`;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 1.2 + brightness * 1.6, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    // Surface highlight — pre-computed, no gradient allocation
+    const shimmer = (0.18 + 0.12 * Math.sin(t * 2.2)) * s;
+    ctx.fillStyle = `rgba(120,180,255,${shimmer.toFixed(2)})`;
+    ctx.fillRect(sx, sy, tw, 5);
   }
 
   function bridge(ctx, def, sx, sy, tw, th) {

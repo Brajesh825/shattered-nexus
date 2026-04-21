@@ -117,6 +117,7 @@ MAP_DEFS.sunken_temple = (function() {
         playerStart: { x: 30, y: 30 },
         bgColor: '#020c14',
         ambientLight: 'rgba(0,100,255,0.1)',
+        weather: 'rain',
         enemyLevelRange: [15, 25],
         // Arc 4 — cursed waters accelerate corruption. Stay moving.
         mutationConfig: {
