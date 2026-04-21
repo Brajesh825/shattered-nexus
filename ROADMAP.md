@@ -3,13 +3,9 @@
 This document outlines the detailed roadmap for the next phase of RPG+ (Aethoria Chronicles) development.
 
 ## 1. Map Enhancing (Make it feel amazing)
-The `map-engine.js` and `map-ui.js` handle tiling and exploration. To improve the visual fidelity and "feel" of exploration, we will add:
-- **Lighting & Shadows:** Introduce a dynamic vignette or lighting gradient around the player character.
-- **Ambient Particles:** Add an ambient particle system to the `<canvas>` rendering loop (e.g., leaves in Verdant Vale, embers in Ember Wastes, snow in Crystal Cavern).
-- **Camera Polish:** Add smooth camera pan/lerping when following the player rather than rigid grid snapping.
+The `map-engine.js` and `map-ui.js` handle tiling and exploration. Remaining work:
 - **Smooth Enemy Rendering:** Ensure enemies drawn on the map canvas are rendered smoothly to remove heavy pixelation.
 - **Interactive Map Puzzles:** Introduce environmental puzzles (switches, pushing blocks, traps) to make map traversal more engaging.
-- **Audio Feedback:** Add gentle footstep SFX when the player moves.
 
 ## 2. Story and World Building with NPCs
 Currently, storytelling relies on cutscenes and lore fragments. To make the world feel lived-in:
