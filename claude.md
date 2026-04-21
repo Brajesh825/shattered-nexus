@@ -135,3 +135,12 @@ Engine status is exposed via `window.LogDebug(msg, type)`.
 - **Reserved Tags**: `[MATH-PHYS]`, `[MATH-MAGIC]`, `[ENEMY-MATH-MAGIC]`, `[ENEMY-MATH-PHYS]`, `[STATE-DIAG]`, `[Aura]`, `[Passive]`, `[Gauntlet]`, `[BUFF]`, `[DEBUFF]`, `[AI-SUPPORT]`, `[HitRoll]`, `[CritRoll]`, `[KO]`.
 - **Gauntlet Mode**: Use for stress-testing AI and new enemy tiers. Accessible from the map screen. Boss list defined in `BossGauntlet.getBossIds()` — add new arc bosses here.
 - **Magic Defense Formula**: `mdef = def×0.25 + mag×0.25 + level×0.5` — both attacker and defender use this blend. Pure DEF tanks and pure MAG mages both get meaningful resistance without immunity.
+
+---
+
+## 📱 Device Support Standards
+The game is responsive and cross-platform. UI components MUST be rigorously tested and scale correctly across the following core breakpoints/devices:
+1. **iPhone SE (375x667)** - The tightest baseline testing boundary. UI elements cannot overlap or require horizontal scrolling.
+2. **iPhone XR / 11 (414x896)** - Mid-tier standard mobile.
+3. **iPhone 12/13/14 Pro (390x844)** - Modern portrait standard.
+4. **Desktop / Laptops** - Widescreen layouts, where the main wrapper should gracefully constrain with empty side gutters or an expanded view without stretching character sprites incorrectly.

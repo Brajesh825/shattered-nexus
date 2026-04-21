@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    ui-overlays.css — Shattered Nexus
    Settings panel, save slot overlay, party swap sheet,
    save toast, overlay nav buttons, reaction popup,
@@ -157,7 +157,7 @@
   justify-content: center;
   z-index: 800;
   opacity: 0;
-  transition: opacity 0.28s;
+  transition: opacity 0.3s;
 }
 
 .slot-overlay.open {
@@ -167,23 +167,23 @@
 .slot-overlay-bg {
   position: absolute;
   inset: 0;
-  background: rgba(2, 5, 12, 0.88);
-  backdrop-filter: blur(4px);
+  background: rgba(2, 4, 10, 0.92);
+  backdrop-filter: blur(12px);
 }
 
 .slot-overlay-panel {
   position: relative;
   z-index: 1;
-  width: min(480px, 92vw);
+  width: min(1000px, 94vw);
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  transform: translateY(16px);
-  transition: transform 0.28s;
+  gap: 20px;
+  transform: translateY(24px) scale(0.98);
+  transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .slot-overlay.open .slot-overlay-panel {
-  transform: translateY(0);
+  transform: translateY(0) scale(1);
 }
 
 .slot-overlay-header {
@@ -191,176 +191,352 @@
 }
 
 .slot-overlay-title {
-  font-size: 22px;
-  letter-spacing: 6px;
-  color: #c0d8f8;
-  font-family: inherit;
+  font-family: 'Cinzel', serif;
+  font-size: 28px;
+  letter-spacing: 8px;
+  color: #e0f0ff;
+  text-shadow: 0 0 20px rgba(120, 180, 255, 0.4);
+  text-transform: uppercase;
 }
 
 .slot-overlay-sub {
-  font-size: 11px;
-  color: #2a4060;
-  letter-spacing: 2px;
-  margin-top: 4px;
+  font-family: 'VT323', monospace;
+  font-size: 14px;
+  color: #507090;
+  letter-spacing: 3px;
+  margin-top: 6px;
 }
 
-/* ── Slot Cards ── */
+/* ── Slot Cards Grid ── */
 .slot-overlay-cards {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+  perspective: 1000px;
 }
 
 .sc {
-  background: linear-gradient(135deg, #070d1a, #0c1424);
-  border: 1px solid #182840;
-  border-radius: 10px;
-  padding: 16px 18px 14px;
+  background: rgba(10, 18, 30, 0.5);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(60, 100, 150, 0.2);
+  border-radius: 12px;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  transition: border-color 0.2s, background 0.2s;
+  transition: all 0.3s cubic-bezier(0.2, 0.6, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
-.sc.sc-filled {
-  border-color: #1e3558;
+.sc:hover {
+  transform: translateY(-8px) scale(1.02);
+  border-color: rgba(100, 160, 255, 0.5);
+  background: rgba(15, 25, 45, 0.7);
+  box-shadow: 0 20px 50px rgba(0, 80, 200, 0.3), 0 0 2px rgba(100, 160, 255, 0.5) inset;
 }
 
-.sc.sc-filled:hover {
-  border-color: #2e5080;
-  background: linear-gradient(135deg, #080f1e, #0e1830);
+.sc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  background: rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid rgba(60, 100, 150, 0.1);
 }
 
 .sc-num {
-  font-size: 11px;
-  color: #1e3050;
-  letter-spacing: 3px;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 8px;
+  color: rgba(120, 160, 200, 0.6);
+  letter-spacing: 1px;
 }
 
+.sc-status {
+  font-family: 'VT323', monospace;
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: rgba(40, 60, 80, 0.4);
+  color: #70a0c0;
+}
+
+.sc-filled .sc-status {
+  color: #70d0ff;
+  background: rgba(40, 120, 200, 0.15);
+}
+
+/* ── Card Body ── */
 .sc-body {
+  padding: 20px 16px;
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-.sc-arc {
-  font-size: 15px;
-  color: #7ab0e0;
-  letter-spacing: 1px;
-  margin-bottom: 4px;
+.sc-arc-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.sc-chars {
-  font-size: 11px;
-  color: #4a6a90;
+.sc-arc-name {
+  font-family: 'Cinzel', serif;
+  font-size: 18px;
+  color: #aac0f0;
   letter-spacing: 1px;
-  margin-bottom: 4px;
-  text-transform: capitalize;
 }
 
 .sc-meta {
-  font-size: 11px;
-  color: #2a4060;
+  font-family: 'VT323', monospace;
+  font-size: 16px;
+  color: #5078a0;
   letter-spacing: 0.5px;
 }
 
-.sc-empty-label {
-  font-size: 13px;
-  color: #1e2e40;
-  letter-spacing: 2px;
-  padding: 6px 0;
+/* ── Party Row ── */
+.sc-party-row {
+  display: flex;
+  gap: 6px;
+  margin-top: 4px;
 }
 
-.sc-hint {
-  font-size: 11px;
-  color: #1a2a38;
-  letter-spacing: 1px;
-}
-
-/* ── Slot Footer ── */
-.sc-footer {
+.sc-hero-wrap {
+  width: 44px;
+  height: 52px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(120, 160, 200, 0.1);
+  border-radius: 6px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  border-top: 1px solid #101e30;
-  padding-top: 10px;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.sc-hero-canvas {
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+}
+
+/* ── Empty Slot ── */
+.sc-empty {
+  opacity: 0.7;
+}
+
+.sc-empty-visual {
+  font-size: 40px;
+  color: rgba(60, 80, 120, 0.3);
+  text-align: center;
+  margin-top: 10px;
+}
+
+.sc-empty-label {
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  color: #405870;
+  letter-spacing: 3px;
+  text-align: center;
+  margin-top: 8px;
+}
+
+/* ── Footer ── */
+.sc-footer {
+  padding: 14px 16px;
+  background: rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-top: 1px solid rgba(60, 100, 150, 0.1);
 }
 
 .sc-action {
   flex: 1;
-  background: none;
-  border: 1px solid #1e3858;
-  color: #4a80b8;
-  font-size: 12px;
-  padding: 8px 14px;
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 2px;
+  padding: 10px;
   border-radius: 6px;
+  border: 1px solid;
   cursor: pointer;
-  letter-spacing: 1.5px;
-  transition: all 0.18s;
+  transition: all 0.2s;
 }
 
 .sc-action.primary {
-  border-color: #2a5898;
-  color: #70b0f0;
+  background: linear-gradient(135deg, #1040a0, #082060);
+  border-color: #2a68d0;
+  color: #fff;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
 }
 
 .sc-action.primary:hover {
-  background: #0a1e3a;
-  border-color: #4a80d0;
-  color: #a0d0ff;
+  border-color: #50a0ff;
+  box-shadow: 0 0 15px rgba(80, 160, 255, 0.4);
 }
 
 .sc-action.warn {
-  border-color: #5a3820;
-  color: #c08040;
+  background: rgba(120, 60, 20, 0.1);
+  border-color: #80401a;
+  color: #e09060;
 }
 
 .sc-action.warn:hover {
-  background: #1a0e04;
-  border-color: #906030;
-  color: #e0a860;
+  background: rgba(120, 60, 20, 0.2);
+  border-color: #c06020;
+  color: #ffa080;
+}
+
+.sc-utility {
+  display: flex;
+  gap: 6px;
 }
 
 .sc-icon-btn {
-  background: none;
-  border: 1px solid #101e30;
-  color: #2a4060;
-  font-size: 13px;
+  background: rgba(20, 35, 50, 0.5);
+  border: 1px solid rgba(120, 160, 200, 0.2);
+  color: #7090b0;
   width: 32px;
   height: 32px;
   border-radius: 6px;
-  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.15s;
-  flex-shrink: 0;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
 .sc-icon-btn:hover {
-  background: #0a1525;
-  border-color: #2a4868;
-  color: #5080a8;
+  background: rgba(40, 70, 100, 0.6);
+  border-color: rgba(120, 160, 200, 0.6);
+  color: #c0d8ff;
 }
 
 .sc-icon-btn.danger:hover {
-  border-color: #602020;
-  color: #a04040;
+  background: rgba(120, 40, 40, 0.4);
+  border-color: #ff6060;
+  color: #fff;
 }
 
 /* ── Back Button ── */
 .slot-overlay-back {
   background: none;
   border: none;
-  color: #243848;
+  font-family: 'Cinzel', serif;
+  color: #406080;
   font-size: 12px;
-  letter-spacing: 2px;
+  letter-spacing: 4px;
   cursor: pointer;
   align-self: center;
-  padding: 6px 16px;
-  transition: color 0.15s;
+  padding: 10px 40px;
+  transition: color 0.3s;
 }
 
 .slot-overlay-back:hover {
-  color: #4a6888;
+  color: #80a0ff;
+}
+
+/* ── Landscape Mobile Optimization (iPhone SE/XR, etc.) ── */
+@media (orientation: landscape) and (max-height: 520px) {
+  .slot-overlay {
+    align-items: flex-start;
+    padding: 2.5vh 0;
+  }
+
+  .slot-overlay-panel {
+    gap: 12px;
+    max-height: 95vh;
+    overflow-y: auto;
+    width: min(1100px, 94vw);
+    padding-right: 4px; /* Space for scrollbar */
+  }
+
+  /* Custom scrollbar for premium look */
+  .slot-overlay-panel::-webkit-scrollbar {
+    width: 4px;
+  }
+  .slot-overlay-panel::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .slot-overlay-panel::-webkit-scrollbar-thumb {
+    background: rgba(120, 160, 200, 0.2);
+    border-radius: 10px;
+  }
+
+  .slot-overlay-title {
+    font-size: 18px;
+    letter-spacing: 4px;
+  }
+
+  .slot-overlay-sub {
+    font-size: 11px;
+    margin-top: 2px;
+  }
+
+  .slot-overlay-cards {
+    grid-template-columns: repeat(3, 1fr); /* Force 3 columns on landscape */
+    gap: 10px;
+  }
+
+  .sc-header {
+    padding: 6px 12px;
+  }
+
+  .sc-status {
+    font-size: 10px;
+    padding: 1px 6px;
+  }
+
+  .sc-body {
+    padding: 12px 12px;
+    gap: 10px;
+  }
+
+  .sc-arc-name {
+    font-size: 15px;
+  }
+
+  .sc-meta {
+    font-size: 13px;
+  }
+
+  .sc-hero-wrap {
+    width: 36px;
+    height: 44px;
+  }
+
+  .sc-empty-visual {
+    font-size: 24px;
+    margin-top: 0;
+  }
+
+  .sc-empty-label {
+    font-size: 11px;
+    margin-top: 4px;
+  }
+
+  .sc-footer {
+    padding: 10px 12px;
+    gap: 8px;
+  }
+
+  .sc-action {
+    padding: 8px;
+    font-size: 10px;
+    letter-spacing: 1px;
+  }
+
+  .sc-icon-btn {
+    width: 28px;
+    height: 28px;
+  }
+
+  .slot-overlay-back {
+    padding: 6px 40px;
+    margin-top: 4px;
+  }
 }
 
 /* ── Save Toast ──────────────────────────────────────── */
