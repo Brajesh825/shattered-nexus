@@ -90,6 +90,7 @@ MAP_DEFS.crystal_cavern = {
   playerStart: { x: 5, y: 50 },
   bgColor: '#04010a',
   ambientLight: 'rgba(140,80,255,0.07)',
+  weather: 'sparks',
   enemyLevelRange: [5, 12],
   // Arc 2 — slightly more aggressive. Dungeon feel, enemies linger in dark.
   mutationConfig: {

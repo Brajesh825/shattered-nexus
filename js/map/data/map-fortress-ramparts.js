@@ -90,6 +90,7 @@ MAP_DEFS.fortress_ramparts = (function() {
         playerStart: { x: 15, y: 14 },
         bgColor: '#080610',
         ambientLight: 'rgba(40,30,80,0.08)',
+        weather: 'ash',
         enemyLevelRange: [22, 26],
         // Arc 7 — corrupted fortress, every creature is already half-gone.
         mutationConfig: {

@@ -338,6 +338,76 @@ const SFX = {
     });
   },
 
+  /* ── Footstep (surface-aware) ────────────────────────────────────────── */
+  footstep(surface = 'default') {
+    this._run(ctx => {
+      const now = ctx.currentTime;
+
+      const _noise = (durationSecs, envelope = 3) => {
+        const len = Math.floor(ctx.sampleRate * durationSecs);
+        const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+        const d = buf.getChannelData(0);
+        for (let i = 0; i < len; i++) d[i] = (Math.random()*2-1) * Math.pow(1 - i/len, envelope);
+        const src = ctx.createBufferSource(); src.buffer = buf; return src;
+      };
+
+      const _filt = (type, freq, q) => {
+        const f = ctx.createBiquadFilter(); f.type = type; f.frequency.value = freq;
+        if (q) f.Q.value = q; return f;
+      };
+
+      const _gain = v => { const g = ctx.createGain(); g.gain.value = v; return g; };
+
+      if (surface === 'grass') {
+        // Soft muffled thud — very low-pass filtered noise
+        const src = _noise(0.07, 4); const f = _filt('lowpass', 260); const g = _gain(0.16);
+        src.connect(f); f.connect(g); g.connect(ctx.destination); src.start();
+
+      } else if (surface === 'stone') {
+        // Crisp tap — bandpass punchy click
+        const src = _noise(0.04, 2.5); const f = _filt('bandpass', 950, 2.5); const g = _gain(0.13);
+        src.connect(f); f.connect(g); g.connect(ctx.destination); src.start();
+
+      } else if (surface === 'wood') {
+        // Hollow resonant knock — sine thud
+        const o = ctx.createOscillator(); const g = _gain(0);
+        o.connect(g); g.connect(ctx.destination);
+        o.type = 'sine';
+        o.frequency.setValueAtTime(180, now);
+        o.frequency.exponentialRampToValueAtTime(90, now + 0.09);
+        g.gain.setValueAtTime(0.18, now);
+        g.gain.exponentialRampToValueAtTime(0.001, now + 0.11);
+        o.start(); o.stop(now + 0.11);
+
+      } else if (surface === 'water') {
+        // Splashy low-mid noise burst
+        const src = _noise(0.10, 2); const f = _filt('lowpass', 700); const g = _gain(0.20);
+        src.connect(f); f.connect(g); g.connect(ctx.destination); src.start();
+
+      } else if (surface === 'sand') {
+        // Soft scuff — very low-pass, quieter
+        const src = _noise(0.06, 5); const f = _filt('lowpass', 180); const g = _gain(0.12);
+        src.connect(f); f.connect(g); g.connect(ctx.destination); src.start();
+
+      } else if (surface === 'ice') {
+        // High-pitched slide squeak
+        const o = ctx.createOscillator(); const g = _gain(0);
+        o.connect(g); g.connect(ctx.destination);
+        o.type = 'sine';
+        o.frequency.setValueAtTime(1200, now);
+        o.frequency.linearRampToValueAtTime(900, now + 0.06);
+        g.gain.setValueAtTime(0.07, now);
+        g.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+        o.start(); o.stop(now + 0.08);
+
+      } else {
+        // Default: generic muted thud
+        const src = _noise(0.05, 3.5); const f = _filt('lowpass', 350); const g = _gain(0.11);
+        src.connect(f); f.connect(g); g.connect(ctx.destination); src.start();
+      }
+    });
+  },
+
   /**
    * Set global SFX volume
    */

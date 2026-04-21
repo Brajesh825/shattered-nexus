@@ -91,6 +91,7 @@ MAP_DEFS.shadow_reach = (function() {
         playerStart: { x: 50, y: 15 },
         bgColor: '#05020c',
         ambientLight: 'rgba(80,20,140,0.08)',
+        weather: 'ash',
         enemyLevelRange: [14, 18],
         // Arc 5 — shadow energy mutates everything. High pressure zone.
         mutationConfig: {
