@@ -464,7 +464,7 @@ function buildEnemyGroup(defs, spawnLevel = 1, isBoss = false) {
     // EXP/gold scale by count so total reward is fair.
     // Level scaling: +10% EXP for each level above 1.
     const levelScale = 1 + (spawnLevel - 1) * 0.1;
-    
+
     const actualIsBossReward = isBoss || def.isBoss;
     const bExpMult = actualIsBossReward ? NexusScaling.boss.exp : 1.0;
     const finalExp = Math.floor(def.reward.exp * growth.expMult * hordeScale * levelScale * bExpMult);
@@ -641,14 +641,14 @@ function buildAbilityMenu() {
     const type = ab.type || 'physical';
     const tIcon = TYPE_ICONS[type] || '🗡️';
 
-    const mpCost   = Math.ceil(ab.mp * PassiveSystem.val(actor, 'MP_COST_MULT', 1.0));
+    const mpCost = Math.ceil(ab.mp * PassiveSystem.val(actor, 'MP_COST_MULT', 1.0));
     const canAfford = actor.mp >= mpCost;
-    const cdLeft   = (actor.cooldowns || {})[ab.id] || 0;
-    const onCD     = cdLeft > 0;
+    const cdLeft = (actor.cooldowns || {})[ab.id] || 0;
+    const onCD = cdLeft > 0;
     const disabled = !canAfford || onCD;
 
     b.className = `cmd-btn ability-btn ab-type-${type}${disabled ? ' disabled' : ''}`;
-    b.disabled  = disabled;
+    b.disabled = disabled;
 
     const cdBadge = onCD
       ? `<span class="ab-cd-badge">⏳ ${cdLeft}t</span>`

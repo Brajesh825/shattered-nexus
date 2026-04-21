@@ -97,26 +97,29 @@
       </div>
 
       <!-- CONTINUE sits above the grid — full width, hidden until save exists -->
-      <button class="big-btn title-continue-btn blink" id="title-continue-btn" onclick="openSlotOverlay('load')"
-        style="display:none">
-        ▶ &nbsp; CONTINUE
-      </button>
-
-      <!-- Menu button grid -->
-      <div class="menu-btns">
-        <button id="gauntlet-btn" class="title-btn title-btn-secondary"
-          onclick="typeof BossGauntlet !== 'undefined' ? BossGauntlet.open() : null">
-          <span class="tbtn-icon">👹</span>
-          <span class="tbtn-label">BOSS MODE</span>
+      <!-- Action block: Continue + Menu Grid -->
+      <div class="title-actions-row">
+        <button class="big-btn title-continue-btn blink" id="title-continue-btn" onclick="openSlotOverlay('load')"
+          style="display:none">
+          ▶ &nbsp; CONTINUE
         </button>
-        <button class="title-btn title-btn-primary" onclick="openSlotOverlay('new')">
-          <span class="tbtn-icon">📖</span>
-          <span class="tbtn-label">NEW STORY</span>
-        </button>
-        <button class="title-btn title-btn-tertiary" onclick="startExplore()">
-          <span class="tbtn-icon">🗺</span>
-          <span class="tbtn-label">EXPLORE</span>
-        </button>
+  
+        <!-- Menu button grid -->
+        <div class="menu-btns">
+          <button id="gauntlet-btn" class="title-btn title-btn-secondary"
+            onclick="typeof BossGauntlet !== 'undefined' ? BossGauntlet.open() : null">
+            <span class="tbtn-icon">👹</span>
+            <span class="tbtn-label">BOSS MODE</span>
+          </button>
+          <button class="title-btn title-btn-primary" onclick="openSlotOverlay('new')">
+            <span class="tbtn-icon">📖</span>
+            <span class="tbtn-label">NEW STORY</span>
+          </button>
+          <button class="title-btn title-btn-tertiary" onclick="startExplore()">
+            <span class="tbtn-icon">🗺</span>
+            <span class="tbtn-label">EXPLORE</span>
+          </button>
+        </div>
       </div>
 
       <div class="ver-tag" id="game-version-tag">v3.0</div>
@@ -738,53 +741,96 @@
     function _renderSlotCards(mode) {
       const container = document.getElementById('slot-overlay-cards');
       const slots = Save.listAll();
+      
       container.innerHTML = slots.map(s => {
         const num = s.slot + 1;
+        const isSelected = s.slot === (G.saveSlot || 0);
 
         if (s.empty) {
           const canLoad = mode === 'load';
           return `
-          <div class="sc sc-empty">
-            <div class="sc-num">0${num}</div>
+          <div class="sc sc-empty" data-slot="${s.slot}">
+            <div class="sc-header">
+              <span class="sc-num">SLOT 0${num}</span>
+              <span class="sc-status">READY</span>
+            </div>
             <div class="sc-body">
-              <div class="sc-empty-label">— Empty Slot —</div>
+              <div class="sc-empty-visual">✦</div>
+              <div class="sc-empty-label">NEW ADVENTURE</div>
             </div>
             <div class="sc-footer">
               ${canLoad
-              ? `<span class="sc-hint">No save data</span>`
-              : `<button class="sc-action primary" onclick="closeSlotOverlay();Story.begin(${s.slot})">START HERE</button>`
-            }
-              <button class="sc-action sc-icon-btn" title="Import save file" onclick="triggerImport(${s.slot})">📂</button>
+                ? `<span class="sc-hint">No Data</span>`
+                : `<button class="sc-action primary" onclick="closeSlotOverlay();Story.begin(${s.slot})">START JOURNEY</button>`
+              }
+              <button class="sc-icon-btn sc-import-btn" title="Import Save" onclick="triggerImport(${s.slot})">📂</button>
             </div>
           </div>`;
         }
 
-        const arc = s.arcName || `Arc ${(s.arcIdx || 0) + 1}`;
+        const arcName = s.arcName || `Arc ${(s.arcIdx || 0) + 1}`;
         const lv = (s.partyStats && s.partyStats.length)
-          ? `Party LV ${Math.max(...s.partyStats.map(p => p.lv || 1))}`
+          ? `LV ${Math.max(...s.partyStats.map(p => p.lv || 1))}`
           : `LV ${s.hero?.lv || 1}`;
         const date = Save.dateStr(s.timestamp);
-        const chars = (s.selectedChars || [s.selectedChar]).filter(Boolean).join(' · ');
+        
+        // Prepare party member canvases
+        const partyIds = (s.selectedChars || [s.selectedChar]).filter(Boolean).slice(0, 4);
+        const partyHtml = partyIds.map((id, i) => 
+          `<div class="sc-hero-wrap">
+            <canvas class="sc-hero-canvas" data-char-id="${id}" data-slot="${s.slot}" data-idx="${i}" width="48" height="57"></canvas>
+           </div>`
+        ).join('');
 
         return `
-        <div class="sc sc-filled">
-          <div class="sc-num">0${num}</div>
+        <div class="sc sc-filled" data-slot="${s.slot}">
+          <div class="sc-header">
+            <span class="sc-num">SLOT 0${num}</span>
+            <span class="sc-status">${s.arcIdx >= 7 ? 'COMPLETE' : 'IN PROGRESS'}</span>
+          </div>
           <div class="sc-body">
-            <div class="sc-arc">${arc}</div>
-            ${chars ? `<div class="sc-chars">${chars}</div>` : ''}
-            <div class="sc-meta">${lv} &nbsp;·&nbsp; ${date}</div>
+            <div class="sc-arc-info">
+              <div class="sc-arc-name">${arcName}</div>
+              <div class="sc-meta">${lv} &nbsp;·&nbsp; ${date}</div>
+            </div>
+            <div class="sc-party-row">
+              ${partyHtml}
+            </div>
           </div>
           <div class="sc-footer">
             ${mode === 'load'
-            ? `<button class="sc-action primary" onclick="closeSlotOverlay();Story.loadSave(${s.slot})">▶ CONTINUE</button>`
-            : `<button class="sc-action warn" onclick="_confirmOverwrite(${s.slot})">⚠ OVERWRITE</button>`
-          }
-            <button class="sc-icon-btn" title="Export save" onclick="Save.exportSlot(${s.slot})">⬇</button>
-            <button class="sc-icon-btn" title="Import save" onclick="triggerImport(${s.slot})">📂</button>
-            <button class="sc-icon-btn danger" title="Delete save" onclick="deleteSlot(${s.slot})">✕</button>
+              ? `<button class="sc-action primary" onclick="closeSlotOverlay();Story.loadSave(${s.slot})">▶ CONTINUE</button>`
+              : `<button class="sc-action warn" onclick="_confirmOverwrite(${s.slot})">⚠ OVERWRITE</button>`
+            }
+            <div class="sc-utility">
+              <button class="sc-icon-btn" title="Export" onclick="Save.exportSlot(${s.slot})">⬇</button>
+              <button class="sc-icon-btn" title="Import" onclick="triggerImport(${s.slot})">📂</button>
+              <button class="sc-icon-btn danger" title="Delete" onclick="deleteSlot(${s.slot})">✕</button>
+            </div>
           </div>
         </div>`;
       }).join('');
+
+      // Post-render: Draw sprites onto canvases
+      requestAnimationFrame(() => {
+        const canvases = container.querySelectorAll('.sc-hero-canvas');
+        canvases.forEach(canv => {
+          const charId = canv.dataset.charId;
+          const slotIdx = parseInt(canv.dataset.slot);
+          const ctx = canv.getContext('2d');
+          
+          // Draw using the SpriteRenderer
+          // We try to find the full character data if available in global G.chars
+          const charData = (typeof G !== 'undefined' && G.chars) ? G.chars.find(c => c.id === charId) : { id: charId };
+          const classData = (typeof G !== 'undefined' && G.classes) ? G.classes.find(c => c.id === charData?.class_affinity?.[0]) : null;
+          
+          if (typeof SpriteRenderer !== 'undefined' && SpriteRenderer.drawHero) {
+            // Draw into a temporary image or use drawHero if it supports canvas
+            // SpriteRenderer.drawHero expects (imgOrCanvas, charId, charData, classData)
+             SpriteRenderer.drawHero(canv, charId, charData, classData);
+          }
+        });
+      });
     }
 
     function _confirmOverwrite(slot) {
