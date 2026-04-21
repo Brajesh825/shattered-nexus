@@ -137,7 +137,11 @@ MAP_DEFS.verdant_vale = {
     })(),
 
     npcs: [
-        { id: 'essabella', x: 44, y: 22, dialogueKey: 'verdant_vale' },
+        { id: 'essabella',    x: 44, y: 22, dialogueKey: 'verdant_vale' },
+        // Arc 1 Story NPCs
+        { id: 'elder_maren',  x: 6,  y: 8,  dialogueKey: 'verdant_vale' },
+        { id: 'soldier_davan',x: 24, y: 14, dialogueKey: 'verdant_vale' },
+        { id: 'lira',         x: 14, y: 20, dialogueKey: 'verdant_vale' },
     ],
 
     objective: {

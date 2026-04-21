@@ -82,7 +82,9 @@ const MapPlayer = (() => {
 
   function _canMove(nx, ny, map) {
     if (nx < 0 || ny < 0 || nx >= map.width || ny >= map.height) return false;
-    const tid = map.tiles[ny]?.[nx] ?? 0;
+    const tiles = map.layers ? map.layers[0] : map.tiles;
+    if (!tiles) return false;
+    const tid = tiles[ny]?.[nx] ?? 0;
     if (!(TILE_DEFS[tid] || TILE_DEFS[0]).walkable) return false;
     // Block on NPCs
     if (MapEntities.checkNPCAt && MapEntities.checkNPCAt(nx, ny)) return false;
@@ -96,7 +98,8 @@ const MapPlayer = (() => {
 
     if (moving) {
       moveTimer += dt;
-      const t = Math.min(moveTimer / MOVE_DURATION, 1);
+      const tRaw = Math.min(moveTimer / MOVE_DURATION, 1);
+      const t = tRaw * tRaw * (3 - 2 * tRaw); // smoothstep — ease in+out
       const prevPx = (tx - _stepDir.dx) * TILE;
       const prevPy = (ty - _stepDir.dy) * TILE;
       px = prevPx + (tx * TILE - prevPx) * t;
@@ -133,6 +136,11 @@ const MapPlayer = (() => {
       _facing  = {dx, dy}; // update facing when actually moving
       tx = nx; ty = ny;
       moving = true; moveTimer = 0;
+
+      // Trigger footstep SFX
+      if (typeof SFX !== 'undefined' && SFX.click) {
+        SFX.click();
+      }
     }
   }
 
@@ -529,7 +537,8 @@ const MapEntities = (() => {
       en.moveDur = (1 / en.speed) / _fogSpeedMult();
       if (en.moving) {
         en.moveTimer += dt;
-        const t = Math.min(en.moveTimer / en.moveDur, 1);
+        const tRaw = Math.min(en.moveTimer / en.moveDur, 1);
+        const t = tRaw * tRaw * (3 - 2 * tRaw); // smoothstep
         en.px = (en.tx - en.stepDir.dx) * TILE * (1 - t) + en.tx * TILE * t;
         en.py = (en.ty - en.stepDir.dy) * TILE * (1 - t) + en.ty * TILE * t;
         en.frameTimer += dt;
@@ -672,7 +681,8 @@ const MapEntities = (() => {
       const spr = _getEnemySprite(en.id);
       if (spr) {
         ctx.save();
-        ctx.imageSmoothingEnabled = false;
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
         if (mut === 'corrupted') {
           ctx.filter = 'hue-rotate(220deg) saturate(2.2) brightness(0.85)';
         } else if (mut === 'mutant') {
@@ -758,7 +768,8 @@ const MapEntities = (() => {
 
         if (n._moving) {
           n._moveTimer += dt;
-          const t = Math.min(n._moveTimer / NPC_MOVE_DUR, 1);
+          const tRaw = Math.min(n._moveTimer / NPC_MOVE_DUR, 1);
+          const t = tRaw * tRaw * (3 - 2 * tRaw); // smoothstep
           n._px = n._prevTx * TILE + (n._tx * TILE - n._prevTx * TILE) * t;
           n._py = n._prevTy * TILE + (n._ty * TILE - n._prevTy * TILE) * t;
 
