@@ -41,6 +41,9 @@ const MapEngine = (() => {
     collected: [],        // for 'collect' type — which artifact indices grabbed
   };
 
+  // Region triggers already fired this session
+  const _firedTriggers = new Set();
+
   /* ── Camera ─────────────────────────────────────────── */
   const cam = { x: 0, y: 0 };
   let _stepBobTime = 0;   // seconds remaining for step-landing bob
@@ -779,6 +782,9 @@ const MapEngine = (() => {
     // Objective check each frame
     _checkObjective();
 
+    // Region triggers check
+    _checkRegionTriggers();
+
     // Fog dialogue + ambient voice lines
     _updateFogDialogue(dt);
 
@@ -799,6 +805,37 @@ const MapEngine = (() => {
 
     // Delegate HUD + minimap refresh to MapUI
     if (typeof MapUI !== 'undefined') MapUI.update(dt);
+  }
+
+  /* ── Region Triggers ────────────────────────────────── */
+
+  function _checkRegionTriggers() {
+    if (!_map || !_map.triggers || MapPlayer.moving) return;
+    const tx = MapPlayer.tx, ty = MapPlayer.ty;
+
+    _map.triggers.forEach(trig => {
+      const id = trig.id || `${trig.x},${trig.y}`;
+      if (_firedTriggers.has(id)) return;
+
+      // Check if player is inside the trigger rect
+      const inside = (tx >= trig.x && tx < (trig.x + (trig.w || 1))) &&
+                     (ty >= trig.y && ty < (trig.y + (trig.h || 1)));
+
+      if (inside) {
+        _firedTriggers.add(id);
+        if (trig.type === 'dialogue' && trig.lines) {
+          _openGenericDialogue(trig.lines);
+        }
+      }
+    });
+  }
+
+  function _openGenericDialogue(lines) {
+    _npcCurrent = { id: 'system', name: '', sprite: null };
+    _npcLines = lines;
+    _npcLineIdx = 0;
+    stop();
+    _showNPCLine();
   }
 
   /* ── Encounter ───────────────────────────────────────── */
@@ -913,6 +950,7 @@ const MapEngine = (() => {
     _fogTime = 0; _fogCanvas = null;
     _fogMilestone = 0;
     _minimapBg = null;
+    _firedTriggers.clear();
     // Ensure we always start in daytime (ratio 0.4 = solidly mid-day in the 0.3-0.7 day band)
     _time = _dayCycleTime * 0.4;
     _bubbles.length = 0;
@@ -999,7 +1037,7 @@ const MapEngine = (() => {
           pctx.drawImage(faceImg, 0, 0, size, size);
         };
         faceImg.src = `images/characters/faces/${speakerLower}_face.png`;
-      } else if (_npcCurrent.sprite) {
+      } else if (_npcCurrent && _npcCurrent.sprite) {
         // NPC: draw frame 0 front strip, top 30% crop
         const img = new Image();
         img.onload = () => {
@@ -1011,10 +1049,12 @@ const MapEngine = (() => {
           pctx.drawImage(img, 0, 0, frameW, cropH, 0, 0, size, size);
         };
         img.src = _npcCurrent.sprite;
+      } else {
+        portrait.style.display = 'none';
       }
     }
     document.getElementById('npc-dialogue-name').textContent =
-      (line.speaker || _npcCurrent.name || '').toUpperCase();
+      (line.speaker || (_npcCurrent && _npcCurrent.name) || '').toUpperCase();
     document.getElementById('npc-dialogue-text').textContent = line.text || '';
     const btn = document.getElementById('npc-dialogue-next');
     if (btn) btn.textContent = (_npcLineIdx >= _npcLines.length - 1) ? '✔ CLOSE' : '▶ CONTINUE';
@@ -1054,6 +1094,8 @@ const MapEngine = (() => {
   return {
     init, loadMap, start, stop, resume, onBattleComplete,
     getMap, getCam, getTile, isRunning, resetFog, fogProgress, npcDialogueNext,
+    openDialogue: _openGenericDialogue,
+    hasTriggerFired: id => _firedTriggers.has(id),
     // Optional callback — wire this up after init to handle encounter transitions:
     // MapEngine.onEncounterStart = function(enc) { ... }
     onEncounterStart: null,

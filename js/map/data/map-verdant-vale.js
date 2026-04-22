@@ -68,7 +68,12 @@ MAP_DEFS.verdant_vale = {
 
                 // 2. The Vertical River
                 if (x >= 28 && x <= 32) {
-                    if (y >= 13 && y <= 15) row[x] = 4;
+                    if (y >= 13 && y <= 15) {
+                        // Bridge surface
+                        if (x === 30 && y === 14) row[x] = 111; // Scattered remains/rubble in middle
+                        else if (x === 31 && y === 15) row[x] = 111; // More debris
+                        else row[x] = 4;
+                    }
                     else row[x] = 3;
                     continue;
                 }
@@ -174,10 +179,25 @@ MAP_DEFS.verdant_vale = {
     npcs: [
         { id: 'essabella',    x: 44, y: 22, dialogueKey: 'verdant_vale' },
         { id: 'elder_maren',  x: 6,  y: 8,  dialogueKey: 'verdant_vale' },
-        { id: 'soldier_davan',x: 23, y: 13, dialogueKey: 'verdant_vale' }, // Moved to GRASS (y=13) to clear the horizontal path (y=14)
-        { id: 'soldier_kael', x: 15, y: 6,  dialogueKey: 'verdant_vale' }, // Moved to GRASS (y=6) to clear the horizontal path (y=7)
-        { id: 'soldier_jace', x: 17, y: 15, dialogueKey: 'verdant_vale' }, // Moved to GRASS (y=15) around the settlement
+        { id: 'soldier_1',    x: 23, y: 13, dialogueKey: 'verdant_vale' }, 
+        { id: 'soldier_2',    x: 15, y: 6,  dialogueKey: 'verdant_vale' }, 
+        { id: 'soldier_3',    x: 17, y: 15, dialogueKey: 'verdant_vale' }, 
         { id: 'lira',         x: 8,  y: 7,  dialogueKey: 'verdant_vale' }, 
+    ],
+
+    triggers: [
+        {
+            id: 'bridge_realization',
+            x: 29, y: 13, w: 3, h: 3, // Cover the bridge area
+            type: 'dialogue',
+            lines: [
+                { speaker: 'Rei',  text: 'Wait... do you feel that?' },
+                { speaker: 'Tao',  text: 'The air... it\'s heavy. And look at the stone. It\'s scorched.' },
+                { speaker: 'Aya',  text: 'Scorched by void, not fire. These aren\'t just ruins... everyone is already dead in here.' },
+                { speaker: 'Lulu', text: 'Davan was right. The Void Knight didn\'t just pass through. He turned this place into a tomb.' },
+                { speaker: 'Rei',  text: 'Keep your guard up. Whatever did this is still around, and it\'s hungry.' },
+            ]
+        }
     ],
 
     objective: {
