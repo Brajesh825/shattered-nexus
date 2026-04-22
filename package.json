@@ -5,7 +5,7 @@
   "main": "index.html",
   "scripts": {
     "dev": "npx browser-sync start --server --files '*.html, css/*.css, js/*.js, data/*.json'",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node -e \"require('./tests/run-tests.js')\""
   },
   "keywords": [
     "rpg",

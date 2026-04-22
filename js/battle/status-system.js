@@ -199,6 +199,14 @@ const StatusSystem = {
           color: '#ffaa00',
           dmgMult: NexusScaling.reactions.melt_fire_on_ice
         };
+      } else if (detonator === 'wind') {
+        reaction = {
+          id: 'swirl',
+          label: 'SWIRL',
+          color: '#8be9fd',
+          dmgMult: NexusScaling.reactions.swirl,
+          swirlAura: auraType
+        };
       }
     } else if (auraType === 'fire') {
       if (detonator === 'nature') {
@@ -224,6 +232,14 @@ const StatusSystem = {
           color: '#ffaa00',
           dmgMult: NexusScaling.reactions.melt_ice_on_fire
         };
+      } else if (detonator === 'wind') {
+        reaction = {
+          id: 'swirl',
+          label: 'SWIRL',
+          color: '#8be9fd',
+          dmgMult: NexusScaling.reactions.swirl,
+          swirlAura: auraType
+        };
       }
     } else if (auraType === 'water') {
       if (detonator === 'lightning') {
@@ -241,6 +257,14 @@ const StatusSystem = {
           color: '#55aaff',
           dmgMult: NexusScaling.reactions.vaporize_fire_on_water
         };
+      } else if (detonator === 'wind') {
+        reaction = {
+          id: 'swirl',
+          label: 'SWIRL',
+          color: '#8be9fd',
+          dmgMult: NexusScaling.reactions.swirl,
+          swirlAura: auraType
+        };
       }
     } else if (auraType === 'nature') {
       if (detonator === 'fire') {
@@ -250,6 +274,24 @@ const StatusSystem = {
           color: '#ee4400',
           dmgMult: NexusScaling.reactions.burning,
           dot: true
+        };
+      } else if (detonator === 'wind') {
+        reaction = {
+          id: 'swirl',
+          label: 'SWIRL',
+          color: '#8be9fd',
+          dmgMult: NexusScaling.reactions.swirl,
+          swirlAura: auraType
+        };
+      }
+    } else if (auraType === 'lightning') {
+      if (detonator === 'wind') {
+        reaction = {
+          id: 'swirl',
+          label: 'SWIRL',
+          color: '#8be9fd',
+          dmgMult: NexusScaling.reactions.swirl,
+          swirlAura: auraType
         };
       }
     }
@@ -269,3 +311,7 @@ const StatusSystem = {
     return reaction;
   }
 };
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = StatusSystem;
+}

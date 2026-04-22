@@ -268,31 +268,13 @@ const Story = {
             // Sync level back to source char so computeStats uses the right level
             if (m.char) m.char.lv = m.lv;
 
-            // Recompute all combat stats from source data at the correct level
-            const fresh = computeStats(m.char, m.cls);
-            m.maxHp = fresh.hp; m.maxMp = fresh.mp;
-            m.atk = fresh.atk; m.def = fresh.def;
-            m.mag = fresh.mag; m.spd = fresh.spd;
-            m.lck = fresh.lck;
-
-            // Restore current resources clamped to fresh maximums
-            m.hp = (saved.hp !== undefined) ? Math.min(Math.max(saved.hp, 0), fresh.hp) : fresh.hp;
-            m.mp = (saved.mp !== undefined) ? Math.min(Math.max(saved.mp, 0), fresh.mp) : fresh.mp;
+            rebuildMemberCombatStats(m, {
+              resourceStrategy: 'clamp',
+              hp: saved.hp,
+              mp: saved.mp
+            });
           }
         });
-        // Re-apply relic bonuses on top of freshly computed base stats
-        applyRelicBonuses();
-        // Re-apply Archive mastery buffs (flat stat bonuses from Track 2 progression)
-        if (typeof Archive !== 'undefined') {
-          const mastery = Archive.getMasteryBuffs();
-          G.party.forEach(m => {
-            m.atk += mastery.atk || 0;
-            m.def += mastery.def || 0;
-            m.mag += mastery.mag || 0;
-            m.spd += mastery.spd || 0;
-            m.lck += mastery.lck || 0;
-          });
-        }
       } else if (s.hero && G.hero) {
         // Legacy save: only hero stats were persisted
         G.hero.lv = s.hero.lv || 1;

@@ -920,10 +920,13 @@ const MapEntities = (() => {
           // Apply color template tinting via filters if color is present
           if (n.color) {
             ctx.save();
-            // Simple heuristic to derive a hue-rotate from a hex color
-            // For more precision, we could add a specific 'hue' or 'tint' property to NPC_DEFS
+            
+            // Apply 'Deformed' horror effect if bridge mystery revealed
+            const isDeformed = (typeof MapEngine !== 'undefined' && MapEngine.hasTriggerFired && MapEngine.hasTriggerFired('bridge_realization'));
+            const horrorFilter = isDeformed ? 'grayscale(0.6) contrast(180%) brightness(0.85) hue-rotate(240deg)' : '';
+            
             const hue = (parseInt(n.color.slice(1), 16) % 360);
-            ctx.filter = `hue-rotate(${hue}deg) brightness(1.1) saturate(1.2)`;
+            ctx.filter = `${horrorFilter} hue-rotate(${hue}deg) brightness(1.1) saturate(1.2)`;
             ctx.drawImage(img, srcX, dir.cy, frameW, frameH, sx + ox, sy + oy + bounce, dw, dh);
             ctx.restore();
           } else {

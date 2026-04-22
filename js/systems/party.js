@@ -13,6 +13,61 @@ function computeStats(ch, cls) {
   return out;
 }
 
+function _getArchiveMasteryBuffs() {
+  if (typeof Archive === 'undefined' || typeof Archive.getMasteryBuffs !== 'function') {
+    return null;
+  }
+  return Archive.getMasteryBuffs();
+}
+
+function applyArchiveMasteryToMember(member, mastery = _getArchiveMasteryBuffs()) {
+  if (!member || !mastery) return;
+  member.atk += mastery.atk || 0;
+  member.def += mastery.def || 0;
+  member.mag += mastery.mag || 0;
+  member.spd += mastery.spd || 0;
+  member.lck += mastery.lck || 0;
+}
+
+function rebuildMemberCombatStats(member, options = {}) {
+  if (!member?.char || !member.cls) return;
+
+  const resourceStrategy = options.resourceStrategy || 'clamp';
+  const base = computeStats(member.char, member.cls);
+  const relicMult = _getRelicStatMult();
+  const prevMaxHp = member.maxHp ?? base.hp;
+  const prevMaxMp = member.maxMp ?? base.mp;
+  const nextMaxHp = Math.floor(base.hp * relicMult.hp);
+  const nextMaxMp = Math.floor(base.mp * relicMult.mp);
+
+  member.maxHp = nextMaxHp;
+  member.maxMp = nextMaxMp;
+  member.atk = Math.floor(base.atk * relicMult.atk);
+  member.def = Math.floor(base.def * relicMult.def);
+  member.mag = Math.floor(base.mag * relicMult.mag);
+  member.spd = Math.floor(base.spd * relicMult.spd);
+  member.lck = Math.floor(base.lck * relicMult.lck);
+
+  applyArchiveMasteryToMember(member);
+
+  if (resourceStrategy === 'delta') {
+    member.hp = Math.min((member.hp ?? prevMaxHp) + (nextMaxHp - prevMaxHp), nextMaxHp);
+    member.mp = Math.min((member.mp ?? prevMaxMp) + (nextMaxMp - prevMaxMp), nextMaxMp);
+    return;
+  }
+
+  if (resourceStrategy === 'full') {
+    member.hp = nextMaxHp;
+    member.mp = nextMaxMp;
+    return;
+  }
+
+  const hpSource = options.hp !== undefined ? options.hp : member.hp;
+  const mpSource = options.mp !== undefined ? options.mp : member.mp;
+  member.hp = Math.min(Math.max(hpSource ?? nextMaxHp, 0), nextMaxHp);
+  member.mp = Math.min(Math.max(mpSource ?? nextMaxMp, 0), nextMaxMp);
+}
+
 /* ============================================================
    PARTY & ENEMY BUILDING
    ============================================================ */
@@ -54,18 +109,6 @@ function buildParty() {
     });
   });
 
-  // Apply Warden's Archive Mastery Buffs (Track 2)
-  if (typeof Archive !== 'undefined') {
-    const mastery = Archive.getMasteryBuffs();
-    G.party.forEach(m => {
-      m.atk += mastery.atk;
-      m.def += mastery.def;
-      m.mag += mastery.mag;
-      m.spd += mastery.spd;
-      m.lck += mastery.lck;
-    });
-  }
-
   // --- DIAMOND FORMATION AUTO-SORTING ---
   const ROLE_WEIGHTS = { 'Paladin': 10, 'Knight': 8, 'Warrior': 6, 'Ranger': 4, 'Mage': 2, 'Healer': 0 };
 
@@ -90,6 +133,8 @@ function buildParty() {
   }
 
   applyRelicBonuses();
+  const mastery = _getArchiveMasteryBuffs();
+  G.party.forEach(m => applyArchiveMasteryToMember(m, mastery));
 }
 
 // Apply active relic bonuses as multipliers on top of base party stats
@@ -189,24 +234,23 @@ function checkMemberLevel(m) {
     m.lv++;
   }
 
-  // Recompute base stats for the new level
-  const s = computeStats(m.char, m.cls);
-
-  // Re-apply any active relic multipliers so bonuses aren't lost mid-battle
-  const relicMult = _getRelicStatMult();
-
-  const newMaxHp = Math.floor(s.hp * relicMult.hp);
-  const newMaxMp = Math.floor(s.mp * relicMult.mp);
-  m.hp    = Math.min(m.hp + (newMaxHp - m.maxHp), newMaxHp);
-  m.mp    = Math.min(m.mp + (newMaxMp - m.maxMp), newMaxMp);
-  m.maxHp = newMaxHp;
-  m.maxMp = newMaxMp;
-  m.atk   = Math.floor(s.atk * relicMult.atk);
-  m.def   = Math.floor(s.def * relicMult.def);
-  m.mag   = Math.floor(s.mag * relicMult.mag);
-  m.spd   = Math.floor(s.spd * relicMult.spd);
-  m.lck   = Math.floor(s.lck * relicMult.lck);
+  rebuildMemberCombatStats(m, { resourceStrategy: 'delta' });
 
   return true;
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    computeStats,
+    buildParty,
+    applyRelicBonuses,
+    getExpThreshold,
+    checkLevel,
+    checkMemberLevel,
+    rebuildMemberCombatStats,
+    applyArchiveMasteryToMember,
+    _getArchiveMasteryBuffs,
+    _getRelicStatMult
+  };
 }
 

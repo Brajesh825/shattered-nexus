@@ -21,10 +21,11 @@
   <link rel="stylesheet" href="css/end-screens.css">
   <link rel="stylesheet" href="css/map.css">
   <link rel="stylesheet" href="css/combat.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚔️</text></svg>">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚔️</text></svg>">
   <script>
     /** Cold Migration: Maps legacy IDs in LocalStorage BEFORE any other scripts run. */
-    (function() {
+    (function () {
       const MAP = { 'ayaka': 'aya', 'hutao': 'tao', 'nilou': 'lulu', 'xiao': 'rei', 'aria': 'ria' };
       const KEYS = ['cc_save_v1', 'cc_save_v2_s0', 'cc_save_v2_s1', 'cc_save_v2_s2'];
       KEYS.forEach(k => {
@@ -39,7 +40,7 @@
             str = str.replace(new RegExp('"' + old + '"', 'gi'), '"' + ali + '"');
           }
           localStorage.setItem(k, str);
-        } catch(e) {}
+        } catch (e) { }
       });
     })();
   </script>
@@ -103,7 +104,7 @@
           style="display:none">
           ▶ &nbsp; CONTINUE
         </button>
-  
+
         <!-- Menu button grid -->
         <div class="menu-btns">
           <button id="gauntlet-btn" class="title-btn title-btn-secondary"
@@ -390,6 +391,7 @@
         <div class="cmd-grid" id="cmd-grid-main">
           <button class="cmd-btn" onclick="heroAttack()">⚔ ATTACK</button>
           <button class="cmd-btn" onclick="BattleUI.openSub('ability-sub')">✨ ABILITY</button>
+          <button class="cmd-btn" onclick="heroDefend()">🛡️ DEFEND</button>
           <button class="cmd-btn" onclick="heroItem()">🧪 ITEM</button>
           <button class="cmd-btn" onclick="heroRun()">💨 RUN</button>
           <button class="cmd-btn cmd-party-btn" onclick="openPartyMenu()">👥 PARTY</button>
@@ -639,6 +641,9 @@
   <script src="js/svg-animations.js"></script>
   <script src="js/asset-preloader.js"></script>
   <script src="js/scaling-config.js"></script>
+  <script src="js/systems/save-contract.js"></script>
+  <script src="js/battle/enemy-scaling.js"></script>
+  <script src="js/battle/reaction-effects.js"></script>
   <script src="js/release-config.js"></script>
   <script src="js/game.js"></script>
   <script src="js/ui/menu-manager.js"></script>
@@ -650,6 +655,7 @@
   <script src="js/battle/passive-system.js"></script>
   <script src="js/battle/turn-manager.js"></script>
   <script src="js/battle/combat-engine.js"></script>
+  <script src="js/battle/formation-rules.js"></script>
 
   <script src="js/battle/action-handler.js"></script>
   <script src="js/systems/archive.js"></script>
@@ -742,7 +748,7 @@
     function _renderSlotCards(mode) {
       const container = document.getElementById('slot-overlay-cards');
       const slots = Save.listAll();
-      
+
       container.innerHTML = slots.map(s => {
         const num = s.slot + 1;
         const isSelected = s.slot === (G.saveSlot || 0);
@@ -761,9 +767,9 @@
             </div>
             <div class="sc-footer">
               ${canLoad
-                ? `<span class="sc-hint">No Data</span>`
-                : `<button class="sc-action primary" onclick="closeSlotOverlay();Story.begin(${s.slot})">START JOURNEY</button>`
-              }
+              ? `<span class="sc-hint">No Data</span>`
+              : `<button class="sc-action primary" onclick="closeSlotOverlay();Story.begin(${s.slot})">START JOURNEY</button>`
+            }
               <button class="sc-icon-btn sc-import-btn" title="Import Save" onclick="triggerImport(${s.slot})">📂</button>
             </div>
           </div>`;
@@ -774,10 +780,10 @@
           ? `LV ${Math.max(...s.partyStats.map(p => p.lv || 1))}`
           : `LV ${s.hero?.lv || 1}`;
         const date = Save.dateStr(s.timestamp);
-        
+
         // Prepare party member canvases
         const partyIds = (s.selectedChars || [s.selectedChar]).filter(Boolean).slice(0, 4);
-        const partyHtml = partyIds.map((id, i) => 
+        const partyHtml = partyIds.map((id, i) =>
           `<div class="sc-hero-wrap">
             <canvas class="sc-hero-canvas" data-char-id="${id}" data-slot="${s.slot}" data-idx="${i}" width="48" height="57"></canvas>
            </div>`
@@ -800,9 +806,9 @@
           </div>
           <div class="sc-footer">
             ${mode === 'load'
-              ? `<button class="sc-action primary" onclick="closeSlotOverlay();Story.loadSave(${s.slot})">▶ CONTINUE</button>`
-              : `<button class="sc-action warn" onclick="_confirmOverwrite(${s.slot})">⚠ OVERWRITE</button>`
-            }
+            ? `<button class="sc-action primary" onclick="closeSlotOverlay();Story.loadSave(${s.slot})">▶ CONTINUE</button>`
+            : `<button class="sc-action warn" onclick="_confirmOverwrite(${s.slot})">⚠ OVERWRITE</button>`
+          }
             <div class="sc-utility">
               <button class="sc-icon-btn" title="Export" onclick="Save.exportSlot(${s.slot})">⬇</button>
               <button class="sc-icon-btn" title="Import" onclick="triggerImport(${s.slot})">📂</button>
@@ -819,16 +825,16 @@
           const charId = canv.dataset.charId;
           const slotIdx = parseInt(canv.dataset.slot);
           const ctx = canv.getContext('2d');
-          
+
           // Draw using the SpriteRenderer
           // We try to find the full character data if available in global G.chars
           const charData = (typeof G !== 'undefined' && G.chars) ? G.chars.find(c => c.id === charId) : { id: charId };
           const classData = (typeof G !== 'undefined' && G.classes) ? G.classes.find(c => c.id === charData?.class_affinity?.[0]) : null;
-          
+
           if (typeof SpriteRenderer !== 'undefined' && SpriteRenderer.drawHero) {
             // Draw into a temporary image or use drawHero if it supports canvas
             // SpriteRenderer.drawHero expects (imgOrCanvas, charId, charData, classData)
-             SpriteRenderer.drawHero(canv, charId, charData, classData);
+            SpriteRenderer.drawHero(canv, charId, charData, classData);
           }
         });
       });
