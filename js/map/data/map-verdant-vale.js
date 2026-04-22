@@ -1,9 +1,5 @@
 /**
  * map-verdant-vale.js — Verdant Vale map data.
- * * DESIGN LOGIC:
- * - WEST (x0-27): Civilized. Contains Town, starting point, and orchard gardens.
- * - CENTER (x28-32): The Vertical River. A natural barrier with a central bridge at y14.
- * - EAST (x33-59): The Wilds. Contains the flower meadow, mountains, and the cave entrance.
  */
 
 MAP_DEFS.verdant_vale = {
@@ -11,18 +7,17 @@ MAP_DEFS.verdant_vale = {
     name: 'Verdant Vale',
     arcId: 1,
     width: 60,
-    height: 40,
+    height: 50, 
     playerStart: { x: 7, y: 10 },
     bgColor: '#0a1a05',
     ambientLight: 'rgba(60,180,60,0.04)',
     weather: 'leaves',
     enemyLevelRange: [1, 3],
-    // Arc 1 — very lenient. Player is still learning the game.
     mutationConfig: {
-        corruptThreshold: 90,   // 90s before corruption rolls begin
-        mutantThreshold: 180,  // 3 min before mutant possible
-        corruptChance: 0.020, // 2%/s — slow creep
-        mutantChance: 0.010, // 1%/s — rare
+        corruptThreshold: 90,
+        mutantThreshold: 180,
+        corruptChance: 0.020,
+        mutantChance: 0.010,
     },
 
     encounterTemplates: [
@@ -38,97 +33,126 @@ MAP_DEFS.verdant_vale = {
     ],
 
     enemies: [
-        // --- WEST SIDE (Lower Level) ---
-        { id: 'goblin', x: 8, y: 15, patrol: 'horizontal', range: 3, speed: 1.0 },
-        { id: 'goblin', x: 18, y: 8, patrol: 'random', range: 2, speed: 1.1 },
-        { id: 'wolf', x: 22, y: 25, patrol: 'random', range: 4, speed: 1.4 },
-        { id: 'goblin', x: 10, y: 8, patrol: 'horizontal', range: 2, speed: 0.9 }, // Near Town
-        { id: 'goblin', x: 15, y: 12, patrol: 'vertical', range: 2, speed: 1.0 }, // Orchard Gate
-        { id: 'wolf', x: 5, y: 20, patrol: 'random', range: 3, speed: 1.2 }, // South Orchard
+        { id: 'goblin', x: 42, y: 18, patrol: 'horizontal', range: 3, speed: 1.0 },
+        { id: 'goblin', x: 48, y: 6,  patrol: 'random', range: 2, speed: 1.1 },
+        { id: 'wolf',   x: 52, y: 22, patrol: 'random', range: 4, speed: 1.4 },
+        { id: 'goblin', x: 40, y: 5,  patrol: 'horizontal', range: 2, speed: 0.9 }, 
+        { id: 'goblin', x: 45, y: 9,  patrol: 'vertical', range: 2, speed: 1.0 }, 
+        { id: 'wolf',   x: 36, y: 24, patrol: 'random', range: 3, speed: 1.2 }, 
 
-        // --- THE BRIDGE GUARDS & RIVER PATROL ---
-        { id: 'bat', x: 26, y: 14, patrol: 'vertical', range: 2, speed: 1.8 },
-        { id: 'bat', x: 34, y: 14, patrol: 'vertical', range: 2, speed: 1.8 },
-        { id: 'bat', x: 27, y: 5, patrol: 'horizontal', range: 4, speed: 1.5 }, // North West Riverbank
-        { id: 'bat', x: 33, y: 25, patrol: 'horizontal', range: 3, speed: 1.6 }, // South East Riverbank
-        { id: 'rat', x: 27, y: 10, patrol: 'random', range: 2, speed: 1.2 }, // West Riverbank
+        { id: 'bat', x: 34, y: 13, patrol: 'vertical', range: 2, speed: 1.8 },
+        { id: 'bat', x: 37, y: 15, patrol: 'vertical', range: 2, speed: 1.8 },
+        { id: 'bat', x: 39, y: 4,  patrol: 'horizontal', range: 4, speed: 1.5 }, 
+        { id: 'bat', x: 44, y: 27, patrol: 'horizontal', range: 3, speed: 1.6 }, 
+        { id: 'rat', x: 35, y: 11, patrol: 'random', range: 2, speed: 1.2 }, 
 
-        // --- EAST SIDE (The Wilds) ---
-        { id: 'spider', x: 40, y: 22, patrol: 'random', range: 3, speed: 0.9 }, // In flower meadow
-        { id: 'spider', x: 48, y: 28, patrol: 'random', range: 3, speed: 0.9 }, // Near sandy bank
-        { id: 'wolf', x: 45, y: 10, patrol: 'horizontal', range: 5, speed: 1.5 }, // North plateau
-        { id: 'goblin', x: 54, y: 28, patrol: 'vertical', range: 2, speed: 1.2 }, // Cave entrance guard
-        { id: 'wolf', x: 42, y: 5, patrol: 'random', range: 3, speed: 1.4 }, // Mountain pass
-        { id: 'spider', x: 45, y: 25, patrol: 'vertical', range: 3, speed: 1.0 }, // Meadow deeps
-        { id: 'spider', x: 50, y: 15, patrol: 'horizontal', range: 4, speed: 1.1 }, // Ruin approach
-        { id: 'goblin', x: 56, y: 12, patrol: 'random', range: 2, speed: 1.1 }  // High plateau
+        { id: 'spider', x: 41, y: 21, patrol: 'random', range: 3, speed: 0.9 }, 
+        { id: 'spider', x: 49, y: 32, patrol: 'random', range: 3, speed: 0.9 }, 
+        { id: 'wolf',   x: 46, y: 11, patrol: 'horizontal', range: 5, speed: 1.5 }, 
+        { id: 'goblin', x: 54, y: 33, patrol: 'vertical', range: 2, speed: 1.2 }, 
+        { id: 'wolf',   x: 43, y: 4,  patrol: 'random', range: 3, speed: 1.4 }, 
+        { id: 'spider', x: 46, y: 26, patrol: 'vertical', range: 3, speed: 1.0 }, 
+        { id: 'spider', x: 51, y: 14, patrol: 'horizontal', range: 4, speed: 1.1 }, 
+        { id: 'goblin', x: 57, y: 10, patrol: 'random', range: 2, speed: 1.1 }  
     ],
 
     tiles: (function () {
         const rows = [];
-        for (let y = 0; y < 40; y++) {
-            let row = new Array(60).fill(1); // Default to Grass (1)
+        const W = 60, H = 50;
+        for (let y = 0; y < H; y++) {
+            let row = new Array(W).fill(1); 
 
-            for (let x = 0; x < 60; x++) {
-                // 1. Forest Borders (Top & Bottom)
-                if (y < 3 || y > 36) {
-                    row[x] = 5;
+            for (let x = 0; x < W; x++) {
+                // 1. Borders
+                if (y < 3 || y > H - 4) { row[x] = 5; continue; }
+
+                // 2. The Vertical River
+                if (x >= 28 && x <= 32) {
+                    if (y >= 13 && y <= 15) row[x] = 4;
+                    else row[x] = 3;
                     continue;
                 }
 
-                // 2. The Vertical River (x28 to x32)
-                if (x >= 28 && x <= 32) {
-                    // Place the Bridge (4) at y13-y15 across the river
-                    if (y >= 13 && y <= 15) {
-                        row[x] = 4;
-                    } else {
-                        row[x] = 3; // Water
-                    }
-                }
-
                 // 3. The Town (North West)
-                if (x >= 5 && x <= 12 && y >= 5 && y <= 9) {
-                    row[x] = 12; // Town floor
+                if (x >= 5 && x <= 12 && y >= 5 && y <= 9) { 
+                    row[x] = 12; 
+                    continue; 
                 }
 
-                // 4. The Path (Connecting Town to Bridge to Cave)
-                // Horizontal segments
-                if (y === 7 && x > 12 && x < 28) row[x] = 2; // From Town to River
-                if (y === 14 && x < 28) row[x] = 2;          // Main Bridge approach West
-                if (y === 14 && x > 32) row[x] = 2;          // Main Bridge approach East
-                // Vertical connector on West
-                if (x === 18 && y > 7 && y < 14) row[x] = 2;
-
-                // 5. The Mountains (North East)
-                if (x > 45 && y < 12) {
-                    row[x] = 6;
-                }
-
-                // 6. Flower Meadow (South East patch)
-                if (x > 35 && x < 48 && y > 18 && y < 26) {
-                    row[x] = 11;
-                }
-
-                // 7. Sandy Bank (Near South River)
-                if (x >= 33 && x <= 38 && y > 26 && y < 33) {
-                    row[x] = 10;
-                }
-
-                // 8. The Cave (Far East Center)
-                if (x >= 55 && x <= 58 && y >= 28 && y <= 31) {
-                    if (x === 55 || x === 58 || y === 28 || y === 31) {
-                        row[x] = 8; // Cave Wall
+                // 4. North West Boundary (Town Wall)
+                const isWallX = (x === 3 || x === 14);
+                const isWallY = (y === 3 || y === 11);
+                if ((isWallX && y >= 3 && y <= 11) || (isWallY && x >= 3 && x <= 14)) {
+                    if (y === 7 && (x === 3 || x === 14)) {
+                        row[x] = 2; // Path entrance
                     } else {
-                        row[x] = 7; // Cave Floor (The Entrance)
+                        row[x] = 68; // Stone wall
                     }
+                    continue;
                 }
 
-                // 9. Side Borders (Deep Forest)
+                // 5. The Path & Bridge Ward
+                if (y === 7 && x > 12 && x < 28) { row[x] = 2; continue; }
+                if (y === 14 && x < 28) { row[x] = 2; continue; }
+                if (x === 27 && y === 12) { row[x] = 88; continue; } // The Bridge Ward Obelisk
+                if (y === 14 && x > 32) { row[x] = 2; continue; }
+                if (x === 18 && y > 7 && y < 14) { row[x] = 2; continue; }
+
+                // 6. The Mountains
+                if (x > 45 && y < 12) { row[x] = 6; continue; }
+
+                // 7. Tall Grass Patches (Rustling Grass)
+                if (x > 35 && x < 48 && y > 18 && y < 26) { row[x] = 40; continue; }
+
+                // 8. Sandy Bank
+                if (x >= 33 && x <= 38 && y > 26 && y < 33) { row[x] = 10; continue; }
+
+                // 9. The Cave
+                if (x >= 55 && x <= 58 && y >= 28 && y <= 31) {
+                    if (x === 55 || x === 58 || y === 28 || y === 31) row[x] = 8;
+                    else row[x] = 7;
+                    continue;
+                }
+
+                // 10. Side Borders
                 if (x < 3 || x > 57) {
-                    // Ensure the Cave and Path can still exist
                     if (!(x >= 55 && y >= 28 && y <= 31) && !(y === 14)) {
                         row[x] = 5;
+                        continue;
                     }
+                }
+
+                // 11. Ruins of a Glorious Kingdom (The Summoning Site)
+                if (x < 25 && y >= 22 && y < 45 && row[x] === 1) {
+                    const sWallX = (x === 5 || x === 21);
+                    const sWallY = (y === 24 || y === 38);
+                    if ((sWallX && y >= 24 && y <= 38) || (sWallY && x >= 5 && x <= 21)) {
+                         if (y === 31 && x === 21) { row[x] = 2; } 
+                         else { row[x] = 68; }
+                         continue;
+                    }
+                    const d = Math.sqrt((x - 13) ** 2 + (y - 31) ** 2);
+                    if (d < 5) {
+                        if (d < 0.8) row[x] = 88;    
+                        else if (d < 2) row[x] = 86; 
+                        else if (d < 3.5) row[x] = 87; 
+                        else row[x] = 73;             
+                    } else if (Math.random() < 0.08) {
+                        row[x] = 111; 
+                    }
+                }
+
+                // 12. Western Refugee Settlement (New Area in Protected Zone)
+                if (x >= 16 && x <= 25 && y >= 16 && y <= 22 && row[x] === 1) {
+                    const wWallX = (x === 16 || x === 25);
+                    const wWallY = (y === 16 || y === 22);
+                    if ((wWallX && y >= 16 && y <= 22) || (wWallY && x >= 16 && x <= 25)) {
+                        if (x === 18 && y === 16) row[x] = 2; // North Entrance connecting to path
+                        else row[x] = 68; // Stone boundary
+                        continue;
+                    }
+                    // Settlement Floor
+                    row[x] = 12;
                 }
             }
             rows.push(row);
@@ -138,10 +162,9 @@ MAP_DEFS.verdant_vale = {
 
     npcs: [
         { id: 'essabella',    x: 44, y: 22, dialogueKey: 'verdant_vale' },
-        // Arc 1 Story NPCs
         { id: 'elder_maren',  x: 6,  y: 8,  dialogueKey: 'verdant_vale' },
-        { id: 'soldier_davan',x: 24, y: 14, dialogueKey: 'verdant_vale' },
-        { id: 'lira',         x: 14, y: 20, dialogueKey: 'verdant_vale' },
+        { id: 'soldier_davan',x: 18, y: 14, dialogueKey: 'verdant_vale' },
+        { id: 'lira',         x: 8,  y: 7,  dialogueKey: 'verdant_vale' }, 
     ],
 
     objective: {
