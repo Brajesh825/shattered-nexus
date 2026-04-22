@@ -567,6 +567,73 @@
     "lore": "The byproduct of a botched ritual to restart the Moonstone mines. They are empty biological shells, still trying to perform the mining labor they did in life."
   },
   {
+    "id": "zombie_soldier",
+    "name": "Zombified Soldier",
+    "subtitle": "A fallen guardian of the Vale, now a hollow shell",
+    "element": "shadow",
+    "weakTo": [
+      "fire",
+      "light",
+      "holy"
+    ],
+    "resistTo": [
+      "shadow",
+      "physical"
+    ],
+    "tier": 1,
+    "stats": {
+      "hp": 52,
+      "atk": 16,
+      "def": 9,
+      "spd": 4,
+      "mag": 5
+    },
+    "reward": {
+      "exp": 42,
+      "gold": 15
+    },
+    "palette": {
+      "body": "#4a5a6a",
+      "dark": "#2a3a4a",
+      "shine": "#7a8a9a",
+      "eye": "#00ffcc",
+      "pupil": "#004433"
+    },
+    "abilities": [
+      {
+        "id": "hollow_strike",
+        "name": "Hollow Strike",
+        "type": "physical",
+        "weight": 50,
+        "dmgMultiplier": 1.2
+      },
+      {
+        "id": "void_shriek",
+        "name": "Void Shriek",
+        "type": "debuff",
+        "weight": 30
+      },
+      {
+        "id": "guard_break",
+        "name": "Guard Break",
+        "type": "physical",
+        "weight": 20,
+        "dmgMultiplier": 1.4
+      }
+    ],
+    "lore": "Guardians who fell during the initial Void Knight incursion. They still wear the rusted plate of the Vale's army, but their minds have been completely emptied and replaced by a hunger for living memory.",
+    "drops": [
+      {
+        "item": "Rusted Plate",
+        "chance": 0.3
+      },
+      {
+        "item": "Potion",
+        "chance": 0.2
+      }
+    ]
+  },
+  {
     "id": "wisp",
     "name": "Lost Wisp",
     "subtitle": "A wayward soul radiating corrosive spectral light",
