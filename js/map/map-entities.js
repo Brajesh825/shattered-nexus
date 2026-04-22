@@ -916,7 +916,19 @@ const MapEntities = (() => {
           const srcX = dir.cx + frameIdx * frameW;
           ctx.imageSmoothingEnabled = true;
           ctx.imageSmoothingQuality = 'high';
-          ctx.drawImage(img, srcX, dir.cy, frameW, frameH, sx + ox, sy + oy + bounce, dw, dh);
+
+          // Apply color template tinting via filters if color is present
+          if (n.color) {
+            ctx.save();
+            // Simple heuristic to derive a hue-rotate from a hex color
+            // For more precision, we could add a specific 'hue' or 'tint' property to NPC_DEFS
+            const hue = (parseInt(n.color.slice(1), 16) % 360);
+            ctx.filter = `hue-rotate(${hue}deg) brightness(1.1) saturate(1.2)`;
+            ctx.drawImage(img, srcX, dir.cy, frameW, frameH, sx + ox, sy + oy + bounce, dw, dh);
+            ctx.restore();
+          } else {
+            ctx.drawImage(img, srcX, dir.cy, frameW, frameH, sx + ox, sy + oy + bounce, dw, dh);
+          }
         } else {
           // Loading placeholder
           ctx.fillStyle = n.color || '#a78bfa';
