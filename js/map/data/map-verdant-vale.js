@@ -23,22 +23,22 @@ MAP_DEFS.verdant_vale = {
     encounterTemplates: [
         { weight: 3, enemies: ['goblin'] },
         { weight: 3, enemies: ['wolf'] },
-        { weight: 2, enemies: ['goblin', 'goblin'] },
+        { weight: 2, enemies: ['zombie_soldier'] },
         { weight: 2, enemies: ['bat', 'bat'] },
-        { weight: 2, enemies: ['goblin', 'wolf'] },
+        { weight: 2, enemies: ['zombie_soldier', 'wolf'] },
         { weight: 2, enemies: ['spider', 'spider'] },
-        { weight: 1, enemies: ['goblin', 'goblin', 'bat'] },
+        { weight: 1, enemies: ['goblin', 'goblin', 'zombie_soldier'] },
         { weight: 1, enemies: ['wolf', 'spider', 'bat'] },
-        { weight: 1, enemies: ['goblin', 'goblin', 'wolf', 'spider'] },
+        { weight: 1, enemies: ['zombie_soldier', 'zombie_soldier', 'wolf'] },
     ],
 
     enemies: [
-        { id: 'goblin', x: 42, y: 18, patrol: 'horizontal', range: 3, speed: 1.0 },
-        { id: 'goblin', x: 48, y: 6,  patrol: 'random', range: 2, speed: 1.1 },
-        { id: 'wolf',   x: 52, y: 22, patrol: 'random', range: 4, speed: 1.4 },
-        { id: 'goblin', x: 40, y: 5,  patrol: 'horizontal', range: 2, speed: 0.9 }, 
-        { id: 'goblin', x: 45, y: 9,  patrol: 'vertical', range: 2, speed: 1.0 }, 
-        { id: 'wolf',   x: 36, y: 24, patrol: 'random', range: 3, speed: 1.2 }, 
+        { id: 'zombie_soldier', x: 42, y: 18, patrol: 'horizontal', range: 3, speed: 0.8 },
+        { id: 'goblin',         x: 48, y: 6,  patrol: 'random', range: 2, speed: 1.1 },
+        { id: 'wolf',           x: 52, y: 22, patrol: 'random', range: 4, speed: 1.4 },
+        { id: 'zombie_soldier', x: 40, y: 5,  patrol: 'horizontal', range: 2, speed: 0.7 }, 
+        { id: 'goblin',         x: 45, y: 9,  patrol: 'vertical', range: 2, speed: 1.0 }, 
+        { id: 'wolf',           x: 36, y: 24, patrol: 'random', range: 3, speed: 1.2 }, 
 
         { id: 'bat', x: 34, y: 13, patrol: 'vertical', range: 2, speed: 1.8 },
         { id: 'bat', x: 37, y: 15, patrol: 'vertical', range: 2, speed: 1.8 },
@@ -46,14 +46,14 @@ MAP_DEFS.verdant_vale = {
         { id: 'bat', x: 44, y: 27, patrol: 'horizontal', range: 3, speed: 1.6 }, 
         { id: 'rat', x: 35, y: 11, patrol: 'random', range: 2, speed: 1.2 }, 
 
-        { id: 'spider', x: 41, y: 21, patrol: 'random', range: 3, speed: 0.9 }, 
-        { id: 'spider', x: 49, y: 32, patrol: 'random', range: 3, speed: 0.9 }, 
-        { id: 'wolf',   x: 46, y: 11, patrol: 'horizontal', range: 5, speed: 1.5 }, 
-        { id: 'goblin', x: 54, y: 33, patrol: 'vertical', range: 2, speed: 1.2 }, 
-        { id: 'wolf',   x: 43, y: 4,  patrol: 'random', range: 3, speed: 1.4 }, 
-        { id: 'spider', x: 46, y: 26, patrol: 'vertical', range: 3, speed: 1.0 }, 
-        { id: 'spider', x: 51, y: 14, patrol: 'horizontal', range: 4, speed: 1.1 }, 
-        { id: 'goblin', x: 57, y: 10, patrol: 'random', range: 2, speed: 1.1 }  
+        { id: 'zombie_soldier', x: 41, y: 21, patrol: 'random', range: 3, speed: 0.7 }, 
+        { id: 'spider',         x: 49, y: 32, patrol: 'random', range: 3, speed: 0.9 }, 
+        { id: 'zombie_soldier', x: 46, y: 11, patrol: 'horizontal', range: 5, speed: 0.9 }, 
+        { id: 'goblin',         x: 54, y: 33, patrol: 'vertical', range: 2, speed: 1.2 }, 
+        { id: 'wolf',           x: 43, y: 4,  patrol: 'random', range: 3, speed: 1.4 }, 
+        { id: 'spider',         x: 46, y: 26, patrol: 'vertical', range: 3, speed: 1.0 }, 
+        { id: 'spider',         x: 51, y: 14, patrol: 'horizontal', range: 4, speed: 1.1 }, 
+        { id: 'zombie_soldier', x: 57, y: 10, patrol: 'random', range: 2, speed: 0.8 }  
     ],
 
     tiles: (function () {
@@ -84,9 +84,9 @@ MAP_DEFS.verdant_vale = {
                 const isWallY = (y === 3 || y === 11);
                 if ((isWallX && y >= 3 && y <= 11) || (isWallY && x >= 3 && x <= 14)) {
                     if (y === 7 && (x === 3 || x === 14)) {
-                        row[x] = 2; // Path entrance
+                        row[x] = 2; 
                     } else {
-                        row[x] = 68; // Stone wall
+                        row[x] = 68; 
                     }
                     continue;
                 }
@@ -94,7 +94,7 @@ MAP_DEFS.verdant_vale = {
                 // 5. The Path & Bridge Ward
                 if (y === 7 && x > 12 && x < 28) { row[x] = 2; continue; }
                 if (y === 14 && x < 28) { row[x] = 2; continue; }
-                if (x === 27 && y === 12) { row[x] = 88; continue; } // The Bridge Ward Obelisk
+                if (x === 27 && y === 12) { row[x] = 88; continue; } 
                 if (y === 14 && x > 32) { row[x] = 2; continue; }
                 if (x === 18 && y > 7 && y < 14) { row[x] = 2; continue; }
 
@@ -142,17 +142,28 @@ MAP_DEFS.verdant_vale = {
                     }
                 }
 
-                // 12. Western Refugee Settlement (New Area in Protected Zone)
+                // 12. Western Refugee Settlement
                 if (x >= 16 && x <= 25 && y >= 16 && y <= 22 && row[x] === 1) {
                     const wWallX = (x === 16 || x === 25);
                     const wWallY = (y === 16 || y === 22);
                     if ((wWallX && y >= 16 && y <= 22) || (wWallY && x >= 16 && x <= 25)) {
-                        if (x === 18 && y === 16) row[x] = 2; // North Entrance connecting to path
-                        else row[x] = 68; // Stone boundary
+                        if (x === 18 && y === 16) row[x] = 2; 
+                        else row[x] = 68; 
                         continue;
                     }
-                    // Settlement Floor
                     row[x] = 12;
+                }
+
+                // 13. Bridge Outpost
+                if (x >= 24 && x <= 27 && y >= 13 && y <= 15 && row[x] === 1) {
+                    const oWallX = (x === 24 || x === 27);
+                    const oWallY = (y === 13 || y === 15);
+                    if ((oWallX && y >= 13 && y <= 15) || (oWallY && x >= 24 && x <= 27)) {
+                        if (x === 27 && y === 14) row[x] = 2; 
+                        else row[x] = 68; 
+                        continue;
+                    }
+                    row[x] = 12; 
                 }
             }
             rows.push(row);
@@ -163,7 +174,9 @@ MAP_DEFS.verdant_vale = {
     npcs: [
         { id: 'essabella',    x: 44, y: 22, dialogueKey: 'verdant_vale' },
         { id: 'elder_maren',  x: 6,  y: 8,  dialogueKey: 'verdant_vale' },
-        { id: 'soldier_davan',x: 18, y: 14, dialogueKey: 'verdant_vale' },
+        { id: 'soldier_davan',x: 23, y: 13, dialogueKey: 'verdant_vale' }, // Moved to GRASS (y=13) to clear the horizontal path (y=14)
+        { id: 'soldier_kael', x: 15, y: 6,  dialogueKey: 'verdant_vale' }, // Moved to GRASS (y=6) to clear the horizontal path (y=7)
+        { id: 'soldier_jace', x: 17, y: 15, dialogueKey: 'verdant_vale' }, // Moved to GRASS (y=15) around the settlement
         { id: 'lira',         x: 8,  y: 7,  dialogueKey: 'verdant_vale' }, 
     ],
 

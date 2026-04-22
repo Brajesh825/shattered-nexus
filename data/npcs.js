@@ -239,6 +239,38 @@ const NPC_DEFS = {
       ],
     },
   },
+  
+  soldier_kael: {
+    name:   'Soldier Kael',
+    color:  '#94a3b8',
+    sprite: 'images/characters/map/sheets/npc/soldier_davan_sheet.png',
+    dialogues: {
+      verdant_vale: [
+        { speaker: 'Soldier Kael', text: 'Halt! Identify yourselves before approaching the Town walls.' },
+        { speaker: 'Aya',          text: 'We are travelers. We seek the Seal Fragment.' },
+        { speaker: 'Soldier Kael', text: 'The Fragment... So the rumors are true. The Summoning Circle pulsed this morning.' },
+        { speaker: 'Rei',           text: 'You guard this gate alone?' },
+        { speaker: 'Soldier Kael', text: 'The rest are at the inner keep or the southern watch. We are stretched thin. If those things from the east cross the river, these walls won\'t be enough.' },
+        { speaker: 'Soldier Kael', text: 'Enter quickly. And stay away from the eastern bridge if you value your souls.' },
+      ],
+    },
+  },
+
+  soldier_jace: {
+    name:   'Soldier Jace',
+    color:  '#94a3b8',
+    sprite: 'images/characters/map/sheets/npc/soldier_davan_sheet.png',
+    dialogues: {
+      verdant_vale: [
+        { speaker: 'Soldier Jace', text: 'Move along, travelers. This settlement is for refugees only.' },
+        { speaker: 'Lulu',          text: 'We only wish to speak with those who escaped the East.' },
+        { speaker: 'Soldier Jace', text: 'There isn\'t much to say. They saw the shadows move, then the screams started. We barely got the gate closed in time.' },
+        { speaker: 'Tao',           text: 'Sounds like you\'ve seen better days.' },
+        { speaker: 'Soldier Jace', text: 'I was stationed at the capital once. Now I guard a cluster of tents and a stone wall that feels far too short. But it\'s the only home left for these people.' },
+        { speaker: 'Soldier Jace', text: 'Watch your back out there. The shadows have a way of following you.' },
+      ],
+    },
+  },
 
   lira: {
     name:   'Lira',
