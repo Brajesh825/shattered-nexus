@@ -788,7 +788,7 @@ const MapEntities = (() => {
           }
         } else {
           n._idleTimer += dt;
-          if (n._idleTimer >= NPC_IDLE_WAIT) {
+          if (n._idleTimer >= NPC_IDLE_WAIT && n.id === 'essabella') {
             n._idleTimer = 0;
             const wp  = n._circle[n._stepIdx % n._circle.length];
             n._stepIdx++;
@@ -845,6 +845,8 @@ const MapEntities = (() => {
     function checkAt(x, y) {
       return _npcs.find(n => n.x === x && n.y === y) || null;
     }
+
+    function getNPCs() { return _npcs; }
 
     function markTalked(id) {
       const n = _npcs.find(n => n.id === id);
@@ -948,7 +950,7 @@ const MapEntities = (() => {
       });
     }
 
-    return { init, update, checkInteract, checkAt, markTalked, render };
+    return { init, update, checkInteract, checkAt, markTalked, getNPCs, render };
   })();
 
   function allCleared() {

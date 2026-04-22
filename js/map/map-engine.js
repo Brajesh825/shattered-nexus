@@ -765,8 +765,10 @@ const MapEngine = (() => {
       ];
       for (const pos of checks) {
         const npc = MapEntities.checkNPCAt(pos.x, pos.y);
-        if (npc && !npc._dialogueOpen && !npc.talked) {
+        // Allow talking multiple times, but with a cooldown to avoid spam
+        if (npc && !npc._dialogueOpen && (!npc._talkCooldown || npc._talkCooldown <= 0)) {
           npc._dialogueOpen = true;
+          npc._talkCooldown = 30; // 30 second cooldown before re-talking automatically
           stop();
           _openNPCDialogue(npc);
           break;
@@ -780,10 +782,17 @@ const MapEngine = (() => {
     // Fog dialogue + ambient voice lines
     _updateFogDialogue(dt);
 
-    // Tick speech bubbles
+    // Tick speech bubbles and NPC cooldowns
     for (let i = _bubbles.length - 1; i >= 0; i--) {
       _bubbles[i].life -= dt;
       if (_bubbles[i].life <= 0) _bubbles.splice(i, 1);
+    }
+    
+    // NPC talk cooldowns
+    if (typeof MapEntities !== 'undefined' && MapEntities.getNPCs) {
+        MapEntities.getNPCs().forEach(n => {
+            if (n._talkCooldown > 0) n._talkCooldown -= dt;
+        });
     }
 
     if (typeof WeatherEngine !== 'undefined') WeatherEngine.update(dt);

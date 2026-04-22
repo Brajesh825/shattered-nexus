@@ -201,7 +201,7 @@ const NPC_DEFS = {
   elder_maren: {
     name:   'Elder Maren',
     color:  '#fbbf24',
-    sprite: 'images/characters/map/sheets/npc/essabela_sheet.png',
+    sprite: 'images/characters/map/sheets/npc/elder_maren_sheet.png',
     dialogues: {
       verdant_vale: [
         { speaker: 'Elder Maren', text: 'The shrine has not pulsed like this in forty years. Not since a scholar from the capital came through with questions about the Sealing Rites.' },
@@ -222,7 +222,7 @@ const NPC_DEFS = {
   soldier_davan: {
     name:   'Soldier Davan',
     color:  '#94a3b8',
-    sprite: 'images/characters/map/sheets/npc/essabela_sheet.png',
+    sprite: 'images/characters/map/sheets/npc/soldier_davan_sheet.png',
     dialogues: {
       verdant_vale: [
         { speaker: 'Soldier Davan', text: '…Don\'t. Don\'t come closer. I need a moment.' },
@@ -243,7 +243,7 @@ const NPC_DEFS = {
   lira: {
     name:   'Lira',
     color:  '#86efac',
-    sprite: 'images/characters/map/sheets/npc/essabela_sheet.png',
+    sprite: 'images/characters/map/sheets/npc/lira_sheet.png',
     dialogues: {
       verdant_vale: [
         { speaker: 'Lira', text: '…Hello? Are you the ones the elder said were coming?' },
@@ -269,7 +269,7 @@ const NPC_DEFS = {
   the_archivist: {
     name:   'The Archivist',
     color:  '#7dd3fc',
-    sprite: 'images/characters/map/sheets/npc/essabela_sheet.png',
+    sprite: 'images/characters/map/sheets/npc/archivist_sheet.png',
     dialogues: {
       crystal_cavern: [
         { speaker: 'The Archivist', text: 'Visitors. How unexpected. How… inconvenient.' },
@@ -296,7 +296,7 @@ const NPC_DEFS = {
   ghost_knight: {
     name:   'Knight of the Vale',
     color:  '#a5f3fc',
-    sprite: 'images/characters/map/sheets/npc/essabela_sheet.png',
+    sprite: 'images/characters/map/sheets/npc/knight_of_the_vale_sheet.png',
     dialogues: {
       crystal_cavern: [
         { speaker: 'Knight of the Vale', text: 'Halt. State your allegiance and reason for passage through the Seal Corridor.' },
