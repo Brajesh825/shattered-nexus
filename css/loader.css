@@ -49,3 +49,83 @@
   font-size: 11px;
   letter-spacing: 1px;
 }
+
+/* ── Quality Picker ─────────────────────────────────────────── */
+#quality-picker {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, #080b12 0%, #0d1220 100%);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  font-family: 'Cinzel', serif;
+}
+
+.qp-box {
+  text-align: center;
+  padding: 36px 28px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(78,207,255,0.2);
+  border-radius: 12px;
+  max-width: 360px;
+  width: 90%;
+}
+
+.qp-title {
+  font-size: 18px;
+  letter-spacing: 3px;
+  color: #4ecfff;
+  margin-bottom: 10px;
+}
+
+.qp-sub {
+  font-family: 'VT323', monospace;
+  font-size: 15px;
+  color: #7a90a8;
+  margin-bottom: 28px;
+  line-height: 1.5;
+}
+
+.qp-options {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+}
+
+.qp-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 18px 12px;
+  background: rgba(78,207,255,0.06);
+  border: 1px solid rgba(78,207,255,0.25);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+  color: #c8dff0;
+}
+
+.qp-btn:hover {
+  background: rgba(78,207,255,0.14);
+  border-color: #4ecfff;
+  transform: translateY(-2px);
+}
+
+.qp-icon { font-size: 26px; }
+
+.qp-label {
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  letter-spacing: 2px;
+  color: #fff;
+}
+
+.qp-desc {
+  font-family: 'VT323', monospace;
+  font-size: 13px;
+  color: #7a90a8;
+  line-height: 1.4;
+}
