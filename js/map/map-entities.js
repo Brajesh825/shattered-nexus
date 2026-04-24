@@ -724,7 +724,7 @@ const MapEntities = (() => {
   /* ── NPC system ─────────────────────────────────────── */
   const MapNPCs = (() => {
     let _npcs = [];
-    const _spriteCache = {};
+    const _imgCache = {};
 
     const BEHAVIORS = {
       STATIONARY: 'stationary',
@@ -734,36 +734,61 @@ const MapEntities = (() => {
 
     const NPC_MOVE_DUR   = 0.35; 
     const NPC_IDLE_WAIT  = 1.5; 
-    const NPC_FRAME_DUR  = 0.15;
+    const NPC_FRAME_DUR  = 0.14;
     const NPC_FRAME_CNT  = 3;
 
-    function init(map) {
-      _npcs = (map.npcs || []).map(n => ({
-        ...n,
-        tx: n.x, ty: n.y,
-        ox: n.x, oy: n.y,
-        px: n.x * MapEngine.getTile(),
-        py: n.y * MapEngine.getTile(),
-        prevTx: n.x, prevTy: n.y,
-        facing: { dx: 0, dy: 1 },
-        moving: false,
-        moveTimer: 0,
-        idleTimer: Math.random() * NPC_IDLE_WAIT,
-        frame: 0,
-        frameTimer: 0,
-        behavior: n.behavior || BEHAVIORS.STATIONARY,
-        range: n.range || 2,
-        waypoints: n.waypoints || [],
-        waypointIdx: 0,
-        // Interaction state
-        isTalking: false
-      }));
+    function _loadImg(src) {
+      const qual = G.settings?.graphicsQuality || G.graphics || 'auto';
+      const isLow = qual === 'low' || (qual === 'auto' && window.innerWidth < 800);
+      let resSrc = src;
+      if (isLow && src.endsWith('.png')) {
+        resSrc = src.replace('.png', '_low.webp');
+      }
+
+      if (_imgCache[resSrc]) return _imgCache[resSrc];
+      const img = new Image();
+      img.src = resSrc;
+      _imgCache[resSrc] = img;
+      return img;
     }
 
-    function update(dt, map, enemies) {
+    function init(map) {
+      _npcs = (map.npcs || []).map(n => {
+        // Map common IDs to filenames (handle spelling mismatches)
+        let spriteId = n.id;
+        if (spriteId === 'essabella') spriteId = 'essabela';
+        if (spriteId.startsWith('soldier_')) spriteId = 'soldier';
+
+        const spritePath = `images/characters/map/sheets/npc/${spriteId}_sheet.png`;
+
+        return {
+          ...n,
+          sprite: spritePath,
+          tx: n.x, ty: n.y,
+          ox: n.x, oy: n.y,
+          px: n.x * MapEngine.getTile(),
+          py: n.y * MapEngine.getTile(),
+          prevTx: n.x, prevTy: n.y,
+          facing: { dx: 0, dy: 1 },
+          moving: false,
+          moveTimer: 0,
+          idleTimer: Math.random() * NPC_IDLE_WAIT,
+          frame: 0,
+          frameTimer: 0,
+          behavior: n.behavior || BEHAVIORS.STATIONARY,
+          range: n.range || 2,
+          waypoints: n.waypoints || [],
+          waypointIdx: 0,
+          isTalking: false,
+          isTalked: false
+        };
+      });
+    }
+
+    function update(dt, map) {
       const TILE = MapEngine.getTile();
       _npcs.forEach(n => {
-        if (n.isTalking) return; // Freeze movement while talking
+        if (n.isTalking) return;
 
         if (n.moving) {
           n.moveTimer += dt;
@@ -778,7 +803,7 @@ const MapEntities = (() => {
           }
 
           if (t >= 1) {
-            n.px = n.tx * TILE; n.py = n.py * TILE;
+            n.px = n.tx * TILE; n.py = n.ty * TILE;
             n.moving = false;
             n.idleTimer = 0;
             n.frame = 0;
@@ -815,7 +840,7 @@ const MapEntities = (() => {
         const target = n.waypoints[n.waypointIdx];
         if (n.tx === target.x && n.ty === target.y) {
           n.waypointIdx = (n.waypointIdx + 1) % n.waypoints.length;
-          return null; // Pause at waypoint
+          return null; 
         }
         const dx = Math.sign(target.x - n.tx);
         const dy = Math.sign(target.y - n.ty);
@@ -826,9 +851,9 @@ const MapEntities = (() => {
     }
 
     function _canNPCMove(nx, ny, map) {
+      if (nx < 0 || ny < 0 || nx >= map.width || ny >= map.height) return false;
       const tid = map.tiles[ny]?.[nx] ?? 0;
       if (!(TILE_DEFS[tid] || TILE_DEFS[0]).walkable) return false;
-      // Don't step on player
       if (nx === MapPlayer.tx && ny === MapPlayer.ty) return false;
       return true;
     }
@@ -836,22 +861,29 @@ const MapEntities = (() => {
     function getDialogue(npcId) {
       const npc = _npcs.find(n => n.id === npcId);
       if (!npc) return null;
-      // Face the player
       const dx = Math.sign(MapPlayer.tx - npc.tx);
       const dy = Math.sign(MapPlayer.ty - npc.ty);
       if (dx !== 0 || dy !== 0) npc.facing = {dx, dy};
-      
       return npc.dialogueKey;
     }
 
-    function render(ctx, cam, TILE, inVision) {
-      const dw = Math.round(TILE * 1.1), dh = Math.round(TILE * 1.8);
-      const ox = (TILE - dw) / 2, oy = TILE - dh;
+    function _getNPCDir(n, img) {
+      const w = img.naturalWidth, h = img.naturalHeight;
+      const dx = n.facing.dx, dy = n.facing.dy;
+      if      (dy > 0)  return { cx: 0,      cy: 0,      rev: false }; // front
+      else if (dy < 0)  return { cx: w / 2,  cy: h / 2,  rev: false }; // back
+      else if (dx < 0)  return { cx: w / 2,  cy: 0,      rev: true  }; // left
+      else              return { cx: 0,       cy: h / 2,  rev: false }; // right
+    }
 
+    function render(ctx, cam, TILE, inVision) {
       _npcs.forEach(n => {
         if (typeof inVision === 'function' && !inVision(n.tx, n.ty)) return;
         const sx = n.px - cam.x, sy = n.py - cam.y;
         if (sx < -TILE || sy < -TILE || sx > ctx.canvas.width + TILE || sy > ctx.canvas.height + TILE) return;
+
+        const dw = Math.round(TILE * 1.1), dh = Math.round(TILE * 1.8);
+        const ox = (TILE - dw) / 2, oy = TILE - dh;
 
         // Shadow
         ctx.fillStyle = 'rgba(0,0,0,0.25)';
@@ -861,205 +893,56 @@ const MapEntities = (() => {
 
         const bounce = n.moving ? Math.sin(n.frame / NPC_FRAME_CNT * Math.PI * 2) * 2 : 0;
         
-        // Sprite selection (reuse enemy drawing for now or simple placeholder)
-        const spr = _getNPCSprite(n.id);
-        if (spr) {
-          ctx.drawImage(spr, sx + ox, sy + oy + bounce, dw, dh);
+        const img = _loadImg(n.sprite);
+        if (img.complete && img.naturalWidth) {
+          const frameW = img.naturalWidth / 6;
+          const frameH = img.naturalHeight / 2;
+          const dir = _getNPCDir(n, img);
+          const frameIdx = dir.rev ? (NPC_FRAME_CNT - 1 - n.frame) : n.frame;
+          const srcX = dir.cx + frameIdx * frameW;
+          const srcY = dir.cy;
+
+          ctx.save();
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = 'high';
+          ctx.drawImage(img, srcX, srcY, frameW, frameH, sx + ox, sy + oy + bounce, dw, dh);
+          ctx.restore();
         } else {
           ctx.fillStyle = '#40ff80';
           ctx.fillRect(sx + 8, sy + 8 + bounce, TILE - 16, TILE - 16);
         }
 
-        // Interaction prompt if player is adjacent
-        const dist = Math.abs(n.tx - MapPlayer.tx) + Math.abs(n.ty - MapPlayer.ty);
-        if (dist === 1 && !n.isTalking) {
-          ctx.fillStyle = '#ffffff';
-          ctx.font = 'bold 10px sans-serif';
-          ctx.textAlign = 'center';
-          ctx.fillText('💬', sx + TILE / 2, sy + oy + bounce - 5);
-          ctx.textAlign = 'left';
-        }
-      });
-    }
-
-    function _getNPCSprite(id) {
-      if (_spriteCache[id]) return _spriteCache[id];
-      // Generic villager palette for now
-      const palette = { body: '#4080ff', dark: '#204080', shine: '#80a0ff', eye: '#ffffff', pupil: '#000000' };
-      _spriteCache[id] = SpriteRenderer.drawEnemyToCanvas('npc', palette);
-      return _spriteCache[id];
-    }
-
-    return { init, update, render, getDialogue, checkNPCAt: (x,y) => _npcs.some(n => n.tx === x && n.ty === y) };
-  })();
-               n._moving    = true;
-               n._facingDx  = dx; n._facingDy = dy;
-            }
-          }
-        }
-
-        if (enemies) {
-          enemies.forEach(en => {
-            if (en.alive && en.tx === n.x && en.ty === n.y) en.alive = false;
-          });
-        }
-      });
-    }
-
-    function _loadImg(src) {
-      const isLow = G.settings.graphicsQuality === 'low' || (G.settings.graphicsQuality === 'auto' && window.innerWidth < 800);
-      let resSrc = src;
-      if (isLow && src.endsWith('.png')) {
-        resSrc = src.replace('.png', '_low.webp');
-      }
-
-      if (_imgCache[resSrc]) return _imgCache[resSrc];
-      const img = new Image();
-      img.src = resSrc;
-      _imgCache[resSrc] = img;
-      return img;
-    }
-
-    function init(map) {
-      _mapId = map.id;
-      const talkedSet = (typeof G !== 'undefined' && G.npcTalked && G.npcTalked[map.id]) || [];
-      _npcs = (map.npcs || []).map(ref => {
-        const def = (typeof NPC_DEFS !== 'undefined' && NPC_DEFS[ref.id]) || {};
-        const dialogue = (def.dialogues && ref.dialogueKey && def.dialogues[ref.dialogueKey]) || [];
-        const talked = talkedSet.includes(ref.id);
-        return { ...def, ...ref, dialogue, talked };
-      });
-    }
-
-    function checkInteract(map) {
-      const px = MapPlayer.tx, py = MapPlayer.ty;
-      return _npcs.find(n => n.x === px && n.y === py) || null;
-    }
-
-    function checkAt(x, y) {
-      return _npcs.find(n => n.x === x && n.y === y) || null;
-    }
-
-    function getNPCs() { return _npcs; }
-
-    function markTalked(id) {
-      const n = _npcs.find(n => n.id === id);
-      if (n) {
-        n.talked = true;
-        if (typeof G !== 'undefined' && _mapId) {
-          if (!G.npcTalked[_mapId]) G.npcTalked[_mapId] = [];
-          if (!G.npcTalked[_mapId].includes(id)) G.npcTalked[_mapId].push(id);
-        }
-      }
-    }
-
-    // Sheet layout matches party exactly (see _getSheetDims):
-    //   front: cx=0,   cy=0,   rev=false
-    //   left:  cx=w/2, cy=0,   rev=true
-    //   right: cx=0,   cy=h/2, rev=false
-    //   back:  cx=w/2, cy=h/2, rev=false
-    // Each strip has 3 frames (frameW = imgW/6)
-    const NPC_FRAME_DUR   = 0.14;
-    const NPC_FRAME_COUNT = 3;
-
-    function _getNPCDir(n, img) {
-      const w = img.naturalWidth, h = img.naturalHeight;
-      const dx = n._facingDx !== undefined ? n._facingDx : 0;
-      const dy = n._facingDy !== undefined ? n._facingDy : 1;
-      if      (dy > 0)  return { cx: 0,      cy: 0,      rev: false }; // front
-      else if (dy < 0)  return { cx: w / 2,  cy: h / 2,  rev: false }; // back
-      else if (dx < 0)  return { cx: w / 2,  cy: 0,      rev: true  }; // left
-      else              return { cx: 0,       cy: h / 2,  rev: false }; // right
-    }
-
-    function _getNPCSheetDims(img) {
-      const w = img.naturalWidth, h = img.naturalHeight;
-      return { frameW: w / 6, frameH: h / 2 };
-    }
-
-    function render(ctx, cam, TILE, time) {
-      _npcs.forEach(n => {
-        const px  = n._px !== undefined ? n._px : n.x * TILE;
-        const py  = n._py !== undefined ? n._py : n.y * TILE;
-        const sx  = px - cam.x;
-        const sy  = py - cam.y;
-        if (sx < -TILE || sy < -TILE || sx > ctx.canvas.width + TILE || sy > ctx.canvas.height + TILE) return;
-
-        const dw  = Math.round(TILE * 1.1);
-        const dh  = Math.round(TILE * 1.6);
-        const ox  = Math.round((TILE - dw) / 2);
-        const oy  = TILE - dh;
-
-        const isMoving = !!n._moving;
-        const bounce   = isMoving
-          ? Math.sin((n._frame / NPC_FRAME_COUNT) * Math.PI * 2) * 3
-          : Math.sin(time * 1.6) * 1.5;
-
-        // Shadow
-        ctx.fillStyle = 'rgba(0,0,0,0.25)';
-        ctx.beginPath();
-        ctx.ellipse(sx + TILE / 2, sy + TILE - 3, TILE * 0.32, 5, 0, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Sprite — directional walk cycle matching party sheet layout
-        const img = _loadImg(n.sprite);
-        if (img.complete && img.naturalWidth) {
-          const { frameW, frameH } = _getNPCSheetDims(img);
-          const dir = _getNPCDir(n, img);
-          const frameIdx = dir.rev ? (NPC_FRAME_COUNT - 1 - n._frame) : n._frame;
-          const srcX = dir.cx + frameIdx * frameW;
-          ctx.imageSmoothingEnabled = true;
-          ctx.imageSmoothingQuality = 'high';
-
-          // Apply color template tinting via filters if color is present
-          if (n.color) {
-            ctx.save();
-            
-            // Apply 'Deformed' horror effect if bridge mystery revealed
-            const isDeformed = (typeof MapEngine !== 'undefined' && MapEngine.hasTriggerFired && MapEngine.hasTriggerFired('bridge_realization'));
-            const horrorFilter = isDeformed ? 'grayscale(0.6) contrast(180%) brightness(0.85) hue-rotate(240deg)' : '';
-            
-            const hue = (parseInt(n.color.slice(1), 16) % 360);
-            ctx.filter = `${horrorFilter} hue-rotate(${hue}deg) brightness(1.1) saturate(1.2)`;
-            ctx.drawImage(img, srcX, dir.cy, frameW, frameH, sx + ox, sy + oy + bounce, dw, dh);
-            ctx.restore();
-          } else {
-            ctx.drawImage(img, srcX, dir.cy, frameW, frameH, sx + ox, sy + oy + bounce, dw, dh);
-          }
-        } else {
-          // Loading placeholder
-          ctx.fillStyle = n.color || '#a78bfa';
-          ctx.beginPath();
-          ctx.arc(sx + TILE / 2, sy + TILE * 0.4 + bounce, TILE * 0.28, 0, Math.PI * 2);
-          ctx.fill();
-        }
-
-        // Pulsing 💬 above head when not yet talked to
-        if (!n.talked) {
-          const pulse = 0.7 + 0.3 * Math.sin(time * 3.5);
+        // Interaction prompt
+        if (!n.isTalked) {
+          const pulse = 0.7 + 0.3 * Math.sin(performance.now() / 300);
           ctx.save();
           ctx.globalAlpha = pulse;
-          ctx.font = `${Math.round(TILE * 0.32)}px serif`;
+          ctx.font = 'bold 12px serif';
           ctx.textAlign = 'center';
-          ctx.textBaseline = 'bottom';
-          ctx.fillText('💬', sx + TILE / 2, sy + oy + bounce - 2);
+          ctx.fillText('💬', sx + TILE / 2, sy + oy + bounce - 4);
           ctx.restore();
         }
 
-        // Name label (same style as enemies)
+        // Name Tag
         ctx.fillStyle = 'rgba(0,0,0,0.55)';
         ctx.fillRect(sx + ox, sy + TILE + 2, dw, 11);
-        ctx.fillStyle = n.color || '#c4b5fd';
+        ctx.fillStyle = '#40ff80';
         ctx.font = '8px monospace';
         ctx.textAlign = 'center';
-        ctx.textBaseline = 'top';
-        ctx.fillText(n.name || n.id, sx + TILE / 2, sy + TILE + 3);
+        ctx.fillText(n.name || n.id, sx + TILE / 2, sy + TILE + 11);
         ctx.textAlign = 'left';
-        ctx.textBaseline = 'alphabetic';
       });
     }
 
-    return { init, update, checkInteract, checkAt, markTalked, getNPCs, render };
+    function markTalked(id) {
+      const n = _npcs.find(n => n.id === id);
+      if (n) n.isTalked = true;
+    }
+
+    return { 
+      init, update, render, getDialogue, markTalked,
+      checkNPCAt: (x,y) => _npcs.find(n => n.tx === x && n.ty === y) 
+    };
   })();
 
   function allCleared() {
@@ -1075,11 +958,14 @@ const MapEntities = (() => {
   }
 
   function initNPCs(map) { MapNPCs.init(map); }
-  function renderNPCs(ctx, cam, TILE, time) { MapNPCs.render(ctx, cam, TILE, time); }
-  function checkNPCInteract(map) { return MapNPCs.checkInteract(map); }
-  function checkNPCAt(x, y) { return MapNPCs.checkAt(x, y); }
+  function renderNPCs(ctx, cam, TILE, inVision) { MapNPCs.render(ctx, cam, TILE, inVision); }
+  function checkNPCAt(x, y) { return MapNPCs.checkNPCAt(x, y); }
+  function getNPCDialogue(id) { return MapNPCs.getDialogue(id); }
   function markNPCTalked(id) { MapNPCs.markTalked(id); }
 
-  return { init, clear, updateEnemies, renderEnemies, checkEncounter, removeEncountered, allCleared, remaining,
-           hasEnemyAt, initNPCs, renderNPCs, checkNPCInteract, checkNPCAt, markNPCTalked };
+  return { 
+    init, clear, updateEnemies, renderEnemies, checkEncounter, removeEncountered, 
+    allCleared, remaining, hasEnemyAt, 
+    initNPCs, renderNPCs, checkNPCAt, getNPCDialogue, markNPCTalked 
+  };
 })();
