@@ -1,6 +1,7 @@
 # RPG+ Development Roadmap
 
 ## ✅ Completed Milestones
+- **[2026-04-25] Battle UI Overhaul (Phase 1)**: Implemented party lunge animations (idle→prepare→lunge→attack→return→idle), enemy strike archetypes (physical/magic/debuff via pure CSS), ghost HP drain bars, colored initial-letter badges for party tokens, enemy HP numbers, pop-text types, and low-HP turn bar pulse. Fixed critical double `TurnManager.advance()` bug in `ActionEngine` for enemy actions.
 - **[2026-04-24] Mobile PWA Stabilization**: Fixed virtual joystick logic, optimized high-res sprites with WebP downsampling for mobile memory efficiency, and finalized manifest integration.
 - **[2026-04-24] NPC Restoration & High-Fidelity Sprites**: Restored directional spritesheet rendering, state-aware interaction bubbles, and robust image caching.
 - **[2026-04-24] Universal Phase System**: Implemented HP-triggered transformations for bosses (e.g., King Galdor, Spectral Guardian) with high-impact scaling.
@@ -25,10 +26,13 @@ To expand progress beyond the party-wide Relic system in a later update:
 - **Per-Character Gear:** Implement individual Weapons and Armor that distinctively alter a specific character's stats.
 - **Equipment UI:** Expand the inventory screens to gracefully handle gear equipping comparing stats.
 
-## 8. Battle Screen UX Overhaul
-The current battle screen lacks clarity for deeper mechanics:
-- **Ability Descriptions:** Implement hover tooltips or dedicated info boxes so players can see exactly what a move does, its MP cost, and its cooldown before casting.
-- **Clarity & Feedback:** Improve visibility for active buffs/debuffs and make the turn-order bar easier to interpret at a glance.
+## 4. Battle UI Polish (Phase 2)
+Phase 1 lunge/animation system is complete. Remaining battle UX work:
+- **Ability Info Pane**: Wire up the `#ability-info-pane` HTML stub — show ability name, MP cost, description, and cooldown on hover/focus before casting.
+- **Status Icon Row**: Render active buff/debuff icons directly on party status cards with remaining turn counts.
+- **Face Portraits**: Add `images/faces/` folder with character portraits and restore portrait display in the active-member bar and turn tokens.
+- **Screen Shake**: Add a short shake to the battle scene on heavy hits / ultimates (CSS `@keyframes battleShake`).
+- **Hit Pause (Hitstop)**: Brief 60–80ms animation pause at impact frame for heavy hits to add weight.
 
 ---
 *Created for planning discussion. Please add comments or adjust priorities as needed.*
