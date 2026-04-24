@@ -247,8 +247,8 @@ self.addEventListener('fetch', event => {
         return fetch(event.request).then(response => {
           // Only cache same-quality sprites — skip the other quality's files
           const isNormalSprite = SPRITES_NORMAL.some(s => path.endsWith(s.replace('./', '/')));
-          const isLowSprite    = SPRITES_LOW.some(s => path.endsWith(s.replace('./', '/')));
-          const isCharSprite   = isNormalSprite || isLowSprite;
+          const isLowSprite = SPRITES_LOW.some(s => path.endsWith(s.replace('./', '/')));
+          const isCharSprite = isNormalSprite || isLowSprite;
 
           if (isCharSprite) {
             // Only cache if it matches the stored quality preference
