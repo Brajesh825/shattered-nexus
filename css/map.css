@@ -1241,15 +1241,16 @@
 /* ── Fixed Virtual Joystick ──────────────────────────── */
 .joystick-container {
   position: absolute;
-  bottom: 20px;
-  left: 20px;
-  width: 130px;
-  height: 130px;
-  z-index: 25;
-  display: none; /* hidden on non-touch */
+  bottom: calc(24px + env(safe-area-inset-bottom));
+  left: 0;
+  right: 0;
+  height: 160px;
+  pointer-events: none;
+  z-index: 100;
+  display: none;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  touch-action: none;
+  padding: 0 40px;
 }
 
 @media (hover: none) {
@@ -1257,35 +1258,57 @@
 }
 
 .joystick-base {
-  position: relative;
-  width: 90px;
-  height: 90px;
-  background: rgba(10, 8, 32, 0.45);
-  border: 1px solid rgba(144, 128, 255, 0.35);
+  width: 120px;
+  height: 120px;
+  background: rgba(144, 128, 255, 0.08);
+  border: 2px solid rgba(144, 128, 255, 0.15);
   border-radius: 50%;
+  pointer-events: all;
+  position: relative;
   backdrop-filter: blur(4px);
-  pointer-events: none;
+  touch-action: none;
 }
 
 .joystick-knob {
+  width: 54px;
+  height: 54px;
+  background: linear-gradient(135deg, #6040c0, #4030a0);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 38px;
-  height: 38px;
-  background: radial-gradient(circle at center, #8e44ad, #4b1a7d);
-  border: 2px solid #c0a0ff;
-  border-radius: 50%;
   transform: translate(-50%, -50%);
-  box-shadow: 0 0 15px rgba(184, 100, 255, 0.4);
+  box-shadow: 0 0 15px rgba(96, 64, 192, 0.4);
   pointer-events: none;
-  transition: background 0.1s;
 }
 
-.joystick-container:active .joystick-knob {
-  background: radial-gradient(circle at center, #a55eea, #5e249f);
-  border-color: #fff;
-  box-shadow: 0 0 20px rgba(184, 100, 255, 0.7);
+/* Mobile Action Button (Right Side) */
+.mobile-action-btn {
+  width: 72px;
+  height: 72px;
+  background: radial-gradient(circle at center, rgba(212, 175, 55, 0.25) 0%, rgba(100, 80, 200, 0.1) 100%);
+  border: 2px solid var(--gold);
+  border-radius: 50%;
+  color: var(--gold);
+  font-family: 'Cinzel', serif;
+  font-size: 28px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: all;
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+  backdrop-filter: blur(4px);
+  cursor: pointer;
+  text-shadow: 0 0 10px var(--gold-glow);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mobile-action-btn:active {
+  transform: scale(0.9);
+  background: radial-gradient(circle at center, rgba(212, 175, 55, 0.4) 0%, rgba(100, 80, 200, 0.2) 100%);
+  box-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
 }
 
 /* ── Slim bottom hint bar ────────────────────────────── */

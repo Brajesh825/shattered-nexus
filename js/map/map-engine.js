@@ -756,18 +756,8 @@ const MapEngine = (() => {
     }
 
     // Manual Interaction check (Space/Enter)
-    if (!MapPlayer.moving && (MapInput.isKey(' ') || MapInput.isKey('Enter'))) {
-      const ptx = MapPlayer.tx, pty = MapPlayer.ty;
-      // Get facing direction from player
-      const face = MapPlayer.getFacing(); 
-      const targetX = ptx + face.dx, targetY = pty + face.dy;
-
-      const npc = MapNPCs.checkNPCAt(targetX, targetY);
-      if (npc && !npc._dialogueOpen) {
-        npc._dialogueOpen = true;
-        stop();
-        _openNPCDialogue(npc);
-      }
+    if (MapInput.isKey(' ') || MapInput.isKey('Enter')) {
+      interact();
     }
 
     // Objective check each frame
@@ -1082,9 +1072,24 @@ const MapEngine = (() => {
   // 0..1 — how far fog has progressed (used by entities to scale aggro/speed)
   function fogProgress() { return _fogProgress(); }
 
+  function interact() {
+    if (MapPlayer.moving) return;
+    const ptx = MapPlayer.tx, pty = MapPlayer.ty;
+    const face = MapPlayer.getFacing(); 
+    const targetX = ptx + face.dx, targetY = pty + face.dy;
+
+    const npc = MapNPCs.checkNPCAt(targetX, targetY);
+    if (npc && !npc._dialogueOpen) {
+      npc._dialogueOpen = true;
+      stop();
+      _openNPCDialogue(npc);
+    }
+  }
+
   return {
     init, loadMap, start, stop, resume, onBattleComplete,
     getMap, getCam, getTile, isRunning, resetFog, fogProgress, npcDialogueNext,
+    interact,
     openDialogue: _openGenericDialogue,
     hasTriggerFired: id => _firedTriggers.has(id),
     // Optional callback — wire this up after init to handle encounter transitions:
