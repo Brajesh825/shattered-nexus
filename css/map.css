@@ -1208,8 +1208,9 @@
 /* ── Minimap (bottom-right of canvas wrap) ───────────── */
 #explore-minimap-wrap {
   position: absolute;
-  bottom: 44px;
-  right: 110px; /* clear of the A button (64px wide + 28px margin + buffer) */
+  top: 52px; /* below the top nav bar */
+  right: 14px;
+  bottom: auto;
   z-index: 20;
   background: rgba(10, 8, 38, 0.3);
   backdrop-filter: blur(12px);
