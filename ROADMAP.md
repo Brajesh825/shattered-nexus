@@ -30,7 +30,6 @@ To expand progress beyond the party-wide Relic system in a later update:
 Phase 1 lunge/animation system is complete. Remaining battle UX work:
 - **Ability Info Pane**: Wire up the `#ability-info-pane` HTML stub — show ability name, MP cost, description, and cooldown on hover/focus before casting.
 - **Status Icon Row**: Render active buff/debuff icons directly on party status cards with remaining turn counts.
-- **Face Portraits**: Add `images/faces/` folder with character portraits and restore portrait display in the active-member bar and turn tokens.
 - **Screen Shake**: Add a short shake to the battle scene on heavy hits / ultimates (CSS `@keyframes battleShake`).
 - **Hit Pause (Hitstop)**: Brief 60–80ms animation pause at impact frame for heavy hits to add weight.
 
