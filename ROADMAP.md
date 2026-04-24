@@ -13,7 +13,7 @@ The `map-engine.js` and `map-ui.js` handle tiling and exploration. Remaining wor
 - **Interactive Map Puzzles**: Introduce environmental puzzles (switches, pushing blocks, traps) to make map traversal more engaging.
 - **Animated Map Tiles**: Add wind-blown grass, flowing water, and flickering torches to the tile renderer.
 
-## 3. Save & Versioning
+## 2. Save & Versioning
 - **Save Migration**: In `save.js`, introduce version migration logic to prevent old saves from breaking.
 - **Patch Notes**: Add a "Patch Notes" modal to the Title Screen.
 

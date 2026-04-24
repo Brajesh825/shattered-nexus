@@ -743,6 +743,101 @@ const BattleUI = {
     }, 980);
   },
 
+  /**
+   * Enemy attack animation sequence. Branches on moveType:
+   *   'physical' — charge wind-up → lunge left → return
+   *   'magic'    — float up + glow → effect overlay → settle
+   *   'debuff'   — hue-rotate pulse, no movement
+   * onHit fires at impact peak. onComplete fires when fully settled.
+   */
+  enemyStrike(enemyIdx, moveType, targetPartyIdx, element, onHit, onComplete) {
+    const enemyEl = document.querySelector(`.enemy[data-idx="${enemyIdx}"]`);
+    const spr     = this.el('espr-' + enemyIdx);
+
+    // Fallback: no element — fire callbacks and bail
+    if (!enemyEl) {
+      setTimeout(() => onHit?.(), 280);
+      setTimeout(() => onComplete?.(), 900);
+      return;
+    }
+
+    const _cleanup = () => {
+      enemyEl.classList.remove('enemy-anim-charge', 'enemy-anim-lunge',
+                               'enemy-anim-cast', 'enemy-anim-debuff');
+      if (spr) spr.classList.remove(...Array.from(spr.classList)
+        .filter(c => c.startsWith('element-')));
+    };
+
+    const _flashParty = () => {
+      const pmember = this.el('pmember-' + targetPartyIdx);
+      if (pmember) {
+        pmember.classList.add('party-hit-flash');
+        setTimeout(() => pmember.classList.remove('party-hit-flash'), 240);
+      }
+    };
+
+    if (moveType === 'physical') {
+      // t=0   charge wind-up
+      enemyEl.classList.add('enemy-anim-charge');
+      setTimeout(() => {
+        // t=120 swap to lunge
+        enemyEl.classList.remove('enemy-anim-charge');
+        enemyEl.classList.add('enemy-anim-lunge');
+        if (spr) spr.classList.add(`element-${element}`);
+      }, 120);
+
+      // t=280 impact — hit, flash, shake
+      setTimeout(() => {
+        _flashParty();
+        this.triggerScreenShake(180);
+        onHit?.();
+      }, 280);
+
+      // t=750 settled — cleanup + complete
+      setTimeout(() => {
+        _cleanup();
+        onComplete?.();
+      }, 750);
+
+    } else if (moveType === 'magic_damage' || moveType === 'magic') {
+      // t=0 float + glow
+      enemyEl.classList.add('enemy-anim-cast');
+      if (spr) spr.classList.add(`element-${element}`);
+
+      // t=200 effect overlay fires from enemy toward party
+      setTimeout(() => {
+        this.createEffectOverlay(targetPartyIdx, element, 'party');
+      }, 200);
+
+      // t=280 damage resolves
+      setTimeout(() => {
+        _flashParty();
+        onHit?.();
+      }, 280);
+
+      // t=920 settled
+      setTimeout(() => {
+        _cleanup();
+        onComplete?.();
+      }, 920);
+
+    } else {
+      // debuff / heal / status — pulse in place, no movement
+      enemyEl.classList.add('enemy-anim-debuff');
+
+      // t=280 effect applies
+      setTimeout(() => {
+        onHit?.();
+      }, 280);
+
+      // t=880 done
+      setTimeout(() => {
+        _cleanup();
+        onComplete?.();
+      }, 880);
+    }
+  },
+
   shakeEnemy(idx) {
     const spr = this.el('espr-' + idx);
     if (!spr) return;

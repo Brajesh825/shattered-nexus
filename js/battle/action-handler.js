@@ -407,7 +407,7 @@ const ActionEngine = {
     else {
       BattleUI.setLog([`${actor.name || actor.displayName} uses ${ab.name}!`], ['']);
       BattleUI.renderEnemyRow(); BattleUI.renderPartyStatus();
-      setTimeout(() => TurnManager.advance(), moveConfig.isUltimate ? 900 : 750);
+      if (!isEnemyAction) setTimeout(() => TurnManager.advance(), moveConfig.isUltimate ? 900 : 750);
     }
   },
 
@@ -478,7 +478,7 @@ const ActionEngine = {
       }
       BattleUI.renderPartyStatus();
       BattleUI.renderPartyRow(); // Nilou Fix: Ensure sprites/HP bars are updated
-      setTimeout(() => TurnManager.advance(), 800);
+      if (!isEnemyAction) setTimeout(() => TurnManager.advance(), 800);
     },
 
     regen(actor, targets, ab, element, moveConfig, isEnemyAction) {
@@ -488,7 +488,7 @@ const ActionEngine = {
       BattleUI.addLog(`${actor.name || actor.displayName}: Regen activated!`, 'regen');
       BattleUI.renderPartyStatus();
       BattleUI.renderPartyRow(); // Sync update
-      setTimeout(() => TurnManager.advance(), 750);
+      if (!isEnemyAction) setTimeout(() => TurnManager.advance(), 750);
     },
 
     buff(actor, targets, ab, element, moveConfig, isEnemyAction) {
@@ -536,13 +536,13 @@ const ActionEngine = {
       BattleUI.addLog(`${actor.name || actor.displayName}: ${ab.name}!${BattleUI._getBuffReport(actor)}`, 'heal');
       BattleUI.renderPartyStatus();
       BattleUI.renderPartyRow(); // Fix: Ensure HP sacrifice (Hu Tao) or buffs show immediately
-      setTimeout(() => TurnManager.advance(), 750);
+      if (!isEnemyAction) setTimeout(() => TurnManager.advance(), 750);
     },
 
     debuff(actor, targets, ab, element, moveConfig, isEnemyAction) {
       const e = ab.effect || {};
       const enemy = targets[0];
-      if (!enemy) { setTimeout(() => TurnManager.advance(), 750); return; }
+      if (!enemy) { if (!isEnemyAction) setTimeout(() => TurnManager.advance(), 750); return; }
 
       const debuffParts = [];
       const sourceSuffix = `_${ab.id}`;
@@ -557,7 +557,7 @@ const ActionEngine = {
       }
 
       BattleUI.renderEnemyRow();
-      setTimeout(() => TurnManager.advance(), 750);
+      if (!isEnemyAction) setTimeout(() => TurnManager.advance(), 750);
     },
 
     stun(actor, targets, ab, element, moveConfig) {
@@ -659,13 +659,15 @@ const ActionEngine = {
       }
 
       BattleUI.renderEnemyRow(); BattleUI.renderPartyStatus();
-      setTimeout(() => {
-        if (!isEnemyAction && Battle.alive(actor)) {
-          const idx = G.party.indexOf(actor);
-          if (idx !== -1) BattleUI.setSpriteFrame(idx, 'idle');
-        }
-        TurnManager.advance();
-      }, moveConfig.isUltimate ? 900 : 750);
+      if (!isEnemyAction) {
+        setTimeout(() => {
+          if (Battle.alive(actor)) {
+            const idx = G.party.indexOf(actor);
+            if (idx !== -1) BattleUI.setSpriteFrame(idx, 'idle');
+          }
+          TurnManager.advance();
+        }, moveConfig.isUltimate ? 900 : 750);
+      }
     };
 
     if (moveConfig.isUltimate) setTimeout(execute, 3000); else execute();
@@ -979,29 +981,35 @@ function enemyAct(enemy, enemyIdx) {
     window.LogDebug(`[AI-${role.toUpperCase()}] ${enemy.name} selects ${abName} against ${target?.displayName || target?.name}`, 'info');
   }
   const element = enemy.element || ab?.effect?.element || 'physical';
-
-  // Get move-specific animation config or use defaults
   const moveConfig = getMoveConfig(ab?.id);
-  const animDuration = moveConfig.actorDuration;
 
-  const enemySpr = BattleUI.getSprite(enemyIdx, 'enemy');
-  if (enemySpr) {
-    // Use move-specific animation if available, otherwise use generic slash
-    const animClass = ab?.id ? `anim-${ab.id}` : 'anim-slash';
-    enemySpr.classList.add(animClass);
-    enemySpr.classList.add(`element-${element}`);
-    setTimeout(() => {
-      enemySpr.classList.remove(animClass);
-      enemySpr.classList.remove(`element-${element}`);
-    }, animDuration);
-  }
+  // Determine animation archetype from move type
+  const moveType = ab?.type || 'physical';
+  const strikeType = (moveType === 'magic_damage') ? 'magic'
+                   : (moveType === 'heal' || moveType === 'buff' || moveType === 'debuff') ? 'debuff'
+                   : 'physical';
 
-  // 4. Execution
-  const targets = (ab?.effect?.aoe) ? alive : [target];
+  // 4. Execution via enemyStrike — handles full animation + callback timing
+  const targets = ab?.effect?.aoe ? alive : [target];
 
-  setTimeout(() => {
-    ActionEngine.execute(enemy, targets, ab, element, moveConfig, true);
-  }, 580);
+  BattleUI.enemyStrike(
+    enemyIdx,
+    strikeType,
+    targetIdx,
+    element,
+    // onHit — fires at animation peak (~280ms)
+    () => {
+      try {
+        ActionEngine.execute(enemy, targets, ab, element, moveConfig, true);
+      } catch (err) {
+        console.error('[enemyAct onHit] Error:', err);
+      }
+    },
+    // onComplete — fires when animation settles (~750–920ms)
+    () => {
+      TurnManager.advance();
+    }
+  );
 }
 
 if (typeof module !== 'undefined' && module.exports) {

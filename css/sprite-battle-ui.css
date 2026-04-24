@@ -648,6 +648,53 @@
   }
 }
 
+/* ── ENEMY ATTACK ANIMATIONS ─────────────────────────────
+   Applied to the .enemy card div (not the sprite img) so
+   the whole unit — sprite + HP bar — moves as one unit.
+   ─────────────────────────────────────────────────────── */
+
+/* Physical: charge wind-up → lunge left → return */
+@keyframes enemyCharge {
+  0%   { transform: translateX(0)    scaleX(1);    }
+  40%  { transform: translateX(14px) scaleX(0.94); }
+  100% { transform: translateX(0)    scaleX(1);    }
+}
+
+@keyframes enemyLunge {
+  0%   { transform: translateX(0);    }
+  35%  { transform: translateX(-72px) scaleX(1.06); }
+  65%  { transform: translateX(-72px) scaleX(1.06); }
+  100% { transform: translateX(0);    }
+}
+
+/* Magic: float up + glow, no horizontal movement */
+@keyframes enemyCast {
+  0%   { transform: translateY(0);     filter: drop-shadow(0 0 6px rgba(200,60,100,.6));  }
+  30%  { transform: translateY(-14px); filter: drop-shadow(0 0 22px rgba(200,60,100,1));  }
+  65%  { transform: translateY(-14px); filter: drop-shadow(0 0 28px rgba(255,255,255,.8));}
+  100% { transform: translateY(0);     filter: drop-shadow(0 0 6px rgba(200,60,100,.6));  }
+}
+
+/* Debuff/status: hue-rotate pulse (purple-ish) */
+@keyframes enemyDebuff {
+  0%   { filter: drop-shadow(0 0 6px rgba(200,60,100,.6));                       }
+  25%  { filter: hue-rotate(80deg) brightness(1.3) drop-shadow(0 0 18px #b864ff);}
+  60%  { filter: hue-rotate(80deg) brightness(1.3) drop-shadow(0 0 18px #b864ff);}
+  100% { filter: drop-shadow(0 0 6px rgba(200,60,100,.6));                       }
+}
+
+/* Party member hit-flash when an enemy attack lands */
+@keyframes partyHitFlash {
+  0%   { filter: brightness(2) saturate(0); }
+  100% { filter: brightness(1) saturate(1); }
+}
+
+.enemy-anim-charge  { animation: enemyCharge  0.12s ease-out forwards; }
+.enemy-anim-lunge   { animation: enemyLunge   0.62s cubic-bezier(0.2,0,0.6,1) forwards; }
+.enemy-anim-cast    { animation: enemyCast    0.90s ease-in-out forwards; }
+.enemy-anim-debuff  { animation: enemyDebuff  0.85s ease-in-out forwards; }
+.party-hit-flash    { animation: partyHitFlash 0.22s ease-out forwards; }
+
 /* ── UI Sprite Containers ────────────────────────────── */
 .ui-sprite-swap,
 .ui-sprite-char-grid,
