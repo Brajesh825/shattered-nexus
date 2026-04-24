@@ -5,6 +5,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Shattered Nexus</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Nexus">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link
     href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap"
@@ -594,6 +599,7 @@
           <div id="joystick-base" class="joystick-base">
             <div id="joystick-knob" class="joystick-knob"></div>
           </div>
+          <button id="mobile-action-btn" class="mobile-action-btn" onclick="MapEngine.interact()">A</button>
         </div>
 
         <!-- Minimap panel (bottom-right, above loc bar) -->
