@@ -12,10 +12,13 @@ const MapEngine = (() => {
   let TILE = 64;
 
   function _calcTileSize() {
-    const w = _canvas.width, h = _canvas.height;
-    // Landscape phones or narrow portrait: use 48px tiles so more map is visible
-    if (h <= 420 || w <= 600) return 48;
-    return 64;
+    // Landscape-only: height is the constraining dimension
+    const h = Math.min(_canvas.height, _canvas.width); // shortest side = landscape height
+    if (h <= 375) return 32; // iPhone SE
+    if (h <= 390) return 36; // iPhone 12/13/14 Pro
+    if (h <= 414) return 40; // iPhone XR/11
+    if (h <= 500) return 48; // small tablets / large phones
+    return 64;               // desktop / large tablets
   }
 
   let _canvas = null, _ctx = null;
@@ -937,7 +940,59 @@ const MapEngine = (() => {
     _canvas.width = canvasEl.offsetWidth || window.innerWidth;
     _canvas.height = canvasEl.offsetHeight || window.innerHeight;
     TILE = _calcTileSize();
-    MapInput.init(canvasEl);
+    if (typeof MapInput !== 'undefined') MapInput.init(canvasEl);
+
+    // ── NATIVE MOBILE TOUCH (LEASH & TARGET) ──
+    let _touchActive = false;
+    let _tapStart = 0;
+
+    canvasEl.addEventListener('touchstart', e => {
+      _touchActive = true;
+      _tapStart = Date.now();
+      _handleMoveTouch(e);
+      if (e.cancelable) e.preventDefault();
+    }, { passive: false });
+
+    canvasEl.addEventListener('touchmove', e => {
+      if (_touchActive) _handleMoveTouch(e);
+      if (e.cancelable) e.preventDefault();
+    }, { passive: false });
+
+    canvasEl.addEventListener('touchend', e => {
+      _touchActive = false;
+      MapInput.setVector(0, 0);
+      // Quick tap logic: if held < 220ms and moved very little, trigger interaction
+      if (Date.now() - _tapStart < 220) {
+        const t = e.changedTouches[0];
+        _touchInteract(t.clientX, t.clientY);
+      }
+      if (e.cancelable) e.preventDefault();
+    }, { passive: false });
+
+    function _handleMoveTouch(e) {
+      const t = e.touches[0];
+      const cw = _canvas.width, ch = _canvas.height;
+      // Calculate screen position of player
+      const scrX = MapPlayer.px - cam.x + TILE / 2;
+      const scrY = MapPlayer.py - cam.y + TILE / 2;
+
+      // Vector from player to touch
+      let dx = t.clientX - scrX;
+      let dy = t.clientY - scrY;
+
+      // Distance
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 10) { // Deadzone
+        MapInput.setVector(0, 0);
+        return;
+      }
+
+      // Normalize and apply speed scaling (optional: faster if finger is further)
+      const maxRange = TILE * 3;
+      const power = Math.min(dist / maxRange, 1.0);
+      MapInput.setVector((dx / dist) * power, (dy / dist) * power);
+    }
+
     window.addEventListener('resize', () => {
       _canvas.width = _canvas.offsetWidth || window.innerWidth;
       _canvas.height = _canvas.offsetHeight || window.innerHeight;
@@ -1106,7 +1161,7 @@ const MapEngine = (() => {
   function interact() {
     if (MapPlayer.moving) return;
     const ptx = MapPlayer.tx, pty = MapPlayer.ty;
-    const face = MapPlayer.getFacing(); 
+    const face = MapPlayer.getFacing();
     const targetX = ptx + face.dx, targetY = pty + face.dy;
 
     const npc = MapEntities.checkNPCAt(targetX, targetY);
@@ -1114,6 +1169,52 @@ const MapEngine = (() => {
       npc._dialogueOpen = true;
       stop();
       _openNPCDialogue(npc);
+    }
+  }
+
+  /**
+   * Touch-tap interact: 
+   * 1. Translates screen coordinates to map tile.
+   * 2. Checks if an NPC was directly tapped.
+   * 3. If not, falls back to proximity check around player.
+   */
+  function _touchInteract(screenX, screenY) {
+    if (!_running) return;
+
+    // Account for canvas offset if not fullscreen
+    const rect = _canvas.getBoundingClientRect();
+    const localX = screenX - rect.left;
+    const localY = screenY - rect.top;
+
+    // Convert local pixel to map tile
+    const tx = Math.floor((localX + cam.x) / TILE);
+    const ty = Math.floor((localY + cam.y) / TILE);
+    console.log(`[TouchInteract] Tap at tile: ${tx}, ${ty} (localX: ${localX}, localY: ${localY})`);
+
+    const npcs = (typeof MapEntities !== 'undefined' && MapEntities.getNPCs)
+      ? MapEntities.getNPCs() : [];
+
+    // 1. Direct Tap Check
+    let target = npcs.find(n => n.tx === tx && n.ty === ty && !n._dialogueOpen);
+
+    // 2. Proximity Fallback (if they tapped near but not exactly on the NPC)
+    if (!target) {
+      const ptx = MapPlayer.tx, pty = MapPlayer.ty;
+      target = npcs.find(n => {
+        const dx = n.tx - ptx, dy = n.ty - pty;
+        // Check if tap was within 1.5 tiles of NPC AND player is within 2.2 tiles of NPC
+        const distToPlayer = Math.sqrt(dx * dx + dy * dy);
+        const tapDX = n.tx - tx, tapDY = n.ty - ty;
+        const distToTap = Math.sqrt(tapDX * tapDX + tapDY * tapDY);
+        
+        return distToTap <= 1.5 && distToPlayer <= 2.5 && !n._dialogueOpen;
+      });
+    }
+
+    if (target) {
+      target._dialogueOpen = true;
+      stop();
+      _openNPCDialogue(target);
     }
   }
 
