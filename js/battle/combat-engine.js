@@ -7,6 +7,11 @@ const CombatEngine = (() => {
 
   // Balance constants — pulling from NexusScaling.mechanics
   const MAG_MITIGATION_RATE = NexusScaling.mechanics.magMitigationRate;
+  function getPassiveSystem() {
+    if (typeof PassiveSystem !== 'undefined') return PassiveSystem;
+    if (typeof globalThis !== 'undefined') return globalThis.PassiveSystem;
+    return undefined;
+  }
 
   /**
    * Returns final combat stats by applying active modifiers.
@@ -18,34 +23,60 @@ const CombatEngine = (() => {
       if (stat === 'accuracy') base = 0.95;
       else if (stat === 'critRate') base = 0.05;
       else if (stat === 'reduction') base = 1.0;
+      else if (stat === 'healBoost') base = 1.0;
+      else if (stat === 'evasion') base = 0.0;
       else base = 0;
     }
 
-    if (!unit.statuses || !unit.statuses.length) return base;
-
-    let mult = 1.0;
+    let pMult = 1.0;
+    let sBonus = 0;
     let flat = 0;
 
-    // 1. Apply Status Multipliers/Flat
-    unit.statuses.forEach(s => {
-      if (s.stat === stat) {
-        if (s.type === 'mult') mult *= s.value;
+    // 1. Calculate Passive Multiplier (Capped at 2.5x - "Base Scaling")
+    const passiveSystem = getPassiveSystem();
+    if (passiveSystem) {
+      pMult *= passiveSystem.getStatMultiplier(unit, stat);
+      flat += passiveSystem.getStatBonus(unit, stat);
+    }
+    const cappedPassive = Math.min(NexusScaling.caps.statMult || 2.5, pMult);
+
+    // 2. Calculate Status Bonuses (Additive Stacking for Moves - Uncapped by Base)
+    (unit.statuses || []).forEach(s => {
+      if (s.stat === stat || s.type === stat) {
+        if (s.type === 'mult') sBonus += (s.value - 1.0);
+        else if (s.type === 'reduction') pMult *= s.value; // Mitigation stays multiplicative
         else if (s.type === 'flat') flat += s.value;
       }
     });
 
-    // 2. Apply Passive Traits (Data-driven)
-    if (typeof PassiveSystem !== 'undefined') {
-      mult *= PassiveSystem.getStatMultiplier(unit, stat);
-      flat += PassiveSystem.getStatBonus(unit, stat);
+    // 3. Combine and apply HP-Based Stat Phases (Universal System)
+    let finalMult = Math.max(0.2, cappedPassive + sBonus);
+    
+    if (unit.statPhases && unit.hp && unit.maxHp) {
+      const hpRatio = unit.hp / unit.maxHp;
+      // Sort phases by HP descending to find the deepest reached phase
+      const activePhase = [...unit.statPhases]
+        .sort((a, b) => a.hp - b.hp)
+        .find(p => hpRatio <= p.hp);
+      
+      if (activePhase && activePhase[stat]) {
+        finalMult *= activePhase[stat];
+      }
     }
 
-    const finalMult = Math.min(3.0, mult); // Safety cap
+    // 4. Final Result with Absolute Safety Cap (8.0x - "Extreme Premium")
+    finalMult = Math.min(8.0, finalMult);
     const result = (base + flat) * finalMult;
 
-    return (stat === 'accuracy' || stat === 'critRate')
-      ? Math.min(1.0, result)
-      : Math.floor(result);
+    // 4. Handle Float-based Combat Stats
+    if (stat === 'accuracy') return Math.max(NexusScaling.caps.accuracyMin, Math.min(1.0, result));
+    if (stat === 'critRate') return Math.min(NexusScaling.caps.critRate, result);
+    if (stat === 'reduction') return Math.max(1 - NexusScaling.caps.mitigation, result);
+    if (stat === 'evasion') return Math.min(NexusScaling.caps.evasion || 0.75, result);
+
+    const floor = Math.max(1, Math.floor(result)); // Minimum 1 for primary stats
+    if (stat === 'hp' || stat === 'maxHp' || stat === 'mp' || stat === 'maxMp') return Math.min(NexusScaling.caps.maxHp, floor);
+    return Math.min(NexusScaling.caps.maxStat, floor);
   }
 
   /**
@@ -122,12 +153,14 @@ const CombatEngine = (() => {
   }
 
   /**
-   * Rolls for a hit.
+   * Rolls for a hit. Consolidated evasion and accuracy check.
    */
-  function rollHit(attacker, defender) {
+  function rollHit(attacker, defender, bonusEvasion = 0) {
     const acc = getStat(attacker, 'accuracy');
-    const eva = defender.evasion || 0;
-    const chance = acc - eva;
+    const eva = getStat(defender, 'evasion') + bonusEvasion;
+    
+    // Chance = Accuracy - Evasion. Minimum 5% pity hit chance.
+    const chance = Math.max(0.05, acc - eva);
     return Math.random() < chance;
   }
 
@@ -137,7 +170,7 @@ const CombatEngine = (() => {
   function rollCrit(attacker) {
     const baseCrit = getStat(attacker, 'critRate');
     const lckBonus = (getStat(attacker, 'lck') || 0) * 0.01; // +1% crit per LCK point
-    const chance = baseCrit + lckBonus;
+    const chance = Math.min(NexusScaling.caps.critRate, baseCrit + lckBonus); // Cap crit rate
     return Math.random() < chance;
   }
 

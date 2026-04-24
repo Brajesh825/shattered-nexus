@@ -5,26 +5,26 @@
 
 /* ── Speaker colours ──────────────────────────────────────────────────────── */
 const SPEAKER_COLOR = {
-  Aya:   '#7dd3fc',
-  Tao:   '#ef4444',
-  Lulu:  '#2dd4bf',
-  Rei:   '#4ade80',
-  Ria:   '#a78bfa',
+  Aya: '#7dd3fc',
+  Tao: '#ef4444',
+  Lulu: '#2dd4bf',
+  Rei: '#4ade80',
+  Ria: '#a78bfa',
   Valka: '#e879f9',
   Drake: '#0ea5e9',
-  Rex:   '#fbbf24',
+  Rex: '#fbbf24',
 };
 
 /* ── Alias → charId mapping for image file lookups ──────────────────────── */
 const ALIAS_TO_CHARID = {
-  aya:   'aya',
-  tao:   'tao',
-  lulu:  'lulu',
-  rei:   'rei',
-  ria:   'ria',
+  aya: 'aya',
+  tao: 'tao',
+  lulu: 'lulu',
+  rei: 'rei',
+  ria: 'ria',
   valka: 'valka',
   drake: 'drake',
-  rex:   'rex',
+  rex: 'rex',
 };
 
 function _charIdForSpeaker(name) {
@@ -33,14 +33,14 @@ function _charIdForSpeaker(name) {
 
 /* ── Speaker portrait images ─────────────────────────────────────────────── */
 const SPEAKER_IMG = {
-  Aya:   'images/characters/spirits/aya_sprite.png',
-  Tao:   'images/characters/spirits/tao_sprite.png',
-  Lulu:  'images/characters/spirits/lulu_sprite.png',
-  Rei:   'images/characters/spirits/rei_sprite.png',
-  Ria:   'images/characters/spirits/ria_sprite.png',
+  Aya: 'images/characters/spirits/aya_sprite.png',
+  Tao: 'images/characters/spirits/tao_sprite.png',
+  Lulu: 'images/characters/spirits/lulu_sprite.png',
+  Rei: 'images/characters/spirits/rei_sprite.png',
+  Ria: 'images/characters/spirits/ria_sprite.png',
   Valka: 'images/characters/spirits/valka_sprite.png',
   Drake: 'images/characters/spirits/drake_sprite.png',
-  Rex:   'images/characters/spirits/rex_sprite.png',
+  Rex: 'images/characters/spirits/rex_sprite.png',
 };
 
 /* ── Speaker portrait emojis (narrator fallback) ────────────────────────── */
@@ -58,15 +58,15 @@ const MAP_POSITIONS = [
   { x: 150, y: 155 },  // Arc 3: Sunken Temple        (west, coastal)
   { x: 370, y: 175 },  // Arc 4: Shadow Reach         (centre)
   { x: 500, y: 135 },  // Arc 5: Inner Sanctum        (centre-east)
-  { x: 600, y:  95 },  // Arc 6: Fortress Gates       (north-east)
-  { x: 680, y:  60 },  // Arc 7: Fortress Inner       (north)
-  { x: 750, y:  30 },  // Arc 8: Eternal Void         (apex)
+  { x: 600, y: 95 },  // Arc 6: Fortress Gates       (north-east)
+  { x: 680, y: 60 },  // Arc 7: Fortress Inner       (north)
+  { x: 750, y: 30 },  // Arc 8: Eternal Void         (apex)
 ];
-const MAP_ICONS   = ['🌲','🔥','🌊','👁','💎','🏰','🌑','⭐'];
-const MAP_COLORS  = ['#1a4010','#7a2808','#083868','#300860','#481068','#201838','#100820','#060008'];
+const MAP_ICONS = ['🌲', '🔥', '🌊', '👁', '💎', '🏰', '🌑', '⭐'];
+const MAP_COLORS = ['#1a4010', '#7a2808', '#083868', '#300860', '#481068', '#201838', '#100820', '#060008'];
 
 /* Explore map linked to each arc (index = arcIdx 0-based) */
-const ARC_MAP_ID  = [
+const ARC_MAP_ID = [
   'verdant_vale',      // Arc 1
   'crystal_cavern',    // Arc 2
   'ember_wastes',      // Arc 3
@@ -227,19 +227,19 @@ const Story = {
   loadSave(slot = 0) {
     const s = Save.read(slot);
     if (!s) { startStoryMode(); return; }
-    this._activeSlot  = slot;
+    this._activeSlot = slot;
     this._pendingSave = s;
     this.init(() => {
       if (!this.data) { alert('Story data not found.'); return; }
       this.active = true;
-      G.selectedChar  = s.selectedChar  || (G.chars[0] && G.chars[0].id);
+      G.selectedChar = s.selectedChar || (G.chars[0] && G.chars[0].id);
       G.selectedClass = s.selectedClass || (G.classes[0] && G.classes[0].id);
       // Restore full party selection if saved, otherwise rebuild from hero
       if (s.selectedChars && s.selectedChars.length) {
         G.selectedChars = s.selectedChars;
       } else {
         const heroId_ = G.selectedChar;
-        G.selectedChars = [heroId_, ...G.chars.map(c=>c.id).filter(id=>id!==heroId_)].slice(0,4);
+        G.selectedChars = [heroId_, ...G.chars.map(c => c.id).filter(id => id !== heroId_)].slice(0, 4);
       }
       startBattle();   // sets up G.hero then calls onHeroReady
     });
@@ -260,52 +260,34 @@ const Story = {
           const saved = s.partyStats.find(p => p.charId === m.charId);
           if (saved) {
             // Restore progression
-            m.lv   = saved.lv   || 1;
-            m.exp  = saved.exp  || 0;
+            m.lv = saved.lv || 1;
+            m.exp = saved.exp || 0;
             m.gold = saved.gold || 0;
             m.isKO = saved.isKO || false;
 
             // Sync level back to source char so computeStats uses the right level
             if (m.char) m.char.lv = m.lv;
 
-            // Recompute all combat stats from source data at the correct level
-            const fresh = computeStats(m.char, m.cls);
-            m.maxHp = fresh.hp;  m.maxMp = fresh.mp;
-            m.atk = fresh.atk;   m.def = fresh.def;
-            m.mag = fresh.mag;   m.spd = fresh.spd;
-            m.lck = fresh.lck;
-
-            // Restore current resources clamped to fresh maximums
-            m.hp = (saved.hp !== undefined) ? Math.min(Math.max(saved.hp, 0), fresh.hp) : fresh.hp;
-            m.mp = (saved.mp !== undefined) ? Math.min(Math.max(saved.mp, 0), fresh.mp) : fresh.mp;
+            rebuildMemberCombatStats(m, {
+              resourceStrategy: 'clamp',
+              hp: saved.hp,
+              mp: saved.mp
+            });
           }
         });
-        // Re-apply relic bonuses on top of freshly computed base stats
-        applyRelicBonuses();
-        // Re-apply Archive mastery buffs (flat stat bonuses from Track 2 progression)
-        if (typeof Archive !== 'undefined') {
-          const mastery = Archive.getMasteryBuffs();
-          G.party.forEach(m => {
-            m.atk += mastery.atk || 0;
-            m.def += mastery.def || 0;
-            m.mag += mastery.mag || 0;
-            m.spd += mastery.spd || 0;
-            m.lck += mastery.lck || 0;
-          });
-        }
       } else if (s.hero && G.hero) {
         // Legacy save: only hero stats were persisted
-        G.hero.lv   = s.hero.lv   || 1;
-        G.hero.exp  = s.hero.exp  || 0;
+        G.hero.lv = s.hero.lv || 1;
+        G.hero.exp = s.hero.exp || 0;
         G.hero.gold = s.hero.gold || 0;
       }
       // Restore unlocked characters and inventory from save
-      if (s.unlockedChars)  G.unlockedChars  = s.unlockedChars;
-      if (s.clearedMaps)    G.clearedMaps    = s.clearedMaps;
-      if (s.inventory)      G.inventory      = s.inventory;
-      if (s.npcTalked)      G.npcTalked      = s.npcTalked;
-      if (s.ownedRelics)    G.ownedRelics    = s.ownedRelics;
-      if (s.activeRelics)   G.activeRelics   = s.activeRelics;
+      if (s.unlockedChars) G.unlockedChars = s.unlockedChars;
+      if (s.clearedMaps) G.clearedMaps = s.clearedMaps;
+      if (s.inventory) G.inventory = s.inventory;
+      if (s.npcTalked) G.npcTalked = s.npcTalked;
+      if (s.ownedRelics) G.ownedRelics = s.ownedRelics;
+      if (s.activeRelics) G.activeRelics = s.activeRelics;
 
       // If saved from explore map, restore directly to that map (no overlay/selection)
       if (s.mapId) {
@@ -393,7 +375,7 @@ const Story = {
         G.clearedMaps.push(mapId);
       }
       this._doSave(); // Save progress after boss defeat
-      
+
       this.phase = 'boss_post';
       const postLines = chap.post_dialogue || [];
       if (this._pendingRelicMsg) {
@@ -803,8 +785,8 @@ const Story = {
     // Calculate spawn level based on arc and whether this is a boss fight
     // Regular: Arc 1→1, 2→3, 3→6, 4→10, 5→14, 6→18, 7→22, 8→26
     // Boss: significantly higher — bosses should feel like a clear step up
-    const arcProgression  = [1,  3,  6,  10, 14, 18, 22, 26];
-    const bossProgression = [6, 12, 18,  24, 30, 36, 42, 50];
+    const arcProgression = [1, 3, 6, 10, 14, 18, 22, 26];
+    const bossProgression = [6, 12, 18, 24, 30, 36, 42, 50];
     const spawnLevel = isBoss
       ? (bossProgression[this.arcIdx] || arcProgression[this.arcIdx] || 1)
       : (arcProgression[this.arcIdx] || 1);
@@ -843,12 +825,12 @@ const Story = {
 
     // Double rAF: first frame applies display change, second has real layout dimensions
     requestAnimationFrame(() => requestAnimationFrame(() => {
-      const wrap   = document.getElementById('explore-canvas-wrap');
+      const wrap = document.getElementById('explore-canvas-wrap');
       const canvas = document.getElementById('explore-canvas');
       if (!wrap || !canvas) return;
 
       // Size canvas to the wrap's actual rendered size
-      canvas.width  = wrap.offsetWidth  || 360;
+      canvas.width = wrap.offsetWidth || 360;
       canvas.height = wrap.offsetHeight || 480;
 
       // One-time init
@@ -884,11 +866,11 @@ const Story = {
     if (typeof _dockPersistentBtns === 'function') _dockPersistentBtns(true);
 
     requestAnimationFrame(() => requestAnimationFrame(() => {
-      const wrap   = document.getElementById('explore-canvas-wrap');
+      const wrap = document.getElementById('explore-canvas-wrap');
       const canvas = document.getElementById('explore-canvas');
       if (!wrap || !canvas) return;
 
-      canvas.width  = wrap.offsetWidth  || 360;
+      canvas.width = wrap.offsetWidth || 360;
       canvas.height = wrap.offsetHeight || 480;
 
       if (!canvas._mapInited) {
@@ -1107,13 +1089,13 @@ const Story = {
     if (typeof TTS !== 'undefined') TTS.stop();
     G.enemies = this._allEnemies.slice();
     G.selectedChar = null; G.selectedClass = null;
-    
+
     if (typeof Credits !== 'undefined') {
       Credits.launch();
     } else {
       showScreen('title-screen');
     }
-    
+
     if (typeof refreshSaveSlots === 'function') refreshSaveSlots();
   },
 
@@ -1131,11 +1113,11 @@ const Story = {
     const partyStats = G.party.map(m => ({
       charId: m.charId,
       classId: m.classId,
-      lv:   m.lv   || 1,
-      exp:  m.exp  || 0,
+      lv: m.lv || 1,
+      exp: m.exp || 0,
       gold: m.gold || 0,
-      hp:   m.hp,
-      mp:   m.mp,
+      hp: m.hp,
+      mp: m.mp,
       isKO: m.isKO || false,
     }));
     // Capture current map location if saving from explore screen.
@@ -1145,28 +1127,28 @@ const Story = {
     const _chapters = (_arc && _arc.chapters) ? _arc.chapters : [];
     const _inBossTerritory = this.chapIdx >= _chapters.length;
     const curMap = (!_inBossTerritory && typeof MapEngine !== 'undefined') ? MapEngine.getMap() : null;
-    const mapId  = curMap?.id || null;
-    const mapX   = (mapId && typeof MapPlayer !== 'undefined') ? MapPlayer.tx : null;
-    const mapY   = (mapId && typeof MapPlayer !== 'undefined') ? MapPlayer.ty : null;
+    const mapId = curMap?.id || null;
+    const mapX = (mapId && typeof MapPlayer !== 'undefined') ? MapPlayer.tx : null;
+    const mapY = (mapId && typeof MapPlayer !== 'undefined') ? MapPlayer.ty : null;
 
     Save.write({
-      arcIdx:        this.arcIdx,
-      chapIdx:       this.chapIdx,
-      phase:         this.phase,
-      lineIdx:       this.lineIdx,
-      arcName:       `Arc ${this.arc.number}: ${this.arc.name}`,
-      selectedChar:  G.hero.charId  || G.selectedChar,
+      arcIdx: this.arcIdx,
+      chapIdx: this.chapIdx,
+      phase: this.phase,
+      lineIdx: this.lineIdx,
+      arcName: `Arc ${this.arc.number}: ${this.arc.name}`,
+      selectedChar: G.hero.charId || G.selectedChar,
       selectedClass: G.hero.classId || G.selectedClass,
       selectedChars: G.selectedChars || [],
       partyStats,
       // Keep legacy hero field for backward compat
       hero: { lv: G.hero.lv, exp: G.hero.exp, gold: G.hero.gold || 0 },
       unlockedChars: G.unlockedChars,
-      clearedMaps:   G.clearedMaps   || [],
-      npcTalked:     G.npcTalked    || {},
-      inventory:     G.inventory    || [],
-      ownedRelics:   G.ownedRelics  || [],
-      activeRelics:  G.activeRelics || [],
+      clearedMaps: G.clearedMaps || [],
+      npcTalked: G.npcTalked || {},
+      inventory: G.inventory || [],
+      ownedRelics: G.ownedRelics || [],
+      activeRelics: G.activeRelics || [],
       mapId,
       mapX,
       mapY,
@@ -1180,9 +1162,9 @@ const Story = {
     this._showSection(null);
     this._closeRegionPanel();
 
-    const arcs    = this.data.arcs;
+    const arcs = this.data.arcs;
     const nextIdx = this.arcIdx + 1;
-    const area    = this.el('map-area');
+    const area = this.el('map-area');
     if (!area) { this._startNextArc(); return; }
 
     /* ── SVG path layer (820×300 viewBox) ── */
@@ -1190,9 +1172,9 @@ const Story = {
     // Only render lines between released arcs
     for (let i = 0; i < Math.min(MAP_POSITIONS.length - 1, ReleaseConfig.MAX_REACHABLE_ARC); i++) {
       const a = MAP_POSITIONS[i], b = MAP_POSITIONS[i + 1];
-      const done  = i < this.arcIdx;
+      const done = i < this.arcIdx;
       const color = done ? '#4a3898' : '#1a1060';
-      const dash  = done ? '' : 'stroke-dasharray="8,5"';
+      const dash = done ? '' : 'stroke-dasharray="8,5"';
       svgLines += `<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}"
         stroke="${color}" stroke-width="2.5" ${dash}/>`;
     }
@@ -1206,17 +1188,17 @@ const Story = {
       // Release Filter: Skip nodes that are completely locked in this release
       if (!isArcReleased(i)) return;
 
-      const pos    = MAP_POSITIONS[i];
+      const pos = MAP_POSITIONS[i];
       const isDone = i < this.arcIdx;
-      const isCur  = i === this.arcIdx;
+      const isCur = i === this.arcIdx;
       const isNext = i === nextIdx;
       const isLock = i > nextIdx;
-      const cls    = [isDone?'done':'', isCur?'current':'', isNext?'next':'', isLock?'locked':''].filter(Boolean).join(' ');
+      const cls = [isDone ? 'done' : '', isCur ? 'current' : '', isNext ? 'next' : '', isLock ? 'locked' : ''].filter(Boolean).join(' ');
 
       const node = document.createElement('div');
       node.className = `map-node ${cls}`;
       node.style.left = (pos.x - 30) + 'px';
-      node.style.top  = (pos.y - 44) + 'px';
+      node.style.top = (pos.y - 44) + 'px';
       if (MAP_COLORS[i]) node.style.setProperty('--node-color', MAP_COLORS[i]);
 
       node.innerHTML =
@@ -1233,7 +1215,7 @@ const Story = {
         const arcComplete = this.phase === 'arc_end' || this.phase === 'epilogue';
         if (!arcComplete) {
           node.style.opacity = '0.4';
-          node.style.cursor  = 'not-allowed';
+          node.style.cursor = 'not-allowed';
           node.title = '⛔ Defeat the current arc boss first';
         }
         node.addEventListener('click', () => this._startNextArc());
@@ -1251,14 +1233,14 @@ const Story = {
     if (proceedBtn) {
       proceedBtn.disabled = !arcComplete;
       proceedBtn.style.opacity = arcComplete ? '' : '0.35';
-      proceedBtn.style.cursor  = arcComplete ? '' : 'not-allowed';
+      proceedBtn.style.cursor = arcComplete ? '' : 'not-allowed';
       proceedBtn.title = arcComplete ? '' : '⛔ Defeat the current arc boss first';
     }
     this.el('map-arc-label').textContent = next
       ? (arcComplete ? `NEXT: ${next.name.toUpperCase()}` : `⛔ BOSS UNDEFEATED`)
       : 'JOURNEY COMPLETE';
-    this.el('map-info-name').textContent = next ? next.name        : '';
-    this.el('map-info-loc').textContent  = next ? (next.location || '') : '';
+    this.el('map-info-name').textContent = next ? next.name : '';
+    this.el('map-info-loc').textContent = next ? (next.location || '') : '';
 
     showScreen('map-screen');
     if (typeof SFX !== 'undefined') SFX.mapMove();
@@ -1272,19 +1254,19 @@ const Story = {
 
   /* ── Region panel (revisit done/current nodes) ───────────────────────── */
   _openRegionPanel(arcIdx) {
-    const arc     = this.data.arcs[arcIdx];
-    const panel   = document.getElementById('map-region-panel');
-    const mapId   = ARC_MAP_ID[arcIdx] || '';
-    const lore    = ARC_LORE[arcIdx]   || '';
-    const shard   = arc.shard;
-    const isDone  = arcIdx < this.arcIdx;
-    const isCur   = arcIdx === this.arcIdx;
+    const arc = this.data.arcs[arcIdx];
+    const panel = document.getElementById('map-region-panel');
+    const mapId = ARC_MAP_ID[arcIdx] || '';
+    const lore = ARC_LORE[arcIdx] || '';
+    const shard = arc.shard;
+    const isDone = arcIdx < this.arcIdx;
+    const isCur = arcIdx === this.arcIdx;
 
     panel.innerHTML = `
       <div class="mrp-num">ARC ${arc.number}</div>
       <div class="mrp-name">${arc.name}</div>
       <div class="mrp-loc">${arc.location || ''}</div>
-      ${shard ? `<div class="mrp-shard" style="color:${shard.color||'#fff'}">🔮 ${shard.name}</div>` : ''}
+      ${shard ? `<div class="mrp-shard" style="color:${shard.color || '#fff'}">🔮 ${shard.name}</div>` : ''}
       <div class="mrp-lore">${lore}</div>
       <div class="mrp-actions">
         ${(isDone || isCur) && mapId ? `<button class="mrp-btn primary" onclick="Story.startRegionSkirmish(${arcIdx})">⚔ SKIRMISH</button>` : ''}
@@ -1315,18 +1297,18 @@ const Story = {
 
   /* ── Skirmish: battle using an arc's enemy pool at current party LV ─── */
   startRegionSkirmish(arcIdx) {
-    const arc  = this.data.arcs[arcIdx];
-    if (!arc)  return;
+    const arc = this.data.arcs[arcIdx];
+    if (!arc) return;
     const pool = arc.enemies_pool || [];
     if (!pool.length || !G.party.length) return;
 
     /* Pick 1-2 random enemy templates from that arc's pool */
-    const count   = 1 + (Math.random() < 0.45 ? 1 : 0);
+    const count = 1 + (Math.random() < 0.45 ? 1 : 0);
     const partyLv = Math.max(...G.party.map(m => m.lv || 1));
-    const picks   = [];
+    const picks = [];
 
     for (let i = 0; i < count; i++) {
-      const id       = pool[Math.floor(Math.random() * pool.length)];
+      const id = pool[Math.floor(Math.random() * pool.length)];
       const template = (G.enemies || []).find(e => e.id === id);
       if (template) picks.push(template);
     }
@@ -1441,24 +1423,44 @@ const Story = {
   },
 
   _typewrite(el, text) {
-    if (this._tw.timer) clearInterval(this._tw.timer);
+    if (this._tw.timer) clearTimeout(this._tw.timer);
     this._tw.full = text;
     this._tw.done = false;
     let idx = 0;
     el.textContent = '';
-    this._tw.timer = setInterval(() => {
-      idx = Math.min(idx + 2, text.length);
-      el.textContent = text.slice(0, idx);
-      if (idx >= text.length) {
-        this._tw.done = true;
-        clearInterval(this._tw.timer);
-        this._tw.timer = null;
+
+    const baseDelay = this._twDelay || 22;
+    let isPaused = 0;
+
+    const tick = () => {
+      if (isPaused > 0) {
+        isPaused--;
+      } else {
+        idx = Math.min(idx + 1, text.length); // render 1 char per tick for smoother pacing
+        const char = text.charAt(idx - 1);
+        el.textContent = text.slice(0, idx);
+
+        // Pacing logic for punctuation
+        if (char === '.' || char === '!' || char === '?') {
+          isPaused = 12;
+        } else if (char === ',') {
+          isPaused = 6;
+        }
+
+        if (idx >= text.length) {
+          this._tw.done = true;
+          this._tw.timer = null;
+          return;
+        }
       }
-    }, this._twDelay || 22);
+      this._tw.timer = setTimeout(tick, baseDelay);
+    };
+
+    this._tw.timer = setTimeout(tick, baseDelay);
   },
 
   _skipTw() {
-    if (this._tw.timer) clearInterval(this._tw.timer);
+    if (this._tw.timer) clearTimeout(this._tw.timer);
     this._tw.done = true;
     if (typeof TTS !== 'undefined') TTS.stop();
     const el = this.el('s-text');
@@ -1492,7 +1494,10 @@ const Story = {
         const spriteEl = document.createElement('div');
         spriteEl.className = 's-scene-sprite';
         const speakerCharId = _charIdForSpeaker(charName);
-        SpriteRenderer.setFrame(spriteEl, speakerCharId, 'idle', 160);
+        const vHeight = window.innerHeight;
+        const isLandscape = window.innerWidth > vHeight;
+        const portraitHeight = Math.max(300, Math.floor(vHeight * (isLandscape ? 0.75 : 0.52)));
+        SpriteRenderer.setFrame(spriteEl, speakerCharId, 'idle', portraitHeight);
 
         const nameEl = document.createElement('div');
         nameEl.className = 's-scene-char-name';
@@ -1528,14 +1533,14 @@ window.addEventListener('DOMContentLoaded', () => {
   if (typeof ReleaseConfig !== 'undefined') {
     const tag = document.getElementById('game-version-tag');
     if (tag) tag.textContent = ReleaseConfig.VERSION || 'v3.0';
-    
+
     const arcCount = document.querySelector('.title-tagline');
     if (arcCount) {
-        const releasedCount = ReleaseConfig.MAX_REACHABLE_ARC + 1;
-        const arcLabel = releasedCount === 1 ? 'Released Arc' : 'Released Arcs';
-        if (releasedCount < 8) {
-            arcCount.innerHTML = arcCount.innerHTML.replace('8 Arcs', `${releasedCount} ${arcLabel}`);
-        }
+      const releasedCount = ReleaseConfig.MAX_REACHABLE_ARC + 1;
+      const arcLabel = releasedCount === 1 ? 'Released Arc' : 'Released Arcs';
+      if (releasedCount < 8) {
+        arcCount.innerHTML = arcCount.innerHTML.replace('8 Arcs', `${releasedCount} ${arcLabel}`);
+      }
     }
 
     const itchBtn = document.getElementById('be-itch-btn');

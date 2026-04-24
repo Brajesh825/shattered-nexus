@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    story-ui.css — Shattered Nexus
    Story/cutscene screen, dialogue boxes, event choices,
    arc-end shard reveal, epilogue cards, and continue button.
@@ -20,7 +20,7 @@
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  transition: background 1s ease;
+  transition: background 1.5s ease-in-out;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -288,24 +288,27 @@
   z-index: 1;
   display: flex;
   align-items: flex-end;
-  justify-content: center;
-  gap: 20px;
-  padding: 0 20px 200px;
+  justify-content: flex-start;
+  padding: 0 40px 0px;
   pointer-events: none;
 }
 
 .s-scene-char {
+  position: absolute;
+  bottom: 0px;
+  left: 6%;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  opacity: 0.5;
-  transition: opacity 0.4s ease;
+  opacity: 0;
+  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transform: translateX(-40px) scale(0.95);
   flex-shrink: 0;
+  z-index: 10;
 }
 
 .s-scene-char .s-scene-sprite {
-  height: 160px;
   width: auto;
   background-size: contain;
   background-position: center bottom;
@@ -315,6 +318,12 @@
 
 .s-scene-char.active {
   opacity: 1;
+  transform: translateX(0) scale(1);
+  z-index: 20;
+}
+
+.s-scene-char.dimmed {
+  display: none !important;
 }
 
 .s-scene-char.active .s-scene-sprite {
@@ -322,12 +331,7 @@
 }
 
 .s-scene-char-name {
-  font-size: 11px;
-  color: #a090d0;
-  font-family: var(--px);
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  opacity: 0.7;
+  display: none !important;
 }
 
 .s-scene-char.active .s-scene-char-name {
@@ -474,9 +478,11 @@
 
 /* ── Dialogue Box ─────────────────────────────────────── */
 .s-dialogue {
-  position: relative;
+  position: absolute;
+  bottom: 0px;
+  left: 0;
+  right: 0;
   z-index: 5;
-  margin-top: auto;
   background: rgba(3, 2, 18, 0.94);
   border-top: 2px solid #3a2880;
   backdrop-filter: blur(8px);
@@ -591,16 +597,7 @@
 
 /* Speaker portrait */
 .s-dialogue-portrait {
-  width: 96px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  padding: 10px 8px 10px;
-  border-right: 1px solid #1a1260;
-  background: rgba(0, 0, 0, .25);
-  position: relative;
-  overflow: hidden;
+  display: none;
 }
 
 /* subtle vignette on the portrait column */
@@ -642,14 +639,17 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  padding: 14px 20px 14px 18px;
+  padding: 14px 120px 14px 18px;
+  /* padding right 120px to avoid continue btn */
 }
 
 .s-speaker {
   font-family: var(--px);
-  font-size: 10px;
-  letter-spacing: 2px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 2.5px;
   margin-bottom: 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
   transition: color .2s;
 }
 
@@ -677,10 +677,10 @@
 
 .s-text {
   font-family: var(--vt);
-  font-size: 22px;
-  color: #ddd8f4;
-  line-height: 1.55;
-  min-height: 64px;
+  font-size: clamp(16px, 4vmin, 24px);
+  color: #f4f0ff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+  line-height: 1.6;
 }
 
 /* ── Event / Choice Box ──────────────────────────────── */
@@ -930,11 +930,11 @@
 
 /* ── Continue button ──────────────────────────────────── */
 .s-continue-btn {
-  position: relative;
+  position: absolute;
   z-index: 10;
-  align-self: flex-end;
-  margin: 10px 20px 14px;
-  padding: 8px 26px;
+  right: 16px;
+  bottom: 16px;
+  padding: 8px 18px;
   background: rgba(80, 52, 180, .15);
   border: 1px solid #5040a0;
   border-radius: 4px;
@@ -955,11 +955,7 @@
   animation: none;
 }
 
-/* ── Spacer so dialogue sits at bottom when alone ─────── */
-#story-screen>.s-dialogue,
-#story-screen>.s-event {
-  margin-top: auto;
-}
+/* ── Spacer removed since abs positioning handles it ─────── */
 
 /* ══════════════════════════════════════════════════════
    MUTE BUTTON
@@ -1002,4 +998,3 @@
   top: 10px;
   right: 126px;
 }
-

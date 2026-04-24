@@ -431,67 +431,8 @@ function renderPartyMenu() {
   });
 }
 function buildEnemyGroup(defs, spawnLevel = 1, isBoss = false) {
-  // Use centralized scaling configuration
-  const tierGrowth = NexusScaling.tierGrowth;
-
-  // Horde scaling: pulling from NexusScaling.horde
-  const hordeScale = defs.length >= 4 ? NexusScaling.horde[4] : defs.length === 3 ? NexusScaling.horde[3] : 1.0;
-
   G.enemyGroup = defs.slice(0, 4).map(def => {
-    const tier = def.tier || 1;
-    // Fallback: if Tier is higher than 3, use Tier 3 stats as the baseline. 
-    // This prevents high-tier enemies from defaulting to Tier 1 strength.
-    let growth = tierGrowth[tier];
-    if (!growth) {
-      growth = tier > 3 ? tierGrowth[3] : tierGrowth[1];
-    }
-
-    const calcStat = (baseStat, statKey) => {
-      // Use the boss from the map trigger OR the base definition (Arc Bosses)
-      const actualIsBoss = isBoss || def.isBoss;
-      const bMult = actualIsBoss ? (NexusScaling.boss[statKey] || NexusScaling.boss.atk) : 1.0;
-
-      const base = baseStat * growth.statMult * hordeScale * bMult;
-      const levelBonus = growth[statKey] * (spawnLevel - 1) * hordeScale * bMult;
-      return Math.max(1, Math.floor(base + levelBonus));
-    };
-
-    const finalHp = calcStat(def.stats.hp, 'hp');
-    const finalAtk = calcStat(def.stats.atk, 'atk');
-    const finalDef = calcStat(def.stats.def, 'def');
-    const finalSpd = calcStat(def.stats.spd, 'spd');
-    const finalMag = calcStat(def.stats.mag, 'mag');
-    // EXP/gold scale by count so total reward is fair.
-    // Level scaling: +10% EXP for each level above 1.
-    const levelScale = 1 + (spawnLevel - 1) * 0.1;
-    
-    const actualIsBossReward = isBoss || def.isBoss;
-    const bExpMult = actualIsBossReward ? NexusScaling.boss.exp : 1.0;
-    const finalExp = Math.floor(def.reward.exp * growth.expMult * hordeScale * levelScale * bExpMult);
-    const bGoldMult = actualIsBossReward ? (NexusScaling.boss.gold || 1.0) : 1.0;
-    const finalGold = Math.floor(def.reward.gold * growth.expMult * hordeScale * bGoldMult);
-
-    const entry = {
-      id: def.id, name: def.name,
-      level: spawnLevel,
-      hp: finalHp, maxHp: finalHp,
-      atk: finalAtk, atk_orig: finalAtk,
-      def: finalDef, spd: finalSpd, mag: finalMag,
-      exp: finalExp, gold: finalGold,
-      abilityDefs: def.abilities || [],
-      palette: def.palette,
-      subtitle: def.subtitle || '',
-      element: def.element || 'physical',
-      weakTo: def.weakTo || [],
-      resistTo: def.resistTo || [],
-      tier: tier,
-      isBoss: isBoss || def.isBoss, // Combined source of truth
-      aiRole: def.aiRole || 'attacker',
-      aiType: def.aiType || 'random',
-      aiStep: 0,
-      isKO: false,
-      statuses: [],
-    };
+    const entry = EnemyScaling.buildEnemyEntry(def, spawnLevel, isBoss, defs.length, NexusScaling);
     if (typeof Archive !== 'undefined') Archive.recordSeen(def.id);
     return entry;
   });
@@ -641,14 +582,14 @@ function buildAbilityMenu() {
     const type = ab.type || 'physical';
     const tIcon = TYPE_ICONS[type] || '🗡️';
 
-    const mpCost   = Math.ceil(ab.mp * PassiveSystem.val(actor, 'MP_COST_MULT', 1.0));
+    const mpCost = Math.ceil(ab.mp * PassiveSystem.val(actor, 'MP_COST_MULT', 1.0));
     const canAfford = actor.mp >= mpCost;
-    const cdLeft   = (actor.cooldowns || {})[ab.id] || 0;
-    const onCD     = cdLeft > 0;
+    const cdLeft = (actor.cooldowns || {})[ab.id] || 0;
+    const onCD = cdLeft > 0;
     const disabled = !canAfford || onCD;
 
     b.className = `cmd-btn ability-btn ab-type-${type}${disabled ? ' disabled' : ''}`;
-    b.disabled  = disabled;
+    b.disabled = disabled;
 
     const cdBadge = onCD
       ? `<span class="ab-cd-badge">⏳ ${cdLeft}t</span>`

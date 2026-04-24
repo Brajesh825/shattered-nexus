@@ -34,18 +34,25 @@ const TILE_RENDERS = (() => {
     ctx.globalAlpha = 1;
   }
 
-  function grass(ctx, def, sx, sy, tw, th) {
+  function grass(ctx, def, sx, sy, tw, th, t) {
     ctx.fillStyle = def.color;
     ctx.fillRect(sx, sy, tw, th);
     ctx.fillStyle = def.hi;
     ctx.fillRect(sx, sy, tw, 2);
     ctx.fillRect(sx, sy, 2, th);
-    const seed = (sx / tw) | 0;
+    const gx = (sx / tw) | 0;
+    const gy = (sy / tw) | 0;
+    const seed = gx * 7 + gy * 13;
+    
+    // Wind sway factor
+    const sway = Math.sin(t * 2.2 + gx * 0.5 + gy * 0.3) * 2.5;
+
     ctx.fillStyle = 'rgba(40,100,20,0.3)';
     for (let i = 0; i < 4; i++) {
       const bx = sx + ((seed * 7 + i * 13) % tw);
-      ctx.fillRect(bx, sy + th - 8, 2, 8);
-      ctx.fillRect(bx + 1, sy + th - 12, 1, 6);
+      const curSway = sway * (1 + i * 0.2);
+      ctx.fillRect(bx + curSway, sy + th - 8, 2, 8);
+      ctx.fillRect(bx + 1 + curSway, sy + th - 12, 1, 6);
     }
     ctx.fillStyle = def.shadow;
     ctx.fillRect(sx, sy + th - 2, tw, 2);
@@ -67,20 +74,41 @@ const TILE_RENDERS = (() => {
   }
 
   function water(ctx, def, sx, sy, tw, th, t) {
-    ctx.fillStyle = '#081828';
+    // Deep base
+    ctx.fillStyle = '#060e1c';
     ctx.fillRect(sx, sy, tw, th);
-    const s = (Math.sin(t * 1.8 + sx * 0.04) + 1) * 0.5;
-    const r = (8  + s * 6)  | 0;
-    const g = (40 + s * 30) | 0;
-    ctx.fillStyle = `rgba(${r},${g},160,0.35)`;
+
+    // Animated depth colour wash
+    const s = (Math.sin(t * 1.8) + 1) * 0.5;
+    const ri = (8  + s * 6)  | 0;
+    const gi = (40 + s * 30) | 0;
+    ctx.fillStyle = `rgba(${ri},${gi},160,0.38)`;
     ctx.fillRect(sx, sy, tw, th);
+
+    // Horizontal ripple bands
     for (let i = 0; i < 3; i++) {
-      const wy = sy + th * 0.2 + i * (th * 0.25) + Math.sin(t * 1.1 + sx * 0.08 + i) * 3;
-      ctx.fillStyle = `rgba(60,120,220,${0.15 + s * 0.2})`;
-      ctx.fillRect(sx + 3, wy, tw - 6, 2);
+      const wy = sy + th * 0.15 + i * (th * 0.28) + Math.sin(t * 1.1 + i * 0.9) * 3.5;
+      const alpha = (0.12 + s * 0.18) * (1 - i * 0.18);
+      ctx.fillStyle = `rgba(60,130,230,${alpha})`;
+      ctx.fillRect(sx + 3, wy, tw - 6, 1.5);
     }
-    ctx.fillStyle = `rgba(180,220,255,${0.3 * s})`;
-    ctx.beginPath(); ctx.arc(sx + tw * 0.3, sy + th * 0.3, 2, 0, Math.PI * 2); ctx.fill();
+
+    // Caustic light dots
+    const causticPts = [[0.28,0.28],[0.68,0.48],[0.18,0.72],[0.78,0.22],[0.52,0.62]];
+    causticPts.forEach(([fx, fy], i) => {
+      const brightness = (Math.sin(t * 2.6 + i * 1.4) + 1) * 0.5;
+      const cx = sx + tw * fx + Math.sin(t * 1.9 + i * 2.3) * 4;
+      const cy = sy + th * fy + Math.cos(t * 2.1 + i * 1.8) * 3;
+      ctx.fillStyle = `rgba(180,225,255,${0.10 + brightness * 0.28})`;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 1.2 + brightness * 1.6, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    // Surface highlight — pre-computed, no gradient allocation
+    const shimmer = (0.18 + 0.12 * Math.sin(t * 2.2)) * s;
+    ctx.fillStyle = `rgba(120,180,255,${shimmer.toFixed(2)})`;
+    ctx.fillRect(sx, sy, tw, 5);
   }
 
   function bridge(ctx, def, sx, sy, tw, th) {
@@ -174,14 +202,19 @@ const TILE_RENDERS = (() => {
     }
   }
 
-  function flower(ctx, def, sx, sy, tw, th) {
+  function flower(ctx, def, sx, sy, tw, th, t) {
     ctx.fillStyle = def.hi;
     ctx.fillRect(sx, sy, tw, th);
     ctx.fillStyle = 'rgba(40,90,20,0.15)';
     ctx.fillRect(sx, sy, tw, 2); ctx.fillRect(sx, sy, 2, th);
     const petals = ['#ff7070','#ff90ff','#ffff80','#70c0ff'];
     const gx = sx/tw|0, gy = sy/tw|0;
-    const fx = sx + 8 + (gx*7) % (tw-16);
+    const seed = gx * 7 + gy * 13;
+    
+    // Wind sway
+    const sway = Math.sin(t * 1.8 + gx * 0.4) * 3;
+    
+    const fx = sx + 8 + (gx*7) % (tw-16) + sway;
     const fy = sy + 8 + (gy*5) % (th-16);
     const pc = petals[(gx + gy) % 4];
     for (let a = 0; a < 4; a++) {
@@ -551,15 +584,19 @@ const TILE_RENDERS = (() => {
     });
   }
 
-  function shrub(ctx, def, sx, sy, tw, th) {
+  function shrub(ctx, def, sx, sy, tw, th, t) {
     ctx.fillStyle = def.color;
     ctx.fillRect(sx, sy, tw, th);
     ctx.fillStyle = '#1e3810';
     ctx.fillRect(sx+tw/2-2, sy+th-8, 4, 8);
+    
+    const gx = (sx/tw)|0, gy = (sy/tw)|0;
+    const sway = Math.sin(t * 1.5 + gx * 0.3) * 1.5;
+
     ctx.fillStyle = '#2e5020';
-    ctx.beginPath(); ctx.arc(sx+tw/2, sy+th*0.45, 14, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(sx+tw/2 + sway, sy+th*0.45, 14, 0, Math.PI*2); ctx.fill();
     ctx.fillStyle = '#3a6028';
-    ctx.beginPath(); ctx.arc(sx+tw/2-4, sy+th*0.4, 9, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(sx+tw/2-4 + sway * 1.2, sy+th*0.4, 9, 0, Math.PI*2); ctx.fill();
     ctx.fillStyle = def.hi;
     ctx.fillRect(sx, sy, tw, 1);
   }
@@ -595,13 +632,16 @@ const TILE_RENDERS = (() => {
     ctx.fillRect(sx, sy, tw, 1);
   }
 
-  function tallGrass(ctx, def, sx, sy, tw, th) {
+  function tallGrass(ctx, def, sx, sy, tw, th, t) {
     ctx.fillStyle = def.color;
     ctx.fillRect(sx, sy, tw, th);
     ctx.fillStyle = def.hi;
-    const seed = (sx/tw|0)*5 + (sy/tw|0)*3;
+    const gx = (sx/tw)|0, gy = (sy/tw)|0;
+    const seed = gx*5 + gy*3;
+    const sway = Math.sin(t * 2.5 + gx * 0.4) * 2;
+
     for (let i = 0; i < 8; i++) {
-      const bx = sx + ((seed*7+i*9) % tw);
+      const bx = sx + ((seed*7+i*9) % tw) + sway * (1 + i * 0.1);
       ctx.fillRect(bx, sy+th*0.15, 2, th*0.7);
       ctx.fillRect(bx-1, sy+th*0.1, 1, th*0.25);
       ctx.fillRect(bx+2, sy+th*0.12, 1, th*0.2);

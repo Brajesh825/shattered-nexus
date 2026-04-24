@@ -32,6 +32,13 @@ Defined in **classes.json** and **enemies.json**.
 All Core math functions in `js/battle/combat-engine.js` MUST use this signature to avoid `NaN` errors:
 ### `(PowerStat, MitigationStat, Multiplier, OptionsObject)`
 
+### 📊 Multiplier & Capping Hierarchy
+Combat stats are calculated in four distinct layers to allow for high-impact scaling:
+1. **Base Passives**: Multipliers from `PassiveSystem` (Capped at **2.5x** / `NexusScaling.caps.statMult`).
+2. **Status/Moves**: Multipliers from statuses (`sBonus`) are added *after* the passive cap.
+3. **Phases**: Multipliers from `statPhases` are applied multiplicative to the result.
+4. **Absolute Cap**: The final multiplier is clamped at **8.0x** (The "Extreme Premium" limit).
+
 ---
 
 ## 🧪 Elemental Reactions (RX) & Auras
@@ -42,6 +49,14 @@ Elemental damage interaction is the primary multiplier in combat.
   - **Shatter**: High damage + removes Freeze.
   - **Conductive**: Damage + Stun chance.
   - **Swirl**: AOE Dispersion of status.
+
+---
+
+## 🌪️ Universal Phase System
+Enemies can define dynamic stat transformations triggered by HP thresholds using the `statPhases` array in `enemies.json`.
+- **Implementation**: `CombatEngine.getStat` automatically picks the phase for the *lowest* threshold reached (e.g., at 20% HP, it picks the 25% phase).
+- **Structure**: `{"hp": 0.25, "atk": 1.5, "def": 0.8}`
+- **Stacking**: Phase multipliers bypass passive caps and stack with statuses, allowing for dramatic "Enrage" or "Fragile Power" shifts.
 
 ---
 
@@ -64,7 +79,8 @@ Final_Stat = floor( ( (Base_Stat × Tier_Mult) + (SpawnLevel - 1) × Tier_Growth
 ### 🛡️ Boss Archetypes (Reference)
 - **Void Knight (Arc 1)**: 240 HP / 22 DEF (The Balanced Start)
 - **Demon Lord (Arc 2)**: 185 HP / 15 DEF (The Magic Menace)
-- **Spectral Guardian (Sideboss)**: 480 HP / 60 DEF (The Wall)
+- **King Galdor (Sideboss)**: 200 HP / 16 DEF (The Greed King - Hardens with HP loss)
+- **Spectral Guardian (Sideboss)**: 480 HP / 60 DEF (The Wall - Shatters into glass cannon at 40% HP)
 - **Dark Phoenix (Arc 3)**: 170 HP / 10 DEF (The Self-Healer)
 
 ---
@@ -135,3 +151,12 @@ Engine status is exposed via `window.LogDebug(msg, type)`.
 - **Reserved Tags**: `[MATH-PHYS]`, `[MATH-MAGIC]`, `[ENEMY-MATH-MAGIC]`, `[ENEMY-MATH-PHYS]`, `[STATE-DIAG]`, `[Aura]`, `[Passive]`, `[Gauntlet]`, `[BUFF]`, `[DEBUFF]`, `[AI-SUPPORT]`, `[HitRoll]`, `[CritRoll]`, `[KO]`.
 - **Gauntlet Mode**: Use for stress-testing AI and new enemy tiers. Accessible from the map screen. Boss list defined in `BossGauntlet.getBossIds()` — add new arc bosses here.
 - **Magic Defense Formula**: `mdef = def×0.25 + mag×0.25 + level×0.5` — both attacker and defender use this blend. Pure DEF tanks and pure MAG mages both get meaningful resistance without immunity.
+
+---
+
+## 📱 Device Support Standards
+The game is responsive and cross-platform. UI components MUST be rigorously tested and scale correctly across the following core breakpoints/devices:
+1. **iPhone SE (375x667)** - The tightest baseline testing boundary. UI elements cannot overlap or require horizontal scrolling.
+2. **iPhone XR / 11 (414x896)** - Mid-tier standard mobile.
+3. **iPhone 12/13/14 Pro (390x844)** - Modern portrait standard.
+4. **Desktop / Laptops** - Widescreen layouts, where the main wrapper should gracefully constrain with empty side gutters or an expanded view without stretching character sprites incorrectly.
