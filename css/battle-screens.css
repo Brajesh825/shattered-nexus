@@ -16,8 +16,8 @@
 }
 
 .tb-tok {
-  width: 26px;
-  height: 26px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   border: 2px solid #3a2870;
   background: #09082a;
@@ -29,12 +29,21 @@
   color: #c0b8e8;
   flex-shrink: 0;
   transition: all .15s;
+  overflow: hidden;
+  position: relative;
+}
+
+.tb-tok img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 50%;
 }
 
 .tb-tok.active-tok {
   border-color: var(--gold);
-  box-shadow: 0 0 8px var(--gold-glow);
-  transform: scale(1.25);
+  box-shadow: 0 0 10px var(--gold-glow);
+  transform: scale(1.3);
   z-index: 1;
 }
 
@@ -404,6 +413,7 @@
   margin-bottom: 4px;
   border-radius: 4px;
   overflow: hidden;
+  position: relative;
 }
 
 .psc-mp-bg {
@@ -414,10 +424,24 @@
   overflow: hidden;
 }
 
+.psc-hp-drain {
+  position: absolute;
+  left: 0; top: 0;
+  height: 100%;
+  background: #e06020;
+  opacity: 0.55;
+  border-radius: 4px;
+  transition: width 1.4s ease-out;
+  z-index: 0;
+}
+
 .psc-hp-bar {
+  position: absolute;
+  left: 0; top: 0;
   height: 100%;
   transition: width .4s, background .4s;
   border-radius: 4px;
+  z-index: 1;
 }
 
 .psc-mp-bar {
@@ -563,6 +587,34 @@
 .amb-mp {
   margin-left: auto;
   font-size: var(--fs-sm);
+}
+
+.amb-portrait {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--px);
+  font-size: 13px;
+  font-weight: bold;
+  background: rgba(0,0,0,0.4);
+}
+
+.tb-tok-badge {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--px);
+  font-size: 13px;
+  font-weight: bold;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.4);
 }
 
 /* ── BATTLE MENU ─────────────────────────────────────── */

@@ -167,16 +167,33 @@ const BattleUI = {
       const unit = t.type === 'party' ? G.party[t.idx] : G.enemyGroup[t.idx];
       if (!unit) return;
       const isEnemy = t.type === 'enemy';
-      const color = isEnemy ? '#ff7070' : (CHAR_COLOR[unit.charId] || '#c0b8e8');
-      const label = (unit.displayName || unit.name || '?')[0].toUpperCase();
+      const color = isEnemy ? '#ff4060' : (CHAR_COLOR[unit.charId] || '#c0b8e8');
+      
       const tok = document.createElement('div');
       tok.className = 'tb-tok' +
         (i === G.turnIdx ? ' active-tok' : '') +
         (isEnemy ? ' enemy-tok' : '') +
         (!Battle.alive(unit) ? ' dead-tok' : '');
-      tok.style.borderColor = Battle.alive(unit) ? color : '#333';
-      tok.style.color = Battle.alive(unit) ? color : '#444';
-      tok.textContent = label;
+      
+      // Enemy: sprite image. Party: colored initial badge.
+      if (isEnemy) {
+        const img = document.createElement('img');
+        img.src = `images/enemies/${unit.id}.png`;
+        img.onerror = () => { img.style.opacity = '0.4'; };
+        tok.appendChild(img);
+      } else {
+        const badge = document.createElement('div');
+        badge.className = 'tb-tok-badge';
+        badge.textContent = (unit.displayName || unit.charId || '?')[0].toUpperCase();
+        badge.style.color = color;
+        badge.style.borderColor = color;
+        tok.appendChild(badge);
+      }
+      const hpRatio = unit.maxHp > 0 ? unit.hp / unit.maxHp : 1;
+      const lowHp = Battle.alive(unit) && hpRatio <= 0.25;
+      const defaultBorder = lowHp ? '#ff4444' : (Battle.alive(unit) ? color : '#333');
+      tok.style.borderColor = (i === G.turnIdx) ? 'var(--gold)' : defaultBorder;
+      if (lowHp && i !== G.turnIdx) tok.style.animation = 'cdPulse 1s ease-in-out infinite';
       tok.title = (unit.displayName || unit.name || '') + (Battle.alive(unit) ? ` (HP ${unit.hp}/${unit.maxHp})` : ' [KO]');
       bar.appendChild(tok);
     });
@@ -224,8 +241,14 @@ const BattleUI = {
         hpBg.className = 'enemy-hp-bar-bg';
         enemy.appendChild(hpBg);
 
+        const hpDrain = document.createElement('div');
+        hpDrain.className = 'enemy-hp-bar-drain';
+        hpDrain.id = 'ehpd-' + i;
+        hpBg.appendChild(hpDrain);
+
         hpBar = document.createElement('div');
         hpBar.className = 'enemy-hp-bar-fill';
+        hpBar.id = 'ehpb-' + i;
         hpBg.appendChild(hpBar);
 
         info = document.createElement('div');
@@ -273,12 +296,18 @@ const BattleUI = {
       // HP Update (Triggers CSS transition)
       hpBar.style.width = pct + '%';
       hpBar.style.background = pct > 50 ? '#4ade80' : pct > 25 ? '#eab308' : '#ef4444';
+      
+      const drain = this.el('ehpd-' + i);
+      if (drain) {
+        setTimeout(() => { drain.style.width = pct + '%'; }, 300);
+      }
 
       let traitHtml = '';
       if (e.mutantTraits?.length) {
         traitHtml = `<div class="enemy-traits">${e.mutantTraits.map(t => `<span class="trait-pill">${t.label}</span>`).join('')}</div>`;
       }
-      const newInfo = `<div class="enemy-name">${e.name}</div><div class="enemy-level">Lv ${e.level}</div>${traitHtml}`;
+      const hpTxt = alive ? `<div class="enemy-hp-txt">${Math.max(0, e.hp)}/${e.maxHp}</div>` : '';
+      const newInfo = `<div class="enemy-name">${e.name}</div><div class="enemy-level">Lv ${e.level}</div>${hpTxt}${traitHtml}`;
       if (info.innerHTML !== newInfo) info.innerHTML = newInfo;
 
       // Indicator
@@ -328,8 +357,14 @@ const BattleUI = {
         hpBg.className = 'party-hp-bar-bg';
         member.appendChild(hpBg);
 
+        const hpDrain = document.createElement('div');
+        hpDrain.className = 'party-hp-bar-drain';
+        hpDrain.id = 'phpd-' + i;
+        hpBg.appendChild(hpDrain);
+
         hpBar = document.createElement('div');
         hpBar.className = 'party-hp-bar-fill';
+        hpBar.id = 'phpb-' + i;
         hpBg.appendChild(hpBar);
 
         info = document.createElement('div');
@@ -388,6 +423,11 @@ const BattleUI = {
       if (hpBar) {
         hpBar.style.width = pct + '%';
         hpBar.style.background = pct > 50 ? 'var(--hp-hi)' : pct > 25 ? 'var(--hp-mid)' : 'var(--hp-lo)';
+        
+        const drain = this.el('phpd-' + i);
+        if (drain) {
+          setTimeout(() => { drain.style.width = pct + '%'; }, 300);
+        }
       }
 
       // Draw/Update Sprite
@@ -432,6 +472,8 @@ const BattleUI = {
   renderPartyStatus() {
     const bar = this.el('party-status-bar');
     if (!bar) return;
+    if (!this._pscPrevHp) this._pscPrevHp = {};
+
     bar.innerHTML = '';
     G.party.forEach((m, i) => {
       if (!m) return;
@@ -440,6 +482,11 @@ const BattleUI = {
       const mpPct = Math.max(0, m.mp / m.maxMp * 100);
       const hpCol = hpPct > 50 ? 'var(--hp-hi)' : hpPct > 25 ? 'var(--hp-mid)' : 'var(--hp-lo)';
       const isActive = G.turnQueue[G.turnIdx]?.type === 'party' && G.turnQueue[G.turnIdx]?.idx === i;
+
+      // Ghost drain: start drain at previous HP, bar at current HP
+      const prevHpPct = this._pscPrevHp[i] ?? hpPct;
+      const drainStart = hpPct < prevHpPct ? prevHpPct : hpPct;
+      this._pscPrevHp[i] = hpPct;
 
       const card = document.createElement('div');
       card.className = 'psc' + (m.isKO ? ' ko-psc' : '') + (isActive ? ' active-psc' : '');
@@ -452,10 +499,22 @@ const BattleUI = {
           <div class="psc-name" style="color:${col}">${m.displayName} <span class="psc-lv">L${m.lv}</span></div>
           <div class="psc-statuses">${statusHtml}</div>
         </div>
-        <div class="psc-hp-bg"><div class="psc-hp-bar" style="width:${hpPct}%;background:${hpCol}"></div></div>
+        <div class="psc-hp-bg">
+          <div class="psc-hp-drain" id="pscd-${i}" style="width:${drainStart}%"></div>
+          <div class="psc-hp-bar" id="pscb-${i}" style="width:${hpPct}%;background:${hpCol}"></div>
+        </div>
         <div class="psc-hp-txt">${Math.max(0, m.hp)}/${m.maxHp} HP · ${m.mp}/${m.maxMp} MP</div>
         <div class="psc-mp-bg"><div class="psc-mp-bar" style="width:${mpPct}%"></div></div>`;
       bar.appendChild(card);
+    });
+
+    // Animate ghost drain to current HP on next frame (triggers CSS transition)
+    requestAnimationFrame(() => {
+      G.party.forEach((m, i) => {
+        if (!m) return;
+        const drain = this.el('pscd-' + i);
+        if (drain) drain.style.width = Math.max(0, m.hp / m.maxHp * 100) + '%';
+      });
     });
   },
 
@@ -490,6 +549,7 @@ const BattleUI = {
     const m = G.party[t.idx];
     const col = CHAR_COLOR[m.charId] || '#c0b8e8';
     bar.innerHTML =
+      `<div class="amb-portrait" style="color:${col};border-color:${col}">${(m.displayName||m.charId||'?')[0].toUpperCase()}</div>` +
       `<span class="amb-arrow" style="color:${col}">▶</span>` +
       `<span class="amb-name" style="color:${col}">${m.displayName}</span>` +
       `<span class="amb-class">${m.cls.name} · LV ${m.lv}</span>` +
@@ -601,12 +661,86 @@ const BattleUI = {
   _pop(text, x, y, type, element) {
     const s = this.el('battle-scene');
     const d = document.createElement('div');
+    
+    // Add random jitter to x/y so multiple hits arc differently
+    const ox = (Math.random() - 0.5) * 40;
+    const oy = (Math.random() - 0.5) * 20;
+
     d.className = `pop-text pop-${type} elem-${element}`;
     d.textContent = text;
-    d.style.left = x + 'px';
-    d.style.top = y + 'px';
+    d.style.left = (x + ox) + 'px';
+    d.style.top = (y + oy) + 'px';
     s.appendChild(d);
     setTimeout(() => d.remove(), 1200);
+  },
+
+  showAbilityInfo(ability) {
+    const p = this.el('ability-info-pane');
+    if (!p || !ability) return;
+    p.querySelector('.inf-name').textContent = ability.name;
+    p.querySelector('.inf-cost').textContent = (ability.cost || 0) + ' MP';
+    p.querySelector('.inf-desc').textContent = ability.desc || 'No description available.';
+    p.querySelector('.inf-meta').textContent = ability.type === 'ultimate' ? '★ ULTIMATE ABILITY' : '';
+    p.classList.add('visible');
+  },
+
+  hideAbilityInfo() {
+    const p = this.el('ability-info-pane');
+    if (p) p.classList.remove('visible');
+  },
+
+  /**
+   * Full lunge sequence: idle → prepare → jump → attack (hit) → hold → return → idle.
+   * onHit fires at the attack peak. onComplete fires when fully back at idle.
+   * Falls back gracefully if the DOM element is missing.
+   */
+  lunge(partyIdx, enemyIdx, onHit, onComplete) {
+    const src = this._getAnchor(partyIdx, 'party');
+    const dst = this._getAnchor(enemyIdx, 'enemy');
+    const member = this.el('pmember-' + partyIdx);
+
+    // Fallback: no element found — fire callbacks immediately and bail
+    if (!member || !src || !dst) {
+      onHit?.();
+      setTimeout(() => onComplete?.(), 100);
+      return;
+    }
+
+    const dx = (dst.x - src.x) * 0.65;
+    const dy = (dst.y - src.y) * 0.65;
+
+    // t=0 — prepare frame already set by caller; hold in place briefly
+
+    // t=150 — snap forward (fast, snappy ease-in)
+    setTimeout(() => {
+      member.style.transition = 'transform 0.2s cubic-bezier(0.3, 0, 0.7, 1)';
+      member.style.transform  = `translate(${dx}px, ${dy}px) scale(1.1)`;
+      member.style.zIndex     = '50';
+    }, 150);
+
+    // t=350 — peak: switch to attack frame, fire damage
+    setTimeout(() => {
+      this.setSpriteFrame(partyIdx, 'attack');
+      onHit?.();
+    }, 350);
+
+    // t=600 — hold felt; now return smoothly
+    setTimeout(() => {
+      member.style.transition = 'transform 0.28s cubic-bezier(0.4, 0, 0.2, 1)';
+      member.style.transform  = '';
+      member.style.zIndex     = '';
+    }, 600);
+
+    // t=880 — landing: brief prepare recovery pose
+    setTimeout(() => {
+      this.setSpriteFrame(partyIdx, 'prepare');
+    }, 880);
+
+    // t=980 — settle into idle, signal turn advance
+    setTimeout(() => {
+      if (Battle.alive(G.party[partyIdx])) this.setSpriteFrame(partyIdx, 'idle');
+      onComplete?.();
+    }, 980);
   },
 
   shakeEnemy(idx) {
