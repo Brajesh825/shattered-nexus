@@ -32,12 +32,12 @@ To expand progress beyond the party-wide Relic system in a later update:
 - Screen shake (`triggerScreenShake` + `.battle-scene-shake`) on heavy hits and ultimates.
 - Hit pause / party flash fires at impact frame (t=280ms) inside `enemyStrike`.
 
-## 4. Sprite Quality Mode Selection
-Ask the player during launch/preload whether they want **Full HD** or **Normal** sprite quality, and persist the choice. All sprite loads must respect the preference:
-- **Launch Modal**: Show a one-time quality picker before the preloader starts — two clear options with a short description of the tradeoff (detail vs. load time/memory).
-- **Persistence**: Save the choice to `localStorage` (`spriteQuality: 'hd' | 'normal'`) so returning players skip the picker.
-- **Preloader Integration**: Route all sprite URLs through a resolver that swaps path prefix or filename suffix based on the stored preference (e.g. `images/sprites/hd/` vs `images/sprites/`).
-- **In-Game Toggle**: Expose the setting in the Options/Settings screen so players can change it later without clearing storage.
+## ✅ [2026-04-25] Sprite Quality Mode Selection — Complete
+- One-time launch modal lets players choose **Normal** (PNG, ~37 MB) or **Low** (WebP, ~1.7 MB) — 95% smaller on mobile.
+- Choice persisted to `localStorage('spriteQuality')`; returning players skip the picker.
+- `asset-preloader.js` routes character sprite paths based on stored preference.
+- `story.js` SPEAKER_IMG uses getters so portrait paths resolve at render time.
+- Enemy sprites unaffected (single quality by design).
 
 ---
 *Created for planning discussion. Please add comments or adjust priorities as needed.*
