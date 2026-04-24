@@ -45,6 +45,13 @@ function setQuality(q) {
 }
 
 async function _startGame() {
+  // Tell the service worker which quality was chosen so it caches correctly
+  if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+    navigator.serviceWorker.controller.postMessage({
+      type: 'SET_QUALITY',
+      quality: localStorage.getItem('spriteQuality') || 'normal'
+    });
+  }
   if (typeof AssetPreloader !== 'undefined') await AssetPreloader.init();
   showScreen('title-screen');
 }
