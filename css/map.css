@@ -1286,38 +1286,6 @@
   will-change: transform;
 }
 
-/* Mobile Action Button — anchored bottom-right, above the minimap */
-.mobile-action-btn {
-  position: absolute;
-  right: calc(28px + env(safe-area-inset-right));
-  bottom: calc(28px + env(safe-area-inset-bottom));
-  width: 64px;
-  height: 64px;
-  background: radial-gradient(circle at center, rgba(212, 175, 55, 0.2) 0%, rgba(100, 80, 200, 0.08) 100%);
-  border: 2px solid var(--gold);
-  border-radius: 50%;
-  color: var(--gold);
-  font-family: 'Cinzel', serif;
-  font-size: 24px;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: all;
-  box-shadow: 0 0 16px rgba(212, 175, 55, 0.2);
-  backdrop-filter: blur(4px);
-  cursor: pointer;
-  text-shadow: 0 0 8px var(--gold-glow);
-  -webkit-tap-highlight-color: transparent;
-  z-index: 101;
-  touch-action: manipulation;
-}
-
-.mobile-action-btn:active {
-  transform: scale(0.88);
-  background: radial-gradient(circle at center, rgba(212, 175, 55, 0.35) 0%, rgba(100, 80, 200, 0.15) 100%);
-  box-shadow: 0 0 28px rgba(212, 175, 55, 0.45);
-}
 
 /* ── Slim bottom hint bar ────────────────────────────── */
 .explore-loc-bar {

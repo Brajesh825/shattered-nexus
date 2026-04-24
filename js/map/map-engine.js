@@ -941,6 +941,14 @@ const MapEngine = (() => {
     _canvas.height = canvasEl.offsetHeight || window.innerHeight;
     TILE = _calcTileSize();
     MapInput.init(canvasEl);
+
+    // Mobile tap-to-interact: short tap on canvas triggers NPC proximity check
+    let _tapStartTime = 0;
+    canvasEl.addEventListener('touchstart', () => { _tapStartTime = Date.now(); }, { passive: true });
+    canvasEl.addEventListener('touchend', e => {
+      if (Date.now() - _tapStartTime < 250) _touchInteract(); // only short taps
+    }, { passive: true });
+
     window.addEventListener('resize', () => {
       _canvas.width = _canvas.offsetWidth || window.innerWidth;
       _canvas.height = _canvas.offsetHeight || window.innerHeight;
@@ -1109,7 +1117,7 @@ const MapEngine = (() => {
   function interact() {
     if (MapPlayer.moving) return;
     const ptx = MapPlayer.tx, pty = MapPlayer.ty;
-    const face = MapPlayer.getFacing(); 
+    const face = MapPlayer.getFacing();
     const targetX = ptx + face.dx, targetY = pty + face.dy;
 
     const npc = MapEntities.checkNPCAt(targetX, targetY);
@@ -1117,6 +1125,24 @@ const MapEngine = (() => {
       npc._dialogueOpen = true;
       stop();
       _openNPCDialogue(npc);
+    }
+  }
+
+  // Touch-tap interact — checks all NPCs within 1.5 tiles of player
+  // Used on mobile instead of the A button so players just tap near an NPC
+  function _touchInteract() {
+    if (!_running) return;
+    const ptx = MapPlayer.tx, pty = MapPlayer.ty;
+    const npcs = (typeof MapEntities !== 'undefined' && MapEntities.getNPCs)
+      ? MapEntities.getNPCs() : [];
+    const nearby = npcs.find(n => {
+      const dx = n.tx - ptx, dy = n.ty - pty;
+      return Math.sqrt(dx * dx + dy * dy) <= 1.5 && !n._dialogueOpen;
+    });
+    if (nearby) {
+      nearby._dialogueOpen = true;
+      stop();
+      _openNPCDialogue(nearby);
     }
   }
 
