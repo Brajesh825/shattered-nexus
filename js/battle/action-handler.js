@@ -702,38 +702,32 @@ function heroAttack() {
     const enemy = G.enemy;
     if (!actor || !enemy) { G.busy = false; BattleUI.btns(true); return; }
 
-    // Basic attack carries the character's class element
     const _atkElem = actor.cls?.element || 'physical';
-    const actorSpr = BattleUI.getSprite(G.activeMemberIdx, 'party');
-    if (actorSpr) {
-      actorSpr.classList.add('anim-slash');
-      actorSpr.classList.add(`element-${_atkElem}`);
-      setTimeout(() => {
-        actorSpr.classList.remove('anim-slash');
-        actorSpr.classList.remove(`element-${_atkElem}`);
-      }, 460);
-    }
 
     BattleUI.setLog([`${actor.displayName} attacks ${enemy.name}!`], ['hi']);
     BattleUI.setSpriteFrame(G.activeMemberIdx, 'prepare');
 
-    setTimeout(() => {
-      try {
-        BattleUI.setSpriteFrame(G.activeMemberIdx, 'attack');
-        if (typeof SFX !== 'undefined') { SFX.attack(); setTimeout(() => SFX.enemyHit(), 80); }
-        const dmg = resolveOffensiveAction(actor, enemy, G.targetEnemyIdx, { name: 'attack', type: 'physical' }, _atkElem);
-        _applyVampiric(enemy, dmg, G.targetEnemyIdx);
-        _checkDragonLeap(actor);
-        BattleUI.renderEnemyRow();
-        setTimeout(() => {
-          if (Battle.alive(actor)) BattleUI.setSpriteFrame(G.activeMemberIdx, 'idle');
-          TurnManager.advance();
-        }, 700);
-      } catch (err) {
-        console.error('[heroAttack inner] Error:', err);
-        G.busy = false; BattleUI.btns(true);
+    BattleUI.lunge(
+      G.activeMemberIdx,
+      G.targetEnemyIdx,
+      // onHit — fires at the peak of the lunge (t≈350ms)
+      () => {
+        try {
+          if (typeof SFX !== 'undefined') { SFX.attack(); setTimeout(() => SFX.enemyHit(), 80); }
+          const dmg = resolveOffensiveAction(actor, enemy, G.targetEnemyIdx, { name: 'attack', type: 'physical' }, _atkElem);
+          _applyVampiric(enemy, dmg, G.targetEnemyIdx);
+          _checkDragonLeap(actor);
+          BattleUI.renderEnemyRow();
+        } catch (err) {
+          console.error('[heroAttack onHit] Error:', err);
+          G.busy = false; BattleUI.btns(true);
+        }
+      },
+      // onComplete — fires when fully back at idle (t≈980ms)
+      () => {
+        TurnManager.advance();
       }
-    }, 250); // Hold prepare frame for 250ms
+    );
   } catch (err) {
     console.error('[heroAttack] Error:', err);
     G.busy = false; BattleUI.btns(true);
