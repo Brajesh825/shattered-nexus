@@ -260,5 +260,29 @@
   { "id": "wind_crystal", "name": "Wind Crystal", "icon": "💨", "type": "trophy", "subtype": "story", "value": 35, "effect": { "target": "none", "stat": "none", "amount": 0, "percent": false }, "usable_in": [], "description": "A crystal humming with concentrated wind energy.", "rarity": "uncommon" },
   { "id": "witch_brew", "name": "Witch Brew", "icon": "🧙", "type": "trophy", "subtype": "story", "value": 30, "effect": { "target": "none", "stat": "none", "amount": 0, "percent": false }, "usable_in": [], "description": "A vial of mysterious brew from a witch. Smells awful, probably powerful.", "rarity": "uncommon" },
   { "id": "wolf_pelt", "name": "Wolf Pelt", "icon": "🐺", "type": "trophy", "subtype": "story", "value": 16, "effect": { "target": "none", "stat": "none", "amount": 0, "percent": false }, "usable_in": [], "description": "A thick pelt from a dire wolf. Warm and surprisingly soft.", "rarity": "common" },
-  { "id": "wyvern_scale", "name": "Wyvern Scale", "icon": "🐲", "type": "trophy", "subtype": "story", "value": 58, "effect": { "target": "none", "stat": "none", "amount": 0, "percent": false }, "usable_in": [], "description": "A venomous scale from a wyvern. Still drips with toxin.", "rarity": "uncommon" }
+  { "id": "wyvern_scale", "name": "Wyvern Scale", "icon": "🐲", "type": "trophy", "subtype": "story", "value": 58, "effect": { "target": "none", "stat": "none", "amount": 0, "percent": false }, "usable_in": [], "description": "A venomous scale from a wyvern. Still drips with toxin.", "rarity": "uncommon" },
+  {
+    "id": "sovereign_ring",
+    "name": "Sovereign Ring",
+    "icon": "ðŸ’",
+    "type": "valuable",
+    "subtype": "sell_only",
+    "value": 1000,
+    "effect": { "target": "none", "stat": "none", "amount": 0, "percent": false },
+    "usable_in": [],
+    "description": "A heavy ring bearing the seal of Aethelgard. Though the gold is cursed, it still holds great value to collectors.",
+    "rarity": "rare"
+  },
+  {
+    "id": "gilded_relic",
+    "name": "Gilded Relic",
+    "icon": "ðŸº",
+    "type": "trophy",
+    "subtype": "story",
+    "value": 500,
+    "effect": { "target": "none", "stat": "none", "amount": 0, "percent": false },
+    "usable_in": [],
+    "description": "A twisted relic from the Ruined Kingdom. It pulses with a faint, greedy warmth.",
+    "rarity": "rare"
+  }
 ]

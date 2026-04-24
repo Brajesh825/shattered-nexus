@@ -53,7 +53,11 @@ MAP_DEFS.verdant_vale = {
         { id: 'wolf',           x: 43, y: 4,  patrol: 'random', range: 3, speed: 1.4 }, 
         { id: 'spider',         x: 46, y: 26, patrol: 'vertical', range: 3, speed: 1.0 }, 
         { id: 'spider',         x: 51, y: 14, patrol: 'horizontal', range: 4, speed: 1.1 }, 
-        { id: 'zombie_soldier', x: 57, y: 10, patrol: 'random', range: 2, speed: 0.8 }  
+        { id: 'zombie_soldier', x: 57, y: 10, patrol: 'random', range: 2, speed: 0.8 },
+        // --- THE RUINED KINGDOM (AETHELGARD) ---
+        { id: 'goblin_elite',   x: 35, y: 40, patrol: 'vertical', range: 3, speed: 0.9 },
+        { id: 'goblin_elite',   x: 46, y: 36, patrol: 'horizontal', range: 2, speed: 1.0 },
+        { id: 'galdor_king',    x: 52, y: 41, patrol: 'horizontal', range: 2, speed: 0.9, isBoss: true }
     ],
 
     tiles: (function () {
@@ -170,6 +174,35 @@ MAP_DEFS.verdant_vale = {
                     }
                     row[x] = 12; 
                 }
+
+                // 14. The Ruined Kingdom (South East) - Touching the River Bank
+                if (x >= 33 && x <= 58 && y >= 35 && y <= 46 && row[x] === 1) {
+                    const rWallX = (x === 33 || x === 58);
+                    const rWallY = (y === 35 || y === 46);
+                    const isEntrance = (x >= 42 && x <= 44 && y === 35); // Move entrance closer to the river side
+
+                    if ((rWallX && y >= 35 && y <= 46) || (rWallY && x >= 33 && x <= 58)) {
+                        if (isEntrance) {
+                            row[x] = 2; // Dirt path entrance
+                        } else {
+                            row[x] = 68; // Stone wall
+                        }
+                        continue;
+                    }
+
+                    // Internal floor & rubble
+                    const dToThrone = Math.sqrt((x - 52) ** 2 + (y - 41) ** 2);
+                    // Guaranteed 3-tile wide clear path from the northern entrance down and across to the throne
+                    const isMainAisle = (x >= 42 && x <= 45 && y >= 35 && y <= 42) || (y >= 40 && y <= 42 && x >= 42 && x <= 52);
+
+                    if (dToThrone < 1.5) {
+                        row[x] = 80; // The Throne (Gold-Tile, Walkable)
+                    } else if (!isMainAisle && Math.random() < 0.15) {
+                        row[x] = 110; // Ruin Floor / Rubble (Walkable)
+                    } else {
+                        row[x] = 73; // Cracked stone floor
+                    }
+                }
             }
             rows.push(row);
         }
@@ -196,6 +229,18 @@ MAP_DEFS.verdant_vale = {
                 { speaker: 'Aya',  text: 'Scorched by void, not fire. These aren\'t just ruins... everyone is already dead in here.' },
                 { speaker: 'Lulu', text: 'Davan was right. The Void Knight didn\'t just pass through. He turned this place into a tomb.' },
                 { speaker: 'Rei',  text: 'Keep your guard up. Whatever did this is still around, and it\'s hungry.' },
+            ]
+        },
+        {
+            id: 'aethelgard_mystery',
+            x: 40, y: 34, w: 5, h: 2, // Adjusted trigger position for new entrance
+            type: 'dialogue',
+            lines: [
+                { speaker: 'narrator', text: 'The grass gives way to jagged stone—not natural formations, but the bones of a city swallowed by the earth.' },
+                { speaker: 'Lulu',     text: 'It feels... heavy here. Like the air is made of lead.' },
+                { speaker: 'narrator', text: 'A stifling weight of ancient gold hangs over the ruins. Somewhere within the labyrinth of stone, a rhythmic clinking of coins echoes against the wind.' },
+                { speaker: 'Rei',      text: 'I don\'t like this. These ruins shouldn\'t be here. They aren\'t on any map.' },
+                { speaker: 'Aya',      text: 'Stay close. Whatever lived here once... it hasn\'t left.' }
             ]
         }
     ],

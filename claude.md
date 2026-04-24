@@ -32,6 +32,13 @@ Defined in **classes.json** and **enemies.json**.
 All Core math functions in `js/battle/combat-engine.js` MUST use this signature to avoid `NaN` errors:
 ### `(PowerStat, MitigationStat, Multiplier, OptionsObject)`
 
+### 📊 Multiplier & Capping Hierarchy
+Combat stats are calculated in four distinct layers to allow for high-impact scaling:
+1. **Base Passives**: Multipliers from `PassiveSystem` (Capped at **2.5x** / `NexusScaling.caps.statMult`).
+2. **Status/Moves**: Multipliers from statuses (`sBonus`) are added *after* the passive cap.
+3. **Phases**: Multipliers from `statPhases` are applied multiplicative to the result.
+4. **Absolute Cap**: The final multiplier is clamped at **8.0x** (The "Extreme Premium" limit).
+
 ---
 
 ## 🧪 Elemental Reactions (RX) & Auras
@@ -42,6 +49,14 @@ Elemental damage interaction is the primary multiplier in combat.
   - **Shatter**: High damage + removes Freeze.
   - **Conductive**: Damage + Stun chance.
   - **Swirl**: AOE Dispersion of status.
+
+---
+
+## 🌪️ Universal Phase System
+Enemies can define dynamic stat transformations triggered by HP thresholds using the `statPhases` array in `enemies.json`.
+- **Implementation**: `CombatEngine.getStat` automatically picks the phase for the *lowest* threshold reached (e.g., at 20% HP, it picks the 25% phase).
+- **Structure**: `{"hp": 0.25, "atk": 1.5, "def": 0.8}`
+- **Stacking**: Phase multipliers bypass passive caps and stack with statuses, allowing for dramatic "Enrage" or "Fragile Power" shifts.
 
 ---
 
@@ -64,7 +79,8 @@ Final_Stat = floor( ( (Base_Stat × Tier_Mult) + (SpawnLevel - 1) × Tier_Growth
 ### 🛡️ Boss Archetypes (Reference)
 - **Void Knight (Arc 1)**: 240 HP / 22 DEF (The Balanced Start)
 - **Demon Lord (Arc 2)**: 185 HP / 15 DEF (The Magic Menace)
-- **Spectral Guardian (Sideboss)**: 480 HP / 60 DEF (The Wall)
+- **King Galdor (Sideboss)**: 200 HP / 16 DEF (The Greed King - Hardens with HP loss)
+- **Spectral Guardian (Sideboss)**: 480 HP / 60 DEF (The Wall - Shatters into glass cannon at 40% HP)
 - **Dark Phoenix (Arc 3)**: 170 HP / 10 DEF (The Self-Healer)
 
 ---

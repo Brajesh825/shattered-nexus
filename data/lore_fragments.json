@@ -22,5 +22,11 @@
     "title": "Of Relics and Resonance",
     "icon": "🏺",
     "description": "Relics are not just artifacts; they are crystalline splinters of the Nexus. When equipped, they resonate with the user's soul, granting them powers once reserved for the elemental gods."
+  },
+  {
+    "id": "king_galdor_curse",
+    "title": "The Fall of King Galdor",
+    "icon": "👑",
+    "description": "King Galdor once ruled the Citadel of Aethelgard in the Verdant Vale. When Veldris arrived, the King offered his vast treasury to buy safety. Veldris took the gold but cursed Galdor's greed, transforming him into the first Goblin and his kingdom into a ruin of 'Void-Gild' where his people forever scavenge for the shiny remains of their former lives."
   }
 ]
