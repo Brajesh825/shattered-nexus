@@ -34,13 +34,16 @@ const MapInput = (() => {
   }
 
   function poll() {
-    if (typeof Input === 'undefined') return { left:false, right:false, up:false, down:false };
-    const axis = Input.getAxis();
+    const axis = (typeof Input !== 'undefined') ? Input.getAxis() : { x: 0, y: 0 };
+    // Combine physical axis and touch vector
+    const x = axis.x || _vec.dx;
+    const y = axis.y || _vec.dy;
+    
     return {
-      left:  axis.x < -0.3,
-      right: axis.x > 0.3,
-      up:    axis.y < -0.3,
-      down:  axis.y > 0.3,
+      left:  x < -0.3,
+      right: x > 0.3,
+      up:    y < -0.3,
+      down:  y > 0.3,
     };
   }
 
