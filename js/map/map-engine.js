@@ -682,7 +682,7 @@ const MapEngine = (() => {
     
     // 2. Entities
     MapEntities.renderEnemies(_ctx, cam, TILE, _map, _inVision.bind(null));
-    MapEntities.renderNPCs(_ctx, cam, TILE, _time);
+    MapEntities.renderNPCs(_ctx, cam, TILE, _inVision.bind(null));
     MapPlayer.render(_ctx, cam, TILE);
 
     // 3. Fringe (Overhead)
@@ -1078,7 +1078,7 @@ const MapEngine = (() => {
     const face = MapPlayer.getFacing(); 
     const targetX = ptx + face.dx, targetY = pty + face.dy;
 
-    const npc = MapNPCs.checkNPCAt(targetX, targetY);
+    const npc = MapEntities.checkNPCAt(targetX, targetY);
     if (npc && !npc._dialogueOpen) {
       npc._dialogueOpen = true;
       stop();

@@ -10,7 +10,7 @@ const ReleaseConfig = {
   // 0 = Arc 1 (Verdant Vale)
   // 1 = Arc 2 (Crystal Caverns)
   // 7 = Arc 8 (Final Arc)
-  MAX_REACHABLE_ARC: 0,
+  MAX_REACHABLE_ARC: 7,
 
   // Toggle for demo/beta specific UI behavior
   IS_BETA: true,
