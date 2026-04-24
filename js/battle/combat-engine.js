@@ -32,15 +32,15 @@ const CombatEngine = (() => {
     let sBonus = 0;
     let flat = 0;
 
-    // 1. Calculate Passive Multiplier (Capped at 2.5x)
+    // 1. Calculate Passive Multiplier (Capped at 2.5x - "Base Scaling")
     const passiveSystem = getPassiveSystem();
     if (passiveSystem) {
       pMult *= passiveSystem.getStatMultiplier(unit, stat);
       flat += passiveSystem.getStatBonus(unit, stat);
     }
-    pMult = Math.min(NexusScaling.caps.statMult || 2.5, pMult);
+    const cappedPassive = Math.min(NexusScaling.caps.statMult || 2.5, pMult);
 
-    // 2. Calculate Status Bonuses (Additive Stacking for Moves)
+    // 2. Calculate Status Bonuses (Additive Stacking for Moves - Uncapped by Base)
     (unit.statuses || []).forEach(s => {
       if (s.stat === stat || s.type === stat) {
         if (s.type === 'mult') sBonus += (s.value - 1.0);
@@ -49,8 +49,23 @@ const CombatEngine = (() => {
       }
     });
 
-    // 3. Combine and apply Total Cap (4.0x) and Floor (0.2x) to prevent runaway scaling or zero-damage soft-locks
-    const finalMult = Math.max(0.2, Math.min(4.0, pMult + sBonus));
+    // 3. Combine and apply HP-Based Stat Phases (Universal System)
+    let finalMult = Math.max(0.2, cappedPassive + sBonus);
+    
+    if (unit.statPhases && unit.hp && unit.maxHp) {
+      const hpRatio = unit.hp / unit.maxHp;
+      // Sort phases by HP descending to find the deepest reached phase
+      const activePhase = [...unit.statPhases]
+        .sort((a, b) => a.hp - b.hp)
+        .find(p => hpRatio <= p.hp);
+      
+      if (activePhase && activePhase[stat]) {
+        finalMult *= activePhase[stat];
+      }
+    }
+
+    // 4. Final Result with Absolute Safety Cap (8.0x - "Extreme Premium")
+    finalMult = Math.min(8.0, finalMult);
     const result = (base + flat) * finalMult;
 
     // 4. Handle Float-based Combat Stats
