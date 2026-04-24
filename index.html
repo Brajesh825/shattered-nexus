@@ -1010,6 +1010,13 @@
 
     window.addEventListener('DOMContentLoaded', () => {
       if (typeof Joystick !== 'undefined') Joystick.init();
+
+      // Register Service Worker for standalone offline support
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('✅ [PWA] Service Worker Registered:', reg.scope))
+          .catch(err => console.warn('⚠️ [PWA] Service Worker Failed:', err));
+      }
     });
   </script>
 
