@@ -1165,45 +1165,7 @@
   margin-top: 2px;
 }
 
-/* ══════════════════════════════════════════════════════
-   VIRTUAL JOYSTICK (MOBILE)
-   ══════════════════════════════════════════════════════ */
-.joystick-zone {
-  position: absolute;
-  inset: 0;
-  z-index: 1000;
-  pointer-events: auto;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: none;
-}
-
-.joystick-base {
-  position: absolute;
-  width: 100px;
-  height: 100px;
-  background: rgba(96, 80, 184, 0.15);
-  border: 2px solid rgba(144, 128, 255, 0.4);
-  border-radius: 50%;
-  pointer-events: none;
-  opacity: 0.3;
-  transform: translate(-50%, -50%);
-  transition: opacity 0.2s ease;
-  box-shadow: 0 0 20px rgba(0,0,0,0.4);
-}
-
-.joystick-knob {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 44px;
-  height: 44px;
-  background: var(--cyan);
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  box-shadow: 0 0 15px var(--cyan);
-  border: 2px solid #fff;
-}
+/* Joystick removed — replaced by Leash & Target movement */
 
 /* ── Minimap (bottom-right of canvas wrap) ───────────── */
 #explore-minimap-wrap {
@@ -1239,52 +1201,7 @@
 
 #explore-minimap { display: block; }
 
-/* ── Fixed Virtual Joystick ──────────────────────────── */
-.joystick-container {
-  position: absolute;
-  bottom: calc(28px + env(safe-area-inset-bottom));
-  left: 0;
-  right: 0;
-  height: 130px;
-  pointer-events: none;
-  z-index: 100;
-  display: none;
-  align-items: center;
-  /* joystick left, A button right — separate so minimap doesn't clash */
-}
-
-@media (hover: none) {
-  .joystick-container { display: flex; }
-}
-
-.joystick-base {
-  width: 110px;
-  height: 110px;
-  background: rgba(144, 128, 255, 0.08);
-  border: 2px solid rgba(144, 128, 255, 0.2);
-  border-radius: 50%;
-  pointer-events: all;
-  position: relative;
-  backdrop-filter: blur(4px);
-  touch-action: none;
-  margin-left: 28px;
-  flex-shrink: 0;
-}
-
-.joystick-knob {
-  width: 46px;
-  height: 46px;
-  background: linear-gradient(135deg, #7050d8, #4030a0);
-  border: 2px solid rgba(255, 255, 255, 0.35);
-  border-radius: 50%;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  box-shadow: 0 0 14px rgba(96, 64, 192, 0.5);
-  pointer-events: none;
-  will-change: transform;
-}
+/* Fixed Joystick definitions removed */
 
 
 /* ── Slim bottom hint bar ────────────────────────────── */

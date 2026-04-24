@@ -1,5 +1,6 @@
 /**
  * map-entities.js — MapPlayer, MapEnemies, MapInput.
+ * v3.0.1 - Mobile Touch Patch
  */
 
 /* ── MapInput ────────────────────────────────────────── */
@@ -13,13 +14,9 @@ const MapInput = (() => {
     window.addEventListener('keydown', e => {
       keys[e.key] = true;
       const isMapRunning = (typeof MapEngine !== 'undefined' && MapEngine.isRunning && MapEngine.isRunning());
-      
-      // Prevent scrolling / focus shift for game keys
       if (isMapRunning && ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Tab'].includes(e.key)) {
-        if (e.key === 'Tab' && e.repeat) return; // Prevent flickering on held Tab
+        if (e.key === 'Tab' && e.repeat) return;
         e.preventDefault();
-        
-        // Character cycle on Tab
         if (e.key === 'Tab' && typeof MapUI !== 'undefined') {
           MapUI.cycleCharacter();
         }
@@ -35,10 +32,8 @@ const MapInput = (() => {
 
   function poll() {
     const axis = (typeof Input !== 'undefined') ? Input.getAxis() : { x: 0, y: 0 };
-    // Combine physical axis and touch vector
     const x = axis.x || _vec.dx;
     const y = axis.y || _vec.dy;
-    
     return {
       left:  x < -0.3,
       right: x > 0.3,
@@ -122,10 +117,10 @@ const MapPlayer = (() => {
     } else {
       const dir = MapInput.poll();
       let dx = 0, dy = 0;
-      if      (dir.left)  dx = -1;
-      else if (dir.right) dx =  1;
-      else if (dir.up)    dy = -1;
-      else if (dir.down)  dy =  1;
+      if (dir.left)  dx = -1;
+      if (dir.right) dx =  1;
+      if (dir.up)    dy = -1;
+      if (dir.down)  dy =  1;
       if (dx !== 0 || dy !== 0) _tryMove(dx, dy, map);
     }
   }
@@ -969,6 +964,7 @@ const MapEntities = (() => {
   return { 
     init, clear, updateEnemies, renderEnemies, checkEncounter, removeEncountered, 
     allCleared, remaining, hasEnemyAt, 
-    initNPCs, renderNPCs, checkNPCAt, getNPCDialogue, markNPCTalked 
+    initNPCs, renderNPCs, checkNPCAt, getNPCDialogue, markNPCTalked,
+    getNPCs: () => MapNPCs.getNPCs()
   };
 })();

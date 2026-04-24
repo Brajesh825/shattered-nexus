@@ -838,15 +838,9 @@ const Story = {
       canvas.width = wrap.offsetWidth || 360;
       canvas.height = wrap.offsetHeight || 480;
 
-      // One-time init
       if (!canvas._mapInited) {
         canvas._mapInited = true;
         MapEngine.init(canvas);
-        canvas.addEventListener('touchstart', e => {
-          e.preventDefault();
-          Array.from(e.changedTouches).forEach(t => MapUI.handleTouch(t.clientX, t.clientY, canvas));
-        }, { passive: false });
-        canvas.addEventListener('mousedown', e => MapUI.handleTouch(e.clientX, e.clientY, canvas));
       }
 
       const overlay = document.getElementById('map-select-overlay');
@@ -881,11 +875,6 @@ const Story = {
       if (!canvas._mapInited) {
         canvas._mapInited = true;
         MapEngine.init(canvas);
-        canvas.addEventListener('touchstart', e => {
-          e.preventDefault();
-          Array.from(e.changedTouches).forEach(t => MapUI.handleTouch(t.clientX, t.clientY, canvas));
-        }, { passive: false });
-        canvas.addEventListener('mousedown', e => MapUI.handleTouch(e.clientX, e.clientY, canvas));
       }
 
       const overlay = document.getElementById('map-select-overlay');
