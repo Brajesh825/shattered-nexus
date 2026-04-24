@@ -32,15 +32,20 @@ function _charIdForSpeaker(name) {
 }
 
 /* ── Speaker portrait images ─────────────────────────────────────────────── */
+function _spiritSrc(name) {
+  const q = localStorage.getItem('spriteQuality') || 'normal';
+  const suffix = q === 'low' ? '_sprite_low.webp' : '_sprite.png';
+  return `images/characters/spirits/${name.toLowerCase()}${suffix}`;
+}
 const SPEAKER_IMG = {
-  Aya: 'images/characters/spirits/aya_sprite.png',
-  Tao: 'images/characters/spirits/tao_sprite.png',
-  Lulu: 'images/characters/spirits/lulu_sprite.png',
-  Rei: 'images/characters/spirits/rei_sprite.png',
-  Ria: 'images/characters/spirits/ria_sprite.png',
-  Valka: 'images/characters/spirits/valka_sprite.png',
-  Drake: 'images/characters/spirits/drake_sprite.png',
-  Rex: 'images/characters/spirits/rex_sprite.png',
+  get Aya()   { return _spiritSrc('aya'); },
+  get Tao()   { return _spiritSrc('tao'); },
+  get Lulu()  { return _spiritSrc('lulu'); },
+  get Rei()   { return _spiritSrc('rei'); },
+  get Ria()   { return _spiritSrc('ria'); },
+  get Valka() { return _spiritSrc('valka'); },
+  get Drake() { return _spiritSrc('drake'); },
+  get Rex()   { return _spiritSrc('rex'); },
 };
 
 /* ── Speaker portrait emojis (narrator fallback) ────────────────────────── */

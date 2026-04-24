@@ -26,8 +26,28 @@ window.addEventListener('DOMContentLoaded', async () => {
   window._origEnemies = G.enemies.slice();
   initStars();
   scaleGame();
-  showScreen('title-screen');
+
+  if (!localStorage.getItem('spriteQuality')) {
+    // First visit — show quality picker before preloader
+    const picker = document.getElementById('quality-picker');
+    if (picker) { picker.style.display = 'flex'; return; }
+  }
+
+  _startGame();
 });
+
+function setQuality(q) {
+  localStorage.setItem('spriteQuality', q);
+  if (typeof G !== 'undefined' && G.settings) G.settings.graphicsQuality = q;
+  const picker = document.getElementById('quality-picker');
+  if (picker) picker.style.display = 'none';
+  _startGame();
+}
+
+async function _startGame() {
+  if (typeof AssetPreloader !== 'undefined') await AssetPreloader.init();
+  showScreen('title-screen');
+}
 
 function initStars() {
   const containers = ['stars', 'stars-l1', 'stars-l2'].map(id => document.getElementById(id)).filter(Boolean);

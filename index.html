@@ -65,6 +65,28 @@
     <p id="loading-text">Loading assets... 0%</p>
   </div>
 
+  <!-- ═══════════════════════════════════════
+     SPRITE QUALITY PICKER (shown once before preloader)
+     ═══════════════════════════════════════ -->
+  <div id="quality-picker" style="display:none">
+    <div class="qp-box">
+      <div class="qp-title">SPRITE QUALITY</div>
+      <div class="qp-sub">Choose how characters look in battle.<br>You can change this in Settings later.</div>
+      <div class="qp-options">
+        <button class="qp-btn" onclick="setQuality('normal')">
+          <span class="qp-icon">✨</span>
+          <span class="qp-label">Normal</span>
+          <span class="qp-desc">Full detail PNG sprites</span>
+        </button>
+        <button class="qp-btn" onclick="setQuality('low')">
+          <span class="qp-icon">⚡</span>
+          <span class="qp-label">Low</span>
+          <span class="qp-desc">Lighter WebP sprites<br>faster loads on mobile</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <div id="game">
 
     <!-- persistent overlay buttons shifted to screen-specific headers or global-actions for better focus control -->
