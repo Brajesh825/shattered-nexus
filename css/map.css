@@ -1208,7 +1208,7 @@
 /* ── Minimap (bottom-right of canvas wrap) ───────────── */
 #explore-minimap-wrap {
   position: absolute;
-  top: 52px; /* below the top nav bar */
+  top: 8px;
   right: 14px;
   bottom: auto;
   z-index: 20;
@@ -1283,7 +1283,7 @@
   transform: translate(-50%, -50%);
   box-shadow: 0 0 14px rgba(96, 64, 192, 0.5);
   pointer-events: none;
-  transition: box-shadow 0.1s ease;
+  will-change: transform;
 }
 
 /* Mobile Action Button — anchored bottom-right, above the minimap */
