@@ -941,9 +941,10 @@ const MapEntities = (() => {
       if (n) n.isTalked = true;
     }
 
-    return { 
+    return {
       init, update, render, getDialogue, markTalked,
-      checkNPCAt: (x,y) => _npcs.find(n => n.tx === x && n.ty === y) 
+      checkNPCAt: (x,y) => _npcs.find(n => n.tx === x && n.ty === y),
+      getNPCs: () => _npcs
     };
   })();
 
