@@ -127,10 +127,15 @@ const MapPlayer = (() => {
 
   function _tryMove(dx, dy, map) {
     if (moving) { _queuedDir = {dx, dy}; return; }
+    
+    // Update facing regardless of whether movement is successful (turn toward obstacles)
+    if (dx !== 0 || dy !== 0) {
+      _facing = { dx, dy };
+    }
+
     const nx = tx + dx, ny = ty + dy;
     if (_canMove(nx, ny, map)) {
       _stepDir = {dx, dy};
-      _facing  = {dx, dy}; // update facing when actually moving
       tx = nx; ty = ny;
       moving = true; moveTimer = 0;
 
@@ -246,10 +251,16 @@ const MapPlayer = (() => {
     if (c.sheet) {
       const dims = _getSheetDims(c.sheet);
       let dir;
-      if      (_facing.dy < 0) dir = dims.dirs.back;
-      else if (_facing.dx < 0) dir = dims.dirs.left;
-      else if (_facing.dx > 0) dir = dims.dirs.right;
-      else                      dir = dims.dirs.front;
+      // Prioritize the dominant axis for direction selection
+      const adx = Math.abs(_facing.dx);
+      const ady = Math.abs(_facing.dy);
+
+      if (ady >= adx && _facing.dy < 0) dir = dims.dirs.back;
+      else if (ady >= adx && _facing.dy > 0) dir = dims.dirs.front;
+      else if (adx > ady && _facing.dx < 0) dir = dims.dirs.left;
+      else if (adx > ady && _facing.dx > 0) dir = dims.dirs.right;
+      else dir = dims.dirs.front;
+
       return { sheet: c.sheet, dims, ...dir, flipX: false };
     }
 
