@@ -630,12 +630,7 @@
         <!-- Party HP strip (bottom-left, above loc bar) -->
         <div id="explore-party-hud"></div>
 
-        <!-- Fixed Mobile Virtual Joystick -->
-        <div id="joystick-container" class="joystick-container">
-          <div id="joystick-base" class="joystick-base">
-            <div id="joystick-knob" class="joystick-knob"></div>
-          </div>
-        </div>
+        <!-- Mobile touch movement enabled (Leash & Target) -->
 
         <!-- Minimap panel (bottom-right, above loc bar) -->
         <div id="explore-minimap-wrap">
@@ -938,133 +933,15 @@
       const btn = document.getElementById('quality-btn');
       if (btn) btn.innerText = `Quality: ${q.charAt(0).toUpperCase() + q.slice(1)}`;
     }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      _updateContinueBtn();
-      _initQualityBtn();
-    });
   </script>
 
   <!-- Save toast notification -->
   <div id="save-toast"></div>
 
   <script>
-    /* ── Fixed Joystick controller for explore screen ────────── */
-    const Joystick = (() => {
-      let _active = false;
-      let _base = null, _knob = null, _actionBtn = null;
-      let _rect = null;
-      let _touchId = null; // track the specific finger on the joystick
-      const _radius = 48;
-
-      // Lerped output vector for smooth acceleration
-      let _rawX = 0, _rawY = 0;
-      let _lerpX = 0, _lerpY = 0;
-      let _rafId = null;
-
-      function init() {
-        _base = document.getElementById('joystick-base');
-        _knob = document.getElementById('joystick-knob');
-        _actionBtn = document.getElementById('mobile-action-btn');
-        if (!_base || !_knob) return;
-
-        // Only listen on the joystick base — not the whole container
-        _base.addEventListener('touchstart', e => _start(e), { passive: false });
-        window.addEventListener('touchmove', e => _move(e), { passive: false });
-        window.addEventListener('touchend', e => _end(e), { passive: false });
-        window.addEventListener('touchcancel', e => _end(e), { passive: false });
-
-        // Mouse fallback for desktop testing
-        _base.addEventListener('mousedown', e => _start(e));
-        window.addEventListener('mousemove', e => _move(e));
-        window.addEventListener('mouseup', e => _end(e));
-      }
-
-      function _start(e) {
-        if (typeof MapEngine === 'undefined' || !MapEngine.isRunning()) return;
-        e.preventDefault();
-        const touch = e.changedTouches ? e.changedTouches[0] : e;
-        _touchId = touch ? touch.identifier : null;
-        _active = true;
-        _rect = _base.getBoundingClientRect();
-        _updateFromEvent(e);
-        if (!_rafId) _rafId = requestAnimationFrame(_tick);
-      }
-
-      function _move(e) {
-        if (!_active) return;
-        e.preventDefault();
-        _updateFromEvent(e);
-      }
-
-      function _updateFromEvent(e) {
-        let t;
-        if (e.changedTouches) {
-          // Find the finger that started on the joystick
-          t = Array.from(e.changedTouches).find(c => c.identifier === _touchId)
-           || Array.from(e.touches || []).find(c => c.identifier === _touchId);
-          if (!t && e.touches) t = e.touches[0];
-        } else {
-          t = e;
-        }
-        if (!t || !_rect) return;
-
-        const cx = _rect.left + _rect.width / 2;
-        const cy = _rect.top + _rect.height / 2;
-        const dx = t.clientX - cx;
-        const dy = t.clientY - cy;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        const angle = Math.atan2(dy, dx);
-        const clamped = Math.min(dist, _radius);
-
-        _rawX = Math.cos(angle) * clamped / _radius;
-        _rawY = Math.sin(angle) * clamped / _radius;
-
-        // Move knob visually (immediate — no lerp on the visual)
-        const kx = Math.cos(angle) * clamped;
-        const ky = Math.sin(angle) * clamped;
-        _knob.style.transform = `translate(calc(-50% + ${kx}px), calc(-50% + ${ky}px))`;
-      }
-
-      function _tick() {
-        // Lerp input vector for smooth acceleration/deceleration
-        const LERP = _active ? 0.18 : 0.12;
-        _lerpX += (_rawX - _lerpX) * LERP;
-        _lerpY += (_rawY - _lerpY) * LERP;
-
-        if (typeof MapInput !== 'undefined') {
-          MapInput.setVector(_lerpX, _lerpY);
-        }
-
-        if (_active || Math.abs(_lerpX) > 0.01 || Math.abs(_lerpY) > 0.01) {
-          _rafId = requestAnimationFrame(_tick);
-        } else {
-          _lerpX = _lerpY = 0;
-          MapInput?.setVector(0, 0);
-          _rafId = null;
-        }
-      }
-
-      function _end(e) {
-        if (!_active) return;
-        // Only end if the joystick finger lifted
-        if (e?.changedTouches) {
-          const lifted = Array.from(e.changedTouches).some(c => c.identifier === _touchId);
-          if (!lifted) return;
-        }
-        _active = false;
-        _touchId = null;
-        _rawX = _rawY = 0;
-        _knob.style.transform = 'translate(-50%, -50%)';
-        // Let _tick lerp back to zero naturally
-        if (!_rafId) _rafId = requestAnimationFrame(_tick);
-      }
-
-      return { init };
-    })();
-
     window.addEventListener('DOMContentLoaded', () => {
-      if (typeof Joystick !== 'undefined') Joystick.init();
+      _updateContinueBtn();
+      _initQualityBtn();
 
       // Register Service Worker + wire update toast
       if ('serviceWorker' in navigator) {
