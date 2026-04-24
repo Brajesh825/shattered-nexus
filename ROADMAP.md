@@ -26,12 +26,18 @@ To expand progress beyond the party-wide Relic system in a later update:
 - **Per-Character Gear:** Implement individual Weapons and Armor that distinctively alter a specific character's stats.
 - **Equipment UI:** Expand the inventory screens to gracefully handle gear equipping comparing stats.
 
-## 4. Battle UI Polish (Phase 2)
-Phase 1 lunge/animation system is complete. Remaining battle UX work:
-- **Ability Info Pane**: Wire up the `#ability-info-pane` HTML stub — show ability name, MP cost, description, and cooldown on hover/focus before casting.
-- **Status Icon Row**: Render active buff/debuff icons directly on party status cards with remaining turn counts.
-- **Screen Shake**: Add a short shake to the battle scene on heavy hits / ultimates (CSS `@keyframes battleShake`).
-- **Hit Pause (Hitstop)**: Brief 60–80ms animation pause at impact frame for heavy hits to add weight.
+## ✅ [2026-04-25] Battle UI Polish (Phase 2) — Complete
+- Ability Info Pane wired (name, MP cost, description on hover/focus).
+- Status icon row with turn counts on party status cards.
+- Screen shake (`triggerScreenShake` + `.battle-scene-shake`) on heavy hits and ultimates.
+- Hit pause / party flash fires at impact frame (t=280ms) inside `enemyStrike`.
+
+## 4. Sprite Quality Mode Selection
+Ask the player during launch/preload whether they want **Full HD** or **Normal** sprite quality, and persist the choice. All sprite loads must respect the preference:
+- **Launch Modal**: Show a one-time quality picker before the preloader starts — two clear options with a short description of the tradeoff (detail vs. load time/memory).
+- **Persistence**: Save the choice to `localStorage` (`spriteQuality: 'hd' | 'normal'`) so returning players skip the picker.
+- **Preloader Integration**: Route all sprite URLs through a resolver that swaps path prefix or filename suffix based on the stored preference (e.g. `images/sprites/hd/` vs `images/sprites/`).
+- **In-Game Toggle**: Expose the setting in the Options/Settings screen so players can change it later without clearing storage.
 
 ---
 *Created for planning discussion. Please add comments or adjust priorities as needed.*
