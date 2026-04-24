@@ -61,12 +61,11 @@ const MapEngine = (() => {
     if (!dt) {
       cam.x = targetX; cam.y = targetY;
     } else {
-      // Dynamic lerp: fast catch-up when far, gentle settle when close
-      const dist = Math.hypot(targetX - cam.x, targetY - cam.y);
-      const lerp = dist > TILE * 3 ? 0.14 : dist < TILE * 0.5 ? 0.04 : 0.08;
-      cam.x += (targetX - cam.x) * lerp;
-      cam.y += (targetY - cam.y) * lerp;
-
+      // Frame-rate independent smoothing
+      // 0.99 catch-up per 100ms
+      const catchUp = 1 - Math.pow(0.01, dt);
+      cam.x += (targetX - cam.x) * catchUp;
+      cam.y += (targetY - cam.y) * catchUp;
     }
 
     if (_shakeTime > 0) {
@@ -448,6 +447,38 @@ const MapEngine = (() => {
       vg.addColorStop(1,   `rgba(${edgeR},${edgeG},${edgeB},0.20)`);
       _ctx.fillStyle = vg;
       _ctx.fillRect(0, 0, cw, ch);
+    }
+
+    // ── PREMIUM ATMOSPHERE: Clouds & God Rays ──
+    if (!atmo.isNight) {
+      _ctx.save();
+      // 1. God Rays (Shafts of light)
+      const rayTime = _time * 0.15;
+      _ctx.globalCompositeOperation = 'screen';
+      for (let i = 0; i < 3; i++) {
+        const rayX = (rayTime + i * 0.4) % 1;
+        const g = _ctx.createLinearGradient(cw * rayX, 0, cw * (rayX - 0.2), ch);
+        g.addColorStop(0, 'rgba(255, 250, 220, 0.08)');
+        g.addColorStop(0.5, 'rgba(255, 250, 220, 0.03)');
+        g.addColorStop(1, 'rgba(255, 250, 220, 0)');
+        _ctx.fillStyle = g;
+        _ctx.fillRect(0, 0, cw, ch);
+      }
+
+      // 2. Drifting Ambient Clouds
+      const cloudTime = _time * 0.02;
+      _ctx.globalCompositeOperation = 'source-over';
+      _ctx.globalAlpha = 0.12;
+      for (let i = 0; i < 2; i++) {
+        const ox = (cloudTime * (1 + i * 0.5) + i * 0.3) % 1.5 - 0.25;
+        const oy = Math.sin(_time * 0.1 + i) * 0.05 + 0.1 * i;
+        const g = _ctx.createRadialGradient(cw * ox, ch * oy, 0, cw * ox, ch * oy, cw * 0.6);
+        g.addColorStop(0, 'rgba(180, 160, 255, 0.4)');
+        g.addColorStop(1, 'rgba(180, 160, 255, 0)');
+        _ctx.fillStyle = g;
+        _ctx.fillRect(0, 0, cw, ch);
+      }
+      _ctx.restore();
     }
   }
 
