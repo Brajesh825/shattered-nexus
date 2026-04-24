@@ -101,8 +101,7 @@ const MapPlayer = (() => {
 
     if (moving) {
       moveTimer += dt;
-      const tRaw = Math.min(moveTimer / MOVE_DURATION, 1);
-      const t = tRaw * tRaw * (3 - 2 * tRaw); // smoothstep — ease in+out
+      const t = Math.min(moveTimer / MOVE_DURATION, 1);
       const prevPx = (tx - _stepDir.dx) * TILE;
       const prevPy = (ty - _stepDir.dy) * TILE;
       px = prevPx + (tx * TILE - prevPx) * t;
