@@ -755,27 +755,18 @@ const MapEngine = (() => {
       if (!atStart) _atCamp = false;
     }
 
-    // NPC interaction check — only fire when player just moved onto an adjacent tile
-    const ptx = MapPlayer.tx, pty = MapPlayer.ty;
-    const justMoved = !MapPlayer.moving && (ptx !== _lastPlayerTx || pty !== _lastPlayerTy);
-    if (justMoved) {
-      _lastPlayerTx = ptx; _lastPlayerTy = pty;
-      // Check player tile AND all 4 adjacent tiles for an NPC
-      const checks = [
-        { x: ptx, y: pty },
-        { x: ptx + 1, y: pty }, { x: ptx - 1, y: pty },
-        { x: ptx, y: pty + 1 }, { x: ptx, y: pty - 1 },
-      ];
-      for (const pos of checks) {
-        const npc = MapEntities.checkNPCAt(pos.x, pos.y);
-        // Allow talking multiple times, but with a cooldown to avoid spam
-        if (npc && !npc._dialogueOpen && (!npc._talkCooldown || npc._talkCooldown <= 0)) {
-          npc._dialogueOpen = true;
-          npc._talkCooldown = 30; // 30 second cooldown before re-talking automatically
-          stop();
-          _openNPCDialogue(npc);
-          break;
-        }
+    // Manual Interaction check (Space/Enter)
+    if (!MapPlayer.moving && (MapInput.isKey(' ') || MapInput.isKey('Enter'))) {
+      const ptx = MapPlayer.tx, pty = MapPlayer.ty;
+      // Get facing direction from player
+      const face = MapPlayer.getFacing(); 
+      const targetX = ptx + face.dx, targetY = pty + face.dy;
+
+      const npc = MapNPCs.checkNPCAt(targetX, targetY);
+      if (npc && !npc._dialogueOpen) {
+        npc._dialogueOpen = true;
+        stop();
+        _openNPCDialogue(npc);
       }
     }
 
@@ -1001,7 +992,7 @@ const MapEngine = (() => {
 
   function _openNPCDialogue(npc) {
     _npcCurrent = npc;
-    _npcLines = npc.dialogue || [];
+    _npcLines = DialogueController.getLines(npc.dialogueKey);
     _npcLineIdx = 0;
     _showNPCLine();
   }
