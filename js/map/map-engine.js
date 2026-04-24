@@ -12,10 +12,13 @@ const MapEngine = (() => {
   let TILE = 64;
 
   function _calcTileSize() {
-    const w = _canvas.width, h = _canvas.height;
-    // Landscape phones or narrow portrait: use 48px tiles so more map is visible
-    if (h <= 420 || w <= 600) return 48;
-    return 64;
+    // Landscape-only: height is the constraining dimension
+    const h = Math.min(_canvas.height, _canvas.width); // shortest side = landscape height
+    if (h <= 375) return 32; // iPhone SE
+    if (h <= 390) return 36; // iPhone 12/13/14 Pro
+    if (h <= 414) return 40; // iPhone XR/11
+    if (h <= 500) return 48; // small tablets / large phones
+    return 64;               // desktop / large tablets
   }
 
   let _canvas = null, _ctx = null;
