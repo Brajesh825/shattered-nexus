@@ -50,6 +50,50 @@
   letter-spacing: 1px;
 }
 
+/* ── PWA Update Toast ───────────────────────────────────────── */
+#pwa-update-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 18px;
+  background: #0d1220;
+  border: 1px solid rgba(78,207,255,0.35);
+  border-radius: 10px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.6);
+  font-family: 'VT323', monospace;
+  font-size: 16px;
+  color: #c8dff0;
+  z-index: 99999;
+  opacity: 0;
+  transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+#pwa-update-toast.visible {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+  pointer-events: all;
+}
+
+.pwa-toast-btn {
+  padding: 6px 14px;
+  background: rgba(78,207,255,0.12);
+  border: 1px solid #4ecfff;
+  border-radius: 6px;
+  color: #4ecfff;
+  font-family: 'VT323', monospace;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.pwa-toast-btn:hover { background: rgba(78,207,255,0.25); }
+
 /* ── Quality Picker ─────────────────────────────────────────── */
 #quality-picker {
   position: fixed;

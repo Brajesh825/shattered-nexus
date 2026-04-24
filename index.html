@@ -65,6 +65,12 @@
     <p id="loading-text">Loading assets... 0%</p>
   </div>
 
+  <!-- PWA Update Toast -->
+  <div id="pwa-update-toast">
+    <span class="pwa-toast-msg">⚔ Update available</span>
+    <button class="pwa-toast-btn">Apply & Reload</button>
+  </div>
+
   <!-- ═══════════════════════════════════════
      SPRITE QUALITY PICKER (shown once before preloader)
      ═══════════════════════════════════════ -->
@@ -1011,11 +1017,35 @@
     window.addEventListener('DOMContentLoaded', () => {
       if (typeof Joystick !== 'undefined') Joystick.init();
 
-      // Register Service Worker for standalone offline support
+      // Register Service Worker + wire update toast
       if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./sw.js')
-          .then(reg => console.log('✅ [PWA] Service Worker Registered:', reg.scope))
-          .catch(err => console.warn('⚠️ [PWA] Service Worker Failed:', err));
+        navigator.serviceWorker.register('./sw.js').then(reg => {
+          console.log('✅ [PWA] Service Worker Registered:', reg.scope);
+          reg.addEventListener('updatefound', () => {
+            const newSW = reg.installing;
+            newSW.addEventListener('statechange', () => {
+              if (newSW.state === 'installed' && navigator.serviceWorker.controller) {
+                _showUpdateToast(newSW);
+              }
+            });
+          });
+        }).catch(err => console.warn('⚠️ [PWA] Service Worker Failed:', err));
+
+        // Reload once new SW takes control
+        let _refreshing = false;
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          if (!_refreshing) { _refreshing = true; window.location.reload(); }
+        });
+      }
+
+      function _showUpdateToast(newSW) {
+        const t = document.getElementById('pwa-update-toast');
+        if (!t) return;
+        t.classList.add('visible');
+        t.querySelector('.pwa-toast-btn').onclick = () => {
+          t.classList.remove('visible');
+          newSW.postMessage({ type: 'SKIP_WAITING' });
+        };
       }
     });
   </script>

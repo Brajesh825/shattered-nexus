@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nexus-cache-v4.0';
+const CACHE_NAME = 'nexus-cache-v4.1';
 
 // Core shell — always pre-cached regardless of quality setting
 const SHELL_ASSETS = [
@@ -196,6 +196,9 @@ self.addEventListener('message', event => {
   if (event.data?.type === 'SET_QUALITY') {
     _quality = event.data.quality || 'normal';
   }
+  if (event.data?.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
 
 // Install: pre-cache shell + quality-appropriate sprites
@@ -211,7 +214,7 @@ self.addEventListener('install', event => {
       console.log('✅ [SW] Shell pre-cache complete');
     })()
   );
-  self.skipWaiting();
+  // Don't skipWaiting here — wait for user to confirm update via toast
 });
 
 // Activate: remove old caches
