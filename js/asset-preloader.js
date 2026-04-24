@@ -54,11 +54,11 @@ const AssetPreloader = (() => {
     let loaded = 0;
 
     // Preload spirits
+    const isLowQuality = (localStorage.getItem('spriteQuality') || 'normal') === 'low';
     for (const charId of ASSETS.spirits) {
       try {
         const id = charId.toLowerCase();
-        // The entire roster now uses high-res sprite sheets
-        const fileName = `${id}_sprite.png`;
+        const fileName = isLowQuality ? `${id}_sprite_low.webp` : `${id}_sprite.png`;
         const img = await loadImage(`images/characters/spirits/${fileName}`);
         cache.images[`spirit_${charId}`] = img;
         loaded++;
