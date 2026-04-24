@@ -334,6 +334,7 @@ const MapPlayer = (() => {
     get px() { return px; },
     get py() { return py; },
     get moving() { return moving; },
+    getFacing: () => ({ dx: _facing.dx, dy: _facing.dy }),
     reset, update, render, dpad, pickVariants, rescale,
   };
 })();
@@ -723,81 +724,174 @@ const MapEntities = (() => {
   /* ── NPC system ─────────────────────────────────────── */
   const MapNPCs = (() => {
     let _npcs = [];
-    let _mapId = null;
-    const _imgCache = {};
+    const _spriteCache = {};
 
-    // 8 waypoints clockwise around origin — each adjacent via a single cardinal step:
-    // right → down → left → left → up → up → right → right (back to start)
-    function _buildCircle(ox, oy) {
-      return [
-        { x: ox+1, y: oy   },  // right
-        { x: ox+1, y: oy+1 },  // down
-        { x: ox,   y: oy+1 },  // left
-        { x: ox-1, y: oy+1 },  // left
-        { x: ox-1, y: oy   },  // up
-        { x: ox-1, y: oy-1 },  // up
-        { x: ox,   y: oy-1 },  // right
-        { x: ox+1, y: oy-1 },  // right
-      ];
-    }
+    const BEHAVIORS = {
+      STATIONARY: 'stationary',
+      WANDER:     'wander',
+      PATROL:     'patrol'
+    };
 
-    const NPC_MOVE_DUR  = 0.38; // seconds to slide one tile (long enough for 3-frame cycle)
-    const NPC_IDLE_WAIT = 0.5;  // seconds to pause between steps
+    const NPC_MOVE_DUR   = 0.35; 
+    const NPC_IDLE_WAIT  = 1.5; 
+    const NPC_FRAME_DUR  = 0.15;
+    const NPC_FRAME_CNT  = 3;
 
-    function _initWander(n) {
-      const TILE = MapEngine.getTile();
-      n._wanderInited = true;
-      n._ox     = n.x; n._oy = n.y;
-      n._circle = _buildCircle(n.x, n.y);
-      n._px     = n.x * TILE; n._py = n.y * TILE;
-      n._tx     = n.x; n._ty = n.y;
-      n._prevTx = n.x; n._prevTy = n.y;
-      n._moveTimer  = NPC_MOVE_DUR;
-      n._idleTimer  = 0;
-      n._moving     = false;
-      n._stepIdx    = 0;
-      n._frame      = 0;
-      n._frameTimer = 0;
-      n._facingDx   = 0; n._facingDy = 1;
+    function init(map) {
+      _npcs = (map.npcs || []).map(n => ({
+        ...n,
+        tx: n.x, ty: n.y,
+        ox: n.x, oy: n.y,
+        px: n.x * MapEngine.getTile(),
+        py: n.y * MapEngine.getTile(),
+        prevTx: n.x, prevTy: n.y,
+        facing: { dx: 0, dy: 1 },
+        moving: false,
+        moveTimer: 0,
+        idleTimer: Math.random() * NPC_IDLE_WAIT,
+        frame: 0,
+        frameTimer: 0,
+        behavior: n.behavior || BEHAVIORS.STATIONARY,
+        range: n.range || 2,
+        waypoints: n.waypoints || [],
+        waypointIdx: 0,
+        // Interaction state
+        isTalking: false
+      }));
     }
 
     function update(dt, map, enemies) {
       const TILE = MapEngine.getTile();
       _npcs.forEach(n => {
-        if (!n._wanderInited) _initWander(n);
+        if (n.isTalking) return; // Freeze movement while talking
 
-        if (n._moving) {
-          n._moveTimer += dt;
-          const tRaw = Math.min(n._moveTimer / NPC_MOVE_DUR, 1);
-          const t = tRaw * tRaw * (3 - 2 * tRaw); // smoothstep
-          n._px = n._prevTx * TILE + (n._tx * TILE - n._prevTx * TILE) * t;
-          n._py = n._prevTy * TILE + (n._ty * TILE - n._prevTy * TILE) * t;
+        if (n.moving) {
+          n.moveTimer += dt;
+          const t = Math.min(n.moveTimer / NPC_MOVE_DUR, 1);
+          n.px = n.prevTx * TILE + (n.tx * TILE - n.prevTx * TILE) * t;
+          n.py = n.prevTy * TILE + (n.ty * TILE - n.prevTy * TILE) * t;
 
-          n._frameTimer += dt;
-          if (n._frameTimer >= NPC_FRAME_DUR) {
-            n._frameTimer = 0;
-            n._frame = (n._frame + 1) % NPC_FRAME_COUNT;
+          n.frameTimer += dt;
+          if (n.frameTimer >= NPC_FRAME_DUR) {
+            n.frameTimer = 0;
+            n.frame = (n.frame + 1) % NPC_FRAME_CNT;
           }
 
           if (t >= 1) {
-            n._px = n._tx * TILE; n._py = n._ty * TILE;
-            n.x   = n._tx;        n.y   = n._ty;
-            n._moving    = false;
-            n._idleTimer = 0;
-            n._frame     = 0;
+            n.px = n.tx * TILE; n.py = n.py * TILE;
+            n.moving = false;
+            n.idleTimer = 0;
+            n.frame = 0;
           }
+        } else if (n.behavior !== BEHAVIORS.STATIONARY) {
+          n.idleTimer += dt;
+          if (n.idleTimer >= NPC_IDLE_WAIT) {
+            n.idleTimer = 0;
+            const move = _decideNPCMove(n, map);
+            if (move) {
+              n.prevTx = n.tx; n.prevTy = n.ty;
+              n.tx += move.dx; n.ty += move.dy;
+              n.facing = move;
+              n.moving = true;
+              n.moveTimer = 0;
+            }
+          }
+        }
+      });
+    }
+
+    function _decideNPCMove(n, map) {
+      if (n.behavior === BEHAVIORS.WANDER) {
+        const dirs = [{dx:1,dy:0},{dx:-1,dy:0},{dx:0,dy:1},{dx:0,dy:-1}];
+        const valid = dirs.filter(d => {
+          const nx = n.tx + d.dx, ny = n.ty + d.dy;
+          return Math.abs(nx - n.ox) <= n.range &&
+                 Math.abs(ny - n.oy) <= n.range &&
+                 _canNPCMove(nx, ny, map);
+        });
+        return valid.length ? valid[Math.floor(Math.random() * valid.length)] : null;
+      }
+      if (n.behavior === BEHAVIORS.PATROL && n.waypoints.length) {
+        const target = n.waypoints[n.waypointIdx];
+        if (n.tx === target.x && n.ty === target.y) {
+          n.waypointIdx = (n.waypointIdx + 1) % n.waypoints.length;
+          return null; // Pause at waypoint
+        }
+        const dx = Math.sign(target.x - n.tx);
+        const dy = Math.sign(target.y - n.ty);
+        if (dx !== 0 && _canNPCMove(n.tx + dx, n.ty, map)) return {dx, dy: 0};
+        if (dy !== 0 && _canNPCMove(n.tx, n.ty + dy, map)) return {dx: 0, dy};
+      }
+      return null;
+    }
+
+    function _canNPCMove(nx, ny, map) {
+      const tid = map.tiles[ny]?.[nx] ?? 0;
+      if (!(TILE_DEFS[tid] || TILE_DEFS[0]).walkable) return false;
+      // Don't step on player
+      if (nx === MapPlayer.tx && ny === MapPlayer.ty) return false;
+      return true;
+    }
+
+    function getDialogue(npcId) {
+      const npc = _npcs.find(n => n.id === npcId);
+      if (!npc) return null;
+      // Face the player
+      const dx = Math.sign(MapPlayer.tx - npc.tx);
+      const dy = Math.sign(MapPlayer.ty - npc.ty);
+      if (dx !== 0 || dy !== 0) npc.facing = {dx, dy};
+      
+      return npc.dialogueKey;
+    }
+
+    function render(ctx, cam, TILE, inVision) {
+      const dw = Math.round(TILE * 1.1), dh = Math.round(TILE * 1.8);
+      const ox = (TILE - dw) / 2, oy = TILE - dh;
+
+      _npcs.forEach(n => {
+        if (typeof inVision === 'function' && !inVision(n.tx, n.ty)) return;
+        const sx = n.px - cam.x, sy = n.py - cam.y;
+        if (sx < -TILE || sy < -TILE || sx > ctx.canvas.width + TILE || sy > ctx.canvas.height + TILE) return;
+
+        // Shadow
+        ctx.fillStyle = 'rgba(0,0,0,0.25)';
+        ctx.beginPath();
+        ctx.ellipse(sx + TILE / 2, sy + TILE - 3, TILE * 0.35, 6, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        const bounce = n.moving ? Math.sin(n.frame / NPC_FRAME_CNT * Math.PI * 2) * 2 : 0;
+        
+        // Sprite selection (reuse enemy drawing for now or simple placeholder)
+        const spr = _getNPCSprite(n.id);
+        if (spr) {
+          ctx.drawImage(spr, sx + ox, sy + oy + bounce, dw, dh);
         } else {
-          n._idleTimer += dt;
-          if (n._idleTimer >= NPC_IDLE_WAIT && n.id === 'essabella') {
-            n._idleTimer = 0;
-            const wp  = n._circle[n._stepIdx % n._circle.length];
-            n._stepIdx++;
-            const tid = map.tiles[wp.y]?.[wp.x] ?? 0;
-            if ((TILE_DEFS[tid] || TILE_DEFS[0]).walkable) {
-              const dx = wp.x - n.x, dy = wp.y - n.y;
-              n._prevTx = n.x; n._prevTy = n.y;
-               n._tx = wp.x;    n._ty = wp.y;
-               n._moveTimer = 0;
+          ctx.fillStyle = '#40ff80';
+          ctx.fillRect(sx + 8, sy + 8 + bounce, TILE - 16, TILE - 16);
+        }
+
+        // Interaction prompt if player is adjacent
+        const dist = Math.abs(n.tx - MapPlayer.tx) + Math.abs(n.ty - MapPlayer.ty);
+        if (dist === 1 && !n.isTalking) {
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'bold 10px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('💬', sx + TILE / 2, sy + oy + bounce - 5);
+          ctx.textAlign = 'left';
+        }
+      });
+    }
+
+    function _getNPCSprite(id) {
+      if (_spriteCache[id]) return _spriteCache[id];
+      // Generic villager palette for now
+      const palette = { body: '#4080ff', dark: '#204080', shine: '#80a0ff', eye: '#ffffff', pupil: '#000000' };
+      _spriteCache[id] = SpriteRenderer.drawEnemyToCanvas('npc', palette);
+      return _spriteCache[id];
+    }
+
+    return { init, update, render, getDialogue, checkNPCAt: (x,y) => _npcs.some(n => n.tx === x && n.ty === y) };
+  })();
                n._moving    = true;
                n._facingDx  = dx; n._facingDy = dy;
             }
