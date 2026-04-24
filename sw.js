@@ -250,22 +250,23 @@ self.addEventListener('fetch', event => {
       caches.match(event.request).then(cached => {
         if (cached) return cached;
         return fetch(event.request).then(response => {
+          // 206 Partial Content (range requests for audio) cannot be cached
+          if (!response || response.status === 206) return response;
+
           // Only cache same-quality sprites — skip the other quality's files
           const isNormalSprite = SPRITES_NORMAL.some(s => path.endsWith(s.replace('./', '/')));
           const isLowSprite = SPRITES_LOW.some(s => path.endsWith(s.replace('./', '/')));
           const isCharSprite = isNormalSprite || isLowSprite;
 
           if (isCharSprite) {
-            // Only cache if it matches the stored quality preference
-            const q = _quality;
-            const shouldCache = (q === 'low' && isLowSprite) || (q !== 'low' && isNormalSprite);
-            if (!shouldCache) return response; // Serve but don't cache wrong quality
+            const shouldCache = (_quality === 'low' && isLowSprite) || (_quality !== 'low' && isNormalSprite);
+            if (!shouldCache) return response;
           }
 
           const clone = response.clone();
           caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
           return response;
-        }).catch(() => caches.match('./index.html')); // offline fallback
+        }).catch(() => caches.match('./index.html'));
       })
     );
   } else {
@@ -273,6 +274,7 @@ self.addEventListener('fetch', event => {
     event.respondWith(
       caches.match(event.request).then(cached => {
         const network = fetch(event.request).then(response => {
+          if (!response || response.status === 206) return response;
           const clone = response.clone();
           caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
           return response;

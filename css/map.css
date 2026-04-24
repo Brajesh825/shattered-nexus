@@ -1165,51 +1165,14 @@
   margin-top: 2px;
 }
 
-/* ══════════════════════════════════════════════════════
-   VIRTUAL JOYSTICK (MOBILE)
-   ══════════════════════════════════════════════════════ */
-.joystick-zone {
-  position: absolute;
-  inset: 0;
-  z-index: 1000;
-  pointer-events: auto;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: none;
-}
-
-.joystick-base {
-  position: absolute;
-  width: 100px;
-  height: 100px;
-  background: rgba(96, 80, 184, 0.15);
-  border: 2px solid rgba(144, 128, 255, 0.4);
-  border-radius: 50%;
-  pointer-events: none;
-  opacity: 0.3;
-  transform: translate(-50%, -50%);
-  transition: opacity 0.2s ease;
-  box-shadow: 0 0 20px rgba(0,0,0,0.4);
-}
-
-.joystick-knob {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 44px;
-  height: 44px;
-  background: var(--cyan);
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  box-shadow: 0 0 15px var(--cyan);
-  border: 2px solid #fff;
-}
+/* Joystick removed — replaced by Leash & Target movement */
 
 /* ── Minimap (bottom-right of canvas wrap) ───────────── */
 #explore-minimap-wrap {
   position: absolute;
-  bottom: 44px;
+  top: 8px;
   right: 14px;
+  bottom: auto;
   z-index: 20;
   background: rgba(10, 8, 38, 0.3);
   backdrop-filter: blur(12px);
@@ -1238,78 +1201,8 @@
 
 #explore-minimap { display: block; }
 
-/* ── Fixed Virtual Joystick ──────────────────────────── */
-.joystick-container {
-  position: absolute;
-  bottom: calc(24px + env(safe-area-inset-bottom));
-  left: 0;
-  right: 0;
-  height: 160px;
-  pointer-events: none;
-  z-index: 100;
-  display: none;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 40px;
-}
+/* Fixed Joystick definitions removed */
 
-@media (hover: none) {
-  .joystick-container { display: flex; }
-}
-
-.joystick-base {
-  width: 120px;
-  height: 120px;
-  background: rgba(144, 128, 255, 0.08);
-  border: 2px solid rgba(144, 128, 255, 0.15);
-  border-radius: 50%;
-  pointer-events: all;
-  position: relative;
-  backdrop-filter: blur(4px);
-  touch-action: none;
-}
-
-.joystick-knob {
-  width: 54px;
-  height: 54px;
-  background: linear-gradient(135deg, #6040c0, #4030a0);
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  box-shadow: 0 0 15px rgba(96, 64, 192, 0.4);
-  pointer-events: none;
-}
-
-/* Mobile Action Button (Right Side) */
-.mobile-action-btn {
-  width: 72px;
-  height: 72px;
-  background: radial-gradient(circle at center, rgba(212, 175, 55, 0.25) 0%, rgba(100, 80, 200, 0.1) 100%);
-  border: 2px solid var(--gold);
-  border-radius: 50%;
-  color: var(--gold);
-  font-family: 'Cinzel', serif;
-  font-size: 28px;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: all;
-  box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
-  backdrop-filter: blur(4px);
-  cursor: pointer;
-  text-shadow: 0 0 10px var(--gold-glow);
-  -webkit-tap-highlight-color: transparent;
-}
-
-.mobile-action-btn:active {
-  transform: scale(0.9);
-  background: radial-gradient(circle at center, rgba(212, 175, 55, 0.4) 0%, rgba(100, 80, 200, 0.2) 100%);
-  box-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
-}
 
 /* ── Slim bottom hint bar ────────────────────────────── */
 .explore-loc-bar {
