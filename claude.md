@@ -154,6 +154,27 @@ Engine status is exposed via `window.LogDebug(msg, type)`.
 
 ---
 
+## 🔄 Service Worker & PWA Update Rules
+
+The game is installable as a PWA. The Service Worker in `sw.js` caches all assets for offline play.
+
+> [!CAUTION]
+> **ALWAYS bump `CACHE_NAME`** in `sw.js` when pushing any significant update (new assets, JS changes, CSS changes). The version string (e.g. `nexus-cache-v4.0`) is the sole mechanism that triggers cache invalidation on installed PWAs. Forgetting to bump it means users continue serving stale images and audio from the old cache indefinitely.
+
+### Update Flow (automatic — no user action needed)
+1. Browser re-fetches `sw.js` on every app open and does a byte-diff
+2. If changed → new SW installs in background, old SW stays active
+3. `self.skipWaiting()` in the install handler forces immediate activation on next navigation
+4. Activate handler deletes all caches whose key ≠ `CACHE_NAME`
+
+### Sprite Quality Cache Rules
+- Character sprites are split into `SPRITES_NORMAL` (PNG ~37 MB) and `SPRITES_LOW` (WebP ~1.7 MB)
+- The fetch handler reads `_quality` (set via `SET_QUALITY` postMessage from the page) and only caches sprites matching the player's choice
+- Enemy sprites have a single quality — always cached regardless of setting
+- When adding new character sprites, add both variants to `SPRITES_NORMAL` and `SPRITES_LOW` in `sw.js`
+
+---
+
 ## 📱 Device Support Standards
 The game is responsive and cross-platform. UI components MUST be rigorously tested and scale correctly across the following core breakpoints/devices:
 1. **iPhone SE (375x667)** - The tightest baseline testing boundary. UI elements cannot overlap or require horizontal scrolling.
