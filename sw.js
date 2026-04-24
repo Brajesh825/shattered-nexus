@@ -260,7 +260,8 @@ self.addEventListener('fetch', event => {
             if (!shouldCache) return response; // Serve but don't cache wrong quality
           }
 
-          caches.open(CACHE_NAME).then(cache => cache.put(event.request, response.clone()));
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
           return response;
         }).catch(() => caches.match('./index.html')); // offline fallback
       })
@@ -270,7 +271,8 @@ self.addEventListener('fetch', event => {
     event.respondWith(
       caches.match(event.request).then(cached => {
         const network = fetch(event.request).then(response => {
-          caches.open(CACHE_NAME).then(cache => cache.put(event.request, response.clone()));
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
           return response;
         }).catch(() => cached);
         return cached || network;
