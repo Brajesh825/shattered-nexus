@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
   <title>Shattered Nexus</title>
   <link rel="manifest" href="manifest.json">
   <meta name="mobile-web-app-capable" content="yes">
@@ -140,6 +140,10 @@
 
         <!-- Menu button grid -->
         <div class="menu-btns">
+          <button id="pwa-install-btn" class="title-btn title-btn-highlight" style="display:none">
+            <span class="tbtn-icon">📲</span>
+            <span class="tbtn-label">INSTALL</span>
+          </button>
           <button id="gauntlet-btn" class="title-btn title-btn-secondary"
             onclick="typeof BossGauntlet !== 'undefined' ? BossGauntlet.open() : null">
             <span class="tbtn-icon">👹</span>
@@ -939,6 +943,44 @@
   <div id="save-toast"></div>
 
   <script>
+    // ── PWA INSTALLATION HANDLER ──
+    let deferredPrompt;
+    const installBtn = document.getElementById('pwa-install-btn');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      // Prevent Chrome 67 and earlier from automatically showing the prompt
+      e.preventDefault();
+      // Stash the event so it can be triggered later.
+      deferredPrompt = e;
+      // Update UI notify the user they can install the PWA
+      if (installBtn) installBtn.style.display = 'flex';
+    });
+
+    if (installBtn) {
+      installBtn.addEventListener('click', async () => {
+        if (!deferredPrompt) return;
+        // Show the install prompt
+        deferredPrompt.prompt();
+        // Wait for the user to respond to the prompt
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log(`User response to the install prompt: ${outcome}`);
+        // We've used the prompt, and can't use it again, throw it away
+        deferredPrompt = null;
+        // Hide the button
+        installBtn.style.display = 'none';
+      });
+    }
+
+    // iOS "Add to Home Screen" detection
+    const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+    
+    if (isIos && !isStandalone) {
+      // For iOS, we can show a hint since we can't trigger the prompt
+      console.log('Detected iOS browser. Suggesting "Add to Home Screen".');
+      // We could show a specific iOS instruction toast here
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
       _updateContinueBtn();
       _initQualityBtn();

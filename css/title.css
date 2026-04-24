@@ -357,7 +357,7 @@
 /* ── Menu button grid ───────────────────────────────────── */
 .menu-btns {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
   gap: 12px;
   width: 100%;
   max-width: 600px;
@@ -451,6 +451,26 @@
   color: #70d8a8;
 }
 
+/* Highlight — Cyan (INSTALL) */
+.title-btn-highlight {
+  color: var(--cyan);
+  background: rgba(0, 242, 255, 0.05);
+  border: 1px solid rgba(0, 242, 255, 0.25);
+  animation: pwaPulse 2s ease-in-out infinite alternate;
+}
+
+.title-btn-highlight:hover {
+  background: rgba(0, 242, 255, 0.15);
+  border-color: var(--cyan);
+  box-shadow: 0 10px 40px rgba(0, 242, 255, 0.2);
+  color: #fff;
+}
+
+@keyframes pwaPulse {
+  from { box-shadow: 0 0 10px rgba(0, 242, 255, 0.1); border-color: rgba(0, 242, 255, 0.25); }
+  to { box-shadow: 0 0 25px rgba(0, 242, 255, 0.3); border-color: var(--cyan); }
+}
+
 .ver-tag {
   position: absolute;
   bottom: 0.8rem;
@@ -515,9 +535,9 @@
 
   /* Fix: grid-template is the correct property for a grid container */
   .menu-btns {
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
     width: 100%;
-    max-width: 400px;
+    max-width: 440px;
     gap: 10px;
   }
 
@@ -577,8 +597,8 @@
 
   /* 2-column grid on medium mobile */
   .menu-btns {
-    grid-template-columns: 1fr 1fr 1fr;
-    max-width: 380px;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    max-width: 100%;
     gap: 8px;
   }
 
@@ -637,10 +657,10 @@
 
   /* iPhone SE: compact 3-column grid */
   .menu-btns {
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(75px, 1fr));
     width: 100%;
     max-width: 100%;
-    gap: 8px;
+    gap: 6px;
     margin-top: 0;
   }
 
@@ -731,11 +751,11 @@
 
   .menu-btns {
     flex: 3;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
     gap: 8px;
     margin-top: 0;
     width: auto;
-    max-width: none;
+    max-width: 500px;
   }
 
   .title-btn {
