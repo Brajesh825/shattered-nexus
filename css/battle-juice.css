@@ -1,0 +1,123 @@
+/* 
+   battle-juice.css — Shattered Nexus
+   Kinetic physics, white-drain bars, and glassmorphic tooltips.
+*/
+
+/* ── HP DRAIN BARS ── */
+.enemy-hp-bar-bg, .party-hp-bar-bg, .psc-hp-bg {
+  position: relative;
+  overflow: hidden;
+}
+
+.enemy-hp-bar-drain, .party-hp-bar-drain, .psc-hp-drain {
+  position: absolute;
+  top: 0; left: 0;
+  height: 100%;
+  background: #ffffff;
+  opacity: 0.6;
+  z-index: 1;
+  transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.enemy-hp-bar-fill, .party-hp-bar-fill, .psc-hp-bar {
+  position: relative;
+  z-index: 2;
+  transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ── ABILITY INFO PANE ── */
+#ability-info-pane {
+  position: absolute;
+  bottom: 130px;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  width: min(420px, 92vw);
+  background: rgba(10, 8, 48, 0.92);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 12px 18px;
+  pointer-events: none;
+  opacity: 0;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 2000;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.6), inset 0 0 20px rgba(96, 80, 184, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+#ability-info-pane.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.inf-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding-bottom: 6px;
+  margin-bottom: 2px;
+}
+
+.inf-name {
+  font-family: var(--px);
+  color: var(--gold);
+  font-size: 16px;
+  letter-spacing: 1.5px;
+  text-shadow: 0 0 8px var(--gold-glow);
+}
+
+.inf-cost {
+  color: #80a0ff;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.inf-desc {
+  font-size: 14px;
+  color: #aea4d4;
+  line-height: 1.5;
+}
+
+.inf-meta {
+  font-size: 11px;
+  color: #6060a0;
+  font-style: italic;
+  margin-top: 2px;
+  letter-spacing: 1px;
+}
+
+/* ── KINETIC POPS ── */
+.pop-text {
+  position: absolute;
+  font-family: var(--px);
+  font-size: 24px;
+  font-weight: bold;
+  pointer-events: none;
+  z-index: 1000;
+  white-space: nowrap;
+  text-shadow: 0 0 4px rgba(0,0,0,0.9), 2px 2px 0px rgba(0,0,0,0.6);
+  animation: pop-burst-arc 0.9s cubic-bezier(0.18, 0.89, 0.32, 1.28) both;
+}
+
+@keyframes pop-burst-arc {
+  0% { transform: scale(0.3) translateY(0) rotate(-15deg); opacity: 0; }
+  15% { transform: scale(1.4) translateY(-35px) rotate(8deg); opacity: 1; }
+  75% { transform: scale(1) translateY(-55px) rotate(0deg); opacity: 1; }
+  100% { transform: scale(0.7) translateY(-65px) rotate(0deg); opacity: 0; }
+}
+
+/* Elemental overrides */
+.pop-damage { color: #ff4d4d; }
+.pop-magic { color: #5dade2; }
+.pop-heal { color: #58d68d; }
+.pop-regen { color: #58d68d; }
+.pop-crit { color: #f4d03f; font-size: 32px; letter-spacing: 2px; }
+.pop-miss { color: #abb2b9; font-style: italic; }
+
+.elem-fire { color: #e67e22; text-shadow: 0 0 12px #d35400; }
+.elem-ice { color: #85c1e9; text-shadow: 0 0 12px #3498db; }
+.elem-bolt { color: #f7dc6f; text-shadow: 0 0 12px #f1c40f; }
+.elem-void { color: #bb8fce; text-shadow: 0 0 12px #8e44ad; }
