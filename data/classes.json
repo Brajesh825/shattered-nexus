@@ -705,7 +705,10 @@
                 "effect": {
                     "dmgMultiplier": 2.5,
                     "element": "holy",
-                    "statScale": ["atk", "def"],
+                    "statScale": [
+                        "atk",
+                        "def"
+                    ],
                     "partyBuff": true,
                     "cooldown": 2
                 }

@@ -12,10 +12,13 @@
   white-space: nowrap;
 }
 
-.pop-dmg  { color: #ff4d4d; text-shadow: 0 0 10px rgba(255, 77, 77, 0.6); font-size: 20px; }
-.pop-heal { color: #00ff6a; text-shadow: 0 0 10px rgba(0, 255, 106, 0.6); }
-.pop-miss { color: #948db8; font-size: 12px; }
-.pop-crit { color: #ffcf5c; font-size: 24px; text-shadow: 0 0 15px #ffcf5c80; }
+.pop-dmg   { color: #ff4d4d; text-shadow: 0 0 10px rgba(255, 77, 77, 0.6); font-size: 20px; }
+.pop-heal  { color: #00ff6a; text-shadow: 0 0 10px rgba(0, 255, 106, 0.6); }
+.pop-miss  { color: #948db8; font-size: 12px; }
+.pop-crit  { color: #ffcf5c; font-size: 24px; text-shadow: 0 0 15px #ffcf5c80; }
+.pop-magic { color: #80c8ff; text-shadow: 0 0 10px rgba(128, 200, 255, 0.6); }
+.pop-regen { color: #40ffb0; text-shadow: 0 0 10px rgba(64, 255, 176, 0.6); font-size: 13px; }
+.pop-steal { color: #c080ff; text-shadow: 0 0 10px rgba(192, 128, 255, 0.6); }
 
 .elem-fire     { color: #ff5e3a !important; text-shadow: 0 0 10px #ff5e3a80 !important; }
 .elem-ice      { color: #4ecfff !important; text-shadow: 0 0 10px #4ecfff80 !important; }

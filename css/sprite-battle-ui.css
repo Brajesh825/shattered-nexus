@@ -32,6 +32,7 @@
   background: rgba(0, 0, 20, 0.3);
   transition: transform 0.2s ease, filter 0.2s ease, border-color 0.2s ease;
   cursor: default;
+  will-change: transform;
 }
 
 .party-member.ko-member {
@@ -452,6 +453,12 @@
   font-size: 9px;
   color: #c08080;
   font-weight: bold;
+}
+
+.enemy-hp-txt {
+  font-size: 8px;
+  color: #806060;
+  margin-top: 1px;
 }
 
 /* ── Mutant trait pills ── */

@@ -65,6 +65,7 @@ const NexusScaling = {
     vaporize_fire_on_water: 1.5, // Fire hitting Water Aura
     shatter: 1.5,            // Physical/Earth hitting Frozen
     conductive: 1.3,         // Lightning hitting Water
+    swirl: 1.2,              // Wind dispersing active aura to nearby units
     conflagration: 1.5,      // Nature hitting Fire
     burning: 1.2,            // Fire hitting Nature
     affinityBonus: 1.5       // Extra mult if reaction aligns with enemy weakness
@@ -102,5 +103,20 @@ const NexusScaling = {
     burnReactionDotPercent: 0.2, // 20% of dmg dealt as DOT
     magicDmgFallback: 1.5,
     enemyMagicFallback: 1.3
+  },
+
+  // 8. NEXUS CAPS (Safety boundaries for high-level scaling)
+  caps: {
+    statMult: 2.5,        // Max multiplier for ATK/DEF/SPD/MAG
+    evasion: 0.75,       // Max 75% dodge chance
+    accuracyMin: 0.1,    // Min 10% hit chance
+    critRate: 0.85,      // Max 85% crit rate
+    mitigation: 0.8,     // Max 80% final damage reduction
+    maxHp: 9999,         // UI comfort cap
+    maxStat: 999         // UI comfort cap
   }
 };
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = NexusScaling;
+}

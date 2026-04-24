@@ -295,19 +295,7 @@ const MapUI = (() => {
     } else {
       // Free explore — save minimal state to slot 0
       if (typeof Save !== 'undefined' && G.party.length) {
-        const partyStats = G.party.map(m => ({
-          charId: m.charId, classId: m.classId,
-          lv: m.lv || 1, exp: m.exp || 0, gold: m.gold || 0,
-        }));
-        Save.write({
-          arcIdx: 0, chapIdx: -1,
-          arcName: 'Free Explore',
-          selectedChars: G.selectedChars || [],
-          partyStats,
-          hero: { lv: G.hero?.lv || 1, exp: G.hero?.exp || 0, gold: G.hero?.gold || 0 },
-          unlockedChars: G.unlockedChars || [],
-          inventory: G.inventory || [],
-        }, 0);
+        Save.write(SaveContract.buildFreeExploreSaveState(G), 0);
         showMsg('💾 Progress saved!', 1800);
       }
     }

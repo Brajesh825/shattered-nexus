@@ -71,7 +71,7 @@ const TILE_DEFS = {
 
   // ── CORE TERRAIN ──────────────────────────────────────────────
   0:  { name: 'void',           walkable: false, color: '#0d0a18', hi: '#1a1428', shadow: '#000000' },
-  1:  { name: 'grass',          walkable: true,  color: '#2d5a1e', hi: '#3d7028', shadow: '#1d4012' },
+  1:  { name: 'grass',          walkable: true,  color: '#2d5a1e', hi: '#3d7028', shadow: '#1d4012', anim: true },
   2:  { name: 'path',           walkable: true,  color: '#8a7050', hi: '#9d8060', shadow: '#6a5438' },
   3:  { name: 'water',          walkable: false, color: '#1a4580', hi: '#2a5898', shadow: '#0f2d50', anim: true },
   4:  { name: 'bridge',         walkable: true,  color: '#8d6d48', hi: '#a07d58', shadow: '#6a5030' },
@@ -81,7 +81,7 @@ const TILE_DEFS = {
   8:  { name: 'cave-wall',      walkable: false, color: '#241a35', hi: '#322848', shadow: '#15101e' },
   9:  { name: 'dungeon',        walkable: true,  color: '#2d2240', hi: '#3d3050', shadow: '#1a1528' },
   10: { name: 'sand',           walkable: true,  color: '#a58860', hi: '#b89870', shadow: '#806845' },
-  11: { name: 'flower',         walkable: true,  color: '#2d5a1e', hi: '#3d7028', shadow: '#1d4012', detail: 'flower' },
+  11: { name: 'flower',         walkable: true,  color: '#2d5a1e', hi: '#3d7028', shadow: '#1d4012', detail: 'flower', anim: true },
   12: { name: 'town-floor',     walkable: true,  color: '#654830', hi: '#755838', shadow: '#4a3520', detail: 'cobble' },
   13: { name: 'lava-floor',     walkable: true,  color: '#c54520', hi: '#e55828', shadow: '#8d3018', anim: true },
   14: { name: 'scorched-earth', walkable: true,  color: '#4d3020', hi: '#603d28', shadow: '#301d10' },
@@ -113,10 +113,10 @@ const TILE_DEFS = {
 
   // ── VEGETATION ────────────────────────────────────────────────
   36: { name: 'dense-jungle',   walkable: false, color: '#154520', hi: '#1e5828', shadow: '#0a2d12' },
-  37: { name: 'shrub',          walkable: true,  color: '#3a5828', hi: '#4a6835', shadow: '#283d18', detail: 'shrub' },
+  37: { name: 'shrub',          walkable: true,  color: '#3a5828', hi: '#4a6835', shadow: '#283d18', detail: 'shrub', anim: true },
   38: { name: 'dead-tree',      walkable: false, color: '#4a3828', hi: '#5a4830', shadow: '#301e15', detail: 'dead-tree' },
   39: { name: 'mushroom-patch', walkable: true,  color: '#4d3850', hi: '#5d4860', shadow: '#302038', detail: 'mushroom' },
-  40: { name: 'tall-grass',     walkable: true,  color: '#3d6825', hi: '#4d7830', shadow: '#2a4818', slow: true, detail: 'tall-grass' },
+  40: { name: 'tall-grass',     walkable: true,  color: '#3d6825', hi: '#4d7830', shadow: '#2a4818', slow: true, detail: 'tall-grass', anim: true },
   41: { name: 'crop-field',     walkable: true,  color: '#6a8030', hi: '#7a9040', shadow: '#4a5d18', detail: 'crop' },
   42: { name: 'orchard',        walkable: true,  color: '#2d5020', hi: '#3d6028', shadow: '#1d3815', detail: 'orchard' },
   43: { name: 'hedge',          walkable: false, color: '#1e4515', hi: '#285520', shadow: '#102d08' },

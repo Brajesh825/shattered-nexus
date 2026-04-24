@@ -567,6 +567,73 @@
     "lore": "The byproduct of a botched ritual to restart the Moonstone mines. They are empty biological shells, still trying to perform the mining labor they did in life."
   },
   {
+    "id": "zombie_soldier",
+    "name": "Zombified Soldier",
+    "subtitle": "A fallen guardian of the Vale, now a hollow shell",
+    "element": "shadow",
+    "weakTo": [
+      "fire",
+      "light",
+      "holy"
+    ],
+    "resistTo": [
+      "shadow",
+      "physical"
+    ],
+    "tier": 1,
+    "stats": {
+      "hp": 52,
+      "atk": 16,
+      "def": 9,
+      "spd": 4,
+      "mag": 5
+    },
+    "reward": {
+      "exp": 42,
+      "gold": 15
+    },
+    "palette": {
+      "body": "#4a5a6a",
+      "dark": "#2a3a4a",
+      "shine": "#7a8a9a",
+      "eye": "#00ffcc",
+      "pupil": "#004433"
+    },
+    "abilities": [
+      {
+        "id": "hollow_strike",
+        "name": "Hollow Strike",
+        "type": "physical",
+        "weight": 50,
+        "dmgMultiplier": 1.2
+      },
+      {
+        "id": "void_shriek",
+        "name": "Void Shriek",
+        "type": "debuff",
+        "weight": 30
+      },
+      {
+        "id": "guard_break",
+        "name": "Guard Break",
+        "type": "physical",
+        "weight": 20,
+        "dmgMultiplier": 1.4
+      }
+    ],
+    "lore": "Guardians who fell during the initial Void Knight incursion. They still wear the rusted plate of the Vale's army, but their minds have been completely emptied and replaced by a hunger for living memory.",
+    "drops": [
+      {
+        "item": "Rusted Plate",
+        "chance": 0.3
+      },
+      {
+        "item": "Potion",
+        "chance": 0.2
+      }
+    ]
+  },
+  {
     "id": "wisp",
     "name": "Lost Wisp",
     "subtitle": "A wayward soul radiating corrosive spectral light",
@@ -3628,15 +3695,12 @@
     "name": "Spectral Guardian",
     "subtitle": "The ancient gatekeeper of the starlit void",
     "element": "void",
-    "weakTo": [
-      "light",
-      "fire"
-    ],
-    "resistTo": [
-      "void",
-      "shadow"
-    ],
+    "weakTo": [ "light", "fire" ],
+    "resistTo": [ "void", "shadow" ],
     "tier": 3,
+    "statPhases": [
+      { "hp": 0.40, "mag": 2.2, "spd": 1.8, "def": 0.35 }
+    ],
     "stats": {
       "hp": 480,
       "atk": 18,
@@ -3668,13 +3732,143 @@
         "type": "magic_damage",
         "weight": 30,
         "dmgMultiplier": 1.2,
-        "effect": { "aoe": true }
+        "effect": {
+          "aoe": true
+        }
       },
       {
         "id": "starlit_shield",
         "name": "Starlit Shield",
         "type": "buff_def",
         "weight": 20
+      }
+    ]
+  },
+  {
+    "id": "galdor_king",
+    "name": "King Galdor",
+    "subtitle": "The Cursed Sovereign of Aethelgard",
+    "element": "physical",
+    "weakTo": [
+      "fire"
+    ],
+    "resistTo": [
+      "physical",
+      "light"
+    ],
+    "tier": 2,
+    "isBoss": true,
+    "statPhases": [
+      { "hp": 0.75, "def": 1.15, "spd": 0.85 },
+      { "hp": 0.50, "def": 1.30, "spd": 0.70 },
+      { "hp": 0.25, "def": 1.45, "spd": 0.55 }
+    ],
+    "stats": {
+      "hp": 200,
+      "atk": 28,
+      "def": 16,
+      "spd": 8,
+      "mag": 10
+    },
+    "reward": {
+      "exp": 800,
+      "gold": 250
+    },
+    "palette": {
+      "body": "#407020",
+      "dark": "#2a4a10",
+      "shine": "#ffd700",
+      "eye": "#ff0000",
+      "pupil": "#000000"
+    },
+    "abilities": [
+      {
+        "id": "gilded_smash",
+        "name": "Gilded Smash",
+        "type": "physical",
+        "weight": 50,
+        "dmgMultiplier": 1.4
+      },
+      {
+        "id": "kings_decree",
+        "name": "King's Decree",
+        "type": "buff_def",
+        "weight": 25
+      },
+      {
+        "id": "avarice_shout",
+        "name": "Avarice Shout",
+        "type": "debuff",
+        "weight": 25,
+        "effect": {
+          "stat": "atk",
+          "value": 0.8
+        }
+      }
+    ],
+    "lore": "The once proud ruler of Aethelgard. His greed led him to bargain with Veldris, a mistake that cost him his humanity and his kingdom. He now sits upon a throne of dust, clutching leaden coins he still believes are gold.",
+    "drops": [
+      {
+        "item": "Sovereign Ring",
+        "chance": 1.0
+      },
+      {
+        "item": "Gilded Relic",
+        "chance": 0.2
+      }
+    ]
+  },
+  {
+    "id": "goblin_elite",
+    "name": "Goblin Elite",
+    "element": "physical",
+    "weakTo": [
+      "fire"
+    ],
+    "tier": 2,
+    "stats": {
+      "hp": 90,
+      "atk": 18,
+      "def": 12,
+      "spd": 10,
+      "mag": 4
+    },
+    "reward": {
+      "exp": 120,
+      "gold": 40
+    },
+    "palette": {
+      "body": "#406020",
+      "dark": "#203010",
+      "shine": "#c0a040",
+      "eye": "#ffcc00",
+      "pupil": "#330000"
+    },
+    "abilities": [
+      {
+        "id": "heavy_cleave",
+        "name": "Heavy Cleave",
+        "type": "physical",
+        "weight": 60,
+        "dmgMultiplier": 1.2
+      },
+      {
+        "id": "shield_bash",
+        "name": "Shield Bash",
+        "type": "physical",
+        "weight": 40,
+        "dmgMultiplier": 0.8
+      }
+    ],
+    "lore": "The personal guard of the Gilded King. Unlike their feral cousins, these goblins maintain a semblance of the martial discipline they held in life, guarding the ruins of Aethelgard with rusted but lethal efficiency.",
+    "drops": [
+      {
+        "item": "Iron Helm",
+        "chance": 0.2
+      },
+      {
+        "item": "Goblin Ear",
+        "chance": 1.0
       }
     ]
   }
