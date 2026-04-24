@@ -57,32 +57,32 @@ Eight characters join your party across the campaign. The first four are availab
 
 | Character | Class | Role | Passive |
 |-----------|-------|------|---------|
-| **Ayaka** *(Aya)* | Cryo Bladestorm | Swift physical striker | **Frostflake Dance** — Always acts first; +3 SPD, attacks carry a cryo edge |
-| **Hu Tao** *(Tao)* | Spirit Incinerator | High-risk fire attacker | **Blood Blossom** — When HP < 50%, ATK +35% |
-| **Nilou** *(Lulu)* | Hydro Performer | Healer / buffer | **Dance of Haftkarsvar** — All healing amplified by 30% |
-| **Xiao** *(Rei)* | Ancient Warden | Tank / barrier setter | **Warden's Valor** — Takes 10% reduced damage; ATK +15% from karmic resolve |
+| **Aya** | Cryo Bladestorm | Swift physical striker | **Frostflake Dance** — Always acts first; +3 SPD, attacks carry a cryo edge |
+| **Tao** | Spirit Incinerator | High-risk fire attacker | **Blood Blossom** — When HP < 50%, ATK +35% |
+| **Lulu** | Hydro Performer | Healer / buffer | **Dance of Haftkarsvar** — All healing amplified by 30% |
+| **Rei** | Ancient Warden | Tank / barrier setter | **Warden's Valor** — Takes 10% reduced damage; ATK +15% from karmic resolve |
 
 ### Recruited Characters
 
 | Character | Class | Arc Joined | Role | Passive |
 |-----------|-------|-----------|------|---------|
-| **Rydia** *(Ria)* | Summoner | Arc 2 | AOE magic / healing | **Eidolon Bond** — Summons +20% stats; MP efficiency +15% |
-| **Lenneth** *(Valka)* | Valkyrie | Arc 2 | Holy attacker / debuffer | **Divine Authority** — DEF +20%; reflects 10% of damage taken |
-| **Kain** *(Drake)* | Divine Dragoon | Arc 3 | Speed striker / evader | **Dragon's Leap** — Every 3rd turn, bonus aerial strike; SPD +2 in aerial combat |
-| **Leon** *(Rex)* | Grail Guardian | Arc 7 | Demi-god tank / healer | **Divine Blessing** — Grants allies +15% HP regen per turn; takes 12% reduced damage |
+| **Ria** | Summoner | Arc 2 | AOE magic / healing | **Eidolon Bond** — Summons +20% stats; MP efficiency +15% |
+| **Valka** | Valkyrie | Arc 2 | Holy attacker / debuffer | **Divine Authority** — DEF +20%; reflects 10% of damage taken |
+| **Drake** | Divine Dragoon | Arc 3 | Speed striker / evader | **Dragon's Leap** — Every 3rd turn, bonus aerial strike; SPD +2 in aerial combat |
+| **Rex** | Grail Guardian | Arc 7 | Demi-god tank / healer | **Divine Blessing** — Grants allies +15% HP regen per turn; takes 12% reduced damage |
 
 ### Base Stats (at Level 1)
 
 | Character | HP | MP | ATK | DEF | SPD | MAG |
 |-----------|----|----|-----|-----|-----|-----|
-| Ayaka | 65 | 30 | 16 | 12 | 18 | 14 |
-| Hu Tao | 50 | 22 | 20 | 7 | 14 | 12 |
-| Nilou | 72 | 42 | 10 | 13 | 11 | 20 |
-| Xiao | 80 | 18 | 18 | 16 | 13 | 8 |
-| Rydia | 58 | 48 | 8 | 9 | 12 | 24 |
-| Lenneth | 88 | 28 | 19 | 18 | 15 | 16 |
-| Kain | 75 | 20 | 19 | 14 | 16 | 10 |
-| Leon | 92 | 32 | 22 | 20 | 14 | 18 |
+| Aya   | 65 | 30 | 16 | 12 | 18 | 14 |
+| Tao   | 50 | 22 | 20 | 7  | 14 | 12 |
+| Lulu  | 72 | 42 | 10 | 13 | 11 | 20 |
+| Rei   | 80 | 18 | 18 | 16 | 13 | 8  |
+| Ria   | 58 | 48 | 8  | 9  | 12 | 24 |
+| Valka | 88 | 28 | 19 | 18 | 15 | 16 |
+| Drake | 75 | 20 | 19 | 14 | 16 | 10 |
+| Rex   | 92 | 32 | 22 | 20 | 14 | 18 |
 
 ---
 
@@ -92,7 +92,7 @@ Each character has a fixed class with 4 abilities (3 active + 1 ultimate). Ultim
 
 ---
 
-### Cryo Bladestorm — *Ayaka*
+### Cryo Bladestorm — *Aya*
 *Ice and swift strikes. Speed-scaling damage, freeze control.*
 
 | Ability | Type | MP | Effect |
@@ -104,7 +104,7 @@ Each character has a fixed class with 4 abilities (3 active + 1 ultimate). Ultim
 
 ---
 
-### Spirit Incinerator — *Hu Tao*
+### Spirit Incinerator — *Tao*
 *Fire and life force. Trade HP for devastating power.*
 
 | Ability | Type | MP | Effect |
@@ -116,7 +116,7 @@ Each character has a fixed class with 4 abilities (3 active + 1 ultimate). Ultim
 
 ---
 
-### Hydro Performer — *Nilou*
+### Hydro Performer — *Lulu*
 *Water and grace. The party's primary healer and enabler.*
 
 | Ability | Type | MP | Effect |
@@ -128,7 +128,7 @@ Each character has a fixed class with 4 abilities (3 active + 1 ultimate). Ultim
 
 ---
 
-### Ancient Warden — *Xiao*
+### Ancient Warden — *Rei*
 *Wind and karmic defense. Forces enemies to focus on him.*
 
 | Ability | Type | MP | Effect |
@@ -136,11 +136,11 @@ Each character has a fixed class with 4 abilities (3 active + 1 ultimate). Ultim
 | Lancing Strike | Physical | 0 | 1.4× ATK; ignore 20% enemy DEF; wind element |
 | Warden's Valor | Buff | 6 | Incoming damage −25%; 15% reflect for 3 turns |
 | Karmic Barrier | Buff | 8 | All allies DEF +40%; next attacked ally takes 10% less damage for 2 turns |
-| **Mastery of Pain** *(Ultimate)* | Magic | 14 | 3.7× magic + DEF scaling; forces all enemies to target Xiao |
+| **Mastery of Pain** *(Ultimate)* | Magic | 14 | 3.7× magic + DEF scaling; forces all enemies to target Rei |
 
 ---
 
-### Summoner — *Rydia*
+### Summoner — *Ria*
 *Magic and eidolons. Powerful AOE and party-wide healing.*
 
 | Ability | Type | MP | Effect |
@@ -152,7 +152,7 @@ Each character has a fixed class with 4 abilities (3 active + 1 ultimate). Ultim
 
 ---
 
-### Valkyrie — *Lenneth*
+### Valkyrie — *Valka*
 *Holy and divine judgment. Debuffs enemies, buffs allies.*
 
 | Ability | Type | MP | Effect |
@@ -164,7 +164,7 @@ Each character has a fixed class with 4 abilities (3 active + 1 ultimate). Ultim
 
 ---
 
-### Divine Dragoon — *Kain*
+### Divine Dragoon — *Drake*
 *Wind and sky. Aerial evasion, speed snowballing.*
 
 | Ability | Type | MP | Effect |
@@ -176,7 +176,7 @@ Each character has a fixed class with 4 abilities (3 active + 1 ultimate). Ultim
 
 ---
 
-### Grail Guardian — *Leon*
+### Grail Guardian — *Rex*
 *Holy and divinity. Tanky multi-target sustain.*
 
 | Ability | Type | MP | Effect |
@@ -280,7 +280,7 @@ Up to 4 members can be in the active party at once, placed in **Vanguard** and *
 | **Vanguard** | 2 | **Intercepts all physical attacks** aimed at allies |
 | Support | 3 | Normal |
 
-The Vanguard interception mechanic makes tank characters like Xiao and Leon extremely effective in slot 2.
+The Vanguard interception mechanic makes tank characters like Rei and Rex extremely effective in slot 2.
 
 ---
 
@@ -302,10 +302,10 @@ The world of Aethoria is in crisis. **Valdris**, the Shadow Emperor, has consume
 | 8 | **The Shadow Emperor** | The Eternal Void | Redemption, end of eternity | **Shadow Emperor** *(final)* | — |
 
 **Party growth through story:**
-- Arcs 1–2: Ayaka, Hu Tao, Nilou, Xiao (core four)
-- Arc 2: Rydia and Lenneth rescued and recruited
-- Arc 3: Kain joins
-- Arc 7: Leon joins (full party of 8)
+- Arcs 1–2: Aya, Tao, Lulu, Rei (core four)
+- Arc 2: Ria and Valka rescued and recruited
+- Arc 3: Drake joins
+- Arc 7: Rex joins (full party of 8)
 
 ---
 
