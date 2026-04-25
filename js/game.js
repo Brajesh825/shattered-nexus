@@ -727,6 +727,8 @@ function checkBattleEnd() {
       }
       setTimeout(() => {
         _clearBattleAtmosphere();
+        // Wipe all battle statuses from party — buffs/debuffs must not carry over between fights
+        G.party.forEach(m => { m.statuses = []; });
         if (G.mode === 'explore' || G.mode === 'story_explore') { MapEngine.onBattleComplete(true); }
         else if (typeof Story !== 'undefined' && Story.active) Story.onBattleWon();
         else showResult('victory');
@@ -755,6 +757,7 @@ function checkBattleEnd() {
 function showResult(type) {
   _clearBattleAtmosphere();
   closePartyMenu();
+  G.party.forEach(m => { m.statuses = []; });
   ResultUI.show(type, G.party);
 }
 
