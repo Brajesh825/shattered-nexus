@@ -62,7 +62,8 @@ const MapUI = (() => {
   function cycleCharacter() {
     if (!G || !G.party || G.party.length < 2) return;
     G.activePartyIdx = (G.activePartyIdx + 1) % G.party.length;
-    showMsg(`▶ ${G.hero?.displayName || G.hero?.charId || '?'}`, 900);
+    const active = G.party[G.activePartyIdx];
+    showMsg(`▶ ${active?.displayName || active?.charId || '?'}`, 900);
     _updatePartyHUD();
   }
 
