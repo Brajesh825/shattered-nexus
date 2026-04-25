@@ -448,8 +448,6 @@ function buildEnemyGroup(defs, spawnLevel = 1, isBoss = false) {
 function unlockCharacter(charId) {
   if (!G.unlockedChars.includes(charId)) {
     G.unlockedChars.push(charId);
-    // Save the updated unlocked characters state
-    if (typeof Story !== 'undefined' && Story.active) Story._doSave();
     return true;
   }
   return false;

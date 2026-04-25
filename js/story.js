@@ -297,21 +297,25 @@ const Story = {
 
       // If saved from explore map, restore directly to that map (no overlay/selection)
       if (s.mapId) {
-        // Find the actual explore chapter so EXIT works correctly afterward
         const arc = this.arc;
         const chapters = arc.chapters || [];
         const savedChap = (this.chapIdx >= 0 && this.chapIdx < chapters.length) ? chapters[this.chapIdx] : null;
 
-        // Only restore to map if the saved chapter is still an explore chapter.
-        // If chapIdx is out of bounds (boss territory) or points to a non-explore
-        // chapter, the mapId is stale — fall through to normal chapter/boss logic.
         if (savedChap && savedChap.type === 'explore') {
+          // Normal story explore chapter — restore with proper chapter context
           this._exploreChap = savedChap;
           this._launchExploreRestore(savedChap, s.mapX, s.mapY);
           return;
         }
-        // chapIdx has advanced past all explore chapters — mapId is stale, ignore it
-        if (window.LogDebug) window.LogDebug(`[Story] stale mapId "${s.mapId}" ignored — chapIdx ${this.chapIdx} is past explore chapters, proceeding to boss`, 'passive');
+
+        // Post-boss free explore (chapIdx out of bounds or non-explore chapter):
+        // player was roaming the map after clearing the arc. Restore to the map;
+        // exiting will call _showWorldMap() via the camp EXIT button.
+        const freeChap = { map: s.mapId, post_dialogue: [] };
+        const exploreIdx = chapters.findIndex(c => c.type === 'explore');
+        this._exploreChap = exploreIdx >= 0 ? chapters[exploreIdx] : freeChap;
+        this._launchExploreRestore(freeChap, s.mapX, s.mapY);
+        return;
       }
 
       // Resume at the saved chapter — skip arc intro/char-select on load
@@ -387,8 +391,7 @@ const Story = {
       if (mapId && !G.clearedMaps.includes(mapId)) {
         G.clearedMaps.push(mapId);
       }
-      this.phase = 'boss_post'; // Set phase BEFORE saving so reload knows boss is done
-      this._doSave();
+      this.phase = 'boss_post';
       const postLines = chap.post_dialogue || [];
       if (this._pendingRelicMsg) {
         const msg = this._pendingRelicMsg;
@@ -440,7 +443,8 @@ const Story = {
 
   /** Roll the save back to the start of the current explore chapter.
    *  Party is fully healed. chapIdx rewinds to the explore chapter index.
-   *  Called on every story-mode party wipe. */
+   *  Called on every story-mode party wipe. Does NOT save — the game-over
+   *  "Return to Map" button loads the last manual save instead. */
   _gameOverRollback() {
     const arc = this.arc;
     const chapters = (arc && arc.chapters) ? arc.chapters : [];
@@ -450,12 +454,8 @@ const Story = {
     this.chapIdx = exploreIdx >= 0 ? exploreIdx : 0;
     this.phase = null;
 
-    // Full-heal party so they're ready to re-enter the map
+    // Heal party so they're ready when the manual save is reloaded
     this._healParty();
-
-    // Save — _doSave() will write null mapId because chapIdx < chapters.length
-    // and MapEngine is stopped, so the player restarts from the map entrance
-    this._doSave();
   },
 
   /** Game Over screen button — reload the rollback save and re-enter the explore map */
@@ -556,7 +556,6 @@ const Story = {
     const arc = this.arc;
     console.log('[Story._nextChapter] After increment, chapIdx:', this.chapIdx, 'arc.chapters.length:', arc.chapters.length);
 
-    this._doSave();
     if (this.chapIdx < arc.chapters.length) {
       console.log('[Story._nextChapter] Loading chapter:', this.chapIdx);
       this._loadChapter(arc.chapters[this.chapIdx]);
@@ -1022,7 +1021,6 @@ const Story = {
     if (G.hero) { G.hero.hp = G.hero.maxHp; G.hero.mp = G.hero.maxMp; }
     this.chapIdx = -1;
     this.phase = null;
-    this._doSave();
     this._showArcIntro();
   },
 
@@ -1047,7 +1045,6 @@ const Story = {
   _beginEpilogue() {
     const epi = this.data.epilogue;
     this.phase = 'epilogue';
-    this._doSave(); // save completion so CONTINUE shows the ending
 
     if (epi.scenes && epi.scenes.length) {
       this._buildSceneLines(epi.scenes);
@@ -1121,13 +1118,8 @@ const Story = {
       mp: m.mp,
       isKO: m.isKO || false,
     }));
-    // Capture current map location if saving from explore screen.
-    // BUT: if chapIdx has advanced past all explore chapters (boss territory),
-    // do NOT persist mapId — a stale mapId causes the loader to skip the boss trigger.
-    const _arc = this.arc;
-    const _chapters = (_arc && _arc.chapters) ? _arc.chapters : [];
-    const _inBossTerritory = this.chapIdx >= _chapters.length;
-    const curMap = (!_inBossTerritory && typeof MapEngine !== 'undefined') ? MapEngine.getMap() : null;
+    // Capture current map location if the explore map is actively running.
+    const curMap = (typeof MapEngine !== 'undefined') ? MapEngine.getMap() : null;
     const mapId = curMap?.id || null;
     const mapX = (mapId && typeof MapPlayer !== 'undefined') ? MapPlayer.tx : null;
     const mapY = (mapId && typeof MapPlayer !== 'undefined') ? MapPlayer.ty : null;
