@@ -1165,6 +1165,7 @@ const Story = {
   _showWorldMap() {
     this._showSection(null);
     this._closeRegionPanel();
+    if (typeof MapTouch !== 'undefined') MapTouch.reset();
 
     const arcs = this.data.arcs;
     const nextIdx = this.arcIdx + 1;
@@ -1289,6 +1290,7 @@ const Story = {
     const arcComplete = this.phase === 'arc_end' || this.phase === 'epilogue';
 
     panel.innerHTML = `
+      <div class="mrp-handle"></div>
       <div class="mrp-num">ARC ${arc.number}</div>
       <div class="mrp-name">${arc.name}</div>
       <div class="mrp-loc">${arc.location || ''}</div>
@@ -1302,6 +1304,7 @@ const Story = {
       </div>`;
 
     panel.classList.add('open');
+    if (typeof MapTouch !== 'undefined') MapTouch.initPanelSwipe(panel);
   },
 
   _openMapPlacePanel(placeIdx) {
@@ -1310,6 +1313,7 @@ const Story = {
     if (!place || !panel) return;
 
     panel.innerHTML = `
+      <div class="mrp-handle"></div>
       <div class="mrp-num">CHARTED PLACE</div>
       <div class="mrp-name">${place.label}</div>
       <div class="mrp-loc">Future map candidate</div>
@@ -1320,6 +1324,7 @@ const Story = {
       </div>`;
 
     panel.classList.add('open');
+    if (typeof MapTouch !== 'undefined') MapTouch.initPanelSwipe(panel);
   },
 
   _closeRegionPanel() {

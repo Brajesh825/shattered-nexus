@@ -74,12 +74,17 @@
 
 #map-area {
   position: relative;
-  /* Square, sized to fit the available viewport space without scrolling */
-  width: min(100%, calc(100vh - 200px));
+  /* Square — constrained by whichever axis is smaller.
+     120px budget covers compacted header + info bar + bottom bar. */
+  width: min(100%, calc(100vh - 120px));
   aspect-ratio: 1 / 1;
   flex-shrink: 0;
   background: url('../images/ui/world_map_bg.png') no-repeat center / cover;
   box-shadow: 0 0 100px rgba(0, 0, 0, 0.8), inset 0 0 50px rgba(0,0,0,0.5);
+  /* GPU layer — needed for smooth pinch-zoom transform */
+  will-change: transform;
+  transform-origin: center center;
+  touch-action: none;  /* JS handles all touch on the map */
 }
 
 .map-svg {
@@ -253,6 +258,21 @@
 
 .map-region-panel.open {
   right: 0;
+}
+
+/* Drag handle — only visible when panel is a bottom sheet (≤600px) */
+.mrp-handle {
+  display: none;
+  width: 40px;
+  height: 4px;
+  background: rgba(144, 128, 224, 0.35);
+  border-radius: 2px;
+  margin: 10px auto 4px;
+  flex-shrink: 0;
+  cursor: grab;
+}
+@media (max-width: 600px) {
+  .mrp-handle { display: block; }
 }
 
 .mrp-num {
@@ -1332,16 +1352,27 @@
    Lives here because map.css loads AFTER style.css.
    ══════════════════════════════════════════════════════════ */
 
-/* ── Landscape phones (h ≤ 500px) ───────────────────── */
+/* ── Landscape phones (h ≤ 500px) — installed PWA primary target ── */
 @media (orientation: landscape) and (max-height: 500px) {
   #map-screen     { min-height: 0; }
   #explore-screen { min-height: 0; }
 
-  .map-header      { padding: 6px 14px 4px; }
+  /* Compact map chrome — reclaim vertical space for the map itself */
+  .map-header      { padding: 3px 14px; }
   .map-title-label { font-size: 8px; letter-spacing: 2px; }
-  .map-arc-label   { font-size: var(--fs-sm); margin-top: 1px; }
+  .map-arc-label   { display: none; }
+  .map-info-bar    { min-height: 0; padding: 3px 14px 2px; }
+  .map-info-name   { font-size: var(--fs-xs); }
+  .map-info-loc    { display: none; }
+  .map-bottom-bar  { padding: 0 10px calc(2px + env(safe-area-inset-bottom)); }
+  .map-bottom-bar .big-btn { padding: 7px 14px; font-size: 11px; }
+  .map-party-btn   { padding: 7px 10px; font-size: 10px; }
 
-  .explore-header   { padding: 6px 12px; background: rgba(10, 5, 25, 0.7); backdrop-filter: blur(8px); border-bottom: 1px solid rgba(160, 140, 255, 0.2); }
+  /* Tighter map size budget now that chrome is compacted (~80px total) */
+  #map-area { width: min(100%, calc(100vh - 80px)); }
+
+  /* Explore header */
+  .explore-header   { padding: 4px 12px; background: rgba(10, 5, 25, 0.7); backdrop-filter: blur(8px); border-bottom: 1px solid rgba(160, 140, 255, 0.2); }
   .explore-map-name { font-size: 11px; }
   .explore-map-hint { font-size: 9px; }
   .explore-menu-btn { font-size: 9px; padding: 4px 10px; }
@@ -1349,6 +1380,32 @@
   .pm-mp-bar-bg   { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
   .pm-mp-bar-fill { background: linear-gradient(90deg, #4a90e2, #8e44ad) !important; height: 6px; transition: width 0.3s ease; }
 }
+
+/* ── Safe area — Android nav bar in standalone PWA ───── */
+.map-bottom-bar {
+  padding-bottom: calc(14px + env(safe-area-inset-bottom));
+}
+
+/* Zoom-reset button (hidden until JS zoomed state) */
+.map-zoom-reset {
+  display: none;
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 20;
+  font-family: var(--px);
+  font-size: var(--fs-xxs);
+  letter-spacing: 1px;
+  padding: 5px 10px;
+  background: rgba(5, 4, 22, 0.88);
+  border: 1px solid rgba(96, 80, 184, 0.5);
+  color: var(--ex-text);
+  cursor: pointer;
+  border-radius: 4px;
+  transition: opacity 0.2s;
+}
+.map-zoom-reset.visible { display: block; }
+.map-zoom-reset:hover { background: rgba(96, 80, 184, 0.2); }
 
 /* ── Tablet / medium screens (≤ 800px) ──────────────── */
 @media (max-width: 800px) {
@@ -1378,6 +1435,8 @@
     transition: bottom 0.5s cubic-bezier(0.19, 1, 0.22, 1);
   }
   .map-region-panel.open { bottom: 0; right: 0; }
+  /* Allow native vertical scroll/swipe inside the panel */
+  .map-region-panel { touch-action: pan-y; overscroll-behavior: contain; }
 
   #explore-party-hud { display: none !important; }
   #explore-minimap-wrap { right: 8px; left: auto; }

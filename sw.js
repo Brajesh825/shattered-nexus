@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nexus-cache-v4.3';
+const CACHE_NAME = 'nexus-cache-v4.4';
 
 // Core shell — always pre-cached regardless of quality setting
 const SHELL_ASSETS = [
@@ -66,6 +66,7 @@ const SHELL_ASSETS = [
   './js/map/map-engine.js',
   './js/map/map-entities.js',
   './js/map/map-ui.js',
+  './js/map/map-touch.js',
   // Data
   './data/characters.json',
   './data/character-unlocks.json',
