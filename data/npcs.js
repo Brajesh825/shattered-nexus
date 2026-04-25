@@ -261,6 +261,48 @@ const NPC_DEFS = {
     },
   },
 
+  the_archivist: {
+    name:   'The Archivist',
+    color:  '#a5b4fc',
+    sprite: 'images/characters/map/sheets/npc/archivist_sheet.png',
+    dialogues: {
+      crystal_cavern: [
+        { speaker: 'The Archivist', text: 'Still here. Still here. I have been cataloguing the resonance patterns for… how long has it been.' },
+        { speaker: 'Tao',           text: 'You are a ghost.' },
+        { speaker: 'The Archivist', text: 'I am an unfinished record. There is a difference.' },
+        { speaker: 'The Archivist', text: 'The Demon Lord — you are going to fight him. I can see it in the way you move. Let me save you time.' },
+        { speaker: 'Rei',           text: 'We are listening.' },
+        { speaker: 'The Archivist', text: 'He has fused a fire Fragment to his core. It does not make him stronger — it makes him saturated. He is running at the absolute limit of what a body can hold.' },
+        { speaker: 'The Archivist', text: 'You cannot burn him. He absorbs it. But a system already at capacity cannot absorb more. Push more fire into him than he can process and the Fragment destabilises. He will not survive his own power.' },
+        { speaker: 'Aya',           text: 'Overload him from the inside.' },
+        { speaker: 'The Archivist', text: 'Precisely. Or hit him with the opposite — ice, cryo. Elemental contradiction causes a reaction he cannot suppress. Either way works. Either way hurts him.' },
+        { speaker: 'The Archivist', text: 'That is all I have left to give. Go. Finish the record I could not.' },
+      ],
+    },
+  },
+
+  ghost_knight: {
+    name:   'Ghost Knight',
+    color:  '#94a3b8',
+    sprite: 'images/characters/map/sheets/npc/knight_of_the_vale_sheet.png',
+    dialogues: {
+      crystal_cavern: [
+        { speaker: 'Ghost Knight', text: '...You are warm. I remember warm.' },
+        { speaker: 'Lulu',         text: 'Can you hear us? Do you know where you are?' },
+        { speaker: 'Ghost Knight', text: 'The passage. I was holding the passage. They sent something through and I… I held.' },
+        { speaker: 'Rei',          text: 'How long have you been here?' },
+        { speaker: 'Ghost Knight', text: 'I do not know how long. I know I was supposed to hold until they came back. No one came back.' },
+        { speaker: 'Tao',          text: 'What did Valdris do to you?' },
+        { speaker: 'Ghost Knight', text: 'He did not take everything. I think he tried. But I had one thing left — the order I was given. Hold the passage. He could not take that. So he left the rest of me hollow and moved on.' },
+        { speaker: 'Aya',          text: 'You kept yourself alive through the order alone.' },
+        { speaker: 'Ghost Knight', text: 'I kept the echo alive. I am not sure there is a difference anymore.' },
+        { speaker: 'Ghost Knight', text: 'The passage is clear now. You can go through. That is what I was holding it for, I think. Someone like you.' },
+        { speaker: 'Lulu',         text: 'You can rest now. You held long enough.' },
+        { speaker: 'Ghost Knight', text: '...Yes. I suppose I did.' },
+      ],
+    },
+  },
+
   lira: {
     name:   'Lira',
     color:  '#4ade80',
