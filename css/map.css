@@ -617,38 +617,40 @@
 #camp-menu {
   position: absolute;
   inset: 0;
-  background: rgba(4,2,12,0.82);
+  background: rgba(4,2,12,0.86);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 60;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(6px);
 }
 
 .camp-panel {
-  background: linear-gradient(160deg, rgba(14, 10, 42, 0.95) 0%, rgba(8, 5, 20, 0.98) 100%);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(96, 80, 184, 0.3);
-  border-radius: 12px;
-  padding: 24px 28px;
-  width: min(340px, 90vw);
+  background: linear-gradient(160deg, rgba(16, 10, 46, 0.97) 0%, rgba(8, 5, 20, 0.99) 100%);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(110, 90, 200, 0.4);
+  border-radius: 14px;
+  padding: 26px 30px 22px;
+  width: min(340px, 92vw);
   display: flex;
   flex-direction: column;
   gap: 14px;
-  box-shadow: 0 0 50px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(96, 80, 184, 0.1);
+  box-shadow: 0 0 60px rgba(0,0,0,0.7), 0 0 0 1px rgba(80,60,160,0.15),
+              inset 0 0 24px rgba(96,80,184,0.08);
 }
 
 .camp-title {
   font-family: var(--px);
   font-size: var(--fs-md);
-  letter-spacing: 3px;
+  letter-spacing: 4px;
   color: var(--ex-accent2);
   text-align: center;
+  text-shadow: 0 0 20px rgba(150,120,255,0.5);
 }
 
 .camp-subtitle {
   font-size: var(--fs-xs);
-  color: #6050a0;
+  color: #7060a8;
   text-align: center;
   margin-top: -8px;
 }
@@ -656,32 +658,59 @@
 .camp-actions {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  border-top: 1px solid #1a0d40;
-  padding-top: 12px;
+  gap: 7px;
+  border-top: 1px solid rgba(60,40,100,0.6);
+  padding-top: 14px;
 }
 
 .camp-btn {
   font-family: var(--px);
   font-size: var(--fs-sm);
-  letter-spacing: 1px;
-  padding: 11px 16px;
-  background: rgba(40,20,80,0.6);
-  border: 1px solid #2a1860;
+  letter-spacing: 1.5px;
+  padding: 12px 18px;
+  background: rgba(36,18,76,0.7);
+  border: 1px solid rgba(60,40,120,0.7);
   color: #c0b0e8;
   cursor: pointer;
-  border-radius: 5px;
-  transition: all .18s;
+  border-radius: 7px;
+  transition: background .15s, border-color .15s, color .15s, transform .1s;
   text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
-.camp-btn:hover { background: rgba(80,50,160,0.4); border-color: #6040c0; color: #fff; }
+.camp-btn:hover  { background: rgba(80,50,160,0.5); border-color: #7050d0; color: #fff; }
+.camp-btn:active { transform: scale(0.97); }
+.camp-btn:disabled {
+  opacity: 0.32;
+  cursor: not-allowed;
+  pointer-events: none;
+}
 
+/* CONTINUE is de-emphasised — dim separator style */
 .camp-btn-minor {
-  border-color: #1a1040;
-  color: #6050a0;
+  background: transparent;
+  border-color: rgba(40,25,80,0.5);
+  color: #5a4890;
   font-size: var(--fs-xxs);
+  letter-spacing: 1px;
+  padding: 8px 18px;
+  justify-content: center;
+  margin-top: 2px;
 }
-.camp-btn-minor:hover { color: #9080c0; border-color: #3a2060; }
+.camp-btn-minor:hover { color: #a090d0; border-color: #4a3080; background: rgba(40,20,80,0.3); }
+
+/* Mobile scaling */
+@media (max-width: 600px) {
+  .camp-panel { padding: 18px 20px 16px; gap: 10px; }
+  .camp-btn   { padding: 10px 14px; font-size: 0.78rem; gap: 8px; }
+  .camp-title { font-size: var(--fs-sm); letter-spacing: 3px; }
+}
+@media (max-width: 400px) {
+  .camp-panel { padding: 14px 14px 12px; width: min(300px, 94vw); }
+  .camp-btn   { padding: 8px 12px; font-size: 0.72rem; gap: 6px; }
+  .camp-btn-minor { padding: 6px 12px; }
+}
 
 /* ── Relic Panel ─────────────────────────────────────── */
 #relic-panel {

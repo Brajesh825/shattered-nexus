@@ -910,16 +910,33 @@ const MapEngine = (() => {
 
   function onBattleComplete(victory) {
     if (!victory) {
-      G.mode = 'free';
-      if (typeof Story !== 'undefined' && Story.active) Story.onBattleLost();
-      else showScreen('title-screen');
-      MapEntities.clear();
+      // Respawn at map start — restore party to half HP, clear statuses, reset position
+      if (_map && _map.playerStart) {
+        G.party.forEach(m => {
+          if (!m) return;
+          m.hp     = Math.max(1, Math.floor(m.maxHp * 0.5));
+          m.mp     = Math.floor(m.maxMp * 0.5);
+          m.isKO   = false;
+          m.statuses = [];
+        });
+        MapEntities.clear();
+        MapPlayer.reset(_map.playerStart.x, _map.playerStart.y);
+        _campUnlocked = false; _atCamp = false;
+        showScreen('explore-screen');
+        resume();
+        if (typeof MapUI !== 'undefined') MapUI.showMsg('💀 Defeated — returned to camp.', 2400);
+      } else {
+        // Fallback: no map loaded, hand off to story or title
+        G.mode = 'free';
+        if (typeof Story !== 'undefined' && Story.active) Story.onBattleLost();
+        else showScreen('title-screen');
+        MapEntities.clear();
+      }
       return;
     }
     MapEntities.removeEncountered();
     showScreen('explore-screen');
     resume();
-    // Objective check runs next frame via _update → _checkObjective
     if (typeof MapUI !== 'undefined') MapUI.showMsg('Victory!', 1200);
   }
 
