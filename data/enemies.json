@@ -3698,15 +3698,16 @@
     "weakTo": [ "light", "fire" ],
     "resistTo": [ "void", "shadow" ],
     "tier": 3,
+    "aiType": "sequenced",
     "statPhases": [
       { "hp": 0.40, "mag": 2.2, "spd": 1.8, "def": 0.35 }
     ],
     "stats": {
-      "hp": 480,
-      "atk": 18,
+      "hp": 680,
+      "atk": 24,
       "def": 60,
       "spd": 12,
-      "mag": 15
+      "mag": 24
     },
     "reward": {
       "exp": 700,

@@ -39,7 +39,30 @@
       "Bash(python3 -c \"import sys, json; data = json.load\\(sys.stdin\\); ranges = {}; [[\\(ranges.setdefault\\(k, {'min': v, 'max': v}\\), ranges[k].update\\({'min': min\\(ranges[k]['min'], v\\), 'max': max\\(ranges[k]['max'], v\\)}\\)\\) for k, v in enemy.get\\('stats', {}\\).items\\(\\)] for enemy in data]; [\\(print\\(f'{k}: {v[\\\\\"min\\\\\"]} to {v[\\\\\"max\\\\\"]}'\\)\\) for k, v in sorted\\(ranges.items\\(\\)\\)]\")",
       "Bash(grep -n \"fireAmp\\\\|absorb\\\\|slowChance\" /c/Users/ASUS/VVI/rpg+/js/battle/*.js /c/Users/ASUS/VVI/rpg+/js/battle/status-system.js)",
       "Bash(python3 -c \"import sys, json; data = json.load\\(sys.stdin\\); ultimates = [ab for cls in data for ab in cls.get\\('abilities', []\\) if ab.get\\('isUltimate'\\)]; print\\('\\\\\\\\n'.join\\(sorted\\(set\\([ab['id'] for ab in ultimates]\\)\\)\\)\\)\")",
-      "Bash(gh pr create --title 'Audit fixes: AOE animations, ability effects, balance & cleanup' --body ':*)"
+      "Bash(gh pr create --title 'Audit fixes: AOE animations, ability effects, balance & cleanup' --body ':*)",
+      "Bash(python -c ' *)",
+      "Bash(node --input-type=module)",
+      "Bash(node --check C:/Users/ASUS/VVI/rpg+/js/game.js)",
+      "Bash(node --check C:/Users/ASUS/VVI/rpg+/js/battle/action-handler.js)",
+      "Bash(node --check C:/Users/ASUS/VVI/rpg+/js/ui/battle-ui.js)",
+      "Bash(gh pr create --title 'feat: battle UI overhaul — lunge animation & visual polish' --body ' *)",
+      "Bash(find C:\\\\Users\\\\ASUS\\\\VVI\\\\rpg+ -name \"*.css\" -type f -exec grep -l \"anim-shake\\\\|anim-slash\\\\|enemy.*anim\" {} \\\\;)",
+      "Bash(find /c/Users/ASUS/VVI/rpg+ -name \"*.js\" -type f -exec grep -l \"moveAnimations\\\\|SVGAnimations\" {} \\\\;)",
+      "Bash(gh pr *)",
+      "Bash(awk '{print $5, $9}')",
+      "Bash(sort -k2)",
+      "Bash(sort -t: -k3 -n)",
+      "Bash(node -e \"eval\\(require\\('fs'\\).readFileSync\\('C:/Users/ASUS/VVI/rpg+/js/map/data/tile-renders.js','utf8'\\)\\); console.log\\('OK'\\)\")",
+      "Bash(node --check \"C:/Users/ASUS/VVI/rpg+/js/map/map-entities.js\")",
+      "Bash(node --check \"C:/Users/ASUS/VVI/rpg+/js/battle/status-system.js\")",
+      "Bash(node --check \"C:/Users/ASUS/VVI/rpg+/js/battle/action-handler.js\")",
+      "Bash(node --check \"C:/Users/ASUS/VVI/rpg+/js/game.js\")",
+      "Bash(node --check \"C:/Users/ASUS/VVI/rpg+/js/map/map-engine.js\")",
+      "Bash(node --check \"C:/Users/ASUS/VVI/rpg+/js/story.js\")",
+      "Bash(node --check \"C:\\\\Users\\\\ASUS\\\\VVI\\\\rpg+\\\\js\\\\story.js\")",
+      "Bash(node --check \"C:\\\\Users\\\\ASUS\\\\VVI\\\\rpg+\\\\js\\\\game.js\")",
+      "Bash(node --check \"C:\\\\Users\\\\ASUS\\\\VVI\\\\rpg+\\\\js\\\\map\\\\map-ui.js\")",
+      "mcp__Claude_in_Chrome__tabs_context_mcp"
     ]
   }
 }

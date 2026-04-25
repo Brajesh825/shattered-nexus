@@ -191,17 +191,27 @@ const Battle = {
     const aura = target?.statuses?.find(s => s.id.startsWith('aura_'));
     const auraType = aura ? aura.id.replace('aura_', '') : null;
 
+    // Predator vanguard-bypass: if a vanguard is alive, physical singles will be
+    // intercepted — predator AI prefers non-physical moves to reach the real target
+    const vanguardAlive = actor.aiRole === 'predator' &&
+      typeof G !== 'undefined' && G.party?.[2] && !G.party[2].isKO && G.party[2].hp > 0;
+
     const weightedAbilities = abilities.map(ab => {
       let weight = ab.weight || 50;
       const element = ab.effect?.element || actor.element || 'physical';
 
-      // If we have an aura and this move triggers a reaction, boost weight significantly
-      if (auraType) {
-        if (this._willReact(auraType, element)) {
-          weight *= 3; // Prioritize reactions!
-          if (window.LogDebug) window.LogDebug(`[AI-Synergy] Weight boosted for ${ab.name} (Element: ${element} vs Aura: ${auraType})`, 'hi');
-        }
+      // Synergy: boost moves that trigger a reaction on the target's aura
+      if (auraType && this._willReact(auraType, element)) {
+        weight *= 3;
+        if (window.LogDebug) window.LogDebug(`[AI-Synergy] Weight boosted for ${ab.name} (Element: ${element} vs Aura: ${auraType})`, 'hi');
       }
+
+      // Predator bypass: heavily favour non-physical moves when vanguard blocks physicals
+      if (vanguardAlive && ab.type === 'physical') {
+        weight *= 0.2; // 80% reduction — almost never wastes a physical into vanguard
+        if (window.LogDebug) window.LogDebug(`[AI-Predator] ${ab.name} suppressed — vanguard blocks physical reach`, 'hi');
+      }
+
       return { ...ab, _tempWeight: weight };
     });
 
