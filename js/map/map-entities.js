@@ -400,6 +400,10 @@ const MapEntities = (() => {
       isBoss:         e.isBoss || e.boss || false, // Capture map-specific boss flag
     }));
     _encounteredIdx = -1;
+
+    // Preload PNG sprites for all unique enemy IDs on this map
+    const uniqueIds = [...new Set(_enemies.map(e => e.id))];
+    uniqueIds.forEach(id => _getEnemySprite(id));
   }
 
   function clear() { _enemies = []; _encounteredIdx = -1; }
@@ -627,26 +631,35 @@ const MapEntities = (() => {
     return ids;
   }
 
-  // Sprite cache: enemyId → offscreen canvas
+  // Sprite cache: enemyId → HTMLImageElement | offscreen canvas
   const _spriteCache = {};
+  // Track which IDs are mid-load so we don't double-request
+  const _spriteLoading = new Set();
 
   function _getEnemySprite(id) {
     if (_spriteCache[id]) return _spriteCache[id];
-    // Find palette from G.enemies
-    const raw = G && G.enemies && G.enemies.find(e => e.id === id);
-    const palette = (raw && raw.palette) ? raw.palette : {
-      body: '#a04040', dark: '#601010', shine: '#d06060', eye: '#ffffff', pupil: '#200000',
+    if (_spriteLoading.has(id)) return null; // still loading — skip this frame
+
+    _spriteLoading.add(id);
+    const img = new Image();
+    img.onload = () => {
+      _spriteCache[id] = img;
+      _spriteLoading.delete(id);
     };
-    _spriteCache[id] = SpriteRenderer.drawEnemyToCanvas(id, palette);
-    return _spriteCache[id];
+    img.onerror = () => {
+      // No PNG — fall back to canvas-drawn sprite
+      const raw = G && G.enemies && G.enemies.find(e => e.id === id);
+      const palette = (raw && raw.palette) ? raw.palette : {
+        body: '#a04040', dark: '#601010', shine: '#d06060', eye: '#ffffff', pupil: '#200000',
+      };
+      _spriteCache[id] = SpriteRenderer.drawEnemyToCanvas(id, palette);
+      _spriteLoading.delete(id);
+    };
+    img.src = `images/enemies/${id}.png`;
+    return null; // not ready yet — renders nothing this frame, appears next frame
   }
 
   function renderEnemies(ctx, cam, TILE, map, inVision) {
-    const _edw = Math.round(TILE * 1.1);
-    const _edh = Math.round(TILE * 1.6);
-    const _eox = Math.round((TILE - _edw) / 2);
-    const _eoy = TILE - _edh;
-
     _enemies.forEach(en => {
       if (!en.alive) return;
       if (typeof inVision === 'function' && !inVision(en.tx, en.ty)) return;
@@ -657,17 +670,23 @@ const MapEntities = (() => {
       const bounce = en.moving ? Math.sin(en.frame / 4 * Math.PI * 2) * 3 : 0;
       const mut    = en.mutation; // null | 'corrupted' | 'mutant'
 
-      // ── Mutation scale ───────────────────────────────
-      const scale  = mut === 'mutant' ? 1.65 : mut === 'corrupted' ? 1.32 : 1.0;
-      const edw    = Math.round(_edw * scale);
-      const edh    = Math.round(_edh * scale);
-      const eox    = Math.round((TILE - edw) / 2);
-      const eoy    = TILE - edh;
+      // ── Base size: bosses are enormous, regular enemies match player size ──
+      const bossScale = en.isBoss ? 2.2 : 1.0;
+      const _edw = Math.round(TILE * 1.2 * bossScale);
+      const _edh = Math.round(TILE * 2.0 * bossScale);
+
+      // ── Mutation scale on top of boss scale ──────────
+      const mutScale = mut === 'mutant' ? 1.65 : mut === 'corrupted' ? 1.32 : 1.0;
+      const scale    = bossScale * mutScale;
+      const edw      = Math.round(_edw * mutScale);
+      const edh      = Math.round(_edh * mutScale);
+      const eox      = Math.round((TILE - edw) / 2);
+      const eoy      = TILE - edh;
 
       // ── Glow ring for mutated enemies ────────────────
       if (mut) {
         const pulse  = 0.5 + 0.5 * Math.sin(en.mutationPhase * (mut === 'mutant' ? 4.0 : 2.5));
-        const glowR  = mut === 'mutant' ? Math.round(TILE * 0.85) : Math.round(TILE * 0.60);
+        const glowR  = mut === 'mutant' ? Math.round(TILE * 0.85 * bossScale) : Math.round(TILE * 0.60 * bossScale);
         const glowC  = mut === 'mutant' ? `rgba(80,255,60,${0.25 + 0.20 * pulse})`
                                         : `rgba(160,40,255,${0.22 + 0.18 * pulse})`;
         ctx.save();
@@ -685,6 +704,7 @@ const MapEntities = (() => {
       ctx.beginPath();
       ctx.ellipse(sx + TILE / 2, sy + TILE - 3, TILE * 0.35 * scale, 6 * scale * 0.6, 0, 0, Math.PI * 2);
       ctx.fill();
+
 
       // ── Sprite (with optional canvas filter for mutations) ──
       const spr = _getEnemySprite(en.id);

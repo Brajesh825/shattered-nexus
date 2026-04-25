@@ -64,12 +64,12 @@ const StatusSystem = {
   },
 
   has(unit, effectId) {
-    return unit.statuses?.some(s => s.id === effectId);
+    return unit.statuses?.some(s => s.id === effectId || s.id.startsWith(effectId + '_'));
   },
 
   remove(unit, effectId) {
     if (!unit.statuses) return;
-    unit.statuses = unit.statuses.filter(s => s.id !== effectId);
+    unit.statuses = unit.statuses.filter(s => s.id !== effectId && !s.id.startsWith(effectId + '_'));
   },
 
   /**

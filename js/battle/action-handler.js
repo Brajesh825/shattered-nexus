@@ -464,7 +464,7 @@ const ActionEngine = {
         }
 
         if (e.cleanse && Battle.alive(m)) {
-          m.statuses = (m.statuses || []).filter(s => !s.id.includes('debuff') && s.id !== 'status_frozen' && s.id !== 'status_stunned');
+          m.statuses = (m.statuses || []).filter(s => !s.id.includes('debuff') && !s.id.startsWith('status_frozen') && !s.id.startsWith('status_stunned'));
           BattleUI.addLog(`✨ ${m.displayName} Cleansed!`, 'heal');
         }
         BattleUI.createEffectOverlay(mIdx, element, layer, ab.id);
@@ -888,7 +888,7 @@ function enemyAct(enemy, enemyIdx) {
 
   // Control check is handled at TurnManager level.
   // This legacy check is kept simplified as a fallback.
-  if (enemy.statuses?.some(s => s.id === 'status_stunned' || s.id === 'status_frozen')) {
+  if (StatusSystem.has(enemy, 'status_stunned') || StatusSystem.has(enemy, 'status_frozen')) {
     TurnManager.advance();
     return;
   }
