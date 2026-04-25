@@ -259,6 +259,7 @@ const Story = {
       this._pendingSave = null;
       this.arcIdx = s.arcIdx || 0;
       this.chapIdx = s.chapIdx !== undefined ? s.chapIdx : -1;
+      this.phase   = s.phase || null;
       // Restore all party member stats (new format) or fall back to hero-only (legacy)
       if (s.partyStats && s.partyStats.length && G.party.length) {
         G.party.forEach(m => {
@@ -321,6 +322,13 @@ const Story = {
         this._showArcIntro();
         return;
       }
+      // If saved phase is post-boss or later, boss is already beaten — go to world map
+      const _postBossPhases = ['boss_post', 'char_moment', 'arc_end', 'world_map', 'epilogue'];
+      if (_postBossPhases.includes(this.phase)) {
+        this._showWorldMap();
+        return;
+      }
+
       if (this.chapIdx < chapters.length) {
         const chap = chapters[this.chapIdx];
         this._setHeader(`Arc ${arc.number}: ${arc.name}`, chap ? chap.title : '');
@@ -379,9 +387,8 @@ const Story = {
       if (mapId && !G.clearedMaps.includes(mapId)) {
         G.clearedMaps.push(mapId);
       }
-      this._doSave(); // Save progress after boss defeat
-
-      this.phase = 'boss_post';
+      this.phase = 'boss_post'; // Set phase BEFORE saving so reload knows boss is done
+      this._doSave();
       const postLines = chap.post_dialogue || [];
       if (this._pendingRelicMsg) {
         const msg = this._pendingRelicMsg;
