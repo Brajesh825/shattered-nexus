@@ -928,11 +928,9 @@ function enemyAct(enemy, enemyIdx) {
     }
 
     if (!target && role === 'predator') {
-      // Always target lowest HP
+      // Silently target lowest HP — no announcement, purely native behaviour
       alive.sort((a, b) => a.hp - b.hp);
       target = alive[0];
-      BattleUI.addLog(`🐺 ${enemy.name} is hunting the weak...`, 'hi');
-      BattleUI.popAI(enemyIdx, '🐺 TARGET WEAKNESS!');
     }
 
     // Default Attacker / Fallback
