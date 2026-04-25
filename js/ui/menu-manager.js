@@ -269,8 +269,6 @@ function confirmPartySwap() {
   G.selectedChars = [..._partySwapSelection];
   G.selectedChar  = G.selectedChars[0];
   buildParty();
-  // Auto-save the new party composition
-  if (typeof Story !== 'undefined' && Story.active) Story._doSave();
   closePartySwap();
   // Show brief confirmation toast
   if (typeof Save !== 'undefined') Save._showToast('Party updated');

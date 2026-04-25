@@ -112,8 +112,6 @@ const Archive = {
    */
   sync() {
     G.archive = this.data;
-    // Auto-save if Story system is active
-    if (typeof Story !== 'undefined' && Story._doSave) Story._doSave();
   }
 };
 
