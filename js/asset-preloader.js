@@ -24,6 +24,9 @@ const AssetPreloader = (() => {
     // BGM tracks (all of them)
     bgm: [
       'title', 'story', 'exploration', 'battle'
+    ],
+    ui: [
+      'world_map_bg'
     ]
   };
 
@@ -49,7 +52,8 @@ const AssetPreloader = (() => {
     const total =
       ASSETS.spirits.length +
       ASSETS.enemies.length +
-      ASSETS.bgm.length;
+      ASSETS.bgm.length +
+      ASSETS.ui.length;
 
     let loaded = 0;
 
@@ -93,6 +97,20 @@ const AssetPreloader = (() => {
         if (onProgress) onProgress(loaded, total);
       } catch (e) {
         console.warn(`⚠️ Failed to preload BGM: ${trackName}`, e);
+        loaded++;
+        if (onProgress) onProgress(loaded, total);
+      }
+    }
+
+    // Preload UI artwork
+    for (const imageId of ASSETS.ui) {
+      try {
+        const img = await loadImage(`images/ui/${imageId}.png`);
+        cache.images[`ui_${imageId}`] = img;
+        loaded++;
+        if (onProgress) onProgress(loaded, total);
+      } catch (e) {
+        console.warn(`⚠️ Failed to preload UI image: ${imageId}`, e);
         loaded++;
         if (onProgress) onProgress(loaded, total);
       }
