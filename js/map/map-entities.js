@@ -784,7 +784,10 @@ const MapEntities = (() => {
       _npcs = (map.npcs || []).map(n => {
         // Map common IDs to filenames (handle spelling mismatches)
         let spriteId = n.id;
-        if (spriteId === 'essabella') spriteId = 'essabela';
+        if (spriteId === 'essabella')    spriteId = 'essabela';
+        if (spriteId === 'the_archivist') spriteId = 'archivist';
+        if (spriteId === 'ghost_knight') spriteId = 'knight_of_the_vale';
+        if (spriteId === 'soldier_davan') spriteId = 'soldier_davan';
         if (spriteId.startsWith('soldier_')) spriteId = 'soldier';
 
         const spritePath = `images/characters/map/sheets/npc/${spriteId}_sheet.png`;
