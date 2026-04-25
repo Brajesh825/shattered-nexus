@@ -782,18 +782,13 @@ const MapEntities = (() => {
 
     function init(map) {
       _npcs = (map.npcs || []).map(n => {
-        // Map common IDs to filenames (handle spelling mismatches)
-        let spriteId = n.id;
-        if (spriteId === 'essabella')    spriteId = 'essabela';
-        if (spriteId === 'the_archivist') spriteId = 'archivist';
-        if (spriteId === 'ghost_knight') spriteId = 'knight_of_the_vale';
-        if (spriteId === 'soldier_davan') spriteId = 'soldier_davan';
-        if (spriteId.startsWith('soldier_')) spriteId = 'soldier';
-
-        const spritePath = `images/characters/map/sheets/npc/${spriteId}_sheet.png`;
+        const def = (typeof NPC_DEFS !== 'undefined') ? NPC_DEFS[n.id] : null;
+        const spritePath = def ? def.sprite : `images/characters/map/sheets/npc/${n.id}_sheet.png`;
 
         return {
           ...n,
+          name:   def ? def.name   : n.id,
+          color:  def ? def.color  : '#ffffff',
           sprite: spritePath,
           tx: n.x, ty: n.y,
           ox: n.x, oy: n.y,

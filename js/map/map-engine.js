@@ -1108,7 +1108,8 @@ const MapEngine = (() => {
 
   function _openNPCDialogue(npc) {
     _npcCurrent = npc;
-    _npcLines = DialogueController.getLines(npc.dialogueKey);
+    const def = (typeof NPC_DEFS !== 'undefined') ? NPC_DEFS[npc.id] : null;
+    _npcLines = (def && def.dialogues && def.dialogues[npc.dialogueKey]) || [{ speaker: npc.name || npc.id, text: '...' }];
     _npcLineIdx = 0;
     _showNPCLine();
   }
