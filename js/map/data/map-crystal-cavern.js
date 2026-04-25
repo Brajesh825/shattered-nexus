@@ -162,9 +162,9 @@ MAP_DEFS.crystal_cavern = {
   tiles: MAP_GENERATOR.generate(),
 
   npcs: [
-    { id: 'essabella',    x: 100, y: 50, dialogueKey: 'essabella_cavern' },
-    { id: 'the_archivist',x: 30,  y: 27, dialogueKey: 'the_archivist' },
-    { id: 'ghost_knight', x: 60,  y: 72, dialogueKey: 'ghost_knight' },
+    { id: 'essabella',    x: 100, y: 50, dialogueKey: 'crystal_cavern' },
+    { id: 'the_archivist',x: 30,  y: 27, dialogueKey: 'crystal_cavern' },
+    { id: 'ghost_knight', x: 60,  y: 72, dialogueKey: 'crystal_cavern' },
   ],
 
   objective: {
