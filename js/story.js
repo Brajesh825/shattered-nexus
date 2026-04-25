@@ -56,19 +56,30 @@ const SPEAKER_PORTRAIT = {
 /* ══════════════════════════════════════════════════════════════════════════
    STORY ENGINE
 ══════════════════════════════════════════════════════════════════════════ */
-/* ── World map node positions (820×300 SVG space, 2D geography) ─────────── */
-const MAP_POSITIONS = [
-  { x: 110, y: 245 },  // Arc 1: Summoning Grounds  (south-west, forest)
-  { x: 270, y: 220 },  // Arc 2: Ember Wastes        (south-centre, desert)
-  { x: 150, y: 155 },  // Arc 3: Sunken Temple        (west, coastal)
-  { x: 370, y: 175 },  // Arc 4: Shadow Reach         (centre)
-  { x: 500, y: 135 },  // Arc 5: Inner Sanctum        (centre-east)
-  { x: 600, y: 95 },  // Arc 6: Fortress Gates       (north-east)
-  { x: 680, y: 60 },  // Arc 7: Fortress Inner       (north)
-  { x: 750, y: 30 },  // Arc 8: Eternal Void         (apex)
+/* World map places in 1024x1024 image space. The first three are the fixed route. */
+const MAP_PLACES = [
+  { x: 306, y: 632, label: 'Verdant Vale', arcIdx: 0, color: '#1f6a2c' },
+  { x: 506, y: 574, label: 'Crystal Cavern', arcIdx: 1, color: '#5c7ee8' },
+  { x: 708, y: 704, label: 'Ember Wastes', arcIdx: 2, color: '#c56820' },
+  { x: 208, y: 360, label: 'Sunken Temple', arcIdx: 3, color: '#1e8ac0' },
+  { x: 610, y: 446, label: 'Shadow Reach', arcIdx: 4, color: '#5630a8' },
+  { x: 756, y: 214, label: 'Void Citadel', arcIdx: 5, color: '#31245c' },
+  { x: 818, y: 162, label: 'Fortress Ramparts', arcIdx: 6, color: '#4c3a78' },
+  { x: 875, y: 108, label: 'Eternal Void', arcIdx: 7, color: '#080014' },
+  { x: 145, y: 145, label: 'Lighthouse Isles', color: '#36a7c8', lore: 'A chain of northern isles marked by an old tower and sea-lanes no one trusts after dusk.' },
+  { x: 450, y: 214, label: 'Northern Highlands', color: '#8c8f52', lore: 'Pale uplands above the Vale, full of old roads, broken watchposts, and forgotten border shrines.' },
+  { x: 575, y: 650, label: 'Ashen Foothills', color: '#8f6040', lore: 'Rocky ground where mountain stone gives way to desert heat. A natural bridge between the cavern and the wastes.' },
+  { x: 835, y: 512, label: 'Eastern Wetlands', color: '#3b8f6a', lore: 'A marshy eastern lowland under the edge of the purple storm, ideal for poison, spirits, and drowned patrols.' },
+  { x: 930, y: 175, label: 'Sky Ruins', color: '#7750c8', lore: 'Floating fragments around the citadel. They could become sky bridges, broken ramparts, or void-borne trials.' },
+  { x: 160, y: 780, label: 'Southern Isles', color: '#2c8a72', lore: 'Small southern islands that could hold exile shrines, optional treasure, or sea-route encounters.' },
+  { x: 470, y: 492, label: 'Riverlands Crossing', color: '#4c9fc0', lore: 'The central rivers where roads, bridges, and ambush paths meet before the world opens wider.' },
 ];
-const MAP_ICONS = ['🌲', '🔥', '🌊', '👁', '💎', '🏰', '🌑', '⭐'];
-const MAP_COLORS = ['#1a4010', '#7a2808', '#083868', '#300860', '#481068', '#201838', '#100820', '#060008'];
+
+const MAP_MAIN_ROUTE = [0, 1, 2, 3, 4, 5, 6, 7];
+const MAP_SIDE_ROUTES = [
+  [0, 13], [0, 14], [1, 9], [1, 14], [1, 10],
+  [2, 10], [3, 8], [4, 11], [5, 12],
+];
 
 /* Explore map linked to each arc (index = arcIdx 0-based) */
 const ARC_MAP_ID = [
@@ -1160,60 +1171,80 @@ const Story = {
     const area = this.el('map-area');
     if (!area) { this._startNextArc(); return; }
 
-    /* ── SVG path layer (820×300 viewBox) ── */
+    /* Path layer shares the world-map image coordinate space. */
     let svgLines = '';
-    // Only render lines between released arcs
-    for (let i = 0; i < Math.min(MAP_POSITIONS.length - 1, ReleaseConfig.MAX_REACHABLE_ARC); i++) {
-      const a = MAP_POSITIONS[i], b = MAP_POSITIONS[i + 1];
-      const done = i < this.arcIdx;
-      const color = done ? '#4a3898' : '#1a1060';
+    for (let i = 0; i < MAP_MAIN_ROUTE.length - 1; i++) {
+      const a = MAP_PLACES[MAP_MAIN_ROUTE[i]], b = MAP_PLACES[MAP_MAIN_ROUTE[i + 1]];
+      if (!a || !b || !isArcReleased(b.arcIdx)) continue;
+      const done = (b.arcIdx ?? 99) <= this.arcIdx;
+      const color = done ? '#f5d060' : '#302860';
       const dash = done ? '' : 'stroke-dasharray="8,5"';
       svgLines += `<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}"
-        stroke="${color}" stroke-width="2.5" ${dash}/>`;
+        stroke="${color}" stroke-width="4" stroke-linecap="round" ${dash}/>`;
+    }
+    for (const [fromIdx, toIdx] of MAP_SIDE_ROUTES) {
+      const a = MAP_PLACES[fromIdx], b = MAP_PLACES[toIdx];
+      if (!a || !b) continue;
+      svgLines += `<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}"
+        stroke="#7d6ab8" stroke-width="2" stroke-linecap="round"
+        stroke-dasharray="5,8" opacity="0.32"/>`;
     }
     area.innerHTML = `
-      <svg class="map-svg" viewBox="0 0 820 300" preserveAspectRatio="xMidYMid meet">
+      <svg class="map-svg" viewBox="0 0 1024 1024" preserveAspectRatio="xMidYMid meet">
         ${svgLines}
       </svg>`;
 
-    /* ── Node elements ── */
-    arcs.forEach((arc, i) => {
-      // Release Filter: Skip nodes that are completely locked in this release
-      if (!isArcReleased(i)) return;
+    /* ── Place elements ── */
+    MAP_PLACES.forEach((place, placeIdx) => {
+      const arcIdx = place.arcIdx;
+      const arc = Number.isInteger(arcIdx) ? arcs[arcIdx] : null;
+      if (arc && !isArcReleased(arcIdx)) return;
 
-      const pos = MAP_POSITIONS[i];
-      const isDone = i < this.arcIdx;
-      const isCur = i === this.arcIdx;
-      const isNext = i === nextIdx;
-      const isLock = i > nextIdx;
-      const cls = [isDone ? 'done' : '', isCur ? 'current' : '', isNext ? 'next' : '', isLock ? 'locked' : ''].filter(Boolean).join(' ');
+      const isStoryPlace = !!arc;
+      const isDone = isStoryPlace && arcIdx < this.arcIdx;
+      const isCur = isStoryPlace && arcIdx === this.arcIdx;
+      const isNext = isStoryPlace && arcIdx === nextIdx;
+      const isLock = isStoryPlace && arcIdx > nextIdx;
+      const isCharted = !isStoryPlace;
+      const cls = [
+        isDone ? 'done' : '',
+        isCur ? 'current' : '',
+        isNext ? 'next' : '',
+        isLock ? 'locked' : '',
+        isCharted ? 'charted' : '',
+        place.x < 260 ? 'label-right' : '',
+        place.x > 760 ? 'label-left' : '',
+        place.x >= 260 && place.x <= 760 && place.y > 760 ? 'label-above' : '',
+      ].filter(Boolean).join(' ');
 
       const node = document.createElement('div');
       node.className = `map-node ${cls}`;
-      node.style.left = (pos.x - 30) + 'px';
-      node.style.top = (pos.y - 44) + 'px';
-      if (MAP_COLORS[i]) node.style.setProperty('--node-color', MAP_COLORS[i]);
+      node.style.left = `${(place.x / 1024) * 100}%`;
+      node.style.top = `${(place.y / 1024) * 100}%`;
+      if (place.color) node.style.setProperty('--node-color', place.color);
 
       node.innerHTML =
-        `<div class="mn-status">${isDone ? '✓ CLEARED' : isCur ? '▶ ACTIVE' : isNext ? '◈ NEXT' : ''}</div>` +
-        `<div class="mn-icon">${MAP_ICONS[i]}</div>` +
-        `<div class="mn-num">ARC ${arc.number}</div>` +
-        `<div class="mn-name">${arc.name}</div>`;
+        `<div class="mn-marker" aria-hidden="true"></div>` +
+        `<div class="mn-label">
+          <span class="mn-status">${isCharted ? 'CHARTED' : isDone ? 'CLEARED' : isCur ? 'ACTIVE' : isNext ? 'NEXT' : 'LOCKED'}</span>
+          <span class="mn-name">${place.label}</span>
+        </div>`;
 
       /* Interaction */
-      if (isDone) {
-        node.title = 'Click to revisit';
-        node.addEventListener('click', () => this._openRegionPanel(i));
-      } else if (isNext) {
-        const arcComplete = this.phase === 'arc_end' || this.phase === 'epilogue';
-        if (!arcComplete) {
-          node.style.opacity = '0.4';
-          node.style.cursor = 'not-allowed';
-          node.title = '⛔ Defeat the current arc boss first';
-        }
-        node.addEventListener('click', () => this._startNextArc());
-      } else if (isCur) {
-        node.addEventListener('click', () => this._openRegionPanel(i));
+      if (isDone || isCur || isNext || isCharted) {
+        node.title = isStoryPlace ? `${place.label} - ${arc.location || 'Select place'}` : place.label;
+        node.setAttribute('role', 'button');
+        node.tabIndex = 0;
+        node.addEventListener('click', () => isStoryPlace ? this._openRegionPanel(arcIdx) : this._openMapPlacePanel(placeIdx));
+        node.addEventListener('keydown', (ev) => {
+          if (ev.key === 'Enter' || ev.key === ' ') {
+            ev.preventDefault();
+            isStoryPlace ? this._openRegionPanel(arcIdx) : this._openMapPlacePanel(placeIdx);
+          }
+        });
+      } else {
+        node.title = 'Locked';
+        node.setAttribute('aria-disabled', 'true');
       }
 
       area.appendChild(node);
@@ -1254,6 +1285,8 @@ const Story = {
     const shard = arc.shard;
     const isDone = arcIdx < this.arcIdx;
     const isCur = arcIdx === this.arcIdx;
+    const isNext = arcIdx === this.arcIdx + 1;
+    const arcComplete = this.phase === 'arc_end' || this.phase === 'epilogue';
 
     panel.innerHTML = `
       <div class="mrp-num">ARC ${arc.number}</div>
@@ -1262,8 +1295,27 @@ const Story = {
       ${shard ? `<div class="mrp-shard" style="color:${shard.color || '#fff'}">🔮 ${shard.name}</div>` : ''}
       <div class="mrp-lore">${lore}</div>
       <div class="mrp-actions">
+        ${isNext ? `<button class="mrp-btn primary" ${arcComplete ? '' : 'disabled'} onclick="Story.proceedFromMap()">${arcComplete ? 'TRAVEL THERE' : 'DEFEAT CURRENT BOSS'}</button>` : ''}
         ${(isDone || isCur) && mapId ? `<button class="mrp-btn primary" onclick="Story.startRegionSkirmish(${arcIdx})">⚔ SKIRMISH</button>` : ''}
-        ${mapId ? `<button class="mrp-btn" onclick="Story._exploreRegion('${mapId}')">🗺 EXPLORE</button>` : ''}
+        ${(isDone || isCur) && mapId ? `<button class="mrp-btn" onclick="Story._exploreRegion('${mapId}')">🗺 EXPLORE</button>` : ''}
+        <button class="mrp-btn" onclick="Story._closeRegionPanel()">← BACK</button>
+      </div>`;
+
+    panel.classList.add('open');
+  },
+
+  _openMapPlacePanel(placeIdx) {
+    const place = MAP_PLACES[placeIdx];
+    const panel = document.getElementById('map-region-panel');
+    if (!place || !panel) return;
+
+    panel.innerHTML = `
+      <div class="mrp-num">CHARTED PLACE</div>
+      <div class="mrp-name">${place.label}</div>
+      <div class="mrp-loc">Future map candidate</div>
+      <div class="mrp-lore">${place.lore || 'This location is visible on the world map, but it is not connected to a playable region yet.'}</div>
+      <div class="mrp-actions">
+        <button class="mrp-btn" disabled>NOT AVAILABLE YET</button>
         <button class="mrp-btn" onclick="Story._closeRegionPanel()">← BACK</button>
       </div>`;
 
