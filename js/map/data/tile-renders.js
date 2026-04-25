@@ -17,6 +17,26 @@ const TILE_RENDERS = (() => {
   // Hash a tile position to a stable pseudo-random 0-1 float
   const _h = (sx, sy, tw) => ((((sx / tw | 0) * 7 + (sy / tw | 0) * 13) & 0xfff) / 0xfff);
 
+  // Raised-block effect for non-walkable solid tiles.
+  // Draws a front face at the bottom and a lit top edge, giving the illusion of height.
+  //   depth  — px height of the visible front face (default 10)
+  //   faceColor — CSS colour of the front face; defaults to a darkened version of def.shadow
+  const _raised = (ctx, def, sx, sy, tw, th, depth = 10, faceColor) => {
+    const d = depth;
+    // Ledge shadow line — thin dark strip separating top from front face
+    ctx.fillStyle = 'rgba(0,0,0,0.55)';
+    ctx.fillRect(sx, sy + th - d - 1, tw, 2);
+    // Front face — visible wall side
+    ctx.fillStyle = faceColor || def.shadow;
+    ctx.fillRect(sx, sy + th - d, tw, d);
+    // Right-side ambient occlusion sliver
+    ctx.fillStyle = 'rgba(0,0,0,0.28)';
+    ctx.fillRect(sx + tw - 2, sy, 2, th - d);
+    // Top-surface highlight edge (light catching the block rim)
+    ctx.fillStyle = 'rgba(255,255,255,0.10)';
+    ctx.fillRect(sx, sy, tw, 1);
+  };
+
   /* ── CORE TERRAIN ─────────────────────────────────────────── */
 
   function void_(ctx, def, sx, sy, tw, th) {
@@ -32,45 +52,72 @@ const TILE_RENDERS = (() => {
     ctx.moveTo(sx + 18, sy + 44); ctx.lineTo(sx + 38, sy + 58);
     ctx.stroke();
     ctx.globalAlpha = 1;
+    _raised(ctx, def, sx, sy, tw, th, 9, '#000000');
   }
 
   function grass(ctx, def, sx, sy, tw, th, t) {
-    ctx.fillStyle = def.color;
+    const gx = (sx / tw) | 0;
+    const gy = (sy / tw) | 0;
+    const h = _h(sx, sy, tw);
+
+    // Per-tile color variation so large fields aren't a flat painted rectangle
+    const rr = (45 + h * 12) | 0;
+    const gg = (90 + h * 22) | 0;
+    ctx.fillStyle = `rgb(${rr},${gg},30)`;
     ctx.fillRect(sx, sy, tw, th);
+
+    // Occasional soil/dirt patch showing through (every ~5th tile)
+    if (h > 0.78) {
+      ctx.fillStyle = 'rgba(60,40,20,0.18)';
+      ctx.fillRect(sx + tw * 0.28, sy + th * 0.48, tw * 0.44, th * 0.38);
+    }
+
+    // Thin highlight edge
     ctx.fillStyle = def.hi;
     ctx.fillRect(sx, sy, tw, 2);
     ctx.fillRect(sx, sy, 2, th);
-    const gx = (sx / tw) | 0;
-    const gy = (sy / tw) | 0;
+
     const seed = gx * 7 + gy * 13;
-    
-    // Wind sway factor
     const sway = Math.sin(t * 2.2 + gx * 0.5 + gy * 0.3) * 2.5;
 
-    ctx.fillStyle = 'rgba(40,100,20,0.3)';
-    for (let i = 0; i < 4; i++) {
-      const bx = sx + ((seed * 7 + i * 13) % tw);
-      const curSway = sway * (1 + i * 0.2);
-      ctx.fillRect(bx + curSway, sy + th - 8, 2, 8);
-      ctx.fillRect(bx + 1 + curSway, sy + th - 12, 1, 6);
+    // 7 blades with 3 height classes and alternating shades
+    for (let i = 0; i < 7; i++) {
+      const bx = sx + ((seed * 7 + i * 11) % (tw - 4));
+      const bh = 6 + (i % 3) * 3;        // 6 / 9 / 12 px
+      const bw = i % 3 === 2 ? 1 : 2;    // narrow accent blades
+      const curSway = sway * (0.5 + i * 0.15);
+      ctx.fillStyle = i % 2 === 0 ? 'rgba(30,80,15,0.45)' : 'rgba(65,115,20,0.3)';
+      ctx.fillRect(bx + curSway, sy + th - bh, bw, bh);
     }
+
     ctx.fillStyle = def.shadow;
     ctx.fillRect(sx, sy + th - 2, tw, 2);
     ctx.fillRect(sx + tw - 2, sy, 2, th);
   }
 
   function path(ctx, def, sx, sy, tw, th) {
+    const h = _h(sx, sy, tw);
     ctx.fillStyle = def.color;
     ctx.fillRect(sx, sy, tw, th);
+
+    // Worn foot-traffic ruts
+    ctx.fillStyle = 'rgba(80,55,25,0.28)';
+    ctx.fillRect(sx + (tw * 0.22) | 0, sy + 2, 3, th - 4);
+    ctx.fillRect(sx + (tw * 0.62) | 0, sy + 2, 2, th - 4);
+
+    // Hash-varied pebbles so no two tiles look identical
+    for (let i = 0; i < 8; i++) {
+      const px = sx + ((h * 37 + i * 19) % (tw - 6)) + 3;
+      const py = sy + (((h * 71 + i * 23) | 0) % (th - 6)) + 3;
+      const r  = 1 + (i % 3) * 0.5;
+      ctx.fillStyle = i % 2 === 0 ? 'rgba(105,78,42,0.55)' : 'rgba(72,52,26,0.4)';
+      ctx.beginPath(); ctx.arc(px, py, r + 0.5, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = def.shadow;
+      ctx.beginPath(); ctx.arc(px, py, r, 0, Math.PI * 2); ctx.fill();
+    }
+
     ctx.fillStyle = def.hi;    ctx.fillRect(sx, sy, tw, 2);
     ctx.fillStyle = def.shadow; ctx.fillRect(sx, sy + th - 2, tw, 2);
-    const pebbles = [[6,8,2],[18,14,1.5],[28,6,2],[10,22,1.5],[24,20,2]];
-    pebbles.forEach(([px, py, r]) => {
-      ctx.fillStyle = 'rgba(90,66,30,0.5)';
-      ctx.beginPath(); ctx.arc(sx + px, sy + py, r + 0.5, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = def.shadow;
-      ctx.beginPath(); ctx.arc(sx + px, sy + py, r, 0, Math.PI * 2); ctx.fill();
-    });
   }
 
   function water(ctx, def, sx, sy, tw, th, t) {
@@ -114,34 +161,72 @@ const TILE_RENDERS = (() => {
   function bridge(ctx, def, sx, sy, tw, th) {
     ctx.fillStyle = def.color;
     ctx.fillRect(sx, sy, tw, th);
+
+    // Plank strips
     ctx.fillStyle = def.shadow;
     for (let bx = sx + 4; bx < sx + tw - 4; bx += 9) ctx.fillRect(bx, sy + 2, 7, th - 4);
+
+    // Rail highlights
     ctx.fillStyle = def.hi;
     ctx.fillRect(sx, sy + 3, tw, 5);
     ctx.fillRect(sx, sy + th - 8, tw, 5);
+
+    // Rail end caps
     ctx.fillStyle = '#9a7a48';
     for (let bx = sx + 4; bx < sx + tw; bx += 8) {
       ctx.fillRect(bx, sy + 1, 3, 4);
       ctx.fillRect(bx, sy + th - 5, 3, 4);
     }
+
+    // Nail heads at plank tops and bottoms
+    ctx.fillStyle = '#5a4020';
+    for (let bx = sx + 6; bx < sx + tw - 4; bx += 9) {
+      ctx.beginPath(); ctx.arc(bx + 3, sy + 7,  1.3, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(bx + 3, sy + th - 7, 1.3, 0, Math.PI * 2); ctx.fill();
+    }
+
+    // Faint wood grain lines
+    ctx.strokeStyle = 'rgba(120,90,40,0.18)'; ctx.lineWidth = 0.5;
+    for (let i = 0; i < 3; i++) {
+      const gy = sy + 11 + i * 14;
+      ctx.beginPath(); ctx.moveTo(sx + 4, gy); ctx.lineTo(sx + tw - 4, gy + 2); ctx.stroke();
+    }
   }
 
   function forest(ctx, def, sx, sy, tw, th) {
+    const h = _h(sx, sy, tw);
     ctx.fillStyle = '#061404';
     ctx.fillRect(sx, sy, tw, th);
+
+    // Trunk + roots
     ctx.fillStyle = '#2a1606';
-    ctx.fillRect(sx + tw / 2 - 3, sy + th - 14, 6, 14);
+    ctx.fillRect(sx + tw / 2 - 3, sy + th - 16, 6, 16);
+    // Root spread shadow
+    ctx.fillStyle = 'rgba(15,6,2,0.55)';
+    ctx.fillRect(sx + tw / 2 - 11, sy + th - 6, 22, 6);
+
+    // Canopy offset varies per tile so borders don't tile-repeat
+    const offX = ((h * 8) | 0) - 4;
     [
-      { bx: tw/2-8, by:0,  r:9,  c:'#0a2006' },
-      { bx: tw/2+1, by:-2, r:8,  c:'#0d2808' },
-      { bx: tw/2-4, by:6,  r:10, c:'#122e0a' },
-      { bx: tw/2,   by:2,  r:7,  c:'#183808' },
+      { bx: tw/2 - 9 + offX, by: 0,  r: 9,  c: '#0a2006' },
+      { bx: tw/2 + 1 + offX, by: -3, r: 8,  c: '#0d2808' },
+      { bx: tw/2 - 4,        by: 5,  r: 11, c: '#122e0a' },
+      { bx: tw/2,            by: 1,  r: 7,  c: '#183808' },
     ].forEach(b => {
       ctx.fillStyle = b.c;
       ctx.beginPath(); ctx.arc(sx + b.bx + 8, sy + b.by + 8, b.r, 0, Math.PI * 2); ctx.fill();
     });
-    ctx.fillStyle = 'rgba(60,120,20,0.15)';
-    ctx.beginPath(); ctx.arc(sx + tw/2 - 2, sy + 6, 6, 0, Math.PI * 2); ctx.fill();
+
+    // Light catch on top of canopy
+    ctx.fillStyle = 'rgba(80,160,30,0.2)';
+    ctx.beginPath(); ctx.arc(sx + tw/2 - 2 + offX, sy + 5, 7, 0, Math.PI * 2); ctx.fill();
+
+    // Rare berry / flower dot for variety
+    if (h > 0.84) {
+      ctx.fillStyle = '#ff5555';
+      ctx.beginPath(); ctx.arc(sx + tw/2 + 6 + offX, sy + 11, 1.8, 0, Math.PI * 2); ctx.fill();
+    }
+    _raised(ctx, def, sx, sy, tw, th, 10, '#071002');
   }
 
   function mountain(ctx, def, sx, sy, tw, th) {
@@ -159,14 +244,33 @@ const TILE_RENDERS = (() => {
     ctx.beginPath();
     ctx.moveTo(sx + tw/2, sy + 3); ctx.lineTo(sx + tw-3, sy + th-3); ctx.lineTo(sx + tw/2, sy + th-3);
     ctx.closePath(); ctx.fill();
+    _raised(ctx, def, sx, sy, tw, th, 12, '#26202e');
   }
 
   function caveFloor(ctx, def, sx, sy, tw, th) {
+    const h = _h(sx, sy, tw);
     ctx.fillStyle = def.color;
     ctx.fillRect(sx, sy, tw, th);
+
+    // Stone block outlines
     ctx.strokeStyle = def.shadow; ctx.lineWidth = 1;
     ctx.strokeRect(sx + 2, sy + 2, tw - 4, th - 4);
     ctx.strokeRect(sx + 5, sy + 5, tw - 10, th - 10);
+
+    // Scattered gravel chips
+    ctx.fillStyle = 'rgba(60,45,70,0.5)';
+    for (let i = 0; i < 4; i++) {
+      const gx = sx + ((h * 53 + i * 17) % (tw - 6)) + 3;
+      const gy = sy + ((h * 41 + i * 23) % (th - 6)) + 3;
+      ctx.fillRect(gx, gy, 2, 1);
+    }
+
+    // Moisture drip dot on some tiles
+    if (h > 0.74) {
+      ctx.fillStyle = 'rgba(80,120,165,0.38)';
+      const dx = sx + ((h * tw) | 0) % (tw - 8) + 4;
+      ctx.beginPath(); ctx.arc(dx, sy + th - 9, 1.6, 0, Math.PI * 2); ctx.fill();
+    }
   }
 
   function dungeon(ctx, def, sx, sy, tw, th) {
@@ -189,17 +293,40 @@ const TILE_RENDERS = (() => {
     ctx.fillRect(sx + tw - 14, sy + th - 14, 10, 10);
     ctx.strokeStyle = 'rgba(0,0,0,0.4)'; ctx.lineWidth = 1;
     ctx.beginPath(); ctx.moveTo(sx+4,sy+4); ctx.lineTo(sx+tw-4,sy+th-4); ctx.stroke();
+    _raised(ctx, def, sx, sy, tw, th, 10, '#050310');
   }
 
   function sand(ctx, def, sx, sy, tw, th) {
+    const h = _h(sx, sy, tw);
+    // Per-tile brightness shift so the sand bank isn't one flat colour
     ctx.fillStyle = def.color;
     ctx.fillRect(sx, sy, tw, th);
+    if (h > 0.5) {
+      ctx.fillStyle = `rgba(200,185,130,${(h - 0.5) * 0.22})`;
+      ctx.fillRect(sx, sy, tw, th);
+    }
+
+    // Curved wind ripples (arcs, not rectangles)
+    ctx.strokeStyle = 'rgba(200,185,120,0.32)';
+    ctx.lineWidth = 1;
+    for (let i = 0; i < 3; i++) {
+      const ry = sy + 10 + i * 17 + ((h * 8) | 0);
+      ctx.beginPath();
+      ctx.moveTo(sx + 4, ry);
+      ctx.quadraticCurveTo(sx + tw / 2, ry - 4, sx + tw - 4, ry);
+      ctx.stroke();
+    }
+
+    // Small shell / pebble detail
+    if (h > 0.68) {
+      ctx.fillStyle = 'rgba(225,205,165,0.65)';
+      const shx = sx + ((h * tw) | 0) % (tw - 8) + 4;
+      const shy = sy + th * 0.6;
+      ctx.beginPath(); ctx.arc(shx, shy, 1.8, 0, Math.PI * 2); ctx.fill();
+    }
+
     ctx.fillStyle = def.hi;
     ctx.fillRect(sx, sy, tw, 2); ctx.fillRect(sx, sy, 2, th);
-    ctx.fillStyle = 'rgba(180,160,80,0.15)';
-    for (let i = 0; i < 8; i++) {
-      ctx.fillRect(sx + ((i*17)%tw), sy + ((i*11)%th), 3, 1);
-    }
   }
 
   function flower(ctx, def, sx, sy, tw, th, t) {
@@ -228,19 +355,32 @@ const TILE_RENDERS = (() => {
   }
 
   function townFloor(ctx, def, sx, sy, tw, th) {
+    const h = _h(sx, sy, tw);
     ctx.fillStyle = def.color;
     ctx.fillRect(sx, sy, tw, th);
-    const cw = tw/4, ch = th/4;
+    const cw = tw / 4, ch = th / 4;
     for (let row = 0; row < 4; row++) {
       for (let col = 0; col < 4; col++) {
-        ctx.fillStyle = (row+col)%2===0 ? def.shadow : def.hi;
-        ctx.fillRect(sx + col*cw+1, sy + row*ch+1, cw-2, ch-2);
+        ctx.fillStyle = (row + col) % 2 === 0 ? def.shadow : def.hi;
+        ctx.fillRect(sx + col * cw + 1, sy + row * ch + 1, cw - 2, ch - 2);
+        // Worn / stained stone — hash-picked so it varies per tile
+        const stoneIdx = row * 4 + col + ((h * 16) | 0);
+        if (stoneIdx % 5 === 0) {
+          ctx.fillStyle = 'rgba(0,0,0,0.13)';
+          ctx.fillRect(sx + col * cw + 2, sy + row * ch + 2, cw - 4, ch - 4);
+        }
       }
     }
+    // Grout lines
     ctx.fillStyle = '#281006';
     for (let i = 1; i < 4; i++) {
-      ctx.fillRect(sx + i*cw, sy, 1, th);
-      ctx.fillRect(sx, sy + i*ch, tw, 1);
+      ctx.fillRect(sx + i * cw, sy, 1, th);
+      ctx.fillRect(sx, sy + i * ch, tw, 1);
+    }
+    // Occasional moss creeping into a corner
+    if (h > 0.87) {
+      ctx.fillStyle = 'rgba(30,80,20,0.28)';
+      ctx.fillRect(sx, sy, 6, 6);
     }
   }
 
@@ -340,6 +480,7 @@ const TILE_RENDERS = (() => {
     ctx.closePath(); ctx.fill();
     ctx.fillStyle = def.shadow;
     ctx.fillRect(sx, sy+th-2, tw, 2); ctx.fillRect(sx+tw-2, sy, 2, th);
+    _raised(ctx, def, sx, sy, tw, th, 11, '#08060e');
   }
 
   /* ── WATER / WETLANDS ──────────────────────────────────────── */
@@ -1002,6 +1143,7 @@ const TILE_RENDERS = (() => {
     ctx.fillStyle = def.shadow;
     ctx.fillRect(sx, sy+th-2, tw, 2); ctx.fillRect(sx+tw-2, sy, 2, th);
     ctx.fillRect(sx, sy+th/2, tw, 1); ctx.fillRect(sx+tw/2, sy, 1, th/2);
+    _raised(ctx, def, sx, sy, tw, th, 11, '#2e2830');
   }
 
   function woodDoor(ctx, def, sx, sy, tw, th) {
@@ -1620,13 +1762,34 @@ const TILE_RENDERS = (() => {
   /* ── RUINS / ANCIENT ────────────────────────────────────────── */
 
   function ruinFloor(ctx, def, sx, sy, tw, th) {
+    const hv = _h(sx, sy, tw);
     ctx.fillStyle = def.color;
     ctx.fillRect(sx, sy, tw, th);
-    // Rubble chunks
-    ctx.fillStyle = def.shadow;
-    [[6,10,14,8],[28,30,10,10],[44,12,12,8],[10,46,16,8],[38,48,10,8]].forEach(([x,y,w,h]) => {
-      ctx.fillRect(sx+x, sy+y, w, h);
+
+    // Irregular stone blocks (not uniform checkerboard)
+    const blocks = [[4,3,22,14],[28,4,18,12],[3,20,14,16],[22,18,20,14],[44,8,14,18],[6,36,20,10],[32,32,18,12],[50,30,8,14]];
+    blocks.forEach(([x, y, w, bh], i) => {
+      ctx.fillStyle = i % 2 === 0 ? def.shadow : 'rgba(90,85,100,0.5)';
+      ctx.fillRect(sx + x, sy + y, w, bh);
     });
+
+    // Crack lines seeded per tile
+    ctx.strokeStyle = def.shadow; ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(sx + (hv * tw | 0) % (tw - 10) + 5, sy + 4);
+    ctx.lineTo(sx + (hv * tw | 0) % (tw - 10) + 10, sy + th * 0.55);
+    ctx.stroke();
+
+    // Moss patches on edges
+    if (hv > 0.55) {
+      ctx.fillStyle = 'rgba(30,70,25,0.28)';
+      ctx.fillRect(sx, sy, 8, 8);
+    }
+    if (hv < 0.35) {
+      ctx.fillStyle = 'rgba(30,70,25,0.22)';
+      ctx.fillRect(sx + tw - 9, sy + th - 9, 9, 9);
+    }
+
     ctx.fillStyle = def.hi;
     ctx.fillRect(sx, sy, tw, 1);
   }
@@ -1642,8 +1805,7 @@ const TILE_RENDERS = (() => {
     ctx.beginPath();
     ctx.moveTo(sx+tw*0.4, sy+2); ctx.lineTo(sx+tw*0.4+6, sy+th*0.5); ctx.lineTo(sx+tw*0.35, sy+th);
     ctx.stroke();
-    ctx.fillStyle = def.shadow;
-    ctx.fillRect(sx, sy+th-2, tw, 2);
+    _raised(ctx, def, sx, sy, tw, th, 10, '#201c28');
   }
 
   function mossyStone(ctx, def, sx, sy, tw, th) {
