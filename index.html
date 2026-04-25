@@ -302,7 +302,10 @@
         <div class="map-title-label">✦ WORLD MAP ✦</div>
         <div class="map-arc-label" id="map-arc-label"></div>
       </div>
-      <div class="map-area" id="map-area"></div>
+      <div class="map-area" id="map-area">
+        <!-- Zoom reset — shown by JS when scale > 1 -->
+        <button class="map-zoom-reset" id="map-zoom-reset" onclick="MapTouch.reset()">⊡ RESET</button>
+      </div>
       <div class="map-info-bar">
         <div class="map-info-name" id="map-info-name"></div>
         <div class="map-info-loc" id="map-info-loc"></div>
@@ -683,6 +686,7 @@
   <script src="js/map/map-entities.js"></script>
   <script src="js/map/map-ui.js"></script>
   <script src="js/map/map-engine.js"></script>
+  <script src="js/map/map-touch.js"></script>
   <script src="js/bgm.js"></script>
   <script src="js/sfx.js"></script>
   <script src="js/ambient.js"></script>

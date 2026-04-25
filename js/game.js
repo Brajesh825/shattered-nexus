@@ -885,6 +885,7 @@ function startExplore() {
   canvas.height = wrap.clientHeight || 480;
 
   MapEngine.init(canvas);
+  if (typeof MapTouch !== 'undefined') MapTouch.init();
 
   // D-pad touch support
   canvas.addEventListener('touchstart', e => {
