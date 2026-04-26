@@ -78,7 +78,7 @@ const MAP_PLACES = [
 
 const MAP_MAIN_ROUTE = [0, 1, 2, 3, 4, 5, 6, 7];
 const MAP_SIDE_ROUTES = [
-  [0, 13], [0, 14], [1, 9], [1, 14], [1, 10],
+  [0, 14], [0, 13], [1, 9], [1, 14], [1, 10],
   [2, 10], [3, 8], [4, 11], [5, 12],
 ];
 
@@ -1322,14 +1322,17 @@ const Story = {
     const panel = document.getElementById('map-region-panel');
     if (!place || !panel) return;
 
+    const mapId = place.label.toLowerCase().replace(/ /g, '_');
+    const isPlayable = typeof MAP_DEFS !== 'undefined' && MAP_DEFS[mapId];
+
     panel.innerHTML = `
       <div class="mrp-handle"></div>
-      <div class="mrp-num">CHARTED PLACE</div>
+      <div class="mrp-num">${isPlayable ? 'SIDE REGION' : 'CHARTED PLACE'}</div>
       <div class="mrp-name">${place.label}</div>
-      <div class="mrp-loc">Future map candidate</div>
+      <div class="mrp-loc">${isPlayable ? 'Explorable Side Map' : 'Future map candidate'}</div>
       <div class="mrp-lore">${place.lore || 'This location is visible on the world map, but it is not connected to a playable region yet.'}</div>
       <div class="mrp-actions">
-        <button class="mrp-btn" disabled>NOT AVAILABLE YET</button>
+        ${isPlayable ? `<button class="mrp-btn primary" onclick="Story._exploreRegion('${mapId}')">🗺 EXPLORE</button>` : `<button class="mrp-btn" disabled>NOT AVAILABLE YET</button>`}
         <button class="mrp-btn" onclick="Story._closeRegionPanel()">← BACK</button>
       </div>`;
 
@@ -1347,9 +1350,6 @@ const Story = {
     this._closeRegionPanel();
     // startExplore() inits the canvas and shows the explore screen
     startExplore();
-    // Hide the map-select overlay (we're going to a specific map directly)
-    const overlay = document.getElementById('map-select-overlay');
-    if (overlay) overlay.style.display = 'none';
     // Start the target map
     MapEngine.start(mapId);
     if (typeof MapUI !== 'undefined') MapUI.showMsg(`Entering ${MAP_DEFS[mapId].name}…`, 1500);

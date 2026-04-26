@@ -278,6 +278,11 @@ const NPC_DEFS = {
         { speaker: 'The Archivist', text: 'Precisely. Or hit him with the opposite — ice, cryo. Elemental contradiction causes a reaction he cannot suppress. Either way works. Either way hurts him.' },
         { speaker: 'The Archivist', text: 'That is all I have left to give. Go. Finish the record I could not.' },
       ],
+      sky_ruins: [
+        { speaker: 'The Archivist', text: 'The storm... it hums with the same frequency as the Void Citadel.' },
+        { speaker: 'Aya', text: 'Is this where the first rift opened?' },
+        { speaker: 'The Archivist', text: 'One of many. But here, the gravity itself has forgotten its purpose. To move forward, you must align the Aerolith Crystals.' }
+      ]
     },
   },
 
@@ -301,6 +306,152 @@ const NPC_DEFS = {
         { speaker: 'Ghost Knight', text: '...Yes. I suppose I did.' },
       ],
     },
+  },
+
+  old_guard: {
+    name: 'Old Guard',
+    color: '#94a3b8',
+    sprite: 'images/characters/map/sheets/npc/soldier_sheet.png',
+    dialogues: {
+      riverlands_crossing: [
+        { speaker: 'Old Guard', text: 'The bridge is out, travelers. And the River King doesn\'t like being disturbed.' },
+        { speaker: 'Rex', text: 'Then we shall give him a disturbance he won\'t forget.' }
+      ]
+    }
+  },
+
+  ghost_soldier: {
+    name: 'Ghost Soldier',
+    color: '#94a3b8',
+    sprite: 'images/characters/map/sheets/npc/knight_of_the_vale_sheet.png',
+    dialogues: {
+      riverlands_crossing: [
+        { speaker: 'Ghost Soldier', text: 'I was guarding the supply cache when the water turned black...' },
+        { speaker: 'Lulu', text: 'It\'s okay. We\'ll finish what you started.' }
+      ]
+    }
+  },
+
+  cursed_miner: {
+    name: 'Cursed Miner',
+    color: '#fbbf24',
+    sprite: 'images/characters/map/sheets/npc/soldier_sheet.png',
+    dialogues: {
+      ashen_foothills: [
+        { speaker: 'Cursed Miner', text: 'The basalt... it\'s grown too fast. We\'re trapped in the maze.' },
+        { speaker: 'Tao', text: 'Not for long. Stay behind us.' }
+      ]
+    }
+  },
+
+  flame_spirit: {
+    name: 'Flame Spirit',
+    color: '#ef4444',
+    sprite: 'images/characters/map/sheets/npc/soldier_sheet.png',
+    dialogues: {
+      ashen_foothills: [
+        { speaker: 'Flame Spirit', text: 'The heat is a gift from the core. Embrace it, or be consumed.' }
+      ]
+    }
+  },
+
+  highland_monk: {
+    name: 'Highland Monk',
+    color: '#a78bfa',
+    sprite: 'images/characters/map/sheets/npc/archivist_sheet.png',
+    dialogues: {
+      northern_highlands: [
+        { speaker: 'Highland Monk', text: 'The wind carries the voices of the fallen. Can you hear them?' }
+      ]
+    }
+  },
+
+  fallen_climber: {
+    name: 'Fallen Climber',
+    color: '#94a3b8',
+    sprite: 'images/characters/map/sheets/npc/soldier_sheet.png',
+    dialogues: {
+      northern_highlands: [
+        { speaker: 'Fallen Climber', text: 'I almost reached the summit... the view was beautiful before the dragon came.' }
+      ]
+    }
+  },
+
+  old_mariner: {
+    name: 'Old Mariner',
+    color: '#36a7c8',
+    sprite: 'images/characters/map/sheets/npc/soldier_sheet.png',
+    dialogues: {
+      lighthouse_isles: [
+        { speaker: 'Old Mariner', text: 'The Ghost Ship sails every midnight. It\'s looking for a crew that doesn\'t exist.' }
+      ]
+    }
+  },
+
+  sea_spirit: {
+    name: 'Sea Spirit',
+    color: '#2dd4bf',
+    sprite: 'images/characters/map/sheets/npc/soldier_sheet.png',
+    dialogues: {
+      lighthouse_isles: [
+        { speaker: 'Sea Spirit', text: 'The lighthouse used to guide us home. Now it only guides the lost.' }
+      ]
+    }
+  },
+
+  survivor: {
+    name: 'Survivor',
+    color: '#fcd34d',
+    sprite: 'images/characters/map/sheets/npc/soldier_sheet.png',
+    dialogues: {
+      southern_isles: [
+        { speaker: 'Survivor', text: 'The tide pulled us into the trench. I\'m the only one who climbed back out.' }
+      ]
+    }
+  },
+
+  guardian: {
+    name: 'Coral Guardian',
+    color: '#a78bfa',
+    sprite: 'images/characters/map/sheets/npc/soldier_sheet.png',
+    dialogues: {
+      southern_isles: [
+        { speaker: 'Coral Guardian', text: 'The Abyssal Gate requires a shell that hums with the sea\'s heart.' }
+      ]
+    }
+  },
+
+  mire_witch: {
+    name: 'Mire Witch',
+    color: '#a78bfa',
+    sprite: 'images/characters/map/sheets/npc/essabela_sheet.png',
+    dialogues: {
+      eastern_wetlands: [
+        { speaker: 'Mire Witch', text: 'You want the spores? They\'ll cost you a memory you don\'t need.' }
+      ]
+    }
+  },
+
+  lost_soul: {
+    name: 'Lost Soul',
+    color: '#94a3b8',
+    sprite: 'images/characters/map/sheets/npc/soldier_sheet.png',
+    dialogues: {
+      eastern_wetlands: [
+        { speaker: 'Lost Soul', text: 'The swamp is so soft... it feels like a blanket.' }
+      ]
+    }
+  },
+
+  sentinel: {
+    name: 'Spectral Sentinel',
+    color: '#94a3b8',
+    sprite: 'images/characters/map/sheets/npc/knight_of_the_vale_sheet.png',
+    dialogues: {
+      sky_ruins: [
+        { speaker: 'Spectral Sentinel', text: 'The Storm Sentinel guards the apex. You are not yet erased.' }
+      ]
+    }
   },
 
   lira: {

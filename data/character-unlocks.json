@@ -1,5 +1,10 @@
 {
-  "unlocked_by_default": ["aya", "tao", "lulu", "rei"],
+  "unlocked_by_default": [
+    "aya",
+    "tao",
+    "lulu",
+    "rei"
+  ],
   "recruitable": [
     {
       "id": "ria",

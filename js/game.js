@@ -915,12 +915,8 @@ function startExplore() {
     MapUI.handleTouch(e.clientX, e.clientY, canvas);
   });
 
-  // Show map select overlay then launch
-  const overlay = document.getElementById('map-select-overlay');
-  if (overlay) {
-    overlay.style.display = 'flex';
-    MapUI.buildMapSelectOverlay();
-  } else {
+  // Launch the engine
+  if (!MapEngine.getMap()) {
     MapEngine.start('verdant_vale');
     MapUI.showMsg('Entering Verdant Vale…', 1500);
   }
