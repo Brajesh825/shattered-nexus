@@ -92,7 +92,7 @@ MAP_DEFS.void_citadel = (function() {
         playerStart: { x: 60, y: 15 },
         bgColor: '#040210',
         ambientLight: 'rgba(60,20,160,0.1)',
-        enemyLevelRange: [18, 22],
+        enemyLevelRange: [27, 35],
         // Arc 6 — void energy tears at reality. Mutation is near-constant.
         mutationConfig: {
           corruptThreshold: 32,

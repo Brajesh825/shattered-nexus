@@ -60,27 +60,12 @@
       { "speaker": "Rei", "emotion": "resolute", "text": "Then we break it. And we free what remains." }
     ],
     "post_dialogue": [
-      { "speaker": "narrator", "emotion": "solemn", "text": "The titan staggers, cracks appearing in its form. But it does not fall. It simply withdraws, pulling back deeper into the fortress." },
-      { "speaker": "Tao", "emotion": "understanding", "text": "It is weakening. We wounded something that thought itself invulnerable." },
-      { "speaker": "Lulu", "emotion": "hopeful", "text": "We are close. One more push — one final confrontation." },
-      { "speaker": "Aya", "emotion": "determined", "text": "Then we finish this. All of us. Together." }
-    ]
-  },
-  "recruitment_chapter": {
-    "title": "The Immortal King's Choice",
-    "background": "core_chamber",
-    "cast": ["Aya", "Tao", "Lulu", "Rei", "Rex", "Valka"],
-    "scenes": [
-      {
-        "narration": "As the Shadow Titan withdraws, a figure steps forward from the gathered light — a king in golden armor, his eyes holding the weight of two hundred years.",
-        "dialogue": [
-          { "speaker": "Rex", "emotion": "solemn", "text": "I have ruled for ages. Commanded armies. Built monuments meant to last forever. I chose immortality, thinking it was strength." },
-          { "speaker": "Rex", "emotion": "resolved", "text": "I see now that true immortality is purpose. And my purpose — here, now — is to stand with you, six warriors against the darkness." },
-          { "speaker": "Aya", "emotion": "warm", "text": "You were a king. Now you are something greater — you are free." },
-          { "speaker": "Valka", "emotion": "approving", "text": "Seven now. The number of completion. The number of final judgment." }
-        ]
-      }
+      { "speaker": "narrator", "emotion": "solemn", "text": "The titan staggers, cracks appearing in its shadow-form. But it does not fall — instead, it dissolves into cold mist, withdrawing into the very heart of the fortress." },
+      { "speaker": "Tao", "emotion": "understanding", "text": "It is weakening. We wounded something that thought itself invulnerable. The path to the Eternal Void is open." },
+      { "speaker": "Rex", "emotion": "resolute", "text": "I have ruled for ages, but I have never seen a stand like this. The Shadow Emperor is retreatng because he finally has something to fear." },
+      { "speaker": "Aya", "emotion": "determined", "text": "Then we do not give him time to recover. This is the end of his eternity. Move!" }
     ]
   }
 }
+
 

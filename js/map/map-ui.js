@@ -23,7 +23,14 @@ const MapUI = (() => {
   function _toggleDpad(show) {
     const dpad = document.getElementById('joystick-container');
     if (!dpad) return;
-    // Only toggle if we are actually on a touch device
+    
+    // Only show if we are actually on a touch device
+    const isTouch = window.matchMedia('(pointer: coarse)').matches;
+    if (!isTouch) {
+      dpad.style.display = 'none';
+      return;
+    }
+
     if (show) {
       dpad.style.removeProperty('display');
     } else {
@@ -232,30 +239,6 @@ const MapUI = (() => {
     });
   }
 
-  /* ── Map select overlay ──────────────────────────────── */
-  function buildMapSelectOverlay() {
-    const overlay = document.getElementById('map-select-overlay');
-    if (!overlay) return;
-
-    // Find or create the inner container (HTML has .map-sel-inner)
-    let inner = overlay.querySelector('.map-sel-inner');
-    if (!inner) { inner = overlay; }
-
-    // Remove any previously injected buttons
-    inner.querySelectorAll('.map-sel-btn').forEach(b => b.remove());
-
-    Object.values(MAP_DEFS).forEach(m => {
-      const btn = document.createElement('button');
-      btn.className   = 'map-sel-btn';
-      btn.textContent = m.name;
-      btn.onclick = () => {
-        overlay.style.display = 'none';
-        MapEngine.start(m.id);   // loadMap inside start() updates #explore-map-name
-        showMsg(`Entering ${m.name}…`, 1800);
-      };
-      inner.appendChild(btn);
-    });
-  }
 
   /* ── Pause Menu ─────────────────────────────────────── */
   const CHAR_COLOR_MAP = {
@@ -686,7 +669,6 @@ const MapUI = (() => {
     showMapBanner,
     triggerDanger,
     handleTouch,
-    buildMapSelectOverlay,
     cycleCharacter,
     update,
     render,

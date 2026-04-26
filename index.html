@@ -38,7 +38,7 @@
         if (!raw) return;
         try {
           let str = raw;
-          for (let [old, ali] in Object.entries(MAP)) {
+          for (let [old, ali] of Object.entries(MAP)) {
             // Precise replacement for "id":"ayaka" or "charId":"ayaka"
             str = str.replace(new RegExp(':"' + old + '"', 'gi'), ':"' + ali + '"');
             // Compatibility for array strings ["ayaka", ...]
@@ -153,7 +153,7 @@
             <span class="tbtn-icon">📖</span>
             <span class="tbtn-label">NEW STORY</span>
           </button>
-          <button class="title-btn title-btn-tertiary" onclick="startExplore()">
+          <button id="explore-btn" class="title-btn title-btn-tertiary" onclick="WorldExplorer.open()" style="display:none">
             <span class="tbtn-icon">🗺</span>
             <span class="tbtn-label">EXPLORE</span>
           </button>
@@ -161,6 +161,21 @@
       </div>
 
       <div class="ver-tag" id="game-version-tag">v3.0</div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+       WORLD EXPLORER OVERLAY (Dev Mode)
+       ═══════════════════════════════════════ -->
+    <div id="explorer-overlay" class="gauntlet-overlay" style="display:none">
+      <div class="gauntlet-bg" onclick="WorldExplorer.close()"></div>
+      <div class="gauntlet-panel">
+        <div class="gauntlet-header">
+          <div class="gauntlet-title">WORLD EXPLORER</div>
+          <div class="gauntlet-sub">Developer Mode: Instant access to all 15 regions of Aethoria</div>
+        </div>
+        <div class="gauntlet-grid" id="explorer-grid"></div>
+        <button class="gauntlet-back" onclick="WorldExplorer.close()">← BACK</button>
+      </div>
     </div>
 
     <!-- ═══════════════════════════════════════
@@ -440,14 +455,6 @@
         <div class="sub-menu" id="item-sub"></div>
       </div>
       <div class="party-status-bar" id="party-status-bar"></div>
-      <div id="ability-info-pane">
-        <div class="inf-head">
-          <span class="inf-name">Ability Name</span>
-          <span class="inf-cost">0 MP</span>
-        </div>
-        <div class="inf-desc">Ability description goes here.</div>
-        <div class="inf-meta"></div>
-      </div>
       <div class="stats-bar">
         <span>LV <span id="stat-lv">1</span></span>
         <span>ATK <span id="stat-atk">-</span></span>
@@ -538,14 +545,6 @@
       <!-- Canvas fills all remaining height -->
       <div id="explore-canvas-wrap">
 
-        <!-- Map select overlay — cinematic style -->
-        <div id="map-select-overlay" style="display:none">
-          <div class="map-sel-inner">
-            <div class="map-sel-crest">⚔</div>
-            <div class="map-sel-title">REALM OF ECHOES</div>
-            <div class="map-sel-sub">Choose your destination</div>
-          </div>
-        </div>
 
         <!-- Pause menu overlay -->
         <div id="map-pause-menu" style="display:none">
@@ -668,6 +667,7 @@
 
   </div><!-- /#game -->
 
+  <script src="js/game.js"></script>
   <script src="data/npcs.js"></script>
   <script src="js/systems/input-manager.js"></script>
   <script src="js/systems/focus-manager.js"></script>
@@ -682,6 +682,15 @@
   <script src="js/map/data/map-void-citadel.js"></script>
   <script src="js/map/data/map-fortress-ramparts.js"></script>
   <script src="js/map/data/map-eternal-void.js"></script>
+  <!-- Side Maps -->
+  <script src="js/map/data/map-riverlands-crossing.js"></script>
+  <script src="js/map/data/map-ashen-foothills.js"></script>
+  <script src="js/map/data/map-northern-highlands.js"></script>
+  <script src="js/map/data/map-lighthouse-isles.js"></script>
+  <script src="js/map/data/map-southern-isles.js"></script>
+  <script src="js/map/data/map-eastern-wetlands.js"></script>
+  <script src="js/map/data/map-sky-ruins.js"></script>
+
   <script src="js/map/map-entities.js"></script>
   <script src="js/map/map-ui.js"></script>
   <script src="js/map/map-engine.js"></script>
@@ -700,7 +709,6 @@
   <script src="js/battle/enemy-scaling.js"></script>
   <script src="js/battle/reaction-effects.js"></script>
   <script src="js/release-config.js"></script>
-  <script src="js/game.js"></script>
   <script src="js/ui/menu-manager.js"></script>
   <script src="js/systems/party.js"></script>
   <script src="js/systems/inventory.js"></script>
@@ -716,6 +724,7 @@
   <script src="js/systems/archive.js"></script>
   <script src="js/ui/archive-ui.js"></script>
   <script src="js/ui/boss-gauntlet.js"></script>
+  <script src="js/ui/world-explorer.js"></script>
   <script src="js/ui/weather-engine.js"></script>
   <script src="js/ui/credits-screen.js"></script>
   <script src="js/story.js"></script>
