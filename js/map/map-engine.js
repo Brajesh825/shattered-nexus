@@ -960,6 +960,13 @@ const MapEngine = (() => {
     if (typeof MapInput !== 'undefined') MapInput.init(canvasEl);
 
     // ── NATIVE MOBILE CONTROLS (JOYSTICK + BUTTONS) ──
+    const isTouch = window.matchMedia('(pointer: coarse)').matches;
+    if (!isTouch) {
+      const dpad = document.getElementById('joystick-container');
+      if (dpad) dpad.style.display = 'none';
+      return;
+    }
+
     const joyBase = document.getElementById('joy-base');
     const joyKnob = document.getElementById('joy-knob');
     const btnX = document.getElementById('btn-x');
