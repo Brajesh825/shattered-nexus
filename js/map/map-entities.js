@@ -70,12 +70,40 @@ const MapPlayer = (() => {
   const FRAME_DUR   = 0.12;
 
   function reset(startX, startY) {
-    tx = startX; ty = startY;
+    const map = MapEngine.getMap();
+    let safeX = startX, safeY = startY;
+
+    // Guard: If spawning into a wall (legacy save or map update), find a safe spot
+    if (map && !_canMove(startX, startY, map)) {
+      const nearest = findNearestSafeTile(startX, startY, map);
+      if (nearest) {
+        safeX = nearest.x; safeY = nearest.y;
+      } else {
+        // Absolute fallback to map default
+        safeX = map.playerStart.x; safeY = map.playerStart.y;
+      }
+    }
+
+    tx = safeX; ty = safeY;
     px = tx * MapEngine.getTile();
     py = ty * MapEngine.getTile();
     moving = false; moveTimer = 0;
     _queuedDir = null; _stepDir = null;
     _frame = 0; _frameTimer = 0;
+  }
+
+  function findNearestSafeTile(targetX, targetY, map) {
+    // Spiral search pattern up to 3 tiles out
+    for (let radius = 1; radius <= 3; radius++) {
+      for (let dx = -radius; dx <= radius; dx++) {
+        for (let dy = -radius; dy <= radius; dy++) {
+          if (Math.abs(dx) !== radius && Math.abs(dy) !== radius) continue;
+          const nx = targetX + dx, ny = targetY + dy;
+          if (_canMove(nx, ny, map)) return { x: nx, y: ny };
+        }
+      }
+    }
+    return null;
   }
 
   function _canMove(nx, ny, map) {

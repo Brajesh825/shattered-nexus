@@ -25,9 +25,20 @@ const SaveContract = (() => {
     };
   }
 
+  function validateSaveStructure(s) {
+    if (!s || typeof s !== 'object') return false;
+    // Mandatory fields for a functional story session
+    const required = ['arcIdx', 'selectedChars'];
+    for (const key of required) {
+      if (typeof s[key] === 'undefined') return false;
+    }
+    return true;
+  }
+
   return {
     serializePartyStats,
-    buildFreeExploreSaveState
+    buildFreeExploreSaveState,
+    validateSaveStructure
   };
 })();
 

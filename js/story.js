@@ -38,14 +38,14 @@ function _spiritSrc(name) {
   return `images/characters/spirits/${name.toLowerCase()}${suffix}`;
 }
 const SPEAKER_IMG = {
-  get Aya()   { return _spiritSrc('aya'); },
-  get Tao()   { return _spiritSrc('tao'); },
-  get Lulu()  { return _spiritSrc('lulu'); },
-  get Rei()   { return _spiritSrc('rei'); },
-  get Ria()   { return _spiritSrc('ria'); },
+  get Aya() { return _spiritSrc('aya'); },
+  get Tao() { return _spiritSrc('tao'); },
+  get Lulu() { return _spiritSrc('lulu'); },
+  get Rei() { return _spiritSrc('rei'); },
+  get Ria() { return _spiritSrc('ria'); },
   get Valka() { return _spiritSrc('valka'); },
   get Drake() { return _spiritSrc('drake'); },
-  get Rex()   { return _spiritSrc('rex'); },
+  get Rex() { return _spiritSrc('rex'); },
 };
 
 /* ── Speaker portrait emojis (narrator fallback) ────────────────────────── */
@@ -268,9 +268,17 @@ const Story = {
     if (this._pendingSave) {
       const s = this._pendingSave;
       this._pendingSave = null;
+
+      // Guard: Validate structure before hydration
+      if (typeof SaveContract !== 'undefined' && !SaveContract.validateSaveStructure(s)) {
+        console.error('Save structure invalid. Aborting hydration.');
+        return;
+      }
+
       this.arcIdx = s.arcIdx || 0;
       this.chapIdx = s.chapIdx !== undefined ? s.chapIdx : -1;
-      this.phase   = s.phase || null;
+      this.phase = s.phase || null;
+      G.saveVersion = s.version || '1.0';
       // Restore all party member stats (new format) or fall back to hero-only (legacy)
       if (s.partyStats && s.partyStats.length && G.party.length) {
         G.party.forEach(m => {
@@ -1226,6 +1234,7 @@ const Story = {
 
       node.innerHTML =
         `<div class="mn-marker" aria-hidden="true"></div>` +
+        (isCur ? `<div class="mn-party-indicator">🚩</div>` : '') +
         `<div class="mn-label">
           <span class="mn-status">${isCharted ? 'CHARTED' : isDone ? 'CLEARED' : isCur ? 'ACTIVE' : isNext ? 'NEXT' : 'LOCKED'}</span>
           <span class="mn-name">${place.label}</span>
@@ -1601,3 +1610,6 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   }
 });
+
+// Explicitly export Story to window for dynamic HTML handlers
+window.Story = Story;
