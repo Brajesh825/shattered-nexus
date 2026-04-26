@@ -40,5 +40,41 @@ Ensure the game feels native and polished on all mobile devices across supported
 - **State-Aware Dialogue**: NPCs react to quest progress.
 - **Per-Character Gear**: Individual Weapons and Armor with Equipment UI.
 
+## 📖 4. World Lore & Living World (Current Focus)
+Make the dead world feel *haunted* — not empty. Every region, enemy, and NPC should carry a trace of what was lost.
+
+### 4a — Lore Fragments (Collectibles)
+Expand `data/lore_fragments.json` to cover all 15 regions. Each region gets 4–6 fragments:
+- **Echo Stones**: Environmental lore (who lived here, what destroyed it)
+- **Remnant Records**: Journals/letters from people who didn't survive
+- **Corrupted Memories**: Fragments found on named enemies (Void Knight, King Galdor's Knights)
+- **Eidolon Songs**: Lore from Ria's summons about the pre-Shattering world
+
+Target: **~70 total fragments** across all regions. Readable in the Archive/Bestiary.
+
+### 4b — Enemy Lore Completion
+Every enemy in `enemies.json` needs a `lore` field that answers:
+1. What were they before corruption?
+2. What does the corruption *do* to them (is it painful? mindless? angry?)?
+3. Do they remember anything?
+
+Priority enemies: all Tier 2 and all Bosses. Tier 1 can share lore categories (e.g., all Goblins share the King Galdor curse origin).
+
+### 4c — NPC Depth Pass
+Each NPC gets 3 tiers of dialogue (not just 1–2 lines):
+- **First meeting**: Who they are and where they're from
+- **Post-arc**: Reacts to what just happened in the story
+- **Endgame**: Reflective — what the world might become
+
+### 4d — Region History Entries
+One per region (15 total). Shown on the world map as a readable "Region Record" — a paragraph describing what the place was before the Shattering. Gives players context for why a beautiful ruined map looks the way it does.
+
+### 4e — Faction Codex
+Four factions defined with history, goals, and relationship to Valdris:
+- **The Summoned** (player party): Eight cross-world warriors
+- **The Corrupted** (Valdris's forces): What each enemy type *was* before
+- **The Remnants** (surviving NPCs): Isabela, scattered survivors, Oracle lineage
+- **The Ancient Ones** (pre-Shattering): Green Emperor, Nexus builders, Tide guardians
+
 ---
 *Created for planning discussion. Please add comments or adjust priorities as needed.*

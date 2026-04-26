@@ -2721,7 +2721,8 @@
         "item": "Dark Crystal",
         "chance": 0.2
       }
-    ]
+    ],
+    "lore": "The last of the Emberveil line — phoenix-kind who maintained a covenant with the Tide Priests to balance flame and sea across the Southern Isles. When the Nexus shattered and the covenant collapsed, the phoenix's fire inverted, fed on its own light, and began consuming what it was meant to protect. It no longer remembers the Emberveil name. It no longer remembers any name."
   },
   {
     "id": "kraken",
@@ -2785,7 +2786,8 @@
         "item": "Sea Crystal",
         "chance": 0.2
       }
-    ]
+    ],
+    "lore": "High Archpriest Oremis of the Tide Priests wanted to reach the deep ocean — the place beyond the tideline where the sea speaks in pressure rather than sound. The Water Seal granted it: his body restructured to exist at those depths. The transformation spread by contact. His congregation followed him into the water one by one. The Kraken is what the deep ocean made of them, compressed and merged into something that has entirely forgotten the surface world."
   },
   {
     "id": "titan",
@@ -2855,7 +2857,7 @@
   {
     "id": "demon_lord",
     "name": "Demon Lord",
-    "subtitle": "A prince of the underworld bathed in hellfire",
+    "subtitle": "Chief Archivist Solvan — consumed by his own catalogue",
     "element": "fire",
     "weakTo": [
       "water",
@@ -2934,7 +2936,8 @@
         "item": "Elixir",
         "chance": 0.1
       }
-    ]
+    ],
+    "lore": "Chief Archivist Solvan of Ashveil's great library — once the foremost scholar of elemental theory in Aethoria. Valdris offered him complete knowledge of fire, and the Fire Seal Fragment delivered it, dissolving the man and replacing him with his own obsession. He does not serve Valdris; he barely registers Valdris's name. He captures resonant beings because that is what archivists do. The catalogue was never finished."
   },
   {
     "id": "bone_dragon",
@@ -3069,7 +3072,7 @@
   {
     "id": "void_knight",
     "name": "Void Knight",
-    "subtitle": "A warrior erased from existence and reborn in darkness",
+    "subtitle": "Valdris's only deliberate creation — a warrior whose name was consumed",
     "element": "void",
     "weakTo": [
       "light",
@@ -3139,7 +3142,8 @@
         "item": "Elixir",
         "chance": 0.1
       }
-    ]
+    ],
+    "lore": "Valdris's only deliberate creation. A warrior whose name has been entirely consumed — not corrupted but erased, reborn as the living embodiment of the Shadow Emperor's first act of dominion over Aethoria. It carries a Seal Fragment not as a prisoner but as a crown, placed there before the Shattering to ensure no casual hero could claim what was buried beneath the Sacred Ruins."
   },
   {
     "id": "fallen_angel",
@@ -3271,7 +3275,8 @@
         "item": "Void Sword",
         "chance": 0.15
       }
-    ]
+    ],
+    "lore": "Valdris — not in body but in reach. The Shadow Emperor is the aspect of Valdris that returned to Aethoria: the part of him that needs the last Seal, the piece that never stopped being a frightened scholar afraid of dying in obscurity. He is not a separate entity. He is what Valdris sends into a world when he needs it to bend. Defeating him does not end Valdris. It only ends the arm."
   },
   {
     "id": "dragon",
@@ -3472,7 +3477,8 @@
         "item": "Dark Crystal",
         "chance": 0.4
       }
-    ]
+    ],
+    "lore": "The Shadow Keepers did not fight when the Shadow Seal dissolved. They followed their leader — Maren the Still — one by one, each stepping through the same threshold, each becoming part of what waited on the other side. The Shadow Titan is the weight of their collective ending: every Shadow Keeper who chose understanding over survival, compressed into a shape that has no self remaining, only the gravity of absence."
   },
   {
     "id": "shadow_wraith",
@@ -3695,12 +3701,23 @@
     "name": "Spectral Guardian",
     "subtitle": "The ancient gatekeeper of the starlit void",
     "element": "void",
-    "weakTo": [ "light", "fire" ],
-    "resistTo": [ "void", "shadow" ],
+    "weakTo": [
+      "light",
+      "fire"
+    ],
+    "resistTo": [
+      "void",
+      "shadow"
+    ],
     "tier": 3,
     "aiType": "sequenced",
     "statPhases": [
-      { "hp": 0.40, "mag": 2.2, "spd": 1.8, "def": 0.35 }
+      {
+        "hp": 0.40,
+        "mag": 2.2,
+        "spd": 1.8,
+        "def": 0.35
+      }
     ],
     "stats": {
       "hp": 680,
@@ -3760,9 +3777,21 @@
     "tier": 2,
     "isBoss": true,
     "statPhases": [
-      { "hp": 0.75, "def": 1.15, "spd": 0.85 },
-      { "hp": 0.50, "def": 1.30, "spd": 0.70 },
-      { "hp": 0.25, "def": 1.45, "spd": 0.55 }
+      {
+        "hp": 0.75,
+        "def": 1.15,
+        "spd": 0.85
+      },
+      {
+        "hp": 0.50,
+        "def": 1.30,
+        "spd": 0.70
+      },
+      {
+        "hp": 0.25,
+        "def": 1.45,
+        "spd": 0.55
+      }
     ],
     "stats": {
       "hp": 200,
@@ -3807,7 +3836,7 @@
         }
       }
     ],
-    "lore": "The once proud ruler of Aethelgard. His greed led him to bargain with Veldris, a mistake that cost him his humanity and his kingdom. He now sits upon a throne of dust, clutching leaden coins he still believes are gold.",
+    "lore": "The once proud ruler of Aethelgard. His greed led him to bargain with Valdris, a mistake that cost him his humanity and his kingdom. He now sits upon a throne of dust, clutching leaden coins he still believes are gold.",
     "drops": [
       {
         "item": "Sovereign Ring",
