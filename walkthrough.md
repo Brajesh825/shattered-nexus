@@ -298,4 +298,11 @@ Corrupted → Trivial
 
 ---
 
-*Document version: Proposed balance pass (pre-implementation). All mechanics reflect new formula constants pending approval.*
+## 11. Tactical AI — Role-Based Behaviors
+
+Enemies operate on a weighted system driven by their `aiRole` field.
+
+- **Attacker (Default)**: Attacks standard targets, mildly preferring weaker units.
+- **Tactician**: Scans the battlefield for active Auras. If a synergy detonation is possible, their probability of using a detonator ability gets a 300% weight boost.
+- **Predator**: Bypasses tanks (unless Taunted) and exclusively hunts the party member with the lowest HP percentage.
+- **Support**: Checks allied HP first. If a teammate falls below 50% HP, overrides its normal offensive pattern to heal or buff them.
