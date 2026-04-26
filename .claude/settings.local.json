@@ -62,7 +62,24 @@
       "Bash(node --check \"C:\\\\Users\\\\ASUS\\\\VVI\\\\rpg+\\\\js\\\\story.js\")",
       "Bash(node --check \"C:\\\\Users\\\\ASUS\\\\VVI\\\\rpg+\\\\js\\\\game.js\")",
       "Bash(node --check \"C:\\\\Users\\\\ASUS\\\\VVI\\\\rpg+\\\\js\\\\map\\\\map-ui.js\")",
-      "mcp__Claude_in_Chrome__tabs_context_mcp"
+      "mcp__Claude_in_Chrome__tabs_context_mcp",
+      "Bash(grep -E \"\\\\.\\(html|js|css\\)$\")",
+      "Bash(grep -v \"^\\\\s*[0-9]*:\\\\s*//\")",
+      "Bash(python3 -c ' *)",
+      "Bash(identify \"C:/Users/ASUS/VVI/rpg+/images/ui/world_map_bg.png\")",
+      "Bash(powershell -c \"\\(Get-Item 'C:/Users/ASUS/VVI/rpg+/images/ui/world_map_bg.png'\\).Length\")",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(sed -n '5314,5320p' \"C:/Users/ASUS/VVI/rpg+/css/style.css\")",
+      "Bash(sed -n '5439,5445p' \"C:/Users/ASUS/VVI/rpg+/css/style.css\")",
+      "Bash(sed -n '5461,5468p' \"C:/Users/ASUS/VVI/rpg+/css/style.css\")",
+      "Bash(node -e \"const fs=require\\('fs'\\); const d=JSON.parse\\(fs.readFileSync\\('data/story.json','utf8'\\)\\); const arc=d.arcs[1]; console.log\\('Arc 1 \\(idx 1\\):', arc.name\\); console.log\\('boss_enemy:', arc.boss_enemy\\); console.log\\('chapters:', arc.chapters.map\\(\\(c,i\\)=>'['+i+'] type='+c.type+' '+\\(c.title||c.enemy_id||''\\)\\)\\)\")",
+      "Bash(node -e \"const fs=require\\('fs'\\); const d=JSON.parse\\(fs.readFileSync\\('data/story/arc_2.json','utf8'\\)\\); console.log\\('boss_enemy:', d.boss_enemy\\); console.log\\('chapters:'\\); d.chapters.forEach\\(\\(c,i\\)=>console.log\\(' ['+i+'] type='+c.type+' id='+\\(c.id||'?'\\)+' title='+\\(c.title||''\\)\\)\\)\")",
+      "Bash(node -e \"eval\\(require\\('fs'\\).readFileSync\\('data/npcs.js','utf8'\\)\\); console.log\\('Keys:', Object.keys\\(NPC_DEFS\\)\\); console.log\\('Essabella maps:', Object.keys\\(NPC_DEFS.essabella.dialogues\\)\\); console.log\\('Verdant lines:', NPC_DEFS.essabella.dialogues.verdant_vale.length\\); console.log\\('Eternal lines:', NPC_DEFS.essabella.dialogues.eternal_void.length\\);\")",
+      "Bash(node -e \"const fs=require\\('fs'\\); const src=fs.readFileSync\\('data/npcs.js','utf8'\\); const fn=new Function\\(src+'; return NPC_DEFS;'\\); const d=fn\\(\\); console.log\\('Keys:', Object.keys\\(d\\)\\); console.log\\('Essabella maps:', Object.keys\\(d.essabella.dialogues\\)\\); console.log\\('verdant lines:', d.essabella.dialogues.verdant_vale.length\\); console.log\\('eternal lines:', d.essabella.dialogues.eternal_void.length\\);\")",
+      "Bash(node -e \"const fs=require\\('fs'\\); const src=fs.readFileSync\\('data/npcs.js','utf8'\\); const fn=new Function\\(src+'; return NPC_DEFS;'\\); const d=fn\\(\\); console.log\\('Keys:', Object.keys\\(d\\)\\); console.log\\('Archivist lines:', d.the_archivist.dialogues.crystal_cavern.length\\); console.log\\('Ghost Knight lines:', d.ghost_knight.dialogues.crystal_cavern.length\\);\")",
+      "Bash(node -e ' *)",
+      "Bash(git rm *)"
     ]
   }
 }

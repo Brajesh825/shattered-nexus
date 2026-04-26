@@ -548,12 +548,16 @@ const BattleUI = {
     }
     const m = G.party[t.idx];
     const col = CHAR_COLOR[m.charId] || '#c0b8e8';
+    const isSmall = window.innerWidth < 600;
+    const classInfo = isSmall ? `LV ${m.lv}` : `${m.cls.name} · LV ${m.lv}`;
+    const mpInfo = isSmall ? `MP ${m.mp}` : `MP ${m.mp}/${m.maxMp}`;
+    
     bar.innerHTML =
       `<div class="amb-portrait" style="color:${col};border-color:${col}">${(m.displayName||m.charId||'?')[0].toUpperCase()}</div>` +
       `<span class="amb-arrow" style="color:${col}">▶</span>` +
       `<span class="amb-name" style="color:${col}">${m.displayName}</span>` +
-      `<span class="amb-class">${m.cls.name} · LV ${m.lv}</span>` +
-      `<span class="amb-mp" style="color:#6080ff">MP ${m.mp}/${m.maxMp}</span>`;
+      `<span class="amb-class">${classInfo}</span>` +
+      `<span class="amb-mp" style="color:#6080ff">${mpInfo}</span>`;
     
     // Auto-focus the action menu for keyboard/controller
     if (typeof Focus !== 'undefined') {

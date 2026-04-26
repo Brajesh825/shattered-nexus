@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    battle-screens.css — Shattered Nexus
    Battle scene, enemy/party UI, damage pops, animations,
    element effects, party status bar, commands, and responsive.
@@ -7,17 +7,17 @@
 .turn-bar {
   display: flex;
   align-items: center;
-  gap: 5px;
-  padding: 4px 10px;
+  gap: 3px;
+  padding: 4px 8px;
   background: #040318;
   border-bottom: 1px solid var(--border);
-  min-height: 36px;
+  min-height: 28px;
   overflow-x: auto;
 }
 
 .tb-tok {
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   border: 2px solid #3a2870;
   background: #09082a;
@@ -580,8 +580,11 @@
 
 .amb-class {
   color: var(--text-dim);
-  font-size: var(--fs-sm);
+  font-size: var(--fs-xs);
   margin-left: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .amb-mp {
@@ -738,11 +741,11 @@
 .ability-btn {
   display: flex !important;
   align-items: center;
-  gap: 8px;
-  padding-left: 10px !important;
-  padding-right: 10px !important;
+  gap: 4px;
+  padding: 6px 6px !important;
   text-align: left !important;
   justify-content: flex-start !important;
+  min-height: 40px;
 }
 
 .ab-type-icon {
@@ -759,8 +762,11 @@
 }
 
 .ab-name {
-  font-size: var(--fs-base);
+  font-size: var(--fs-xxs);
   flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .ab-cost {
@@ -2411,7 +2417,7 @@
      ─────────────────────────────────────────────────────────────── */
   #battle-screen.active {
     display: grid !important;
-    grid-template-columns: 1fr 220px;
+    grid-template-columns: 1fr 210px;
     grid-template-rows: auto auto 1fr auto auto;
     overflow: hidden;
   }
@@ -2482,8 +2488,13 @@
   }
 
   .psc {
-    padding: 1px 3px;
+    padding: 2px 4px;
+    margin-bottom: 2px;
   }
+  .psc-name { font-size: 11px; }
+  .psc-hp-txt { font-size: 9px; }
+  .psc-hp-bg { height: 6px; margin-bottom: 2px; }
+  .psc-mp-bg { height: 4px; }
 
   /* Cmd grid: 2×2 in 220px side panel */
   .cmd-grid {
