@@ -5,50 +5,64 @@
 MAP_DEFS.northern_highlands = {
     id: 'northern_highlands',
     name: 'Northern Highlands',
-    width: 30,
-    height: 30,
-    playerStart: { x: 15, y: 25 },
-    bgColor: '#101a10',
-    ambientLight: 'rgba(180,180,180,0.05)',
+    width: 80,
+    height: 40,
+    playerStart: { x: 40, y: 37 },
+    bgColor: '#eef6fc',
+    ambientLight: 'rgba(200,220,255,0.15)',
     weather: 'mist',
-    enemyLevelRange: [25, 35],
+    enemyLevelRange: [35, 45],
     encounterTemplates: [
         { weight: 3, enemies: ['wolf'] },
         { weight: 2, enemies: ['harpy'] },
-        { weight: 1, enemies: ['wolf', 'wolf'] }
+        { weight: 1, enemies: ['wolf', 'harpy'] }
     ],
     enemies: [
-        { id: 'wolf',   x: 5,  y: 5,  patrol: 'random', range: 5, speed: 1.4 },
-        { id: 'wolf',   x: 25, y: 25, patrol: 'random', range: 5, speed: 1.4 },
-        { id: 'harpy',  x: 10, y: 15, patrol: 'vertical', range: 6, speed: 1.6 },
-        { id: 'harpy',  x: 20, y: 10, patrol: 'horizontal', range: 4, speed: 1.5 },
-        { id: 'wyvern', x: 15, y: 5,  patrol: 'stationary', isBoss: true, label: 'Sky-Drake' }
+        { id: 'harpy',  x: 15, y: 32, patrol: 'random', range: 8, speed: 1.6 },
+        { id: 'harpy',  x: 65, y: 32, patrol: 'random', range: 8, speed: 1.6 },
+        { id: 'wolf',   x: 40, y: 35, patrol: 'random', range: 5, speed: 1.4 },
+        { id: 'harpy',  x: 10, y: 22, patrol: 'horizontal', range: 15, speed: 1.7 },
+        { id: 'harpy',  x: 70, y: 22, patrol: 'horizontal', range: 15, speed: 1.7 },
+        { id: 'fire_elemental', x: 40, y: 15, patrol: 'vertical', range: 10, speed: 1.3, label: 'Sky-Drake' },
+        { id: 'dragon', x: 40, y: 5,  patrol: 'stationary', isBoss: true, label: 'Shadow Dragon' }
     ],
     tiles: (function () {
         const rows = [];
-        const W = 30, H = 30;
+        const W = 80, H = 40;
+        const entityLocs = [
+            {x:15,y:32},{x:65,y:32},{x:40,y:35},{x:10,y:22},{x:70,y:22},{x:40,y:15},{x:40,y:5},
+            {x:35,y:36},{x:40,y:10}
+        ];
+
         for (let y = 0; y < H; y++) {
-            let row = new Array(W).fill(1); // Grass
+            let row = new Array(W).fill(0); // START WITH VOID (SKY RIFTS)
             for (let x = 0; x < W; x++) {
-                // 1. Mountain Ranges
-                if (x < 5 || x > 25 || y < 5) {
-                    if (Math.random() < 0.7) row[x] = 6; // Mountain
-                    continue;
+                // 0. THE CENTRAL SPINE (Floating Land)
+                // A narrow strip in the middle that winds slightly
+                const spineX = 40 + Math.sin(y / 5) * 8;
+                const distToSpine = Math.abs(x - spineX);
+                
+                if (distToSpine < 10) {
+                    row[x] = 27; // Snow base
+                    
+                    // The Path
+                    if (distToSpine < 3) row[x] = 2; // Dirt Path
+                    
+                    // Safety Zones
+                    const isSafe = entityLocs.some(loc => Math.abs(loc.x - x) <= 1 && Math.abs(loc.y - y) <= 1);
+                    if (isSafe) row[x] = 27;
+                } else {
+                    // 1. FLOATING SKY ELEMENTS
+                    const noise = Math.sin(x / 4) * Math.cos(y / 4);
+                    if (noise > 0.6) row[x] = 106; // Clouds
+                    else if (noise > 0.5) row[x] = 109; // Wind Platform
+                    else if (Math.random() < 0.005) row[x] = 6; // Tiny floating rock
                 }
 
-                // 2. Ancient Watchtowers
-                if ((x === 6 && y === 10) || (x === 24 && y === 18)) {
-                    row[x] = 68; // Stone wall
-                    continue;
-                }
-
-                // 3. Flower Patches (Alpine Flora)
-                if (Math.random() < 0.08) row[x] = 11;
-
-                // 4. Central Climbing Path
-                if (x >= 14 && x <= 16) {
-                    row[x] = 2; // Dirt path
-                    continue;
+                // 2. THE SUMMIT ARENA
+                if (y <= 8 && distToSpine < 15) {
+                    row[x] = 27; 
+                    if (distToSpine > 12) row[x] = 68; // Stone boundary
                 }
             }
             rows.push(row);
@@ -56,34 +70,34 @@ MAP_DEFS.northern_highlands = {
         return rows;
     })(),
     npcs: [
-        { id: 'highland_monk', x: 13, y: 12, dialogueKey: 'monk_wisdom', behavior: 'stationary' },
-        { id: 'fallen_climber', x: 22, y: 20, dialogueKey: 'climber_ghost', behavior: 'stationary' }
+        { id: 'highland_monk', x: 42, y: 36, dialogueKey: 'monk_wisdom', behavior: 'stationary' },
+        { id: 'fallen_climber', x: 40, y: 10, dialogueKey: 'climber_ghost', behavior: 'stationary' }
     ],
     triggers: [
         {
             id: 'thin_air_trigger',
-            x: 14, y: 20, w: 3, h: 2,
+            x: 5, y: 25, w: 70, h: 3,
             type: 'dialogue',
             lines: [
-                { speaker: 'Rei', text: 'My lungs... they feel like they\'re burning. The air is too thin.' },
-                { speaker: 'Lulu', text: 'Breathe slowly. The mountain doesn\'t want us here.' }
+                { speaker: 'Rei', text: 'The rifts on either side... one slip and we\'re falling forever.' },
+                { speaker: 'Lulu', text: 'Breathe slowly. Don\'t look down. Just watch for the harpies.' }
             ]
         },
         {
-            id: 'shrine_discovery',
-            x: 15, y: 10, w: 2, h: 2,
+            id: 'wind_gust',
+            x: 5, y: 18, w: 70, h: 4,
             type: 'dialogue',
             lines: [
-                { speaker: 'narrator', text: 'You discover a small, weathered shrine dedicated to the spirits of the wind.' },
-                { speaker: 'Aya', text: 'A Highland Shrine. If we offer a prayer, the elements might favor us.' }
+                { speaker: 'narrator', text: 'A powerful gale nearly knocks you off the Cloud-Spine.' },
+                { speaker: 'Tao', text: 'Is it just me, or did the mountain just try to push us?' }
             ]
         }
     ],
     objective: {
         type: 'reach',
-        target: { x: 15, y: 4 },
-        label: 'Slay the Sky-Drake',
-        completeMsg: '✦ The Sky-Drake has been grounded. The highlands are yours.',
+        target: { x: 40, y: 4 },
+        label: 'Slay the Shadow Dragon',
+        completeMsg: '✦ The Shadow Dragon has been grounded. The highlands are yours.',
     },
     voiceLines: {
         ambient: [
