@@ -16,7 +16,8 @@ const Save = {
   /** Write state to a slot and show toast */
   write(state, slot = 0) {
     try {
-      const data = { ...state, slot, timestamp: Date.now() };
+      const version = (typeof ReleaseConfig !== 'undefined') ? ReleaseConfig.SAVE_VERSION : '1.0';
+      const data = { ...state, slot, timestamp: Date.now(), version };
       localStorage.setItem(this._key(slot), JSON.stringify(data));
       this._showToast('Progress saved');
     } catch(e) { console.warn('Save.write failed:', e); }

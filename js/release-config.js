@@ -11,6 +11,7 @@ const ReleaseConfig = {
   // 1 = Arc 2 (Crystal Caverns)
   // 7 = Arc 8 (Final Arc)
   MAX_REACHABLE_ARC: 1,
+  SAVE_VERSION: "4.0",
 
   // Toggle for demo/beta specific UI behavior
   IS_BETA: true,

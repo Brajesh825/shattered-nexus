@@ -82,6 +82,8 @@ const SHELL_ASSETS = [
   './images/backgrounds/sacred_ruins_boss.png',
   './images/backgrounds/shattered_ruins.png',
   './images/backgrounds/summoning_ruins.png',
+  // UI Assets
+  './images/ui/world_map_bg.png',
   // Enemies (single quality)
   './images/enemies/abomination.png',
   './images/enemies/bandit.png',
