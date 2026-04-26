@@ -11,7 +11,7 @@ MAP_DEFS.ashen_foothills = {
     bgColor: '#120b02',
     ambientLight: 'rgba(200,60,20,0.1)',
     weather: 'ash',
-    enemyLevelRange: [30, 42],
+    enemyLevelRange: [20, 28],
     encounterTemplates: [
         { weight: 3, enemies: ['imp'] },
         { weight: 2, enemies: ['fire_elemental'] },

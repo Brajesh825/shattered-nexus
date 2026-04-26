@@ -11,7 +11,7 @@ MAP_DEFS.sky_ruins = {
     bgColor: '#04020a',
     ambientLight: 'rgba(150,50,250,0.12)',
     weather: 'mist',
-    enemyLevelRange: [48, 60],
+    enemyLevelRange: [35, 43],
     encounterTemplates: [
         { weight: 2, enemies: ['void_knight'], mutation: 'corrupted' },
         { weight: 1, enemies: ['lich'], mutation: 'corrupted' },

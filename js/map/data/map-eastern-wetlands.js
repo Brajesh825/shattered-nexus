@@ -11,7 +11,7 @@ MAP_DEFS.eastern_wetlands = {
     bgColor: '#0a100a',
     ambientLight: 'rgba(100,255,100,0.08)',
     weather: 'mist',
-    enemyLevelRange: [38, 48],
+    enemyLevelRange: [30, 38],
     encounterTemplates: [
         { weight: 3, enemies: ['mushroom'] },
         { weight: 2, enemies: ['spider'] },
