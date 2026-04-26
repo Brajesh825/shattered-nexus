@@ -24,9 +24,9 @@ const NPC_DEFS = {
       verdant_vale: [
         { speaker: 'Lady Essabella', text: 'You are not his. Good. I was beginning to think I\'d wait forever.' },
         { speaker: 'Aya', text: 'You knew someone would come?' },
-        { speaker: 'Lady Essabella', text: 'I calculated it. Someone always does, when the world is desperate enough to call.' },
-        { speaker: 'Tao', text: 'That is either very wise or very sad.' },
-        { speaker: 'Lady Essabella', text: 'Both, usually.' },
+        { speaker: 'Lady Essabella', text: 'I calculated it. Someone always does, when the world is desperate enough to call. Though mortal logic is a poor substitute for the overview I once held.' },
+        { speaker: 'Tao', text: 'What overview?' },
+        { speaker: 'Lady Essabella', text: '...A scholar\'s overview. Nothing more.' },
         { speaker: 'Rei', text: 'The Sacred Ruins. The Void Knight. Tell us what you know.' },
         { speaker: 'Lady Essabella', text: 'Direct. I appreciate that.' },
         { speaker: 'Lady Essabella', text: 'Valdris bound a soul to those ruins two years ago. A warrior. What guards the Fragment now is not what it once was — it has forgotten everything except the order it was given. You cannot reason with it. You can only end it.' },
@@ -162,6 +162,19 @@ const NPC_DEFS = {
         { speaker: 'Lady Essabella', text: 'I still think the Oracle\'s way risks everything. I still think destroying the Fragments is a gamble you do not fully understand. But I have seen what happens when someone refuses to accept a risk they cannot control. I will not become that.' },
         { speaker: 'Aya', text: 'Will you stay?' },
         { speaker: 'Lady Essabella', text: 'Someone should witness this. In case you are right and I am wrong. I would like to know what that looks like.' },
+      ],
+
+      // ── ARC 7 — Void Citadel ─────────────────────────────────────
+      // The reveal before the final climb.
+      void_citadel: [
+        { speaker: 'Aya', text: 'The air here... it feels like it\'s being pulled toward the center.' },
+        { speaker: 'Lady Essabella', text: 'He is phase-locked. The Grand Ritual has entered its final stage. He is forcing the Shadow Seal open by sheer elemental resonance.' },
+        { speaker: 'Rei', text: 'Then we interrupt him.' },
+        { speaker: 'Lady Essabella', text: 'It is not so simple. Valdris has injected the Living Core of the Nexus into his own heart. He is the archive now.' },
+        { speaker: 'Lulu', text: 'If he dies... what happens to the Core?' },
+        { speaker: 'Lady Essabella', text: 'I will be there to catch it. I was the Goddess who oversaw that Core for eons. I took this mortal vessel specifically to repair the error I allowed to happen.' },
+        { speaker: 'Tao', text: 'A goddess? You?' },
+        { speaker: 'Lady Essabella', text: 'A fallen one. But I still remember how the pieces fit together. Reclaim the Fragments from his body, and I will restore Aethoria.' },
       ],
 
       // ── ARC 8 — Eternal Void ──────────────────────────────────────

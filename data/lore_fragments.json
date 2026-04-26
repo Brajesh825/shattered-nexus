@@ -1,32 +1,602 @@
 [
   {
-    "id": "world_nexus",
-    "title": "The Shattering of Nexus",
-    "icon": "💥",
-    "description": "Centuries ago, the Nexus was a crystalline construct that maintained the balance of all elements. When it shattered, the world was split into islands of extreme elemental energy, and the 'Shattered Souls' (the player characters) were chosen to reassemble it."
+    "id": "world_five_civilizations",
+    "title": "The Five Who Stood Watch",
+    "icon": "🌐",
+    "category": "World History",
+    "region": "world",
+    "description": "Five elemental civilizations each guarded one Seal. The Verdant Throne governed wind and growth. The Ashveil Kingdom kept fire and knowledge. The Forge Lords held earth through craft. The Tide Priests maintained water and healing. The Shadow Keepers kept void and endings — a people who understood darkness not as enemy but as necessary. Each civilization was entirely different from the others. They did not always agree. The Seals kept them stable anyway: five notes that never fully harmonized but never fully clashed. The balance lasted for centuries. It ended in three days."
   },
   {
-    "id": "npc_essabela",
-    "title": "Isabela the Merchant",
-    "icon": "💎",
-    "description": "A merchant found in the Sunken Temple. She is actually a former High Priestess of the Tide, seeking a way to purify the corruption that has turned her people into Armored Crabs and Slimes."
-  },
-  {
-    "id": "region_vale",
-    "title": "The Green Emperor's Silence",
+    "id": "world_verdant_throne",
+    "title": "The Verdant Throne",
     "icon": "🌿",
-    "description": "The Verdant Vale used to be a paradise governed by a benevolent entity known as the Green Emperor. After the Shattering, the Emperor vanished, leaving behind nothing but overgrown ruins and the Goblins—who are whispered to be his cursed children."
+    "category": "World History",
+    "region": "verdant_vale",
+    "description": "The Verdant Throne was not a court — it was a stewardship. The Green Emperor governed the wind and growth Seal not from a throne room but from the Vale itself, walking its fields and forests for centuries. His people were farmers and singers. They measured wealth in harvest surplus shared with neighbors. They had developed a calendar of songs — one melody per month, sung collectively in the fields. They were not naive. They were simply people who had lived under a good steward long enough to become good themselves. The Emperor's one fear: that when he ended, the Vale's balance would end with him. He was right to worry. He was more load-bearing than he understood."
   },
   {
-    "id": "relic_origin",
+    "id": "world_ashveil_kingdom",
+    "title": "The Ashveil Kingdom",
+    "icon": "🔥",
+    "category": "World History",
+    "region": "crystal_cavern",
+    "description": "Ashveil was built into a mountain, carved over four generations by a civilization that believed knowledge was the highest good and fire was its symbol — illuminating darkness, burning away what was false, revealing what was hidden. Led by a Fire Council of scholars, the greatest of whom was Chief Archivist Solvan: sixty years old, forty of them spent cataloguing fire resonance patterns in the crystal caverns. He had documented more about elemental fire than anyone alive. He believed that when he finally understood how fire passes memory from flame to flame across centuries, truth itself would become indestructible. He was close. He had been close for a decade. That proximity was the thing Valdris exploited."
+  },
+  {
+    "id": "world_forge_lords",
+    "title": "The Forge Lords",
+    "icon": "🔨",
+    "category": "World History",
+    "region": "ember_wastes",
+    "description": "Not a kingdom. A guild-civilization governed by a Grand Forgemaster elected by senior craftsmen. They believed making something durable was a form of prayer. Every weapon, every bridge, every tool was an act of devotion to permanence. Their obsession: a metal that could not be destroyed. They had been trying for three centuries. Every alloy eventually broke, melted, or corroded. Grand Forgemaster Dara kept her predecessors' failed attempts in a vault she visited every morning — not as reminders of failure but as a record of how close they had gotten. She was close. She had been close for years. That proximity was the thing Valdris exploited."
+  },
+  {
+    "id": "world_forge_lords_vault",
+    "title": "The Vault of Failed Attempts",
+    "icon": "🔐",
+    "category": "World History",
+    "region": "ember_wastes",
+    "description": "Grand Forgemaster Dara kept her predecessors' failed attempts in a vault she visited every morning. Every cracked blade, every rusted gear, and every brittle alloy was a physical record of three centuries of getting closer to the indestructible. She did not see them as failures; she saw them as the rungs of a ladder. Valdris sat in that vault with her for three days. He told her the ladder was finished. He showed her the top rung. She climbed it without looking back."
+  },
+  {
+    "id": "world_tide_priests",
+    "title": "The Tide Priests",
+    "icon": "🌊",
+    "category": "World History",
+    "region": "sunken_temple",
+    "description": "The only civilization organized entirely around service. The Tide Priests maintained the Water Seal and used its connection to the ocean's elemental energy to heal. Their high archpriest was Oremis — a man who had spent fifty years healing and fifty years watching people die from things he could not cure. Diseases from the deep water. Corruptions that didn't respond to anything he had. He believed the answer was in the absolute deepest ocean — that the Water Seal's origin held a knowledge of healing the surface had never accessed. He was old. He felt the people dying of incurable things were dying partly because he had not yet found what he was looking for. That guilt was the thing Valdris exploited."
+  },
+  {
+    "id": "world_tide_water_market",
+    "title": "The Submerged Market",
+    "icon": "🚢",
+    "category": "World History",
+    "region": "sunken_temple",
+    "description": "The Sunken Temple was once a hub of commerce where the water market never closed. Boats on stone platforms, children learning to swim before they could walk, and healers working from floating barges. It was a civilization that lived in constant, joyful negotiation with the tide. Now, the iron rings that once held trading ships are submerged, holding nothing but rotted rope and the weight of a silence that hasn't broken in decades."
+  },
+  {
+    "id": "world_shadow_keepers",
+    "title": "The Shadow Keepers",
+    "icon": "🌑",
+    "category": "World History",
+    "region": "eternal_void",
+    "description": "The civilization nobody visited — not because they were hostile but because they were uncomfortable. They had built their philosophy entirely around the nature of endings. They did not fear death. They studied it. Shadow, in their understanding, was not evil — it was the space between things, the contrast that made light visible, the pause that made sound music. Without endings, nothing new could begin. Their leader was Maren the Still — a scholar-mystic who had sat with thousands of dying people and animals, studying the threshold moment. She was the world's foremost authority on what happened at the edge of ending. She was not suicidal. She was curious in the way that saints are curious: with full acceptance of what the answer might cost."
+  },
+  {
+    "id": "valdris_origin",
+    "title": "The Scholar From Nowhere",
+    "icon": "📖",
+    "category": "Valdris",
+    "region": "world",
+    "description": "Valdris was born in a small settlement near the Verdant Vale's eastern edge — close enough to see the Green Emperor's territory, far enough to never benefit from it. No elemental resonance. No divine heritage. No faction loyalty. Just an intelligence so comprehensive it frightened people who spent more than an hour with him. He spent sixty years traveling all five civilizations, welcomed everywhere as a neutral scholar with no agenda. He studied in Ashveil's archives. He healed alongside the Tide Priests. He watched the Forge Lords work. He sat with Maren the Still and discussed endings. He was, by every measure, Aethoria's finest living mind. He was also dying, and he had just calculated exactly when."
+  },
+  {
+    "id": "valdris_star_maps",
+    "title": "Eleven Years",
+    "icon": "⭐",
+    "category": "Valdris",
+    "region": "world",
+    "description": "Valdris had been working on the star maps for twelve years — the theory that celestial movements contained a pattern that could predict any specific person's moment of death. He finished it at age sixty-three. He looked at his result. He had eleven years left. Not someday. Eleven years. A specific number. He sat with that number for three days and did not eat. A vague death was manageable. A date was not. He got up on the fourth day, packed his notes, and traveled to the Nexus. He had decided, in those three days, that eleven years was the wrong answer. He was going to find a different one."
+  },
+  {
+    "id": "valdris_nexus_discovery",
+    "title": "What the Nexus Actually Was",
+    "icon": "💎",
+    "category": "Valdris",
+    "region": "world",
+    "description": "The five civilizations believed the Nexus was a balancing instrument — a tuning fork that kept the five Seals in harmony. Valdris, studying it with sixty years of elemental theory and no reverence to cloud his vision, understood the truth within three days. The Nexus was a memory device. Every elemental event in Aethoria's entire history — every storm, flood, fire, harvest, ending — was recorded in the crystal. The five civilizations had built, without understanding it, the world's perfect record. Things that are completely recorded do not fully end. The Nexus contained events from before anyone living was born. Those events were over. But they still existed — inside the crystal, perfectly intact. He understood immediately: if he could make himself what the Nexus does to elemental events, he could not fully end."
+  },
+  {
+    "id": "valdris_seduction_emperor",
+    "title": "What Valdris Offered the Green Emperor",
+    "icon": "🌿",
+    "category": "Valdris",
+    "region": "verdant_vale",
+    "description": "Valdris went to the Green Emperor alone and told him the truth: he had found a way to bind a consciousness to the elemental force it governed. The Emperor would not die — he would become the Vale. Eternal, inseparable from the growth he had tended for centuries. His people would never lose him because he would be the land itself. The Emperor was ancient and wise. He asked questions Valdris answered carefully and correctly. He consulted no one — this was not a decision he felt he could share. He agreed. The ritual Valdris performed was real. Something of the Emperor did bind to the land. What Valdris did not explain: binding a consciousness to an elemental force and preserving it intact are different things. The Emperor's awareness fragmented as it dispersed into the Vale's wind and growth energy. He did not die. He dissolved — slowly, over months, becoming the forest's heartbeat without retaining the mind that had governed it. He is still there. He has been for decades. He does not know what he is."
+  },
+  {
+    "id": "valdris_seduction_archivist",
+    "title": "What Valdris Offered Solvan",
+    "icon": "🔥",
+    "category": "Valdris",
+    "region": "crystal_cavern",
+    "description": "To Chief Archivist Solvan, Valdris brought the offer that required no manipulation: direct access to the Fire Seal's complete elemental memory. Everything fire had ever done in Aethoria, available instantly. Forty years of Solvan's life's work, completed in a moment. Solvan asked what Valdris wanted in return. Valdris said: access to the Nexus through Ashveil's Seal connection, and Solvan's expertise in elemental memory compression. Solvan agreed. He was not naive — he knew Valdris wanted something significant. But the offer was genuine. The knowledge was real. And he had spent forty years one step from understanding fire completely. One step was too close to stop. Valdris fused the Fire Seal Fragment to him. Forty years of documented knowledge instantly collided with centuries of compressed Seal memory entering the same mind simultaneously. Solvan understood fire completely for approximately four seconds. Then the overload consumed him. The Demon Lord is what remained: same obsession, same drive to catalogue and absorb. No coherent person left to choose when to stop."
+  },
+  {
+    "id": "valdris_seduction_forge",
+    "title": "What Valdris Offered the Forge Lords",
+    "icon": "🔨",
+    "category": "Valdris",
+    "region": "ember_wastes",
+    "description": "Valdris arrived at the forge with a sample of Void-metal — a material that existed outside the elemental cycle, neither created nor destroyed. He let Grand Forgemaster Dara test it for a week. Every test confirmed it: it could not be melted, broken, or altered. She asked for enough to work with. He gave it in exchange for the Forge Lords' knowledge of the deep geological channels where Earth Seal energy ran closest to the surface. They made weapons with the Void-metal — extraordinary ones. The problem revealed itself slowly. Everything made with Void-metal existed outside the elemental cycle, and prolonged contact with something outside the cycle pulled its makers in the same direction. The Forge Lords began hardening. Their connection to the fire element that sustained them grew distant. Dara was first: the Grand Forgemaster who had devoted her life to making permanent things became, herself, permanent. The Molten Golem still stands in the deepest mine shaft, still protecting the forge, still performing the last instruction her deteriorating consciousness could hold. She made the indestructible thing she always wanted. She is just no longer a person who can appreciate it."
+  },
+  {
+    "id": "valdris_seduction_tide",
+    "title": "What Valdris Offered Archpriest Oremis",
+    "icon": "🌊",
+    "category": "Valdris",
+    "region": "sunken_temple",
+    "description": "To Oremis, Valdris offered the most seemingly benign gift: the ability to survive the descent into the absolute deep ocean, where the Water Seal's origin resided. No promise of immortality. Just the means to reach what Oremis had been trying to reach for thirty years — the knowledge he believed would end the suffering he could not cure. Oremis accepted without hesitation. He descended. What he found at the absolute depth was not the source of healing. It was the compressed Water Seal memory — centuries of the ocean's elemental history, raw and unfiltered, entering a mortal mind that could not hold it. He came back up changed. He did not know it yet. He went back to the temple, touched the water to begin healing someone. The corruption spread on contact — not because he wanted it to, but because the foreign Seal memory inside him transferred on elemental proximity. The Tide Priests who worked beside him changed first. Then the people they treated. The transformation was not violent. It was gradual. Tidal. Oremis completed the transformation last, alone in the deep chamber, still trying to understand what had happened to him."
+  },
+  {
+    "id": "valdris_seduction_shadow",
+    "title": "What Valdris Offered Maren the Still",
+    "icon": "🌑",
+    "category": "Valdris",
+    "region": "eternal_void",
+    "description": "Valdris approached Maren differently. He knew she had no interest in immortality. He offered her the one thing her philosophy had always reached toward: complete understanding of what happens at the threshold — what endings actually are, from the inside. Full access to the Shadow Seal's memory. The answer to the question her civilization had been building toward for generations. Maren studied him for three weeks before responding. She asked him directly: you are afraid of dying. Is this about you or about me? Valdris said: both. She respected the honesty enough to agree. She was old, she had studied endings her entire life and still did not fully understand them. She suspected there would be a cost. She thought the cost would be her life. It was her mind. The Shadow Seal memory — the compressed record of every ending, every void, every absence in Aethoria's history — entered her and she understood endings completely for a moment that lasted no measurable time and felt infinite. Then she was the ending. The Shadow Keepers followed their Sovereign one by one, seeking the same experience. Their ruins are not dramatic. No conflict, no struggle, no bodies. Just empty buildings. Absence where a civilization used to be."
+  },
+  {
+    "id": "valdris_galdor",
+    "title": "The Transaction",
+    "icon": "👑",
+    "category": "Valdris",
+    "region": "verdant_vale",
+    "description": "King Galdor of Aethelgard was not one of the five. He was a regional king in the Verdant Vale area — wealthy, comfortable, and frightened when the corruption began spreading. He sent Valdris a message: the entire treasury of Aethelgard in exchange for safety. Valdris accepted the gold. He cursed Galdor and his people anyway — king into the first Goblin, kingdom into a ruin of Void-Gild. Not out of hatred. Galdor meant nothing to Valdris. A cursed kingdom in the Verdant Vale was simply useful as an anchor point for shadow corruption. Galdor's promise was broken because the terms didn't matter. This is what makes it the cruelest story in the Vale: Galdor wasn't important enough for Valdris to hate. He was a transaction that went against the terms because keeping terms requires considering the other party as a person worth keeping them to."
+  },
+  {
+    "id": "valdris_shattering",
+    "title": "Three Days",
+    "icon": "💥",
+    "category": "Valdris",
+    "region": "world",
+    "description": "With all five civilizations compromised and their Seals weakened, Valdris dismantled the Nexus over three days — carefully, methodically, extracting what it contained into himself. On the third day, Essabella arrived. Three hours too late. She had calculated that intervention was possible. What she had not calculated was which piece to take from his hands first. She stood at the edge of the chamber looking at a sixty-six-year-old scholar calmly taking apart the world's most important structure, and she could not decide. One moment of uncertainty. The final Seal fractured. The Nexus shattered. The elemental memory of Aethoria flooded into a mortal body. Valdris felt, for a moment, like he contained everything. Like death was a concept that applied to smaller things. The moment passed. What remained was hunger. He had absorbed the record but not the recorder. And a record without a recorder is just weight."
+  },
+  {
+    "id": "valdris_transformation",
+    "title": "The Moment He Stopped Being a Scholar",
+    "icon": "🌑",
+    "category": "Valdris",
+    "region": "world",
+    "description": "As the Nexus shattered, the world broke apart around him. The five Seals, no longer held in harmony, began their long failure. The five civilizations that had helped him — each believing they had gotten something in exchange — began the transformations that would produce the Demon Lord, the Molten Golem, the Armored Crabs, the empty Shadow Reaches. Valdris watched this with detached curiosity. He did not feel horror at what his plan had produced. He felt interested. That was the moment — not the calculation, not the ritual, not the Shattering itself. The moment Valdris watched his home world begin to break apart and felt primarily interested rather than horrified. That was the moment he became something other than a frightened scholar. Everything after was consequence."
+  },
+  {
+    "id": "valdris_hunger",
+    "title": "Why Consuming More Makes It Worse",
+    "icon": "🌌",
+    "category": "Valdris",
+    "region": "eternal_void",
+    "description": "Each layer of the Nexus that Valdris consumed added to what he contained. Each addition doubled the hunger rather than filling it. This is the flaw in his logic that he has been unable to see for six centuries: the more you contain, the more you have to lose. He wanted permanence through indispensability — to become the thing the universe cannot exist without, and therefore cannot end. But the more he consumed, the less reality remained outside him. The endpoint of his plan is a void with nothing left in it to need him. He has been building toward the thing he feared — absolute aloneness in absolute emptiness."
+  },
+  {
+    "id": "valdris_return",
+    "title": "Why He Came Back to Aethoria",
+    "icon": "📖",
+    "category": "Valdris",
+    "region": "eternal_void",
+    "description": "Valdris returned to the physical plane of Aethoria because the Shadow Seal — the fifth and final Seal — 'guarded itself' during the Shattering. When the first four elemental pillars fell, the element of boundaries instinctively withdrew into an impenetrable defensive void. Valdris requires this piece to achieve 'Absolute Permanence.' Without it, he is a being made of four notes in a five-note world — unstable, hungry, and forced to keep absorbing Aethoria's remaining data just to stay coherent."
+  },
+  {
+    "id": "valdris_grand_ritual",
+    "title": "The Grand Ritual",
+    "icon": "🔮",
+    "category": "Valdris",
+    "region": "void_citadel",
+    "description": "The reason Valdris does not descend to end the party personally is simple: he is phase-locked. Within the heart of the Void Citadel, he is performing a 'Grand Ritual' of forced resonance — a centuries-long magical siege designed to break the Shadow Seal's final defenses. To leave his post would be to forfeit six hundred years of work. He relies on his four 'Personal Anchors' (the corrupted leaders) to maintain the world's glitched state while he focuses on the final upload. Every Fragment the party frees is a strike against the ritual's stability."
+  },
+  {
+    "id": "world_nexus_purpose",
+    "title": "What the Nexus Was For",
+    "icon": "💎",
+    "category": "World History",
+    "region": "world",
+    "description": "The Nexus was not a weapon or a throne. It was a tuning instrument — a crystalline construct built by all five civilizations together at a neutral place none of them owned. Its purpose was to keep the five elemental Seals in harmony. Without the Nexus, the Seals drift. Without the Seals, the elements pull against each other. The world does not collapse all at once. It unravels slowly, region by region, like a cloth pulled from one thread at a time. The civilizations knew this. They built the Nexus anyway, because some things are only possible together."
+  },
+  {
+    "id": "world_oracle_lineage",
+    "title": "The Oracle Lineage",
+    "icon": "🔮",
+    "category": "World History",
+    "region": "world",
+    "description": "The Oracle is not a single person. It is a lineage — a bloodline who inherited both the summoning ritual and the weight of knowing when to use it. The ritual was designed as a last resort: if Aethoria ever fell beyond saving from within, those outside could be called in. The current Oracle activated it with four Seal Fragments already gone and the fifth cracking. She used the fracturing energy of the Shadow Seal itself as a massive, desperate battery to reach across the planes. She says there was never a right time. There was only a last time."
+  },
+  {
+    "id": "world_shadow_battery",
+    "title": "The Ironic Summoning",
+    "icon": "⚡",
+    "category": "World History",
+    "region": "world",
+    "description": "Valdris's return for the fifth and final Seal was his greatest strategic error. By attempting to claim the Shadow Seal, he caused it to crack, leaking raw elemental energy. It was this 'leak' that provided the Oracle with enough signal strength to summon the party. In a profound irony, Valdris's own greed provided the power to call for the people who would eventually defeat him. Without his return, the Oracle would have never had the strength to reach beyond Aethoria."
+  },
+  {
+    "id": "world_fractured_reality",
+    "title": "Fractured Reality",
+    "icon": "🌀",
+    "category": "World History",
+    "region": "world",
+    "description": "The corruption of Aethoria is not just magical; it is architectural. When the Seals were removed from their custodians, the world's source code lost its grounding. Reality began to unravel, turning living beings into 'glitched' versions of themselves. A Tide Priest doesn't just become a monster; their healing code is overwritten by the deep sea's pressure. A Forge Lord's crafting code is overwritten by Void-metal. The world is a system in failure, its data fracturing because the harmony of the Nexus was broken."
+  },
+  {
+    "id": "world_fragment_fusions",
+    "title": "The Fragment Fusions",
+    "icon": "💎",
+    "category": "World History",
+    "region": "world",
+    "description": "Valdris did not merely hide the Seal Fragments; he weaponized them. By fusing each Fragment into a powerful host, he created 'Living Battery-Anchors.' The Fragments provide these bosses with a source of infinite elemental power, making them nearly invincible and granting them a form of glitched immortality. The host then acts as a transformer, filtering the Fragment's pure energy into a 'Dark Pulse' that broadcasts corruption across the entire region. To reclaim a Fragment is not just a matter of finding it; it is a battle against the world's own redirected life-force."
+  },
+  {
+    "id": "world_seal_mechanics",
+    "title": "What Happens When a Fragment Is Freed",
+    "icon": "🔷",
+    "category": "World History",
+    "region": "world",
+    "description": "Valdris did not destroy the Seal Fragments. He extracted them from their civilizations and fused them into corrupted creatures as anchors — points of shadow-corruption tethered to each region. As long as a Fragment is inside a corrupted host, the shadow energy of that host overwrites the Fragment's elemental memory. The Fragment cannot return to its natural state. When the party defeats each boss, they do not destroy the Fragment — they free it. A freed Fragment begins drifting, naturally, toward the others. This is what the Oracle calls 'breaking the anchors.' What she does not fully explain: freed Fragments do not simply scatter. They seek each other. By the time all five are freed, they are already pulling back together. The Seals were never truly broken. They were just held apart."
+  },
+  {
+    "id": "world_relics",
     "title": "Of Relics and Resonance",
     "icon": "🏺",
-    "description": "Relics are not just artifacts; they are crystalline splinters of the Nexus. When equipped, they resonate with the user's soul, granting them powers once reserved for the elemental gods."
+    "category": "World History",
+    "region": "world",
+    "description": "When the Nexus shattered, its crystal dispersed across Aethoria — billions of fragments, most too small to find. The largest pieces became Relics. When held by a living being with strong elemental resonance, a Relic does not grant power — it reveals it. The power was always there. The Relic is simply a mirror held up to it. This is why a Relic in one person's hand feels like a warm stone and in another's blazes like a small sun. The universe is not giving anything. It is recognizing something that was already there."
   },
   {
-    "id": "king_galdor_curse",
+    "id": "world_fallen_angels",
+    "title": "The Fallen Angels",
+    "icon": "🪶",
+    "category": "World History",
+    "region": "world",
+    "description": "Before Valdris came, Aethoria was overseen by a Goddess of the Nexus — a divine being who maintained the elemental balance from the celestial realm. When the Shattering began, the divine order fractured. Most returned to the higher planes, refusing to intervene in a 'mortal error.' But the Goddess herself refused to leave. She descended, shed her immortality, and took the name Essabella. She gathered the others who felt as she did: angels who chose the world they loved over the realm that birthed them. They are the Fallen Angels, led by a Goddess who fell by choice."
+  },
+  {
+    "id": "essabella_vessel",
+    "title": "The Goddess and the Vessel",
+    "icon": "🎭",
+    "category": "Essabella",
+    "region": "world",
+    "description": "The being now known as Lady Essabella is not a mortal woman, but the Goddess of Aethoria inhabiting a physical vessel. She chose this form because divine law forbade her from intervening in the physical plane as a deity. By becoming 'Essabella,' she gained the right to fight, but lost the 'Perfect Overview' she once held from the stars. Her obsession with calculation is a byproduct of this loss: she is a Goddess trying to regain the certainty she once possessed through mortal logic."
+  },
+  {
+    "id": "essabella_fall",
+    "title": "Why Essabella Stayed",
+    "icon": "🪶",
+    "category": "Essabella",
+    "region": "world",
+    "description": "Essabella arrived at the Nexus three hours before Valdris finished dismantling it. As the world's Goddess, she had calculated that her presence would be enough to halt the ritual. What she had not calculated was the weight of mortal hesitation. In that one moment of uncertainty, the final Seal fractured and her world shattered. She did not return to the heavens. She remained as a mortal refusal to accept her own failure. For six centuries, she has been trying to calculate a way to fix the world she once simply understood."
+  },
+  {
+    "id": "essabella_plan",
+    "title": "The Preservation Doctrine",
+    "icon": "📐",
+    "category": "Essabella",
+    "region": "world",
+    "description": "Essabella's ultimate objective is not just the defeat of Valdris, but the 'Full Reconstruction' of the Nexus. For this, she requires every single fragment and shard, even those shattered during the initial collapse. She knows what the Oracle does not: that the Master Code of Aethoria is no longer in the stones, but in the blood. She has positioned her Fallen Angels to secure the outer fragments, while the party strikes at the core."
+  },
+  {
+    "id": "valdris_living_core",
+    "title": "The Living Core",
+    "icon": "🫀",
+    "category": "Valdris",
+    "region": "void_citadel",
+    "description": "In his final act of paranoia, Valdris did not merely absorb the Nexus's data—he injected the crystalline 'Core' of the world's source code into his own physical form. He has turned his heart into the only copy of Aethoria's master archive. This is why he cannot be reasoned with or bargained with: to restore the world, the record must be retrieved, and the record is now inseparable from the man. He is the living lock on a world that can only be opened by his own ending."
+  },
+  {
+    "id": "valdris_essabella_parallel",
+    "title": "The Divine Mirror",
+    "icon": "⚖️",
+    "category": "Essabella",
+    "region": "world",
+    "description": "The conflict between Valdris and Essabella is a mirror of tragic symmetry. Valdris is the mortal scholar who refused his own ending and climbed the stars to become a God of Hunger. Essabella is the Goddess of the Nexus who refused her own immortality and descended to the earth to become a mortal Commander. One sought to contain everything and lost his humanity; the other sought to save everything and lost her divinity. They are the two halves of Aethoria's ending, locked in a struggle that neither can win without becoming what they once feared."
+  },
+  {
+    "id": "essabella_kraken",
+    "title": "The Binding Chain",
+    "icon": "⛓️",
+    "category": "Essabella",
+    "region": "sunken_temple",
+    "description": "Before Valdris's corruption reached the Sunken Temple, Essabella bound the Kraken to the central chamber using a chain of divine inscription — the kind only a being of celestial origin could write. Her calculation: if the Kraken could not flee, Valdris could not use it as a weapon against the surface. She left her seal on the lock. After the party defeats the Kraken and the chamber falls still, they find the seal in the wreckage — her mark, inscribed before they were ever summoned. Rei recognizes it immediately. He holds it for a long time before speaking."
+  },
+  {
+    "id": "essabella_lieutenant",
+    "title": "Commander Veleth",
+    "icon": "🪶",
+    "category": "Essabella",
+    "region": "shadow_reach",
+    "description": "Commander Veleth was the first Fallen Angel to join Essabella after the celestial order departed — patient, principled, loyal in the way that comes from choosing loyalty freely. When Valdris's influence reached the interior of the Fallen Angel network, Veleth was the one he found first. Essabella tracked her deterioration for six weeks before accepting the conclusion. She sent the party to Shadow Reach knowing exactly what they would find. Tao asks afterward if Essabella at least said goodbye. She says she did not want Veleth to know she was already gone. Tao says he understands. He does not say whether he thinks it was right."
+  },
+  {
+    "id": "essabella_mirror",
+    "title": "The Calculation She Recognized",
+    "icon": "📖",
+    "category": "Essabella",
+    "region": "fortress_ramparts",
+    "description": "In Valdris's private chamber, Essabella found sixty years of mortality studies in increasingly desperate handwriting — a scholar who was meticulous, afraid, and trying to outthink the universe. What broke something in her was not the fear. She had expected fear. It was the precision. He catalogued everything. He calculated everything. He built an edifice of numbers around a wound that numbers cannot close. She had been doing the same thing in a different direction: refusing to leave anything to chance, calling it strategy. Calculation without trust is just fear wearing a coat of numbers. She has known this, somewhere, for a long time."
+  },
+  {
+    "id": "essabella_choice",
+    "title": "What Essabella Chose at the End",
+    "icon": "✨",
+    "category": "Essabella",
+    "region": "eternal_void",
+    "description": "When Aya asks Essabella to stay after it is over — not as a commander, but as someone who chooses to — Essabella is quiet long enough that the silence becomes its own answer. She spent two years calculating how to save this world. Valdris spent six centuries refusing to release it. Both were wrong in the same direction. She says: go, end it, I will be here when you return. She does not say what she will do after. For the first time in centuries, she does not have a plan for what comes next. She finds, unexpectedly, that this feels less like failure and more like something she does not have a word for yet."
+  },
+  {
+    "id": "vale_green_emperor",
+    "title": "The Green Emperor's Silence",
+    "icon": "🌿",
+    "category": "Verdant Vale",
+    "region": "verdant_vale",
+    "description": "The Green Emperor did not vanish — he dissolved. Valdris's ritual fragmented his awareness as it dispersed into the Vale's elemental energy. He did not choose to become the forest. He became it as his coherence failed, over months, losing pieces of himself to the wind and the growth and the soil until what was left was not a mind but a presence. He is still there — the heartbeat beneath the oldest trees, generating the elemental energy that keeps the Vale alive. He does not know what he is. He does not know anything anymore. The Goblins leave offerings at the oldest trees. Whatever they remember of him has passed through the curse and come out the other side as instinct."
+  },
+  {
+    "id": "vale_king_galdor",
     "title": "The Fall of King Galdor",
     "icon": "👑",
-    "description": "King Galdor once ruled the Citadel of Aethelgard in the Verdant Vale. When Veldris arrived, the King offered his vast treasury to buy safety. Veldris took the gold but cursed Galdor's greed, transforming him into the first Goblin and his kingdom into a ruin of 'Void-Gild' where his people forever scavenge for the shiny remains of their former lives."
+    "category": "Verdant Vale",
+    "region": "verdant_vale",
+    "description": "King Galdor was not a coward. He was a pragmatist who loved his people and believed negotiation was worth attempting before war. When Valdris arrived at the Citadel of Aethelgard, Galdor opened the gates and offered the treasury — every coin, every jewel, every plate and cup bearing the royal crest. Valdris accepted. Then he cursed them anyway: king into the first Goblin, people along with him, palace into a ruin of Void-Gild. The curse was not punishment. It was convenience — a corrupted kingdom in the Vale made useful shadow anchor points. Galdor wasn't important enough for Valdris to hate. He was a transaction that went against the terms because keeping terms requires considering the other party as worth keeping them to."
+  },
+  {
+    "id": "vale_before",
+    "title": "When the Vale Still Sang",
+    "icon": "🌱",
+    "category": "Verdant Vale",
+    "region": "verdant_vale",
+    "description": "The Verdant Vale held harvest festivals three times a year — one for planting, one for growth, one for gratitude. Its people had a calendar of songs: each month had a specific melody, sung in the fields by anyone who felt like it. Travelers from other regions described the Vale as a place that always sounded like it was celebrating something. The festivals have been gone for decades. On certain still nights, survivors say they still hear music from the eastern ruins. They do not go to investigate. They have decided some sounds are better left as sounds."
+  },
+  {
+    "id": "vale_void_knight_name",
+    "title": "The Name the Void Knight Forgot",
+    "icon": "⚔️",
+    "category": "Verdant Vale",
+    "region": "verdant_vale",
+    "description": "Before Valdris took him, the Void Knight was a soldier named Arren — a bridge guard posted three hours east of the Citadel when the curse fell. He returned to find his king transformed and his people gone. He spent two years trying to find a reversal. Valdris found him on the third year and decided a man of that much stubborn purpose was worth keeping as a guardian. He kept the purpose. He removed everything that made it matter. When the creature falls and the pale crystal pulses once like a heartbeat, Tao says he will remember its name when they find it. Rei says so will he. Neither knows the name yet. That does not change the promise."
+  },
+  {
+    "id": "vale_bridge_ward",
+    "title": "The Bridge Ward",
+    "icon": "🌉",
+    "category": "Verdant Vale",
+    "region": "verdant_vale",
+    "description": "The eastern bridge of the Vale was maintained by an elemental ward that predated King Galdor's reign by two centuries. The ward reflected malicious intent back as weight — full awareness of what one was about to do. The Void Knight crossed without difficulty. It had no malice left to reflect. The ward flickered for the first time in its existence and has not stopped since. Elder Maren watched from the town gates. She has not described what it looked like to anyone. She has not slept properly since."
+  },
+  {
+    "id": "cavern_demon_lord_origin",
+    "title": "What the Demon Lord Actually Is",
+    "icon": "🔥",
+    "category": "Crystal Cavern",
+    "region": "crystal_cavern",
+    "description": "The Demon Lord does not serve Valdris. He does not know Valdris's name. He is Chief Archivist Solvan — consumed by the Fire Seal Fragment fused to him, still driven by the same obsession that defined his life, now with no capacity to stop. He stayed in Ashveil's undercroft not because he was stationed there but because the Fragment tethered him to the region and everything that carries elemental resonance eventually comes to the Crystal Cavern. When the party arrives carrying four strong elemental resonances, he is interested in the same way the archivist was always interested in new sources of fire-knowledge. He captured Ria and Valka on his own initiative. Valdris did not order it. The Demon Lord does not take orders. He catalogues. He absorbs. He continues."
+  },
+  {
+    "id": "cavern_archivist",
+    "title": "The Unfinished Record",
+    "icon": "📜",
+    "category": "Crystal Cavern",
+    "region": "crystal_cavern",
+    "description": "The Archivist died in the third month of Ashveil's siege — not from the siege but from refusing to stop working while his people starved. His documentation of the crystal resonance patterns was incomplete and he could not leave with it unfinished. He is still there: not alive exactly, not gone exactly — anchored by the same stubbornness that killed him. He describes himself as an unfinished record. He corrects anyone who calls him a ghost. He knows the Demon Lord's weakness because he wrote the original report on fire saturation thresholds. He has been waiting for someone who will listen for a very long time."
+  },
+  {
+    "id": "cavern_ghost_knight",
+    "title": "What Remains When Everything Else Is Taken",
+    "icon": "🛡️",
+    "category": "Crystal Cavern",
+    "region": "crystal_cavern",
+    "description": "The Ghost Knight at the passage in the Crystal Cavern was given one order — hold the passage — and Valdris could not take it because taking it would have required caring about one corridor in a mountain already won. So he left him hollow and moved on. The knight has kept the passage for decades on the echo of an instruction he no longer fully understands. When the party tells him he can rest, he asks if the people he was holding it for made it out. They say yes. He says he thought so. He says he is glad someone came. Then he is quiet, and then he is not there anymore. Lulu cries. Everyone already knows why."
+  },
+  {
+    "id": "wastes_forge_lords_end",
+    "title": "What the Forge Lords Became",
+    "icon": "🔨",
+    "category": "Ember Wastes",
+    "region": "ember_wastes",
+    "description": "The Forge Lords did not fall to Valdris's corruption in the traditional sense. They fell to their own work. The Void-metal Valdris gave them was real — indestructible, exactly as promised. Everything made with it existed outside the elemental cycle. Prolonged contact began pulling its makers in the same direction. The Forge Lords hardened slowly, their connection to elemental fire growing distant, their thoughts less flexible, their bodies following. Grand Forgemaster Dara completed the transformation first — becoming the Molten Golem in the deepest mine shaft, still protecting the forge, still performing the last instruction her deteriorating consciousness could hold. The Fire Imps in the Wastes are the grief the other Forge Lords felt as they changed, burning off as pure emotion when their physical forms completed the transition. The weapons they made are still in the ash. Indestructible. Still watching."
+  },
+  {
+    "id": "wastes_dark_phoenix",
+    "title": "What Fire Was Meant to Do",
+    "icon": "🔥",
+    "category": "Ember Wastes",
+    "region": "ember_wastes",
+    "description": "The Dark Phoenix was not always dark. It was a creature of renewal — as old as the Forge Lords' first fire. When it burned, things grew in the ash. When it died, it was reborn in the following spring. Valdris twisted the cycle by removing two things: the growing and the dying. He left only the burning. The Phoenix cannot stop because the part of it that knew when to stop has been taken. It is not malicious. It burns, and burns, and burns, waiting for a spring that does not come. Rei says: there is no malice in it. Only obedience to a process that has forgotten its own purpose."
+  },
+  {
+    "id": "wastes_drake_ash",
+    "title": "What the Ash Preserved",
+    "icon": "🐉",
+    "category": "Ember Wastes",
+    "region": "ember_wastes",
+    "description": "Drake arrived in Aethoria before the party — not summoned, but pulled through a rift opened by the Shattering. He spent years in the Ember Wastes, drawn to the Dark Phoenix by the wind-resonance at the core of his dragoon training. The Phoenix's ash had a preserving quality: it held him in a loop — the same route, the same days, endlessly. The Phoenix was not doing it deliberately. It simply could not stop cycling. When the party breaks the cycle, Drake finds himself standing in a landscape unchanged around him for years, looking at people who came from outside it. He asks how long it has been. No one knows exactly. He says that is fine. He is used to lost time."
+  },
+  {
+    "id": "temple_tide_civilization",
+    "title": "The People of the Tide",
+    "icon": "🌊",
+    "category": "Sunken Temple",
+    "region": "sunken_temple",
+    "description": "The Tide civilization built around an ancient temple already resonant with the Water Seal. They organized their entire culture around the tide cycle: work, rest, ceremony, and trade all timed to the water's rhythm. They had a daily water market — boats on stone platforms, healers on flat-bottomed barges, children learning to swim before walking on land. When Valdris offered High Archpriest Oremis knowledge of the deepest water, they did not know their leader had agreed. By the time they understood what was happening, the transformation had already begun. They changed from within — infected by the person they trusted most, who had gone looking for something to help them and come back as something that could not."
+  },
+  {
+    "id": "temple_water_market",
+    "title": "What the Flooded Floors Were For",
+    "icon": "🚢",
+    "category": "Sunken Temple",
+    "region": "sunken_temple",
+    "description": "The broad stone platforms of the Sunken Temple — now submerged and patrolled by corrupted creatures — were a daily market. Iron rings hammered into the stone tied boats. Healers worked from floating barges. Vendors called their prices across the water. The iron rings are still there, underwater. Some still have rope attached, half-dissolved. The party swims past them without knowing what they were. They look like decoration. They are a market that forgot to close."
+  },
+  {
+    "id": "temple_transformed_people",
+    "title": "The People Who Became the Sea",
+    "icon": "🦀",
+    "category": "Sunken Temple",
+    "region": "sunken_temple",
+    "description": "The Tide people did not become Armored Crabs and Slimes through a deliberate curse. They were transformed through contact with Archpriest Oremis after he returned from the deep — the Water Seal memory inside him transferring on elemental proximity to everyone he touched. The transformation was gradual, tidal. They are still protecting. They simply cannot remember what they are protecting, or that visitors were ever welcomed, or that there was ever a time when the doors were open. They treat every arrival as a threat because that is the only category remaining."
+  },
+  {
+    "id": "temple_kraken_guardian",
+    "title": "The First Guardian",
+    "icon": "🐙",
+    "category": "Sunken Temple",
+    "region": "sunken_temple",
+    "description": "The Kraken was older than the Tide civilization that built above it. It lived in the deep chamber and never surfaced — not because it was trapped, but because it had chosen the deep. The Tide Priests considered it a guardian of the Water Seal and left offerings at the submerged altar on festival days. The Kraken never acknowledged the offerings. It acknowledged the Seal. When Essabella came to bind it before Valdris arrived, the creature understood the binding before she finished inscribing it. It did not resist. It had already decided it would not leave. The binding confirmed a choice the Kraken had made on its own terms."
+  },
+  {
+    "id": "temple_valdris_speaks",
+    "title": "What Valdris Said at the Water",
+    "icon": "🌑",
+    "category": "Sunken Temple",
+    "region": "sunken_temple",
+    "description": "After the Kraken falls, Valdris appears for the fourth time. He speaks to each of the party by name. He tells Lulu he whispered hopelessness at her through the water and she refused it. He names Rei's two thousand years of karmic weight. He asks Aya what composure costs her. He is not demoralizing them — he is genuinely curious. In six centuries of watching reality unravel, no one has reached the fourth Seal intact and spoken to him as though he were still worth arguing with. He finds this worth examining. He does not say what conclusion he reaches."
+  },
+  {
+    "id": "shadow_reach_rift",
+    "title": "The First Void Rift",
+    "icon": "🌀",
+    "category": "Shadow Reach",
+    "region": "shadow_reach",
+    "description": "The Void Rift at the heart of Shadow Reach was not Valdris's creation. It formed when the Shadow Keepers ceased — when Maren the Still and her people followed her path into the Shadow Seal's memory one by one, and the Seal they had maintained lost its custodians. Reality in the surrounding region began to fail. A rift is not a doorway — it is a gap where the world forgot to maintain itself. Valdris found it, recognized it, and established his staging ground beside it. He did not create the wound. He built his camp inside it."
+  },
+  {
+    "id": "shadow_reach_bandits",
+    "title": "The Ones Who Chose to Stay Alive",
+    "icon": "🗡️",
+    "category": "Shadow Reach",
+    "region": "shadow_reach",
+    "description": "The Shadow Bandits are survivors from multiple collapsed regions who found each other in the corrupted wilds and made a collective decision: survive at any cost. They carry Old World gold — pre-collapse currency they still trade as though it has value, because naming it preserves something they cannot otherwise name. They attack travelers from the arithmetic of survival: fewer people in the wilds means more resources. They know what they have become. Some of them are still deciding how they feel about it."
+  },
+  {
+    "id": "shadow_reach_fallen_network",
+    "title": "The Network That Broke",
+    "icon": "🪶",
+    "category": "Shadow Reach",
+    "region": "shadow_reach",
+    "description": "Essabella's Fallen Angel network inside Valdris's territories had forty-three members at its peak. By the time the party reaches Shadow Reach, thirty-one are gone. For three weeks before the party's arrival, Essabella fed Valdris false patrol routes — movements that did not exist, positions already empty. He spent those weeks hunting shadows. The Fallen Angels he was hunting were already lost. Essabella used the time she bought to clear the party's path instead."
+  },
+  {
+    "id": "citadel_void_warden",
+    "title": "The Gate Guardian's Last Post",
+    "icon": "🗡️",
+    "category": "Void Citadel",
+    "region": "void_citadel",
+    "description": "The Void Warden was once Valdris's most trusted strategist — a mortal general who served willingly in the early decades, before willing service became irrelevant. By the time the party reaches the gate, the Warden has been standing at his post for longer than he can remember standing anywhere. He tells them Valdris is pleased they arrived this far. He says it the way a person says something they have been told to say so many times it has lost all weight. The battle that follows is the end of a very long wait on behalf of someone who stopped being himself a long time ago."
+  },
+  {
+    "id": "citadel_consumed_angels",
+    "title": "What Filled the Outer Pools",
+    "icon": "🌑",
+    "category": "Void Citadel",
+    "region": "void_citadel",
+    "description": "The enemies in the Void Citadel's outer ring are Essabella's last Fallen Angels. Valdris found them faster than she calculated. She watched from the outer walls as it happened. By the time intervention was possible, it was already complete. When Rei tells her those were her soldiers, she says 'were' and does not say anything else for a long time. Lulu says she is sorry. Essabella says she made calculations that were wrong. That is hers to carry."
+  },
+  {
+    "id": "ramparts_star_maps",
+    "title": "The Scholar's Star Maps",
+    "icon": "⭐",
+    "category": "Fortress Ramparts",
+    "region": "fortress_ramparts",
+    "description": "Valdris's private chamber contains sixty years of star maps — precise, obsessive, beautiful in the way that things made from fear often are. He was attempting to calculate the moment of his own death by working backwards from celestial movements. The maps end mid-chart on the date the Nexus shattered. He stopped mapping the stars the day he decided to stop being subject to them. The incomplete chart remains. It would have been correct, had he ever finished it."
+  },
+  {
+    "id": "ramparts_shadow_titan",
+    "title": "What He Became When He Refused to Let Go",
+    "icon": "💀",
+    "category": "Fortress Ramparts",
+    "region": "fortress_ramparts",
+    "description": "The Shadow Titan is not Valdris. It is the accumulated weight of six centuries of unravelling reality wearing his form like armor — compressed by refusal, held together by the stubbornness of something that has decided it cannot afford to end. The party wounds it: the first wound something that believed itself invulnerable has ever received. It dissolves into cold mist and retreats. This is the first time Valdris has retreated from anything in six centuries. He retreats not because he is losing. He retreats because he is afraid — and fear is something he thought he had resolved."
+  },
+  {
+    "id": "void_scholar_memory",
+    "title": "The Scholar's Last Calculation",
+    "icon": "📖",
+    "category": "Eternal Void",
+    "region": "eternal_void",
+    "description": "Valdris remembers starlight. Books. The smell of paper and ink. He remembers wondering about death — not fearing it yet, just finding it interesting. He remembers the precise moment the curiosity became terror and the terror became action. He does not remember what came after that — not truly. It was a long time ago. When Rex tells him to release what he has held, Valdris says he is afraid of dissolving into nothing. Ria tells him he will return to the stars. He asks if that is true or if she is saying it to make the ending easier. She says both can be true at once. He is quiet. Then he releases."
+  },
+  {
+    "id": "void_release",
+    "title": "What Release Looked Like",
+    "icon": "✨",
+    "category": "Eternal Void",
+    "region": "eternal_void",
+    "description": "When Valdris releases his hold, it happens the way dawn happens — slowly, and then suddenly. First the edges of the Void lighten. Then the compressed shapes of seventeen consumed worlds begin to unfold — not violently, but with the patient certainty of something that was always going to happen once the weight was lifted. Civilizations bloom in forms none of them had before. The last thing that remains of Valdris is not shadow. It is a sound — something between a sigh and a chord — and then nothing. Which is different from emptiness. Tao knows the difference. He says so quietly. Nobody asks him to explain."
+  },
+  {
+    "id": "southern_isles_before",
+    "title": "When the South Was Coastal",
+    "icon": "🌊",
+    "category": "Southern Isles",
+    "region": "southern_isles",
+    "description": "The Southern Isles were not always islands. They were the coastal edge of a larger landmass — a trading civilization that built its ports on the assumption that the sea would stay where it was. When the Wind Seal weakened, storm patterns changed over three generations and what was coast became archipelago. What were port cities became reefs. The Sunken Leviathan was not Valdris's creation — an oceanic creature drawn to the concentrated elemental resonance of the submerged buildings. Valdris found it already there and simply ensured it stayed."
+  },
+  {
+    "id": "riverlands_river_king",
+    "title": "The River King's Bargain",
+    "icon": "🌊",
+    "category": "Riverlands Crossing",
+    "region": "riverlands_crossing",
+    "description": "The River King was a water spirit — not divine, not mortal, something between. It governed the Riverlands Crossing for centuries as a neutral party: it let everyone through and collected a toll in the form of a truth. You could not cross while lying. The river knew. When Valdris's corruption reached the water table, the River King negotiated rather than fought — safe passage through its territory in exchange for being left alone. Valdris agreed. The corruption entered through the agreement itself. Neutrality became complicity. Complicity became corruption. By the time the River King understood what it had become, it had already forgotten what it had been."
+  },
+  {
+    "id": "ashen_foothills_mines",
+    "title": "The Last Ore Never Collected",
+    "icon": "🪨",
+    "category": "Ashen Foothills",
+    "region": "ashen_foothills",
+    "description": "The Ashen Foothills supplied raw ore to the Forge Lords — essential to the weapon-making that defined that civilization. When the Forge Lords fell, the mines kept running for two more years before the workers accepted no collection would come. The Molten Golem was the mine's automated guardian — a construct of basalt and elemental fire built to protect the deepest shafts. When the corruption reached the basalt, the Golem's purpose did not change. It simply began protecting the mine from the inside out — including from the miners who built it."
+  },
+  {
+    "id": "lighthouse_isles_ghost_ship",
+    "title": "The Ship That Still Sails",
+    "icon": "🚢",
+    "category": "Lighthouse Isles",
+    "region": "lighthouse_isles",
+    "description": "The Ghost Ship that sails the Lighthouse Isles at midnight was the last merchant vessel to leave the Southern Isles before the flooding. The crew died crossing a zone of elemental instability. The ship kept sailing. It has completed its route thousands of times since, looking for a port that no longer exists and a crew that no longer lives. The Old Mariner who tends the lighthouse watches it every night. He says it comes closer each year. He has not decided yet whether to be afraid of what that means or grateful that something is still trying."
+  },
+  {
+    "id": "eastern_wetlands_abomination",
+    "title": "What the Mire Accumulated",
+    "icon": "🌿",
+    "category": "Eastern Wetlands",
+    "region": "eastern_wetlands",
+    "description": "The Eastern Wetlands were a natural boundary — a vast toxic mire most civilizations used as a border. When the corruption reached the water table, it did not transform the mire. It fed it. The Flesh Abomination is not a single creature. It is the accumulated organic matter of everything that has died in the mire for three centuries — consolidated, animated, given purpose by the corruption's interest in things that decompose. It does not have a mind. It has a hunger that has been accumulating for a very long time and does not know what it is building toward."
+  },
+  {
+    "id": "northern_highlands_dragon",
+    "title": "The Last Dragon",
+    "icon": "🐉",
+    "category": "Northern Highlands",
+    "region": "northern_highlands",
+    "description": "Before the Shattering, seven dragons lived in the Northern Highlands. Dragons require stable elemental resonance to exist — sustained by the fundamental balance of elemental forces in the surrounding air. As the Seals weakened, six faded. The Shadow Dragon is the only one remaining. It survived by adapting: absorbing void energy to replace the elemental resonance it could no longer find. It is alive. It is also no longer purely what it was. The Highland Monk prays for it every morning at dawn. He is no longer certain what he is praying to. He does it anyway."
+  },
+  {
+    "id": "sky_ruins_origin",
+    "title": "What the Sky Ruins Were Before",
+    "icon": "🏰",
+    "category": "Sky Ruins",
+    "region": "sky_ruins",
+    "description": "The Sky Ruins predate the five elemental civilizations by at least three centuries — structures floating in regions where gravity works differently, built by a civilization with no name in any record the Archivist could find. The Four Kings who now control them are Valdris's lieutenants, placed there as a throne he never needed. Valdris does not sit on thrones. He placed them there because the ruins felt like the kind of place that should have something guarding it, and he had four things available."
+  },
+  {
+    "id": "npc_elder_maren",
+    "title": "Elder Maren of the Vale",
+    "icon": "🌾",
+    "category": "People",
+    "region": "verdant_vale",
+    "description": "Elder Maren was the Vale's record-keeper before the fall — responsible for maintaining the calendar of songs and the harvest counts that organized the community's year. She stayed when others fled because someone had to remember what the place had been. She has been maintaining the outer settlement alone for three years, then with whoever she could convince to stop running. She knows the east is lost. She maintains the west regardless. When she tells the party the Vale is no longer the home she remembers, she says it without bitterness. She has had enough time with grief to decide what to do with it. She decided to keep doing her job."
+  },
+  {
+    "id": "npc_soldier_davan",
+    "title": "Soldier Davan and the Road He Holds",
+    "icon": "🛡️",
+    "category": "People",
+    "region": "verdant_vale",
+    "description": "Davan's unit of eight soldiers tried to hold the outer bridge when the Void Knight passed through. Seven survived — in the sense that they are still standing, still breathing, still wearing their armor. Their eyes are empty. When Davan looks at his brother among them, his brother looks through him. He has not left the road. He tells the party he is waiting in case his brother wakes up. He does not say whether he believes this is possible. He says the road is the only thing he can hold right now. He is holding it."
+  },
+  {
+    "id": "npc_mire_witch",
+    "title": "The Mire Witch's Collection",
+    "icon": "🌿",
+    "category": "People",
+    "region": "eastern_wetlands",
+    "description": "The Mire Witch was a water-healer from the Tide civilization who fled inland when the temple flooded. She has been in the wetlands long enough to adapt to them, and adaptation in the wetlands is a negotiation. She trades in memories now — specifically in memories people believe they do not need. She offers useful things in return: ingredients, directions, warnings. She keeps the memories in small jars near the fire. She says she is holding them for people who might come back. She knows no one comes back for memories they decided to give away. She keeps them anyway."
+  },
+  {
+    "id": "npc_archivist_distinction",
+    "title": "The Archivist's Distinction",
+    "icon": "📜",
+    "category": "People",
+    "region": "crystal_cavern",
+    "description": "The Archivist insists there is a difference between a ghost and an unfinished record. A ghost is defined by what it lost. An unfinished record is defined by what it has not yet completed. He has not completed his documentation of the Crystal Cavern's resonance patterns. He is therefore not a ghost. He is prepared to explain this distinction to anyone who wishes to debate it. Tao listens carefully and says the distinction might be the same thing described from different directions. The Archivist says he will need to document it before he can respond adequately."
   }
 ]
