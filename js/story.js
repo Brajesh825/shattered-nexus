@@ -66,13 +66,14 @@ const MAP_PLACES = [
   { x: 756, y: 214, label: 'Void Citadel', arcIdx: 5, color: '#31245c' },
   { x: 818, y: 162, label: 'Fortress Ramparts', arcIdx: 6, color: '#4c3a78' },
   { x: 875, y: 108, label: 'Eternal Void', arcIdx: 7, color: '#080014' },
-  { x: 145, y: 145, label: 'Lighthouse Isles', color: '#36a7c8', lore: 'A chain of northern isles marked by an old tower and sea-lanes no one trusts after dusk.' },
-  { x: 450, y: 214, label: 'Northern Highlands', color: '#8c8f52', lore: 'Pale uplands above the Vale, full of old roads, broken watchposts, and forgotten border shrines.' },
-  { x: 575, y: 650, label: 'Ashen Foothills', color: '#8f6040', lore: 'Rocky ground where mountain stone gives way to desert heat. A natural bridge between the cavern and the wastes.' },
-  { x: 835, y: 512, label: 'Eastern Wetlands', color: '#3b8f6a', lore: 'A marshy eastern lowland under the edge of the purple storm, ideal for poison, spirits, and drowned patrols.' },
-  { x: 930, y: 175, label: 'Sky Ruins', color: '#7750c8', lore: 'Floating fragments around the citadel. They could become sky bridges, broken ramparts, or void-borne trials.' },
-  { x: 160, y: 780, label: 'Southern Isles', color: '#2c8a72', lore: 'Small southern islands that could hold exile shrines, optional treasure, or sea-route encounters.' },
-  { x: 470, y: 492, label: 'Riverlands Crossing', color: '#4c9fc0', lore: 'The central rivers where roads, bridges, and ambush paths meet before the world opens wider.' },
+  { x: 145, y: 145, label: 'Lighthouse Isles', color: '#36a7c8', lore: 'Mist-shrouded islands featuring a spectral lighthouse. Critical: Obtain the Navigator\'s Compass and defeat the Ghost Ship mini-boss.' },
+  { x: 450, y: 214, label: 'Northern Highlands', color: '#8c8f52', lore: 'Desolate, high-altitude plateau with ancient watchtowers. Critical: Discover the Highland Shrine and face the Sky-Drake guardian.' },
+  { x: 575, y: 650, label: 'Ashen Foothills', color: '#8f6040', lore: 'Volcanic transition zone where lava meets ash. Critical: Navigate the Basalt Labyrinth and defeat the Molten Golem.' },
+  { x: 835, y: 512, label: 'Eastern Wetlands', color: '#3b8f6a', lore: 'Poisonous, neon-lit marshland with bioluminescent flora. Critical: Collect Glow-Spore Essence and survive the Swamp Horror\'s ambush.' },
+  { x: 930, y: 175, label: 'Sky Ruins', color: '#7750c8', lore: 'Crumbling floating islands suspended in a perpetual storm. Critical: Align the Aerolith Crystals and defeat the Storm Sentinel.' },
+  { x: 160, y: 780, label: 'Southern Isles', color: '#2c8a72', lore: 'Tropical archipelago masking a deep-sea trench. Critical: Use the Tide-Caller Shell and face the Sunken Leviathan.' },
+  { x: 470, y: 492, label: 'Riverlands Crossing', color: '#4c9fc0', lore: 'A strategic junction of rushing rivers and crumbling bridges. Critical: Repair the Great Stone Bridge and defeat the River King.' },
+
 ];
 
 const MAP_MAIN_ROUTE = [0, 1, 2, 3, 4, 5, 6, 7];
