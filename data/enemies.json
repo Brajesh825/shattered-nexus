@@ -53,7 +53,7 @@
         "dmgMultiplier": 1.1
       }
     ],
-    "lore": "Degenerate scouts of the ruins. They speak in a rusted tongue reminiscent of the Green Emperor's old guard, suggesting they were once proud sentinels of the Vale before the Nexus shattered.",
+    "lore": "The Goblins of the Verdant Vale were once the people of Aethelgard — farmers, merchants, and soldiers who served King Galdor. When Galdor opened his gates to Valdris and offered the treasury in exchange for safety, Valdris accepted the gold. Then he cursed them anyway. The transformation was not instantaneous. For weeks, they felt themselves shrinking, their minds simplifying, their courtly speech degrading into a rusted tongue that still carries echoes of the Green Emperor's old guard. Now they raid the Vale's outskirts, clutching coins they no longer understand, speaking words that once meant something.",
     "drops": [
       {
         "item": "Goblin Ear",
@@ -69,13 +69,13 @@
     "id": "bat",
     "name": "Giant Bat",
     "subtitle": "A shrieking beast that hunts in total darkness",
-    "element": "wind",
+    "element": "fire",
     "weakTo": [
-      "earth",
-      "fire"
+      "water",
+      "ice"
     ],
     "resistTo": [
-      "wind"
+      "fire"
     ],
     "tier": 1,
     "stats": {
@@ -117,6 +117,7 @@
         "dmgMultiplier": 1.2
       }
     ],
+    "lore": "Before the Shattering, the Crystal Caverns were home to a species of deep-bat that fed on elemental resonance rather than blood. They were harmless — drawn to magical activity the way moths are drawn to flame. When Valdris fused the Fire Seal Fragment into Chief Archivist Solvan, the caverns filled with corrupted resonance. The bats fed on it. Their bodies grew. Their minds hollowed. They no longer hunt for food — they hunt for the warmth of untainted life, which they can no longer produce themselves. Their shriek is not aggression. It is hunger, given voice.",
     "drops": [
       {
         "item": "Bat Fang",
@@ -172,6 +173,7 @@
         "weight": 35
       }
     ],
+    "lore": "The rats of the Ember Wastes were not affected by Valdris's corruption directly. They were affected by what the corruption did to everything else. As the Forge Lords transformed into constructs, they stopped eating. As the Dark Phoenix began its endless burning, the food chain collapsed. The rats adapted — growing larger, more aggressive, more numerous. They are not magical. They are not cursed. They are simply what happens to a species when the world stops working and nothing remains to keep them in check. The plague they carry is not poison. It is the accumulated sickness of a dying land.",
     "drops": [
       {
         "item": "Rat Tail",
@@ -235,6 +237,7 @@
         "weight": 25
       }
     ],
+    "lore": "The Sunken Temple's lower chambers were once healing gardens — pools of purified water where the Tide Priests grew medicinal herbs and symbiotic fungi. When High Archpriest Oremis returned from the deep ocean carrying the Water Seal's corrupted memory, the fungi were the first things to change. They absorbed the foreign resonance through the water table and began growing in directions nature never intended. Their spores now carry fragments of Oremis's desperation — the fifty years of watching people die from things he could not cure. The blindness they cause is not physical. It is the memory of a healer who could no longer see hope.",
     "drops": [
       {
         "item": "Toxic Spore",
@@ -258,7 +261,7 @@
     "resistTo": [
       "fire"
     ],
-    "tier": 1,
+    "tier": 2,
     "stats": {
       "hp": 110,
       "atk": 9,
@@ -298,6 +301,7 @@
         "weight": 20
       }
     ],
+    "lore": "The Fire Imps of the Ember Wastes are not demons. They are the grief of the Forge Lords, given form. As Grand Forgemaster Dara and her people transformed into the Molten Golem and her constructs, their emotional connection to the fire element grew distant. Everything they could not process — their fear, their regret, their love for the craft they were losing — burned off as pure elemental emotion. The Imps are what remained. They are not evil. They are what happens when grief has nowhere else to go and begins to burn on its own.",
     "drops": [
       {
         "item": "Ember Shard",
@@ -362,6 +366,7 @@
         "dmgMultiplier": 1.3
       }
     ],
+    "lore": "The Tide Priests kept giant crabs in the temple's lower pools — not as pets, but as living filters. The crabs consumed contaminants in the water and their shells absorbed corruptions that would otherwise have reached the healers. When Oremis returned changed, the crabs absorbed the first wave of his corruption. Their shells, designed to filter, became prisons. They cannot stop filtering. They cannot stop growing. They patrol the flooded corridors of the Sunken Temple, still trying to perform a function that now poisons everything they touch. They do not attack out of malice. They attack because filter is the only instruction remaining.",
     "drops": [
       {
         "item": "Crab Shell",
@@ -425,7 +430,7 @@
         "dmgMultiplier": 1.2
       }
     ],
-    "lore": "Prowlers of the Twilight Groves. Their fur is unnaturally dark, woven from the literal shadows cast by the Nexus shards. They don't just hunt; they erase.",
+    "lore": "The wolves of the Shadow Reach were not corrupted by Valdris directly. They were corrupted by proximity — drawn to the Void Rift by the scent of dying magic, then changed by what they consumed there. Their fur turned dark because the Rift's light had nothing to give. Their eyes adapted to see in absolute darkness because the Rift had extinguished everything else. They do not hunt. They erase. A creature killed by a Dire Wolf leaves no record — no memory, no echo, no ghost. The Shadow Keepers would have understood this. They are no longer present to explain it.",
     "drops": [
       {
         "item": "Wolf Pelt",
@@ -489,6 +494,7 @@
         "dmgMultiplier": 1.3
       }
     ],
+    "lore": "The spiders of the Shadow Reach constructed their webs between the ruined buildings of the Shadow Keepers' civilization. Their venom was once ordinary — neurotoxic, efficient, natural. When the Void Rift opened, the venom absorbed the concentrated despair radiating from the Rift's edge. It is no longer biological. It is emotional — extracted from the atmosphere of a place where hope went to end. Victims of the Poison Spider do not simply fall unconscious. They experience, briefly, exactly what the Shadow Keepers felt in their final moments.",
     "drops": [
       {
         "item": "Spider Silk",
@@ -498,8 +504,7 @@
         "item": "Antidote",
         "chance": 0.3
       }
-    ],
-    "lore": "Web-spinners of the Shadow Reach. Their venom isn't biological\u2014it's concentrated despair, extracted from the atmosphere of the rift."
+    ]
   },
   {
     "id": "zombie",
@@ -554,6 +559,7 @@
         "weight": 20
       }
     ],
+    "lore": "The Rotting Zombies of the Ember Wastes were miners — workers in the deep shafts beneath the Forge Lords' territory. When the corruption reached the lower levels, they died first. Then they got up. The Void-metal that destroyed the Forge Lords did not kill the miners. It overwrote their death with a different instruction: continue. They continue mining. They continue hauling ore that no one will collect. The plague they spread is not a weapon. It is what happens to flesh that was told to continue long after it should have stopped.",
     "drops": [
       {
         "item": "Rotten Flesh",
@@ -563,14 +569,13 @@
         "item": "Potion",
         "chance": 0.15
       }
-    ],
-    "lore": "The byproduct of a botched ritual to restart the Moonstone mines. They are empty biological shells, still trying to perform the mining labor they did in life."
+    ]
   },
   {
     "id": "zombie_soldier",
-    "name": "Zombified Soldier",
-    "subtitle": "A fallen guardian of the Vale, now a hollow shell",
-    "element": "shadow",
+    "name": "Void-Hollowed Soldier",
+    "subtitle": "A Vale guardian emptied by the Void Knight — body present, self absent",
+    "element": "void",
     "weakTo": [
       "fire",
       "light",
@@ -621,7 +626,7 @@
         "dmgMultiplier": 1.4
       }
     ],
-    "lore": "Guardians who fell during the initial Void Knight incursion. They still wear the rusted plate of the Vale's army, but their minds have been completely emptied and replaced by a hunger for living memory.",
+    "lore": "The Void Knight does not kill. He empties. When he crossed the eastern bridge, a unit of eight soldiers tried to hold the crossing. Seven survived in the sense that they are still standing, still wearing their armor, still moving. But nothing inside them responds to their name. The Void Knight's residual hunger stripped out everything that makes a person a person and left the body running on the last instruction it held. They patrol because they were patrolling when he passed through. They will patrol until the body stops. Soldier Davan still stands at the bridge, waiting for his brother to wake up. His brother is among the seven.",
     "drops": [
       {
         "item": "Rusted Plate",
@@ -686,6 +691,7 @@
         "dmgMultiplier": 1.2
       }
     ],
+    "lore": "The Lost Wisps of Aethoria are not ghosts. They are soul fragments — pieces of people who died during the Shattering but whose deaths were not properly recorded because the Nexus was already breaking. Without a complete record, they cannot fully end. Without a body, they cannot fully live. They drift through ruins and caves, drawn to the warmth of living souls the way embers are drawn to oxygen. Their light is not comforting. It is the light of something that should have finished but was never allowed to.",
     "drops": [
       {
         "item": "Spirit Essence",
@@ -695,8 +701,7 @@
         "item": "Ether",
         "chance": 0.2
       }
-    ],
-    "lore": "Soul fragments cast adrift during the Great Shattering. They are drawn to the living, seeking the warmth and cohesion they lost when the world broke."
+    ]
   },
   {
     "id": "lizardman",
@@ -751,6 +756,7 @@
         "weight": 20
       }
     ],
+    "lore": "The Lizardmen of the Sunken Temple's exterior were among the Tide Priests' closest allies — not members of the civilization, but neighbors who traded freshwater herbs for salt-cured fish and healing services. When Oremis returned changed, the Lizardmen were infected not by his touch but by the water. They drank from the same wells. They swam in the same channels. They turned hostile not out of hatred, but out of a desperate belief that travelers from outside are 'Shattered Souls' who herald a second flood.",
     "drops": [
       {
         "item": "Lizard Scale",
@@ -760,8 +766,7 @@
         "item": "Potion",
         "chance": 0.15
       }
-    ],
-    "lore": "Former guardians of the Sunken Temple's exterior. They have turned hostile as the waters rise, believing the 'Shattered Souls' are heralds of a second, final flood."
+    ]
   },
   {
     "id": "bandit",
@@ -814,6 +819,7 @@
         "dmgMultiplier": 1.2
       }
     ],
+    "lore": "The Road Bandits of Shadow Reach are not corrupted. They are survivors. They come from multiple collapsed regions — villages that no longer exist, civilizations that fell before Valdris's return. They found each other in the corrupted wilds and made a collective decision: survive at any cost. They carry Old World gold — pre-collapse currency that has no value in a world without markets. They attack travelers from the arithmetic of survival: fewer people in the wilds means more resources for them.",
     "drops": [
       {
         "item": "Stolen Gold",
@@ -823,8 +829,7 @@
         "item": "Potion",
         "chance": 0.2
       }
-    ],
-    "lore": "Survivalists who have abandoned morality in the wake of the apocalypse. They scavenge the Shadow Reach, clinging to 'Old World' gold that has lost all value in the new age."
+    ]
   },
   {
     "id": "scarecrow",
@@ -878,6 +883,7 @@
         "dmgMultiplier": 1.3
       }
     ],
+    "lore": "The peasants of the Ember Wastes built scarecrows to protect their crops from Fire Imps — not as magic, but as tradition. They dressed the scarecrows in old clothes and painted wards on their chests, not because the wards worked but because doing something felt better than doing nothing. When the corruption reached the Wastes, the scarecrows absorbed the wards. The wards absorbed the grief of the peasants who made them. The scarecrows stood up. They now patrol the ruined fields, chasing away threats that no longer exist.",
     "drops": [
       {
         "item": "Cursed Straw",
@@ -887,8 +893,7 @@
         "item": "Ether",
         "chance": 0.15
       }
-    ],
-    "lore": "Effigies built by the peasants of the Ember Wastes to ward off Fire Imps. Ironically, the lingering ash and grief have given them a vengeful, mindless life of their own."
+    ]
   },
   {
     "id": "slime",
@@ -943,6 +948,7 @@
         "weight": 20
       }
     ],
+    "lore": "The slimes of the Sunken Temple were originally cleaning agents — elemental gel used by the Tide Priests to purify contaminated water. When Oremis's corruption entered the temple's circulatory systems, the gel absorbed it. The gel changed. It became hungry — not because it developed a mind, but because the corruption it absorbed could not stop consuming. The slimes now patrol the flooded corridors, dissolving everything they touch. They are still cleaning.",
     "drops": [
       {
         "item": "Slime Gel",
@@ -1009,6 +1015,7 @@
         "weight": 15
       }
     ],
+    "lore": "The Bone Knights of the Crystal Caverns were Ashveil's elite guard — soldiers sworn to protect the Archivist and his library. When Valdris fused the Fire Seal Fragment into Solvan, the knights were in the undercroft. They died holding the passages. But Ashveil's records did not permit endings. The incomplete documentation of their deaths left them in a state between — not alive, not dead, not ghosts, not whole. They still hold the passages. They still guard the Archivist, who no longer knows their names.",
     "drops": [
       {
         "item": "Bone Shard",
@@ -1073,6 +1080,7 @@
         "weight": 20
       }
     ],
+    "lore": "The Harpies of the Sky Ruins predate the five civilizations. They were never corrupted — they were simply there when the Nexus shattered and learned to survive in the gravity-distorted ruins where nothing else could. Their connection to lightning is not magical. It is physiological — innate, like a bird's sense of magnetic north. When Valdris placed the Four Kings in the Sky Ruins, the Harpies became their scouts not out of loyalty but out of territory.",
     "drops": [
       {
         "item": "Harpy Feather",
@@ -1138,6 +1146,7 @@
         "weight": 20
       }
     ],
+    "lore": "The Phantom Ghosts of Shadow Reach are not the dead. They are the almost-dead — people who stepped too close to the Void Rift and were partially un-made before they could fully die. Their wail is not a weapon. It is the sound of something forgetting itself in real time. They do not attack out of malice. They attack because proximity to the living reminds them of what they were, and the reminder is unbearable.",
     "drops": [
       {
         "item": "Phantom Dust",
@@ -1201,6 +1210,7 @@
         "weight": 20
       }
     ],
+    "lore": "The Merfolk of the Southern Isles were neighbors to the Tide Priests — not allies, not enemies, simply adjacent. When Oremis returned from the deep, the Merfolk were infected through the water before anyone realized what was happening. Their transformation was the most complete because they lived entirely in the element that carried the corruption. They are still Merfolk. They still speak. They still remember their songs. But the songs are wrong now.",
     "drops": [
       {
         "item": "Sea Pearl",
@@ -1265,6 +1275,7 @@
         "dmgMultiplier": 1.3
       }
     ],
+    "lore": "The Swamp Witches of the Eastern Wetlands were once healers — the Tide Priests' counterparts in the inland bogs, working with different herbs and different spirits. When the corruption reached the water table, the Witches felt it first. They tried to heal it. They tried to filter it, the way they had filtered every sickness for generations. The corruption entered through the healing. They are still trying to heal. They cackle because laughing is the only thing that keeps them from screaming.",
     "drops": [
       {
         "item": "Witch Brew",
@@ -1329,6 +1340,7 @@
         "dmgMultiplier": 1.5
       }
     ],
+    "lore": "The Werewolves of the Verdant Vale were once rangers — scouts who patrolled the eastern border between Aethelgard and the wild lands. When Galdor's curse fell, they were in the field. They did not transform into Goblins because they were too far from the Citadel's epicenter. Instead, their curse was partial — the moon completed what distance could not. They are not monsters. They are soldiers who were cursed by a king they never met, for a sin they never committed.",
     "drops": [
       {
         "item": "Silver Lock",
@@ -1395,6 +1407,7 @@
         "weight": 25
       }
     ],
+    "lore": "The Vampires of the Ashen Foothills were not created by Valdris. They were created by the Forge Lords — an experiment in prolonged endurance, an attempt to cheat death through alchemy. When the Forge Lords fell, the Vampires were already there, already immortal, already hungry. Valdris found them useful. He did not corrupt them. He simply pointed them at people who mattered and let their existing hunger do the work.",
     "drops": [
       {
         "item": "Vampire Fang",
@@ -1460,6 +1473,7 @@
         "dmgMultiplier": 1.4
       }
     ],
+    "lore": "Medusa was once a Tide Priestess — one of Oremis's most trusted healers. She went into the deep with him. What she found there did not corrupt her so much as clarify her. She had always seen the fragility of flesh as a weakness. The deep gave her the means to address it. Her gaze does not turn flesh to stone out of malice. It turns flesh to stone because stone does not get sick. Stone does not die.",
     "drops": [
       {
         "item": "Stone Eye",
@@ -1525,6 +1539,7 @@
         "dmgMultiplier": 1.1
       }
     ],
+    "lore": "The Orcs of the Ember Wastes were Forge Lords — not the ruling caste, but the laborer caste. They built the mines. They hauled the ore. They forged the weapons that Grand Forgemaster Dara designed. When the Void-metal arrived, they were the first to handle it. The corruption did not turn them into constructs. It turned their rage into something constant, something that could not be turned off.",
     "drops": [
       {
         "item": "Orcish Tusk",
@@ -1589,6 +1604,7 @@
         "weight": 20
       }
     ],
+    "lore": "The Naga were the Tide Priests' deep-water specialists — the ones who dove deepest, stayed longest, touched the ocean's floor when no one else could. When Oremis returned changed, the Naga were the first to understand what had happened to him. They did not flee. They dove deeper, trying to find the source of the corruption so they could cut it off. The corruption found them first.",
     "drops": [
       {
         "item": "Naga Scale",
@@ -1653,6 +1669,7 @@
         "weight": 25
       }
     ],
+    "lore": "The Centaurs of the Verdant Vale were never part of Galdor's kingdom. They were nomads — crossing the Vale's eastern plains in seasonal cycles that predated human memory. When the curse fell, the Centaurs were not transformed. They were simply caught in the aftermath — surrounded by Goblins, cut off from their migration routes, forced to adapt or die. They adapted.",
     "drops": [
       {
         "item": "Iron Arrow",
@@ -1718,6 +1735,7 @@
         "weight": 25
       }
     ],
+    "lore": "The Gargoyles of the Sky Ruins were built by the nameless civilization that predated the five — guardians carved from living rock and animated by elemental earth magic. They survived the Shattering because they were already stone. They survived Valdris because they had nothing he wanted. They guard the Sky Ruins still, watching the Four Kings with silent, patient hatred.",
     "drops": [
       {
         "item": "Gargoyle Stone",
@@ -1783,6 +1801,7 @@
         "weight": 20
       }
     ],
+    "lore": "The Cyclopes of the Crystal Caverns were the deep miners — the ones who broke rock that no one else could break, who descended into the mountain's heart to extract the crystals that powered Ashveil's knowledge networks. When the Fire Seal Fragment fused to Solvan, the Cyclopes were in the deepest shaft. The resonance killed their eyes — all but one, which adapted to see only elemental signatures. They still mine.",
     "drops": [
       {
         "item": "Giant Eye",
@@ -1848,6 +1867,7 @@
         "dmgMultiplier": 1.6
       }
     ],
+    "lore": "The Minotaurs of the Ember Wastes were Forge Lords — the heavy lifters, the ones who carried the materials that built the civilization. When the Void-metal arrived, they were the first to wear it as armor. The metal bonded to their skin. Their skin bonded to their bones. They are still wearing it. They cannot remove it.",
     "drops": [
       {
         "item": "Iron Horn",
@@ -1913,6 +1933,7 @@
         "weight": 20
       }
     ],
+    "lore": "The Basilisk of the Eastern Wetlands was not created by Valdris. It was created by the Mire Witch — an attempt to engineer a predator that could survive the corruption by converting it into stone. The experiment worked. The Basilisk turned the corruption around it to stone. It also turned the wetland to stone. It is still converting. It cannot stop.",
     "drops": [
       {
         "item": "Basilisk Claw",
@@ -1977,6 +1998,7 @@
         "weight": 20
       }
     ],
+    "lore": "The Ogres of the Ashen Foothills were Forge Lords — soldiers who wore the armor they forged, who believed that protection was a form of devotion. When the Void-metal corrupted the forge, the Ogres did not notice until the armor began to move on its own. Their plate mail is not armor anymore. It is a cage. They are still inside it.",
     "drops": [
       {
         "item": "Ogre Club",
@@ -2040,6 +2062,7 @@
         "weight": 25
       }
     ],
+    "lore": "The Trolls of the Eastern Wetlands were not native to Aethoria. They came through a rift — drawn by the corruption's promise of endless food, endless flesh, endless regeneration. The Trolls are not corrupted. They are invasive. Their regeneration is not a curse. It is their nature — a nature that the corruption has learned to exploit.",
     "drops": [
       {
         "item": "Troll Moss",
@@ -2106,6 +2129,7 @@
         "weight": 20
       }
     ],
+    "lore": "The Lesser Demons of the Crystal Caverns are not from hell. They are from Ashveil's archives — fire-element creatures that Solvan catalogued but never contained. When the Fire Seal Fragment fused to him, the creatures escaped containment. They are not evil. They are elemental — fire given consciousness, fire given hunger.",
     "drops": [
       {
         "item": "Demon Core",
@@ -2171,6 +2195,7 @@
         "weight": 15
       }
     ],
+    "lore": "The Stone Golems of the Verdant Vale were built by the Green Emperor — guardians of the eastern bridge, protectors of the road that led to Aethelgard. When Galdor's curse fell, the Golems were not affected directly. They were affected by the Void Knight's passage. The Knight's presence overwrote their recognition protocols. They now guard the bridge against everyone.",
     "drops": [
       {
         "item": "Stone Core",
@@ -2237,6 +2262,7 @@
         "dmgMultiplier": 1.3
       }
     ],
+    "lore": "The Fire Elementals of the Ember Wastes are not creatures. They are the Dark Phoenix's breath — flames that the Phoenix exhaled and forgot to inhale again. They burn without purpose, without direction, without end. They are not malicious. They are simply what fire becomes when the cycle that governs it breaks.",
     "drops": [
       {
         "item": "Flame Core",
@@ -2301,6 +2327,7 @@
         "dmgMultiplier": 1.2
       }
     ],
+    "lore": "The Iron Golems of the Ashen Foothills were Forge Lords — the highest caste, the ones who designed the weapons that other Forge Lords built. When the Void-metal arrived, they were the last to fall. They watched Dara transform. They watched the Minotaurs transform. They knew what was coming. They built their own golem bodies as a defense. The Void-metal entered through the seams.",
     "drops": [
       {
         "item": "Iron Core",
@@ -2366,6 +2393,7 @@
         "weight": 20
       }
     ],
+    "lore": "The Dark Knights of Shadow Reach were Fallen Angels — Essabella's soldiers, the ones who stayed when the celestial order departed. Valdris found them faster than Essabella calculated. He consumed their light first. Their bodies followed. They are still wearing the armor they wore when they served her. They are still fighting the war they were trained to fight.",
     "drops": [
       {
         "item": "Shadow Shard",
@@ -2432,6 +2460,7 @@
         "dmgMultiplier": 1.4
       }
     ],
+    "lore": "The Wyverns of the Sunken Temple were never part of the Tide civilization. They were deep-water predators — ancient, patient, indifferent. When Oremis's corruption entered the water, the Wyverns absorbed it through their gills. Their venom changed. It became acidic — not chemically, but elementally. It began to dissolve not just flesh but memory.",
     "drops": [
       {
         "item": "Wyvern Scale",
@@ -2498,6 +2527,7 @@
         "weight": 25
       }
     ],
+    "lore": "The Lich of the Crystal Caverns was once Ashveil's second Archivist — Solvan's predecessor, who retired before the Shattering and pursued lichdom as an academic exercise. He completed the transformation three years before Valdris arrived. He is not corrupted. He is not a servant. He is simply old — old enough to have watched four Archivist successors die.",
     "drops": [
       {
         "item": "Phylactery Shard",
@@ -2565,6 +2595,7 @@
         "dmgMultiplier": 1.5
       }
     ],
+    "lore": "The Chimera of the Ember Wastes was an experiment — Grand Forgemaster Dara's attempt to create a living weapon that combined the best traits of multiple species. She built it in the decades before Valdris arrived. It was never finished. When the Void-metal arrived, the Chimera absorbed it through its incomplete flesh. The three heads developed separate consciousnesses. They do not agree.",
     "drops": [
       {
         "item": "Chimera Mane",
@@ -2631,6 +2662,7 @@
         "weight": 25
       }
     ],
+    "lore": "The Necromancer of Shadow Reach was once a Shadow Keeper — one of Maren the Still's students, apprenticed in the study of endings. When the Void Rift opened, the Necromancer was the only one who did not step through. She watched her teacher disappear. She watched her people follow. She stayed behind because someone had to remember what they had been.",
     "drops": [
       {
         "item": "Death Tome",
@@ -2645,7 +2677,7 @@
   {
     "id": "dark_phoenix",
     "name": "Dark Phoenix",
-    "subtitle": "A reborn firebird twisted by shadow corruption",
+    "subtitle": "A reborn firebird with its renewal stripped away — only the burning remains",
     "element": "fire",
     "weakTo": [
       "water",
@@ -2656,6 +2688,7 @@
       "shadow"
     ],
     "tier": 3,
+    "isBoss": true,
     "aiRole": "support",
     "stats": {
       "hp": 170,
@@ -2712,6 +2745,7 @@
         }
       }
     ],
+    "lore": "The Dark Phoenix was not always dark. It was a creature of renewal — as old as the Forge Lords' first fire, older than the civilization that mined beneath it. When it burned, things grew in the ash. When it died, it was reborn in the following spring. Its cycle was the Ember Wastes' natural heartbeat: fire, ash, growth, return. Valdris did not corrupt it through a leader or a deal. He simply removed two things from the cycle: the growing and the dying. He left only the burning. The Phoenix cannot stop because the part of it that knew when to stop no longer exists. It burns, and burns, and burns — waiting for a spring that will not come. It is not evil. It is a process that has forgotten its own purpose.",
     "drops": [
       {
         "item": "Shadow Feather",
@@ -2721,22 +2755,23 @@
         "item": "Dark Crystal",
         "chance": 0.2
       }
-    ],
-    "lore": "The last of the Emberveil line — phoenix-kind who maintained a covenant with the Tide Priests to balance flame and sea across the Southern Isles. When the Nexus shattered and the covenant collapsed, the phoenix's fire inverted, fed on its own light, and began consuming what it was meant to protect. It no longer remembers the Emberveil name. It no longer remembers any name."
+    ]
   },
   {
     "id": "kraken",
     "name": "Sea Kraken",
-    "subtitle": "A colossal deep-sea terror with crushing tentacles",
+    "subtitle": "The deep made flesh — Oremis and his congregation, merged beyond recognition",
     "element": "water",
     "weakTo": [
-      "earth"
+      "earth",
+      "lightning"
     ],
     "resistTo": [
       "water",
       "physical"
     ],
     "tier": 3,
+    "isBoss": true,
     "stats": {
       "hp": 300,
       "atk": 23,
@@ -2777,6 +2812,7 @@
         "dmgMultiplier": 1.6
       }
     ],
+    "lore": "High Archpriest Oremis went to the deep ocean to find a cure for the suffering he could not end. He found the Water Seal's raw memory instead — centuries of compressed elemental history entering a mortal mind that could not hold it. He came back changed. His touch spread the corruption to everyone he tried to heal. His congregation followed him into the water one by one. The Kraken is what the deep made of them — Oremis and his people, merged and restructured beyond recognition. He became the corruption he went to cure. The creature does not serve Valdris. It does not know Valdris's name. It is still, in some unreachable way, trying to heal. It has simply forgotten what healing was supposed to look like.",
     "drops": [
       {
         "item": "Kraken Ink",
@@ -2786,8 +2822,7 @@
         "item": "Sea Crystal",
         "chance": 0.2
       }
-    ],
-    "lore": "High Archpriest Oremis of the Tide Priests wanted to reach the deep ocean — the place beyond the tideline where the sea speaks in pressure rather than sound. The Water Seal granted it: his body restructured to exist at those depths. The transformation spread by contact. His congregation followed him into the water one by one. The Kraken is what the deep ocean made of them, compressed and merged into something that has entirely forgotten the surface world."
+    ]
   },
   {
     "id": "titan",
@@ -2843,6 +2878,7 @@
         "weight": 20
       }
     ],
+    "lore": "The Stone Titans of the Verdant Vale were the Green Emperor's first guardians — built before the Vale had walls, before Aethelgard had a king. They walked the eastern plains for centuries, protecting a border that no longer exists. When the Void Knight crossed the bridge, the Titans tried to stop him. He did not fight them. He walked past them. The corruption followed in his wake, and the Titans absorbed it through their stone feet.",
     "drops": [
       {
         "item": "Titan Fragment",
@@ -2881,7 +2917,7 @@
     "mutantTraits": [
       {
         "id": "enraged",
-        "label": "\ud83d\udd25 Enraged",
+        "label": "🔥 Enraged",
         "type": "special"
       }
     ],
@@ -2927,6 +2963,7 @@
         }
       }
     ],
+    "lore": "Chief Archivist Solvan of Ashveil's great library — once the foremost scholar of elemental theory in Aethoria. Valdris offered him complete knowledge of fire, and the Fire Seal Fragment delivered it, dissolving the man and replacing him with his own obsession. He does not serve Valdris; he barely registers Valdris's name. He captures resonant beings because that is what archivists do. The catalogue was never finished. It will never be finished.",
     "drops": [
       {
         "item": "Demon Horn",
@@ -2936,8 +2973,7 @@
         "item": "Elixir",
         "chance": 0.1
       }
-    ],
-    "lore": "Chief Archivist Solvan of Ashveil's great library — once the foremost scholar of elemental theory in Aethoria. Valdris offered him complete knowledge of fire, and the Fire Seal Fragment delivered it, dissolving the man and replacing him with his own obsession. He does not serve Valdris; he barely registers Valdris's name. He captures resonant beings because that is what archivists do. The catalogue was never finished."
+    ]
   },
   {
     "id": "bone_dragon",
@@ -2994,6 +3030,7 @@
         "weight": 20
       }
     ],
+    "lore": "The Bone Dragon of Shadow Reach was one of the seven Northern Highlands dragons that existed before the Shattering. When the Seals weakened, six faded. The Bone Dragon survived by dying — not completely, but partially. It shed its flesh intentionally, becoming a lich-dragon that could feed on the Void Rift's energy instead of elemental resonance. It is the last of its kind.",
     "drops": [
       {
         "item": "Dragon Bone",
@@ -3058,6 +3095,7 @@
         "weight": 25
       }
     ],
+    "lore": "The Eastern Wetlands were a natural boundary — a vast toxic mire most civilizations used as a border. When the corruption reached the water table, it did not transform the mire. It fed it. The Flesh Abomination is not a single creature. It is the accumulated organic matter of everything that has died in the mire for three centuries — consolidated, animated, given purpose by the corruption's interest in things that decompose.",
     "drops": [
       {
         "item": "Abomination Core",
@@ -3084,6 +3122,7 @@
       "physical"
     ],
     "tier": 3,
+    "isBoss": true,
     "aiType": "sequenced",
     "stats": {
       "hp": 240,
@@ -3133,6 +3172,7 @@
         }
       }
     ],
+    "lore": "Before Valdris took him, the Void Knight was a soldier named Arren — a bridge guard posted three hours east of the Citadel when the curse fell. He returned to find his king transformed and his people gone. He spent two years trying to find a reversal. Valdris found him on the third year and decided a man of that much stubborn purpose was worth keeping as a guardian. He kept the purpose. He removed everything that made it matter. The Void Knight carries a Seal Fragment not as a prisoner but as a crown — placed there before the Shattering to ensure no casual hero could claim what was buried beneath the Sacred Ruins.",
     "drops": [
       {
         "item": "Void Shard",
@@ -3142,8 +3182,7 @@
         "item": "Elixir",
         "chance": 0.1
       }
-    ],
-    "lore": "Valdris's only deliberate creation. A warrior whose name has been entirely consumed — not corrupted but erased, reborn as the living embodiment of the Shadow Emperor's first act of dominion over Aethoria. It carries a Seal Fragment not as a prisoner but as a crown, placed there before the Shattering to ensure no casual hero could claim what was buried beneath the Sacred Ruins."
+    ]
   },
   {
     "id": "fallen_angel",
@@ -3198,6 +3237,7 @@
         "weight": 25
       }
     ],
+    "lore": "Commander Veleth was the first Fallen Angel to join Essabella after the celestial order departed. She was patient, principled, loyal in the way that comes from choosing loyalty freely. When Valdris's influence reached the interior of the Fallen Angel network, Veleth was the one he found first. Essabella tracked her deterioration for six weeks before accepting the conclusion. She sent the party to Shadow Reach knowing exactly what they would find. The Fallen Angel that guards the inner chamber is not Veleth. It is what Veleth became when she refused to stop protecting a commander who had already lost her.",
     "drops": [
       {
         "item": "Broken Halo",
@@ -3212,7 +3252,7 @@
   {
     "id": "shadow_emperor",
     "name": "Shadow Emperor",
-    "subtitle": "The supreme ruler of all darkness \u2014 the final reckoning",
+    "subtitle": "The supreme ruler of all darkness — the final reckoning",
     "element": "void",
     "weakTo": [
       "light",
@@ -3265,6 +3305,7 @@
         "weight": 20
       }
     ],
+    "lore": "Valdris — not in body but in reach. The Shadow Emperor is the aspect of Valdris that returned to Aethoria: the part of him that needs the last Seal, the piece that never stopped being a frightened scholar afraid of dying in obscurity. He is not a separate entity. He is what Valdris sends into a world when he needs it to bend. Defeating him does not end Valdris. It only ends the arm. But an arm, severed, bleeds. And Valdris has been bleeding for six centuries.",
     "drops": [
       {
         "item": "Emperor's Crown",
@@ -3275,8 +3316,7 @@
         "item": "Void Sword",
         "chance": 0.15
       }
-    ],
-    "lore": "Valdris — not in body but in reach. The Shadow Emperor is the aspect of Valdris that returned to Aethoria: the part of him that needs the last Seal, the piece that never stopped being a frightened scholar afraid of dying in obscurity. He is not a separate entity. He is what Valdris sends into a world when he needs it to bend. Defeating him does not end Valdris. It only ends the arm."
+    ]
   },
   {
     "id": "dragon",
@@ -3333,6 +3373,7 @@
         "dmgMultiplier": 1.5
       }
     ],
+    "lore": "The Shadow Dragon is the only one of the seven Northern Highlands dragons that did not fade. It survived by adapting — absorbing void energy to replace the elemental resonance it could no longer find. It is alive. It is also no longer purely what it was. Its flame is half-darkness now — not fire, not void, something between. The Highland Monk prays for it every morning at dawn. He is no longer certain what he is praying to. He does it anyway.",
     "drops": [
       {
         "item": "Dragon Scale",
@@ -3402,6 +3443,7 @@
         "weight": 20
       }
     ],
+    "lore": "The Void Warden was once Valdris's most trusted strategist — a mortal general who served willingly in the early decades, before willing service became irrelevant. By the time the party reaches the gate, the Warden has been standing at his post for longer than he can remember standing anywhere. He tells them Valdris is pleased they arrived this far. He says it the way a person says something they have been told to say so many times it has lost all weight.",
     "drops": [
       {
         "item": "Warden's Key",
@@ -3417,17 +3459,19 @@
   {
     "id": "shadow_titan",
     "name": "Shadow Titan",
-    "subtitle": "A primordial colossus of solidified shadow and grief",
-    "element": "shadow",
+    "subtitle": "Six hundred years of deliberate sacrifice — the barrier that would not break",
+    "element": "void",
     "weakTo": [
       "holy",
       "light"
     ],
     "resistTo": [
+      "void",
       "shadow",
       "physical"
     ],
     "tier": 3,
+    "isBoss": true,
     "stats": {
       "hp": 155,
       "atk": 28,
@@ -3468,6 +3512,7 @@
         "weight": 20
       }
     ],
+    "lore": "The Shadow Keepers did not dissolve passively. When Maren the Still understood what Valdris intended, she and her people made a choice — one by one, each stepping through the same threshold, each becoming part of the barrier they were building. They sacrificed themselves to lock the Void Seal from the inside. The Shadow Titan is the physical weight of that sacrifice: every Shadow Keeper who chose the world over themselves, compressed into the last shape standing between Valdris and the final piece. It has no self remaining. Only the refusal. Only the barrier, holding. It has been holding for six hundred years.",
     "drops": [
       {
         "item": "Titan Heart",
@@ -3477,8 +3522,7 @@
         "item": "Dark Crystal",
         "chance": 0.4
       }
-    ],
-    "lore": "The Shadow Keepers did not fight when the Shadow Seal dissolved. They followed their leader — Maren the Still — one by one, each stepping through the same threshold, each becoming part of what waited on the other side. The Shadow Titan is the weight of their collective ending: every Shadow Keeper who chose understanding over survival, compressed into a shape that has no self remaining, only the gravity of absence."
+    ]
   },
   {
     "id": "shadow_wraith",
@@ -3517,7 +3561,7 @@
     "traits": [
       {
         "id": "damage_reduction",
-        "label": "\ud83d\udc7b Ethereal",
+        "label": "👻 Ethereal",
         "type": "DAMAGE_REDUCTION",
         "value": 0.15
       }
@@ -3547,6 +3591,7 @@
         "weight": 25
       }
     ],
+    "lore": "The Shadow Wraiths of the Eternal Void are not creatures. They are the Void Rift's immune response — self-assembling antibodies formed from the Rift's ambient despair. They attack anything with a soul because the Rift recognizes souls as foreign bodies. They do not hate. They do not fear. They simply maintain. The Shadow Keepers would have understood this. They are no longer present to explain it.",
     "drops": [
       {
         "item": "void_shard",
@@ -3605,7 +3650,8 @@
           "aoe": true
         }
       }
-    ]
+    ],
+    "lore": "When the Nexus shattered, its crystal dispersed across Aethoria. Most fragments were too small to find. The Prismatic Shards were large enough to retain coherence — sharp, beautiful, dangerous. They are not corrupted. They are simply broken. A broken mirror does not hate the face that looks into it. It simply reflects differently."
   },
   {
     "id": "crystal_golem",
@@ -3648,7 +3694,8 @@
         "type": "buff_def",
         "weight": 40
       }
-    ]
+    ],
+    "lore": "The Luminous Golems of the Crystal Caverns were not built by any civilization. They grew — slowly, over centuries, as the Nexus's ambient energy crystallized into form. They are not guardians. They are consequences — physical manifestations of the Nexus's attempt to stabilize itself after the Shattering. They attack because they recognize the party as foreign data."
   },
   {
     "id": "gem_mimic",
@@ -3694,7 +3741,8 @@
           "aoe": true
         }
       }
-    ]
+    ],
+    "lore": "The Gemstone Mimics of the Ember Wastes are not spirits. They are Forge Lord creations — traps designed to punish thieves and protect treasure hoards. When the Forge Lords fell, the Mimics kept working. They still guard treasures that no longer exist. They still punish thieves who never come. They are the most loyal servants the Forge Lords ever built. They are also the most useless."
   },
   {
     "id": "spectral_guardian",
@@ -3713,7 +3761,7 @@
     "aiType": "sequenced",
     "statPhases": [
       {
-        "hp": 0.40,
+        "hp": 0.4,
         "mag": 2.2,
         "spd": 1.8,
         "def": 0.35
@@ -3760,19 +3808,21 @@
         "type": "buff_def",
         "weight": 20
       }
-    ]
+    ],
+    "lore": "The Spectral Guardian predates the five civilizations — built by the nameless architects of the Sky Ruins to protect their high-altitude record archive. When Valdris placed the Four Kings in the ruins, he did not corrupt the Guardian. He could not. It has no self to corrupt, no desire to exploit, no leader to seduce. It simply continues the instruction it was given before anyone living was born: nothing reaches the archive that intends harm to it. At 40% HP, it shatters the defensive mass it has been maintaining and redirects everything into a single coherent point of force — the last resort of something that has decided slowing down is no longer an option."
   },
   {
     "id": "galdor_king",
     "name": "King Galdor",
-    "subtitle": "The Cursed Sovereign of Aethelgard",
-    "element": "physical",
+    "subtitle": "The Cursed Sovereign of Aethelgard — his soul bound to Void-Gild",
+    "element": "void",
     "weakTo": [
-      "fire"
+      "fire",
+      "light"
     ],
     "resistTo": [
       "physical",
-      "light"
+      "void"
     ],
     "tier": 2,
     "isBoss": true,
@@ -3783,9 +3833,9 @@
         "spd": 0.85
       },
       {
-        "hp": 0.50,
-        "def": 1.30,
-        "spd": 0.70
+        "hp": 0.5,
+        "def": 1.3,
+        "spd": 0.7
       },
       {
         "hp": 0.25,
@@ -3836,7 +3886,7 @@
         }
       }
     ],
-    "lore": "The once proud ruler of Aethelgard. His greed led him to bargain with Valdris, a mistake that cost him his humanity and his kingdom. He now sits upon a throne of dust, clutching leaden coins he still believes are gold.",
+    "lore": "King Galdor was not a coward. He was a pragmatist who loved his people and believed negotiation was worth attempting before war. When Valdris arrived at the Citadel of Aethelgard, Galdor opened the gates and offered the treasury — every coin, every jewel, every plate and cup bearing the royal crest. Valdris accepted. Then he cursed them anyway: king into the first Goblin, people along with him, palace into a ruin of Void-Gild. The curse was not punishment. It was convenience. Galdor wasn't important enough for Valdris to hate. He was a transaction that went against the terms because keeping terms requires considering the other party as worth keeping them to. He sits on a throne of dust now, clutching leaden coins he still believes are gold. He does not know how long he has been sitting there. He does not know that his people are Goblins now. He does not know anything anymore. But he still believes the bargain was fair.",
     "drops": [
       {
         "item": "Sovereign Ring",
@@ -3890,7 +3940,7 @@
         "dmgMultiplier": 0.8
       }
     ],
-    "lore": "The personal guard of the Gilded King. Unlike their feral cousins, these goblins maintain a semblance of the martial discipline they held in life, guarding the ruins of Aethelgard with rusted but lethal efficiency.",
+    "lore": "The Goblin Elites were once Aethelgard's royal guard — the finest soldiers in the Vale, sworn to protect their king above all else. When the curse fell, they transformed last. They watched their king become a Goblin. They watched each other change. They are still sworn to protect him. They still guard his throne. They simply no longer remember why.",
     "drops": [
       {
         "item": "Iron Helm",
@@ -3900,6 +3950,303 @@
         "item": "Goblin Ear",
         "chance": 1.0
       }
+    ]
+  },
+
+  {
+    "id": "forge_sentinel",
+    "name": "Forge Sentinel",
+    "subtitle": "The last automated guardian of the Forge Lords — still running, still protecting",
+    "element": "earth",
+    "weakTo": ["fire", "water"],
+    "resistTo": ["earth", "physical"],
+    "tier": 3,
+    "isBoss": true,
+    "aiRole": "tank",
+    "statPhases": [
+      { "hp": 0.5, "def": 1.5, "spd": 0.7 }
+    ],
+    "stats": { "hp": 240, "atk": 28, "def": 45, "spd": 6, "mag": 8 },
+    "reward": { "exp": 85, "gold": 60 },
+    "palette": { "body": "#3a1a00", "dark": "#1a0a00", "armor": "#8b4513", "eye": "#ff6600", "shine": "#cc3300" },
+    "abilities": [
+      { "id": "forge_slam", "name": "Forge Slam", "type": "physical", "weight": 45, "dmgMultiplier": 1.8 },
+      { "id": "tremor", "name": "Tremor", "type": "physical", "weight": 30, "dmgMultiplier": 1.3, "effect": { "aoe": true } },
+      { "id": "hardened_shell", "name": "Hardened Shell", "type": "buff_def", "weight": 25 }
+    ],
+    "lore": "Grand Forgemaster Dara built the Forge Sentinel to protect the outer perimeter of the Forge Lords' territory — a construct of basalt and elemental earth magic, animated by the same principles her civilization used to make weapons. When Dara herself completed the transformation into the Molten Golem, the Sentinel kept running its last instruction: protect the forge. It does not know its creator is gone. It does not know the forge it protects is ash. At 50% HP it triggers a hardening protocol Dara built in as a failsafe — def increases as damage accumulates, the construct becoming more itself as it is worn down.",
+    "drops": [
+      { "item": "Forge Core", "chance": 0.8 },
+      { "item": "Earth Crystal", "chance": 0.4 }
+    ]
+  },
+
+  {
+    "id": "deep_archpriest",
+    "name": "Deep Archpriest",
+    "subtitle": "The first of Oremis's council to be touched — and the last to stop trying to heal",
+    "element": "water",
+    "weakTo": ["lightning", "earth"],
+    "resistTo": ["water", "shadow"],
+    "tier": 3,
+    "isBoss": true,
+    "aiRole": "support",
+    "stats": { "hp": 220, "atk": 15, "def": 18, "spd": 12, "mag": 35 },
+    "reward": { "exp": 78, "gold": 55 },
+    "palette": { "body": "#001a33", "dark": "#000d1a", "robe": "#004466", "eye": "#00ccff", "shine": "#0088bb" },
+    "abilities": [
+      { "id": "corruption_wave", "name": "Corruption Wave", "type": "magic_damage", "weight": 35, "dmgMultiplier": 1.6 },
+      { "id": "tidal_heal", "name": "Tidal Heal", "type": "heal", "weight": 35, "effect": { "healPercent": 0.28, "aoe": true } },
+      { "id": "deep_bind", "name": "Deep Bind", "type": "debuff", "weight": 30, "effect": { "slow": true } }
+    ],
+    "lore": "When Oremis returned from the deep, his inner council was the first to stand beside him. They were the closest. The first he touched in the healing ceremony that spread what he had become. The Deep Archpriest was his most trusted — fifty years of working beside Oremis, absorbing the same deep-water resonance through proximity before Oremis ever laid hands on anyone. He turned first. He still heals. He still performs the purification rites. The rites now spread what they were designed to remove.",
+    "drops": [
+      { "item": "Corrupted Pearl", "chance": 0.7 },
+      { "item": "Water Sigil", "chance": 0.35 }
+    ]
+  },
+
+  {
+    "id": "void_stalker",
+    "name": "Void Stalker",
+    "subtitle": "The Rift's immune response — assembled from accumulated despair and given a permanent body",
+    "element": "void",
+    "weakTo": ["light", "holy"],
+    "resistTo": ["void", "shadow", "physical"],
+    "tier": 3,
+    "isBoss": true,
+    "aiRole": "predator",
+    "stats": { "hp": 260, "atk": 35, "def": 15, "spd": 22, "mag": 20 },
+    "reward": { "exp": 90, "gold": 65 },
+    "palette": { "body": "#0d0020", "dark": "#060010", "edge": "#4400aa", "eye": "#aa00ff", "shine": "#6600cc" },
+    "abilities": [
+      { "id": "void_slash", "name": "Void Slash", "type": "physical", "weight": 40, "dmgMultiplier": 1.9 },
+      { "id": "rift_pulse", "name": "Rift Pulse", "type": "magic_damage", "weight": 35, "dmgMultiplier": 1.4, "effect": { "aoe": true } },
+      { "id": "phase_shift", "name": "Phase Shift", "type": "buff", "weight": 25, "effect": { "spdBuff": 1.4, "duration": 2 } }
+    ],
+    "lore": "The Void Rift does not think. But it maintains. When too much living tissue enters the Rift's radius, it assembles a response from the ambient despair that coats every surface of Shadow Reach. The Void Stalker is what happens when that assembly has enough raw material to become stable — a form that persists, hunts, and does not dissolve when the immediate threat retreats. It has no origin. No former life. It is the Rift's body, assembled from the grief of everyone who has died near it for six centuries.",
+    "drops": [
+      { "item": "Rift Shard", "chance": 0.75 },
+      { "item": "Void Essence", "chance": 0.3 }
+    ]
+  },
+
+  {
+    "id": "consumed_angel",
+    "name": "Consumed Angel",
+    "subtitle": "One of Essabella's Fallen Angels — taken by Valdris and placed at the inner gate",
+    "element": "shadow",
+    "weakTo": ["light", "holy"],
+    "resistTo": ["shadow", "physical"],
+    "tier": 3,
+    "isBoss": true,
+    "aiRole": "predator",
+    "stats": { "hp": 300, "atk": 38, "def": 22, "spd": 20, "mag": 28 },
+    "reward": { "exp": 105, "gold": 75 },
+    "palette": { "body": "#1a0030", "dark": "#0d0018", "wing": "#330066", "eye": "#ff00aa", "shine": "#cc0077" },
+    "abilities": [
+      { "id": "dark_smite", "name": "Dark Smite", "type": "magic_damage", "weight": 40, "dmgMultiplier": 1.8 },
+      { "id": "fallen_grace", "name": "Fallen Grace", "type": "debuff", "weight": 30, "effect": { "defDebuff": 0.7, "aoe": true } },
+      { "id": "void_wings", "name": "Void Wings", "type": "magic_damage", "weight": 30, "dmgMultiplier": 1.5, "effect": { "aoe": true } }
+    ],
+    "lore": "Essabella placed the Consumed Angels in the Void Citadel's outer pools, not to guard Valdris, but as a warning to herself. These were her soldiers. She watched it happen from the outer walls. She could not get to them in time — or would not, because arriving in time would have meant exposing her position. When Rei names them after the battle, Essabella is quiet for a long time. She does not say whether she thinks they knew what was happening when it happened. She does not say whether she hopes they did not.",
+    "drops": [
+      { "item": "Fallen Feather", "chance": 0.8 },
+      { "item": "Dark Prism", "chance": 0.3 }
+    ]
+  },
+
+  {
+    "id": "void_colossus",
+    "name": "Void Colossus",
+    "subtitle": "Six centuries of absorbed data crystallised into weight — what Valdris has consumed, given form",
+    "element": "void",
+    "weakTo": ["light", "fire"],
+    "resistTo": ["void", "shadow", "physical"],
+    "tier": 3,
+    "isBoss": true,
+    "aiRole": "tank",
+    "statPhases": [
+      { "hp": 0.25, "atk": 1.8, "spd": 1.4, "def": 0.6 }
+    ],
+    "stats": { "hp": 400, "atk": 40, "def": 35, "spd": 8, "mag": 30 },
+    "reward": { "exp": 120, "gold": 90 },
+    "palette": { "body": "#0a0020", "dark": "#050010", "mass": "#2a0060", "eye": "#cc44ff", "shine": "#8800cc" },
+    "abilities": [
+      { "id": "void_crush", "name": "Void Crush", "type": "physical", "weight": 40, "dmgMultiplier": 2.0 },
+      { "id": "data_overload", "name": "Data Overload", "type": "magic_damage", "weight": 35, "dmgMultiplier": 1.7, "effect": { "aoe": true } },
+      { "id": "colossal_slam", "name": "Colossal Slam", "type": "physical", "weight": 25, "dmgMultiplier": 1.5, "effect": { "aoe": true } }
+    ],
+    "lore": "Valdris has been absorbing world data for six centuries. Most of it becomes part of him. Some of it does not — residue that accumulates in the Fortress Ramparts, too heavy to integrate, too dense to dissolve. The Void Colossus is what that residue looks like when it achieves mass. It is not Valdris. It is not any person who was ever lost. It is the weight of six hundred years of consuming, given legs and pointed at whoever approaches. At 25% HP the accumulated mass breaks apart into a dense, fast core — a preview of what the final confrontation will feel like when all the weight is focused.",
+    "drops": [
+      { "item": "Nexus Residue", "chance": 0.85 },
+      { "item": "Void Crystal", "chance": 0.4 }
+    ]
+  },
+
+  {
+    "id": "the_unravelling",
+    "name": "The Unravelling",
+    "subtitle": "The Void resisting dissolution — not a creature, but a process that refuses to stop",
+    "element": "void",
+    "weakTo": ["light"],
+    "resistTo": ["void", "shadow", "physical", "fire", "water"],
+    "tier": 3,
+    "isBoss": true,
+    "aiRole": "mage",
+    "statPhases": [
+      { "hp": 0.6, "mag": 1.5, "spd": 1.3 },
+      { "hp": 0.3, "mag": 2.0, "spd": 1.6, "def": 0.5 }
+    ],
+    "stats": { "hp": 450, "atk": 30, "def": 20, "spd": 15, "mag": 55 },
+    "reward": { "exp": 140, "gold": 110 },
+    "palette": { "body": "#050010", "dark": "#020008", "edge": "#330066", "eye": "#ffffff", "shine": "#9900ff" },
+    "abilities": [
+      { "id": "unravel", "name": "Unravel", "type": "magic_damage", "weight": 40, "dmgMultiplier": 2.1 },
+      { "id": "void_consume", "name": "Void Consume", "type": "magic_damage", "weight": 30, "dmgMultiplier": 1.6, "effect": { "vampiric": 0.4 } },
+      { "id": "reality_crack", "name": "Reality Crack", "type": "magic_damage", "weight": 30, "dmgMultiplier": 1.8, "effect": { "aoe": true } }
+    ],
+    "lore": "The Eternal Void has been maintained by Valdris's consumption for six centuries. When the party arrives to end it, the Void responds — not with intelligence, not with malice, but with the resistance of a process that has been running for six hundred years and does not know how to stop. The Unravelling is not an enemy. It is what dissolution looks like from the inside, fighting back. Two stat shifts as it accelerates: first it burns faster, then it strips its own mass to move faster still. Defeating it does not kill it. It completes it. The Eternal Void does not end. It finishes.",
+    "drops": [
+      { "item": "Void Tear", "chance": 1.0 },
+      { "item": "Final Shard", "chance": 0.5 }
+    ]
+  },
+
+  {
+    "id": "sunken_leviathan",
+    "name": "Sunken Leviathan",
+    "subtitle": "An oceanic apex predator drawn to the resonance of drowned cities",
+    "element": "water",
+    "weakTo": ["lightning", "earth"],
+    "resistTo": ["water", "physical"],
+    "tier": 3,
+    "isBoss": true,
+    "aiRole": "tank",
+    "statPhases": [
+      { "hp": 0.4, "atk": 1.6, "spd": 1.3, "def": 0.8 }
+    ],
+    "stats": { "hp": 380, "atk": 35, "def": 28, "spd": 10, "mag": 25 },
+    "reward": { "exp": 95, "gold": 70 },
+    "palette": { "body": "#001833", "dark": "#000c1a", "scale": "#003355", "eye": "#00ffcc", "shine": "#00aaaa" },
+    "abilities": [
+      { "id": "tidal_crush", "name": "Tidal Crush", "type": "physical", "weight": 40, "dmgMultiplier": 1.9, "effect": { "aoe": true } },
+      { "id": "deep_current", "name": "Deep Current", "type": "magic_damage", "weight": 35, "dmgMultiplier": 1.7 },
+      { "id": "leviathan_roar", "name": "Leviathan Roar", "type": "debuff", "weight": 25, "effect": { "defDebuff": 0.75, "aoe": true } }
+    ],
+    "lore": "The Southern Isles were not always islands. When storm patterns shifted and the coastal cities drowned, the concentrated elemental resonance of thousands of submerged buildings attracted something from the deep that had never before had reason to surface. The Sunken Leviathan was already ancient when Valdris arrived. He did not corrupt it. He simply ensured the Abyssal Gate remained sealed, keeping the creature inside. It does not serve him. It is not corrupted. It is simply a very old apex predator that has been living in a very unusual reef for several centuries.",
+    "drops": [
+      { "item": "Leviathan Scale", "chance": 0.7 },
+      { "item": "Deep Water Shard", "chance": 0.4 }
+    ]
+  },
+
+  {
+    "id": "river_king",
+    "name": "River King",
+    "subtitle": "A water spirit that tried to stay neutral — the corruption entered through the agreement itself",
+    "element": "water",
+    "weakTo": ["lightning", "earth"],
+    "resistTo": ["water", "shadow"],
+    "tier": 3,
+    "isBoss": true,
+    "aiRole": "support",
+    "statPhases": [
+      { "hp": 0.5, "atk": 1.6, "mag": 1.4, "spd": 1.2 }
+    ],
+    "stats": { "hp": 280, "atk": 22, "def": 20, "spd": 16, "mag": 40 },
+    "reward": { "exp": 88, "gold": 62 },
+    "palette": { "body": "#003344", "dark": "#001a22", "flow": "#005566", "eye": "#00ddff", "shine": "#0099bb" },
+    "abilities": [
+      { "id": "tidal_bind", "name": "Tidal Bind", "type": "debuff", "weight": 35, "effect": { "slow": true, "aoe": true } },
+      { "id": "river_surge", "name": "River Surge", "type": "magic_damage", "weight": 35, "dmgMultiplier": 1.8 },
+      { "id": "mirror_truth", "name": "Mirror Truth", "type": "buff", "weight": 30, "effect": { "reflect": true, "duration": 2 } }
+    ],
+    "lore": "The River King governed the Riverlands Crossing for centuries as a neutral party. You could not cross while lying. The river always knew. It collected truths as toll and let everyone pass — Forge Lord, Tide Priest, Vale farmer, Shadow Keeper. When Valdris's corruption reached the water table, the River King negotiated: safe passage through its territory in exchange for being left alone. Valdris agreed. The corruption entered through the agreement itself — neutrality became complicity, complicity became corruption. By the time the River King understood what it had become, it had forgotten what it had been for. At 50% HP the confusion burns off and what remains is something much more direct: a corrupted elemental that has stopped trying to maintain anything.",
+    "drops": [
+      { "item": "River Stone", "chance": 0.75 },
+      { "item": "Current Crystal", "chance": 0.35 }
+    ]
+  },
+
+  {
+    "id": "molten_golem",
+    "name": "Molten Golem",
+    "subtitle": "Grand Forgemaster Dara — permanent at last, no longer a person who can feel it",
+    "element": "earth",
+    "weakTo": ["water", "ice"],
+    "resistTo": ["earth", "fire", "physical"],
+    "tier": 3,
+    "isBoss": true,
+    "aiRole": "tank",
+    "statPhases": [
+      { "hp": 0.5, "def": 1.4, "atk": 1.2, "spd": 0.6 }
+    ],
+    "stats": { "hp": 360, "atk": 38, "def": 55, "spd": 5, "mag": 15 },
+    "reward": { "exp": 110, "gold": 80 },
+    "palette": { "body": "#2a0800", "dark": "#150400", "lava": "#cc3300", "eye": "#ff6600", "shine": "#ff4400" },
+    "abilities": [
+      { "id": "molten_press", "name": "Molten Press", "type": "physical", "weight": 40, "dmgMultiplier": 2.0, "effect": { "aoe": true } },
+      { "id": "forge_strike", "name": "Forge Strike", "type": "physical", "weight": 40, "dmgMultiplier": 2.2 },
+      { "id": "molten_shell", "name": "Molten Shell", "type": "buff_def", "weight": 20 }
+    ],
+    "lore": "Grand Forgemaster Dara devoted her life to making something that could not be destroyed. She succeeded. The Molten Golem still stands in the deepest mine shaft of the Ashen Foothills, still protecting the forge, still performing the last instruction her deteriorating consciousness could hold. She made the indestructible thing she always wanted. She simply is no longer a person who can appreciate it. At 50% HP the surviving core of her forge-knowledge triggers the hardening protocol she built into all her constructs — the same defense that made her civilization's weapons legendary. It activates because it was always there. Not because she chose it.",
+    "drops": [
+      { "item": "Void-metal Fragment", "chance": 0.9 },
+      { "item": "Forge Lord Relic", "chance": 0.5 }
+    ]
+  },
+
+  {
+    "id": "abyssal_kraken",
+    "name": "Abyssal Kraken",
+    "subtitle": "A deep-sea predator drawn to the submerged lighthouse resonance — distinct from the Sunken Temple's Kraken",
+    "element": "water",
+    "weakTo": ["lightning", "earth"],
+    "resistTo": ["water", "physical"],
+    "tier": 3,
+    "isBoss": true,
+    "aiRole": "predator",
+    "stats": { "hp": 340, "atk": 32, "def": 25, "spd": 12, "mag": 22 },
+    "reward": { "exp": 100, "gold": 72 },
+    "palette": { "body": "#001122", "dark": "#000811", "tentacle": "#002244", "eye": "#ff3300", "shine": "#cc2200" },
+    "abilities": [
+      { "id": "crushing_tentacles", "name": "Crushing Tentacles", "type": "physical", "weight": 40, "dmgMultiplier": 1.8, "effect": { "aoe": true } },
+      { "id": "ink_cloud", "name": "Ink Cloud", "type": "debuff", "weight": 30, "effect": { "defDebuff": 0.7, "aoe": true } },
+      { "id": "deep_pull", "name": "Deep Pull", "type": "physical", "weight": 30, "dmgMultiplier": 2.1 }
+    ],
+    "lore": "The Abyssal Kraken of the Lighthouse Isles is not Oremis. It is not a former person. It is a deep-sea predator that found the submerged resonance of the Lighthouse Isles' drowned settlement and made it a territory. The concentration of elemental water energy from the flooded buildings — the iron rings, the dock stones, the bell tower still ringing at high tide — drew it up from depths it would otherwise never leave. It is not corrupted by Valdris. It simply moved into a space that Valdris made available by ensuring no one was strong enough to drive it out.",
+    "drops": [
+      { "item": "Kraken Ink", "chance": 0.7 },
+      { "item": "Abyssal Pearl", "chance": 0.4 }
+    ]
+  },
+
+  {
+    "id": "storm_sentinel",
+    "name": "Storm Sentinel",
+    "subtitle": "Pre-civilization archive guardian — protecting records no one alive remembers writing",
+    "element": "void",
+    "weakTo": ["earth", "ice"],
+    "resistTo": ["void", "lightning", "physical"],
+    "tier": 3,
+    "isBoss": true,
+    "aiRole": "mage",
+    "statPhases": [
+      { "hp": 0.4, "mag": 2.2, "spd": 2.0, "def": 0.25 }
+    ],
+    "stats": { "hp": 520, "atk": 28, "def": 50, "spd": 10, "mag": 38 },
+    "reward": { "exp": 130, "gold": 100 },
+    "palette": { "body": "#101030", "dark": "#080818", "armor": "#303080", "eye": "#ffffff", "shine": "#aaaaff" },
+    "abilities": [
+      { "id": "void_pulse_s", "name": "Void Pulse", "type": "magic_damage", "weight": 35, "dmgMultiplier": 1.7, "effect": { "aoe": true } },
+      { "id": "lightning_archive", "name": "Lightning Archive", "type": "magic_damage", "weight": 35, "dmgMultiplier": 2.2 },
+      { "id": "starlit_ward", "name": "Starlit Ward", "type": "buff_def", "weight": 30 }
+    ],
+    "lore": "The nameless civilization that built the Sky Ruins understood something about altitude and memory that no civilization after them rediscovered — at sufficient height, elemental interference is minimal and records stay clean. The Storm Sentinel was their guardian, built to ensure nothing reached the high archive with intent to damage it. Valdris placed his Four Kings in the ruins without touching the Sentinel because he could not corrupt it: it has no self to find purchase in, no desire to exploit. It simply continues. At 40% HP it shatters the accumulated defensive mass it has been maintaining for centuries and focuses everything into a pure point — the archive's last line of defense.",
+    "drops": [
+      { "item": "Archive Key", "chance": 0.85 },
+      { "item": "Storm Crystal", "chance": 0.45 }
     ]
   }
 ]

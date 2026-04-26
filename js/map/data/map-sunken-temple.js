@@ -143,7 +143,10 @@ MAP_DEFS.sunken_temple = (function() {
             { id: 'merman',     x: 130, y: 130, patrol: 'horizontal', range: 12, speed: 1.1 },
             { id: 'zombie',     x: 80,  y: 130, patrol: 'random',     range: 10, speed: 1.0 },
             { id: 'necromancer',x: 30,  y: 130, patrol: 'vertical',   range: 15, speed: 1.0 },
-            { id: 'bone_dragon',x: 80,  y: 80,  patrol: 'random',     range: 12, speed: 1.3 }
+            { id: 'bone_dragon',x: 80,  y: 80,  patrol: 'random',     range: 12, speed: 1.3 },
+
+            // MAP BOSS — Deep Archpriest, mid-temple corruption herald
+            { id: 'deep_archpriest', x: 80, y: 120, patrol: 'stationary', isBoss: true, label: 'Deep Archpriest' }
         ],
 
         npcs: [

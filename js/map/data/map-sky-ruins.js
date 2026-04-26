@@ -27,7 +27,7 @@ MAP_DEFS.sky_ruins = {
         { id: 'lich',        x: 10, y: 10, patrol: 'stationary', isBoss: true, label: 'The Pale King', mutation: 'corrupted' },
         { id: 'dark_knight', x: 70, y: 10, patrol: 'stationary', isBoss: true, label: 'The Ebon Champion', mutation: 'corrupted' },
         { id: 'bone_dragon', x: 40, y: 30, patrol: 'stationary', isBoss: true, label: 'The Skeletal Maw', mutation: 'corrupted' },
-        { id: 'void_knight', x: 40, y: 5,  patrol: 'stationary', isBoss: true, label: 'Storm Sentinel', mutation: 'corrupted' }
+        { id: 'storm_sentinel', x: 40, y: 5,  patrol: 'stationary', isBoss: true, label: 'Storm Sentinel', mutation: 'corrupted' }
     ],
     tiles: (function () {
         const rows = [];

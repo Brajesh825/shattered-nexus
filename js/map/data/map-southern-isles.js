@@ -23,7 +23,7 @@ MAP_DEFS.southern_isles = {
         { id: 'crab',   x: 40, y: 25, patrol: 'horizontal', range: 10, speed: 0.6 },
         { id: 'naga',   x: 15, y: 15, patrol: 'vertical', range: 8, speed: 1.3 },
         { id: 'naga',   x: 65, y: 15, patrol: 'vertical', range: 8, speed: 1.3 },
-        { id: 'void_warden', x: 40, y: 8,  patrol: 'stationary', isBoss: true, label: 'Sunken Leviathan' }
+        { id: 'sunken_leviathan', x: 40, y: 8,  patrol: 'stationary', isBoss: true, label: 'Sunken Leviathan' }
     ],
     tiles: (function () {
         const rows = [];
