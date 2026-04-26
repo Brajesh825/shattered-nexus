@@ -137,7 +137,10 @@ MAP_DEFS.shadow_reach = (function() {
             // BOSS GATEKEEPERS
             { id: 'witch',    x: 42, y: 90, patrol: 'random',     range: 4,  speed: 1.2 },
             { id: 'witch',    x: 58, y: 90, patrol: 'random',     range: 4,  speed: 1.2 },
-            { id: 'orc',      x: 50, y: 95, patrol: 'horizontal', range: 5,  speed: 1.0 }
+            { id: 'orc',      x: 50, y: 95, patrol: 'horizontal', range: 5,  speed: 1.0 },
+
+            // MAP BOSS — Void Stalker, Rift's permanent immune response
+            { id: 'void_stalker', x: 50, y: 75, patrol: 'stationary', isBoss: true, label: 'Void Stalker' }
         ],
 
         npcs: [

@@ -77,4 +77,112 @@ Four factions defined with history, goals, and relationship to Valdris:
 - **The Ancient Ones** (pre-Shattering): Green Emperor, Nexus builders, Tide guardians
 
 ---
+
+## 🎬 5. Cutscene & Narrative Presentation
+Address the gap between strong written story and flat visual delivery.
+
+### 5a — Cutscene Skip (Priority: High)
+- Tap once to complete the current typewriter line instantly
+- Tap again to advance to the next line
+- Table-stakes UX for any RPG with non-skippable scenes
+
+### 5b — Emotion → Portrait Visual Mapping
+- Map `emotion` values already in arc JSON (e.g. `"grave"`, `"shocked"`) to CSS filter overlays on character portraits
+- Use `hue-rotate`, `brightness`, and `saturate` — no new assets required
+- Dramatically increases scene expressiveness at near-zero cost
+
+### 5c — Cutscene Presentation Modes
+Add an optional `"mode"` field to arc JSON chapters for distinct visual treatments:
+- `"standard"` — current portrait + typewriter (default)
+- `"blackout"` — full black background, centered text only (for Valdris reveals / heavy lore drops)
+- `"combat_flashback"` — battle sprite visible + screen shake (for action recall moments)
+- Driven entirely by a CSS class toggle in `story.js` — no new engine work
+
+### 5d — Story.js Refactor (Code Health)
+- Extract cutscene rendering into a dedicated `js/cutscene.js`
+- `story.js` becomes an orchestrator; `cutscene.js` owns portrait management, typewriter, and dialogue queue
+- Resolves the current 1643-line monolith mixing save/load/world-map/cutscene logic
+
+### 5e — Intra-Party Dialogue Beats
+- Add 2–3 party chemistry moments per arc, triggered after boss defeat
+- Example: Rei's reaction to Aya's memory loss evolving across arcs
+- Pure data work in arc JSON — zero engine changes
+
+### 5f — Character Moment Content Pass
+- Current `char_moment` phases post-boss are structurally defined but content-thin
+- Each character moment should reference that arc's specific emotional beat, not be generic
+- Tie `char_moment` to arc-specific dialogue in the existing arc JSON format
+
+---
+
+## ⚔️ 6. Battle System Improvements
+Polish and close gaps in an already strong combat engine.
+
+### 6a — Enemy AI Extraction (Code Health)
+- Extract AI decision logic from `action-handler.js` / `game.js` into a dedicated `js/battle/enemy-ai.js`
+- Define `aiRole` values (`predator`, `support`, `berserker`) as priority-weighted action selectors
+- Prerequisite for expanding AI role variety without bloating `action-handler.js`
+
+### 6b — Action Handler Split (Code Health)
+- Split `action-handler.js` (currently 1038 lines) into:
+  - `action-handler.js` — flow coordinator only
+  - `ability-resolver.js` — per-ability outcome math
+- Remove or formalize the "kept for legacy" dispatch path
+
+### 6c — Vanguard Intercept UI Feedback
+- Flash a `"VANGUARD INTERCEPT"` indicator when Slot 2 absorbs a redirected attack
+- Matches the existing `CRIT` flash pattern — same implementation effort
+- Players currently may not understand *why* an attack redirected
+
+### 6d — Status Effect Counterplay
+- Add a Dispel mechanic to at least one hero skill
+- Alternatively, allow Swirl reaction to cleanse allied debuffs (infrastructure already exists in `reaction-effects.js`)
+- Addresses the freeze/stun dead-turn problem for affected heroes
+
+### 6e — EXP Gap Penalty Smoothing
+- Current formula: `clamp(1 - (memberLevel - enemyLevel) / 3, 0, 1)` — hits 0 EXP at +3 levels
+- In a 4-person party with uneven KO history, one member can soft-lock progression
+- Replace with: `max(0.1, 1 - gap / 5)` — always grants at least 10%, linear ramp to gap 5
+
+---
+
+## 🗺️ 7. Map & World Tools
+Reduce maintainability risk and add missing player-facing systems.
+
+### 7a — Browser-Based Tile Editor (Priority: High)
+- All 15 map layouts are hand-coded JS tile arrays — largest maintainability risk in the codebase
+- Build a minimal HTML canvas tile editor: click-to-paint tiles, export to existing JS array format
+- The map data format is clean enough that editor output drops in directly
+- Check `tools/` folder for any existing foundation to build on
+
+### 7b — NPC Dialogue → Arc JSON Bridge
+- Add an optional `arcDialogue` field to NPC entities in map data
+- When set, `story.js` looks up that key in the arc JSON and renders it through the cutscene engine
+- Connects the two narrative systems that currently don't talk to each other
+- Unlocks richer side-region storytelling (NPC depth pass from §4c) without a new engine
+
+### 7c — Fast Travel System
+- Add world-map fast-travel unlocked after first visit to a region
+- Save infrastructure already exists — just requires a `visitedRegions` flag set in save state
+- Critical for an 80×40 expanded world where backtracking for side content is high friction
+
+### 7d — Encounter Cooldown
+- Add a `_encounterCooldown` step counter (minimum ~8 steps between encounters)
+- Prevents back-to-back encounters that feel punishing and break exploration flow
+- Does not reduce overall encounter density — just distributes it
+
+### 7e — Level Range Documentation Audit
+- `map-data.js` comments and `STORY_PROGRESSION.md` have drifted (e.g., Arc 3 comments say Lv 8–12, doc says Lv 12–20)
+- One-time pass to align all level range comments to `STORY_PROGRESSION.md` as the single source of truth
+
+---
+
+## 🌍 8. Side-Expansion Story Depth
+Side-expansion regions (8 total) currently lack the narrative depth of main arcs.
+
+- Each expansion region needs at minimum 1 lore-giving NPC linked to the arc JSON narrative engine (see §7b)
+- Plant "Valdris aftermath" environmental storytelling per region — a former civilization leader's final words as a lore fragment, unlocked on that map
+- Aligns with §4a Lore Fragments target of ~70 total
+
+---
 *Created for planning discussion. Please add comments or adjust priorities as needed.*

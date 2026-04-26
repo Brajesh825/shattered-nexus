@@ -1,6 +1,6 @@
 /**
  * npcs.js — Global NPC database.
- * 
+ *
  * IDs should match the 'id' field in map-verdant-vale.js and other map files.
  * Each NPC defines:
  *   - name: Display name in game.
@@ -10,6 +10,11 @@
  */
 
 const NPC_DEFS = {
+
+  // ════════════════════════════════════════════════════════════════
+  //  ESSABELLA — Fallen Goddess. Full arc across all 8 regions.
+  //  NOTE: void_citadel has two story beats merged into one scene.
+  // ════════════════════════════════════════════════════════════════
   essabella: {
     name: 'Lady Essabella',
     color: '#c4b5fd',
@@ -100,11 +105,8 @@ const NPC_DEFS = {
 
       // ── ARC 5 — Shadow Reach ──────────────────────────────────────
       // Post-reveal. The party now knows who she is. Essabella does not
-      // pretend otherwise. Her faction is fighting Valdris too — but
-      // trying to capture corrupted creatures rather than destroy them.
-      // She reveals she has been feeding Valdris distractions to buy the
-      // party time. First crack in her villain framing: she is not their
-      // enemy. She is just not their ally. Not yet.
+      // pretend otherwise. First crack in her villain framing: she is not
+      // their enemy. She is just not their ally. Not yet.
       shadow_reach: [
         { speaker: 'Aya', text: 'Lady Essabella. Or should I say — Commander.' },
         { speaker: 'Lady Essabella', text: 'Either is accurate. I did not expect you to come this far.' },
@@ -120,12 +122,10 @@ const NPC_DEFS = {
         { speaker: 'Lady Essabella', text: 'My faction is taking losses I cannot replace. Whatever I planned — it is no longer possible. So I bought you time instead. Do not waste it.' },
       ],
 
-      // ── ARC 6 — Void Citadel ──────────────────────────────────────
-      // Essabella's plan has completely collapsed. Valdris has been
-      // consuming Fallen Angel soldiers — her own people, turned into
-      // enemies in the pools above. She is shaken. The calculation is
-      // gone. What remains is the question she has always carried:
-      // what happens to the world after Valdris falls?
+      // ── ARC 6 & ARC 7 — Void Citadel (merged) ───────────────────
+      // Her plan has completely collapsed. Valdris consumed her soldiers.
+      // She is shaken — then the goddess reveal, and the final briefing
+      // before the party ascends to the end.
       void_citadel: [
         { speaker: 'Rei', text: 'The Fallen Angels in the enemy pools — those were yours.' },
         { speaker: 'Lady Essabella', text: 'Were. He found them faster than I anticipated. I underestimated how far his reach extended into the citadel.' },
@@ -134,20 +134,23 @@ const NPC_DEFS = {
         { speaker: 'Lady Essabella', text: '...The plan is finished. The Fragments I meant to preserve, the Seals I meant to rebuild from within — Valdris took everything I positioned. Two years of work. Gone.' },
         { speaker: 'Lulu', text: 'I am sorry.' },
         { speaker: 'Lady Essabella', text: 'Do not be. I made calculations. They were wrong. That is mine to carry.' },
-        { speaker: 'Lady Essabella', text: 'But I need you to answer something. When you destroy the last Fragment and Valdris falls — what fills the space he leaves? The Seals will be broken. The elemental anchors will be gone. Who holds the world together after?' },
+        { speaker: 'Lady Essabella', text: 'But I need you to answer something. When Valdris falls — what fills the space he leaves? The Seals will be broken. The elemental anchors will be gone. Who holds the world together after?' },
         { speaker: 'Aya', text: 'The Oracle believes the world will heal on its own. That the Seals were never meant to be permanent.' },
         { speaker: 'Lady Essabella', text: 'The Oracle believes many things. I have spent two years watching what happens when the anchors weaken. The answer is not healing. The answer is fracture.' },
+        { speaker: 'Aya', text: 'The air here... it feels like it\'s being pulled toward the center.' },
+        { speaker: 'Lady Essabella', text: 'He is phase-locked. The Grand Ritual has entered its final stage. He is forcing the Shadow Seal open by sheer elemental resonance.' },
+        { speaker: 'Rei', text: 'Then we interrupt him.' },
+        { speaker: 'Lady Essabella', text: 'It is not so simple. Valdris has injected the Living Core of the Nexus into his own heart. He is the archive now.' },
+        { speaker: 'Lulu', text: 'If he dies... what happens to the Core?' },
+        { speaker: 'Lady Essabella', text: 'I will be there to catch it.' },
+        { speaker: 'Tao', text: 'A goddess? You?' },
+        { speaker: 'Lady Essabella', text: 'A fallen one. But I still remember how the pieces fit together. Reclaim the Fragments from his body, and I will restore Aethoria. I took this mortal vessel specifically to repair the error I allowed to happen.' },
         { speaker: 'Lady Essabella', text: 'I am not asking you to change your plan. I am asking you to have an answer ready for what comes after. Because someone will need to be there.' },
       ],
 
       // ── ARC 7 — Fortress Ramparts ─────────────────────────────────
-      // The arc reveals Valdris was a scholar — afraid of death, who
-      // consumed everything to escape it. There is a mirror at the core.
-      // Essabella has been doing the same thing in a different direction:
-      // controlling the Fragments to prevent catastrophe, refusing to
-      // trust anything to chance. She sees herself in him.
-      // She is broken. Honest. The calculation is completely gone.
-      // She tells the party the Fallen Angels will stand down.
+      // The scholar's chamber. Essabella sees herself in Valdris.
+      // The calculation is completely gone. She tells them she is standing down.
       fortress_ramparts: [
         { speaker: 'Aya', text: 'You look different.' },
         { speaker: 'Lady Essabella', text: 'I found the scholar\'s chamber. The texts. The star maps.' },
@@ -164,26 +167,9 @@ const NPC_DEFS = {
         { speaker: 'Lady Essabella', text: 'Someone should witness this. In case you are right and I am wrong. I would like to know what that looks like.' },
       ],
 
-      // ── ARC 7 — Void Citadel ─────────────────────────────────────
-      // The reveal before the final climb.
-      void_citadel: [
-        { speaker: 'Aya', text: 'The air here... it feels like it\'s being pulled toward the center.' },
-        { speaker: 'Lady Essabella', text: 'He is phase-locked. The Grand Ritual has entered its final stage. He is forcing the Shadow Seal open by sheer elemental resonance.' },
-        { speaker: 'Rei', text: 'Then we interrupt him.' },
-        { speaker: 'Lady Essabella', text: 'It is not so simple. Valdris has injected the Living Core of the Nexus into his own heart. He is the archive now.' },
-        { speaker: 'Lulu', text: 'If he dies... what happens to the Core?' },
-        { speaker: 'Lady Essabella', text: 'I will be there to catch it. I was the Goddess who oversaw that Core for eons. I took this mortal vessel specifically to repair the error I allowed to happen.' },
-        { speaker: 'Tao', text: 'A goddess? You?' },
-        { speaker: 'Lady Essabella', text: 'A fallen one. But I still remember how the pieces fit together. Reclaim the Fragments from his body, and I will restore Aethoria.' },
-      ],
-
       // ── ARC 8 — Eternal Void ──────────────────────────────────────
-      // Valdris releases everything and dissolves into light.
-      // The consumed worlds are reborn. Essabella witnesses it —
-      // and finally has her answer. The Fragments do not need to be
-      // claimed or controlled. They need to be released.
-      // She was wrong. She says so, plainly, without flinching.
-      // Her last line is the end of her arc.
+      // Valdris releases everything and dissolves. Essabella witnesses it.
+      // She was wrong. She says so, plainly. Her last line is the end of her arc.
       eternal_void: [
         { speaker: 'Rei', text: 'You came.' },
         { speaker: 'Lady Essabella', text: 'I said I wanted to see what it looked like if you were right.' },
@@ -201,6 +187,10 @@ const NPC_DEFS = {
     },
   },
 
+  // ════════════════════════════════════════════════════════════════
+  //  VERDANT VALE NPCs
+  // ════════════════════════════════════════════════════════════════
+
   elder_maren: {
     name: 'Elder Maren',
     color: '#fbbf24',
@@ -208,22 +198,24 @@ const NPC_DEFS = {
     dialogues: {
       verdant_vale: [
         { speaker: 'Elder Maren', text: 'Travelers! Praise the stars, I thought we were the last ones left.' },
-        { speaker: 'Aya', text: 'The town is empty, Elder. Where did everyone go?' },
-        { speaker: 'Elder Maren', text: 'Most fled west to the refugee settlement when the Bridge Ward flickered. The Void Knight… he passed through here like a cold wind.' },
-        { speaker: 'Lulu', text: 'Did he take the Seal Fragment?' },
-        { speaker: 'Elder Maren', text: 'No. The Fragment is bound by light. He could not touch it — but he left his "children" to ensure no one else could either.' },
-        { speaker: 'Rei', text: 'We will retrieve it. The Nexus must be restored.' },
-        { speaker: 'Elder Maren', text: 'Then go with caution. The East is no longer the home I remember.' },
+        { speaker: 'Aya', text: 'The town feels half-empty, Elder. What happened here?' },
+        { speaker: 'Elder Maren', text: 'Most fled west when the Bridge Ward flickered. The Void Knight passed through like a cold wind and left his shadows behind to make sure nothing moved east.' },
+        { speaker: 'Lulu', text: 'You stayed.' },
+        { speaker: 'Elder Maren', text: 'Someone had to. I was the record-keeper before the fall — responsible for the calendar of songs, the harvest counts, the names of who lived where. When everyone runs, someone needs to stay and remember what the place was.' },
+        { speaker: 'Rei', text: 'The Seal Fragment. The Void Knight could not take it?' },
+        { speaker: 'Elder Maren', text: 'The Fragment is bound by light — the same light that governed this land for centuries before the Emperor dissolved into it. Whatever Valdris sent here could not touch it. But he left enough behind to make sure no one else could either.' },
+        { speaker: 'Tao', text: 'So it\'s just been sitting there. Guarded by something that can\'t use it, stopping anyone who could.' },
+        { speaker: 'Elder Maren', text: 'That is Valdris\'s way, from what I understand. He does not need to win. He only needs to make sure nobody else does.' },
+        { speaker: 'Aya', text: 'We will retrieve it.' },
+        { speaker: 'Elder Maren', text: 'Then go with every caution you have. The east is no longer the home I remember. But it is still worth remembering.' },
+        { speaker: 'Elder Maren', text: 'If you find anything out there — a name, a record, something that tells you who someone was before — bring it back. Not to me. Just... carry it. Someone should.' },
       ],
     },
   },
 
-  // --- GENERIC SOLDIERS ---
-  // Using standardized 'soldier_sheet' with color variations
-
   soldier_1: {
     name: 'Soldier Davan',
-    color: '#94a3b8', // Slate Blue (Sentinel)
+    color: '#94a3b8',
     sprite: 'images/characters/map/sheets/npc/soldier_sheet.png',
     dialogues: {
       verdant_vale: [
@@ -244,35 +236,62 @@ const NPC_DEFS = {
 
   soldier_2: {
     name: 'Soldier Kael',
-    color: '#64748b', // Darker Slate (Gate Guard)
+    color: '#64748b',
     sprite: 'images/characters/map/sheets/npc/soldier_sheet.png',
     dialogues: {
       verdant_vale: [
-        { speaker: 'Soldier Kael', text: 'Halt! Identify yourselves before approaching the Town walls.' },
-        { speaker: 'Aya', text: 'We are travelers. We seek the Seal Fragment.' },
-        { speaker: 'Soldier Kael', text: 'The Fragment... So the rumors are true. The Summoning Circle pulsed this morning.' },
-        { speaker: 'Rei', text: 'You guard this gate alone?' },
-        { speaker: 'Soldier Kael', text: 'The rest are at the inner keep or the southern watch. We are stretched thin. If those things from the east cross the river, these walls won\'t be enough.' },
-        { speaker: 'Soldier Kael', text: 'Enter quickly. And stay away from the eastern bridge if you value your souls.' },
+        { speaker: 'Soldier Kael', text: 'Halt! Identify yourselves before you take another step.' },
+        { speaker: 'Aya', text: 'We are travelers. Summoned here — we are looking for the Seal Fragment.' },
+        { speaker: 'Soldier Kael', text: 'The Fragment. So the Summoning Circle did pulse. I thought I was imagining it.' },
+        { speaker: 'Soldier Kael', text: 'You\'re the first people I\'ve seen come from outside in two weeks. Everything moving east gets emptied. Everything moving west is running.' },
+        { speaker: 'Rei', text: 'How long have you held this gate alone?' },
+        { speaker: 'Soldier Kael', text: 'Since the others went to reinforce the southern watch. That was six days ago. I\'m beginning to think they are not coming back.' },
+        { speaker: 'Tao', text: 'That\'s a long time to hold a post on your own.' },
+        { speaker: 'Soldier Kael', text: 'It\'s just a gate. The gate doesn\'t know I\'m alone. The refugees coming through don\'t know either. I keep the post because if I leave it, there\'s nothing between the settlement and whatever comes next.' },
+        { speaker: 'Lulu', text: 'That is very brave.' },
+        { speaker: 'Soldier Kael', text: 'It\'s a job. Enter quickly. And if you reach the eastern bridge — be ready for the fact that what the Void Knight left behind doesn\'t look like an enemy until it\'s too late.' },
       ],
     },
   },
 
   soldier_3: {
     name: 'Soldier Jace',
-    color: '#475569', // Deep Blue-Grey (Settlement Guard)
+    color: '#475569',
     sprite: 'images/characters/map/sheets/npc/soldier_sheet.png',
     dialogues: {
       verdant_vale: [
-        { speaker: 'Soldier Jace', text: 'Move along, travelers. This settlement is for refugees only.' },
-        { speaker: 'Lulu', text: 'We only wish to speak with those who escaped the East.' },
-        { speaker: 'Soldier Jace', text: 'There isn\'t much to say. They saw the shadows move, then the screams started. We barely got the gate closed in time.' },
-        { speaker: 'Tao', text: 'Sounds like you\'ve seen better days.' },
-        { speaker: 'Soldier Jace', text: 'I was stationed at the capital once. Now I guard a cluster of tents and a stone wall that feels far too short. But it\'s the only home left for these people.' },
-        { speaker: 'Soldier Jace', text: 'Watch your back out there. The shadows have a way of following you.' },
+        { speaker: 'Soldier Jace', text: 'Hold there. This settlement is for refugees. Are you running from the east?' },
+        { speaker: 'Aya', text: 'We are moving toward it. We need what is in the ruins.' },
+        { speaker: 'Soldier Jace', text: 'Moving toward it.' },
+        { speaker: 'Soldier Jace', text: 'I\'ve spent two weeks turning people away from the east gate. You are the first ones asking me to open it going the other direction.' },
+        { speaker: 'Tao', text: 'Does that change your answer?' },
+        { speaker: 'Soldier Jace', text: 'It changes how I feel about your odds. The people who came through here told me what they saw. Shadows that follow you. Soldiers standing at their posts with no one inside. A bridge ward flickering for the first time in two hundred years.' },
+        { speaker: 'Lulu', text: 'You were stationed at the capital once, weren\'t you.' },
+        { speaker: 'Soldier Jace', text: '...How did you know that?' },
+        { speaker: 'Lulu', text: 'The way you hold yourself. This is not the post you expected to end up at.' },
+        { speaker: 'Soldier Jace', text: 'No. But it\'s the post that needs holding. Go on through. And come back, if you can. These people need to hear that someone made it to the east and came back.' },
       ],
     },
   },
+
+  lira: {
+    name: 'Lira',
+    color: '#4ade80',
+    sprite: 'images/characters/map/sheets/npc/lira_sheet.png',
+    dialogues: {
+      verdant_vale: [
+        { speaker: 'Lira', text: 'Oh! You look like you can actually handle yourselves in a fight.' },
+        { speaker: 'Tao', text: 'We\'ve had some practice. Why?' },
+        { speaker: 'Lira', text: 'I lost my favorite locket in the tall grass east of the river. I\'d go get it, but there are things crawling around over there that don\'t like visitors.' },
+        { speaker: 'Rei', text: 'We are headed that way for the Fragment. We will keep an eye out.' },
+        { speaker: 'Lira', text: 'You would? Oh, thank you! It\'s silver, with a little blue gem. If you find it, I have some spare supplies I can give you!' },
+      ],
+    },
+  },
+
+  // ════════════════════════════════════════════════════════════════
+  //  CRYSTAL CAVERN NPCs
+  // ════════════════════════════════════════════════════════════════
 
   the_archivist: {
     name: 'The Archivist',
@@ -292,10 +311,12 @@ const NPC_DEFS = {
         { speaker: 'The Archivist', text: 'That is all I have left to give. Go. Finish the record I could not.' },
       ],
       sky_ruins: [
-        { speaker: 'The Archivist', text: 'The storm... it hums with the same frequency as the Void Citadel.' },
+        { speaker: 'The Archivist', text: 'The storm hums with the same frequency as the Void Citadel. These ruins predate the five civilizations — I never finished documenting them.' },
         { speaker: 'Aya', text: 'Is this where the first rift opened?' },
-        { speaker: 'The Archivist', text: 'One of many. But here, the gravity itself has forgotten its purpose. To move forward, you must align the Aerolith Crystals.' }
-      ]
+        { speaker: 'The Archivist', text: 'One of many. But here, the gravity itself has forgotten its purpose. To move forward, you must align the Aerolith Crystals.' },
+        { speaker: 'Tao', text: 'You followed us all the way up here?' },
+        { speaker: 'The Archivist', text: 'An unfinished record goes where the data is. There is still so much left to document.' },
+      ],
     },
   },
 
@@ -321,16 +342,27 @@ const NPC_DEFS = {
     },
   },
 
+  // ════════════════════════════════════════════════════════════════
+  //  RIVERLANDS CROSSING NPCs
+  // ════════════════════════════════════════════════════════════════
+
   old_guard: {
     name: 'Old Guard',
     color: '#94a3b8',
     sprite: 'images/characters/map/sheets/npc/soldier_sheet.png',
     dialogues: {
       riverlands_crossing: [
-        { speaker: 'Old Guard', text: 'The bridge is out, travelers. And the River King doesn\'t like being disturbed.' },
-        { speaker: 'Rex', text: 'Then we shall give him a disturbance he won\'t forget.' }
-      ]
-    }
+        { speaker: 'Old Guard', text: 'The bridge is out. Has been for three weeks. And the River King doesn\'t take kindly to people trying to cross what isn\'t there anymore.' },
+        { speaker: 'Rex', text: 'What happened to the bridge?' },
+        { speaker: 'Old Guard', text: 'The River King took it. Pulled it down into the water one plank at a time, slow as tide. We watched from this bank and couldn\'t do a thing.' },
+        { speaker: 'Aya', text: 'The River King — it was neutral once. The lore says it let everyone through.' },
+        { speaker: 'Old Guard', text: 'That\'s right. Neutral. Collected a truth as toll and let you pass. Couldn\'t cross while lying. The river always knew.' },
+        { speaker: 'Old Guard', text: 'Then Valdris\'s corruption reached the water table. And the spirit that governed this crossing for two centuries... changed. Something in the agreement it made contaminated it. Now it guards the crossing for him.' },
+        { speaker: 'Rei', text: 'A neutral party that made a deal with corruption became corrupt through the deal itself.' },
+        { speaker: 'Old Guard', text: 'That\'s the part that keeps me up at night. It didn\'t choose wrong. It chose nothing. Tried to stay out of it. And that\'s what took it in the end.' },
+        { speaker: 'Old Guard', text: 'The ford downstream is passable at low tide. Go at dusk. And don\'t make any deals with anything that speaks in the water.' },
+      ],
+    },
   },
 
   ghost_soldier: {
@@ -339,11 +371,23 @@ const NPC_DEFS = {
     sprite: 'images/characters/map/sheets/npc/knight_of_the_vale_sheet.png',
     dialogues: {
       riverlands_crossing: [
-        { speaker: 'Ghost Soldier', text: 'I was guarding the supply cache when the water turned black...' },
-        { speaker: 'Lulu', text: 'It\'s okay. We\'ll finish what you started.' }
-      ]
-    }
+        { speaker: 'Ghost Soldier', text: 'I was guarding the supply cache when the water turned black. My unit crossed the bridge before I did. I watched it from the east bank.' },
+        { speaker: 'Lulu', text: 'What happened to them?' },
+        { speaker: 'Ghost Soldier', text: 'The water didn\'t kill them. It changed them. They got to the other side and just... stood there. Facing the river. Waiting for orders that weren\'t coming.' },
+        { speaker: 'Tao', text: 'And you? You didn\'t cross.' },
+        { speaker: 'Ghost Soldier', text: 'I was holding the cache. That was my post. I held it. Even after the bridge went down. Even after I understood there was nobody left to deliver the supplies to.' },
+        { speaker: 'Ghost Soldier', text: 'I\'m still holding it, I suppose. Old habit.' },
+        { speaker: 'Aya', text: 'What was in the cache?' },
+        { speaker: 'Ghost Soldier', text: 'Field rations. Bandages. A letter I was supposed to deliver to someone in the southern settlement. I never found out if she received it.' },
+        { speaker: 'Lulu', text: 'We\'ll finish what you started. All of it.' },
+        { speaker: 'Ghost Soldier', text: '...There\'s a loose stone in the east wall. What\'s behind it is yours now. It\'s not doing anyone any good with me.' },
+      ],
+    },
   },
+
+  // ════════════════════════════════════════════════════════════════
+  //  ASHEN FOOTHILLS NPCs
+  // ════════════════════════════════════════════════════════════════
 
   cursed_miner: {
     name: 'Cursed Miner',
@@ -351,10 +395,19 @@ const NPC_DEFS = {
     sprite: 'images/characters/map/sheets/npc/soldier_sheet.png',
     dialogues: {
       ashen_foothills: [
-        { speaker: 'Cursed Miner', text: 'The basalt... it\'s grown too fast. We\'re trapped in the maze.' },
-        { speaker: 'Tao', text: 'Not for long. Stay behind us.' }
-      ]
-    }
+        { speaker: 'Cursed Miner', text: 'Don\'t go deeper. The basalt has grown over the south tunnel again. That\'s the third time this week.' },
+        { speaker: 'Rex', text: 'You\'re still mining? After everything?' },
+        { speaker: 'Cursed Miner', text: 'We kept running the shaft for two years after the Forge Lords fell. Waiting for collection that never came. Nobody told us to stop. So we didn\'t.' },
+        { speaker: 'Cursed Miner', text: 'Then the basalt started moving. Slow at first — a crack here, a seal there. Now it shifts like it\'s breathing.' },
+        { speaker: 'Aya', text: 'The Void-metal contamination. It spread into the stone.' },
+        { speaker: 'Cursed Miner', text: 'I don\'t know what it is. I just know that three of my crew went into the deep shaft to check the lower ore vein and didn\'t come back the same. They\'re still down there. Working. Just... working. No food. No rest. No answer when you call their names.' },
+        { speaker: 'Tao', text: 'The Golem is in those shafts.' },
+        { speaker: 'Cursed Miner', text: 'There is something in there. We hear it at night — a sound like hammering that doesn\'t stop, not for hours, not for days. Whatever it\'s making, it never finishes.' },
+        { speaker: 'Cursed Miner', text: 'I keep thinking — the Forge Lords devoted their whole civilization to making something permanent. And now whatever is down there is permanent, and it doesn\'t know what to do with that.' },
+        { speaker: 'Rex', text: 'We\'ll handle what\'s in the deep shaft. Stay near the entrance.' },
+        { speaker: 'Cursed Miner', text: 'I\'m not going anywhere. This shaft is all I know.' },
+      ],
+    },
   },
 
   flame_spirit: {
@@ -363,10 +416,21 @@ const NPC_DEFS = {
     sprite: 'images/characters/map/sheets/npc/soldier_sheet.png',
     dialogues: {
       ashen_foothills: [
-        { speaker: 'Flame Spirit', text: 'The heat is a gift from the core. Embrace it, or be consumed.' }
-      ]
-    }
+        { speaker: 'Flame Spirit', text: '...We remember the forge fires. We are what the forge fires became when there was no forge left to tend.' },
+        { speaker: 'Lulu', text: 'You were part of the Forge Lords?' },
+        { speaker: 'Flame Spirit', text: 'We were the warmth of their work. Every flame that lit an anvil, every spark from a hammer — we were there. When they hardened and stopped feeling the heat, the heat became us.' },
+        { speaker: 'Tao', text: 'You\'re the grief they couldn\'t feel anymore.' },
+        { speaker: 'Flame Spirit', text: 'We are what they burned off when their connection to fire completed the transition. They made the indestructible thing they always wanted. We are what they gave up to do it.' },
+        { speaker: 'Flame Spirit', text: 'The Golem in the deep shaft — she was first. She became permanent before she understood that permanent and finished are different things. She is still making something. She has been making it for a very long time.' },
+        { speaker: 'Aya', text: 'What is she making?' },
+        { speaker: 'Flame Spirit', text: 'We do not know. We do not think she knows either. The instruction her mind could hold at the end was: keep working. So she does. The heat is still generous down there, if you walk through without flinching. Embrace what remains of it. It is the last of what they were.' },
+      ],
+    },
   },
+
+  // ════════════════════════════════════════════════════════════════
+  //  NORTHERN HIGHLANDS NPCs
+  // ════════════════════════════════════════════════════════════════
 
   highland_monk: {
     name: 'Highland Monk',
@@ -374,9 +438,19 @@ const NPC_DEFS = {
     sprite: 'images/characters/map/sheets/npc/archivist_sheet.png',
     dialogues: {
       northern_highlands: [
-        { speaker: 'Highland Monk', text: 'The wind carries the voices of the fallen. Can you hear them?' }
-      ]
-    }
+        { speaker: 'Highland Monk', text: 'You are early. Dawn prayer is not finished.' },
+        { speaker: 'Rei', text: 'Who do you pray for?' },
+        { speaker: 'Highland Monk', text: 'The dragon. I pray for the dragon every morning at dawn. I have done so for eleven years.' },
+        { speaker: 'Tao', text: 'You pray for the thing that destroyed this place?' },
+        { speaker: 'Highland Monk', text: 'I pray for the thing that was left after the others faded. Before the Shattering, there were seven. The six who could not adapt to the failing elemental balance — they simply ceased. The one remaining survived by absorbing void energy in place of what it could no longer find.' },
+        { speaker: 'Highland Monk', text: 'It is still alive. It is also no longer purely what it was. I am no longer certain what I am praying to.' },
+        { speaker: 'Lulu', text: 'Then why continue?' },
+        { speaker: 'Highland Monk', text: 'Because something that absorbed six hundred years of void energy to survive deserves to have someone acknowledge that it is still here. Even if I can no longer name what it has become. Maybe especially because of that.' },
+        { speaker: 'Highland Monk', text: 'The Highlands wind carries voices. I have been here long enough to recognize which ones are grief and which ones are the wind simply being wind. Today there is more grief than usual. Something is coming.' },
+        { speaker: 'Rei', text: 'We are going to face the dragon.' },
+        { speaker: 'Highland Monk', text: 'I know. I will finish the prayer before you go. It seems appropriate.' },
+      ],
+    },
   },
 
   fallen_climber: {
@@ -385,10 +459,22 @@ const NPC_DEFS = {
     sprite: 'images/characters/map/sheets/npc/soldier_sheet.png',
     dialogues: {
       northern_highlands: [
-        { speaker: 'Fallen Climber', text: 'I almost reached the summit... the view was beautiful before the dragon came.' }
-      ]
-    }
+        { speaker: 'Fallen Climber', text: 'Don\'t go to the summit. I know you\'re thinking about the summit. Don\'t.' },
+        { speaker: 'Drake', text: 'What happened to you?' },
+        { speaker: 'Fallen Climber', text: 'I almost made it. The view from the upper ridge — I saw it for about thirty seconds before the shadow crossed the sky. I thought it was a stormcloud. It wasn\'t.' },
+        { speaker: 'Fallen Climber', text: 'The dragon doesn\'t attack from anger. It doesn\'t attack from territory. I\'m not sure it attacks at all, in the way we use that word. It just moves through the space you\'re in, and if you\'re in its path you\'re in its path.' },
+        { speaker: 'Aya', text: 'What did you see from the ridge? Before it came.' },
+        { speaker: 'Fallen Climber', text: 'The full spread of the Highlands. Every range, all the way to the northern edge of the world. And below them — the places where the other six dragons were. Not the dragons. Just the... shapes their absence left in the landscape. Like a weight that lifts and leaves an impression in the ground.' },
+        { speaker: 'Fallen Climber', text: 'I did not expect it to be beautiful. I still think about it.' },
+        { speaker: 'Drake', text: 'Sounds like it was worth it.' },
+        { speaker: 'Fallen Climber', text: 'I broke three ribs getting back down. And I would go again.' },
+      ],
+    },
   },
+
+  // ════════════════════════════════════════════════════════════════
+  //  LIGHTHOUSE ISLES NPCs
+  // ════════════════════════════════════════════════════════════════
 
   old_mariner: {
     name: 'Old Mariner',
@@ -396,9 +482,20 @@ const NPC_DEFS = {
     sprite: 'images/characters/map/sheets/npc/soldier_sheet.png',
     dialogues: {
       lighthouse_isles: [
-        { speaker: 'Old Mariner', text: 'The Ghost Ship sails every midnight. It\'s looking for a crew that doesn\'t exist.' }
-      ]
-    }
+        { speaker: 'Old Mariner', text: 'You\'re here just before midnight. That\'s good. Or bad. Depends on how you feel about ghost ships.' },
+        { speaker: 'Tao', text: 'Explain.' },
+        { speaker: 'Old Mariner', text: 'Every midnight, the Ghost Ship comes around the outer reef. Last merchant vessel to leave the Southern Isles before the flooding. Crew died in the crossing. Ship kept sailing.' },
+        { speaker: 'Old Mariner', text: 'It has completed its route thousands of times since. Looking for a port that doesn\'t exist. Looking for a crew that doesn\'t live.' },
+        { speaker: 'Lulu', text: 'That is terribly sad.' },
+        { speaker: 'Old Mariner', text: 'It is. I\'ve been tending this lighthouse for thirty years. Watching it every night.' },
+        { speaker: 'Old Mariner', text: 'It comes closer each year. I\'ve measured it. Not by much — a few feet of bearing — but consistently. Every year, closer.' },
+        { speaker: 'Rex', text: 'What do you think that means?' },
+        { speaker: 'Old Mariner', text: 'I have not decided yet whether to be afraid of what it means or grateful that something is still trying to find its way home.' },
+        { speaker: 'Old Mariner', text: 'I keep the lighthouse lit because of that ship. Not for the living sailors — the living ones know where the rocks are. For that ship. So if it does finally find what it\'s looking for, the light will be on.' },
+        { speaker: 'Aya', text: 'You have tended this light for thirty years for a ship that cannot see it.' },
+        { speaker: 'Old Mariner', text: 'I tend it in case that changes. There is a difference between cannot and has not yet.' },
+      ],
+    },
   },
 
   sea_spirit: {
@@ -407,10 +504,21 @@ const NPC_DEFS = {
     sprite: 'images/characters/map/sheets/npc/soldier_sheet.png',
     dialogues: {
       lighthouse_isles: [
-        { speaker: 'Sea Spirit', text: 'The lighthouse used to guide us home. Now it only guides the lost.' }
-      ]
-    }
+        { speaker: 'Sea Spirit', text: 'You smell of inland. Of stone and fire and earth. The sea has not claimed you yet.' },
+        { speaker: 'Aya', text: 'Are you a remnant of the Tide civilization?' },
+        { speaker: 'Sea Spirit', text: 'I am a remnant of the water. The civilization was built around me, not the other way. When the Tide Priests fell, the water remained. Contaminated. Grieving, in the way that water grieves — by moving differently than it did.' },
+        { speaker: 'Sea Spirit', text: 'The lighthouse used to guide the living home. Merchants. Healers traveling between the temple and the outer isles. A whole network of people who trusted the light.' },
+        { speaker: 'Lulu', text: 'Now?' },
+        { speaker: 'Sea Spirit', text: 'Now it guides the lost. Not the living. The ones who cannot find the shore because they have forgotten which direction shore is. The water keeps them. The light reminds them something is still there.' },
+        { speaker: 'Sea Spirit', text: 'The Seal Fragment from this region still carries the ocean\'s elemental memory. Oremis wanted to heal using the deep water\'s knowledge. He found it. It consumed him. But the desire behind it — that was real. What he wanted was real.' },
+        { speaker: 'Sea Spirit', text: 'When you free what he became — remember that. Whatever he is now, it started as someone who wanted the suffering to stop.' },
+      ],
+    },
   },
+
+  // ════════════════════════════════════════════════════════════════
+  //  SOUTHERN ISLES NPCs
+  // ════════════════════════════════════════════════════════════════
 
   survivor: {
     name: 'Survivor',
@@ -418,9 +526,18 @@ const NPC_DEFS = {
     sprite: 'images/characters/map/sheets/npc/soldier_sheet.png',
     dialogues: {
       southern_isles: [
-        { speaker: 'Survivor', text: 'The tide pulled us into the trench. I\'m the only one who climbed back out.' }
-      ]
-    }
+        { speaker: 'Survivor', text: 'The tide pulled us into the trench. My ship. All eleven of us. I\'m the only one who climbed back out.' },
+        { speaker: 'Lulu', text: 'I\'m sorry. How long have you been here alone?' },
+        { speaker: 'Survivor', text: 'I stopped counting. Long enough that I\'ve named the rock formations. Long enough that I\'ve started talking to them.' },
+        { speaker: 'Survivor', text: 'The southern coast used to be ports. The whole landmass — it wasn\'t islands. It was one continuous shoreline with cities on it. Trading cities. The kind where the market never fully closed because there was always a ship coming in from somewhere.' },
+        { speaker: 'Rex', text: 'What happened to it?' },
+        { speaker: 'Survivor', text: 'The Wind Seal weakened and the storm patterns shifted over three generations. What was coast became archipelago. What were port cities became reefs.' },
+        { speaker: 'Survivor', text: 'The Sunken Leviathan was already here when Valdris arrived. Drew to the concentrated elemental resonance of the submerged buildings. He just made sure it stayed.' },
+        { speaker: 'Aya', text: 'The buildings are still there. Under the water.' },
+        { speaker: 'Survivor', text: 'Everything is still there. The market stalls. The dock rings. A bell tower that still rings at high tide because the current moves through it the right way. I can hear it from here on clear nights.' },
+        { speaker: 'Survivor', text: 'I stay because I am not ready to stop hearing that bell.' },
+      ],
+    },
   },
 
   guardian: {
@@ -429,20 +546,43 @@ const NPC_DEFS = {
     sprite: 'images/characters/map/sheets/npc/soldier_sheet.png',
     dialogues: {
       southern_isles: [
-        { speaker: 'Coral Guardian', text: 'The Abyssal Gate requires a shell that hums with the sea\'s heart.' }
-      ]
-    }
+        { speaker: 'Coral Guardian', text: 'The deep paths are sealed. The Abyssal Gate requires a shell that hums with the sea\'s resonance. Do you carry such a thing?' },
+        { speaker: 'Aya', text: 'We carry elemental resonance from the Seals we have already freed.' },
+        { speaker: 'Coral Guardian', text: '...That is not what I expected to hear from surface-walkers.' },
+        { speaker: 'Coral Guardian', text: 'I was the border-guard of the old coastal civilization — before the flooding, before the Leviathan, before the reef claimed the market squares. My purpose was to protect the deep passage from those who would disturb the ocean\'s memory.' },
+        { speaker: 'Rex', text: 'You\'ve been guarding an underwater gate since the flooding?' },
+        { speaker: 'Coral Guardian', text: 'The gate does not know the city above it drowned. Neither do I, in the way that matters. Purpose does not require context to persist.' },
+        { speaker: 'Coral Guardian', text: 'The Leviathan is below. It is not Valdris\'s creature — it was drawn here by the concentrated resonance of a thousand submerged buildings and it stayed. Valdris only ensured the gate was sealed so it could not leave. He needed it here as an anchor.' },
+        { speaker: 'Coral Guardian', text: 'You carry freed Fragment resonance. The gate will read it as passage rights. Go. Whatever you free from the deep will make the ocean remember what it was for.' },
+      ],
+    },
   },
+
+  // ════════════════════════════════════════════════════════════════
+  //  EASTERN WETLANDS NPCs
+  // ════════════════════════════════════════════════════════════════
 
   mire_witch: {
     name: 'Mire Witch',
     color: '#a78bfa',
-    sprite: 'images/characters/map/sheets/npc/essabela_sheet.png',
+    sprite: 'images/characters/map/sheets/npc/mire_witch_sheet.png',
     dialogues: {
       eastern_wetlands: [
-        { speaker: 'Mire Witch', text: 'You want the spores? They\'ll cost you a memory you don\'t need.' }
-      ]
-    }
+        { speaker: 'Mire Witch', text: 'You want something. Everyone who finds this fire wants something.' },
+        { speaker: 'Lulu', text: 'We need to pass through the deep mire. The path is corrupted.' },
+        { speaker: 'Mire Witch', text: 'All the paths are corrupted. That stopped being useful information about six years ago.' },
+        { speaker: 'Mire Witch', text: 'I can give you the spores to clear the fog in the deep mire. They\'ll cost you a memory you don\'t need.' },
+        { speaker: 'Tao', text: 'How do you know which memories we don\'t need?' },
+        { speaker: 'Mire Witch', text: 'I ask. You\'d be surprised how many people know exactly which memory they\'ve been carrying that does them no good and haven\'t had anyone to give it to.' },
+        { speaker: 'Mire Witch', text: 'I keep them in the jars. Over there by the fire — those aren\'t potions. Those are what people left behind.' },
+        { speaker: 'Lulu', text: 'Why keep them? If they\'re given up—' },
+        { speaker: 'Mire Witch', text: 'In case someone comes back for them. No one has yet. But I was a healer once, and healers hold things for people who might need them again later.' },
+        { speaker: 'Aya', text: 'You were with the Tide Priests.' },
+        { speaker: 'Mire Witch', text: 'I was a water-healer from the temple. Fled inland when the flooding started. The wetlands were as far as I got before I understood I wasn\'t running toward anything — just away from something.' },
+        { speaker: 'Mire Witch', text: 'I\'ve adapted to the mire. Adaptation here is a negotiation. You give something, you get something. It hasn\'t killed me yet. I take that as encouragement.' },
+        { speaker: 'Mire Witch', text: 'The spores. A memory you don\'t need. That\'s my price. Take your time deciding.' },
+      ],
+    },
   },
 
   lost_soul: {
@@ -451,10 +591,24 @@ const NPC_DEFS = {
     sprite: 'images/characters/map/sheets/npc/soldier_sheet.png',
     dialogues: {
       eastern_wetlands: [
-        { speaker: 'Lost Soul', text: 'The swamp is so soft... it feels like a blanket.' }
-      ]
-    }
+        { speaker: 'Lost Soul', text: 'The swamp is so soft... it feels like a blanket. I stopped walking three days ago. Or maybe three weeks.' },
+        { speaker: 'Lulu', text: 'You need to keep moving. If you stay too long the mire pulls you in.' },
+        { speaker: 'Lost Soul', text: 'I know. I kept moving for a long time. I moved for months. East to west, west to east. Trying to find the part of the world that wasn\'t like this.' },
+        { speaker: 'Lost Soul', text: 'I think that part is gone.' },
+        { speaker: 'Tao', text: 'It\'s not gone. We came from outside the mire. It exists.' },
+        { speaker: 'Lost Soul', text: 'I used to be a cartographer. I made maps of the five civilizations. Beautiful maps — hand-inked, with proper borders and trade routes and the names of everything.' },
+        { speaker: 'Lost Soul', text: 'None of those maps are accurate anymore. All the borders are wrong. All the routes lead somewhere they shouldn\'t.' },
+        { speaker: 'Lost Soul', text: 'I kept trying to update them and there was always something new that had changed. I got tired.' },
+        { speaker: 'Aya', text: 'A map drawn after the world is restored would be worth making.' },
+        { speaker: 'Lost Soul', text: '...I hadn\'t thought about that.' },
+        { speaker: 'Lost Soul', text: 'That would be a map worth the ink.' },
+      ],
+    },
   },
+
+  // ════════════════════════════════════════════════════════════════
+  //  SKY RUINS NPCs
+  // ════════════════════════════════════════════════════════════════
 
   sentinel: {
     name: 'Spectral Sentinel',
@@ -462,23 +616,18 @@ const NPC_DEFS = {
     sprite: 'images/characters/map/sheets/npc/knight_of_the_vale_sheet.png',
     dialogues: {
       sky_ruins: [
-        { speaker: 'Spectral Sentinel', text: 'The Storm Sentinel guards the apex. You are not yet erased.' }
-      ]
-    }
-  },
-
-  lira: {
-    name: 'Lira',
-    color: '#4ade80',
-    sprite: 'images/characters/map/sheets/npc/lira_sheet.png',
-    dialogues: {
-      verdant_vale: [
-        { speaker: 'Lira', text: 'Oh! You look like you can actually handle yourselves in a fight.' },
-        { speaker: 'Tao', text: 'We\'ve had some practice. Why?' },
-        { speaker: 'Lira', text: 'I lost my favorite locket in the tall grass east of the river. I’d go get it, but there are things crawling around over there that don’t like visitors.' },
-        { speaker: 'Rei', text: 'We are headed that way for the Fragment. We’ll keep an eye out.' },
-        { speaker: 'Lira', text: 'You would? Oh, thank you! It’s silver, with a little blue gem. If you find it, I have some spare supplies I can give you!' },
+        { speaker: 'Spectral Sentinel', text: 'You are not erased. That is more than I can say for most who reach this altitude.' },
+        { speaker: 'Rei', text: 'What are these ruins? They predate the five civilizations.' },
+        { speaker: 'Spectral Sentinel', text: 'They predate everything with a name. The people who built them had no name in any record I have found. They built in places where gravity works differently because they understood something about the relationship between height and memory that no civilization after them ever rediscovered.' },
+        { speaker: 'Aya', text: 'You have been here since before the five civilizations?' },
+        { speaker: 'Spectral Sentinel', text: 'I have been here since the last person who understood these ruins asked me to remain. That was long before Valdris. Long before the Seals.' },
+        { speaker: 'Tao', text: 'What are you guarding?' },
+        { speaker: 'Spectral Sentinel', text: 'Records. The builders recorded events at altitude because at sufficient height, the elemental interference is minimal. The record is cleaner. Purer. Less likely to be overwritten.' },
+        { speaker: 'Spectral Sentinel', text: 'The Storm Sentinel guards the apex — the highest archive. It is not Valdris\'s creature. It is the ruins\' own defense, still running the last instruction it was given: nothing reaches the apex that intends harm to the record.' },
+        { speaker: 'Rei', text: 'We do not intend harm to records. We are trying to restore them.' },
+        { speaker: 'Spectral Sentinel', text: 'Then the Sentinel will read you correctly. Move forward. The Aerolith Crystals need to be aligned before the upper path will hold weight. Approach each one with elemental resonance, not force. The ruins respond to acknowledgment, not assault.' },
       ],
     },
   },
+
 };
