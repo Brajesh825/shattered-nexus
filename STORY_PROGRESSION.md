@@ -8,63 +8,60 @@ The world map is a place-based progression surface. Players select locations on 
 
 Story locations unlock in arc order. A player may view completed, current, and next story locations, but the next story location only becomes travel-ready after the current arc boss is defeated.
 
-## Main Story Route
+## Master Story Progression & Unlock Table
 
-The first three locations are final and should not be reordered without explicit approval:
+| Arc | Arc Name | Main Map | Side Map Unlocks | Requirements |
+| --- | --- | --- | --- | --- |
+| **Arc 1** | The Rift Awakening | `verdant_vale` | `riverlands_crossing`, `northern_highlands` | Starts at New Game |
+| **Arc 2** | Beneath the Ashes | `crystal_cavern` | `ashen_foothills` | Clear Arc 1 Boss |
+| **Arc 3** | The Scorched Spiral | `ember_wastes` | None | Clear Arc 2 Boss |
+| **Arc 4** | The Weeping Depths | `sunken_temple` | `lighthouse_isles`, `southern_isles` | Clear Arc 3 Boss |
+| **Arc 5** | The Shadow's Heart | `shadow_reach` | `eastern_wetlands` | Clear Arc 4 Boss |
+| **Arc 6** | The Fortress Gates | `void_citadel` | `sky_ruins` | Clear Arc 5 Boss |
+| **Arc 7** | The Inner Sanctum | `fortress_ramparts` | None | Clear Arc 6 Boss |
+| **Arc 8** | The Shadow Emperor | `eternal_void` | None | Clear Arc 7 Boss |
 
-1. Verdant Vale
-2. Crystal Cavern
-3. Ember Wastes
+## Main Arc Details
 
-Full current story route:
+1. **Arc 1: Verdant Vale**
+   - **Map ID**: `verdant_vale`
+   - **Story Focus**: The summoning of the four heroes and the recovery of the first Seal Fragment.
+   - **Side Branches**: Unlocks `riverlands_crossing` (central hub) and `northern_highlands` (optional high-level challenge).
 
-1. Verdant Vale
-   - Arc: 1
-   - Map ID: `verdant_vale`
-   - Unlock state at new game: current/active
-   - Purpose: Starting region, forest, village, Sacred Ruins approach.
+2. **Arc 2: Crystal Cavern**
+   - **Map ID**: `crystal_cavern`
+   - **Story Focus**: Navigating the mountain pass to reach the burning kingdom of Ashveil.
+   - **Side Branches**: Unlocks `ashen_foothills` (the bridge to the desert wastes).
 
-2. Crystal Cavern
-   - Arc: 2
-   - Map ID: `crystal_cavern`
-   - Unlocks after: Arc 1 boss clear
-   - Purpose: Central pass between Verdant Vale and Ember Wastes.
+3. **Arc 3: Ember Wastes**
+   - **Map ID**: `ember_wastes`
+   - **Story Focus**: Facing the Dark Phoenix and reclaiming the Seal Fragment of Fire.
+   - **Side Branches**: None (focused desert trek).
 
-3. Ember Wastes
-   - Arc: 3
-   - Map ID: `ember_wastes`
-   - Unlocks after: Arc 2 boss clear
-   - Purpose: Southeast desert/fire region.
+4. **Arc 4: Sunken Temple**
+   - **Map ID**: `sunken_temple`
+   - **Story Focus**: Diving into the depths to free the Kraken and claim the Wind Fragment.
+   - **Side Branches**: Unlocks the sea routes to `lighthouse_isles` and `southern_isles`.
 
-4. Sunken Temple
-   - Arc: 4
-   - Map ID: `sunken_temple`
-   - Unlocks after: Arc 3 boss clear
-   - Note: This is geographically far from Ember Wastes. Treat the transition as a magical/Seal-driven route, sea current, ancient leyline, or other deliberate story jump rather than normal walking distance.
+5. **Arc 6: Void Citadel**
+   - **Map ID**: `void_citadel`
+   - **Story Focus**: Breaching the outer ring of Valdris's fortress.
+   - **Side Branches**: Unlocks `sky_ruins` (the floating debris around the citadel).
 
-5. Shadow Reach
-   - Arc: 5
-   - Map ID: `shadow_reach`
-   - Unlocks after: Arc 4 boss clear
-   - Purpose: The route turns from elemental recovery toward direct corruption.
+6. **Arc 5: Shadow Reach**
+   - **Map ID**: `shadow_reach`
+   - **Story Focus**: The first direct confrontation with the Shadow Emperor's influence.
+   - **Side Branches**: Unlocks `eastern_wetlands` (the marsh beneath the void storm).
 
-6. Void Citadel
-   - Arc: 6
-   - Map ID: `void_citadel`
-   - Unlocks after: Arc 5 boss clear
-   - Purpose: Outer fortress/void approach.
+7. **Arc 7: Fortress Ramparts**
+   - **Map ID**: `fortress_ramparts`
+   - **Story Focus**: Climbing the inner walls toward the Core Chamber.
+   - **Side Branches**: None (final fortress ascent).
 
-7. Fortress Ramparts
-   - Arc: 7
-   - Map ID: `fortress_ramparts`
-   - Unlocks after: Arc 6 boss clear
-   - Purpose: Fortress breach and inner approach.
-
-8. Eternal Void
-   - Arc: 8
-   - Map ID: `eternal_void`
-   - Unlocks after: Arc 7 boss clear
-   - Purpose: Final void space and Valdris endgame.
+8. **Arc 8: Eternal Void**
+   - **Map ID**: `eternal_void`
+   - **Story Focus**: The final truth and the confrontation with Valdris's true form.
+   - **Side Branches**: None (The end of eternity).
 
 ## Unlock States
 
@@ -85,57 +82,52 @@ The next story location becomes travel-ready only when `Story.phase` is:
 
 If the player clicks the next story location before that, show the region panel with a disabled action such as `DEFEAT CURRENT BOSS`.
 
-## Existing Map IDs
+## Playable Side Locations
 
-These map IDs exist now and are tied to the main story route:
+These locations are optional branches that provide lore, unique upgrades, and tactical challenges. They unlock as the main story progresses.
 
-- `verdant_vale`
-- `crystal_cavern`
-- `ember_wastes`
-- `sunken_temple`
-- `shadow_reach`
-- `void_citadel`
-- `fortress_ramparts`
-- `eternal_void`
-
-## Charted Future Locations
-
-These locations are visible on the world map and may become future maps, side quests, or optional route nodes. They should not block story progression until they are implemented.
-
-1. Lighthouse Isles
-   - Geography: Northwest sea islands and tower.
-   - Unlocks after: Sunken Temple clear.
-   - Suggested use: Optional sea route, lighthouse dungeon, navigation relic, storm encounter.
-
-2. Northern Highlands
-   - Geography: Pale uplands north of Verdant Vale.
-   - Unlocks after: Sunken Temple clear.
-   - Suggested use: Old kingdom road, border shrine, highland ruins, early/mid-game optional map.
-
-3. Ashen Foothills
-   - Geography: Transition between Crystal Cavern and Ember Wastes.
-   - Unlocks after: Ember Wastes clear.
-   - Suggested use: Excellent bridge map if the route needs less of a jump from cavern to desert.
-
-4. Eastern Wetlands
-   - Geography: Marshy green-blue region below the void storm.
-   - Unlocks after: Shadow Reach clear.
-   - Suggested use: Poison, spirits, undead patrols, post-Sunken Temple transition toward Shadow Reach.
-
-5. Sky Ruins
-   - Geography: Floating shards around the Void Citadel.
-   - Unlocks after: Void Citadel clear.
-   - Suggested use: Sky bridge trials, fortress approach variant, late-game optional challenge.
-
-6. Southern Isles
-   - Geography: Small southern islands.
-   - Unlocks after: Sunken Temple clear.
-   - Suggested use: Treasure island, exile shrine, sea monster side quest.
-
-7. Riverlands Crossing
+1. **Riverlands Crossing**
    - Geography: Central river road between forest, mountains, and desert.
    - Unlocks after: Crystal Cavern clear.
-   - Suggested use: Bridge battle, ambush route, travel hub, caravan encounter.
+   - Description: A strategic junction of rushing rivers and crumbling bridges contested by rogue spirits and bandits.
+   - **Critical**: Repair the **Great Stone Bridge** to unlock fast-travel between main arcs and defeat the **River King**.
+
+2. **Ashen Foothills**
+   - Geography: Transition between Crystal Cavern and Ember Wastes.
+   - Unlocks after: Ember Wastes clear.
+   - Description: A volcanic transition zone where lava meets ash, creating a hazardous, shifting landscape.
+   - **Critical**: Navigate the **Basalt Labyrinth** to find the **Fire-Forged Key** and defeat the **Molten Golem**.
+
+3. **Northern Highlands**
+   - Geography: Pale uplands north of Verdant Vale.
+   - Unlocks after: Sunken Temple clear.
+   - Description: A desolate, high-altitude plateau with ancient watchtowers that drain stamina.
+   - **Critical**: Discover the **Highland Shrine** for elemental resistance and face the **Sky-Drake** guardian.
+
+4. **Lighthouse Isles**
+   - Geography: Northwest sea islands and tower.
+   - Unlocks after: Northern Highlands clear.
+   - Description: Mist-shrouded islands featuring a spectral lighthouse that guides lost souls through the fog.
+   - **Critical**: Obtain the **Navigator's Compass** and defeat the **Ghost Ship** mini-boss.
+
+5. **Southern Isles**
+   - Geography: Small southern islands.
+   - Unlocks after: Lighthouse Isles clear.
+   - Description: A tropical archipelago masking a deep-sea trench where the First Summoner's remains lie.
+   - **Critical**: Use the **Tide-Caller Shell** to reveal the **Abyssal Gate** and face the **Sunken Leviathan**.
+
+6. **Eastern Wetlands**
+   - Geography: Marshy green-blue region below the void storm.
+   - Unlocks after: Shadow Reach clear.
+   - Description: A poisonous, neon-lit marshland filled with bioluminescent flora and hidden pitfalls.
+   - **Critical**: Collect **Glow-Spore Essence** to craft anti-toxins and survive the **Swamp Horror's** ambush.
+
+7. **Sky Ruins**
+   - Geography: Floating shards around the Void Citadel.
+   - Unlocks after: Void Citadel clear.
+   - Description: Crumbling floating islands suspended in a perpetual storm requiring wind-navigation.
+   - **Critical**: Align the **Aerolith Crystals** to stabilize the path and defeat the **Storm Sentinel**.
+
 
 ## Side Map Unlock Chain
 
