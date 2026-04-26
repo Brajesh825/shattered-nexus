@@ -171,10 +171,10 @@ lyra(ctx, char, cls) {
   "boss_chapter": {
     "title": "The Shadow Ascendant",
     "background": "obsidian_tower",
-    "cast": ["Ayaka", "Hutao", "Nilou", "Xiao"],
+    "cast": ["Aya", "Tao", "Lulu", "Rei"],
     "pre_dialogue": [
       { "speaker": "narrator", "emotion": "apocalyptic", "text": "The tower trembles. Something ancient awakens." },
-      { "speaker": "Xiao", "emotion": "grim", "text": "This... this is older than Valdris. The shadow itself is waking." }
+      { "speaker": "Rei", "emotion": "grim", "text": "This... this is older than Valdris. The shadow itself is waking." }
     ],
     "post_dialogue": [
       { "speaker": "narrator", "emotion": "solemn", "text": "The darkness recedes. But something fundamental has changed." }
@@ -186,13 +186,13 @@ lyra(ctx, char, cls) {
       "title": "The Tower's Call",
       "type": "cutscene",
       "background": "obsidian_tower",
-      "cast": ["Ayaka", "Xiao"],
+      "cast": ["Aya", "Rei"],
       "scenes": [
         {
           "narration": "The tower rises before them, black stone against a darker sky. It was not here before. Or perhaps it was always here, hidden.",
           "dialogue": [
-            { "speaker": "Ayaka", "emotion": "resolved", "text": "It calls to us. I can feel it." },
-            { "speaker": "Xiao", "emotion": "low", "text": "Not a call. A challenge." }
+            { "speaker": "Aya", "emotion": "resolved", "text": "It calls to us. I can feel it." },
+            { "speaker": "Rei", "emotion": "low", "text": "Not a call. A challenge." }
           ]
         }
       ]
@@ -248,10 +248,10 @@ Add to any chapter's scenes array:
 {
   "narration": "The chamber falls silent. In that silence, they all understand: there is no going back.",
   "dialogue": [
-    { "speaker": "Hutao", "emotion": "earnest", "text": "Whatever happens next—we do it together." },
-    { "speaker": "Nilou", "emotion": "soft_strength", "text": "Together." },
-    { "speaker": "Ayaka", "emotion": "steady", "text": "Together." },
-    { "speaker": "Xiao", "emotion": "quiet", "text": "...Yes." }
+    { "speaker": "Tao", "emotion": "earnest", "text": "Whatever happens next—we do it together." },
+    { "speaker": "Lulu", "emotion": "soft_strength", "text": "Together." },
+    { "speaker": "Aya", "emotion": "steady", "text": "Together." },
+    { "speaker": "Rei", "emotion": "quiet", "text": "...Yes." }
   ]
 }
 ```
@@ -311,8 +311,6 @@ After adding arc:
 ---
 
 ## 📚 For More Details
-
-See: `GUIDE_ADDING_CONTENT.md` (comprehensive guide)
 
 ---
 

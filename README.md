@@ -62,6 +62,7 @@ Eight characters join your party across the campaign. The first four are availab
 | **Lulu** | Hydro Performer | Healer / buffer | **Dance of Haftkarsvar** — All healing amplified by 30% |
 | **Rei** | Ancient Warden | Tank / barrier setter | **Warden's Valor** — Takes 10% reduced damage; ATK +15% from karmic resolve |
 
+
 ### Recruited Characters
 
 | Character | Class | Arc Joined | Role | Passive |
@@ -422,35 +423,47 @@ Dark Knight, Venom Wyvern, Werewolf, Harpy, Minotaur, Necromancer, Fire Elementa
 ```
 rpg+/
 ├── index.html                        ← Entry point — open to play
-├── css/
-│   └── style.css                     ← All styling + CSS variables
+├── css/                              ← 13 stylesheets (style, animations, battle, map, etc.)
+├── data/
+│   ├── characters.json               ← 8 character definitions (stats, passives, lore)
+│   ├── classes.json                  ← 8 classes (abilities, growths, multipliers)
+│   ├── enemies.json                  ← 100+ enemy definitions across 3 tiers
+│   ├── items.json                    ← Consumables, revives, buffs
+│   ├── relics.json                   ← 20 equippable relics
+│   └── story/
+│       ├── index.json                ← Arc registry
+│       └── arc_1.json … arc_8.json  ← Full narrative for each arc
 ├── js/
-│   ├── game.js                       ← Core game loop, screen routing, party menu
-│   ├── story.js                      ← All 8 story arcs, dialogue, scene logic
-│   ├── data/
-│   │   ├── characters.js             ← 8 character definitions
-│   │   ├── abilities.js              ← All class abilities (4 per class)
-│   │   ├── enemies.js                ← 50+ enemy definitions across 3 tiers
-│   │   ├── items.js                  ← 15 item definitions
-│   │   └── relics.js                 ← 16 relic definitions
+│   ├── game.js                       ← Core state, screen routing
+│   ├── story.js                      ← Narrative engine, arc loading, cutscene logic
+│   ├── save.js                       ← localStorage persistence, import/export
 │   ├── battle/
-│   │   ├── action-handler.js         ← ActionEngine, ability processors, enemy AI
-│   │   ├── battle-core.js            ← Battle init, hit/crit/absorption math
-│   │   ├── status-system.js          ← Status application, tick, elemental reactions
-│   │   └── turn-manager.js           ← Turn order, KO checks, battle end logic
+│   │   ├── combat-engine.js          ← Stat calculations, damage formulas
+│   │   ├── action-handler.js         ← Ability execution, enemy AI
+│   │   ├── turn-manager.js           ← Turn order, KO checks, battle end
+│   │   ├── status-system.js          ← Buffs, debuffs, elemental auras
+│   │   ├── passive-system.js         ← Trait queries and multiplier injection
+│   │   └── enemy-scaling.js          ← Level-based stat projection
 │   ├── ui/
-│   │   ├── battle-ui.js              ← Battle HUD rendering, pop-ups, turn bar
-│   │   ├── menu-manager.js           ← Party menu, relic viewer, map encounter UI
-│   │   └── result-ui.js              ← Victory / defeat / escape result screen
+│   │   ├── battle-ui.js              ← Battle HUD, floating numbers, turn bar
+│   │   ├── menu-manager.js           ← Party menu, relic viewer
+│   │   ├── result-ui.js              ← Victory / defeat / escape screens
+│   │   ├── archive-ui.js             ← Bestiary and lore compendium
+│   │   └── boss-gauntlet.js          ← Postgame gauntlet challenge
 │   ├── systems/
-│   │   └── inventory.js              ← Inventory management, item use in battle
-│   ├── map/
-│   │   ├── map-engine.js             ← World map state, movement, encounters
-│   │   └── map-ui.js                 ← Map rendering, sprite animation, tile drawing
-│   └── sprites.js                    ← SpriteRenderer — hero portraits + map sprites
+│   │   ├── party.js                  ← computeStats(), buildParty(), relic bonuses
+│   │   ├── inventory.js              ← Item management, in-battle use
+│   │   └── archive.js                ← Bestiary tracking, mastery buffs
+│   └── map/
+│       ├── map-engine.js             ← Canvas rendering, camera, game loop
+│       ├── map-entities.js           ← NPCs, enemies on map
+│       ├── map-ui.js                 ← HUD, camp menu, minimap
+│       └── map-data.js               ← Map registry (15 regions)
 └── images/
-    ├── characters/                   ← Character spritesheets (battle + map)
-    └── maps/                         ← Map tile assets
+    └── characters/
+        ├── faces/                    ← 128×128 face icons (dialogue, HUD)
+        ├── spirits/                  ← 256×256 full art (story scenes, menus)
+        └── map/sheets/               ← Chibi walk spritesheets (exploration)
 ```
 
 ### Architecture Notes
