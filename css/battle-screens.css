@@ -738,41 +738,82 @@
 }
 
 /* ── ABILITY BUTTON ENHANCEMENTS ────────────────────── */
+.ab-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  margin-bottom: 3px;
+}
+
 .ability-btn {
   display: flex !important;
   align-items: center;
-  gap: 4px;
-  padding: 6px 6px !important;
+  gap: 6px;
+  padding: 2px 8px !important;
   text-align: left !important;
   justify-content: flex-start !important;
   min-height: 40px;
+  flex: 1;
+  min-width: 0;
 }
 
-.ab-type-icon {
-  font-size: 1.1rem;
-  width: 20px;
+.ab-content {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.2));
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
 }
+
 
 .ab-icon {
   font-size: 1.2rem;
 }
 
 .ab-name {
-  font-size: var(--fs-xxs);
-  flex: 1;
+  font-size: var(--fs-xs);
+  color: #fff;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  line-height: 1.2;
 }
 
-.ab-cost {
-  font-size: var(--fs-xxs);
+.ab-meta {
+  font-size: 9px;
   color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
+
+.ab-info-eye {
+  font-size: 12px;
+  width: 36px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: all 0.2s;
+  filter: grayscale(1);
+  position: relative;
+  z-index: 10;
+  pointer-events: all;
+}
+
+.ab-info-eye:hover, .ab-info-eye:active {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--cyan);
+  filter: grayscale(0);
+  text-shadow: 0 0 8px var(--cyan);
+}
+
+
 
 /* Type Color Coding */
 .ab-type-physical .ab-type-icon {
@@ -2496,9 +2537,9 @@
   .psc-hp-bg { height: 6px; margin-bottom: 2px; }
   .psc-mp-bg { height: 4px; }
 
-  /* Cmd grid: 2×2 in 220px side panel */
-  .cmd-grid {
-    grid-template-columns: 1fr 1fr;
+  /* Cmd grid & sub-menus: 1 column on mobile landscape for readability */
+  .cmd-grid, .sub-menu.open {
+    grid-template-columns: 1fr;
     gap: 4px;
   }
 

@@ -38,7 +38,7 @@
         if (!raw) return;
         try {
           let str = raw;
-          for (let [old, ali] in Object.entries(MAP)) {
+          for (let [old, ali] of Object.entries(MAP)) {
             // Precise replacement for "id":"ayaka" or "charId":"ayaka"
             str = str.replace(new RegExp(':"' + old + '"', 'gi'), ':"' + ali + '"');
             // Compatibility for array strings ["ayaka", ...]
@@ -440,14 +440,6 @@
         <div class="sub-menu" id="item-sub"></div>
       </div>
       <div class="party-status-bar" id="party-status-bar"></div>
-      <div id="ability-info-pane">
-        <div class="inf-head">
-          <span class="inf-name">Ability Name</span>
-          <span class="inf-cost">0 MP</span>
-        </div>
-        <div class="inf-desc">Ability description goes here.</div>
-        <div class="inf-meta"></div>
-      </div>
       <div class="stats-bar">
         <span>LV <span id="stat-lv">1</span></span>
         <span>ATK <span id="stat-atk">-</span></span>
@@ -668,6 +660,7 @@
 
   </div><!-- /#game -->
 
+  <script src="js/game.js"></script>
   <script src="data/npcs.js"></script>
   <script src="js/systems/input-manager.js"></script>
   <script src="js/systems/focus-manager.js"></script>
@@ -700,7 +693,6 @@
   <script src="js/battle/enemy-scaling.js"></script>
   <script src="js/battle/reaction-effects.js"></script>
   <script src="js/release-config.js"></script>
-  <script src="js/game.js"></script>
   <script src="js/ui/menu-manager.js"></script>
   <script src="js/systems/party.js"></script>
   <script src="js/systems/inventory.js"></script>
