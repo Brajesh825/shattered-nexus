@@ -1183,9 +1183,29 @@ const Story = {
 
     /* Path layer shares the world-map image coordinate space. */
     let svgLines = '';
+    const unlockedPlaces = new Set(MAP_MAIN_ROUTE); // Main route always shown (though locked)
+    
+    // DEV MODE BYPASS: Show everything if IS_DEV or debug URL param is set
+    const urlParams = new URLSearchParams(window.location.search);
+    const isDebug = (typeof ReleaseConfig !== 'undefined' && ReleaseConfig.IS_DEV) || 
+                    urlParams.get('debug') === 'true' || 
+                    urlParams.get('dev') === 'true';
+
+    // Determine which side regions are unlocked
+    MAP_SIDE_ROUTES.forEach(([fromIdx, toIdx]) => {
+      // Side region is only considered for unlocking if its parent arc is released (or in debug mode)
+      if (isArcReleased(fromIdx) || isDebug) {
+        if (isDebug || fromIdx < this.arcIdx) {
+          unlockedPlaces.add(toIdx);
+        }
+      }
+    });
+
     for (let i = 0; i < MAP_MAIN_ROUTE.length - 1; i++) {
       const a = MAP_PLACES[MAP_MAIN_ROUTE[i]], b = MAP_PLACES[MAP_MAIN_ROUTE[i + 1]];
-      if (!a || !b || !isArcReleased(b.arcIdx)) continue;
+      if (!a || !b) continue;
+      // Skip if not released AND not in debug mode
+      if (!isArcReleased(b.arcIdx) && !isDebug) continue;
       const done = (b.arcIdx ?? 99) <= this.arcIdx;
       const color = done ? '#f5d060' : '#302860';
       const dash = done ? '' : 'stroke-dasharray="8,5"';
@@ -1193,6 +1213,7 @@ const Story = {
         stroke="${color}" stroke-width="4" stroke-linecap="round" ${dash}/>`;
     }
     for (const [fromIdx, toIdx] of MAP_SIDE_ROUTES) {
+      if (!unlockedPlaces.has(toIdx)) continue; // Only show paths to unlocked places
       const a = MAP_PLACES[fromIdx], b = MAP_PLACES[toIdx];
       if (!a || !b) continue;
       svgLines += `<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}"
@@ -1208,14 +1229,20 @@ const Story = {
     MAP_PLACES.forEach((place, placeIdx) => {
       const arcIdx = place.arcIdx;
       const arc = Number.isInteger(arcIdx) ? arcs[arcIdx] : null;
-      if (arc && !isArcReleased(arcIdx)) return;
-
+      
+      // Filter out unreleased arcs (unless in debug mode)
+      if (arc && !isArcReleased(arcIdx) && !isDebug) return;
+      
+      // Filter out locked side regions
       const isStoryPlace = !!arc;
+      const isCharted = !isStoryPlace;
+      if (isCharted && !unlockedPlaces.has(placeIdx)) return;
+
       const isDone = isStoryPlace && arcIdx < this.arcIdx;
       const isCur = isStoryPlace && arcIdx === this.arcIdx;
       const isNext = isStoryPlace && arcIdx === nextIdx;
       const isLock = isStoryPlace && arcIdx > nextIdx;
-      const isCharted = !isStoryPlace;
+      
       const cls = [
         isDone ? 'done' : '',
         isCur ? 'current' : '',
