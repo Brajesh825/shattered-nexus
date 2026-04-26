@@ -23,7 +23,14 @@ const MapUI = (() => {
   function _toggleDpad(show) {
     const dpad = document.getElementById('joystick-container');
     if (!dpad) return;
-    // Only toggle if we are actually on a touch device
+    
+    // Only show if we are actually on a touch device
+    const isTouch = window.matchMedia('(pointer: coarse)').matches;
+    if (!isTouch) {
+      dpad.style.display = 'none';
+      return;
+    }
+
     if (show) {
       dpad.style.removeProperty('display');
     } else {
