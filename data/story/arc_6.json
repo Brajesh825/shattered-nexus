@@ -60,25 +60,12 @@
       { "speaker": "Tao", "emotion": "determined", "text": "Then we unmake it." }
     ],
     "post_dialogue": [
-      { "speaker": "narrator", "emotion": "quiet", "text": "The Void Warden dissolves, its form unraveling like burning paper." },
-      { "speaker": "Lulu", "emotion": "hopeful", "text": "The gates are breaking. The fortress is... weakening. We can feel it." },
-      { "speaker": "Aya", "emotion": "resolved", "text": "Then we continue. We are close now. The last darkness awaits." }
-    ]
-  },
-  "recruitment_chapter": {
-    "title": "Six Stand United",
-    "background": "fortress_entrance",
-    "cast": ["Aya", "Tao", "Lulu", "Rei", "Ria", "Drake"],
-    "scenes": [
-      {
-        "narration": "As the Void Warden falls, Drake emerges from the shadow, his dragoon armor gleaming with aerial energy. Behind him, the sky itself seems to brighten.",
-        "dialogue": [
-          { "speaker": "Drake", "emotion": "strong", "text": "The barrier that bound me — it shattered the moment your light broke through. I am free. And I stand with you." },
-          { "speaker": "Aya", "emotion": "welcoming", "text": "The Dragoon of the Sky. You have come far to find this purpose." },
-          { "speaker": "Rei", "emotion": "knowing", "text": "Another soul released from chains. Another voice to sing against the darkness." }
-        ]
-      }
+      { "speaker": "narrator", "emotion": "quiet", "text": "The Void Warden dissolves, its form unraveling like burning paper. The outer gates of the fortress groan, the dark energy holding them shut beginning to fracture." },
+      { "speaker": "Lulu", "emotion": "hopeful", "text": "The gates are breaking. The fortress is... weakening. We can feel the light from the Fragments reaching inside." },
+      { "speaker": "Aya", "emotion": "resolved", "text": "Then we continue. We have breached the outer ring. The Shadow Emperor's inner sanctum lies just beyond these ramparts." },
+      { "speaker": "Drake", "emotion": "strong", "text": "The air here is thick with his influence, but it is not absolute. We push forward. Together." }
     ]
   }
 }
+
 

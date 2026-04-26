@@ -152,6 +152,14 @@ const BattleUI = {
     const grid = this.el('cmd-grid-main');
     if (grid) grid.style.display = id ? 'none' : 'grid';
 
+    // Clear log and prepare for descriptions when sub-menu is open
+    const log = document.querySelector('.battle-log');
+    if (log && id) {
+      log.innerHTML = '<p class="log-line" style="color:var(--text-dim);font-style:italic">Choose an action...</p>';
+    } else if (log) {
+      this.refreshLog(); 
+    }
+
     // Switch focus context to the sub-menu or back to main
     if (typeof Focus !== 'undefined') {
       Focus.setContext(id || 'cmd-grid-main');
@@ -678,19 +686,19 @@ const BattleUI = {
     setTimeout(() => d.remove(), 1200);
   },
 
-  showAbilityInfo(ability) {
-    const p = this.el('ability-info-pane');
-    if (!p || !ability) return;
-    p.querySelector('.inf-name').textContent = ability.name;
-    p.querySelector('.inf-cost').textContent = (ability.cost || 0) + ' MP';
-    p.querySelector('.inf-desc').textContent = ability.desc || 'No description available.';
-    p.querySelector('.inf-meta').textContent = ability.type === 'ultimate' ? '★ ULTIMATE ABILITY' : '';
-    p.classList.add('visible');
+  showAbilityDesc(ab) {
+    const log = document.querySelector('.battle-log');
+    if (!log || !ab) return;
+    log.innerHTML = `<p class="log-line" style="color:var(--gold);font-weight:bold">${ab.name}</p>` +
+                    `<p class="log-line" style="font-size:12px;color:#fff">${ab.description}</p>`;
   },
 
-  hideAbilityInfo() {
-    const p = this.el('ability-info-pane');
-    if (p) p.classList.remove('visible');
+  clearAbilityDesc() {
+    // Optional
+  },
+
+  refreshLog() {
+    // For now combat messages repopulate on next turn action.
   },
 
   /**

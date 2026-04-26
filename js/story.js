@@ -66,18 +66,19 @@ const MAP_PLACES = [
   { x: 756, y: 214, label: 'Void Citadel', arcIdx: 5, color: '#31245c' },
   { x: 818, y: 162, label: 'Fortress Ramparts', arcIdx: 6, color: '#4c3a78' },
   { x: 875, y: 108, label: 'Eternal Void', arcIdx: 7, color: '#080014' },
-  { x: 145, y: 145, label: 'Lighthouse Isles', color: '#36a7c8', lore: 'A chain of northern isles marked by an old tower and sea-lanes no one trusts after dusk.' },
-  { x: 450, y: 214, label: 'Northern Highlands', color: '#8c8f52', lore: 'Pale uplands above the Vale, full of old roads, broken watchposts, and forgotten border shrines.' },
-  { x: 575, y: 650, label: 'Ashen Foothills', color: '#8f6040', lore: 'Rocky ground where mountain stone gives way to desert heat. A natural bridge between the cavern and the wastes.' },
-  { x: 835, y: 512, label: 'Eastern Wetlands', color: '#3b8f6a', lore: 'A marshy eastern lowland under the edge of the purple storm, ideal for poison, spirits, and drowned patrols.' },
-  { x: 930, y: 175, label: 'Sky Ruins', color: '#7750c8', lore: 'Floating fragments around the citadel. They could become sky bridges, broken ramparts, or void-borne trials.' },
-  { x: 160, y: 780, label: 'Southern Isles', color: '#2c8a72', lore: 'Small southern islands that could hold exile shrines, optional treasure, or sea-route encounters.' },
-  { x: 470, y: 492, label: 'Riverlands Crossing', color: '#4c9fc0', lore: 'The central rivers where roads, bridges, and ambush paths meet before the world opens wider.' },
+  { x: 145, y: 145, label: 'Lighthouse Isles', color: '#36a7c8', lore: 'Mist-shrouded islands featuring a spectral lighthouse. Critical: Obtain the Navigator\'s Compass and defeat the Sea Kraken.' },
+  { x: 450, y: 214, label: 'Northern Highlands', color: '#8c8f52', lore: 'Desolate, high-altitude plateau with ancient watchtowers. Critical: Discover the Highland Shrine and face the Sky-Drake guardian.' },
+  { x: 575, y: 650, label: 'Ashen Foothills', color: '#8f6040', lore: 'Volcanic transition zone where lava meets ash. Critical: Navigate the Basalt Labyrinth and defeat the Molten Golem.' },
+  { x: 835, y: 512, label: 'Eastern Wetlands', color: '#3b8f6a', lore: 'Poisonous, neon-lit marshland with bioluminescent flora. Critical: Collect Glow-Spore Essence and survive the Swamp Horror\'s ambush.' },
+  { x: 930, y: 175, label: 'Sky Ruins', color: '#7750c8', lore: 'Crumbling floating islands suspended in a perpetual storm. Critical: Align the Aerolith Crystals and defeat the Storm Sentinel.' },
+  { x: 160, y: 780, label: 'Southern Isles', color: '#2c8a72', lore: 'Tropical archipelago masking a deep-sea trench. Critical: Use the Tide-Caller Shell and face the Sunken Leviathan.' },
+  { x: 470, y: 492, label: 'Riverlands Crossing', color: '#4c9fc0', lore: 'A strategic junction of rushing rivers and crumbling bridges. Critical: Repair the Great Stone Bridge and defeat the River King.' },
+
 ];
 
 const MAP_MAIN_ROUTE = [0, 1, 2, 3, 4, 5, 6, 7];
 const MAP_SIDE_ROUTES = [
-  [0, 13], [0, 14], [1, 9], [1, 14], [1, 10],
+  [0, 14], [0, 13], [5, 9], [1, 14], [1, 10],
   [2, 10], [3, 8], [4, 11], [5, 12],
 ];
 
@@ -1182,9 +1183,29 @@ const Story = {
 
     /* Path layer shares the world-map image coordinate space. */
     let svgLines = '';
+    const unlockedPlaces = new Set(MAP_MAIN_ROUTE); // Main route always shown (though locked)
+    
+    // DEV MODE BYPASS: Show everything if IS_DEV or debug URL param is set
+    const urlParams = new URLSearchParams(window.location.search);
+    const isDebug = (typeof ReleaseConfig !== 'undefined' && ReleaseConfig.IS_DEV) || 
+                    urlParams.get('debug') === 'true' || 
+                    urlParams.get('dev') === 'true';
+
+    // Determine which side regions are unlocked
+    MAP_SIDE_ROUTES.forEach(([fromIdx, toIdx]) => {
+      // Side region is only considered for unlocking if its parent arc is released (or in debug mode)
+      if (isArcReleased(fromIdx) || isDebug) {
+        if (isDebug || fromIdx < this.arcIdx) {
+          unlockedPlaces.add(toIdx);
+        }
+      }
+    });
+
     for (let i = 0; i < MAP_MAIN_ROUTE.length - 1; i++) {
       const a = MAP_PLACES[MAP_MAIN_ROUTE[i]], b = MAP_PLACES[MAP_MAIN_ROUTE[i + 1]];
-      if (!a || !b || !isArcReleased(b.arcIdx)) continue;
+      if (!a || !b) continue;
+      // Skip if not released AND not in debug mode
+      if (!isArcReleased(b.arcIdx) && !isDebug) continue;
       const done = (b.arcIdx ?? 99) <= this.arcIdx;
       const color = done ? '#f5d060' : '#302860';
       const dash = done ? '' : 'stroke-dasharray="8,5"';
@@ -1192,6 +1213,7 @@ const Story = {
         stroke="${color}" stroke-width="4" stroke-linecap="round" ${dash}/>`;
     }
     for (const [fromIdx, toIdx] of MAP_SIDE_ROUTES) {
+      if (!unlockedPlaces.has(toIdx)) continue; // Only show paths to unlocked places
       const a = MAP_PLACES[fromIdx], b = MAP_PLACES[toIdx];
       if (!a || !b) continue;
       svgLines += `<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}"
@@ -1207,14 +1229,20 @@ const Story = {
     MAP_PLACES.forEach((place, placeIdx) => {
       const arcIdx = place.arcIdx;
       const arc = Number.isInteger(arcIdx) ? arcs[arcIdx] : null;
-      if (arc && !isArcReleased(arcIdx)) return;
-
+      
+      // Filter out unreleased arcs (unless in debug mode)
+      if (arc && !isArcReleased(arcIdx) && !isDebug) return;
+      
+      // Filter out locked side regions
       const isStoryPlace = !!arc;
+      const isCharted = !isStoryPlace;
+      if (isCharted && !unlockedPlaces.has(placeIdx)) return;
+
       const isDone = isStoryPlace && arcIdx < this.arcIdx;
       const isCur = isStoryPlace && arcIdx === this.arcIdx;
       const isNext = isStoryPlace && arcIdx === nextIdx;
       const isLock = isStoryPlace && arcIdx > nextIdx;
-      const isCharted = !isStoryPlace;
+      
       const cls = [
         isDone ? 'done' : '',
         isCur ? 'current' : '',
@@ -1321,14 +1349,17 @@ const Story = {
     const panel = document.getElementById('map-region-panel');
     if (!place || !panel) return;
 
+    const mapId = place.label.toLowerCase().replace(/ /g, '_');
+    const isPlayable = typeof MAP_DEFS !== 'undefined' && MAP_DEFS[mapId];
+
     panel.innerHTML = `
       <div class="mrp-handle"></div>
-      <div class="mrp-num">CHARTED PLACE</div>
+      <div class="mrp-num">${isPlayable ? 'SIDE REGION' : 'CHARTED PLACE'}</div>
       <div class="mrp-name">${place.label}</div>
-      <div class="mrp-loc">Future map candidate</div>
+      <div class="mrp-loc">${isPlayable ? 'Explorable Side Map' : 'Future map candidate'}</div>
       <div class="mrp-lore">${place.lore || 'This location is visible on the world map, but it is not connected to a playable region yet.'}</div>
       <div class="mrp-actions">
-        <button class="mrp-btn" disabled>NOT AVAILABLE YET</button>
+        ${isPlayable ? `<button class="mrp-btn primary" onclick="Story._exploreRegion('${mapId}')">🗺 EXPLORE</button>` : `<button class="mrp-btn" disabled>NOT AVAILABLE YET</button>`}
         <button class="mrp-btn" onclick="Story._closeRegionPanel()">← BACK</button>
       </div>`;
 
@@ -1346,9 +1377,6 @@ const Story = {
     this._closeRegionPanel();
     // startExplore() inits the canvas and shows the explore screen
     startExplore();
-    // Hide the map-select overlay (we're going to a specific map directly)
-    const overlay = document.getElementById('map-select-overlay');
-    if (overlay) overlay.style.display = 'none';
     // Start the target map
     MapEngine.start(mapId);
     if (typeof MapUI !== 'undefined') MapUI.showMsg(`Entering ${MAP_DEFS[mapId].name}…`, 1500);

@@ -1,6 +1,10 @@
 # RPG+ Development Roadmap
 
 ## ✅ Completed Milestones
+- **[2026-04-26] Smooth-Curve Scaling Audit**: Comprehensive re-leveling of 15 maps (1-8, 7-15, 12-20) to ensure overlapping, accessible progression. Synchronized code with documentation, including the final shift of Northern Highlands to endgame status (Arc 6, Lv 35-43).
+- **[2026-04-26] Story Progression Documentation**: Created a master guide mapping all 8 Narrative Arcs and expansion regions with exact level ranges and unlock triggers.
+- **[2026-04-26] Sky Ruins Overhaul**: Massive 80x40 gauntlet redesigned with a 4-chamber "Four Kings" citadel, obsidian-bridge nexus, and Tier 3 corrupted bosses.
+- **[2026-04-26] World Expansion Finalization**: Completed 5 massive 80x40 "Elite" gauntlets (Highlands, Lighthouse, Southern, Wetlands, Ruins) using a optimized "Clean Slate" tile system for 100% pathing reliability.
 - **[2026-04-26] Production Readiness Audit**: Comprehensive codebase audit for "v1.0-beta" release. Verified enemy scaling (Level 50 boss balance), data integrity, and cross-platform UI stability.
 - **[2026-04-26] Interactive World Map (v2)**: Implemented 1024x1024 high-fidelity physical map with landmark navigation, party tracking (🚩), and responsive scale-to-fit logic for mobile viewports.
 - **[2026-04-26] Save System Guards & Versioning**: Established `SAVE_VERSION` (v4.0) with structural validation and a "Safe Spawn" collision-aware loading guard to prevent out-of-bounds spawning.

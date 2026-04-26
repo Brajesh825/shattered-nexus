@@ -83,7 +83,7 @@ const TILE_DEFS = {
   10: { name: 'sand',           walkable: true,  color: '#a58860', hi: '#b89870', shadow: '#806845' },
   11: { name: 'flower',         walkable: true,  color: '#2d5a1e', hi: '#3d7028', shadow: '#1d4012', detail: 'flower', anim: true },
   12: { name: 'town-floor',     walkable: true,  color: '#654830', hi: '#755838', shadow: '#4a3520', detail: 'cobble' },
-  13: { name: 'lava-floor',     walkable: true,  color: '#c54520', hi: '#e55828', shadow: '#8d3018', anim: true },
+  13: { name: 'lava-floor',     walkable: true,  color: '#c54520', hi: '#e55828', shadow: '#8d3018', anim: true, slow: true },
   14: { name: 'scorched-earth', walkable: true,  color: '#4d3020', hi: '#603d28', shadow: '#301d10' },
   15: { name: 'cracked-stone',  walkable: true,  color: '#6a5d70', hi: '#7d7085', shadow: '#4d4558', detail: 'crack' },
   16: { name: 'ember-pit',      walkable: false, color: '#a53815', hi: '#c54a20', shadow: '#6a2008', anim: true },
