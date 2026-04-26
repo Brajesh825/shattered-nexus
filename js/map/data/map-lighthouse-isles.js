@@ -11,7 +11,7 @@ MAP_DEFS.lighthouse_isles = {
     bgColor: '#051020',
     ambientLight: 'rgba(50,150,255,0.1)',
     weather: 'mist',
-    enemyLevelRange: [30, 42],
+    enemyLevelRange: [25, 33],
     encounterTemplates: [
         { weight: 3, enemies: ['crab'] },
         { weight: 2, enemies: ['merman'] },

@@ -66,7 +66,7 @@ const MAP_PLACES = [
   { x: 756, y: 214, label: 'Void Citadel', arcIdx: 5, color: '#31245c' },
   { x: 818, y: 162, label: 'Fortress Ramparts', arcIdx: 6, color: '#4c3a78' },
   { x: 875, y: 108, label: 'Eternal Void', arcIdx: 7, color: '#080014' },
-  { x: 145, y: 145, label: 'Lighthouse Isles', color: '#36a7c8', lore: 'Mist-shrouded islands featuring a spectral lighthouse. Critical: Obtain the Navigator\'s Compass and defeat the Ghost Ship mini-boss.' },
+  { x: 145, y: 145, label: 'Lighthouse Isles', color: '#36a7c8', lore: 'Mist-shrouded islands featuring a spectral lighthouse. Critical: Obtain the Navigator\'s Compass and defeat the Sea Kraken.' },
   { x: 450, y: 214, label: 'Northern Highlands', color: '#8c8f52', lore: 'Desolate, high-altitude plateau with ancient watchtowers. Critical: Discover the Highland Shrine and face the Sky-Drake guardian.' },
   { x: 575, y: 650, label: 'Ashen Foothills', color: '#8f6040', lore: 'Volcanic transition zone where lava meets ash. Critical: Navigate the Basalt Labyrinth and defeat the Molten Golem.' },
   { x: 835, y: 512, label: 'Eastern Wetlands', color: '#3b8f6a', lore: 'Poisonous, neon-lit marshland with bioluminescent flora. Critical: Collect Glow-Spore Essence and survive the Swamp Horror\'s ambush.' },
@@ -78,7 +78,7 @@ const MAP_PLACES = [
 
 const MAP_MAIN_ROUTE = [0, 1, 2, 3, 4, 5, 6, 7];
 const MAP_SIDE_ROUTES = [
-  [0, 14], [0, 13], [1, 9], [1, 14], [1, 10],
+  [0, 14], [0, 13], [5, 9], [1, 14], [1, 10],
   [2, 10], [3, 8], [4, 11], [5, 12],
 ];
 

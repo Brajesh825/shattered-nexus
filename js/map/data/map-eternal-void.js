@@ -75,7 +75,7 @@ MAP_DEFS.eternal_void = (function() {
         playerStart: { x: 50, y: 15 },
         bgColor: '#000000',
         ambientLight: 'rgba(40,10,80,0.12)',
-        enemyLevelRange: [26, 30],
+        enemyLevelRange: [37, 45],
         // Arc 8 — the Eternal Void. Mutation is almost instant. Nothing is clean here.
         mutationConfig: {
           corruptThreshold: 20,

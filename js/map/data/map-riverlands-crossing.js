@@ -11,7 +11,7 @@ MAP_DEFS.riverlands_crossing = {
     bgColor: '#020f12',
     ambientLight: 'rgba(50,150,180,0.1)',
     weather: 'rain',
-    enemyLevelRange: [30, 40],
+    enemyLevelRange: [10, 18],
     encounterTemplates: [
         { weight: 3, enemies: ['bandit'] },
         { weight: 2, enemies: ['wisp'] },

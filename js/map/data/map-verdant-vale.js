@@ -12,7 +12,7 @@ MAP_DEFS.verdant_vale = {
     bgColor: '#0a1a05',
     ambientLight: 'rgba(60,180,60,0.04)',
     weather: 'leaves',
-    enemyLevelRange: [1, 3],
+    enemyLevelRange: [1, 8],
     mutationConfig: {
         corruptThreshold: 90,
         mutantThreshold: 180,

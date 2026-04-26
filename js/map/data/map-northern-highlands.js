@@ -11,7 +11,7 @@ MAP_DEFS.northern_highlands = {
     bgColor: '#eef6fc',
     ambientLight: 'rgba(200,220,255,0.15)',
     weather: 'mist',
-    enemyLevelRange: [35, 45],
+    enemyLevelRange: [35, 43],
     encounterTemplates: [
         { weight: 3, enemies: ['wolf'] },
         { weight: 2, enemies: ['harpy'] },

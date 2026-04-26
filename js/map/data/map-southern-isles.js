@@ -11,7 +11,7 @@ MAP_DEFS.southern_isles = {
     bgColor: '#081a08',
     ambientLight: 'rgba(50,200,100,0.1)',
     weather: 'rain',
-    enemyLevelRange: [35, 45],
+    enemyLevelRange: [10, 18],
     encounterTemplates: [
         { weight: 3, enemies: ['naga'] },
         { weight: 2, enemies: ['crab'] },
