@@ -498,6 +498,13 @@ const Story = {
   /* ════════════════════════════════════════════════════════════════════════
      CONTINUE BUTTON (called from HTML onclick)
   ════════════════════════════════════════════════════════════════════════ */
+  handleScreenClick(e) {
+    if (e.target.closest('button')) return;
+    // Only advance if a line is currently active
+    if (!this._activeLines || this._activeLines.length === 0 || this.lineIdx >= this._activeLines.length) return;
+    this.advance();
+  },
+
   advance() {
     // Skip typewriter first if still running
     if (!this._tw.done) { this._skipTw(); return; }
@@ -683,9 +690,9 @@ const Story = {
     const flat = [];
     (lines || []).forEach(l => {
       if (l.is_narration || (!l.speaker && l.narration)) {
-        flat.push({ speaker: null, text: l.narration || l.text });
+        flat.push({ speaker: null, text: l.narration || l.text, emotion: l.emotion });
       } else {
-        flat.push({ speaker: l.speaker, text: l.text });
+        flat.push({ speaker: l.speaker, text: l.text, emotion: l.emotion });
       }
     });
 
@@ -705,7 +712,7 @@ const Story = {
     const l = this._activeLines[this.lineIdx];
     if (!l) { console.log('[_renderActiveLine] No line found, returning'); return; }
     console.log('[_renderActiveLine] Rendering line:', l.text.substring(0, 50));
-    this._renderLine(l.speaker || null, l.text || '');
+    this._renderLine(l.speaker || null, l.text || '', l.emotion || null);
     this._setContinue('▶ CONTINUE');
     console.log('[_renderActiveLine] Finished');
   },
@@ -1467,7 +1474,7 @@ const Story = {
     if (btn) btn.style.display = 'none';
   },
 
-  _renderLine(speaker, text) {
+  _renderLine(speaker, text, emotion) {
     const box = this.el('s-dialogue');
     const spkEl = this.el('s-speaker');
     const txtEl = this.el('s-text');
@@ -1481,7 +1488,7 @@ const Story = {
 
     // Render scene characters
     if (speaker && this.currentChap && this.currentChap.cast) {
-      this._renderSceneCharacters(speaker);
+      this._renderSceneCharacters(speaker, emotion);
     }
 
     if (speaker) {
@@ -1561,7 +1568,7 @@ const Story = {
     if (layer) layer.innerHTML = '';
   },
 
-  _renderSceneCharacters(speaker) {
+  _renderSceneCharacters(speaker, emotion) {
     if (!this.currentChap || !this.currentChap.cast) return;
 
     const layer = this.el('s-scene-layer');
@@ -1600,12 +1607,15 @@ const Story = {
       // Update active/dimmed state
       const charEl = this.el(`s-scene-char-${charName.toLowerCase()}`);
       if (charEl) {
+        const spriteEl = charEl.querySelector('.s-scene-sprite');
         if (speaker && speaker.toLowerCase() === charName.toLowerCase()) {
           charEl.classList.add('active');
           charEl.classList.remove('dimmed');
+          if (spriteEl) spriteEl.dataset.emotion = emotion ? emotion.toLowerCase() : 'neutral';
         } else {
           charEl.classList.remove('active');
           charEl.classList.add('dimmed');
+          if (spriteEl) spriteEl.dataset.emotion = 'neutral';
         }
       }
     });

@@ -998,3 +998,39 @@
   top: 10px;
   right: 126px;
 }
+/* Emotion -> Portrait Visual Mapping */
+.s-scene-sprite[data-emotion="furious"], 
+.s-scene-sprite[data-emotion="sharp"], 
+.s-scene-sprite[data-emotion="fierce"], 
+.s-scene-sprite[data-emotion="cold"] {
+  filter: saturate(1.3) contrast(1.2) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
+  transform: scale(1.02);
+}
+
+.s-scene-sprite[data-emotion="grave"], 
+.s-scene-sprite[data-emotion="somber"], 
+.s-scene-sprite[data-emotion="grieving"], 
+.s-scene-sprite[data-emotion="aching"],
+.s-scene-sprite[data-emotion="heavy"] {
+  filter: saturate(0.6) brightness(0.8) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
+}
+
+.s-scene-sprite[data-emotion="shocked"], 
+.s-scene-sprite[data-emotion="revelation"], 
+.s-scene-sprite[data-emotion="breathless"] {
+  filter: brightness(1.2) contrast(1.1) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
+}
+
+.s-scene-sprite[data-emotion="peaceful"], 
+.s-scene-sprite[data-emotion="warm"], 
+.s-scene-sprite[data-emotion="gentle"],
+.s-scene-sprite[data-emotion="soft"] {
+  filter: brightness(1.1) sepia(0.2) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
+}
+
+.s-scene-sprite[data-emotion="resolute"], 
+.s-scene-sprite[data-emotion="determined"], 
+.s-scene-sprite[data-emotion="focused"] {
+  filter: contrast(1.1) drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+}
+
