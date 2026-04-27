@@ -88,8 +88,8 @@ MAP_DEFS.ashen_foothills = {
         return rows;
     })(),
     npcs: [
-        { id: 'cursed_miner', x: 42, y: 36, dialogueKey: 'miner_chat', behavior: 'stationary' },
-        { id: 'flame_spirit', x: 40, y: 8, dialogueKey: 'spirit_lore', behavior: 'wander', range: 3 }
+        { id: 'cursed_miner', x: 42, y: 36, dialogueKey: 'ashen_foothills', behavior: 'stationary' },
+        { id: 'flame_spirit', x: 40, y: 8, dialogueKey: 'ashen_foothills', behavior: 'wander', range: 3 }
     ],
     triggers: [
         {
@@ -109,13 +109,23 @@ MAP_DEFS.ashen_foothills = {
                 { speaker: 'narrator', text: 'The heat becomes unbearable as the path winds through the shattered canyon.' },
                 { speaker: 'Rei', text: 'Look at the center. The Molten Golem is absorbing the core\'s energy.' }
             ]
+        },
+        {
+            id: 'molten_golem_approach',
+            x: 30, y: 10, w: 20, h: 6,
+            type: 'dialogue',
+            lines: [
+                { speaker: 'Aya', text: 'The hammering is louder here. Whatever is at the center... it has been working without stopping.' },
+                { speaker: 'Rei', text: 'The Forge Lords made something that could not be unmade. This is what permanent looks like without a purpose left to justify it.' },
+                { speaker: 'Tao', text: 'We end it. Gently if we can. It is not the Golem\'s fault it outlasted everything it was built for.' }
+            ]
         }
     ],
     objective: {
         type: 'reach',
         target: { x: 40, y: 5 },
         label: 'Storm the Molten Spire',
-        completeMsg: '✦ The Golem has been extinguished. The volcanic fires subside.',
+        completeMsg: '✦ The hammering has stopped. For the first time in centuries, the Ashen Foothills are quiet.',
     },
     voiceLines: {
         ambient: [

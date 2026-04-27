@@ -103,8 +103,8 @@ MAP_DEFS.lighthouse_isles = {
         return rows;
     })(),
     npcs: [
-        { id: 'old_mariner', x: 12, y: 36, dialogueKey: 'mariner_tales', behavior: 'stationary' },
-        { id: 'sea_spirit', x: 60, y: 25, dialogueKey: 'sea_wisdom', behavior: 'wander', range: 3 }
+        { id: 'old_mariner', x: 12, y: 36, dialogueKey: 'lighthouse_isles', behavior: 'stationary' },
+        { id: 'sea_spirit', x: 60, y: 25, dialogueKey: 'lighthouse_isles', behavior: 'wander', range: 3 }
     ],
     triggers: [
         {
@@ -124,13 +124,23 @@ MAP_DEFS.lighthouse_isles = {
                 { speaker: 'narrator', text: 'A massive shadow passes beneath the bridge. The ocean itself seems to breathe.' },
                 { speaker: 'Tao', text: 'Please tell me that was a very large dolphin. A VERY large dolphin.' }
             ]
+        },
+        {
+            id: 'abyssal_kraken_approach',
+            x: 36, y: 13, w: 8, h: 5,
+            type: 'dialogue',
+            lines: [
+                { speaker: 'Lulu', text: 'Oremis. The Sea Spirit told us — he wanted to heal people using the deep water\'s knowledge. That was real. That desire was real.' },
+                { speaker: 'Aya', text: 'What is real does not stop being dangerous.' },
+                { speaker: 'Lulu', text: 'No. But it means we owe it a clean ending, not just a fast one.' }
+            ]
         }
     ],
     objective: {
         type: 'reach',
         target: { x: 40, y: 10 },
         label: 'Storm the Lighthouse',
-        completeMsg: '✦ The Lighthouse door creaks open. The path is set.',
+        completeMsg: '✦ The lighthouse pulses once — bright, clear, and steady. For the first time in years, it is guiding something home.',
     },
     voiceLines: {
         ambient: [
