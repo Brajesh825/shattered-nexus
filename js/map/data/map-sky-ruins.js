@@ -88,8 +88,8 @@ MAP_DEFS.sky_ruins = {
         return rows;
     })(),
     npcs: [
-        { id: 'archivist', x: 42, y: 20, dialogueKey: 'archivist_lore', behavior: 'stationary' },
-        { id: 'sentinel', x: 38, y: 38, dialogueKey: 'sentinel_oath', behavior: 'stationary' }
+        { id: 'archivist', x: 42, y: 20, dialogueKey: 'sky_ruins', behavior: 'stationary' },
+        { id: 'sentinel', x: 38, y: 38, dialogueKey: 'sky_ruins', behavior: 'stationary' }
     ],
     triggers: [
         {
@@ -109,13 +109,24 @@ MAP_DEFS.sky_ruins = {
                 { speaker: 'narrator', text: 'The Aerolith Crystal hums with power as the four kings fall. The sky begins to stabilize.' },
                 { speaker: 'Lulu', text: 'The corruption is receding. We\'ve actually done it!' }
             ]
+        },
+        {
+            id: 'storm_sentinel_approach',
+            x: 37, y: 6, w: 6, h: 4,
+            type: 'dialogue',
+            lines: [
+                { speaker: 'Aya', text: 'The Spectral Sentinel said it responds to acknowledgment, not assault. It is not Valdris\'s creature. It is a defense built by people who are long gone, still running.' },
+                { speaker: 'Rei', text: 'We approach as scholars, not conquerors. We carry the four kings\' resonance. The Sentinel will read our purpose.' },
+                { speaker: 'Aya', text: 'And if it doesn\'t?' },
+                { speaker: 'Rei', text: 'Then we prove it correct.' }
+            ]
         }
     ],
     objective: {
         type: 'reach',
         target: { x: 40, y: 5 },
         label: 'Defeat the Storm Sentinel',
-        completeMsg: '✦ The Gauntlet is over. The Sky Ruins have been reclaimed.',
+        completeMsg: '✦ The Aerolith Crystals align. Far above, the storm cloud that has hung over the ruins for a century begins to break apart.',
     },
     voiceLines: {
         ambient: [

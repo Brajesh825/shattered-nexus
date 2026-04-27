@@ -86,8 +86,8 @@ MAP_DEFS.southern_isles = {
         return rows;
     })(),
     npcs: [
-        { id: 'survivor', x: 45, y: 36, dialogueKey: 'survivor_plea', behavior: 'stationary' },
-        { id: 'guardian', x: 40, y: 18, dialogueKey: 'guardian_test', behavior: 'stationary' }
+        { id: 'survivor', x: 45, y: 36, dialogueKey: 'southern_isles', behavior: 'stationary' },
+        { id: 'guardian', x: 40, y: 18, dialogueKey: 'southern_isles', behavior: 'stationary' }
     ],
     triggers: [
         {
@@ -107,13 +107,24 @@ MAP_DEFS.southern_isles = {
                 { speaker: 'narrator', text: 'The wooden platforms groan as the Sunken Leviathan begins to surface.' },
                 { speaker: 'Ria', text: 'Get ready! The Abyssal Gate is opening!' }
             ]
+        },
+        {
+            id: 'leviathan_approach',
+            x: 36, y: 9, w: 8, h: 4,
+            type: 'dialogue',
+            lines: [
+                { speaker: 'Rex', text: 'The Survivor said there is still a bell tower down there that rings at high tide. Something in the architecture remembers what it was for.' },
+                { speaker: 'Rei', text: 'The Leviathan was drawn by that resonance. Not by malice.' },
+                { speaker: 'Lulu', text: 'A creature that came to a place because it felt like home. And then got trapped there by someone who needed an anchor.' },
+                { speaker: 'Rex', text: 'Let\'s free it. And give the bell something to ring for.' }
+            ]
         }
     ],
     objective: {
         type: 'reach',
         target: { x: 40, y: 8 },
         label: 'Open the Abyssal Gate',
-        completeMsg: '✦ The Abyssal Gate has resonated. The depths await.',
+        completeMsg: '✦ From far below, faint and clear through the water, a bell rings. The sound carries up through the stilts and into your chest.',
     },
     voiceLines: {
         ambient: [

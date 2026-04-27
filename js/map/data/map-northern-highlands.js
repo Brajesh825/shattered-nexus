@@ -70,8 +70,8 @@ MAP_DEFS.northern_highlands = {
         return rows;
     })(),
     npcs: [
-        { id: 'highland_monk', x: 42, y: 36, dialogueKey: 'monk_wisdom', behavior: 'stationary' },
-        { id: 'fallen_climber', x: 40, y: 10, dialogueKey: 'climber_ghost', behavior: 'stationary' }
+        { id: 'highland_monk', x: 42, y: 36, dialogueKey: 'northern_highlands', behavior: 'stationary' },
+        { id: 'fallen_climber', x: 40, y: 10, dialogueKey: 'northern_highlands', behavior: 'stationary' }
     ],
     triggers: [
         {
@@ -91,13 +91,23 @@ MAP_DEFS.northern_highlands = {
                 { speaker: 'narrator', text: 'A powerful gale nearly knocks you off the Cloud-Spine.' },
                 { speaker: 'Tao', text: 'Is it just me, or did the mountain just try to push us?' }
             ]
+        },
+        {
+            id: 'shadow_dragon_approach',
+            x: 30, y: 8, w: 20, h: 6,
+            type: 'dialogue',
+            lines: [
+                { speaker: 'Rei', text: 'It absorbed void energy to survive when all the others faded. Six centuries of that. We need to understand what we are putting down — not just who is ordering us to do it.' },
+                { speaker: 'Drake', text: 'Something that chose to endure by changing what it was. There is a kind of courage in that. Even if the result is this.' },
+                { speaker: 'Aya', text: 'We acknowledge what it was. Then we end what it has become. That is all we can offer it.' }
+            ]
         }
     ],
     objective: {
         type: 'reach',
         target: { x: 40, y: 4 },
         label: 'Slay the Shadow Dragon',
-        completeMsg: '✦ The Shadow Dragon has been grounded. The highlands are yours.',
+        completeMsg: '✦ The Shadow Dragon falls. The highland winds carry its passing — quieter now, and something close to settled.',
     },
     voiceLines: {
         ambient: [

@@ -89,8 +89,8 @@ MAP_DEFS.eastern_wetlands = {
         return rows;
     })(),
     npcs: [
-        { id: 'mire_witch', x: 10, y: 20, dialogueKey: 'witch_alchemy', behavior: 'stationary' },
-        { id: 'lost_soul', x: 50, y: 20, dialogueKey: 'ghost_plea', behavior: 'wander', range: 4 }
+        { id: 'mire_witch', x: 10, y: 20, dialogueKey: 'eastern_wetlands', behavior: 'stationary' },
+        { id: 'lost_soul', x: 50, y: 20, dialogueKey: 'eastern_wetlands', behavior: 'wander', range: 4 }
     ],
     triggers: [
         {
@@ -110,13 +110,23 @@ MAP_DEFS.eastern_wetlands = {
                 { speaker: 'narrator', text: 'A massive shape rises from the black mud. Stitched flesh groans with every movement.' },
                 { speaker: 'Aya', text: 'It\'s... it\'s a nightmare made real. Get back!' }
             ]
+        },
+        {
+            id: 'abomination_approach',
+            x: 57, y: 8, w: 16, h: 6,
+            type: 'dialogue',
+            lines: [
+                { speaker: 'Tao', text: 'Stitched from the survivors of five different civilizations, the Witch said. Valdris assembled grief until it had weight and called it a guardian.' },
+                { speaker: 'Lulu', text: 'It is not guarding anything. It is just in pain.' },
+                { speaker: 'Aya', text: 'Then we are not slaying a monster. We are ending something that should have ended a long time ago.' }
+            ]
         }
     ],
     objective: {
         type: 'reach',
         target: { x: 65, y: 10 },
         label: 'Slay the Flesh Abomination',
-        completeMsg: '✦ The Abomination has been put to rest. The mire is silent.',
+        completeMsg: '✦ The Abomination dissolves into the mire. The mire does not absorb it — it simply opens and lets it go. The Eastern Wetlands are quiet.',
     },
     voiceLines: {
         ambient: [
