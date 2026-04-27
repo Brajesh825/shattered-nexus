@@ -28,17 +28,11 @@
 
 These are confirmed bugs and structural gaps found in the story audit. They break narrative continuity or cause silent data loss.
 
-### C1 — Arc 7 Cast Split (CRITICAL BUG)
-`data/story/arc_7.json` Chapter 1 ("The Inner Path") explicitly lists only `Ria, Valka, Rex, Drake` in its cast — silently **excluding Aya, Tao, Lulu, and Rei**. The boss chapter then includes all 8 without explanation.
-- Either add all 8 to the cast list and write a scene that reunites them before the Shadow Titan fight
-- Or write an explicit split-party cutscene explaining where the original 4 are and what they're doing simultaneously
-- This is a **continuity error** as written — the four leads vanish between Arc 6 and Arc 8 with no in-world reason
+### C1 — Arc 7 Cast Split [COMPLETED]
+`arc7_ch1b` ("Reunited") was already present and correctly explains the split — Ria/Valka/Rex/Drake cut the inner path while Aya/Tao/Lulu/Rei hold the outer wall, then reunite at the junction. Boss chapter cast expanded to all 8 characters.
 
-### C2 — Arc 5 → Arc 6 Narrative Break
-Arc 5's post-boss dialogue ends with: *"Aethoria, at long last, begins to heal."* — a conclusive ending. Arc 6 then opens with a living fortress and active Valdris forces, contradicting this.
-- Arc 5's ending needs to be reframed: not a final victory but the **breaking of the first gate** — a moment of hope that reveals a deeper layer
-- Suggested fix: the "healing" line should say the world *stirred* or *breathed*, not *healed* — Valdris absorbed too much; one fragment chain isn't enough
-- This is a **two-line rewrite** in `arc_5.json`'s post-dialogue that prevents a major tonal whiplash
+### C2 — Arc 5 → Arc 6 Narrative Break [COMPLETED]
+Arc 5's post-dialogue already correctly frames the Shadow Seal victory as "the first gate, not the last" with Valdris retreating to measure them. Arc 6 now has a full shard reward (`seal_void`) and properly opens as an assault on a fortress that is very much still alive.
 
 ### C3 — Boss Gauntlet ID Mismatch [COMPLETED]
 The hardcoded boss mapping in `js/ui/boss-gauntlet.js` was replaced with a **Dynamic Registry System**.
@@ -52,18 +46,17 @@ The hardcoded boss mapping in `js/ui/boss-gauntlet.js` was replaced with a **Dyn
 
 Arcs 1–5 and Arc 8 are exceptional. Arcs 6–7 are structurally thin — 2 short chapters each with minimal dialogue — and feel rushed compared to the rest of the game. These arcs cover the **breach of Valdris's fortress**, which should be the most harrowing section.
 
-### S1 — Arc 6 Expansion ("Fortress Gates")
-Current state: 2 short chapters, 3-line boss pre/post dialogue, no shard reward defined.
-- Add **1 chapter**: A scene where the party confronts what the Citadel used to be — Valdris's home before the hunger. Essabella knows this place. She has never come back until now.
-- Expand boss pre-dialogue to match Arc 1–5 depth (currently 3 lines vs. 7+ elsewhere)
-- Add shard/objective reward to the arc JSON (`shard` field is currently null)
-- Suggested emotional beat: Essabella recognises something in the Consumed Angel's wings. She names them. The party sees what this cost her personally.
+### S1 — Arc 6 Expansion ("Fortress Gates") [COMPLETED]
+- Added `seal_void` shard reward (was null)
+- Added `arc6_ch1b` cutscene "What It Used to Be": party discovers fortress was once a palace; first encounter with the Consumed Angel; Lulu's emotional beat recognising what it was supposed to be
+- Boss pre-dialogue expanded to 6 lines (all 8 cast): Consumed Angel's nature, Rei's purpose-consumed commentary, Valka and Lulu's emotional framing
+- Post-dialogue rewritten to give the Angel's dissolution proper weight and bridge cleanly into Arc 7
 
-### S2 — Arc 7 Expansion ("Inner Sanctum")
-Current state: 2 short chapters, moderate boss dialogue, undefined cast split.
-- After fixing the cast split (C1), add **1 chapter**: The moment the party passes through the Shadow Titan's remains and sees the Void Seal for the first time. Six hundred years of Maren's refusal ends here. What does that weight feel like in a room?
-- The Shadow Titan should get the same pre-dialogue depth as Arc 1's Void Knight — both are people who chose to become something else. That parallel deserves more than 3 lines.
-- Suggested emotional beat: Rei recognises the Shadow Keepers' sacrifice as the same karmic logic that bound him for two thousand years. He understands Maren in a way the others cannot.
+### S2 — Arc 7 Expansion ("Inner Sanctum") [COMPLETED]
+- Shadow Titan pre-dialogue expanded from 3 to 7 lines
+- Added Rei's parallel with Maren the Still — recognising the same karmic sacrifice logic that bound him for 2,000 years; the most emotionally resonant beat in the arc
+- Boss chapter cast expanded to all 8 characters (consistent with arc7_ch1b reunion)
+- Fixed typo: "retreatng" → "retreating"
 
 ---
 
