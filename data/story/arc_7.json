@@ -96,6 +96,19 @@
       { "speaker": "Tao", "emotion": "understanding", "text": "It is weakening. We wounded something that thought itself invulnerable. The path to the Eternal Void is open." },
       { "speaker": "Rex", "emotion": "resolute", "text": "I have ruled for ages, but I have never seen a stand like this. The Shadow Emperor is retreating because he finally has something to fear." },
       { "speaker": "Aya", "emotion": "determined", "text": "Then we do not give him time to recover. This is the end of his eternity. Move!" }
-    ]
+    ],
+    "character_moment": {
+      "background": "core_chamber",
+      "dialogue": [
+        { "speaker": "narrator", "text": "The dust settles in the core chamber. The path to the Eternal Void is open, swirling with the compressed history of everything Valdris has consumed." },
+        { "speaker": "Aya", "emotion": "quiet", "text": "Rei... you guarded your world for two millennia. Maren stood here for six centuries. How do you bear that much time?" },
+        { "speaker": "Rei", "emotion": "somber", "text": "You forget your own name before you forget your duty. You become the wall." },
+        { "speaker": "Tao", "emotion": "solemn", "text": "Then it is time to lower the wall. I have listened to the dead since we arrived in Aethoria. They are tired. They are so incredibly tired." },
+        { "speaker": "Lulu", "emotion": "soft", "text": "What do they say, Tao?" },
+        { "speaker": "Tao", "emotion": "peaceful", "text": "They say they are ready to cross over. Maren, the Forge Lords, the Tide Priests... even the people of Aethelgard. This is the eulogy for a world that has been dying for six hundred years. We are not just fighting to defeat an Emperor. We are fighting to give Aethoria permission to finally rest." },
+        { "speaker": "Rex", "emotion": "resolute", "text": "A beautiful eulogy. And a worthy cause for eight outsiders." },
+        { "speaker": "Drake", "emotion": "determined", "text": "Then let's finish the song. Into the Void." }
+      ]
+    }
   }
 }

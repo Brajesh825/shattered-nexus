@@ -100,7 +100,19 @@
       { "speaker": "Aya", "emotion": "steady", "text": "The outer ring is broken. The fortress is weakening at its core. We have the Fragment. We do not stop." },
       { "speaker": "Rei", "emotion": "grim", "text": "He will feel this. He built that thing, and now it is gone. Even if he cannot feel grief, he will feel the gap where it was. Good." },
       { "speaker": "Drake", "emotion": "forward", "text": "The inner sanctum. The Shadow Titan. Whatever is left of the man inside that darkness — we face it now. Together." }
-    ]
+    ],
+    "character_moment": {
+      "background": "fortress_entrance",
+      "dialogue": [
+        { "speaker": "narrator", "emotion": "quiet", "text": "The communication stone pulses. For the first time since they entered the Citadel, Essabella's voice cuts through the static." },
+        { "speaker": "narrator", "emotion": "heavy", "text": "Essabella: The guardian you just unmade. The Consumed Angel. That was Commander Veleth. The first to join me when I fell." },
+        { "speaker": "Rei", "emotion": "grim", "text": "Those were your soldiers in the outer ring. He didn't just kill them. He kept them." },
+        { "speaker": "narrator", "emotion": "cold", "text": "Essabella: Yes. They were my soldiers." },
+        { "speaker": "Lulu", "emotion": "soft", "text": "We freed them, Essabella. I am so sorry." },
+        { "speaker": "narrator", "emotion": "aching", "text": "Essabella: I made calculations that were wrong. I thought she had more time. That is my weight to carry. You must carry yourselves to the inner sanctum. Do not let her ending be for nothing." },
+        { "speaker": "Aya", "emotion": "steady", "text": "We won't. We finish this." }
+      ]
+    }
   }
 }
 
