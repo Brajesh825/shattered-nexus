@@ -40,10 +40,11 @@ Arc 5's post-boss dialogue ends with: *"Aethoria, at long last, begins to heal."
 - Suggested fix: the "healing" line should say the world *stirred* or *breathed*, not *healed* — Valdris absorbed too much; one fragment chain isn't enough
 - This is a **two-line rewrite** in `arc_5.json`'s post-dialogue that prevents a major tonal whiplash
 
-### C3 — Boss Gauntlet ID Mismatch
-`js/boss-gauntlet.js` maps arc indices to boss IDs that don't match the actual arc boss chain. The gauntlet lists `abomination` for Arc 2 but the actual boss is `demon_lord`; `dragon` for Arc 3 but actual is `dark_phoenix`.
-- Update `BossGauntlet.getBossIds()` to match the canonical order: `void_knight → demon_lord → dark_phoenix → kraken → fallen_angel → void_warden → shadow_titan → shadow_emperor`
-- Also add the 6 new map bosses as optional gauntlet entries
+### C3 — Boss Gauntlet ID Mismatch [COMPLETED]
+The hardcoded boss mapping in `js/ui/boss-gauntlet.js` was replaced with a **Dynamic Registry System**.
+- **Fix**: The Gauntlet now scans `Story.data.arcs` and `MAP_DEFS` automatically to find bosses.
+- **Victory Tracking**: Integrated with `Archive.recordKill` and centralized in `Battle.setKO` to accurately track wins via direct damage, DOT (Burn/Poison), and Reflect.
+- **Discovery Mode**: Implemented a "Victories Only" view—bosses are hidden until defeated in the story or exploration.
 
 ---
 

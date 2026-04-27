@@ -1,10 +1,6 @@
-/**
- * js/ui/boss-gauntlet.js
- * Manages the "Legendary Gauntlet" (Boss Mode).
- * Allows players to refight defeated bosses at adaptive level for stress testing.
- */
 const BossGauntlet = {
     isOpen: false,
+    _bossRegistry: null, // Cache: { id: { name, subtitle, arcIdx, mapId, isStoryBoss } }
 
     init() {
         this.updateButtonVisibility();
@@ -14,81 +10,85 @@ const BossGauntlet = {
         const btn = document.getElementById('gauntlet-btn');
         if (!btn) return;
 
-        // Check for debug/dev override
         const urlParams = new URLSearchParams(window.location.search);
         const isDebug = urlParams.get('debug') === 'true' || urlParams.get('dev') === 'true' || (typeof ReleaseConfig !== 'undefined' && ReleaseConfig.IS_DEV);
-
         const isEnabled = (typeof ReleaseConfig !== 'undefined' && ReleaseConfig.ENABLE_BOSS_MODE) || isDebug;
 
         btn.style.display = isEnabled ? 'flex' : 'none';
-
-        if (isEnabled && window.LogDebug) window.LogDebug(`[Gauntlet] Mode unlocked ${isDebug ? '(DEV)' : ''}`, 'passive');
     },
 
-    // Map of Boss IDs to their corresponding Arc Index (0-based).
-    // Used by the release filter — bosses with arc > MAX_REACHABLE_ARC are hidden.
-    // Map bosses share the arc of their map. Expansion bosses use the unlock arc.
-    getBossArcMap() {
-        return {
-            // Arc story bosses (canonical order)
-            "void_knight":      0,  // Arc 1 — Verdant Vale
-            "demon_lord":       1,  // Arc 2 — Crystal Cavern
-            "dark_phoenix":     2,  // Arc 3 — Ember Wastes
-            "kraken":           3,  // Arc 4 — Sunken Temple
-            "fallen_angel":     4,  // Arc 5 — Shadow Reach
-            "void_warden":      5,  // Arc 6 — Void Citadel
-            "shadow_titan":     6,  // Arc 7 — Fortress Ramparts
-            "shadow_emperor":   7,  // Arc 8 — Eternal Void
-            // Main map bosses
-            "galdor_king":      0,  // Arc 1 map boss
-            "spectral_guardian":1,  // Arc 2 map boss
-            "forge_sentinel":   2,  // Arc 3 map boss
-            "deep_archpriest":  3,  // Arc 4 map boss
-            "void_stalker":     4,  // Arc 5 map boss
-            "consumed_angel":   5,  // Arc 6 map boss
-            "void_colossus":    6,  // Arc 7 map boss
-            "the_unravelling":  7,  // Arc 8 map boss
-            // Expansion map bosses (unlock arc = parent arc cleared)
-            "sunken_leviathan": 0,  // Unlocks after Arc 1
-            "river_king":       0,  // Unlocks after Arc 1
-            "molten_golem":     2,  // Unlocks after Arc 3
-            "abyssal_kraken":   3,  // Unlocks after Arc 4
-            "abomination":      4,  // Eastern Wetlands, unlocks after Arc 5
-            "dragon":           5,  // Northern Highlands, unlocks after Arc 6
-            "storm_sentinel":   5,  // Sky Ruins, unlocks after Arc 6
-        };
+    /**
+     * Dynamically builds the boss registry from Story and Map data.
+     * Prevents hardcoding of IDs and requirements.
+     */
+    buildBossRegistry() {
+        if (this._bossRegistry) return this._bossRegistry;
+        const registry = {};
+
+        // 1. Arc Story Bosses (The Guardians)
+        if (typeof Story !== 'undefined' && Story.data && Story.data.arcs) {
+            Story.data.arcs.forEach((arc, idx) => {
+                if (arc.boss_enemy) {
+                    registry[arc.boss_enemy] = {
+                        id: arc.boss_enemy,
+                        arcIdx: idx,
+                        mapId: ARC_MAP_ID[idx] || null,
+                        isStoryBoss: true,
+                        tier: 3
+                    };
+                }
+                // Also check chapters for map-specific bosses within the arc sequence
+                (arc.chapters || []).forEach(chap => {
+                    if (chap.type === 'boss_battle' && chap.enemy_id) {
+                        if (!registry[chap.enemy_id]) {
+                            registry[chap.enemy_id] = {
+                                id: chap.enemy_id,
+                                arcIdx: idx,
+                                mapId: chap.map || ARC_MAP_ID[idx] || null,
+                                isStoryBoss: false,
+                                tier: 3
+                            };
+                        }
+                    }
+                });
+            });
+        }
+
+        // 2. Expansion & Map Bosses (The Predators)
+        if (typeof MAP_DEFS !== 'undefined') {
+            Object.keys(MAP_DEFS).forEach(mapId => {
+                const map = MAP_DEFS[mapId];
+                (map.enemies || []).forEach(en => {
+                    if (en.isBoss) {
+                        if (!registry[en.id]) {
+                            registry[en.id] = {
+                                id: en.id,
+                                arcIdx: map.arcIdx ?? 99,
+                                mapId: mapId,
+                                isStoryBoss: false,
+                                tier: 3
+                            };
+                        }
+                    }
+                });
+            });
+        }
+
+        this._bossRegistry = registry;
+        return registry;
     },
 
-    // Definitive list of Story Bosses (Arc Guardians)
-    // Arc story bosses (canonical order Arc 1–8):
-    //   void_knight → demon_lord → dark_phoenix → kraken → fallen_angel
-    //   → void_warden → shadow_titan → shadow_emperor
-    // Map bosses (encountered during exploration):
-    //   galdor_king, spectral_guardian, forge_sentinel, deep_archpriest,
-    //   void_stalker, consumed_angel, void_colossus, the_unravelling
-    // Expansion map bosses:
-    //   sunken_leviathan, river_king, molten_golem, abyssal_kraken,
-    //   abomination, dragon, storm_sentinel
     getBossIds() {
-        return [
-            // Arc story bosses
-            "void_knight", "demon_lord", "dark_phoenix", "kraken",
-            "fallen_angel", "void_warden", "shadow_titan", "shadow_emperor",
-            // Main map bosses
-            "galdor_king", "spectral_guardian", "forge_sentinel", "deep_archpriest",
-            "void_stalker", "consumed_angel", "void_colossus", "the_unravelling",
-            // Expansion map bosses
-            "sunken_leviathan", "river_king", "molten_golem", "abyssal_kraken",
-            "abomination", "dragon", "storm_sentinel"
-        ];
+        return Object.keys(this.buildBossRegistry());
     },
 
-    getDefeatedBosses() {
-        if (!window.ENEMIES_DATA) return [];
-        const bossIds = this.getBossIds();
-
-        // Return only the true Story Bosses found in the data
-        return window.ENEMIES_DATA.filter(e => bossIds.includes(e.id));
+    getBossArcMap() {
+        const reg = this.buildBossRegistry();
+        const map = {};
+        Object.keys(reg).forEach(id => {
+            map[id] = reg[id].arcIdx;
+        });
+        return map;
     },
 
     open() {
@@ -99,20 +99,17 @@ const BossGauntlet = {
         overlay.style.display = 'flex';
         this.isOpen = true;
 
-        // If no party is active, show the Save Picker
         if (!G.party || G.party.length === 0) {
             this.showSavePicker();
         } else {
             this.renderBossList();
         }
-
         if (typeof SFX !== 'undefined' && typeof SFX.click === 'function') SFX.click();
     },
 
     showSavePicker() {
         const grid = document.getElementById('gauntlet-grid');
         if (!grid) return;
-
         const slots = Save.listAll();
 
         grid.innerHTML = `
@@ -125,37 +122,23 @@ const BossGauntlet = {
         slots.forEach(s => {
             const card = document.createElement('div');
             card.className = 'gauntlet-card save-select-card';
-            card.style.cursor = 'pointer';
-
             if (s.empty) {
-                card.innerHTML = `
-                    <div class="gc-body">
-                        <div class="gc-name">SLOT ${s.slot + 1}</div>
-                        <div class="gc-subtitle">Empty Slot</div>
-                    </div>
-                `;
+                card.innerHTML = `<div class="gc-body"><div class="gc-name">SLOT ${s.slot + 1}</div><div class="gc-subtitle">Empty Slot</div></div>`;
                 card.style.opacity = '0.5';
                 card.style.pointerEvents = 'none';
             } else {
                 const date = Save.dateStr(s.timestamp);
                 const lv = s.partyStats?.[0]?.lv || s.heroLv || '?';
-
                 card.innerHTML = `
-                    <div class="gc-header">
-                        <span class="gc-tier">LV ${lv}</span>
-                    </div>
+                    <div class="gc-header"><span class="gc-tier">LV ${lv}</span></div>
                     <div class="gc-body">
                         <div class="gc-name">SLOT ${s.slot + 1}</div>
                         <div class="gc-subtitle">${s.arcName || 'Story Progress'}</div>
                         <div class="gc-stat" style="margin-top:10px">${date}</div>
                     </div>
-                    <div class="gc-footer">
-                        <button class="gc-fight-btn">LOAD SAVE</button>
-                    </div>
+                    <div class="gc-footer"><button class="gc-fight-btn">LOAD SAVE</button></div>
                 `;
-                card.onclick = () => {
-                    this.loadSaveData(s.slot);
-                };
+                card.onclick = () => this.loadSaveData(s.slot);
             }
             grid.appendChild(card);
         });
@@ -165,111 +148,96 @@ const BossGauntlet = {
         const s = Save.read(slot);
         if (!s) return;
 
-        // Perform "Silent Hydration" of the global game state
+        // Hydrate G state
         G.selectedChar = s.selectedChar || (G.chars[0] && G.chars[0].id);
         G.selectedClass = s.selectedClass || (G.classes[0] && G.classes[0].id);
+        G.selectedChars = s.selectedChars || [G.selectedChar];
+        G.inventory = s.inventory || [];
+        G.clearedMaps = s.clearedMaps || [];
+        G.arcIdx = s.arcIdx || 0;
 
-        if (s.selectedChars && s.selectedChars.length) {
-            G.selectedChars = s.selectedChars;
-        } else {
-            const heroId_ = G.selectedChar;
-            G.selectedChars = [heroId_, ...G.chars.map(c => c.id).filter(id => id !== heroId_)].slice(0, 4);
-        }
+        if (typeof buildParty === 'function') buildParty();
 
-        // Build the combat-ready party object
-        if (typeof buildParty === 'function') {
-            buildParty();
-        }
-
-        // Apply saved stats (HP, MP, LV, etc.) to both active party AND base characters
-        if (s.partyStats && s.partyStats.length) {
+        // Restore party stats
+        if (s.partyStats && G.party) {
             s.partyStats.forEach(saved => {
-                // 1. Sync the active combat member in G.party
-                const member = G.party?.find(m => m.charId === saved.charId);
+                const member = G.party.find(m => m.charId === saved.charId);
                 if (member) {
-                    member.lv = saved.lv || 1;
-                    member.exp = saved.exp || 0;
-                    member.gold = saved.gold || 0;
-
-                    // Sync level to char FIRST so computeStats uses the correct level
-                    if (member.char) member.char.lv = saved.lv || 1;
-
+                    member.lv = saved.lv;
+                    if (member.char) member.char.lv = saved.lv;
                     rebuildMemberCombatStats(member, { resourceStrategy: 'full' });
-
-                    // FORCE FULL RESTORATION FOR GAUNTLET MODE
                     member.isKO = false;
-                    member.statuses = [];
-                }
-
-                // 2. Sync the base character definition in G.chars (prevents reset if party is rebuilt)
-                const char = G.chars?.find(c => c.id === saved.charId);
-                if (char) {
-                    char.lv = saved.lv || 1;
-                    char.exp = saved.exp || 0;
-                    char.hp = saved.hp;
-                    char.mp = saved.mp;
                 }
             });
         }
-
-        // Ensure global references are set for the combat engine
         G.hero = G.party?.[0];
-        if (s.inventory) G.inventory = s.inventory;
-        if (s.activeRelics) G.activeRelics = s.activeRelics;
-        if (s.ownedRelics) G.ownedRelics = s.ownedRelics;
-
-        // Tag story as temporarily active so turn-based engine logic is valid
-        if (typeof Story !== 'undefined') Story.active = true;
-
-        if (window.LogDebug) window.LogDebug(`[Gauntlet] Party synced from Slot ${slot + 1} (LV ${G.party?.[0]?.lv || 1})`, 'regen');
-
-        // Refresh UI to show the Boss List now that we have a party
         this.renderBossList();
     },
 
     renderBossList() {
         const grid = document.getElementById('gauntlet-grid');
         if (!grid) return;
-
         grid.innerHTML = '';
-        const allBossIds = this.getBossIds();
 
-        // Ensure we handle both cases where ENEMIES_DATA is global or localized
+        const registry = this.buildBossRegistry();
         const data = window.ENEMIES_DATA || (typeof G !== 'undefined' ? G.enemies : []);
-        let bosses = data.filter(e => allBossIds.includes(e.id));
-
-        // Release Filter: Only show bosses from released arcs
-        if (typeof ReleaseConfig !== 'undefined') {
-            const arcMap = this.getBossArcMap();
-            bosses = bosses.filter(b => {
-                const bossArc = arcMap[b.id] ?? 99; // Default to locked if unknown
-                return bossArc <= ReleaseConfig.MAX_REACHABLE_ARC;
+        
+        // Filter and sort bosses
+        let bosses = data.filter(e => registry[e.id])
+            .sort((a, b) => {
+                const regA = registry[a.id], regB = registry[b.id];
+                // Story bosses first, then by arcIdx
+                if (regA.isStoryBoss !== regB.isStoryBoss) return regB.isStoryBoss ? 1 : -1;
+                return regA.arcIdx - regB.arcIdx;
             });
-        }
 
-        if (bosses.length === 0) {
-            grid.innerHTML = '<div class="gauntlet-empty">Loading Boss Data...<br><span style="font-size:12px;color:#666">If this persists, ensuring enemies.json is loaded</span></div>';
-            // Retry once if data was empty
-            setTimeout(() => this.renderBossList(), 500);
-        } else {
-            bosses.forEach(boss => {
-                const card = this.createBossCard(boss);
+        // Application of Progress and Release Filters
+        const isDebug = new URLSearchParams(window.location.search).get('debug') === 'true' || (typeof ReleaseConfig !== 'undefined' && ReleaseConfig.IS_DEV);
+        
+        bosses.forEach(boss => {
+            const reg = registry[boss.id];
+            const isReleased = (typeof ReleaseConfig === 'undefined') || reg.arcIdx <= ReleaseConfig.MAX_REACHABLE_ARC;
+
+            // Priority 1: Archive kill count (Definitive victory)
+            let hasKills = 0;
+            if (typeof Archive !== 'undefined' && typeof Archive.getEntry === 'function') {
+                hasKills = Archive.getEntry(boss.id)?.kills || 0;
+            }
+
+            // Priority 2: Progression fallbacks (Legacy/Sync safety)
+            const isCleared = (G.clearedMaps && G.clearedMaps.includes(reg.mapId)) || (G.arcIdx > reg.arcIdx);
+            
+            const isUnlocked = isDebug || hasKills > 0 || isCleared;
+
+            // Only show the boss if it has been cleared/unlocked
+            if (isReleased && isUnlocked) {
+                const card = this.createBossCard(boss, true);
                 grid.appendChild(card);
-            });
+            }
+        });
+
+        if (grid.children.length === 0) {
+            grid.innerHTML = '<div class="gauntlet-empty">No Bosses Encountered Yet<br><span style="font-size:12px;color:#666">Defeat bosses in Story Mode to unlock them here.</span></div>';
         }
     },
 
-    close() {
-        const overlay = document.getElementById('gauntlet-overlay');
-        if (overlay) overlay.style.display = 'none';
-        this.isOpen = false;
-
-        if (typeof SFX !== 'undefined' && typeof SFX.click === 'function') SFX.click();
-    },
-
-    createBossCard(boss) {
+    createBossCard(boss, isUnlocked) {
         const card = document.createElement('div');
-        card.className = `gauntlet-card element-${boss.element || 'neutral'}`;
+        card.className = `gauntlet-card element-${boss.element || 'neutral'} ${isUnlocked ? '' : 'locked'}`;
+
+        if (!isUnlocked) {
+            card.innerHTML = `
+                <div class="gc-body" style="filter: grayscale(1) opacity(0.5)">
+                    <div class="gc-sprite-container"><div class="locked-icon">🔒</div></div>
+                    <div class="gc-name">???</div>
+                    <div class="gc-subtitle">Undiscovered Legendary</div>
+                </div>
+                <div class="gc-footer">
+                    <div class="gc-stat">Requirement: <span>Explore further</span></div>
+                </div>
+            `;
+            return card;
+        }
 
         let kills = 0;
         if (typeof Archive !== 'undefined' && typeof Archive.getEntry === 'function') {
@@ -294,77 +262,53 @@ const BossGauntlet = {
             </div>
         `;
 
-        // Render sprite
         const cont = card.querySelector(`#gspr-cont-${boss.id}`);
         const spr = document.createElement('img');
         spr.className = 'gauntlet-sprite';
-        if (typeof SpriteRenderer !== 'undefined') {
-            SpriteRenderer.drawEnemy(spr, boss.id, boss.palette);
-        }
+        if (typeof SpriteRenderer !== 'undefined') SpriteRenderer.drawEnemy(spr, boss.id, boss.palette);
         cont.appendChild(spr);
 
-        // Make both the button AND the entire card (including sprite) clickable
         const triggerStart = (e) => {
             e.stopPropagation();
             this.start(boss.id);
         };
-
         card.querySelector('.gc-fight-btn').onclick = triggerStart;
-        card.querySelector('.gc-body').onclick = triggerStart;
-        card.querySelector('.gc-body').style.cursor = 'pointer';
-        card.style.cursor = 'pointer';
+        card.onclick = triggerStart;
 
         return card;
     },
 
-    start(bossId) {
-        if (window.LogDebug) window.LogDebug(`[Gauntlet] Starting stress test against: ${bossId}`, 'fight');
+    close() {
+        const overlay = document.getElementById('gauntlet-overlay');
+        if (overlay) overlay.style.display = 'none';
+        this.isOpen = false;
+    },
 
-        const bossDef = window.ENEMIES_DATA.find(e => e.id === bossId);
+    start(bossId) {
+        const bossDef = (window.ENEMIES_DATA || G.enemies).find(e => e.id === bossId);
         if (!bossDef) return;
 
         this.close();
-
-        // Ensure Story mode is active so win/loss logic works correctly
         if (typeof Story !== 'undefined') Story.active = true;
 
-        // 0. RESTORE PARTY TO FULL HEALTH (Quality of Life)
+        // Full Restore
         if (G.party) {
             G.party.forEach(m => {
-                m.hp = m.maxHp;
-                m.mp = m.maxMp;
-                m.isKO = false;
-                m.statuses = [];
-                // Sync to base character definition
-                const ch = G.chars.find(c => c.id === m.charId);
-                if (ch) { ch.hp = m.hp; ch.mp = m.mp; ch.isKO = false; }
+                m.hp = m.maxHp; m.mp = m.maxMp; m.isKO = false; m.statuses = [];
             });
         }
 
-        // 1. Set Gauntlet Mode flag
         G.isGauntletMode = true;
-
-        // 2. Build Enemy Group (Force player level + Boss multiplier)
         const playerLv = (G.party && G.party[0]) ? G.party[0].lv : 1;
         buildEnemyGroup([bossDef], playerLv, true);
-
-        // 2b. Synchronize global references for the Turn Engine
         G.enemies = G.enemyGroup;
         G.targetEnemyIdx = 0;
 
-        // 3. Launch Battle
-        if (typeof _initBattle === 'function') {
-            _initBattle();
-        }
-
-        // 4. KICKSTART TURN ENGINE (Critical fix for "A")
-        if (typeof processCurrentTurn === 'function') {
-            processCurrentTurn();
-        }
+        if (typeof _initBattle === 'function') _initBattle();
+        if (typeof processCurrentTurn === 'function') processCurrentTurn();
     }
 };
 
-// Global hook for Save/Load
 window.addEventListener('saveLoaded', () => {
     BossGauntlet.updateButtonVisibility();
     if (BossGauntlet.isOpen) BossGauntlet.open();
