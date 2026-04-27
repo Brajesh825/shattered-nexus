@@ -66,12 +66,14 @@ const BossGauntlet = {
         if (typeof MAP_DEFS !== 'undefined') {
             Object.keys(MAP_DEFS).forEach(mapId => {
                 const map = MAP_DEFS[mapId];
+                // Support both arcIdx and arcId property names across map definitions
+                const mapArcIdx = map.arcIdx ?? map.arcId ?? 99;
                 (map.enemies || []).forEach(en => {
                     if (en.isBoss) {
                         if (!registry[en.id]) {
                             registry[en.id] = {
                                 id: en.id,
-                                arcIdx: map.arcIdx ?? 99,
+                                arcIdx: mapArcIdx - 1, // arcId is 1-based; convert to 0-based index
                                 mapId: mapId,
                                 isStoryBoss: false,
                                 tier: 3
@@ -208,25 +210,27 @@ const BossGauntlet = {
                 return regA.arcIdx - regB.arcIdx;
             });
 
-        // Application of Progress and Release Filters
+        // Application of Release and Discovery Filters
+        // isDebug bypasses the RELEASE gate (lets you see unreleased arcs)
+        // but NOT the discovery gate (you still need kills to unlock a boss).
         const isDebug = new URLSearchParams(window.location.search).get('debug') === 'true' || (typeof ReleaseConfig !== 'undefined' && ReleaseConfig.IS_DEV);
-        
+
         bosses.forEach(boss => {
             const reg = registry[boss.id];
-            const isReleased = (typeof ReleaseConfig === 'undefined') || reg.arcIdx <= ReleaseConfig.MAX_REACHABLE_ARC;
+            const isReleased = isDebug || (typeof ReleaseConfig === 'undefined') || reg.arcIdx <= ReleaseConfig.MAX_REACHABLE_ARC;
 
-            // Priority 1: Archive kill count (Definitive victory)
+            // Discovery gate: boss must have at least one confirmed kill
             let hasKills = 0;
             if (typeof Archive !== 'undefined' && typeof Archive.getEntry === 'function') {
                 hasKills = Archive.getEntry(boss.id)?.kills || 0;
             }
 
-            // Priority 2: Progression fallbacks (Legacy/Sync safety)
-            const isCleared = (G.clearedMaps && G.clearedMaps.includes(reg.mapId)) || (G.arcIdx > reg.arcIdx);
-            
-            const isUnlocked = isDebug || hasKills > 0 || isCleared;
+            // Legacy fallback: cleared map also counts (handles old saves without kill records)
+            const isCleared = (G.clearedMaps && G.clearedMaps.includes(reg.mapId));
 
-            // Only show the boss if it has been cleared/unlocked
+            const isUnlocked = hasKills > 0 || isCleared;
+
+            // Only show the boss if it has been cleared/unlocked AND is released
             if (isReleased && isUnlocked) {
                 const card = this.createBossCard(boss, true);
                 grid.appendChild(card);
