@@ -13,16 +13,22 @@ MAP_DEFS.southern_isles = {
     weather: 'rain',
     enemyLevelRange: [10, 18],
     encounterTemplates: [
-        { weight: 3, enemies: ['naga'] },
-        { weight: 2, enemies: ['crab'] },
-        { weight: 1, enemies: ['naga', 'crab'] }
+        { weight: 4, enemies: ['naga', 'naga'] },
+        { weight: 3, enemies: ['crab'] },
+        { weight: 2, enemies: ['naga', 'crab'] },
+        { weight: 2, enemies: ['merman'] },
+        { weight: 1, enemies: ['naga', 'naga', 'crab'] },
+        { weight: 1, enemies: ['crab', 'merman'] },
+        { weight: 1, enemies: ['merman', 'merman'] }
     ],
     enemies: [
-        { id: 'naga',   x: 20, y: 30, patrol: 'random', range: 5, speed: 1.2 },
-        { id: 'naga',   x: 60, y: 30, patrol: 'random', range: 5, speed: 1.2 },
+        // --- STILT VILLAGE SENTINELS ---
+        { id: 'naga',   x: 20, y: 30, patrol: 'random',     range: 5,  speed: 1.2 },
+        { id: 'naga',   x: 60, y: 30, patrol: 'random',     range: 5,  speed: 1.2 },
+        // --- DOCK GUARDIANS ---
         { id: 'crab',   x: 40, y: 25, patrol: 'horizontal', range: 10, speed: 0.6 },
-        { id: 'naga',   x: 15, y: 15, patrol: 'vertical', range: 8, speed: 1.3 },
-        { id: 'naga',   x: 65, y: 15, patrol: 'vertical', range: 8, speed: 1.3 },
+        { id: 'naga',   x: 15, y: 15, patrol: 'vertical',   range: 8,  speed: 1.3 },
+        // --- MAP BOSS ---
         { id: 'sunken_leviathan', x: 40, y: 8,  patrol: 'stationary', isBoss: true, label: 'Sunken Leviathan' }
     ],
     tiles: (function () {

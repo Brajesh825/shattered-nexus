@@ -13,15 +13,22 @@ MAP_DEFS.eastern_wetlands = {
     weather: 'mist',
     enemyLevelRange: [30, 38],
     encounterTemplates: [
-        { weight: 3, enemies: ['mushroom'] },
-        { weight: 2, enemies: ['spider'] },
-        { weight: 1, enemies: ['mushroom', 'spider'] }
+        { weight: 4, enemies: ['mushroom', 'mushroom'] },
+        { weight: 3, enemies: ['spider'] },
+        { weight: 2, enemies: ['mushroom', 'spider'] },
+        { weight: 2, enemies: ['slug'] },
+        { weight: 1, enemies: ['spider', 'spider'] },
+        { weight: 1, enemies: ['mushroom', 'mushroom', 'spider'] },
+        { weight: 1, enemies: ['slug', 'mushroom'] }
     ],
     enemies: [
-        { id: 'mushroom', x: 20, y: 15, patrol: 'random', range: 5, speed: 0.8 },
-        { id: 'spider',   x: 40, y: 25, patrol: 'horizontal', range: 12, speed: 1.4 },
-        { id: 'spider',   x: 60, y: 15, patrol: 'random', range: 5, speed: 1.2 },
-        { id: 'mushroom', x: 25, y: 30, patrol: 'random', range: 6, speed: 0.9 },
+        // --- MIRE SENTINELS ---
+        { id: 'mushroom',    x: 20, y: 15, patrol: 'random',     range: 5,  speed: 0.8 },
+        { id: 'spider',      x: 40, y: 25, patrol: 'horizontal', range: 12, speed: 1.4 },
+        { id: 'mushroom',    x: 25, y: 30, patrol: 'random',     range: 6,  speed: 0.9 },
+        // --- BORDER PATROL ---
+        { id: 'spider',      x: 60, y: 15, patrol: 'random',     range: 5,  speed: 1.2 },
+        // --- MAP BOSS ---
         { id: 'abomination', x: 65, y: 10, patrol: 'stationary', isBoss: true, label: 'Flesh Abomination' }
     ],
     tiles: (function () {

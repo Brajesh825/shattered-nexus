@@ -114,49 +114,18 @@ MAP_DEFS.crystal_cavern = {
 
 
   enemies: [
-    // --- ENTRANCE & ARTERIES ---
-    { id: 'skeleton', x: 10, y: 50, patrol: 'horizontal', range: 5, speed: 1.2 },
-    { id: 'crystal_golem', x: 30, y: 50, patrol: 'horizontal', range: 10, speed: 0.8 }, // NATIVE TANK
-    { id: 'crystal_shard', x: 110, y: 50, patrol: 'horizontal', range: 5, speed: 2.5 }, // NATIVE SPEEDER
-    { id: 'bat', x: 60, y: 15, patrol: 'vertical', range: 15, speed: 2.0 },
-    { id: 'bat', x: 60, y: 85, patrol: 'vertical', range: 15, speed: 2.0 },
-    { id: 'gargoyle', x: 61, y: 5, patrol: 'vertical', range: 10, speed: 1.0 },
-    { id: 'gargoyle', x: 59, y: 95, patrol: 'vertical', range: 10, speed: 1.0 },
-
-    // --- NW HUB (Dungeon) ---
-    { id: 'crystal_golem', x: 25, y: 20, patrol: 'random', range: 8, speed: 0.7 }, // NATIVE
-    { id: 'skeleton', x: 30, y: 25, patrol: 'horizontal', range: 10, speed: 1.0 },
-    { id: 'skeleton', x: 18, y: 18, patrol: 'random', range: 5, speed: 1.1 },
-    { id: 'crystal_golem', x: 42, y: 37, patrol: 'random', range: 5, speed: 0.7 }, // NATIVE
-    { id: 'ghost', x: 25, y: 35, patrol: 'random', range: 8, speed: 1.0 },
-    { id: 'ghost', x: 35, y: 30, patrol: 'random', range: 8, speed: 1.0 },
-
-    // --- NE HUB (Ice) ---
-    { id: 'crystal_shard', x: 90, y: 20, patrol: 'vertical', range: 10, speed: 2.5 }, // NATIVE
-    { id: 'crystal_shard', x: 95, y: 25, patrol: 'random', range: 8, speed: 2.5 }, // NATIVE
-    { id: 'crystal_shard', x: 85, y: 18, patrol: 'random', range: 5, speed: 2.5 }, // NATIVE
-    { id: 'imp', x: 105, y: 37, patrol: 'random', range: 5, speed: 1.5 },
-    { id: 'ghost', x: 95, y: 20, patrol: 'random', range: 5, speed: 1.1 },
-
-    // --- SW HUB (Mine) ---
-    { id: 'crystal_golem', x: 25, y: 75, patrol: 'horizontal', range: 12, speed: 0.8 }, // NATIVE
-    { id: 'crystal_golem', x: 30, y: 80, patrol: 'random', range: 6, speed: 0.8 }, // NATIVE
-    { id: 'goblin', x: 18, y: 68, patrol: 'random', range: 5, speed: 1.3 },
-    { id: 'werewolf', x: 20, y: 85, patrol: 'random', range: 5, speed: 1.6 },
-    { id: 'merman', x: 35, y: 80, patrol: 'random', range: 8, speed: 1.2 },
-
-    // --- SE HUB (Garden) ---
-    { id: 'gem_mimic', x: 90, y: 75, patrol: 'random', range: 8, speed: 2.0 }, // RARE NATIVE
-    { id: 'imp', x: 95, y: 80, patrol: 'vertical', range: 12, speed: 1.6 },
-    { id: 'spider', x: 85, y: 68, patrol: 'random', range: 5, speed: 1.2 },
-    { id: 'witch', x: 110, y: 75, patrol: 'random', range: 8, speed: 1.1 },
-    { id: 'witch', x: 95, y: 70, patrol: 'random', range: 5, speed: 1.1 },
-
-    // --- THE CENTRAL GEODE (Boss & Approach) ---
-    { id: 'crystal_shard', x: 60, y: 50, patrol: 'random', range: 5, speed: 2.5 }, // NATIVE
-    { id: 'cyclops', x: 60, y: 40, patrol: 'random', range: 3, speed: 0.8 },
-    { id: 'minotaur', x: 60, y: 60, patrol: 'random', range: 3, speed: 0.7 },
-    { id: 'spectral_guardian', x: 60, y: 51, patrol: 'random', range: 2, speed: 0.9, isBoss: true } // THE CRYSTAL SENTINEL
+    // --- ENTRANCE ARTERY SENTINEL ---
+    { id: 'skeleton',         x: 10,  y: 50, patrol: 'horizontal', range: 5,  speed: 1.2 },
+    // --- NORTH VERTICAL SHAFT SENTINEL ---
+    { id: 'bat',              x: 60,  y: 15, patrol: 'vertical',   range: 15, speed: 2.0 },
+    // --- NW DUNGEON HUB ---
+    { id: 'crystal_golem',   x: 25,  y: 20, patrol: 'random',     range: 8,  speed: 0.7 },
+    // --- SE CRYSTAL GARDEN RARE ---
+    { id: 'gem_mimic',       x: 90,  y: 75, patrol: 'random',     range: 8,  speed: 2.0 },
+    // --- CENTRAL GEODE GUARDIAN ---
+    { id: 'crystal_shard',   x: 60,  y: 50, patrol: 'random',     range: 5,  speed: 2.5 },
+    // --- MAP BOSS ---
+    { id: 'spectral_guardian', x: 60, y: 51, patrol: 'random', range: 2, speed: 0.9, isBoss: true }
   ],
 
   tiles: MAP_GENERATOR.generate(),

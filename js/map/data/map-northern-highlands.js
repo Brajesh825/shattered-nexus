@@ -13,17 +13,22 @@ MAP_DEFS.northern_highlands = {
     weather: 'mist',
     enemyLevelRange: [35, 43],
     encounterTemplates: [
-        { weight: 3, enemies: ['wolf'] },
-        { weight: 2, enemies: ['harpy'] },
-        { weight: 1, enemies: ['wolf', 'harpy'] }
+        { weight: 4, enemies: ['wolf', 'wolf'] },
+        { weight: 3, enemies: ['harpy'] },
+        { weight: 2, enemies: ['wolf', 'harpy'] },
+        { weight: 2, enemies: ['cyclops'] },
+        { weight: 1, enemies: ['harpy', 'harpy'] },
+        { weight: 1, enemies: ['wolf', 'wolf', 'harpy'] },
+        { weight: 1, enemies: ['cyclops', 'wolf'] }
     ],
     enemies: [
-        { id: 'harpy',  x: 15, y: 32, patrol: 'random', range: 8, speed: 1.6 },
-        { id: 'harpy',  x: 65, y: 32, patrol: 'random', range: 8, speed: 1.6 },
-        { id: 'wolf',   x: 40, y: 35, patrol: 'random', range: 5, speed: 1.4 },
-        { id: 'harpy',  x: 10, y: 22, patrol: 'horizontal', range: 15, speed: 1.7 },
-        { id: 'harpy',  x: 70, y: 22, patrol: 'horizontal', range: 15, speed: 1.7 },
+        // --- PEAK SENTINELS ---
+        { id: 'harpy',  x: 15, y: 32, patrol: 'random',     range: 8,  speed: 1.6 },
+        { id: 'harpy',  x: 65, y: 32, patrol: 'random',     range: 8,  speed: 1.6 },
+        // --- PATH GUARDIANS ---
+        { id: 'wolf',   x: 40, y: 35, patrol: 'random',     range: 5,  speed: 1.4 },
         { id: 'fire_elemental', x: 40, y: 15, patrol: 'vertical', range: 10, speed: 1.3, label: 'Sky-Drake' },
+        // --- MAP BOSS ---
         { id: 'dragon', x: 40, y: 5,  patrol: 'stationary', isBoss: true, label: 'Shadow Dragon' }
     ],
     tiles: (function () {

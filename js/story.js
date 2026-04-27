@@ -809,7 +809,7 @@ const Story = {
     if (!raw) { console.warn('Story: enemy not found:', enemyId); this.onBattleWon(); return; }
     const def = this._scaleEnemy(raw);
 
-    // Story battles are always solo boss/mid-boss encounters
+    // Build enemy group: boss is always solo
     const defs = [def];
     const isBoss = (this.phase === 'boss_in');
 
@@ -1383,40 +1383,27 @@ const Story = {
     if (typeof MapUI !== 'undefined') MapUI.showMsg(`Entering ${MAP_DEFS[mapId].name}…`, 1500);
   },
 
-  /* ── Skirmish: battle using an arc's enemy pool at current party LV ─── */
+  /* ── Skirmish: battle using the map's encounter templates at current party LV ─── */
   startRegionSkirmish(arcIdx) {
-    if (!G.party || !G.party.length) return;
+    if (!G.party.length) return;
 
-    // Find all maps associated with this arc
-    const maps = typeof MAP_DEFS !== 'undefined' 
-      ? Object.values(MAP_DEFS).filter(m => m.arcId === arcIdx + 1)
-      : [];
+    // Find the map that belongs to this arc (arcId is 1-indexed, arcIdx is 0-indexed)
+    const mapDef = typeof MAP_DEFS !== 'undefined'
+      ? Object.values(MAP_DEFS).find(m => m.arcId === arcIdx + 1)
+      : null;
+    const templates = mapDef ? (mapDef.encounterTemplates || []) : [];
+    if (!templates.length) return;
 
-    let pool = [];
-    maps.forEach(m => {
-      if (m.enemies) {
-        // Collect all non-boss enemy IDs from the map
-        m.enemies.forEach(e => {
-          const raw = (G.enemies || []).find(r => r.id === e.id);
-          const isElite = raw ? (raw.isBoss || raw.tier >= 3) : (e.isBoss || e.id.includes('boss'));
-          if (!isElite && !pool.includes(e.id)) pool.push(e.id);
-        });
-      }
-    });
+    // Weighted random pick of a template
+    const total = templates.reduce((s, t) => s + (t.weight || 1), 0);
+    let roll = Math.random() * total;
+    let template = templates[0];
+    for (const t of templates) { roll -= (t.weight || 1); if (roll <= 0) { template = t; break; } }
 
-    // Fallback if map parsing fails or no normal enemies exist
-    if (!pool.length) pool = ['slime', 'bat', 'wolf'];
-
-    /* Pick 1-2 random enemy templates from that map pool */
-    const count = 1 + (Math.random() < 0.45 ? 1 : 0);
     const partyLv = Math.max(...G.party.map(m => m.lv || 1));
-    const picks = [];
-
-    for (let i = 0; i < count; i++) {
-      const id = pool[Math.floor(Math.random() * pool.length)];
-      const template = (G.enemies || []).find(e => e.id === id);
-      if (template) picks.push(template);
-    }
+    const picks = template.enemies
+      .map(id => (G.enemies || []).find(e => e.id === id))
+      .filter(Boolean);
     if (!picks.length) return;
 
     /* buildEnemyGroup is a global function in game.js — sets G.enemyGroup */
