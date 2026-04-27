@@ -199,13 +199,13 @@
       { "speaker": "Rei", "emotion": "resolute", "text": "And for the karma you will finally pay." }
     ],
     "post_dialogue": [
-      { "speaker": "narrator", "emotion": "solemn", "text": "The Shadow Emperor falls. Not with fury — with a sound like something ancient finally letting go." },
-      { "speaker": "narrator", "emotion": "warm", "text": "The Seals, all five, resonate together. Light — true, unbroken light — floods through Aethoria. The cracks in the world begin to mend. The corruption, centuries thick, begins to fade." },
-      { "speaker": "Lulu", "emotion": "gentle", "text": "It is ending. It is truly ending." },
-      { "speaker": "Aya", "emotion": "peaceful", "text": "Our journey is complete. We did what was needed." },
-      { "speaker": "Tao", "emotion": "reflective", "text": "We came as strangers. We are leaving as something else." },
-      { "speaker": "Rei", "emotion": "quiet", "text": "Yes. We are." },
-      { "speaker": "narrator", "emotion": "eternal", "text": "And Aethoria, at long last, begins to heal." }
+      { "speaker": "narrator", "emotion": "solemn", "text": "The Fallen Angel staggers. The darkness holding Commander Veleth together fractures — and for a single breath, something like recognition crosses what was once a face." },
+      { "speaker": "Lulu", "emotion": "soft", "text": "Veleth. I am sorry it took us so long." },
+      { "speaker": "narrator", "emotion": "heavy", "text": "The form dissolves. Not with peace — with the sound of something that had been held too long finally releasing. The Shadow Seal Fragment pulses once in the dark, recovered." },
+      { "speaker": "Tao", "emotion": "sombre", "text": "We have the Fragment. That was the first gate. Not the last." },
+      { "speaker": "Rei", "emotion": "grim", "text": "He retreated. He was never here to stop us — he was here to measure us. Valdris knows what we are capable of now." },
+      { "speaker": "Aya", "emotion": "controlled", "text": "Then he also knows we are coming. The Void Citadel is ahead. His fortress. His last line." },
+      { "speaker": "narrator", "emotion": "ominous", "text": "In the far dark, behind walls of obsidian that have stood for six centuries, the Living Core stirs — and for the first time since it consumed its first world, something in Valdris's architecture registers the faint signal it has not felt in an age. Danger." }
     ]
   }
 }
