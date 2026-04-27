@@ -87,7 +87,7 @@
       "background": "ember_wastes",
       "dialogue": [
         { "speaker": null, "text": "As the ash settles, a figure descends from above — a dragoon knight, his armor scorched at the edges but his lance glowing bright with aerial energy. He lands before them without a sound." },
-        { "speaker": "Drake", "emotion": "formal", "text": "I am Drake, Dragoon of the Sky. For three centuries I have circled this wasteland. The Phoenix was bound to an endless cycle of burning, and my curse was to watch it — unable to stop it, unable to look away." },
+        { "speaker": "Drake", "emotion": "formal", "text": "I am Drake, Dragoon of the Sky. When I was pulled from my world into this rift, Valdris bound me to this wasteland. The Phoenix was forced into an endless cycle of burning, and my curse was to watch it — unable to stop it, unable to look away." },
         { "speaker": "Ria", "emotion": "surprised", "text": "To watch a creature of renewal forced to destroy itself, over and over. That is a terrible burden for a protector of the sky." },
         { "speaker": "Drake", "emotion": "conflicted", "text": "It was Valdris's idea of a lesson. But the moment the Phoenix fell, the chain broke. I can move again. And I know exactly where my lance needs to be." },
         { "speaker": "Rei", "emotion": "knowing", "text": "You survived a cycle designed to break your spirit. I understand that kind of endurance." },
