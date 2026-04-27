@@ -22,7 +22,7 @@ MAP_DEFS.lighthouse_isles = {
         { id: 'merman', x: 40, y: 30, patrol: 'horizontal', range: 10, speed: 1.2 },
         { id: 'crab',   x: 70, y: 20, patrol: 'random', range: 5, speed: 0.6 },
         { id: 'merman', x: 20, y: 15, patrol: 'vertical', range: 8, speed: 1.3 },
-        { id: 'kraken', x: 40, y: 12, patrol: 'stationary', isBoss: true, label: 'Abyssal Kraken' }
+        { id: 'abyssal_kraken', x: 40, y: 12, patrol: 'stationary', isBoss: true, label: 'Abyssal Kraken' }
     ],
     tiles: (function () {
         const rows = [];

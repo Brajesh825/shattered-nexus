@@ -1,4 +1,4 @@
-﻿{
+{
   "meta": {
     "resolution": "1024x1024",
     "downscale_to": "256x256 (enemies) / 128x192 (heroes)",
@@ -663,6 +663,24 @@
       "filename": "dragon.png",
       "target_path": "images/enemies/dragon.png",
       "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (shadow dragon), (massive dark purple scaled dragon), (large bat wings spread), (burning red eyes), (dark flame breath), (curved horns), (glowing purple magic aura), (legendary ancient evil), (imposing final boss size)"
+    },
+    {
+      "id": "deep_archpriest",
+      "name": "Deep Archpriest",
+      "category": "enemies",
+      "tier": 3,
+      "filename": "deep_archpriest.png",
+      "target_path": "images/enemies/deep_archpriest.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (massive deep sea jellyfish abomination), (twisted woman's torso and face fused into the enormous translucent bell:1.3), (distorted female features expressing silent agony), (bell body covered in barnacles and corrupted tissue), (dozens of long trailing tentacles dragging coral and bone debris), (bioluminescent teal corruption markings pulsing across body), (black corrupted water aura), (ancient sea creature warped by proximity to the seal), (water and void elemental horror), (macabre aquatic nightmare)"
+    },
+    {
+      "id": "abyssal_kraken",
+      "name": "Abyssal Kraken",
+      "category": "enemies",
+      "tier": 3,
+      "filename": "abyssal_kraken.png",
+      "target_path": "images/enemies/abyssal_kraken.png",
+      "prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (clean lineart:1.2), (full color), (bold outlines:1.2), (abyssal kraken boss), (colossal deep-sea cephalopod), (dark navy and black leathery body), (glowing bright red eyes), (enormous tentacles with sharp suckers), (submerged lighthouse ruins in background), (ink cloud aura), (menacing predator stance), (ancient marine terror aesthetic)"
     }
   ]
 }

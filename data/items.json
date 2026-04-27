@@ -168,6 +168,66 @@
     "rarity": "rare"
   },
   {
+    "id": "light_seal_fragment",
+    "name": "Light Seal Fragment",
+    "icon": "✨",
+    "type": "key_item",
+    "subtype": "story",
+    "value": 0,
+    "effect": { "target": "none", "stat": "none", "amount": 0, "percent": false },
+    "usable_in": [],
+    "description": "A shattered piece of the first Nexus. It radiates a warm, rhythmic light. Essabella needs these to restore the world's balance.",
+    "rarity": "rare"
+  },
+  {
+    "id": "fire_seal_fragment",
+    "name": "Fire Seal Fragment",
+    "icon": "🔥",
+    "type": "key_item",
+    "subtype": "story",
+    "value": 0,
+    "effect": { "target": "none", "stat": "none", "amount": 0, "percent": false },
+    "usable_in": [],
+    "description": "A burning shard from the second Nexus. It pulses with the memories of the Crystal Cavern archivists.",
+    "rarity": "rare"
+  },
+  {
+    "id": "earth_seal_fragment",
+    "name": "Earth Seal Fragment",
+    "icon": "🌿",
+    "type": "key_item",
+    "subtype": "story",
+    "value": 0,
+    "effect": { "target": "none", "stat": "none", "amount": 0, "percent": false },
+    "usable_in": [],
+    "description": "A heavy, stone-like fragment from the third Nexus. It weighs more than its size suggests, carrying the gravity of the Forge Lords' fall.",
+    "rarity": "rare"
+  },
+  {
+    "id": "water_seal_fragment",
+    "name": "Water Seal Fragment",
+    "icon": "💧",
+    "type": "key_item",
+    "subtype": "story",
+    "value": 0,
+    "effect": { "target": "none", "stat": "none", "amount": 0, "percent": false },
+    "usable_in": [],
+    "description": "A fluid, crystalline shard from the fourth Nexus. It feels cold and damp, echoing with the tragic rites of Oremis.",
+    "rarity": "rare"
+  },
+  {
+    "id": "nexus_core",
+    "name": "Nexus Core",
+    "icon": "🌌",
+    "type": "key_item",
+    "subtype": "story",
+    "value": 0,
+    "effect": { "target": "none", "stat": "none", "amount": 0, "percent": false },
+    "usable_in": [],
+    "description": "The fifth and final Nexus. It is the living heart of the world's archive. Valdris has implanted it within himself for true immortality.",
+    "rarity": "legendary"
+  },
+  {
     "id": "tent",
     "name": "Tent",
     "icon": "⛺",

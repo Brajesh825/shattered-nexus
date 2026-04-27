@@ -23,7 +23,7 @@ MAP_DEFS.ashen_foothills = {
         { id: 'fire_elemental', x: 40, y: 25, patrol: 'horizontal', range: 10, speed: 1.1 },
         { id: 'imp',    x: 12, y: 15, patrol: 'vertical', range: 5, speed: 1.3 },
         { id: 'fire_elemental', x: 68, y: 10, patrol: 'random', range: 4, speed: 1.1 },
-        { id: 'dark_knight',  x: 40, y: 6,  patrol: 'stationary', isBoss: true, label: 'Molten Golem' }
+        { id: 'molten_golem',  x: 40, y: 6,  patrol: 'stationary', isBoss: true, label: 'Molten Golem' }
     ],
     tiles: (function () {
         const rows = [];

@@ -127,7 +127,10 @@ MAP_DEFS.void_citadel = (function() {
             // SOUTH WING (Portal Guard)
             { id: 'bone_dragon', x: 60, y: 90, patrol: 'horizontal', range: 15, speed: 0.9 },
             { id: 'necromancer', x: 50, y: 105, patrol: 'random', range: 5, speed: 0.8 },
-            { id: 'necromancer', x: 70, y: 105, patrol: 'random', range: 5, speed: 0.8 }
+            { id: 'necromancer', x: 70, y: 105, patrol: 'random', range: 5, speed: 0.8 },
+
+            // MAP BOSS — Consumed Angel guards the inner gate
+            { id: 'consumed_angel', x: 60, y: 90, patrol: 'stationary', isBoss: true, label: 'Consumed Angel' }
         ],
 
         npcs: [

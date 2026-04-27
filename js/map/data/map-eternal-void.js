@@ -112,7 +112,10 @@ MAP_DEFS.eternal_void = (function() {
             // FINAL GATEKEEPERS (South Island)
             { id: 'shadow_wraith', x: 42, y: 85, patrol: 'random',     range: 4,  speed: 1.6 },
             { id: 'shadow_wraith', x: 58, y: 85, patrol: 'random',     range: 4,  speed: 1.6 },
-            { id: 'necromancer',   x: 50, y: 90, patrol: 'horizontal', range: 8,  speed: 1.0 }
+            { id: 'necromancer',   x: 50, y: 90, patrol: 'horizontal', range: 8,  speed: 1.0 },
+
+            // MAP BOSS — The Unravelling, the Void resisting dissolution
+            { id: 'the_unravelling', x: 50, y: 70, patrol: 'stationary', isBoss: true, label: 'The Unravelling' }
         ],
 
         npcs: [
