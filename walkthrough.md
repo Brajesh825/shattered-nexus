@@ -306,3 +306,27 @@ Enemies operate on a weighted system driven by their `aiRole` field.
 - **Tactician**: Scans the battlefield for active Auras. If a synergy detonation is possible, their probability of using a detonator ability gets a 300% weight boost.
 - **Predator**: Bypasses tanks (unless Taunted) and exclusively hunts the party member with the lowest HP percentage.
 - **Support**: Checks allied HP first. If a teammate falls below 50% HP, overrides its normal offensive pattern to heal or buff them.
+
+---
+
+## 12. Narrative Architecture
+
+The combat and exploration systems are framed by a high-stakes "Shattered Reality" narrative.
+
+### 12a — The Living Core
+The endgame objective is not merely to kill a villain, but to reclaim the **Nexus Core**. Valdris has injected this "Source Code" of reality into his own heart, turning himself into the only archive of Aethoria's original laws. 
+- **The Implication**: To save the world, the record must be retrieved, and the record is inseparable from Valdris. His death is the world's unlock.
+
+### 12b — The Goddess and the Vessel
+**Lady Essabella** is revealed as the Goddess of the Nexus inhabiting a mortal vessel. 
+- **The Loss of Overview**: By becoming mortal, she gained the right to fight but lost her "Perfect Overview" of reality.
+- **The Guilt**: Her obsession with "Calculation" is an attempt to compensate for her initial hesitation during the Shattering.
+
+### 12c — The Grand Ritual
+Valdris is absent from most of the game because he is **Phase-Locked**. Within the Void Citadel, he is performing a centuries-long "Grand Ritual" to force open the **Self-Guarding Shadow Seal**. 
+- **The Tactical Window**: This ritual prevents him from engaging the party personally until they breach his final sanctum.
+- **The Personal Anchors**: The four main bosses (Solvan, Dara, Oremis, Maren) are his "Battery-Anchors" that maintain the world's glitched state while he focuses on the upload.
+
+### 12d — Fractured Reality (Glitched Data)
+Corruption is treated as **Architectural Failure**. Enemies are "glitched" versions of their original selves, with their elemental code overwritten by shadow energy. 
+- **Combat as De-fragmentation**: Freeing a Fragment from a boss "re-tunes" the region, replacing the dark pulse with the world's original elemental laws.

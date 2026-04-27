@@ -132,7 +132,10 @@ MAP_DEFS.fortress_ramparts = (function() {
             // BASTION GUARDIANS
             { id: 'dark_phoenix',  x: 85, y: 65, patrol: 'random',     range: 5,  speed: 1.5 },
             { id: 'fallen_angel',  x: 95, y: 65, patrol: 'random',     range: 5,  speed: 1.5 },
-            { id: 'shadow_wraith', x: 90, y: 55, patrol: 'horizontal', range: 8,  speed: 1.3 }
+            { id: 'shadow_wraith', x: 90, y: 55, patrol: 'horizontal', range: 8,  speed: 1.3 },
+
+            // MAP BOSS — Void Colossus, crystallised weight of six centuries of absorbed data
+            { id: 'void_colossus', x: 50, y: 70, patrol: 'stationary', isBoss: true, label: 'Void Colossus' }
         ],
 
         npcs: [

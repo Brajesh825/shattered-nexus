@@ -100,7 +100,10 @@ MAP_DEFS.ember_wastes = (function() {
 
             // Central Guardians
             { id: 'golem',          x: 50, y: 45, patrol: 'random',     range: 3, speed: 1.0 },
-            { id: 'fire_elemental', x: 55, y: 40, patrol: 'random',     range: 3, speed: 1.3 }
+            { id: 'fire_elemental', x: 55, y: 40, patrol: 'random',     range: 3, speed: 1.3 },
+
+            // MAP BOSS — Forge Sentinel guards the outer perimeter
+            { id: 'forge_sentinel', x: 50, y: 5,  patrol: 'stationary', isBoss: true, label: 'Forge Sentinel' }
         ],
 
         npcs: [

@@ -23,7 +23,7 @@ MAP_DEFS.riverlands_crossing = {
         { id: 'wisp',   x: 40, y: 15, patrol: 'vertical', range: 8, speed: 1.5 },
         { id: 'bandit', x: 25, y: 35, patrol: 'random', range: 4, speed: 1.0 },
         { id: 'wisp',   x: 60, y: 32, patrol: 'horizontal', range: 10, speed: 1.6 },
-        { id: 'wyvern', x: 40, y: 27, patrol: 'stationary', isBoss: true, label: 'River King' }
+        { id: 'river_king', x: 40, y: 27, patrol: 'stationary', isBoss: true, label: 'River King' }
     ],
     tiles: (function () {
         const rows = [];
