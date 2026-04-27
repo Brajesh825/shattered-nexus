@@ -81,19 +81,21 @@
   "boss_chapter": {
     "title": "The Shadow Titan",
     "background": "core_chamber",
-    "cast": ["Aya", "Tao", "Lulu", "Rei"],
+    "cast": ["Aya", "Tao", "Lulu", "Rei", "Ria", "Valka", "Rex", "Drake"],
     "pre_dialogue": [
-      { "speaker": "narrator", "emotion": "intense", "text": "The darkness coalesces into something immense — a titan of shadow and malice, wearing Valdris's form like armor." },
-      { "speaker": "Aya", "emotion": "focused", "text": "This is not him. This is what he became when he refused to let go." },
-      { "speaker": "Rei", "emotion": "resolute", "text": "Then we break it. And we free what remains." }
+      { "speaker": "narrator", "emotion": "intense", "text": "The darkness coalesces into something immense — a titan of shadow and will, wearing Valdris's grief like armour. Not a monster. A decision made six hundred years ago and never unmade." },
+      { "speaker": "Rei", "emotion": "recognition", "text": "Maren the Still. I know what you chose. I know why you stayed." },
+      { "speaker": "narrator", "emotion": "vast_silence", "text": "The titan turns toward Rei. Something in its form shifts — not aggression. Something older than aggression." },
+      { "speaker": "Rei", "emotion": "heavy_certainty", "text": "You chose to become the seal. Not because you were ordered to. Because it was the only way to hold, and you were the strongest. I understand that logic. I lived by it for two thousand years. It is not wrong. But it is over now." },
+      { "speaker": "Aya", "emotion": "focused", "text": "This is not him. This is what he became when he refused to let go. We break it. We free what remains." },
+      { "speaker": "Valka", "emotion": "solemn_fire", "text": "Six centuries of will. We honour it by ending it. That is the last gift we can give them." },
+      { "speaker": "Tao", "emotion": "quiet_steel", "text": "For Maren. For all the Shadow Keepers who chose to remain. Let us end the waiting." }
     ],
     "post_dialogue": [
       { "speaker": "narrator", "emotion": "solemn", "text": "The titan staggers, cracks appearing in its shadow-form. But it does not fall — instead, it dissolves into cold mist, withdrawing into the very heart of the fortress." },
       { "speaker": "Tao", "emotion": "understanding", "text": "It is weakening. We wounded something that thought itself invulnerable. The path to the Eternal Void is open." },
-      { "speaker": "Rex", "emotion": "resolute", "text": "I have ruled for ages, but I have never seen a stand like this. The Shadow Emperor is retreatng because he finally has something to fear." },
+      { "speaker": "Rex", "emotion": "resolute", "text": "I have ruled for ages, but I have never seen a stand like this. The Shadow Emperor is retreating because he finally has something to fear." },
       { "speaker": "Aya", "emotion": "determined", "text": "Then we do not give him time to recover. This is the end of his eternity. Move!" }
     ]
   }
 }
-
-
