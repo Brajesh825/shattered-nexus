@@ -3,7 +3,7 @@
 ## ✅ Completed Milestones
 - **[2026-04-27] Critical Story Fixes & Arc Depth (C1–C3, S1–S2)**: Verified Arc 7 cast split was already resolved via `arc7_ch1b` ("Reunited"). Confirmed Arc 5→6 tonal break was already fixed. Arc 6 (`Fortress Gates`): added `seal_void` shard reward, new cutscene "What It Used to Be" (Consumed Angel reveal, all 8 cast), expanded boss pre/post dialogue from 3 to 6 lines. Arc 7 (`Inner Sanctum`): expanded Shadow Titan pre-dialogue from 3 to 7 lines with Rei's parallel with Maren the Still, boss cast expanded to all 8, typo fixed. Boss Gauntlet dynamic registry: auto-scans `Story.data.arcs` + `MAP_DEFS`, kills tracked via `Archive.recordKill` centralized in `Battle.setKO`, discovery gate enforced.
 - **[2026-04-27] Boss Integration Complete**: Added 11 new enemy entries (forge_sentinel, deep_archpriest, void_stalker, consumed_angel, void_colossus, the_unravelling, sunken_leviathan, river_king, molten_golem, abyssal_kraken, storm_sentinel) with full stats, lore, abilities, and statPhases. Fixed 5 proxy ID bugs in expansion maps. Added map boss entities to all Arc 3–8 main maps. Every map now has a two-layer boss structure.
-- **[2026-04-27] Lore & NPC Overhaul**: Rewrote lore_fragments.json (70 fragments) aligned to campaign canon. Rewrote npcs.js (21 NPCs, 307 dialogue lines). Fixed duplicate void_citadel NPC key (silent Arc 6 dialogue loss). Corrected mire_witch sprite path. Complete lore consistency sweep across all 8 arcs and expansion maps to explicitly align with the "Summoned" premise (main cast learns Aethorian history from Oracle/NPCs rather than knowing it natively).
+- **[2026-04-27] Lore & NPC Overhaul**: Rewrote lore_fragments.json (70 fragments) aligned to campaign canon, including 7 Expansion Region specific fragments. Rewrote npcs.js (21 NPCs, 307 dialogue lines). Fixed duplicate void_citadel NPC key (silent Arc 6 dialogue loss). Corrected mire_witch sprite path. Complete lore consistency sweep across all 8 arcs and expansion maps to explicitly align with the "Summoned" premise (main cast learns Aethorian history from Oracle/NPCs rather than knowing it natively).
 - **[2026-04-27] Expansion Region Story Depth (E1)**: Fixed 14 NPC `dialogueKey` mismatches across all 7 expansion maps — expansion NPC dialogue now fully functional. Added boss approach triggers (3–4 lines, referencing lore) to all 7 maps: Ashen Foothills (Molten Golem), Northern Highlands (Shadow Dragon), Lighthouse Isles (Abyssal Kraken), Southern Isles (Sunken Leviathan), Eastern Wetlands (Flesh Abomination), Sky Ruins (Storm Sentinel), Riverlands Crossing (River King). Enriched all 7 `completeMsg` strings from generic to emotionally specific story beats.
 - **[2026-04-26] Smooth-Curve Scaling Audit**: Comprehensive re-leveling of 15 maps (1-8, 7-15, 12-20) to ensure overlapping, accessible progression. Synchronized code with documentation, including the final shift of Northern Highlands to endgame status (Arc 6, Lv 35-43).
 - **[2026-04-26] Story Progression Documentation**: Created a master guide mapping all 8 Narrative Arcs and expansion regions with exact level ranges and unlock triggers.
@@ -41,8 +41,8 @@ Priority order (narrative richness of existing lore):
 4. **Northern Highlands** — The last dragon. The Highland Monk. Strong emotional setup already in NPC dialogue.
 5. **Southern Isles / Lighthouse Isles / Eastern Wetlands** — Thinner lore; can share a "drowned world" theme.
 
-### E2 — Valdris Aftermath Fragments
-One lore fragment per expansion region: the final words/record of the civilization that used to live there, unlocked when the player first enters the map. Feeds into the `~70 fragments` target from §4a (currently at ~70 but no expansion-specific entries).
+### ~~E2 — Valdris Aftermath Fragments~~ (Done)
+- Added 7 expansion-specific lore fragments during the `lore_fragments.json` rewrite.
 
 ### M6 — NPC Dialogue → Arc JSON Bridge (Tier 2 Upgrade)
 - The existing `dialogueKey` fix (E1) routes to the map NPC panel (existing engine)
@@ -185,10 +185,8 @@ Add an optional `"mode"` field to arc JSON chapters for distinct visual treatmen
 
 ## 📖 World Lore & Living World
 
-### L1 — Lore Fragments — Expansion Regions
-Currently ~70 fragments covering main arcs. Expansion regions have no dedicated entries.
-- Add 4–6 fragments per expansion region (7 regions = ~28–42 new fragments)
-- Priority types: **Remnant Records** (final words of each civilization) + **Corrupted Memories** (dropped by expansion bosses)
+### ~~L1 — Lore Fragments — Expansion Regions~~ (Done)
+- Added 7 expansion region lore fragments to `lore_fragments.json`.
 
 ### L2 — Enemy Lore Completion
 Every Tier 2 enemy and all bosses need a `lore` field covering: what they were, what corruption does to them, whether they remember.
