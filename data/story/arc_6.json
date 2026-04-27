@@ -44,7 +44,7 @@
       "pre_dialogue": [
         { "speaker": "narrator", "emotion": "intense", "text": "The Void Citadel stretches before them — black stone that swallows light, towers that twist in ways that hurt to look at. Shadow-creatures pour from every passage, guardians of the outer ring." },
         { "speaker": "Rei", "emotion": "ready", "text": "Let them come. We break through." },
-        { "speaker": "Ria", "emotion": "calm", "text": "The eidolons say this place was not always dark. Once, it held light. They remember singing in its halls." },
+        { "speaker": "Ria", "emotion": "calm", "text": "The eidolons sense the echoes. This place was not always dark. Once, it held light. They can feel what used to sing in its halls." },
         { "speaker": "Valka", "emotion": "resolute", "text": "Then we reclaim it. Not for ourselves — for what was stolen from it." }
       ],
       "post_dialogue": [
@@ -65,8 +65,8 @@
           "narration": "Inside the outer walls, the fortress is different to what they expected. Not a weapon. Not a dungeon. A palace, once — its bones still visible beneath the corruption. Arched corridors that were meant to carry light. Libraries with empty shelves where knowledge used to live. Someone built this place to be beautiful.",
           "dialogue": [
             { "speaker": "Tao", "emotion": "quiet", "text": "This was not a fortress. It was a home." },
-            { "speaker": "Ria", "emotion": "aching", "text": "The eidolons remember. They have been here before — in another age, when the singing in these halls was not screaming." },
-            { "speaker": "Rei", "emotion": "heavy", "text": "He built this. Before the hunger. When he was still someone who built things." }
+            { "speaker": "Ria", "emotion": "aching", "text": "The eidolons sense the tragedy here. A place that was meant to be beautiful, now corrupted into a weapon." },
+            { "speaker": "Rei", "emotion": "heavy", "text": "The Oracle's records say he built this. Before the hunger. When he was still someone who built things." }
           ]
         },
         {
