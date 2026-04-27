@@ -174,8 +174,6 @@ function resolveOffensiveAction(actor, target, targetIdx, action, element) {
 
   if (target.hp <= 0) {
     Battle.setKO(target, true);
-    // If it was an enemy kill, record in Archive
-    if (typeof Archive !== 'undefined') Archive.recordKill(target.id);
   }
 
   BattleUI.popEnemy(targetIdx, dmg, isMagic ? 'magic' : 'dmg', element);
@@ -388,6 +386,9 @@ function resolveEnemyOffensiveAction(actor, target, targetIdx, ab, element) {
     const reflect = Math.floor(dmg * reflectPerc);
     actor.hp = Math.max(0, actor.hp - reflect);
     BattleUI.addLog(`✦ Reflected ${reflect} damage!`, 'magic');
+    if (actor.hp <= 0) {
+      Battle.setKO(actor, true);
+    }
   }
 
   return dmg;

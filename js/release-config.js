@@ -21,7 +21,7 @@ const ReleaseConfig = {
 
   // Development mode: set to false for production
   // Can be overridden via ?debug=true URL parameter
-  IS_DEV: false,
+  IS_DEV: true,
 
   // UI Strings for the "End of Version" screen
   BETA_END_TITLE: "ARC 1 COMPLETE",

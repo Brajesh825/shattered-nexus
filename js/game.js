@@ -118,6 +118,11 @@ const Battle = {
         BattleUI.addLog(`${unit.displayName} has fallen!`, 'dmg');
         if (idx !== -1) BattleUI.setSpriteFrame(idx, 'fallen');
       }
+    } else {
+      // Record victory in the Archive automatically for every enemy KO
+      if (typeof Archive !== 'undefined') {
+        Archive.recordKill(unit.id);
+      }
     }
     if (window.LogDebug) window.LogDebug(`[KO] ${unit.displayName || unit.name} knocked out`, 'dmg');
   },
@@ -686,7 +691,6 @@ function checkBattleEnd() {
         totalGold += e.gold;
         const rawDef = G.enemies.find(r => r.id === e.id);
         if (rawDef) _awardDrops(rawDef).forEach(id => allDrops.push(id));
-        if (typeof Archive !== 'undefined') Archive.recordKill(e.id);
         // One relic drop attempt per encounter (elite enemies have higher chance)
         if (!relicDrop) relicDrop = _tryRelicDrop(rawDef?.elite || false);
       });
