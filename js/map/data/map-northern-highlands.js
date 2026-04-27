@@ -97,7 +97,7 @@ MAP_DEFS.northern_highlands = {
             x: 30, y: 8, w: 20, h: 6,
             type: 'dialogue',
             lines: [
-                { speaker: 'Rei', text: 'It absorbed void energy to survive when all the others faded. Six centuries of that. We need to understand what we are putting down — not just who is ordering us to do it.' },
+                { speaker: 'Rei', text: 'The Monk told us it absorbed void energy to survive when all the others faded. Six centuries of that. We need to understand what we are putting down — not just who is ordering us to do it.' },
                 { speaker: 'Drake', text: 'Something that chose to endure by changing what it was. There is a kind of courage in that. Even if the result is this.' },
                 { speaker: 'Aya', text: 'We acknowledge what it was. Then we end what it has become. That is all we can offer it.' }
             ]

@@ -116,7 +116,7 @@ MAP_DEFS.ashen_foothills = {
             type: 'dialogue',
             lines: [
                 { speaker: 'Aya', text: 'The hammering is louder here. Whatever is at the center... it has been working without stopping.' },
-                { speaker: 'Rei', text: 'The Forge Lords made something that could not be unmade. This is what permanent looks like without a purpose left to justify it.' },
+                { speaker: 'Rei', text: 'The Flame Spirit told us the Forge Lords made something that could not be unmade. This is what permanent looks like without a purpose left to justify it.' },
                 { speaker: 'Tao', text: 'We end it. Gently if we can. It is not the Golem\'s fault it outlasted everything it was built for.' }
             ]
         }

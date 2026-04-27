@@ -144,7 +144,7 @@
       "post_dialogue": [
         { "speaker": "narrator", "emotion": "solemn", "text": "The deepest chamber opens before them. The water is still here — ancient, black, lit from below by the pulse of the Wind Seal Fragment. And beneath the surface, something immense circles." },
         { "speaker": "Lulu", "emotion": "moved", "text": "The water here is grief-soaked. Something ancient was bound to this place against its will. I can feel it." },
-        { "speaker": "Rei", "emotion": "quiet", "text": "The Kraken. Pre-dates Valdris. He corrupted it when he broke the Seal — turned a guardian into a jailer." },
+        { "speaker": "Rei", "emotion": "quiet", "text": "The Oracle's records mention the Kraken. It pre-dates Valdris. He corrupted it when he broke the Seal — turned a guardian into a jailer." },
         { "speaker": "Aya", "emotion": "resolved", "text": "Then we free it. That is what we do. Together." }
       ]
     }
@@ -156,7 +156,7 @@
     "cast": ["Aya", "Tao", "Lulu", "Rei"],
     "pre_dialogue": [
       { "speaker": "narrator", "emotion": "heavy", "text": "The Kraken rises from the black water — ancient, immense, its body threaded through with shadow-corruption that pulses in time with the Wind Seal Fragment. It does not want to be here. It has no choice." },
-      { "speaker": "Rei", "emotion": "grave", "text": "It was a guardian once. This temple, these depths — they were its charge. Valdris broke the Seal and broke the creature with it." },
+      { "speaker": "Rei", "emotion": "grave", "text": "The Oracle told us it was a guardian once. This temple, these depths — they were its charge. Valdris broke the Seal and broke the creature with it." },
       { "speaker": "Lulu", "emotion": "determined", "text": "I can feel what it feels. It is not anger. It is grief. We end this for its sake." },
       { "speaker": "Tao", "emotion": "ready", "text": "For its sake, and for ours. Together." }
     ],
