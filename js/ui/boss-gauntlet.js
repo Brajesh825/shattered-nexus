@@ -211,13 +211,13 @@ const BossGauntlet = {
             });
 
         // Application of Release and Discovery Filters
-        // isDebug bypasses the RELEASE gate (lets you see unreleased arcs)
-        // but NOT the discovery gate (you still need kills to unlock a boss).
+        // isDebug: shows ALL bosses within MAX_REACHABLE_ARC, no kill required (dev testing).
+        // Normal mode: boss must have at least one confirmed kill to appear.
         const isDebug = new URLSearchParams(window.location.search).get('debug') === 'true' || (typeof ReleaseConfig !== 'undefined' && ReleaseConfig.IS_DEV);
 
         bosses.forEach(boss => {
             const reg = registry[boss.id];
-            const isReleased = isDebug || (typeof ReleaseConfig === 'undefined') || reg.arcIdx <= ReleaseConfig.MAX_REACHABLE_ARC;
+            const isReleased = (typeof ReleaseConfig === 'undefined') || reg.arcIdx <= ReleaseConfig.MAX_REACHABLE_ARC;
 
             // Discovery gate: boss must have at least one confirmed kill
             let hasKills = 0;
@@ -228,9 +228,10 @@ const BossGauntlet = {
             // Legacy fallback: cleared map also counts (handles old saves without kill records)
             const isCleared = (G.clearedMaps && G.clearedMaps.includes(reg.mapId));
 
-            const isUnlocked = hasKills > 0 || isCleared;
+            // Dev mode bypasses the kill requirement but respects the release gate
+            const isUnlocked = isDebug || hasKills > 0 || isCleared;
 
-            // Only show the boss if it has been cleared/unlocked AND is released
+            // Only show if released AND unlocked
             if (isReleased && isUnlocked) {
                 const card = this.createBossCard(boss, true);
                 grid.appendChild(card);
