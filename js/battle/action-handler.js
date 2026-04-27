@@ -12,11 +12,13 @@ const ActionHandler = {
       BattleUI.showTutorial("🛡️ VANGUARD: The front-most ally (left) intercepts single-target attacks. Keep them healthy!");
     }
 
+    const element = ab.element || ab.effect?.element || 'physical';
+
     if (ab.type === 'physical' || ab.type === 'magic_damage') {
-      return resolveOffensiveAction(actor, target, targetIdx, ab, ab.element || 'physical');
+      return resolveOffensiveAction(actor, target, targetIdx, ab, element);
     } else if (ab.type === 'buff_def' || ab.type === 'heal' || ab.type === 'buff') {
       // These are handled by ActionEngine generally now, but kept for legacy calls
-      ActionEngine.execute(actor, [target], ab, ab.element || 'physical', {}, isEnemy);
+      ActionEngine.execute(actor, [target], ab, element, {}, isEnemy);
     }
   }
 };
@@ -166,7 +168,8 @@ function resolveOffensiveAction(actor, target, targetIdx, action, element) {
   BattleUI.renderEnemyRow(); // Immediate refresh for boss/enemy bars
 
   // Strategic Thaw: Attacking a frozen target breaks the ice
-  if (typeof StatusSystem !== 'undefined' && StatusSystem.has(target, 'status_frozen')) {
+  // (Non-Ice attacks only; Ice damage shouldn't thaw ice)
+  if (element !== 'ice' && typeof StatusSystem !== 'undefined' && StatusSystem.has(target, 'status_frozen')) {
     StatusSystem.remove(target, 'status_frozen');
     BattleUI.addLog(`❄️ ${target.name} shattered! They are no longer frozen!`, 'magic');
     BattleUI.renderEnemyRow();
@@ -545,6 +548,15 @@ const ActionEngine = {
       const enemy = targets[0];
       if (!enemy) { if (!isEnemyAction) setTimeout(() => TurnManager.advance(), 750); return; }
 
+      // Elemental Reaction Check
+      const reaction = Battle.triggerReaction(enemy, element);
+      if (reaction) {
+        BattleUI.popReaction(G.enemyGroup.indexOf(enemy), reaction.label, isEnemyAction ? 'party' : 'enemy');
+        BattleUI.addLog(`✨ ELEMENTAL REACTION: ${reaction.label}!`, 'magic');
+        // Record discovered weakness in Archive
+        if (typeof Archive !== 'undefined') Archive.recordWeakness(enemy.id, element);
+      }
+
       const debuffParts = [];
       const sourceSuffix = `_${ab.id}`;
       if (e.stat)        { Battle.addStatus(enemy, { id: `debuff_${e.stat}${sourceSuffix}`, label: `${e.stat.toUpperCase()} Down`, icon: '🔻', stat: e.stat, type: 'mult', value: e.multiplier || 0.7, turns: e.duration || 2, color: 'var(--red)' }); BattleUI.addLog(`${enemy.name}'s ${e.stat.toUpperCase()} lowered!`, 'magic'); debuffParts.push(`${e.stat.toUpperCase()}×${e.multiplier || 0.7}`); }
@@ -555,6 +567,11 @@ const ActionEngine = {
 
       if (window.LogDebug) {
         window.LogDebug(`[DEBUFF] ${actor.displayName || actor.name} uses ${ab.name} -> ${enemy.name}: ${debuffParts.join(', ') || 'no effect'} (${e.duration || 2} turns)`, 'dmg');
+      }
+
+      // Apply Aura if no reaction
+      if (!reaction && element !== 'physical') {
+        Battle.applyAura(enemy, element);
       }
 
       BattleUI.renderEnemyRow();

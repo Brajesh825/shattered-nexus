@@ -177,10 +177,17 @@ const StatusSystem = {
    */
   triggerReaction(target, detonator) {
     if (!target.statuses) return null;
+    
+    // Find active aura
     const aura = target.statuses.find(s => s.id.startsWith('aura_'));
-    if (!aura) return null;
+    const isFrozen = this.has(target, 'status_frozen');
+    
+    if (!aura && !isFrozen) return null;
 
-    const auraType = aura.id.replace('aura_', '');
+    // If target is frozen, treat it as a high-potency Ice Aura
+    const auraType = aura ? aura.id.replace('aura_', '') : (isFrozen ? 'ice' : null);
+    if (!auraType) return null;
+
     let reaction = null;
 
     if (auraType === 'ice') {
@@ -297,7 +304,9 @@ const StatusSystem = {
     }
 
     if (reaction) {
-      this.remove(target, aura.id); // Consume aura
+      // Consume the source (Aura and/or Frozen status)
+      if (aura) this.remove(target, aura.id);
+      if (auraType === 'ice') this.remove(target, 'status_frozen');
 
       // Scaling by elemental affinity
       const m = typeof Battle !== 'undefined' ? Battle.elemMult(detonator, target) : 1.0;
