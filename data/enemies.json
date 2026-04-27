@@ -3999,7 +3999,7 @@
       { "id": "tidal_heal", "name": "Tidal Heal", "type": "heal", "weight": 35, "effect": { "healPercent": 0.28, "aoe": true } },
       { "id": "deep_bind", "name": "Deep Bind", "type": "debuff", "weight": 30, "effect": { "slow": true } }
     ],
-    "lore": "When Oremis returned from the deep, his inner council was the first to stand beside him. They were the closest. The first he touched in the healing ceremony that spread what he had become. The Deep Archpriest was his most trusted — fifty years of working beside Oremis, absorbing the same deep-water resonance through proximity before Oremis ever laid hands on anyone. He turned first. He still heals. He still performs the purification rites. The rites now spread what they were designed to remove.",
+    "lore": "When Oremis returned from the deep, his inner council was the first to stand beside him. They were the closest. The first he touched in the healing ceremony that spread what he had become. The Deep Archpriest was his most trusted — fifty years of working beside Oremis, absorbing the same deep-water resonance through proximity before Oremis ever laid hands on anyone. She turned first. She still heals. She still performs the purification rites. The rites now spread what they were designed to remove. The abomination she has become — a massive, translucent predator with her own features warped into the bell — is the final testament to her devotion.",
     "drops": [
       { "item": "Corrupted Pearl", "chance": 0.7 },
       { "item": "Water Sigil", "chance": 0.35 }
