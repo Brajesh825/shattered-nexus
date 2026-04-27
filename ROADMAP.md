@@ -91,11 +91,11 @@ Add an optional `"mode"` field to arc JSON chapters for distinct visual treatmen
 - `story.js` becomes an orchestrator; `cutscene.js` owns portrait management, typewriter, and dialogue queue
 - Resolves the current 1643-line monolith mixing save/load/world-map/cutscene logic
 
-### N4 — Intra-Party Chemistry Beats
-- Add 2–3 party chemistry moments per arc, triggered after boss defeat
+### ~~N4 — Intra-Party Chemistry Beats~~ (Done)
+- Added 2–3 party chemistry moments per arc, triggered after boss defeat
 - Arcs 1–5 have strong individual character beats; Arcs 6–8 have none
 - Pure data work in arc JSON — zero engine changes
-- Suggested beats: Rei and Maren's parallel in Arc 7, Essabella naming the Consumed Angel in Arc 6, Tao's final eulogy before Arc 8
+- Added Essabella naming the Consumed Angel in Arc 6, Rei and Maren's parallel in Arc 7, and Tao's final eulogy before Arc 8.
 
 ### N5 — Character Moment Content Pass
 - Current `char_moment` phases post-boss are structurally defined but content-thin in Arc 5
