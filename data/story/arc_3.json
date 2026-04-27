@@ -87,12 +87,12 @@
       "background": "ember_wastes",
       "dialogue": [
         { "speaker": null, "text": "As the ash settles, a figure descends from above — a dragoon knight, his armor scorched at the edges but his lance glowing bright with aerial energy. He lands before them without a sound." },
-        { "speaker": "Drake", "emotion": "formal", "text": "I am Drake, Dragoon of the Sky. I have been circling this wasteland for longer than I can account for. The moment the Phoenix fell — something in me unclenched. A chain I had forgotten was there." },
-        { "speaker": "Ria", "emotion": "surprised", "text": "A dragoon. I have heard of them — warriors who fight between earth and sky. What bound you here?" },
-        { "speaker": "Drake", "emotion": "conflicted", "text": "A curse I could not name. I only knew I could not leave. Now, feeling it shatter — I can move again. I would move with you, if you will have me." },
-        { "speaker": "Rei", "emotion": "knowing", "text": "A warrior chained by oaths not of their choosing, freed by the breaking of chains elsewhere. I understand that more than most." },
-        { "speaker": "Aya", "emotion": "welcoming", "text": "Then stand with us. Not by curse — by choice." },
-        { "speaker": "Drake", "emotion": "resolved", "text": "My lance answers to a new oath now. The oath to see this darkness end." }
+        { "speaker": "Drake", "emotion": "formal", "text": "I am Drake, Dragoon of the Sky. For three centuries I have circled this wasteland. The Phoenix was bound to an endless cycle of burning, and my curse was to watch it — unable to stop it, unable to look away." },
+        { "speaker": "Ria", "emotion": "surprised", "text": "To watch a creature of renewal forced to destroy itself, over and over. That is a terrible burden for a protector of the sky." },
+        { "speaker": "Drake", "emotion": "conflicted", "text": "It was Valdris's idea of a lesson. But the moment the Phoenix fell, the chain broke. I can move again. And I know exactly where my lance needs to be." },
+        { "speaker": "Rei", "emotion": "knowing", "text": "You survived a cycle designed to break your spirit. I understand that kind of endurance." },
+        { "speaker": "Aya", "emotion": "welcoming", "text": "Then stand with us. Let the cycle end here." },
+        { "speaker": "Drake", "emotion": "resolved", "text": "My lance answers to a new oath now. We bring the sky down on him." }
       ]
     }
   }
