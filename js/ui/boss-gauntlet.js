@@ -4,6 +4,14 @@ const BossGauntlet = {
 
     init() {
         this.updateButtonVisibility();
+        // Pre-warm story data so the registry can find arc bosses immediately
+        // when the Gauntlet opens, even before any game has been started.
+        if (typeof Story !== 'undefined' && !Story.data) {
+            Story.init(() => {
+                // Invalidate the registry cache so it rebuilds with fresh arc data
+                this._bossRegistry = null;
+            });
+        }
     },
 
     updateButtonVisibility() {
@@ -155,6 +163,15 @@ const BossGauntlet = {
         G.inventory = s.inventory || [];
         G.clearedMaps = s.clearedMaps || [];
         G.arcIdx = s.arcIdx || 0;
+        G.unlockedChars = s.unlockedChars || G.selectedChars;
+
+        // ── Hydrate Archive from save ─────────────────────────────────────
+        // Critical: the Archive system reads from G.archive, which won't be
+        // populated unless we copy it from the save file and re-initialize.
+        if (s.archive) {
+            G.archive = s.archive;
+            if (typeof Archive !== 'undefined') Archive.init();
+        }
 
         if (typeof buildParty === 'function') buildParty();
 

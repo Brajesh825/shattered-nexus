@@ -9,12 +9,16 @@ const Archive = {
   },
 
   init() {
-    // Load existing archive from global G (which loads from Save)
+    // Load existing archive from global G (which loads from Save).
+    // Safe to call multiple times — always replaces live data with G.archive
+    // so switching saves in the Gauntlet never bleeds stale kill counts.
     if (G.archive) {
-      this.data = { ...this.data, ...G.archive };
-      // Ensure story registry exists for legacy saves
-      if (!this.data.story) this.data.story = {};
+      this.data = {
+        bestiary: { ...(G.archive.bestiary || {}) },
+        story:    { ...(G.archive.story    || {}) },
+      };
     } else {
+      this.data = { bestiary: {}, story: {} };
       G.archive = this.data;
     }
   },
