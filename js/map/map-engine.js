@@ -923,6 +923,7 @@ const MapEngine = (() => {
         MapPlayer.reset(_map.playerStart.x, _map.playerStart.y);
         _campUnlocked = false; _atCamp = false;
         showScreen('explore-screen');
+        MapPlayer.setCooldown(8); // Grace period
         resume();
         if (typeof MapUI !== 'undefined') MapUI.showMsg('💀 Defeated — returned to camp.', 2400);
       } else {
@@ -936,6 +937,7 @@ const MapEngine = (() => {
     }
     MapEntities.removeEncountered();
     showScreen('explore-screen');
+    MapPlayer.setCooldown(8); // Grace period
     resume();
     if (typeof MapUI !== 'undefined') MapUI.showMsg('Victory!', 1200);
   }

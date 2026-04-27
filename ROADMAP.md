@@ -131,9 +131,9 @@ Add an optional `"mode"` field to arc JSON chapters for distinct visual treatmen
 - When set, `story.js` looks up that key in the arc JSON and renders it through the cutscene engine
 - Prerequisite for §E1 expansion story content without a new engine
 
-### M7 — Encounter Cooldown
-- Add a `_encounterCooldown` step counter (minimum ~8 steps between encounters)
-- Prevents back-to-back encounters that feel punishing; does not reduce overall density
+### ~~M7 — Encounter Cooldown & Random Steps~~ (Done)
+- Switched to a hybrid system: maximum 4 visible normal enemies per map, plus random invisible step encounters (~8% chance).
+- Added an 8-step cooldown after battles where the player sprite pulses and no encounters can trigger.
 
 ### M8 — Level Range Comment Audit
 - `map-data.js` comments have drifted from `STORY_PROGRESSION.md` (e.g. Arc 3 comments say Lv 8–12, doc says Lv 12–20)

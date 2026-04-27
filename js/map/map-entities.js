@@ -60,6 +60,9 @@ const MapPlayer = (() => {
   let _queuedDir = null;
   let _stepDir   = null; // {dx,dy} of current step
 
+  let _encounterCooldown = 0;
+  let _pendingRandomEncounter = false;
+
   // Last known facing direction (persists when idle)
   let _facing = { dx: 0, dy: 1 }; // default: facing down
 
@@ -90,6 +93,8 @@ const MapPlayer = (() => {
     moving = false; moveTimer = 0;
     _queuedDir = null; _stepDir = null;
     _frame = 0; _frameTimer = 0;
+    _encounterCooldown = 0;
+    _pendingRandomEncounter = false;
   }
 
   function findNearestSafeTile(targetX, targetY, map) {
@@ -136,6 +141,13 @@ const MapPlayer = (() => {
       if (moveTimer >= MOVE_DURATION) {
         px = tx * TILE; py = ty * TILE;
         moving = false; moveTimer = 0;
+        
+        if (_encounterCooldown > 0) {
+            _encounterCooldown--;
+        } else if (Math.random() < 0.08) {
+            _pendingRandomEncounter = true;
+        }
+
         // Apply queued direction immediately
         if (_queuedDir) {
           const d = _queuedDir; _queuedDir = null;
@@ -315,6 +327,10 @@ const MapPlayer = (() => {
     const ox = Math.round((TILE - dw) / 2);
     const oy = Math.round(TILE - dh);       // anchor bottom of sprite to tile bottom
 
+    if (_encounterCooldown > 0) {
+      ctx.globalAlpha = 0.6 + 0.2 * Math.sin(Date.now() / 150);
+    }
+
     if (info && info.sheet) {
       // Left strip is stored reversed (walk2,walk1,idle), so mirror the index
       const frameIdx = info.rev ? (FRAME_COUNT - 1 - _frame) : _frame;
@@ -344,6 +360,10 @@ const MapPlayer = (() => {
       ctx.fillRect(sx + 6, sy + 6 + bounce, TILE - 12, TILE - 12);
     }
 
+    if (_encounterCooldown > 0) {
+      ctx.globalAlpha = 1.0;
+    }
+
     // Name tag
     if (!moving) {
       if (hero) {
@@ -371,6 +391,13 @@ const MapPlayer = (() => {
     get py() { return py; },
     get moving() { return moving; },
     getFacing: () => ({ dx: _facing.dx, dy: _facing.dy }),
+    getCooldown: () => _encounterCooldown,
+    setCooldown: (val) => { _encounterCooldown = val; _pendingRandomEncounter = false; },
+    checkRandomEncounter: () => { 
+       const ret = _pendingRandomEncounter; 
+       _pendingRandomEncounter = false; 
+       return ret; 
+    },
     reset, update, render, dpad, pickVariants, rescale,
   };
 })();
@@ -399,7 +426,21 @@ const MapEntities = (() => {
   }
 
   function init(map) {
-    _enemies = (map.enemies || []).map((e, i) => ({
+    let normalCount = 0;
+    const filteredEnemies = (map.enemies || []).filter(e => {
+      // Check if boss or elite
+      const raw = (G && G.enemies) ? G.enemies.find(r => r.id === e.id) : null;
+      const isElite = raw ? (raw.isBoss || raw.tier >= 3) : (e.isBoss || e.id.includes('boss'));
+      
+      if (isElite) return true;
+      if (normalCount < 4) {
+        normalCount++;
+        return true;
+      }
+      return false;
+    });
+
+    _enemies = filteredEnemies.map((e, i) => ({
       id:      e.id,
       idx:     i,
       name:    (() => { const d = G && G.enemies && G.enemies.find(r => r.id === e.id); return d ? d.name.slice(0, 8) : e.id; })(),
@@ -604,7 +645,10 @@ const MapEntities = (() => {
   }
 
   function checkEncounter(map) {
+    if (MapPlayer.getCooldown() > 0) return null;
+
     const ptx = MapPlayer.tx, pty = MapPlayer.ty;
+    // 1. Check physical enemies (Bosses / Elites / specific patrols)
     for (let i = 0; i < _enemies.length; i++) {
       const en = _enemies[i];
       if (!en.alive) continue;
@@ -615,22 +659,37 @@ const MapEntities = (() => {
           enemies: ids, 
           mutation: en.mutation || null, 
           mutantTraits: en.mutantTraits || null,
-          isBoss: en.isBoss || false // Pass through the map-level boss flag
+          isBoss: en.isBoss || false
         };
       }
     }
+
+    // 2. Check random invisible encounters
+    if (MapPlayer.checkRandomEncounter()) {
+      _encounteredIdx = -1;
+      const ids = _buildEncounterGroup(null, map);
+      return {
+        enemies: ids,
+        mutation: null,
+        mutantTraits: null,
+        isBoss: false
+      };
+    }
+
     return null;
   }
 
   // Build a 1–4 enemy encounter group from the triggered enemy + map pool
   function _buildEncounterGroup(triggerId, map) {
     const mapEnemyIds = (map.encounters || map.enemies || []).map(e => e.id);
-    const pool        = mapEnemyIds.length ? mapEnemyIds : [triggerId];
+    const pool = mapEnemyIds.length ? mapEnemyIds : (triggerId ? [triggerId] : ['slime']);
 
-    // --- LOGIC FIX: Respect Bosses and Tier 3 Alphas ---
-    const raw = (G && G.enemies) ? G.enemies.find(r => r.id === triggerId) : null;
-    if (raw && (raw.isBoss || raw.tier >= 3)) {
-        return [triggerId]; // Bosses/Alphas always fight solo or as defined by trigger
+    if (triggerId) {
+      // --- LOGIC FIX: Respect Bosses and Tier 3 Alphas ---
+      const raw = (G && G.enemies) ? G.enemies.find(r => r.id === triggerId) : null;
+      if (raw && (raw.isBoss || raw.tier >= 3)) {
+          return [triggerId]; // Bosses/Alphas always fight solo or as defined by trigger
+      }
     }
 
     // Use encounter templates if defined on the map, else roll random group size
@@ -644,7 +703,7 @@ const MapEntities = (() => {
       }
     }
 
-    // Fallback: triggered enemy is always first; roll group size 1–4
+    // Fallback: triggered enemy is always first; roll group size 1-4
     const r = Math.random();
     let groupSize;
     if      (r < 0.25) groupSize = 1;   // 25% solo
@@ -652,7 +711,8 @@ const MapEntities = (() => {
     else if (r < 0.85) groupSize = 3;   // 25% trio
     else               groupSize = 4;   // 15% quad (horde)
 
-    const ids = [triggerId];
+    const firstEnemy = triggerId || pool[Math.floor(Math.random() * pool.length)];
+    const ids = [firstEnemy];
     while (ids.length < groupSize) {
       ids.push(pool[Math.floor(Math.random() * pool.length)]);
     }
