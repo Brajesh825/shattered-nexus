@@ -53,10 +53,10 @@ Priority order (narrative richness of existing lore):
 
 ## 🟢 Release & Polish
 
-### P1 — Cutscene Skip (Priority: High)
+### ~~P1 — Cutscene Skip~~ (Done)
 - Tap once to complete the current typewriter line instantly
 - Tap again to advance to the next line
-- Table-stakes UX for any RPG with non-skippable scenes
+- Bound to the entire cutscene screen, excluding choice buttons
 
 ### P2 — iOS Safe Area
 - Apply `env(safe-area-inset-*)` padding to fixed UI elements for notch/home-bar devices
@@ -74,9 +74,9 @@ Priority order (narrative richness of existing lore):
 
 ## 🎬 Cutscene & Narrative Presentation
 
-### N1 — Emotion → Portrait Visual Mapping
+### ~~N1 — Emotion → Portrait Visual Mapping~~ (Done)
 - Map `emotion` values already in arc JSON (e.g. `"grave"`, `"shocked"`) to CSS filter overlays on character portraits
-- Use `hue-rotate`, `brightness`, and `saturate` — no new assets required
+- Used `hue-rotate`, `brightness`, and `saturate` — no new assets required
 - Dramatically increases scene expressiveness at near-zero cost
 
 ### N2 — Cutscene Presentation Modes
