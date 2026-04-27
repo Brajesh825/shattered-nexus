@@ -314,6 +314,7 @@ const Story = {
       if (s.npcTalked) G.npcTalked = s.npcTalked;
       if (s.ownedRelics) G.ownedRelics = s.ownedRelics;
       if (s.activeRelics) G.activeRelics = s.activeRelics;
+      if (s.archive) { G.archive = s.archive; if (typeof Archive !== 'undefined') Archive.init(); }
 
       // If saved from explore map, restore directly to that map (no overlay/selection)
       if (s.mapId) {
@@ -1162,6 +1163,7 @@ const Story = {
       inventory: G.inventory || [],
       ownedRelics: G.ownedRelics || [],
       activeRelics: G.activeRelics || [],
+      archive: G.archive || {},
       mapId,
       mapX,
       mapY,
