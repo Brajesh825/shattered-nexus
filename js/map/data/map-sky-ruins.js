@@ -13,9 +13,12 @@ MAP_DEFS.sky_ruins = {
     weather: 'mist',
     enemyLevelRange: [35, 43],
     encounterTemplates: [
-        { weight: 2, enemies: ['void_knight'], mutation: 'corrupted' },
-        { weight: 1, enemies: ['lich'], mutation: 'corrupted' },
-        { weight: 1, enemies: ['dark_knight'], mutation: 'corrupted' }
+        { weight: 3, enemies: ['void_knight'], mutation: 'corrupted' },
+        { weight: 2, enemies: ['lich'], mutation: 'corrupted' },
+        { weight: 2, enemies: ['dark_knight'], mutation: 'corrupted' },
+        { weight: 2, enemies: ['void_knight', 'lich'], mutation: 'corrupted' },
+        { weight: 1, enemies: ['void_knight', 'dark_knight'], mutation: 'corrupted' },
+        { weight: 1, enemies: ['lich', 'dark_knight'], mutation: 'corrupted' }
     ],
     enemies: [
         // Roaming Guardians (Wide patrol, 100% walkable)

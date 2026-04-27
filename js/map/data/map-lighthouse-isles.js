@@ -13,15 +13,22 @@ MAP_DEFS.lighthouse_isles = {
     weather: 'mist',
     enemyLevelRange: [25, 33],
     encounterTemplates: [
-        { weight: 3, enemies: ['crab'] },
-        { weight: 2, enemies: ['merman'] },
-        { weight: 1, enemies: ['crab', 'merman'] }
+        { weight: 4, enemies: ['crab', 'crab'] },
+        { weight: 3, enemies: ['merman'] },
+        { weight: 2, enemies: ['crab', 'merman'] },
+        { weight: 2, enemies: ['wisp'] },
+        { weight: 1, enemies: ['merman', 'merman'] },
+        { weight: 1, enemies: ['crab', 'crab', 'merman'] },
+        { weight: 1, enemies: ['wisp', 'merman'] }
     ],
     enemies: [
-        { id: 'crab',   x: 10, y: 30, patrol: 'random', range: 5, speed: 0.6 },
+        // --- COASTAL SENTINELS ---
+        { id: 'crab',   x: 10, y: 30, patrol: 'random',     range: 5,  speed: 0.6 },
         { id: 'merman', x: 40, y: 30, patrol: 'horizontal', range: 10, speed: 1.2 },
-        { id: 'crab',   x: 70, y: 20, patrol: 'random', range: 5, speed: 0.6 },
-        { id: 'merman', x: 20, y: 15, patrol: 'vertical', range: 8, speed: 1.3 },
+        // --- OUTER ISLE PATROL ---
+        { id: 'crab',   x: 70, y: 20, patrol: 'random',     range: 5,  speed: 0.6 },
+        { id: 'merman', x: 20, y: 15, patrol: 'vertical',   range: 8,  speed: 1.3 },
+        // --- MAP BOSS ---
         { id: 'abyssal_kraken', x: 40, y: 12, patrol: 'stationary', isBoss: true, label: 'Abyssal Kraken' }
     ],
     tiles: (function () {

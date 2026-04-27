@@ -33,30 +33,15 @@ MAP_DEFS.verdant_vale = {
     ],
 
     enemies: [
-        { id: 'zombie_soldier', x: 42, y: 18, patrol: 'horizontal', range: 3, speed: 0.8 },
-        { id: 'goblin',         x: 48, y: 6,  patrol: 'random', range: 2, speed: 1.1 },
-        { id: 'wolf',           x: 52, y: 22, patrol: 'random', range: 4, speed: 1.4 },
-        { id: 'zombie_soldier', x: 40, y: 5,  patrol: 'horizontal', range: 2, speed: 0.7 }, 
-        { id: 'goblin',         x: 45, y: 9,  patrol: 'vertical', range: 2, speed: 1.0 }, 
-        { id: 'wolf',           x: 36, y: 24, patrol: 'random', range: 3, speed: 1.2 }, 
-
-        { id: 'bat', x: 34, y: 13, patrol: 'vertical', range: 2, speed: 1.8 },
-        { id: 'bat', x: 37, y: 15, patrol: 'vertical', range: 2, speed: 1.8 },
-        { id: 'bat', x: 39, y: 4,  patrol: 'horizontal', range: 4, speed: 1.5 }, 
-        { id: 'bat', x: 44, y: 27, patrol: 'horizontal', range: 3, speed: 1.6 }, 
-        { id: 'rat', x: 35, y: 11, patrol: 'random', range: 2, speed: 1.2 }, 
-
-        { id: 'zombie_soldier', x: 41, y: 21, patrol: 'random', range: 3, speed: 0.7 }, 
-        { id: 'spider',         x: 49, y: 32, patrol: 'random', range: 3, speed: 0.9 }, 
-        { id: 'zombie_soldier', x: 46, y: 11, patrol: 'horizontal', range: 5, speed: 0.9 }, 
-        { id: 'goblin',         x: 54, y: 33, patrol: 'vertical', range: 2, speed: 1.2 }, 
-        { id: 'wolf',           x: 43, y: 4,  patrol: 'random', range: 3, speed: 1.4 }, 
-        { id: 'spider',         x: 46, y: 26, patrol: 'vertical', range: 3, speed: 1.0 }, 
-        { id: 'spider',         x: 51, y: 14, patrol: 'horizontal', range: 4, speed: 1.1 }, 
-        { id: 'zombie_soldier', x: 57, y: 10, patrol: 'random', range: 2, speed: 0.8 },
-        // --- THE RUINED KINGDOM (AETHELGARD) ---
-        { id: 'goblin_elite',   x: 35, y: 40, patrol: 'vertical', range: 3, speed: 0.9 },
-        { id: 'goblin_elite',   x: 46, y: 36, patrol: 'horizontal', range: 2, speed: 1.0 },
+        // --- RIVER CROSSING SENTINEL ---
+        { id: 'bat',            x: 34,  y: 13, patrol: 'vertical',   range: 3, speed: 1.8 },
+        // --- TALL GRASS EASTERN ZONE ---
+        { id: 'wolf',           x: 42,  y: 22, patrol: 'random',     range: 4, speed: 1.4 },
+        // --- RUINS NORTHERN APPROACH ---
+        { id: 'zombie_soldier', x: 40,  y: 18, patrol: 'horizontal', range: 3, speed: 0.8 },
+        // --- MOUNTAIN BORDER ---
+        { id: 'goblin',         x: 48,  y: 6,  patrol: 'random',     range: 2, speed: 1.1 },
+        // --- MAP BOSS (Aethelgard Throne) ---
         { id: 'galdor_king',    x: 52, y: 41, patrol: 'horizontal', range: 2, speed: 0.9, isBoss: true }
     ],
 

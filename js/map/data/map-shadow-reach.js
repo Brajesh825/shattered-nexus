@@ -112,34 +112,15 @@ MAP_DEFS.shadow_reach = (function() {
         ],
         tiles: tiles,
         enemies: [
-            // SPINE STALKERS
+            // --- NORTH CORRIDOR SENTINEL ---
             { id: 'ghost',    x: 50, y: 25, patrol: 'vertical',   range: 10, speed: 1.4 },
-            { id: 'vampire',  x: 50, y: 45, patrol: 'vertical',   range: 10, speed: 1.2 },
-            { id: 'ghost',    x: 50, y: 65, patrol: 'vertical',   range: 10, speed: 1.4 },
-            { id: 'vampire',  x: 50, y: 80, patrol: 'vertical',   range: 10, speed: 1.2 },
-
-            // WING GUARDIANS (Top Left)
-            { id: 'orc',      x: 20, y: 23, patrol: 'random',     range: 5,  speed: 0.9 },
-            { id: 'witch',    x: 30, y: 20, patrol: 'horizontal', range: 6,  speed: 1.1 },
-
-            // WING GUARDIANS (Top Right)
-            { id: 'witch',    x: 80, y: 38, patrol: 'random',     range: 5,  speed: 1.0 },
-            { id: 'gargoyle', x: 70, y: 35, patrol: 'horizontal', range: 6,  speed: 1.1 },
-
-            // WING GUARDIANS (Bottom Left)
-            { id: 'orc',      x: 20, y: 63, patrol: 'random',     range: 5,  speed: 0.9 },
-            { id: 'ghost',    x: 30, y: 60, patrol: 'horizontal', range: 8,  speed: 1.3 },
-
-            // WING GUARDIANS (Bottom Right)
-            { id: 'gargoyle', x: 80, y: 78, patrol: 'random',     range: 5,  speed: 1.1 },
-            { id: 'vampire',  x: 70, y: 75, patrol: 'horizontal', range: 6,  speed: 1.2 },
-
-            // BOSS GATEKEEPERS
-            { id: 'witch',    x: 42, y: 90, patrol: 'random',     range: 4,  speed: 1.2 },
-            { id: 'witch',    x: 58, y: 90, patrol: 'random',     range: 4,  speed: 1.2 },
-            { id: 'orc',      x: 50, y: 95, patrol: 'horizontal', range: 5,  speed: 1.0 },
-
-            // MAP BOSS — Void Stalker, Rift's permanent immune response
+            // --- WEST DISTRICT PATROL ---
+            { id: 'orc',      x: 20, y: 45, patrol: 'random',     range: 5,  speed: 0.9 },
+            // --- EAST SPIRE SENTINEL ---
+            { id: 'gargoyle', x: 70, y: 55, patrol: 'horizontal', range: 6,  speed: 1.1 },
+            // --- CRYPT APPROACH ---
+            { id: 'vampire',  x: 50, y: 70, patrol: 'vertical',   range: 8,  speed: 1.2 },
+            // --- MAP BOSS ---
             { id: 'void_stalker', x: 50, y: 75, patrol: 'stationary', isBoss: true, label: 'Void Stalker' }
         ],
 

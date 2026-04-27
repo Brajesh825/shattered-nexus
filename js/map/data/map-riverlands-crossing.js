@@ -13,16 +13,22 @@ MAP_DEFS.riverlands_crossing = {
     weather: 'rain',
     enemyLevelRange: [10, 18],
     encounterTemplates: [
-        { weight: 3, enemies: ['bandit'] },
-        { weight: 2, enemies: ['wisp'] },
-        { weight: 1, enemies: ['bandit', 'bandit', 'bandit'] }
+        { weight: 4, enemies: ['bandit', 'bandit'] },
+        { weight: 3, enemies: ['wisp'] },
+        { weight: 2, enemies: ['bandit', 'wisp'] },
+        { weight: 2, enemies: ['harpy'] },
+        { weight: 1, enemies: ['bandit', 'bandit', 'bandit'] },
+        { weight: 1, enemies: ['wisp', 'wisp'] },
+        { weight: 1, enemies: ['harpy', 'bandit'] }
     ],
     enemies: [
-        { id: 'bandit', x: 10, y: 25,  patrol: 'horizontal', range: 4, speed: 1.0 },
-        { id: 'bandit', x: 70, y: 29, patrol: 'random', range: 3, speed: 1.1 },
-        { id: 'wisp',   x: 40, y: 15, patrol: 'vertical', range: 8, speed: 1.5 },
-        { id: 'bandit', x: 25, y: 35, patrol: 'random', range: 4, speed: 1.0 },
-        { id: 'wisp',   x: 60, y: 32, patrol: 'horizontal', range: 10, speed: 1.6 },
+        // --- BRIDGE SENTINELS ---
+        { id: 'bandit', x: 10, y: 25,  patrol: 'horizontal', range: 4,  speed: 1.0 },
+        { id: 'bandit', x: 70, y: 29,  patrol: 'random',     range: 3,  speed: 1.1 },
+        // --- WATERFALL PATROL ---
+        { id: 'wisp',   x: 40, y: 15,  patrol: 'vertical',   range: 8,  speed: 1.5 },
+        { id: 'wisp',   x: 60, y: 32,  patrol: 'horizontal', range: 10, speed: 1.6 },
+        // --- MAP BOSS ---
         { id: 'river_king', x: 40, y: 27, patrol: 'stationary', isBoss: true, label: 'River King' }
     ],
     tiles: (function () {
