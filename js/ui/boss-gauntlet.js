@@ -25,19 +25,37 @@ const BossGauntlet = {
         if (isEnabled && window.LogDebug) window.LogDebug(`[Gauntlet] Mode unlocked ${isDebug ? '(DEV)' : ''}`, 'passive');
     },
 
-    // Map of Boss IDs to their corresponding Arc Index (0-based)
+    // Map of Boss IDs to their corresponding Arc Index (0-based).
+    // Used by the release filter — bosses with arc > MAX_REACHABLE_ARC are hidden.
+    // Map bosses share the arc of their map. Expansion bosses use the unlock arc.
     getBossArcMap() {
         return {
-            "void_knight": 0,    // Arc 1
-            "abomination": 1,    // Arc 2
-            "dragon": 2,         // Arc 3
-            "fallen_angel": 3,   // Arc 4
-            "void_warden": 4,    // Arc 5
-            "shadow_titan": 5,   // Arc 6
-            "shadow_emperor": 6, // Arc 7
-            "kraken": 7,         // Arc 8
-            "demon_lord": 8,
-            "dark_phoenix": 9
+            // Arc story bosses (canonical order)
+            "void_knight":      0,  // Arc 1 — Verdant Vale
+            "demon_lord":       1,  // Arc 2 — Crystal Cavern
+            "dark_phoenix":     2,  // Arc 3 — Ember Wastes
+            "kraken":           3,  // Arc 4 — Sunken Temple
+            "fallen_angel":     4,  // Arc 5 — Shadow Reach
+            "void_warden":      5,  // Arc 6 — Void Citadel
+            "shadow_titan":     6,  // Arc 7 — Fortress Ramparts
+            "shadow_emperor":   7,  // Arc 8 — Eternal Void
+            // Main map bosses
+            "galdor_king":      0,  // Arc 1 map boss
+            "spectral_guardian":1,  // Arc 2 map boss
+            "forge_sentinel":   2,  // Arc 3 map boss
+            "deep_archpriest":  3,  // Arc 4 map boss
+            "void_stalker":     4,  // Arc 5 map boss
+            "consumed_angel":   5,  // Arc 6 map boss
+            "void_colossus":    6,  // Arc 7 map boss
+            "the_unravelling":  7,  // Arc 8 map boss
+            // Expansion map bosses (unlock arc = parent arc cleared)
+            "sunken_leviathan": 0,  // Unlocks after Arc 1
+            "river_king":       0,  // Unlocks after Arc 1
+            "molten_golem":     2,  // Unlocks after Arc 3
+            "abyssal_kraken":   3,  // Unlocks after Arc 4
+            "abomination":      4,  // Eastern Wetlands, unlocks after Arc 5
+            "dragon":           5,  // Northern Highlands, unlocks after Arc 6
+            "storm_sentinel":   5,  // Sky Ruins, unlocks after Arc 6
         };
     },
 
