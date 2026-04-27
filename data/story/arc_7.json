@@ -17,7 +17,8 @@
       "cast": ["Ria", "Valka", "Rex", "Drake"],
       "scenes": [
         {
-          "narration": "The deeper passages of the fortress are not halls — they are arteries. The stone pulses with something that might be blood, might be power. The air tastes of fear and ancient memory."
+          "narration": "The deeper passages of the fortress are not halls — they are arteries. The stone pulses with something that might be blood, might be power. The air tastes of fear and ancient memory. The first four push ahead — Ria, Valka, Rex, Drake — cutting the path while the others hold the outer wall against the Citadel's remaining defenders.",
+          "dialogue": []
         },
         {
           "narration": "Valka walks ahead, her sword blazing with divine light. The darkness recoils from her presence.",
@@ -26,6 +27,33 @@
             { "speaker": "Rex", "emotion": "somber", "text": "A being that became everything it feared. That is a tragedy I understand all too well." },
             { "speaker": "Ria", "emotion": "peaceful", "text": "The eidolons weep. They sense what he was — and what he refused to be." },
             { "speaker": "Drake", "emotion": "resolute", "text": "Then we show him another path. We show him that what he fears can be faced." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "arc7_ch1b",
+      "title": "Reunited",
+      "type": "cutscene",
+      "background": "sanctum_corridor",
+      "cast": ["Aya", "Tao", "Lulu", "Rei", "Ria", "Valka", "Rex", "Drake"],
+      "scenes": [
+        {
+          "narration": "The outer wall breaks. The remaining defenders scatter. Footsteps on stone — and then the second four arrive at the junction deep in the fortress, breathing hard, alive.",
+          "dialogue": [
+            { "speaker": "Tao", "emotion": "relieved", "text": "We are alive. Noted. Everyone accounted for?" },
+            { "speaker": "Drake", "emotion": "dry", "text": "We held the inner corridor. You are late." },
+            { "speaker": "Tao", "emotion": "cheerful", "text": "We were being dramatic. It takes time." }
+          ]
+        },
+        {
+          "narration": "Rei looks down the passage ahead. The air beyond the junction is different — older. The darkness here is not Valdris's design. It is what was here before him.",
+          "dialogue": [
+            { "speaker": "Rei", "emotion": "grave", "text": "Beyond this point is not his fortress. It is where the Shadow Keepers chose to stand. Six hundred years of refusal made into stone and shadow." },
+            { "speaker": "Ria", "emotion": "quiet", "text": "The eidolons know this place. They have been trying to reach it since we crossed the threshold." },
+            { "speaker": "Valka", "emotion": "solemn", "text": "Maren the Still. And all those who stood with them. They did not die here. They became here. What we face is not a monster — it is a will that has not broken in six centuries." },
+            { "speaker": "Lulu", "emotion": "aching", "text": "They have been waiting a long time." },
+            { "speaker": "Rei", "emotion": "heavy", "text": "They have been waiting for someone strong enough to end the waiting. That is us. Now. Together." }
           ]
         }
       ]

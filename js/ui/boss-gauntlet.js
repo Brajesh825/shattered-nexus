@@ -42,11 +42,26 @@ const BossGauntlet = {
     },
 
     // Definitive list of Story Bosses (Arc Guardians)
+    // Arc story bosses (canonical order Arc 1–8):
+    //   void_knight → demon_lord → dark_phoenix → kraken → fallen_angel
+    //   → void_warden → shadow_titan → shadow_emperor
+    // Map bosses (encountered during exploration):
+    //   galdor_king, spectral_guardian, forge_sentinel, deep_archpriest,
+    //   void_stalker, consumed_angel, void_colossus, the_unravelling
+    // Expansion map bosses:
+    //   sunken_leviathan, river_king, molten_golem, abyssal_kraken,
+    //   abomination, dragon, storm_sentinel
     getBossIds() {
         return [
-            "void_knight", "abomination", "dragon", "fallen_angel",
-            "void_warden", "shadow_titan", "shadow_emperor", "kraken",
-            "demon_lord", "dark_phoenix"
+            // Arc story bosses
+            "void_knight", "demon_lord", "dark_phoenix", "kraken",
+            "fallen_angel", "void_warden", "shadow_titan", "shadow_emperor",
+            // Main map bosses
+            "galdor_king", "spectral_guardian", "forge_sentinel", "deep_archpriest",
+            "void_stalker", "consumed_angel", "void_colossus", "the_unravelling",
+            // Expansion map bosses
+            "sunken_leviathan", "river_king", "molten_golem", "abyssal_kraken",
+            "abomination", "dragon", "storm_sentinel"
         ];
     },
 
