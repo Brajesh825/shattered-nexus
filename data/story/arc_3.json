@@ -36,7 +36,7 @@
         {
           "narration": "Rei stands still at the centre of the path, head tilted — reading the air the way others read a map.",
           "dialogue": [
-            { "speaker": "Rei", "emotion": "alert", "text": "The Dark Phoenix. Ancient. It was a creature of renewal once — fire that destroys so that something new can grow. Valdris twisted that. Turned rebirth into an endless loop of burning." },
+            { "speaker": "Rei", "emotion": "alert", "text": "The Oracle's records spoke of the Dark Phoenix. Ancient. It was a creature of renewal once — fire that destroys so that something new can grow. Valdris twisted that." },
             { "speaker": "Aya", "emotion": "calm", "text": "A creature whose purpose was corrupted into its opposite. That has a particular kind of cruelty to it." },
             { "speaker": "Tao", "emotion": "focused", "text": "Yes. And it is very much on fire. Let us have a plan." }
           ]
