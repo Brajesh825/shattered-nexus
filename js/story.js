@@ -809,17 +809,9 @@ const Story = {
     if (!raw) { console.warn('Story: enemy not found:', enemyId); this.onBattleWon(); return; }
     const def = this._scaleEnemy(raw);
 
-    // Build enemy group: boss/mid-boss is solo; regular battles add 1 weak add from arc pool
+    // Story battles are always solo boss/mid-boss encounters
     const defs = [def];
     const isBoss = (this.phase === 'boss_in');
-    if (!isBoss && this.arcIdx >= 1) {
-      const pool = (this.arc.enemies_pool || []).filter(id => id !== enemyId);
-      if (pool.length) {
-        const addId = pool[Math.floor(Math.random() * pool.length)];
-        const addRaw = this._allEnemies.find(e => e.id === addId);
-        if (addRaw) defs.push(this._scaleEnemy(addRaw));
-      }
-    }
 
     // Calculate spawn level based on arc and whether this is a boss fight
     // Regular: Arc 1→1, 2→3, 3→6, 4→10, 5→14, 6→18, 7→22, 8→26
@@ -1393,12 +1385,29 @@ const Story = {
 
   /* ── Skirmish: battle using an arc's enemy pool at current party LV ─── */
   startRegionSkirmish(arcIdx) {
-    const arc = this.data.arcs[arcIdx];
-    if (!arc) return;
-    const pool = arc.enemies_pool || [];
-    if (!pool.length || !G.party.length) return;
+    if (!G.party || !G.party.length) return;
 
-    /* Pick 1-2 random enemy templates from that arc's pool */
+    // Find all maps associated with this arc
+    const maps = typeof MAP_DEFS !== 'undefined' 
+      ? Object.values(MAP_DEFS).filter(m => m.arcId === arcIdx + 1)
+      : [];
+
+    let pool = [];
+    maps.forEach(m => {
+      if (m.enemies) {
+        // Collect all non-boss enemy IDs from the map
+        m.enemies.forEach(e => {
+          const raw = (G.enemies || []).find(r => r.id === e.id);
+          const isElite = raw ? (raw.isBoss || raw.tier >= 3) : (e.isBoss || e.id.includes('boss'));
+          if (!isElite && !pool.includes(e.id)) pool.push(e.id);
+        });
+      }
+    });
+
+    // Fallback if map parsing fails or no normal enemies exist
+    if (!pool.length) pool = ['slime', 'bat', 'wolf'];
+
+    /* Pick 1-2 random enemy templates from that map pool */
     const count = 1 + (Math.random() < 0.45 ? 1 : 0);
     const partyLv = Math.max(...G.party.map(m => m.lv || 1));
     const picks = [];
