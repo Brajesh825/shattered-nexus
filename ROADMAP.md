@@ -1,6 +1,7 @@
 # RPG+ Development Roadmap
 
 ## ✅ Completed Milestones
+- **[2026-04-27] Critical Story Fixes & Arc Depth (C1–C3, S1–S2)**: Verified Arc 7 cast split was already resolved via `arc7_ch1b` ("Reunited"). Confirmed Arc 5→6 tonal break was already fixed. Arc 6 (`Fortress Gates`): added `seal_void` shard reward, new cutscene "What It Used to Be" (Consumed Angel reveal, all 8 cast), expanded boss pre/post dialogue from 3 to 6 lines. Arc 7 (`Inner Sanctum`): expanded Shadow Titan pre-dialogue from 3 to 7 lines with Rei's parallel with Maren the Still, boss cast expanded to all 8, typo fixed. Boss Gauntlet dynamic registry: auto-scans `Story.data.arcs` + `MAP_DEFS`, kills tracked via `Archive.recordKill` centralized in `Battle.setKO`, discovery gate enforced.
 - **[2026-04-27] Boss Integration Complete**: Added 11 new enemy entries (forge_sentinel, deep_archpriest, void_stalker, consumed_angel, void_colossus, the_unravelling, sunken_leviathan, river_king, molten_golem, abyssal_kraken, storm_sentinel) with full stats, lore, abilities, and statPhases. Fixed 5 proxy ID bugs in expansion maps. Added map boss entities to all Arc 3–8 main maps. Every map now has a two-layer boss structure.
 - **[2026-04-27] Lore & NPC Overhaul**: Rewrote lore_fragments.json (70 fragments) aligned to campaign canon. Rewrote npcs.js (21 NPCs, 307 dialogue lines). Fixed duplicate void_citadel NPC key (silent Arc 6 dialogue loss). Corrected mire_witch sprite path.
 - **[2026-04-26] Smooth-Curve Scaling Audit**: Comprehensive re-leveling of 15 maps (1-8, 7-15, 12-20) to ensure overlapping, accessible progression. Synchronized code with documentation, including the final shift of Northern Highlands to endgame status (Arc 6, Lv 35-43).
@@ -21,44 +22,6 @@
 - **[2026-04-24] Universal Phase System**: HP-triggered stat transformations for bosses (King Galdor, Spectral Guardian).
 - **[2026-04-22] The Ruined Kingdom**: Aethelgard ruins, river-bank geometry, King Galdor mini-boss.
 - **[2026-04-20] Combat Animation Restore**: Fixed `action-handler.js` battle overlays and flow.
-
----
-
-## 🔴 Critical Story Fixes (Must Do Before Any New Content)
-
-These are confirmed bugs and structural gaps found in the story audit. They break narrative continuity or cause silent data loss.
-
-### C1 — Arc 7 Cast Split [COMPLETED]
-`arc7_ch1b` ("Reunited") was already present and correctly explains the split — Ria/Valka/Rex/Drake cut the inner path while Aya/Tao/Lulu/Rei hold the outer wall, then reunite at the junction. Boss chapter cast expanded to all 8 characters.
-
-### C2 — Arc 5 → Arc 6 Narrative Break [COMPLETED]
-Arc 5's post-dialogue already correctly frames the Shadow Seal victory as "the first gate, not the last" with Valdris retreating to measure them. Arc 6 now has a full shard reward (`seal_void`) and properly opens as an assault on a fortress that is very much still alive.
-
-### C3 — Boss Gauntlet ID Mismatch [COMPLETED]
-The hardcoded boss mapping in `js/ui/boss-gauntlet.js` was replaced with a **Dynamic Registry System**.
-- **Fix**: The Gauntlet now scans `Story.data.arcs` and `MAP_DEFS` automatically to find bosses.
-- **Victory Tracking**: Integrated with `Archive.recordKill` and centralized in `Battle.setKO` to accurately track wins via direct damage, DOT (Burn/Poison), and Reflect.
-- **Discovery Mode**: Implemented a "Victories Only" view—bosses are hidden until defeated in the story or exploration.
-
----
-
-## 🟠 Story Depth — Arcs 6 & 7 (High Priority)
-
-Arcs 1–5 and Arc 8 are exceptional. Arcs 6–7 are structurally thin — 2 short chapters each with minimal dialogue — and feel rushed compared to the rest of the game. These arcs cover the **breach of Valdris's fortress**, which should be the most harrowing section.
-
-### S1 — Arc 6 Expansion ("Fortress Gates") [COMPLETED]
-- Added `seal_void` shard reward (was null)
-- Added `arc6_ch1b` cutscene "What It Used to Be": party discovers fortress was once a palace; first encounter with the Consumed Angel; Lulu's emotional beat recognising what it was supposed to be
-- Boss pre-dialogue expanded to 6 lines (all 8 cast): Consumed Angel's nature, Rei's purpose-consumed commentary, Valka and Lulu's emotional framing
-- Post-dialogue rewritten to give the Angel's dissolution proper weight and bridge cleanly into Arc 7
-
-### S2 — Arc 7 Expansion ("Inner Sanctum") [COMPLETED]
-- Shadow Titan pre-dialogue expanded from 3 to 7 lines
-- Added Rei's parallel with Maren the Still — recognising the same karmic sacrifice logic that bound him for 2,000 years; the most emotionally resonant beat in the arc
-- Boss chapter cast expanded to all 8 characters (consistent with arc7_ch1b reunion)
-- Fixed typo: "retreatng" → "retreating"
-
----
 
 ## 🟡 Expansion Region Story Depth
 
