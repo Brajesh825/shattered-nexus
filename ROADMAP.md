@@ -1,6 +1,9 @@
 # RPG+ Development Roadmap
 
 ## ✅ Completed Milestones
+- **[2026-04-28] System Audit & Roadmap Refresh**: Full codebase audit.
+- **[2026-04-28] Level Range Comment Audit (M8)**: Corrected `map-data.js` comments to strictly match `STORY_PROGRESSION.md`.
+- **[2026-04-27] Encounter Data Migration & Overworld Declutter**: Removed legacy `enemies_pool` from Arc JSONs, routing Skirmishes and Bestiary directly to `MAP_DEFS.encounterTemplates`. Curated overworld enemies down to 4-5 sentinels per map in favor of the new 8% random encounter system.
 - **[2026-04-27] Critical Story Fixes & Arc Depth (C1–C3, S1–S2)**: Verified Arc 7 cast split was already resolved via `arc7_ch1b` ("Reunited"). Confirmed Arc 5→6 tonal break was already fixed. Arc 6 (`Fortress Gates`): added `seal_void` shard reward, new cutscene "What It Used to Be" (Consumed Angel reveal, all 8 cast), expanded boss pre/post dialogue from 3 to 6 lines. Arc 7 (`Inner Sanctum`): expanded Shadow Titan pre-dialogue from 3 to 7 lines with Rei's parallel with Maren the Still, boss cast expanded to all 8, typo fixed. Boss Gauntlet dynamic registry: auto-scans `Story.data.arcs` + `MAP_DEFS`, kills tracked via `Archive.recordKill` centralized in `Battle.setKO`, discovery gate enforced.
 - **[2026-04-27] Boss Integration Complete**: Added 11 new enemy entries (forge_sentinel, deep_archpriest, void_stalker, consumed_angel, void_colossus, the_unravelling, sunken_leviathan, river_king, molten_golem, abyssal_kraken, storm_sentinel) with full stats, lore, abilities, and statPhases. Fixed 5 proxy ID bugs in expansion maps. Added map boss entities to all Arc 3–8 main maps. Every map now has a two-layer boss structure.
 - **[2026-04-27] Lore & NPC Overhaul**: Rewrote lore_fragments.json (70 fragments) aligned to campaign canon, including 7 Expansion Region specific fragments. Rewrote npcs.js (21 NPCs, 307 dialogue lines). Fixed duplicate void_citadel NPC key (silent Arc 6 dialogue loss). Corrected mire_witch sprite path. Complete lore consistency sweep across all 8 arcs and expansion maps to explicitly align with the "Summoned" premise (main cast learns Aethorian history from Oracle/NPCs rather than knowing it natively).
@@ -24,28 +27,8 @@
 - **[2026-04-22] The Ruined Kingdom**: Aethelgard ruins, river-bank geometry, King Galdor mini-boss.
 - **[2026-04-20] Combat Animation Restore**: Fixed `action-handler.js` battle overlays and flow.
 
-## 🟡 Expansion Region Story Depth
-
-The 7 expansion regions are mechanically complete but **narratively empty** — no cutscenes, no story chapters, no character dialogue tied to the region's history. Players who explore these after unlocking them find only combat and no payoff for curiosity.
-
-### E1 — Minimum Story Layer (Each Region)
-Each expansion region needs at minimum:
-1. **One pre-boss encounter scene** (2–4 lines) triggered when the player first approaches the map boss — establishes who/what the boss was before corruption. Pure dialogue, no new engine work.
-2. **One post-boss echo** (1–2 lines) — a brief moment of stillness after the boss falls. The world is slightly less wrong here now.
-3. **One lore NPC** — a survivor, remnant, or spirit tied to that civilization. Links to the `arcDialogue` bridge (§T2).
-
-Priority order (narrative richness of existing lore):
-1. **Ashen Foothills** — Dara's story is the richest. Her civilization made things to last forever and she became the thing that lasted.
-2. **Sky Ruins** — Four Kings as Valdris's lieutenants. The ruins predate all five civilizations. Huge lore density.
-3. **Riverlands Crossing** — The River King's neutrality deal is a fascinating moral story.
-4. **Northern Highlands** — The last dragon. The Highland Monk. Strong emotional setup already in NPC dialogue.
-5. **Southern Isles / Lighthouse Isles / Eastern Wetlands** — Thinner lore; can share a "drowned world" theme.
-
-### ~~E2 — Valdris Aftermath Fragments~~ (Done)
-- Added 7 expansion-specific lore fragments during the `lore_fragments.json` rewrite.
-
 ### M6 — NPC Dialogue → Arc JSON Bridge (Tier 2 Upgrade)
-- The existing `dialogueKey` fix (E1) routes to the map NPC panel (existing engine)
+- The existing `dialogueKey` fix routes to the map NPC panel (existing engine)
 - Tier 2: add an optional `arcDialogue` field that routes to the full Story Screen with character portraits
 - **Not required for arc release cadence** — current NPC panel is sufficient for weekly drops
 
@@ -129,15 +112,7 @@ Add an optional `"mode"` field to arc JSON chapters for distinct visual treatmen
 ### M6 — NPC Dialogue → Arc JSON Bridge
 - Add an optional `arcDialogue` field to NPC entities in map data
 - When set, `story.js` looks up that key in the arc JSON and renders it through the cutscene engine
-- Prerequisite for §E1 expansion story content without a new engine
-
-### ~~M7 — Encounter Cooldown & Random Steps~~ (Done)
-- Switched to a hybrid system: maximum 4 visible normal enemies per map, plus random invisible step encounters (~8% chance).
-- Added an 8-step cooldown after battles where the player sprite pulses and no encounters can trigger.
-
-### M8 — Level Range Comment Audit
-- `map-data.js` comments have drifted from `STORY_PROGRESSION.md` (e.g. Arc 3 comments say Lv 8–12, doc says Lv 12–20)
-- One-time pass to align all level range comments to `STORY_PROGRESSION.md` as the single source of truth
+- Prerequisite for advanced expansion story content without a new engine
 
 ---
 
@@ -204,4 +179,4 @@ Four factions defined with history, goals, and relationship to Valdris:
 
 ---
 
-*Last audited: 2026-04-27. Priority order: Expansion Story (E2, M6-T2) → Narrative Polish (N1, N4, N5) → Release & Polish (P1) → everything else.*
+*Last audited: 2026-04-28. Priority order: Browser-Based Tile Editor (M4) → Story Refactor (N3) → Action Handler Refactor (B5) → Fast Travel (M5).*
