@@ -19,7 +19,9 @@
         <div class="divider"></div>
         <div class="tool-btn-group">
             <button class="action-btn" onclick="editor.resetMap()" title="Reset Map">🔄</button>
+            <button class="action-btn" onclick="document.getElementById('import-input').click()" title="Import JSON Map">📂</button>
             <button class="action-btn" onclick="editor.exportMap()" title="Export Map">💾</button>
+            <input type="file" id="import-input" style="display:none" onchange="editor.importJSON(event)" accept=".json">
         </div>
         <div class="divider"></div>
         <div id="coords">X: 0, Y: 0</div>

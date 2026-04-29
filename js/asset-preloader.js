@@ -62,85 +62,54 @@ const AssetPreloader = (() => {
       ASSETS.environment.length;
 
     let loaded = 0;
+    const update = () => {
+      loaded++;
+      if (onProgress) onProgress(loaded, total);
+    };
 
-    // Preload spirits
+    // Helper to run a batch in parallel
+    const loadBatch = async (items, loaderFunc, cacheKeyPrefix, pathFunc, isAudio = false) => {
+      const promises = items.map(async (item) => {
+        try {
+          const path = pathFunc(item);
+          const asset = await loaderFunc(path);
+          if (isAudio) cache.audio[item] = asset;
+          else cache.images[`${cacheKeyPrefix}${item}`] = asset;
+        } catch (e) {
+          console.warn(`⚠️ Failed to preload ${cacheKeyPrefix}: ${item}`, e);
+        } finally {
+          update();
+        }
+      });
+      return Promise.all(promises);
+    };
+
+    // Run all batches simultaneously
     const isLowQuality = (localStorage.getItem('spriteQuality') || 'normal') === 'low';
-    for (const charId of ASSETS.spirits) {
-      try {
-        const id = charId.toLowerCase();
-        const fileName = isLowQuality ? `${id}_sprite_low.webp` : `${id}_sprite.png`;
-        const img = await loadImage(`images/characters/spirits/${fileName}`);
-        cache.images[`spirit_${charId}`] = img;
-        loaded++;
-        if (onProgress) onProgress(loaded, total);
-      } catch (e) {
-        console.warn(`⚠️ Failed to preload spirit: ${charId}`, e);
-        loaded++;
-        if (onProgress) onProgress(loaded, total);
-      }
-    }
-
-    // Preload enemies (optional - only if you use them)
-    for (const enemyId of ASSETS.enemies) {
-      try {
-        const img = await loadImage(`images/enemies/${enemyId}.png`);
-        cache.images[`enemy_${enemyId}`] = img;
-        loaded++;
-        if (onProgress) onProgress(loaded, total);
-      } catch (e) {
-        console.warn(`⚠️ Failed to preload enemy: ${enemyId}`, e);
-        loaded++;
-        if (onProgress) onProgress(loaded, total);
-      }
-    }
-
-    // Preload BGM (only preload metadata, not full download)
-    for (const trackName of ASSETS.bgm) {
-      try {
-        const audio = await loadAudio(`audio/bgm/${trackName}.mp3`);
-        cache.audio[trackName] = audio;
-        loaded++;
-        if (onProgress) onProgress(loaded, total);
-      } catch (e) {
-        console.warn(`⚠️ Failed to preload BGM: ${trackName}`, e);
-        loaded++;
-        if (onProgress) onProgress(loaded, total);
-      }
-    }
-
-    // Preload UI artwork
-    for (const imageId of ASSETS.ui) {
-      try {
-        const img = await loadImage(`images/ui/${imageId}.png`);
-        cache.images[`ui_${imageId}`] = img;
-        loaded++;
-        if (onProgress) onProgress(loaded, total);
-      } catch (e) {
-        console.warn(`⚠️ Failed to preload UI image: ${imageId}`, e);
-        loaded++;
-        if (onProgress) onProgress(loaded, total);
-      }
-    }
-
-    // Preload Environment sprites
-    for (const imageId of ASSETS.environment) {
-      try {
+    
+    await Promise.all([
+      // 1. Spirits
+      loadBatch(ASSETS.spirits, loadImage, 'spirit_', (id) => {
+        const charId = id.toLowerCase();
+        const fileName = isLowQuality ? `${charId}_sprite_low.webp` : `${charId}_sprite.png`;
+        return `images/characters/spirits/${fileName}`;
+      }),
+      // 2. Enemies
+      loadBatch(ASSETS.enemies, loadImage, 'enemy_', (id) => `images/enemies/${id}.png`),
+      // 3. BGM
+      loadBatch(ASSETS.bgm, loadAudio, '', (id) => `audio/bgm/${id}.mp3`, true),
+      // 4. UI
+      loadBatch(ASSETS.ui, loadImage, 'ui_', (id) => `images/ui/${id}.png`),
+      // 5. Environment (SVGs)
+      loadBatch(ASSETS.environment, loadImage, 'env_', (id) => {
         const extension = [
           'oak', 'pine', 'shrub', 'boulder', 'mushroom', 'flower', 'crystal', 'lily', 'dead_tree', 'well', 'market', 'chest', 'statue',
           'fountain', 'obelisk', 'tombstone', 'pillar_broken', 'wagon', 'tent', 'campfire', 'signpost', 'street_lamp', 'archway',
           'void_rift', 'cursed_idol', 'skeleton', 'floating_crystal', 'ancient_pillar', 'withered_vine', 'sacrificial_altar', 'void_spires', 'iron_maiden', 'magic_circle'
-        ].includes(imageId) ? 'svg' : 'png';
-        const path = extension === 'svg' ? `images/environment/svg/${imageId}.svg` : `images/environment/${imageId}.png`;
-        const img = await loadImage(path);
-        cache.images[`env_${imageId}`] = img;
-        loaded++;
-        if (onProgress) onProgress(loaded, total);
-      } catch (e) {
-        console.warn(`⚠️ Failed to preload environment image: ${imageId}`, e);
-        loaded++;
-        if (onProgress) onProgress(loaded, total);
-      }
-    }
+        ].includes(id) ? 'svg' : 'png';
+        return extension === 'svg' ? `images/environment/svg/${id}.svg` : `images/environment/${id}.png`;
+      })
+    ]);
 
     return cache;
   }
