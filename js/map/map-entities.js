@@ -113,10 +113,14 @@ const MapPlayer = (() => {
 
   function _canMove(nx, ny, map) {
     if (nx < 0 || ny < 0 || nx >= map.width || ny >= map.height) return false;
-    const tiles = map.layers ? map.layers[0] : map.tiles;
-    if (!tiles) return false;
-    const tid = tiles[ny]?.[nx] ?? 0;
-    if (!(TILE_DEFS[tid] || TILE_DEFS[0]).walkable) return false;
+    
+    // Check all layers for collisions
+    const layers = MapData.getLayers(map);
+    for (const layer of layers) {
+      if (!layer) continue;
+      const tid = layer[ny]?.[nx] ?? 0;
+      if (tid !== 0 && !(TILE_DEFS[tid] || TILE_DEFS[0]).walkable) return false;
+    }
     // Block on NPCs
     if (MapEntities.checkNPCAt && MapEntities.checkNPCAt(nx, ny)) return false;
     // Block on alive enemies
@@ -486,8 +490,15 @@ const MapEntities = (() => {
 
   function _canMoveTo(tx, ty, map) {
     if (tx < 0 || ty < 0 || tx >= map.width || ty >= map.height) return false;
-    const tid = map.tiles[ty]?.[tx] ?? 0;
-    return (TILE_DEFS[tid] || TILE_DEFS[0]).walkable;
+    
+    // Check all layers for collisions
+    const layers = MapData.getLayers(map);
+    for (const layer of layers) {
+      if (!layer) continue;
+      const tid = layer[ty]?.[tx] ?? 0;
+      if (tid !== 0 && !(TILE_DEFS[tid] || TILE_DEFS[0]).walkable) return false;
+    }
+    return true;
   }
 
   function _decideMove(enemy, map) {
@@ -966,7 +977,7 @@ const MapEntities = (() => {
 
     function _canNPCMove(nx, ny, map) {
       if (nx < 0 || ny < 0 || nx >= map.width || ny >= map.height) return false;
-      const tid = map.tiles[ny]?.[nx] ?? 0;
+      const tid = MapData.getTileAt(map, nx, ny);
       if (!(TILE_DEFS[tid] || TILE_DEFS[0]).walkable) return false;
       if (nx === MapPlayer.tx && ny === MapPlayer.ty) return false;
       return true;

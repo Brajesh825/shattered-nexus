@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120">
+  <defs>
+    <linearGradient id="statue-stone" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#cfd8dc"/>
+      <stop offset="100%" style="stop-color:#78909c"/>
+    </linearGradient>
+  </defs>
+  <!-- Pedestal -->
+  <rect x="30" y="90" width="40" height="20" fill="#546e7a" rx="2"/>
+  <!-- Figure -->
+  <circle cx="50" cy="35" r="12" fill="url(#statue-stone)"/>
+  <path d="M50 47 L35 90 L65 90 Z" fill="url(#statue-stone)"/>
+  <!-- Wings (Angel) -->
+  <path d="M35 50 Q10 30 25 70" fill="url(#statue-stone)" opacity="0.6"/>
+  <path d="M65 50 Q90 30 75 70" fill="url(#statue-stone)" opacity="0.6"/>
+  <!-- Weathering -->
+  <path d="M45 40 L48 45 L42 43 Z" fill="rgba(0,0,0,0.1)"/>
+  <path d="M55 70 L58 75 L52 73 Z" fill="rgba(0,0,0,0.1)"/>
+</svg>

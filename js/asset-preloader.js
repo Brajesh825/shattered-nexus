@@ -27,6 +27,9 @@ const AssetPreloader = (() => {
     ],
     ui: [
       'world_map_bg'
+    ],
+    environment: [
+      'oak', 'pine', 'shrub', 'boulder', 'mushroom', 'flower', 'crystal', 'lily', 'dead_tree', 'well', 'market', 'chest', 'statue'
     ]
   };
 
@@ -53,7 +56,8 @@ const AssetPreloader = (() => {
       ASSETS.spirits.length +
       ASSETS.enemies.length +
       ASSETS.bgm.length +
-      ASSETS.ui.length;
+      ASSETS.ui.length +
+      ASSETS.environment.length;
 
     let loaded = 0;
 
@@ -116,6 +120,22 @@ const AssetPreloader = (() => {
       }
     }
 
+    // Preload Environment sprites
+    for (const imageId of ASSETS.environment) {
+      try {
+        const extension = ['oak', 'pine', 'shrub', 'boulder', 'mushroom', 'flower', 'crystal', 'lily', 'dead_tree', 'well', 'market', 'chest', 'statue'].includes(imageId) ? 'svg' : 'png';
+        const path = extension === 'svg' ? `images/environment/svg/${imageId}.svg` : `images/environment/${imageId}.png`;
+        const img = await loadImage(path);
+        cache.images[`env_${imageId}`] = img;
+        loaded++;
+        if (onProgress) onProgress(loaded, total);
+      } catch (e) {
+        console.warn(`⚠️ Failed to preload environment image: ${imageId}`, e);
+        loaded++;
+        if (onProgress) onProgress(loaded, total);
+      }
+    }
+
     return cache;
   }
 
@@ -159,6 +179,15 @@ const AssetPreloader = (() => {
 
     getAudio(key) {
       return cache.audio[key] || null;
+    },
+    async loadManifest() {
+      try {
+        const resp = await fetch('../images/environment/sprites.json');
+        return await resp.json();
+      } catch (e) {
+        console.warn("Failed to load environment manifest", e);
+        return null;
+      }
     }
   };
 })();
