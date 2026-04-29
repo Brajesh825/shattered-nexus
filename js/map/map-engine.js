@@ -26,11 +26,12 @@ const MapEngine = (() => {
     if (tx < 0 || ty < 0 || tx >= _map.width || ty >= _map.height) return true;
 
     const layers = MapData.getLayers(_map);
+    if (!layers || !layers[0] || !Array.isArray(layers[0])) return true; // Map data not ready
     
     // 1. Direct Hit Check (Layer-by-layer)
     for (const layer of layers) {
       if (!layer) continue;
-      const tid = layer[ty]?.[tx] ?? 0;
+      const tid = layer?.[ty]?.[tx] ?? 0;
       if (tid !== 0) {
         const def = TILE_DEFS[tid] || TILE_DEFS[0];
         if (!def.walkable) return true;
@@ -42,10 +43,10 @@ const MapEngine = (() => {
     for (let dy = -R; dy <= R; dy++) {
       for (let dx = -R; dx <= R; dx++) {
         const nx = tx + dx, ny = ty + dy;
-        if (nx < 0 || ny < 0 || nx >= _map.width || ny >= _map.height) continue;
+        if (nx < 0 || ny < 0 || nx >= (_map?.width || 0) || ny >= (_map?.height || 0)) continue;
 
         for (const layer of layers) {
-          const tid = layer[ny]?.[nx];
+          const tid = layer?.[ny]?.[nx];
           if (!tid) continue;
           const def = TILE_DEFS[tid];
           if (!def) continue;
@@ -1323,13 +1324,16 @@ const MapEngine = (() => {
     if (typeof AmbientEngine !== 'undefined') {
       AmbientEngine.setMap(_map.id);
     }
-
-    }
+    _hideLoader();
+    // Emergency Force Hide: ensures game is never stuck even if assets 404
+    setTimeout(_hideLoader, 1000);
   }
 
   function getLayers(map) {
-    if (map.layers && Array.isArray(map.layers)) return map.layers;
-    return [map.r0, map.r1, map.r2];
+    const data = map.data || map;
+    if (Array.isArray(data) && Array.isArray(data[0]) && Array.isArray(data[0][0])) return data;
+    if (data.layers && Array.isArray(data.layers)) return data.layers;
+    return [data.r0, data.r1, data.r2];
   }
 
   async function start(mapId) {

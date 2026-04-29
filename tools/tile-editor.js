@@ -17,7 +17,13 @@ class TileEditor {
             currentStamp: null,
             currentTool: 'brush', // brush, fill, rect, eyedropper
             panOffset: { x: 0, y: 0 },
-            isMouseDown: false
+            isMouseDown: false,
+            isPanning: false,
+            lastMousePos: { x: 0, y: 0 },
+            showCollision: false,
+            showAll: false,
+            spaceDown: false,
+            history: []
         };
 
         this.elements = {
@@ -43,12 +49,14 @@ class TileEditor {
         };
 
         this.init();
+        
+        // Auto-load default map
+        setTimeout(() => this.switchMap('verdant_vale'), 100);
     }
 
     async init() {
-        this.manifest = await AssetPreloader.loadManifest();
-        this.loadCache();
         this.initMap();
+        this.loadCache();
         this.initTabs();
         this.initTools();
         this.initPalette();
@@ -74,13 +82,9 @@ class TileEditor {
                 this.cache[key].src = `../images/environment/${key}.png`;
             };
         });
-
-        this.cache.spritesheet.onerror = () => {
-            console.warn("Spritesheet missing, continuing with SVGs only.");
-            this.render();
-        };
-        this.cache.spritesheet.src = '../images/environment/sprites.png';
-        this.cache.spritesheet.onload = () => this.render();
+        
+        // Initial render to show procedural tiles
+        this.render();
     }
 
     initMap() {
@@ -91,6 +95,14 @@ class TileEditor {
             }
             this.state.map[l] = layer;
         }
+
+        // Center on start
+        setTimeout(() => {
+            const wrapper = this.elements.wrapper;
+            const c = this.elements.canvas;
+            wrapper.scrollLeft = (c.width + 1000 - wrapper.clientWidth) / 2;
+            wrapper.scrollTop = (c.height + 1000 - wrapper.clientHeight) / 2;
+        }, 100);
     }
 
     initTabs() {
@@ -106,7 +118,11 @@ class TileEditor {
     initTools() {
         document.querySelectorAll('.tool-btn').forEach(btn => {
             btn.onclick = () => {
-                document.querySelectorAll('.tool-btn').forEach(el => el.classList.remove('active'));
+                if (btn.dataset.tool === 'collision') {
+                    this.toggleCollision();
+                    return;
+                }
+                document.querySelectorAll('.tool-btn:not([data-tool="collision"])').forEach(el => el.classList.remove('active'));
                 btn.classList.add('active');
                 this.state.currentTool = btn.dataset.tool;
             };
@@ -118,6 +134,7 @@ class TileEditor {
             if (e.key === 'g') this.setTool('fill');
             if (e.key === 'r') this.setTool('rect');
             if (e.key === 'i') this.setTool('eyedropper');
+            if (e.key === 'c') this.toggleCollision();
         });
     }
 
@@ -126,7 +143,9 @@ class TileEditor {
     }
 
     initPalette() {
-        const terrainIds = Object.keys(TILE_DEFS).filter(id => id < 200);
+        this.elements.palette.innerHTML = '';
+        const terrainIds = Object.keys(TILE_DEFS).filter(id => !TILE_DEFS[id].svgAsset);
+        
         terrainIds.forEach(id => {
             const def = TILE_DEFS[id];
             const swatch = document.createElement('div');
@@ -134,17 +153,24 @@ class TileEditor {
             if (id == this.state.currentTile) swatch.classList.add('active');
             
             const canvas = document.createElement('canvas');
-            canvas.width = 32;
-            canvas.height = 32;
-            this.drawPreview(canvas.getContext('2d'), id, 32);
+            canvas.width = 64;
+            canvas.height = 64;
+            const ctx = canvas.getContext('2d');
+            
+            // Draw with a slight brightness boost for the UI
+            this.drawPreview(ctx, id, 64);
+            ctx.fillStyle = 'rgba(255,255,255,0.05)';
+            ctx.fillRect(0, 0, 64, 64);
             
             swatch.appendChild(canvas);
-            swatch.innerHTML += `<div class="swatch-label">${def.name}</div>`;
+            const labelText = def.name.length > 10 ? def.name.slice(0, 8) + '..' : def.name;
+            swatch.innerHTML += `<div class="swatch-label">${labelText}</div>`;
             swatch.onclick = () => {
                 this.state.currentTile = id;
                 this.state.currentStamp = null;
                 document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
                 swatch.classList.add('active');
+                this.updateBrushPreview();
             };
             this.elements.palette.appendChild(swatch);
         });
@@ -216,34 +242,116 @@ class TileEditor {
                 document.querySelectorAll('.layer-btn').forEach(el => el.classList.remove('active'));
                 btn.classList.add('active');
                 this.state.currentLayer = parseInt(btn.dataset.layer);
+                this.state.showAll = false; // Auto-isolate when switching
+                this.updateShowAllButton();
+                this.render();
             };
         });
     }
 
     initEvents() {
         const c = this.elements.canvas;
-        c.onmousedown = (e) => {
-            this.state.isMouseDown = true;
-            this.handleAction(e);
-        };
-        window.onmouseup = () => this.state.isMouseDown = false;
-        c.onmousemove = (e) => {
-            this.updateCoords(e);
-            if (this.state.isMouseDown) this.handleAction(e);
-            this.updateBrushPreview(e);
-        };
-
-        // Zoom/Pan
-        window.onwheel = (e) => {
+        
+        // Scroll & Zoom Handler - Using addEventListener with passive: false to prevent browser zoom
+        window.addEventListener('wheel', (e) => {
             if (e.ctrlKey) {
                 e.preventDefault();
-                this.config.zoom = Math.max(0.1, Math.min(5, this.config.zoom - e.deltaY * 0.001));
-                this.render();
+                const factor = Math.pow(1.1, -e.deltaY / 100);
+                const oldZoom = this.config.zoom;
+                const newZoom = Math.max(0.1, Math.min(10, oldZoom * factor));
+                
+                if (oldZoom !== newZoom) {
+                    this.config.zoom = newZoom;
+                    this.render();
+                    this.updateBrushPreview(e);
+                }
+            } else {
+                // Standard Scrolling
+                const wrapper = this.elements.wrapper;
+                if (e.shiftKey) {
+                    wrapper.scrollLeft += e.deltaY;
+                } else {
+                    wrapper.scrollTop += e.deltaY;
+                }
+                this.updateBrushPreview(e);
             }
+        }, { passive: false });
+
+        // Keybinds
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                this.state.spaceDown = true;
+                this.elements.canvas.style.cursor = 'grab';
+            }
+            const keyMap = { 'b': 'brush', 'g': 'fill', 'r': 'rect', 'i': 'eyedropper', 'c': 'collision' };
+            if (keyMap[e.key]) {
+                if (e.key === 'c') this.toggleCollision();
+                else this.setTool(keyMap[e.key]);
+            }
+            if (e.key === 'x' || e.key === 'Delete') {
+                this.state.currentTile = 0;
+                this.state.currentStamp = null;
+                document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+                this.updateBrushPreview();
+            }
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                this.downloadMap();
+            }
+            if (e.ctrlKey && e.key === 'z') {
+                e.preventDefault();
+                this.undo();
+            }
+        });
+
+        window.addEventListener('keyup', (e) => {
+            if (e.code === 'Space') {
+                this.state.spaceDown = false;
+                this.elements.canvas.style.cursor = 'crosshair';
+            }
+        });
+
+        // Mouse Handlers
+        c.oncontextmenu = (e) => e.preventDefault(); // Disable right-click menu
+
+        c.onmousedown = (e) => {
+            if (e.button === 1 || (e.button === 0 && this.state.spaceDown)) {
+                this.state.isPanning = true;
+                this.state.lastMousePos = { x: e.clientX, y: e.clientY };
+                this.elements.canvas.style.cursor = 'grabbing';
+                return;
+            }
+            if (e.button === 0 || e.button === 2) {
+                this.saveHistory();
+                this.state.isMouseDown = true;
+                this.handleAction(e);
+            }
+        };
+
+        window.onmouseup = () => {
+            this.state.isMouseDown = false;
+            this.state.isPanning = false;
+            this.elements.canvas.style.cursor = this.state.spaceDown ? 'grab' : 'crosshair';
+        };
+
+        c.onmousemove = (e) => {
+            this.updateCoords(e);
+            if (this.state.isPanning) {
+                const dx = e.clientX - this.state.lastMousePos.x;
+                const dy = e.clientY - this.state.lastMousePos.y;
+                const wrapper = this.elements.wrapper;
+                wrapper.scrollLeft -= dx;
+                wrapper.scrollTop -= dy;
+                this.state.lastMousePos = { x: e.clientX, y: e.clientY };
+                return;
+            }
+            if (this.state.isMouseDown) this.handleAction(e);
+            this.updateBrushPreview(e);
         };
     }
 
     updateCoords(e) {
+        if (!e) return;
         const rect = this.elements.canvas.getBoundingClientRect();
         const s = this.config.tileSize * this.config.zoom;
         const x = Math.floor((e.clientX - rect.left) / s);
@@ -252,55 +360,70 @@ class TileEditor {
     }
 
     updateBrushPreview(e) {
+        const p = this.elements.brushPreview;
         const rect = this.elements.canvas.getBoundingClientRect();
         const s = this.config.tileSize * this.config.zoom;
-        const x = Math.floor((e.clientX - rect.left) / s);
-        const y = Math.floor((e.clientY - rect.top) / s);
-
-        const bp = this.elements.brushPreview;
-        bp.style.left = (rect.left + x * s) + 'px';
-        bp.style.top = (rect.top + y * s) + 'px';
         
-        if (this.state.currentStamp) {
-            bp.style.width = (this.state.currentStamp.size.w * s) + 'px';
-            bp.style.height = (this.state.currentStamp.size.h * s) + 'px';
-        } else {
-            bp.style.width = s + 'px';
-            bp.style.height = s + 'px';
+        if (!e) {
+            p.innerHTML = '';
+            if (!this.state.currentStamp) {
+                const canvas = document.createElement('canvas');
+                canvas.width = 64; canvas.height = 64;
+                canvas.style.width = '100%'; canvas.style.height = '100%';
+                this.drawPreview(canvas.getContext('2d'), this.state.currentTile, 64);
+                p.appendChild(canvas);
+            }
+            return;
         }
-        bp.classList.remove('hidden');
+
+        const x = Math.floor(e.offsetX / s);
+        const y = Math.floor(e.offsetY / s);
+        p.style.left = (x * s + 500) + 'px'; // +500 for wrapper padding
+        p.style.top = (y * s + 500) + 'px';
+
+        if (this.state.currentStamp) {
+            p.innerHTML = '';
+            p.style.width = (this.state.currentStamp.size.w * s) + 'px';
+            p.style.height = (this.state.currentStamp.size.h * s) + 'px';
+        } else {
+            p.style.width = s + 'px';
+            p.style.height = s + 'px';
+            if (!p.querySelector('canvas')) this.updateBrushPreview();
+        }
+        p.classList.remove('hidden');
     }
 
     handleAction(e) {
-        const rect = this.elements.canvas.getBoundingClientRect();
         const s = this.config.tileSize * this.config.zoom;
-        const x = Math.floor((e.clientX - rect.left) / s);
-        const y = Math.floor((e.clientY - rect.top) / s);
+        const x = Math.floor(e.offsetX / s);
+        const y = Math.floor(e.offsetY / s);
 
         if (x < 0 || y < 0 || x >= this.config.width || y >= this.config.height) return;
+
+        // Right-click always erases (sets to 0)
+        const activeTile = (e.buttons === 2) ? 0 : this.state.currentTile;
 
         if (this.state.currentTool === 'eyedropper') {
             const id = this.state.map[this.state.currentLayer][y][x];
             if (id !== undefined) {
                 this.state.currentTile = id;
                 this.state.currentStamp = null;
-                // Update UI selection
                 this.setTool('brush');
             }
             return;
         }
 
-        if (this.state.currentTool === 'fill') {
-            this.floodFill(x, y, this.state.currentTile);
-            this.render();
-            return;
-        }
-
-        if (this.state.currentStamp) {
+        if (e.buttons === 2) {
+            // Eraser Mode
+            this.state.map[this.state.currentLayer][y][x] = 0;
+        } else if (this.state.currentStamp) {
             this.applyStamp(x, y, this.state.currentStamp);
-        } else {
-            this.state.map[this.state.currentLayer][y][x] = parseInt(this.state.currentTile);
+        } else if (this.state.currentTool === 'brush' || this.state.currentTool === 'rect') {
+            this.state.map[this.state.currentLayer][y][x] = parseInt(activeTile);
+        } else if (this.state.currentTool === 'fill') {
+            this.floodFill(x, y, activeTile);
         }
+        
         this.render();
     }
 
@@ -341,17 +464,11 @@ class TileEditor {
         const def = TILE_DEFS[id];
         if (!def) return;
         
-        ctx.fillStyle = def.color || '#000';
-        ctx.fillRect(0, 0, size, size);
+        ctx.clearRect(0, 0, size, size);
+        this.drawTerrainTexture(ctx, id, 0, 0, size);
 
         if (def.svgAsset && this.cache[def.svgAsset]) {
             ctx.drawImage(this.cache[def.svgAsset], 0, 0, size, size);
-        } else if (def.spriteIdx !== undefined && this.cache.spritesheet.complete && this.cache.spritesheet.width > 0) {
-            const sIdx = def.spriteIdx;
-            const gw = 6;
-            const sw = this.cache.spritesheet.width / gw;
-            const sh = this.cache.spritesheet.height / gw;
-            ctx.drawImage(this.cache.spritesheet, (sIdx % gw) * sw, Math.floor(sIdx / gw) * sh, sw, sh, 0, 0, size, size);
         }
     }
 
@@ -375,6 +492,8 @@ class TileEditor {
     }
 
     render() {
+        if (!this.state.map || !this.state.map[0]) return;
+        
         const c = this.elements.canvas;
         const s = this.config.tileSize * this.config.zoom;
         c.width = this.config.width * s;
@@ -383,6 +502,12 @@ class TileEditor {
         this.ctx.clearRect(0, 0, c.width, c.height);
 
         for (let l = 0; l < 3; l++) {
+            // LAYER ISOLATION: Only render current if not in "Show All" mode
+            if (!this.state.showAll && l !== this.state.currentLayer) continue; 
+            
+            // If in isolation mode and on Layer 1 or 2, maybe we want a tiny hint of Layer 0?
+            // For now, full transparency as requested.
+
             const layer = this.state.map[l];
             for (let y = 0; y < this.config.height; y++) {
                 for (let x = 0; x < this.config.width; x++) {
@@ -398,47 +523,305 @@ class TileEditor {
                 }
             }
         }
+
+        if (this.state.showCollision) {
+            this.renderCollisionOverlay(s);
+        }
+
         this.updateMinimap();
+    }
+
+    renderCollisionOverlay(s) {
+        this.ctx.save();
+        for (let y = 0; y < this.config.height; y++) {
+            for (let x = 0; x < this.config.width; x++) {
+                const isBlocked = this.isTileBlocked(x, y);
+                
+                const cx = x * s + s/2;
+                const cy = y * s + s/2;
+
+                if (isBlocked) {
+                    // Draw Red X
+                    this.ctx.strokeStyle = '#ff3333';
+                    this.ctx.lineWidth = 3;
+                    this.ctx.beginPath();
+                    const pad = s * 0.3;
+                    this.ctx.moveTo(x * s + pad, y * s + pad);
+                    this.ctx.lineTo((x + 1) * s - pad, (y + 1) * s - pad);
+                    this.ctx.moveTo((x + 1) * s - pad, y * s + pad);
+                    this.ctx.lineTo(x * s + pad, (y + 1) * s - pad);
+                    this.ctx.stroke();
+                } else {
+                    // Draw Green Dot
+                    this.ctx.fillStyle = '#33ff33';
+                    this.ctx.beginPath();
+                    this.ctx.arc(cx, cy, s * 0.1, 0, Math.PI * 2);
+                    this.ctx.fill();
+                }
+            }
+        }
+        this.ctx.restore();
+    }
+
+    isTileBlocked(tx, ty) {
+        if (tx < 0 || ty < 0 || tx >= this.config.width || ty >= this.config.height) return true;
+
+        // 1. Direct Layer Check
+        const baseTid = this.state.map[0][ty][tx];
+        if (baseTid === 0) return true; // If there is no ground (Layer 0), it's blocked (Void)
+
+        for (let l = 0; l < 3; l++) {
+            const tid = this.state.map[l][ty][tx];
+            if (tid === 0) continue; // Treat 0 as transparent for upper layers
+            
+            const def = TILE_DEFS[tid];
+            if (def && !def.walkable && !def.collisionMask) return true;
+        }
+
+        // 2. Scan for Collision Masks and Footprints
+        const R = 4; // Scan radius for large assets
+        for (let dy = -R; dy <= R; dy++) {
+            for (let dx = -R; dx <= R; dx++) {
+                const nx = tx + dx;
+                const ny = ty + dy;
+                if (nx < 0 || ny < 0 || nx >= this.config.width || ny >= this.config.height) continue;
+
+                for (let l = 0; l < 3; l++) {
+                    const tid = this.state.map[l][ny][nx];
+                    if (tid === 0) continue;
+                    
+                    const def = TILE_DEFS[tid];
+                    if (!def) continue;
+
+                    // Check Collision Mask
+                    if (def.collisionMask) {
+                        const maskY = ty - ny;
+                        const maskX = tx - nx;
+                        const rows = def.collisionMask.length;
+                        const mY = (rows - 1) - (ty - ny);
+                        const mX = tx - nx;
+                        
+                        if (def.collisionMask[mY] && def.collisionMask[mY][mX] === 'X') {
+                            return true;
+                        }
+                    }
+
+                    // Check Footprint
+                    if (def.footprint) {
+                        for (const [fx, fy] of def.footprint) {
+                            if (nx + fx === tx && ny + fy === ty) return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    toggleShowAll() {
+        this.state.showAll = !this.state.showAll;
+        this.updateShowAllButton();
+        this.render();
+    }
+
+    updateShowAllButton() {
+        const btn = document.getElementById('toggle-all-layers');
+        if (btn) {
+            btn.style.background = this.state.showAll ? 'var(--accent)' : 'rgba(255,255,255,0.05)';
+            btn.style.color = this.state.showAll ? '#000' : 'var(--accent)';
+            btn.innerText = this.state.showAll ? '👁️ ISOLATE' : '👁️ SHOW ALL';
+        }
+    }
+
+    updateCanvasSize() {
+        const s = this.config.tileSize * this.config.zoom;
+        this.elements.canvas.width = this.config.width * s;
+        this.elements.canvas.height = this.config.height * s;
+    }
+
+    exportJSON() {
+        // Custom stringifier to keep the map in a readable grid format
+        const map = this.state.map;
+        let json = "[\n";
+        
+        map.forEach((layer, lIdx) => {
+            json += "  [\n";
+            layer.forEach((row, rIdx) => {
+                json += "    [" + row.join(",") + "]";
+                if (rIdx < layer.length - 1) json += ",";
+                json += "\n";
+            });
+            json += "  ]";
+            if (lIdx < map.length - 1) json += ",";
+            json += "\n";
+        });
+        json += "]";
+        
+        return json;
+    }
+
+    setZoom(val) {
+        this.state.zoom = parseFloat(val);
+        document.getElementById('zoom-value').innerText = Math.round(this.state.zoom * 100) + '%';
+        this.updateCanvasSize();
+        this.render();
+    }
+
+    async switchMap(mapId) {
+        const paths = {
+            'verdant_vale': '../js/map/data/map-verdant-vale.json',
+            'iron_hold': '../js/map/data/map-iron-hold.json'
+        };
+        const path = paths[mapId];
+        if (!path) return alert("Map path unknown: " + mapId);
+        
+        try {
+            const response = await fetch(path);
+            const data = await response.json();
+            
+            // Handle both raw arrays and object wrappers
+            const layers = Array.isArray(data) ? data : (data.layers || [data.r0, data.r1, data.r2]);
+            
+            // Auto-detect dimensions from data
+            this.config.height = layers[0].length;
+            this.config.width = layers[0][0].length;
+            
+            this.state.map = layers;
+            this.state.mapId = mapId;
+            this.state.mapPath = path.replace('../', ''); // Store relative to project root
+            
+            this.saveHistory();
+            this.updateCanvasSize();
+            this.render();
+            
+            console.log(`🗺️ Switched to: ${mapId} (${this.state.mapPath})`);
+        } catch (e) {
+            console.error("Failed to load map:", e);
+        }
+    }
+
+    async syncToWorkspace() {
+        const json = this.exportJSON();
+        const path = this.state.mapPath || 'js/map/data/map-verdant-vale.json';
+
+        console.log("💎 ARCHITECT PRO: SYNC DATA READY");
+        
+        try {
+            const response = await fetch('http://localhost:3000/sync', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ path: path, data: json })
+            });
+
+            if (response.ok) {
+                alert(`✅ SYNC SUCCESSFUL!\n\n${path} has been updated and backed up.`);
+                console.log("✅ Live Sync Success!");
+            } else {
+                throw new Error("Server rejected request");
+            }
+        } catch (e) {
+            console.warn("⚠️ Live Sync Bridge not detected. Falling back to Manual Sync.");
+            console.log(json);
+            alert(`💎 Live Sync Bridge is not running.\n\n1. Run: node tools/sync-server.js\n2. Or copy the data from the console and ask me to sync it manually!`);
+        }
+    }
+
+    downloadMap() {
+        const json = this.exportJSON();
+        const blob = new Blob([json], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'map-verdant-vale.json';
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    saveHistory() {
+        // Deep clone the map
+        const snapshot = JSON.parse(JSON.stringify(this.state.map));
+        this.state.history.push(snapshot);
+        if (this.state.history.length > 50) this.state.history.shift();
+    }
+
+    undo() {
+        if (this.state.history.length === 0) return;
+        const lastMap = this.state.history.pop();
+        this.state.map = lastMap;
+        this.render();
+    }
+
+    toggleCollision() {
+        this.state.showCollision = !this.state.showCollision;
+        document.querySelector('.tool-btn[data-tool="collision"]')?.classList.toggle('active', this.state.showCollision);
+        this.render();
     }
 
     drawTile(ctx, id, x, y, s) {
         const def = TILE_DEFS[id];
         if (!def) return;
 
-        // Base background for non-walkable blocks
-        if (!def.walkable && !def.svgAsset && !def.spriteIdx) {
-            ctx.fillStyle = def.color || '#333';
-            ctx.fillRect(x, y, s, s);
-        }
+        // Base Terrain
+        this.drawTerrainTexture(ctx, id, x, y, s);
 
-        const scale = def.vScale || 1.0;
-        const offX = (def.vOffset?.x || 0) * (s / 64);
-        const offY = (def.vOffset?.y || 0) * (s / 64);
-        const dw = s * scale;
-        const dh = s * scale;
-
-        let dx = x + offX;
-        let dy = y + offY;
-
-        if (def.anchor === 'bottom-left') {
-            dy = (y + s) - dh + offY;
-        } else if (def.anchor === 'bottom-center') {
-            dx = (x + s / 2) - dw / 2 + offX;
-            dy = (y + s) - dh + offY;
-        }
-
+        // Assets
         if (def.svgAsset && this.cache[def.svgAsset]) {
-            ctx.drawImage(this.cache[def.svgAsset], dx, dy, dw, dh);
-        } else if (def.spriteIdx !== undefined && this.cache.spritesheet.complete && this.cache.spritesheet.width > 0) {
-            const sIdx = def.spriteIdx;
-            const gw = 6;
-            const sw = this.cache.spritesheet.width / gw;
-            const sh = this.cache.spritesheet.height / gw;
-            ctx.drawImage(this.cache.spritesheet, (sIdx % gw) * sw, Math.floor(sIdx / gw) * sh, sw, sh, dx, dy, dw, dh);
-        } else if (def.color) {
-            ctx.fillStyle = def.color;
-            ctx.fillRect(x, y, s, s);
+            const img = this.cache[def.svgAsset];
+            const scale = def.scale || 1;
+            const sw = s * scale;
+            const sh = s * scale * (img.height / img.width || 1);
+            
+            // Anchor logic: Assets are usually anchored to bottom-center in VV engine
+            const dx = x + (s - sw) / 2;
+            const dy = y + s - sh;
+            
+            ctx.drawImage(img, dx, dy, sw, sh);
         }
+    }
+
+    drawTerrainTexture(ctx, id, x, y, s) {
+        const def = TILE_DEFS[id];
+        const color = def.color || '#1a1a2e';
+        const hi = def.hi || color;
+        const shadow = def.shadow || color;
+
+        ctx.fillStyle = color;
+        ctx.fillRect(x, y, s, s);
+
+        // Add Premium Procedural Details
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(x, y, s, s);
+        ctx.clip();
+
+        if (def.name.includes('grass')) {
+            ctx.fillStyle = hi;
+            for(let i=0; i<3; i++) {
+                ctx.fillRect(x + (i*s/3) + 2, y + 4, 2, s/3);
+                ctx.fillRect(x + (i*s/3) + 6, y + s/2, 2, s/4);
+            }
+        } else if (def.name.includes('water')) {
+            ctx.strokeStyle = hi;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(x + 2, y + s/3);
+            ctx.bezierCurveTo(x + s/3, y + 2, x + 2*s/3, y + s/3, x + s - 2, y + 2);
+            ctx.stroke();
+        } else if (def.name.includes('stone') || def.name.includes('wall') || def.name.includes('mountain')) {
+            ctx.fillStyle = shadow;
+            ctx.fillRect(x, y + s - 4, s, 4);
+            ctx.fillStyle = hi;
+            ctx.fillRect(x, y, s, 2);
+        } else if (def.name.includes('path') || def.name.includes('sand')) {
+            ctx.fillStyle = hi;
+            for(let i=0; i<5; i++) {
+                ctx.beginPath();
+                ctx.arc(x + Math.random()*s, y + Math.random()*s, 1.5, 0, Math.PI*2);
+                ctx.fill();
+            }
+        }
+
+        ctx.restore();
     }
 
     updateMinimap() {
