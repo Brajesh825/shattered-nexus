@@ -60,14 +60,20 @@ class TileEditor {
     }
 
     loadCache() {
-        if (this.manifest && this.manifest.assets) {
-            Object.keys(this.manifest.assets).forEach(key => {
-                if (!this.cache[key]) this.cache[key] = new Image();
-                this.cache[key].src = `../images/environment/svg/${key}.svg`;
-                this.cache[key].onload = () => this.render();
-                this.cache[key].onerror = () => console.warn(`Failed to load SVG: ${key}`);
-            });
-        }
+        // Automatically cache all unique SVGs found in tile definitions
+        const uniqueSvgs = new Set();
+        Object.values(TILE_DEFS).forEach(def => {
+            if (def.svgAsset) uniqueSvgs.add(def.svgAsset);
+        });
+
+        uniqueSvgs.forEach(key => {
+            if (!this.cache[key]) this.cache[key] = new Image();
+            this.cache[key].src = `../images/environment/svg/${key}.svg`;
+            this.cache[key].onload = () => this.render();
+            this.cache[key].onerror = () => {
+                this.cache[key].src = `../images/environment/${key}.png`;
+            };
+        });
 
         this.cache.spritesheet.onerror = () => {
             console.warn("Spritesheet missing, continuing with SVGs only.");
@@ -146,20 +152,34 @@ class TileEditor {
 
     initAssets() {
         this.elements.assets.innerHTML = '';
-        if (!this.manifest || !this.manifest.assets) return;
+        const envAssets = [
+            'oak', 'pine', 'shrub', 'boulder', 'mushroom', 'flower', 'crystal', 'lily', 'dead_tree', 'well', 'market', 'chest', 'statue',
+            'fountain', 'obelisk', 'tombstone', 'pillar_broken', 'wagon', 'tent', 'campfire', 'signpost', 'street_lamp', 'archway',
+            'void_rift', 'cursed_idol', 'skeleton', 'floating_crystal', 'ancient_pillar', 'withered_vine', 'sacrificial_altar', 'void_spires', 'iron_maiden', 'magic_circle'
+        ];
 
-        Object.keys(this.manifest.assets).forEach(key => {
-            const asset = this.manifest.assets[key];
+        // Filter TILE_DEFS to find IDs matching these assets
+        const assetMap = {};
+        Object.keys(TILE_DEFS).forEach(id => {
+            const def = TILE_DEFS[id];
+            if (def.svgAsset) assetMap[def.svgAsset] = id;
+        });
+
+        envAssets.forEach(key => {
+            const id = assetMap[key];
+            if (!id) return;
+
             const swatch = document.createElement('div');
             swatch.className = 'swatch';
             
             const img = document.createElement('img');
             img.src = `../images/environment/svg/${key}.svg`;
+            img.onerror = () => { img.src = `../images/environment/${key}.png`; };
             
             swatch.appendChild(img);
-            swatch.innerHTML += `<div class="swatch-label">${asset.name}</div>`;
+            swatch.innerHTML += `<div class="swatch-label">${key}</div>`;
             swatch.onclick = () => {
-                this.state.currentTile = asset.id;
+                this.state.currentTile = id;
                 this.state.currentStamp = null;
                 document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
                 swatch.classList.add('active');
@@ -385,16 +405,38 @@ class TileEditor {
         const def = TILE_DEFS[id];
         if (!def) return;
 
+        // Base background for non-walkable blocks
+        if (!def.walkable && !def.svgAsset && !def.spriteIdx) {
+            ctx.fillStyle = def.color || '#333';
+            ctx.fillRect(x, y, s, s);
+        }
+
+        const scale = def.vScale || 1.0;
+        const offX = (def.vOffset?.x || 0) * (s / 64);
+        const offY = (def.vOffset?.y || 0) * (s / 64);
+        const dw = s * scale;
+        const dh = s * scale;
+
+        let dx = x + offX;
+        let dy = y + offY;
+
+        if (def.anchor === 'bottom-left') {
+            dy = (y + s) - dh + offY;
+        } else if (def.anchor === 'bottom-center') {
+            dx = (x + s / 2) - dw / 2 + offX;
+            dy = (y + s) - dh + offY;
+        }
+
         if (def.svgAsset && this.cache[def.svgAsset]) {
-            ctx.drawImage(this.cache[def.svgAsset], x, y, s, s);
+            ctx.drawImage(this.cache[def.svgAsset], dx, dy, dw, dh);
         } else if (def.spriteIdx !== undefined && this.cache.spritesheet.complete && this.cache.spritesheet.width > 0) {
             const sIdx = def.spriteIdx;
             const gw = 6;
             const sw = this.cache.spritesheet.width / gw;
             const sh = this.cache.spritesheet.height / gw;
-            ctx.drawImage(this.cache.spritesheet, (sIdx % gw) * sw, Math.floor(sIdx / gw) * sh, sw, sh, x, y, s, s);
-        } else {
-            ctx.fillStyle = def.color || '#333';
+            ctx.drawImage(this.cache.spritesheet, (sIdx % gw) * sw, Math.floor(sIdx / gw) * sh, sw, sh, dx, dy, dw, dh);
+        } else if (def.color) {
+            ctx.fillStyle = def.color;
             ctx.fillRect(x, y, s, s);
         }
     }
@@ -453,6 +495,81 @@ class TileEditor {
         if (confirm('Erase entire map?')) {
             this.initMap();
             this.render();
+        }
+    }
+
+    importJSON(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        this.showLoader("Parsing Map Data...");
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            try {
+                const raw = JSON.parse(event.target.result);
+                const mapData = Array.isArray(raw) ? raw : (raw.data || raw.layers);
+                
+                if (!mapData || !Array.isArray(mapData)) {
+                    throw new Error("Invalid map data format.");
+                }
+
+                this.config.height = mapData[0].length;
+                this.config.width  = mapData[0][0].length;
+                this.state.map     = mapData;
+                
+                this.render();
+                setTimeout(() => this.hideLoader(), 300);
+            } catch (err) {
+                this.hideLoader();
+                alert("Error loading JSON: " + err.message);
+            }
+        };
+        reader.readAsText(file);
+    }
+
+    showLoader(text) {
+        let loader = document.getElementById('editor-loader');
+        if (!loader) {
+            loader = document.createElement('div');
+            loader.id = 'editor-loader';
+            loader.innerHTML = `
+                <div class="loader-box">
+                    <div class="spinner"></div>
+                    <div id="loader-text"></div>
+                </div>
+            `;
+            document.body.appendChild(loader);
+            
+            const style = document.createElement('style');
+            style.textContent = `
+                #editor-loader {
+                    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                    background: rgba(15, 23, 42, 0.9); z-index: 10000;
+                    display: flex; align-items: center; justify-content: center;
+                    font-family: 'Outfit', sans-serif; color: #38bdf8;
+                    transition: opacity 0.3s ease;
+                }
+                .loader-box { text-align: center; }
+                .spinner {
+                    width: 40px; height: 40px; border: 3px solid rgba(56, 189, 248, 0.1);
+                    border-top-color: #38bdf8; border-radius: 50%;
+                    animation: spin 0.8s linear infinite; margin: 0 auto 15px;
+                }
+                #loader-text { letter-spacing: 2px; font-size: 12px; font-weight: 600; text-transform: uppercase; }
+                @keyframes spin { to { transform: rotate(360deg); } }
+            `;
+            document.head.appendChild(style);
+        }
+        document.getElementById('loader-text').innerText = text;
+        loader.style.opacity = '1';
+        loader.style.display = 'flex';
+    }
+
+    hideLoader() {
+        const loader = document.getElementById('editor-loader');
+        if (loader) {
+            loader.style.opacity = '0';
+            setTimeout(() => { loader.style.display = 'none'; }, 300);
         }
     }
 }
