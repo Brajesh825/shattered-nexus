@@ -1,0 +1,20 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="lamp-bloom">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  <!-- Post -->
+  <rect x="30" y="24" width="4" height="40" fill="#263238"/>
+  <rect x="28" y="60" width="8" height="4" fill="#1a1a1a"/>
+  <!-- Lantern Housing -->
+  <path d="M24 24 L32 10 L40 24 Z" fill="#37474f"/>
+  <!-- Glowing Glass -->
+  <circle cx="32" cy="22" r="7" fill="#fff9c4" filter="url(#lamp-bloom)">
+    <animate attributeName="opacity" values="0.8; 1; 0.8" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="32" cy="22" r="3" fill="#fffde7"/>
+  <!-- Iron Frame -->
+  <path d="M24 24 L40 24 M32 10 L32 24" stroke="#263238" stroke-width="1.5"/>
+</svg>

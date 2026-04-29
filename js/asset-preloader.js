@@ -29,7 +29,9 @@ const AssetPreloader = (() => {
       'world_map_bg'
     ],
     environment: [
-      'oak', 'pine', 'shrub', 'boulder', 'mushroom', 'flower', 'crystal', 'lily', 'dead_tree', 'well', 'market', 'chest', 'statue'
+      'oak', 'pine', 'shrub', 'boulder', 'mushroom', 'flower', 'crystal', 'lily', 'dead_tree', 'well', 'market', 'chest', 'statue',
+      'fountain', 'obelisk', 'tombstone', 'pillar_broken', 'wagon', 'tent', 'campfire', 'signpost', 'street_lamp', 'archway',
+      'void_rift', 'cursed_idol', 'skeleton', 'floating_crystal', 'ancient_pillar', 'withered_vine', 'sacrificial_altar', 'void_spires', 'iron_maiden', 'magic_circle'
     ]
   };
 
@@ -123,7 +125,11 @@ const AssetPreloader = (() => {
     // Preload Environment sprites
     for (const imageId of ASSETS.environment) {
       try {
-        const extension = ['oak', 'pine', 'shrub', 'boulder', 'mushroom', 'flower', 'crystal', 'lily', 'dead_tree', 'well', 'market', 'chest', 'statue'].includes(imageId) ? 'svg' : 'png';
+        const extension = [
+          'oak', 'pine', 'shrub', 'boulder', 'mushroom', 'flower', 'crystal', 'lily', 'dead_tree', 'well', 'market', 'chest', 'statue',
+          'fountain', 'obelisk', 'tombstone', 'pillar_broken', 'wagon', 'tent', 'campfire', 'signpost', 'street_lamp', 'archway',
+          'void_rift', 'cursed_idol', 'skeleton', 'floating_crystal', 'ancient_pillar', 'withered_vine', 'sacrificial_altar', 'void_spires', 'iron_maiden', 'magic_circle'
+        ].includes(imageId) ? 'svg' : 'png';
         const path = extension === 'svg' ? `images/environment/svg/${imageId}.svg` : `images/environment/${imageId}.png`;
         const img = await loadImage(path);
         cache.images[`env_${imageId}`] = img;

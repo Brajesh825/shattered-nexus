@@ -1,24 +1,27 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120">
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="well-stone" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" style="stop-color:#787068"/>
-      <stop offset="100%" style="stop-color:#484038"/>
+    <linearGradient id="stone" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#90a4ae;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#455a64;stop-opacity:1" />
     </linearGradient>
-    <linearGradient id="well-wood" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" style="stop-color:#8d6e63"/>
-      <stop offset="100%" style="stop-color:#5d4037"/>
-    </linearGradient>
+    <radialGradient id="water" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#4fc3f7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0277bd;stop-opacity:1" />
+    </radialGradient>
   </defs>
-  <!-- Base -->
-  <rect x="25" y="80" width="50" height="30" fill="url(#well-stone)" rx="5"/>
-  <rect x="20" y="85" width="60" height="5" fill="rgba(0,0,0,0.2)"/>
-  <!-- Posts -->
-  <rect x="30" y="40" width="4" height="40" fill="url(#well-wood)"/>
-  <rect x="66" y="40" width="4" height="40" fill="url(#well-wood)"/>
+  <!-- Stone Base -->
+  <rect x="18" y="48" width="28" height="12" rx="2" fill="url(#stone)"/>
+  <path d="M22 48 L22 60 M28 48 L28 60 M36 48 L36 60 M42 48 L42 60" stroke="#263238" stroke-width="0.5" opacity="0.3"/>
+  <!-- Well Rim -->
+  <ellipse cx="32" cy="48" rx="14" ry="4" fill="#37474f"/>
+  <ellipse cx="32" cy="48" rx="12" ry="3" fill="url(#water)">
+    <animate attributeName="opacity" values="0.8; 1; 0.8" dur="3s" repeatCount="indefinite"/>
+  </ellipse>
+  <!-- Wooden Pillars -->
+  <rect x="20" y="24" width="4" height="24" fill="#5d4037"/>
+  <rect x="40" y="24" width="4" height="24" fill="#5d4037"/>
   <!-- Roof -->
-  <path d="M20 50 L50 20 L80 50 Z" fill="#6d4c41"/>
-  <path d="M25 45 L50 25 L75 45 Z" fill="#8d6e63"/>
-  <!-- Bucket (proxy) -->
-  <rect x="47" y="60" width="6" height="8" fill="#5d4037" rx="1"/>
-  <line x1="50" y1="40" x2="50" y2="60" stroke="#3e2723" stroke-width="1"/>
+  <path d="M16 28 L32 12 L48 28 Z" fill="#8d6e63"/>
+  <path d="M16 28 L32 12 L48 28 Z" fill="none" stroke="#5d4037" stroke-width="1"/>
+  <path d="M20 25 L32 16 L44 25" fill="none" stroke="#d7ccc8" stroke-width="0.5" opacity="0.4"/>
 </svg>

@@ -1,20 +1,20 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <linearGradient id="chest-wood" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#8d6e63"/>
-      <stop offset="100%" style="stop-color:#3e2723"/>
+      <stop offset="0%" style="stop-color:#a1887f;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#5d4037;stop-opacity:1" />
     </linearGradient>
   </defs>
-  <!-- Box -->
-  <rect x="20" y="40" width="60" height="40" fill="url(#chest-wood)" rx="2"/>
-  <!-- Gold Trim -->
-  <rect x="20" y="40" width="60" height="6" fill="#ffd700"/>
-  <rect x="20" y="74" width="60" height="6" fill="#ffd700"/>
-  <rect x="20" y="40" width="6" height="40" fill="#ffd700"/>
-  <rect x="74" y="40" width="6" height="40" fill="#ffd700"/>
-  <!-- Lid Arch -->
-  <path d="M20 40 Q50 10 80 40 Z" fill="#5d4037" stroke="#ffd700" stroke-width="2"/>
+  <!-- Body -->
+  <rect x="12" y="32" width="40" height="24" rx="2" fill="url(#chest-wood)"/>
+  <!-- Iron Bindings -->
+  <rect x="12" y="32" width="40" height="4" fill="#37474f"/>
+  <rect x="12" y="52" width="40" height="4" fill="#37474f"/>
+  <rect x="18" y="32" width="4" height="24" fill="#37474f"/>
+  <rect x="42" y="32" width="4" height="24" fill="#37474f"/>
   <!-- Lock -->
-  <rect x="45" y="42" width="10" height="12" fill="#ffd700" rx="2"/>
-  <circle cx="50" cy="48" r="2" fill="#3e2723"/>
+  <rect x="30" y="40" width="4" height="6" rx="1" fill="#fbbf24"/>
+  <circle cx="32" cy="43" r="1" fill="#3e2723"/>
+  <!-- Shine -->
+  <path d="M15 35 L49 35" stroke="#fff" stroke-width="0.5" opacity="0.3"/>
 </svg>

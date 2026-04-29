@@ -1,4 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <path d="M50 50 m-40 0 a40 40 0 1 0 80 0 a40 40 0 1 0 -80 0 Z M50 50 L10 50" fill="#2e7d32" stroke="#1b5e20" stroke-width="2"/>
-  <circle cx="60" cy="40" r="8" fill="#fff" opacity="0.4"/>
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="petal-grad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#90caf9;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Pad -->
+  <ellipse cx="32" cy="48" rx="20" ry="8" fill="#2e7d32" opacity="0.6"/>
+  <path d="M25 48 L15 48" stroke="#1b5e20" stroke-width="1" opacity="0.4"/>
+  <!-- Flower -->
+  <path d="M32 48 Q25 35 32 25 Q39 35 32 48" fill="url(#petal-grad)"/>
+  <path d="M32 48 Q45 40 50 32 Q45 24 32 48" fill="url(#petal-grad)" opacity="0.8"/>
+  <path d="M32 48 Q19 40 14 32 Q19 24 32 48" fill="url(#petal-grad)" opacity="0.8"/>
+  <!-- Core -->
+  <circle cx="32" cy="42" r="2" fill="#fff176"/>
 </svg>

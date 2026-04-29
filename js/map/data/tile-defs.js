@@ -64,6 +64,30 @@ TILE_DEFS[210] = { name: 'SVG Market',    walkable: false, svgAsset: 'market', c
 TILE_DEFS[211] = { name: 'SVG Chest',     walkable: true,  svgAsset: 'chest', color: '#ffd700' };
 TILE_DEFS[212] = { name: 'SVG Statue',    walkable: false, svgAsset: 'statue', color: '#78909c' };
 
+// ── EXPANDED SVG LIBRARY (IDs 220+) ──────────────────────────
+TILE_DEFS[220] = { name: 'SVG Fountain',  walkable: false, svgAsset: 'fountain', color: '#718096' };
+TILE_DEFS[221] = { name: 'SVG Obelisk',   walkable: false, svgAsset: 'obelisk',  color: '#4a5568' };
+TILE_DEFS[222] = { name: 'SVG Tombstone', walkable: true,  svgAsset: 'tombstone',color: '#718096' };
+TILE_DEFS[223] = { name: 'SVG Pillar Br', walkable: false, svgAsset: 'pillar_broken', color: '#a0aec0' };
+TILE_DEFS[224] = { name: 'SVG Wagon',     walkable: false, svgAsset: 'wagon',    color: '#8d6e63' };
+TILE_DEFS[225] = { name: 'SVG Tent',      walkable: false, svgAsset: 'tent',     color: '#90caf9' };
+TILE_DEFS[226] = { name: 'SVG Campfire',  walkable: true,  svgAsset: 'campfire', color: '#ff9800', anim: true };
+TILE_DEFS[227] = { name: 'SVG Signpost',  walkable: true,  svgAsset: 'signpost', color: '#8d6e63' };
+TILE_DEFS[228] = { name: 'SVG Lamp',      walkable: true,  svgAsset: 'street_lamp', color: '#2d3748', anim: true };
+TILE_DEFS[229] = { name: 'SVG Archway',   walkable: true,  svgAsset: 'archway',  color: '#718096' };
+
+// ── DARK FANTASY POI (IDs 230+) ──────────────────────────────
+TILE_DEFS[230] = { name: 'Void Rift',     walkable: true,  svgAsset: 'void_rift', color: '#4a148c', anim: true, glows: '#6a1b9a60' };
+TILE_DEFS[231] = { name: 'Cursed Idol',   walkable: false, svgAsset: 'cursed_idol', color: '#263238', interactive: true };
+TILE_DEFS[232] = { name: 'Skeleton',      walkable: true,  svgAsset: 'skeleton', color: '#e0e0e0' };
+TILE_DEFS[233] = { name: 'Float Crystal', walkable: false, svgAsset: 'floating_crystal', color: '#b388ff', anim: true, glows: '#7c4dff40' };
+TILE_DEFS[234] = { name: 'Ancient Col',   walkable: false, svgAsset: 'ancient_pillar', color: '#546e7a' };
+TILE_DEFS[235] = { name: 'Wither Vine',   walkable: true,  svgAsset: 'withered_vine', color: '#3e2723' };
+TILE_DEFS[236] = { name: 'Sac Altar',     walkable: false, svgAsset: 'sacrificial_altar', color: '#37474f', interactive: true };
+TILE_DEFS[237] = { name: 'Void Spires',   walkable: false, svgAsset: 'void_spires', color: '#1a1a1a' };
+TILE_DEFS[238] = { name: 'Iron Maiden',   walkable: false, svgAsset: 'iron_maiden', color: '#263238' };
+TILE_DEFS[239] = { name: 'Magic Circle',  walkable: true,  svgAsset: 'magic_circle', color: '#7b1fa2', anim: true, glows: '#ba68c830' };
+
 // ── VIRTUAL SPRITE IDs (1000+) ────────────────────────────────
 const ENV_NAMES = [
   "Oak Tree A", "Oak Tree B", "Oak Tree C", "Oak Tree D",

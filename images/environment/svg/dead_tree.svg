@@ -1,5 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120">
-  <path d="M45 110 L55 110 L52 70 L65 50 L60 45 L50 65 L40 40 L35 45 L48 70 Z" fill="#3e2723"/>
-  <path d="M52 70 L75 80 L78 75 L52 65 Z" fill="#3e2723"/>
-  <path d="M48 75 L25 85 L22 80 L48 70 Z" fill="#3e2723"/>
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="dead-wood" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#5d4037;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2b1b17;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Trunk -->
+  <path d="M28 60 Q32 58 36 60 L34 40 Q32 38 30 40 Z" fill="url(#dead-wood)"/>
+  <!-- Branches -->
+  <path d="M31 42 Q20 35 15 20" fill="none" stroke="#3e2723" stroke-width="2"/>
+  <path d="M33 42 Q45 35 50 25" fill="none" stroke="#3e2723" stroke-width="2"/>
+  <path d="M32 38 Q32 20 25 10" fill="none" stroke="#3e2723" stroke-width="1.5"/>
+  <!-- Weathering -->
+  <path d="M30 50 L31 45" stroke="#000" stroke-width="0.5" opacity="0.4"/>
 </svg>

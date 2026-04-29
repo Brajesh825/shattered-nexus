@@ -1,0 +1,14 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="void-shard" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4a148c;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#000000;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Shards -->
+  <path d="M10 56 L18 20 L26 56 Z" fill="url(#void-shard)"/>
+  <path d="M40 56 L48 30 L56 56 Z" fill="url(#void-shard)"/>
+  <path d="M22 56 L32 8 L42 56 Z" fill="#212121"/>
+  <!-- Glowing Edges -->
+  <path d="M18 20 L10 56 M48 30 L40 56 M32 8 L22 56" stroke="#9c27b0" stroke-width="0.5" opacity="0.4"/>
+</svg>
