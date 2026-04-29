@@ -9,22 +9,41 @@
 </head>
 <body>
     <!-- Floating Toolbar -->
-    <div id="toolbar">
+    <div id="toolbar" class="glass">
+        <div class="header-group">
+            <h1 class="logo">ARCHITECT<span>PRO</span></h1>
+            <select id="map-selector" class="map-picker" onchange="editor.switchMap(this.value)">
+                <option value="verdant_vale">Verdant Vale</option>
+                <option value="iron_hold">Iron Hold (TBD)</option>
+            </select>
+        </div>
+        
+        <div class="divider"></div>
+        
         <div class="tool-btn-group">
             <button class="tool-btn active" data-tool="brush" title="Brush (B)">🖌️</button>
+            <button class="tool-btn" data-tool="eraser" title="Eraser (E)">🧹</button>
             <button class="tool-btn" data-tool="fill" title="Bucket Fill (G)">🪣</button>
-            <button class="tool-btn" data-tool="rect" title="Rectangle (R)">🟦</button>
             <button class="tool-btn" data-tool="eyedropper" title="Eyedropper (I)">🧪</button>
+            <button class="tool-btn" data-tool="collision" title="Toggle Collision (C)">🛡️</button>
         </div>
+
         <div class="divider"></div>
-        <div class="tool-btn-group">
-            <button class="action-btn" onclick="editor.resetMap()" title="Reset Map">🔄</button>
-            <button class="action-btn" onclick="document.getElementById('import-input').click()" title="Import JSON Map">📂</button>
-            <button class="action-btn" onclick="editor.exportMap()" title="Export Map">💾</button>
-            <input type="file" id="import-input" style="display:none" onchange="editor.importJSON(event)" accept=".json">
+
+        <div class="action-group">
+            <button class="action-btn undo" onclick="editor.undo()" title="Undo (Ctrl+Z)">⏪</button>
+            <button class="action-btn sync" onclick="editor.syncToWorkspace()" title="Sync to Workspace">🔄 SYNC</button>
         </div>
+
         <div class="divider"></div>
-        <div id="coords">X: 0, Y: 0</div>
+
+        <div class="zoom-group">
+            <span class="label">SCALE</span>
+            <input type="range" id="zoom-slider" min="0.2" max="3" step="0.1" value="1" oninput="editor.setZoom(this.value)">
+            <span id="zoom-value">100%</span>
+        </div>
+
+        <div id="coords" class="status-chip">X: 0, Y: 0</div>
     </div>
 
     <div id="main-container">
@@ -54,7 +73,10 @@
 
             <div class="sidebar-footer">
                 <div class="layer-manager">
-                    <h3>Layers</h3>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h3 style="margin: 0;">Layers</h3>
+                        <button id="toggle-all-layers" class="action-btn" onclick="editor.toggleShowAll()" style="font-size: 10px; padding: 4px 8px; border-radius: 4px; background: rgba(255,255,255,0.05); color: var(--accent); border: 1px solid rgba(74,222,128,0.3);">👁️ SHOW ALL</button>
+                    </div>
                     <div id="layer-list">
                         <button class="layer-btn active" data-layer="2">
                             <span class="l-num">2</span> Overhead
