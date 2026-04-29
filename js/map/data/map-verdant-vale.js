@@ -1,5 +1,7 @@
 /**
  * map-verdant-vale.js — Verdant Vale map data.
+ * UPGRADED: Architect Pro 3-Layer Format
+ * This version preserves all original procedural logic but organizes it into L0 (Floor), L1 (Decor), and L2 (Overhead).
  */
 
 MAP_DEFS.verdant_vale = {
@@ -33,165 +35,150 @@ MAP_DEFS.verdant_vale = {
     ],
 
     enemies: [
-        // --- RIVER CROSSING SENTINEL ---
         { id: 'bat',            x: 34,  y: 13, patrol: 'vertical',   range: 3, speed: 1.8 },
-        // --- TALL GRASS EASTERN ZONE ---
         { id: 'wolf',           x: 42,  y: 22, patrol: 'random',     range: 4, speed: 1.4 },
-        // --- RUINS NORTHERN APPROACH ---
         { id: 'zombie_soldier', x: 40,  y: 18, patrol: 'horizontal', range: 3, speed: 0.8 },
-        // --- MOUNTAIN BORDER ---
         { id: 'goblin',         x: 48,  y: 6,  patrol: 'random',     range: 2, speed: 1.1 },
-        // --- MAP BOSS (Aethelgard Throne) ---
         { id: 'galdor_king',    x: 52, y: 41, patrol: 'horizontal', range: 2, speed: 0.9, isBoss: true }
     ],
 
-    tiles: (function () {
-        const rows = [];
+    data: (function () {
+        const L0 = [], L1 = [], L2 = [];
         const W = 60, H = 50;
         for (let y = 0; y < H; y++) {
-            let row = new Array(W).fill(1); 
+            const r0 = new Array(W).fill(1); // Floor (Default Grass)
+            const r1 = new Array(W).fill(0); // Decor/Walls
+            const r2 = new Array(W).fill(0); // Overhead
 
             for (let x = 0; x < W; x++) {
-                // 1. Borders
-                if (y < 3 || y > H - 4) { row[x] = 5; continue; }
+                // 1. Core Terrain & Borders
+                if (y < 3 || y > H - 4) { r1[x] = 5; }
+                else if (x < 3 || x > 57) {
+                    // Only place side border if not in the cave or path zones
+                    if (!(x >= 55 && y >= 28 && y <= 31) && !(y === 14)) {
+                        r1[x] = 5;
+                    }
+                }
 
                 // 2. The Vertical River
                 if (x >= 28 && x <= 32) {
                     if (y >= 13 && y <= 15) {
-                        // Bridge surface
-                        if (x === 30 && y === 14) row[x] = 111; // Scattered remains/rubble in middle
-                        else if (x === 31 && y === 15) row[x] = 111; // More debris
-                        else row[x] = 4;
+                        if (x === 30 && y === 14) r1[x] = 110; 
+                        else if (x === 31 && y === 15) r1[x] = 110;
+                        else { r0[x] = 4; r1[x] = 0; } // Bridge floor
                     }
-                    else row[x] = 3;
-                    continue;
+                    else { r0[x] = 3; r1[x] = 0; } // Deep water
                 }
 
                 // 3. The Town (North West)
                 if (x >= 5 && x <= 12 && y >= 5 && y <= 9) { 
-                    row[x] = 12; 
-                    continue; 
+                    r0[x] = 12; r1[x] = 0;
                 }
 
                 // 4. North West Boundary (Town Wall)
-                const isWallX = (x === 3 || x === 14);
-                const isWallY = (y === 3 || y === 11);
-                if ((isWallX && y >= 3 && y <= 11) || (isWallY && x >= 3 && x <= 14)) {
-                    if (y === 7 && (x === 3 || x === 14)) {
-                        row[x] = 2; 
-                    } else {
-                        row[x] = 68; 
-                    }
-                    continue;
+                if ((x === 3 || x === 14) && y >= 3 && y <= 11) {
+                    if (y === 7) { r0[x] = 2; r1[x] = 0; } 
+                    else { r1[x] = 68; }
+                }
+                if ((y === 3 || y === 11) && x >= 3 && x <= 14) {
+                    r1[x] = 68;
                 }
 
                 // 5. The Path & Bridge Ward
-                if (y === 7 && x > 12 && x < 28) { row[x] = 2; continue; }
-                if (y === 14 && x < 28) { row[x] = 2; continue; }
-                if (x === 27 && y === 12) { row[x] = 88; continue; } 
-                if (y === 14 && x > 32) { row[x] = 2; continue; }
-                if (x === 18 && y > 7 && y < 14) { row[x] = 2; continue; }
+                if (y === 7 && x > 12 && x < 28) { r0[x] = 2; r1[x] = 0; }
+                if (y === 14 && x < 28) { r0[x] = 2; r1[x] = 0; }
+                if (x === 27 && y === 12) { r1[x] = 88; } 
+                if (y === 14 && x > 32) { r0[x] = 2; r1[x] = 0; }
+                if (x === 18 && y > 7 && y < 14) { r0[x] = 2; r1[x] = 0; }
 
                 // 6. The Mountains
-                if (x > 45 && y < 12) { row[x] = 6; continue; }
+                if (x > 45 && y < 12) { r1[x] = 6; }
 
-                // 7. Tall Grass Patches (Rustling Grass)
-                if (x > 35 && x < 48 && y > 18 && y < 26) { row[x] = 40; continue; }
+                // 7. Tall Grass Patches
+                if (x > 35 && x < 48 && y > 18 && y < 26) { r1[x] = 40; }
 
                 // 8. Sandy Bank
-                if (x >= 33 && x <= 38 && y > 26 && y < 33) { row[x] = 10; continue; }
+                if (x >= 33 && x <= 38 && y > 26 && y < 33) { r0[x] = 10; r1[x] = 0; }
 
                 // 9. The Cave
                 if (x >= 55 && x <= 58 && y >= 28 && y <= 31) {
-                    if (x === 55 || x === 58 || y === 28 || y === 31) row[x] = 8;
-                    else row[x] = 7;
-                    continue;
+                    if (x === 55 || x === 58 || y === 28 || y === 31) r1[x] = 8;
+                    else { r0[x] = 7; r1[x] = 0; }
                 }
 
-                // 10. Side Borders
-                if (x < 3 || x > 57) {
-                    if (!(x >= 55 && y >= 28 && y <= 31) && !(y === 14)) {
-                        row[x] = 5;
-                        continue;
-                    }
-                }
-
-                // 11. Ruins of a Glorious Kingdom (The Summoning Site)
-                if (x < 25 && y >= 22 && y < 45 && row[x] === 1) {
+                // 11. Ruins of a Glorious Kingdom (Western Summoning Site)
+                if (x < 25 && y >= 22 && y < 45 && r0[x] === 1) {
                     const sWallX = (x === 5 || x === 21);
                     const sWallY = (y === 24 || y === 38);
                     if ((sWallX && y >= 24 && y <= 38) || (sWallY && x >= 5 && x <= 21)) {
-                         if (y === 31 && x === 21) { row[x] = 2; } 
-                         else { row[x] = 68; }
-                         continue;
-                    }
-                    const d = Math.sqrt((x - 13) ** 2 + (y - 31) ** 2);
-                    if (d < 5) {
-                        if (d < 0.8) row[x] = 88;    
-                        else if (d < 2) row[x] = 86; 
-                        else if (d < 3.5) row[x] = 87; 
-                        else row[x] = 73;             
-                    } else if (Math.random() < 0.08) {
-                        row[x] = 111; 
+                         if (y === 31 && x === 21) { r0[x] = 2; r1[x] = 0; } 
+                         else { r1[x] = 68; }
+                    } else {
+                        const d = Math.sqrt((x - 13) ** 2 + (y - 31) ** 2);
+                        if (d < 5) {
+                            if (d < 0.8) r1[x] = 88;    
+                            else if (d < 2) r1[x] = 86; 
+                            else if (d < 3.5) r1[x] = 87; 
+                            else { r0[x] = 73; r1[x] = 0; }            
+                        } else if (Math.random() < 0.08) {
+                            r1[x] = 110; 
+                        }
                     }
                 }
 
                 // 12. Western Refugee Settlement
-                if (x >= 16 && x <= 25 && y >= 16 && y <= 22 && row[x] === 1) {
+                if (x >= 16 && x <= 25 && y >= 16 && y <= 22 && r0[x] === 1) {
                     const wWallX = (x === 16 || x === 25);
                     const wWallY = (y === 16 || y === 22);
                     if ((wWallX && y >= 16 && y <= 22) || (wWallY && x >= 16 && x <= 25)) {
-                        if (x === 18 && y === 16) row[x] = 2; 
-                        else row[x] = 68; 
-                        continue;
+                        if (x === 18 && y === 16) { r0[x] = 2; r1[x] = 0; } 
+                        else { r1[x] = 68; }
+                    } else {
+                        r0[x] = 12; r1[x] = 0;
                     }
-                    row[x] = 12;
                 }
 
                 // 13. Bridge Outpost
-                if (x >= 24 && x <= 27 && y >= 13 && y <= 15 && row[x] === 1) {
+                if (x >= 24 && x <= 27 && y >= 13 && y <= 15 && r0[x] === 1) {
                     const oWallX = (x === 24 || x === 27);
                     const oWallY = (y === 13 || y === 15);
                     if ((oWallX && y >= 13 && y <= 15) || (oWallY && x >= 24 && x <= 27)) {
-                        if (x === 27 && y === 14) row[x] = 2; 
-                        else row[x] = 68; 
-                        continue;
+                        if (x === 27 && y === 14) { r0[x] = 2; r1[x] = 0; } 
+                        else { r1[x] = 68; }
+                    } else {
+                        r0[x] = 12; r1[x] = 0;
                     }
-                    row[x] = 12; 
                 }
 
-                // 14. The Ruined Kingdom (South East) - Touching the River Bank
-                if (x >= 33 && x <= 58 && y >= 35 && y <= 46 && row[x] === 1) {
+                // 14. The Ruined Kingdom (South East)
+                if (x >= 33 && x <= 58 && y >= 35 && y <= 46 && (r0[x] === 1 || r0[x] === 10)) {
                     const rWallX = (x === 33 || x === 58);
                     const rWallY = (y === 35 || y === 46);
-                    const isEntrance = (x >= 42 && x <= 44 && y === 35); // Move entrance closer to the river side
+                    const isEntrance = (x >= 42 && x <= 44 && y === 35);
 
                     if ((rWallX && y >= 35 && y <= 46) || (rWallY && x >= 33 && x <= 58)) {
                         if (isEntrance) {
-                            row[x] = 2; // Dirt path entrance
+                            r0[x] = 2; r1[x] = 0;
                         } else {
-                            row[x] = 68; // Stone wall
+                            r1[x] = 68;
                         }
-                        continue;
-                    }
-
-                    // Internal floor & rubble
-                    const dToThrone = Math.sqrt((x - 52) ** 2 + (y - 41) ** 2);
-                    // Guaranteed 3-tile wide clear path from the northern entrance down and across to the throne
-                    const isMainAisle = (x >= 42 && x <= 45 && y >= 35 && y <= 42) || (y >= 40 && y <= 42 && x >= 42 && x <= 52);
-
-                    if (dToThrone < 1.5) {
-                        row[x] = 80; // The Throne (Gold-Tile, Walkable)
-                    } else if (!isMainAisle && Math.random() < 0.15) {
-                        row[x] = 110; // Ruin Floor / Rubble (Walkable)
                     } else {
-                        row[x] = 73; // Cracked stone floor
+                        const dToThrone = Math.sqrt((x - 52) ** 2 + (y - 41) ** 2);
+                        const isMainAisle = (x >= 42 && x <= 45 && y >= 35 && y <= 42) || (y >= 40 && y <= 42 && x >= 42 && x <= 52);
+
+                        if (dToThrone < 1.5) {
+                            r1[x] = 80; // The Throne
+                        } else if (!isMainAisle && Math.random() < 0.15) {
+                            r1[x] = 110; 
+                        } else {
+                            r0[x] = 73; r1[x] = 0;
+                        }
                     }
                 }
             }
-            rows.push(row);
+            L0.push(r0); L1.push(r1); L2.push(r2);
         }
-        return rows;
+        return [L0, L1, L2];
     })(),
 
     npcs: [
@@ -206,7 +193,7 @@ MAP_DEFS.verdant_vale = {
     triggers: [
         {
             id: 'bridge_realization',
-            x: 29, y: 13, w: 3, h: 3, // Cover the bridge area
+            x: 29, y: 13, w: 3, h: 3, 
             type: 'dialogue',
             lines: [
                 { speaker: 'Rei',  text: 'Wait... do you feel that?' },
@@ -218,7 +205,7 @@ MAP_DEFS.verdant_vale = {
         },
         {
             id: 'aethelgard_mystery',
-            x: 40, y: 34, w: 5, h: 2, // Adjusted trigger position for new entrance
+            x: 40, y: 34, w: 5, h: 2, 
             type: 'dialogue',
             lines: [
                 { speaker: 'narrator', text: 'The grass gives way to jagged stone—not natural formations, but the bones of a city swallowed by the earth.' },

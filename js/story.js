@@ -3,55 +3,11 @@
  * Drives cutscenes, battles, events and arc progression from story.json
  */
 
-/* ── Speaker colours ──────────────────────────────────────────────────────── */
-const SPEAKER_COLOR = {
-  Aya: '#7dd3fc',
-  Tao: '#ef4444',
-  Lulu: '#2dd4bf',
-  Rei: '#4ade80',
-  Ria: '#a78bfa',
-  Valka: '#e879f9',
-  Drake: '#0ea5e9',
-  Rex: '#fbbf24',
-};
-
-/* ── Alias → charId mapping for image file lookups ──────────────────────── */
-const ALIAS_TO_CHARID = {
-  aya: 'aya',
-  tao: 'tao',
-  lulu: 'lulu',
-  rei: 'rei',
-  ria: 'ria',
-  valka: 'valka',
-  drake: 'drake',
-  rex: 'rex',
-};
-
+/* ── Helpers migrated to cutscene.js ── */
 function _charIdForSpeaker(name) {
-  return ALIAS_TO_CHARID[name.toLowerCase()] || name.toLowerCase();
+  return Cutscene.ALIAS_TO_CHARID[name.toLowerCase()] || name.toLowerCase();
 }
 
-/* ── Speaker portrait images ─────────────────────────────────────────────── */
-function _spiritSrc(name) {
-  const q = localStorage.getItem('spriteQuality') || 'normal';
-  const suffix = q === 'low' ? '_sprite_low.webp' : '_sprite.png';
-  return `images/characters/spirits/${name.toLowerCase()}${suffix}`;
-}
-const SPEAKER_IMG = {
-  get Aya() { return _spiritSrc('aya'); },
-  get Tao() { return _spiritSrc('tao'); },
-  get Lulu() { return _spiritSrc('lulu'); },
-  get Rei() { return _spiritSrc('rei'); },
-  get Ria() { return _spiritSrc('ria'); },
-  get Valka() { return _spiritSrc('valka'); },
-  get Drake() { return _spiritSrc('drake'); },
-  get Rex() { return _spiritSrc('rex'); },
-};
-
-/* ── Speaker portrait emojis (narrator fallback) ────────────────────────── */
-const SPEAKER_PORTRAIT = {
-  narrator: '📖',
-};
 
 /* ══════════════════════════════════════════════════════════════════════════
    STORY ENGINE
@@ -122,17 +78,8 @@ const Story = {
 
   currentChap: null,
   _allEnemies: [],
-  _activeLines: [],   // current dialogue/narration array being rendered
-  _onLinesDone: null, // callback when _activeLines exhausted
   _retrying: false,
 
-  // Scene character management
-  _charAppeared: {},  // tracks which characters have appeared: { "Aya": true, ... }
-  _charPositions: {}, // character positions: { "Aya": "left", "Tao": "center", ... }
-  _posCounter: 0,     // counter for distributing positions
-
-  // Typewriter
-  _tw: { timer: null, full: '', done: true },
 
   /* ── Element shortcut ── */
   el: id => document.getElementById(id),
@@ -500,15 +447,16 @@ const Story = {
   ════════════════════════════════════════════════════════════════════════ */
   handleScreenClick(e) {
     if (e.target.closest('button')) return;
-    // Only advance if a line is currently active
-    if (!this._activeLines || this._activeLines.length === 0 || this.lineIdx >= this._activeLines.length) return;
-    this.advance();
+    if (G.mode === 'story') {
+      if (this.phase === 'arc_intro') {
+        this.advance();
+      } else {
+        Cutscene.advance();
+      }
+    }
   },
 
   advance() {
-    // Skip typewriter first if still running
-    if (!this._tw.done) { this._skipTw(); return; }
-
     if (this.phase === 'arc_intro') {
       // For Arc 1, go directly to first chapter (no character selection)
       // For Arc 2+, show character selection
@@ -530,17 +478,10 @@ const Story = {
     if (this.phase === 'epilogue_cards') {
       this._endStory(); return;
     }
-
-    // Advance through the current active lines array
-    this.lineIdx++;
-    if (this.lineIdx < this._activeLines.length) {
-      this._renderActiveLine();
-    } else if (this._onLinesDone) {
-      const cb = this._onLinesDone;
-      this._onLinesDone = null;
-      cb();
-    }
+    
+    Cutscene.advance();
   },
+
 
   /* ════════════════════════════════════════════════════════════════════════
      ARC INTRO
@@ -614,52 +555,29 @@ const Story = {
     this.currentChap = chap;
     this.sceneIdx = 0;
     this.lineIdx = 0;
-    this._charAppeared = {};  // reset character appearances
-    this._charPositions = {}; // reset character positions
-    this._posCounter = 0;     // reset position counter
-    this._clearSceneLayer();  // clear scene characters
-
-    // Clear dialogue content
-    const dialogue = this.el('s-dialogue');
-    if (dialogue) {
-      dialogue.style.display = 'none';
-      this.el('s-speaker').textContent = '';
-      this.el('s-text').textContent = '';
-      // s-portrait-img (img tag) removed in favor of spirit-based rendering
-    }
+    Cutscene.clear();
 
     this._setHeader(`Arc ${this.arc.number}: ${this.arc.name}`, chap.title || '');
     this._setBg(chap.background);
     console.log('[Story._loadChapter] Processing chapter type:', chap.type);
 
     if (chap.type === 'cutscene') {
-      console.log('[Story._loadChapter] Building scene lines...');
       this.phase = 'cutscene';
-      this._buildSceneLines(chap.scenes);
-      console.log('[Story._loadChapter] Setting onLinesDone callback...');
-      this._onLinesDone = () => this._nextChapter();
-      console.log('[Story._loadChapter] Rendering active line...');
-      this._renderActiveLine();
-      console.log('[Story._loadChapter] Showing dialogue section...');
-      this._showSection('s-dialogue');
-      console.log('[Story._loadChapter] Cutscene loaded');
+      const lines = this._buildSceneLines(chap.scenes);
+      Cutscene.start(lines, () => this._nextChapter());
     } else if (chap.type === 'battle') {
       this.phase = 'pre_battle';
       this._showLines(chap.pre_dialogue || [], () => this._launchStoryBattle(chap.enemy_id));
-      console.log('[Story._loadChapter] Battle loaded');
     } else if (chap.type === 'event') {
       this.phase = 'event';
       this._renderEvent(chap);
-      console.log('[Story._loadChapter] Event loaded');
     } else if (chap.type === 'boss_battle') {
       this.phase = 'pre_battle';
       this._showLines(chap.pre_dialogue || [], () => this._launchStoryBattle(chap.enemy_id));
-      console.log('[Story._loadChapter] Boss battle loaded');
     } else if (chap.type === 'explore') {
       this.phase = 'exploring';
       this._showLines(chap.pre_dialogue || [], () => this._launchExplore(chap));
-      console.log('[Story._loadChapter] Explore loaded, returning');
-      return; // _launchExplore will switch screens
+      return;
     }
     showScreen('story-screen');
     console.log('[Story._loadChapter] Finished');
@@ -678,44 +596,17 @@ const Story = {
         }
       });
     });
-    this._activeLines = lines;
-    this._onLinesDone = null;
-    this.lineIdx = 0;
+    return lines;
   },
+
 
   /* ════════════════════════════════════════════════════════════════════════
      GENERIC LINE LIST RENDERER
   ════════════════════════════════════════════════════════════════════════ */
   _showLines(lines, onDone) {
-    const flat = [];
-    (lines || []).forEach(l => {
-      if (l.is_narration || (!l.speaker && l.narration)) {
-        flat.push({ speaker: null, text: l.narration || l.text, emotion: l.emotion });
-      } else {
-        flat.push({ speaker: l.speaker, text: l.text, emotion: l.emotion });
-      }
-    });
-
-    this._activeLines = flat;
-    this._onLinesDone = onDone;
-    this.lineIdx = 0;
-
-    if (flat.length === 0) { onDone && onDone(); return; }
-
-    this._renderActiveLine();
-    this._showSection('s-dialogue');
-    this._setContinue('▶ CONTINUE');
+    Cutscene.start(lines, onDone);
   },
 
-  _renderActiveLine() {
-    console.log('[_renderActiveLine] lineIdx:', this.lineIdx, 'total lines:', this._activeLines.length);
-    const l = this._activeLines[this.lineIdx];
-    if (!l) { console.log('[_renderActiveLine] No line found, returning'); return; }
-    console.log('[_renderActiveLine] Rendering line:', l.text.substring(0, 50));
-    this._renderLine(l.speaker || null, l.text || '', l.emotion || null);
-    this._setContinue('▶ CONTINUE');
-    console.log('[_renderActiveLine] Finished');
-  },
 
   /* ════════════════════════════════════════════════════════════════════════
      EVENT RENDERER
@@ -775,15 +666,13 @@ const Story = {
     this.currentBossChapter = boss;  // Store for onVictory event processing
     this.lineIdx = 0;
     this.phase = 'boss_pre';
-    this._charAppeared = {};  // reset character appearances
-    this._charPositions = {}; // reset character positions
-    this._posCounter = 0;     // reset position counter
-    this._clearSceneLayer();  // clear scene characters
+    Cutscene.clear();
     this._setHeader(`Arc ${this.arc.number}: ${this.arc.name}`, `⚔ BOSS: ${boss.title}`);
     this._setBg(boss.background);
     this._showLines(boss.pre_dialogue || [], () => this._launchBoss());
     showScreen('story-screen');
   },
+
 
   _launchBoss() {
     this.phase = 'boss_in';
@@ -978,12 +867,11 @@ const Story = {
     this.phase = 'outro';
     const bg = arc.outro.background || arc.outro.scenes[0]?.background || 'default';
     this._setBg(bg);
-    this._buildSceneLines(arc.outro.scenes);
-    this._onLinesDone = () => this._showArcEnd();
-    this._renderActiveLine();
-    this._showSection('s-dialogue');
+    const lines = this._buildSceneLines(arc.outro.scenes);
+    Cutscene.start(lines, () => this._showArcEnd());
     showScreen('story-screen');
   },
+
 
   /* ════════════════════════════════════════════════════════════════════════
      ARC END (shard card)
@@ -1067,10 +955,8 @@ const Story = {
     this.phase = 'epilogue';
 
     if (epi.scenes && epi.scenes.length) {
-      this._buildSceneLines(epi.scenes);
-      this._onLinesDone = () => this._showEpilogueCards();
-      this._renderActiveLine();
-      this._showSection('s-dialogue');
+      const lines = this._buildSceneLines(epi.scenes);
+      Cutscene.start(lines, () => this._showEpilogueCards());
       this._setHeader(epi.title || 'EPILOGUE', '');
       this._setBg('epilogue');
       showScreen('story-screen');
@@ -1078,6 +964,7 @@ const Story = {
       this._showEpilogueCards();
     }
   },
+
 
   _showEpilogueCards() {
     const epi = this.data.epilogue;
@@ -1427,11 +1314,9 @@ const Story = {
      SKIP
   ════════════════════════════════════════════════════════════════════════ */
   skip() {
-    // Skip current chapter and go to next
-    this._skipTw();
-    this.lineIdx = 999; // Set to high number to skip all lines
-    this._onLinesDone && this._onLinesDone();
+    Cutscene.skip();
   },
+
 
   /* ════════════════════════════════════════════════════════════════════════
      UI HELPERS
@@ -1447,176 +1332,18 @@ const Story = {
   },
 
   _showSection(id) {
-    console.log('[_showSection] Showing section:', id);
-    // Hide all main sections first
-    ['s-arc-intro', 's-dialogue', 's-event', 's-arc-end', 's-epilogue'].forEach(sid => {
-      const e = this.el(sid);
-      if (e) e.style.display = sid === id ? '' : 'none';
-    });
-    console.log('[_showSection] Finished');
+    Cutscene._showSection(id);
   },
 
   _setContinue(label) {
-    console.log('[_setContinue] Setting continue button to:', label);
-    const btn = this.el('s-continue');
-    if (!btn) { console.log('[_setContinue] Button not found'); return; }
-    btn.textContent = label;
-    btn.style.display = 'inline-block';
-    console.log('[_setContinue] Finished, button display:', btn.style.display);
+    Cutscene._setContinue(label);
   },
 
   _hideContinue() {
-    const btn = this.el('s-continue');
-    if (btn) btn.style.display = 'none';
-  },
-
-  _renderLine(speaker, text, emotion) {
-    const box = this.el('s-dialogue');
-    const spkEl = this.el('s-speaker');
-    const txtEl = this.el('s-text');
-    const emojiEl = this.el('s-portrait-emoji');
-    const spiritsRow = this.el('s-dialogue-spirits-row');
-    if (!box) return;
-
-    box.style.display = '';
-    if (typeof SFX !== 'undefined') SFX.dialogue();
-    if (typeof TTS !== 'undefined') TTS.stop();
-
-    // Render scene characters
-    if (speaker && this.currentChap && this.currentChap.cast) {
-      this._renderSceneCharacters(speaker, emotion);
-    }
-
-    if (speaker) {
-      spkEl.textContent = speaker.toUpperCase();
-      spkEl.style.color = SPEAKER_COLOR[speaker] || '#f0f0f8';
-      spkEl.style.display = 'block';
-      box.dataset.speaker = speaker.toLowerCase();
-
-      // Get speaker character ID for face image path (alias → charId)
-      const speakerCharId = _charIdForSpeaker(speaker);
-
-      // Use emoji fallback only (face images removed)
-      if (emojiEl) {
-        emojiEl.style.display = 'block';
-        emojiEl.textContent = '💬';
-      }
-    } else {
-      spkEl.style.display = 'none';
-      box.dataset.speaker = 'narrator';
-      if (emojiEl) {
-        emojiEl.style.display = 'block';
-        emojiEl.textContent = SPEAKER_PORTRAIT.narrator;
-      }
-    }
-    // TTS speaks full text; typewriter shows it character-by-character in parallel
-    if (typeof TTS !== 'undefined') TTS.speak(speaker || 'narrator', text || '');
-    this._typewrite(txtEl, text || '');
-  },
-
-  _typewrite(el, text) {
-    if (this._tw.timer) clearTimeout(this._tw.timer);
-    this._tw.full = text;
-    this._tw.done = false;
-    let idx = 0;
-    el.textContent = '';
-
-    const baseDelay = this._twDelay || 22;
-    let isPaused = 0;
-
-    const tick = () => {
-      if (isPaused > 0) {
-        isPaused--;
-      } else {
-        idx = Math.min(idx + 1, text.length); // render 1 char per tick for smoother pacing
-        const char = text.charAt(idx - 1);
-        el.textContent = text.slice(0, idx);
-
-        // Pacing logic for punctuation
-        if (char === '.' || char === '!' || char === '?') {
-          isPaused = 12;
-        } else if (char === ',') {
-          isPaused = 6;
-        }
-
-        if (idx >= text.length) {
-          this._tw.done = true;
-          this._tw.timer = null;
-          return;
-        }
-      }
-      this._tw.timer = setTimeout(tick, baseDelay);
-    };
-
-    this._tw.timer = setTimeout(tick, baseDelay);
-  },
-
-  _skipTw() {
-    if (this._tw.timer) clearTimeout(this._tw.timer);
-    this._tw.done = true;
-    if (typeof TTS !== 'undefined') TTS.stop();
-    const el = this.el('s-text');
-    if (el) el.textContent = this._tw.full;
-  },
-
-  _clearSceneLayer() {
-    const layer = this.el('s-scene-layer');
-    if (layer) layer.innerHTML = '';
-  },
-
-  _renderSceneCharacters(speaker, emotion) {
-    if (!this.currentChap || !this.currentChap.cast) return;
-
-    const layer = this.el('s-scene-layer');
-    if (!layer) return;
-
-    const cast = this.currentChap.cast;
-
-    cast.forEach(charName => {
-      if (!charName) return;
-
-      // First appearance - create character element
-      if (!this._charAppeared[charName]) {
-        this._charAppeared[charName] = true;
-
-        const charEl = document.createElement('div');
-        charEl.className = 's-scene-char';
-        charEl.id = `s-scene-char-${charName.toLowerCase()}`;
-
-        const spriteEl = document.createElement('div');
-        spriteEl.className = 's-scene-sprite';
-        const speakerCharId = _charIdForSpeaker(charName);
-        const vHeight = window.innerHeight;
-        const isLandscape = window.innerWidth > vHeight;
-        const portraitHeight = Math.max(300, Math.floor(vHeight * (isLandscape ? 0.75 : 0.52)));
-        SpriteRenderer.setFrame(spriteEl, speakerCharId, 'idle', portraitHeight);
-
-        const nameEl = document.createElement('div');
-        nameEl.className = 's-scene-char-name';
-        nameEl.textContent = charName;
-
-        charEl.appendChild(spriteEl);
-        charEl.appendChild(nameEl);
-        layer.appendChild(charEl);
-      }
-
-      // Update active/dimmed state
-      const charEl = this.el(`s-scene-char-${charName.toLowerCase()}`);
-      if (charEl) {
-        const spriteEl = charEl.querySelector('.s-scene-sprite');
-        if (speaker && speaker.toLowerCase() === charName.toLowerCase()) {
-          charEl.classList.add('active');
-          charEl.classList.remove('dimmed');
-          if (spriteEl) spriteEl.dataset.emotion = emotion ? emotion.toLowerCase() : 'neutral';
-        } else {
-          charEl.classList.remove('active');
-          charEl.classList.add('dimmed');
-          if (spriteEl) spriteEl.dataset.emotion = 'neutral';
-        }
-      }
-    });
+    Cutscene._hideContinue();
   },
 };
+
 
 /* ── Global entry point called from title screen button ─────────────────── */
 function startStoryMode() {

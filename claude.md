@@ -181,3 +181,25 @@ The game is responsive and cross-platform. UI components MUST be rigorously test
 2. **iPhone XR / 11 (414x896)** - Mid-tier standard mobile.
 3. **iPhone 12/13/14 Pro (390x844)** - Modern portrait standard.
 4. **Desktop / Laptops** - Widescreen layouts, where the main wrapper should gracefully constrain with empty side gutters or an expanded view without stretching character sprites incorrectly.
+
+---
+
+## 🗺️ Map Architect Data Standards (V1.1)
+The **Architect Pro** editor (`tools/tile-editor.html`) is the primary source for region data.
+
+### 📁 Manifest & Dynamic Assets
+- **Manifest**: `images/environment/sprites.json`
+- **Rule**: All new SVG assets MUST be registered in the manifest with a unique ID (200-299) to appear in the editor and game engine.
+- **Paths**: SVGs reside in `images/environment/svg/`.
+
+### 📊 Export Schema
+- **Structure**: `metadata`, `palette_schema`, and `data` (3D array).
+- **Z-Order Indexing**:
+    - `data[0]`: Ground (rendered behind player).
+    - `data[1]`: Decoration/Objects (same-level occlusion).
+    - `data[2]`: Overhead (rendered in front of player).
+- **ID Registry**: 
+    - `0`: Transparent/Empty.
+    - `1-199`: Standard core tiles.
+    - `200-299`: Dynamic SVG assets.
+    - `1000+`: Sprite-based environmental objects.

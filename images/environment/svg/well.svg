@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120">
+  <defs>
+    <linearGradient id="well-stone" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#787068"/>
+      <stop offset="100%" style="stop-color:#484038"/>
+    </linearGradient>
+    <linearGradient id="well-wood" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#8d6e63"/>
+      <stop offset="100%" style="stop-color:#5d4037"/>
+    </linearGradient>
+  </defs>
+  <!-- Base -->
+  <rect x="25" y="80" width="50" height="30" fill="url(#well-stone)" rx="5"/>
+  <rect x="20" y="85" width="60" height="5" fill="rgba(0,0,0,0.2)"/>
+  <!-- Posts -->
+  <rect x="30" y="40" width="4" height="40" fill="url(#well-wood)"/>
+  <rect x="66" y="40" width="4" height="40" fill="url(#well-wood)"/>
+  <!-- Roof -->
+  <path d="M20 50 L50 20 L80 50 Z" fill="#6d4c41"/>
+  <path d="M25 45 L50 25 L75 45 Z" fill="#8d6e63"/>
+  <!-- Bucket (proxy) -->
+  <rect x="47" y="60" width="6" height="8" fill="#5d4037" rx="1"/>
+  <line x1="50" y1="40" x2="50" y2="60" stroke="#3e2723" stroke-width="1"/>
+</svg>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Architect Pro | RPG+ Map Editor</title>
+    <link rel="stylesheet" href="tile-editor.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Floating Toolbar -->
+    <div id="toolbar">
+        <div class="tool-btn-group">
+            <button class="tool-btn active" data-tool="brush" title="Brush (B)">🖌️</button>
+            <button class="tool-btn" data-tool="fill" title="Bucket Fill (G)">🪣</button>
+            <button class="tool-btn" data-tool="rect" title="Rectangle (R)">🟦</button>
+            <button class="tool-btn" data-tool="eyedropper" title="Eyedropper (I)">🧪</button>
+        </div>
+        <div class="divider"></div>
+        <div class="tool-btn-group">
+            <button class="action-btn" onclick="editor.resetMap()" title="Reset Map">🔄</button>
+            <button class="action-btn" onclick="editor.exportMap()" title="Export Map">💾</button>
+        </div>
+        <div class="divider"></div>
+        <div id="coords">X: 0, Y: 0</div>
+    </div>
+
+    <div id="main-container">
+        <!-- Sidebar -->
+        <div id="sidebar">
+            <div class="sidebar-header">
+                <h2>Architect Pro</h2>
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="tiles">Tiles</button>
+                    <button class="tab-btn" data-tab="assets">Assets</button>
+                    <button class="tab-btn" data-tab="stamps">Library</button>
+                </div>
+            </div>
+
+            <div class="sidebar-scrollable">
+                <!-- Tab Contents -->
+                <div id="tab-tiles" class="tab-content active">
+                    <div id="palette" class="grid-palette"></div>
+                </div>
+                <div id="tab-assets" class="tab-content">
+                    <div id="assets-gallery" class="grid-palette"></div>
+                </div>
+                <div id="tab-stamps" class="tab-content">
+                    <div id="stamps-menu" class="grid-palette"></div>
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <div class="layer-manager">
+                    <h3>Layers</h3>
+                    <div id="layer-list">
+                        <button class="layer-btn active" data-layer="2">
+                            <span class="l-num">2</span> Overhead
+                        </button>
+                        <button class="layer-btn" data-layer="1">
+                            <span class="l-num">1</span> Decoration
+                        </button>
+                        <button class="layer-btn" data-layer="0">
+                            <span class="l-num">0</span> Ground
+                        </button>
+                    </div>
+                </div>
+                <div class="minimap-container">
+                    <canvas id="minimap"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Canvas Area -->
+        <div id="editor-wrapper">
+            <canvas id="editorCanvas"></canvas>
+            <div id="brush-preview" class="hidden"></div>
+        </div>
+    </div>
+
+    <!-- Script Imports -->
+    <script src="../js/asset-preloader.js"></script>
+    <script src="../js/map/data/tile-defs.js"></script>
+    <script src="tile-editor.js"></script>
+</body>
+</html>

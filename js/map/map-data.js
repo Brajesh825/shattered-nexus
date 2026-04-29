@@ -32,3 +32,23 @@
 
 // Populated by the individual map data files below.
 const MAP_DEFS = {};
+
+const MapData = {
+  getLayers(map) {
+    if (!map) return [];
+    return map.data || map.layers || [map.tiles];
+  },
+  getTileAt(map, x, y, preferredLayer = null) {
+    if (!map) return 0;
+    const layers = this.getLayers(map);
+    if (preferredLayer !== null) {
+      return layers[preferredLayer]?.[y]?.[x] ?? 0;
+    }
+    // Top-down search for first non-empty tile
+    for (let i = layers.length - 1; i >= 0; i--) {
+      const tid = layers[i]?.[y]?.[x] ?? 0;
+      if (tid !== 0) return tid;
+    }
+    return 0;
+  }
+};

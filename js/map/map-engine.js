@@ -127,7 +127,50 @@ const MapEngine = (() => {
   function _paintTile(ctx, def, sx, sy, tw, th, t) {
     if (!def) return;
     
-    // Procedural water ripples (sx/sy are 0 when rendering to offscreen cache)
+    // 1. Sprite Support (High Fidelity)
+    if (def.svgAsset) {
+      const svg = AssetPreloader.getImage(`env_${def.svgAsset}`);
+      if (svg) {
+        ctx.drawImage(svg, sx, sy, tw, th);
+        return;
+      }
+    }
+
+    if (def.sprite || def.spriteIdx !== undefined) {
+      const sheet = AssetPreloader.getImage('env_sprites');
+      if (sheet) {
+        let sw, sh, sx_src, sy_src, frames;
+
+        if (def.spriteIdx !== undefined) {
+          // Standard 6x6 grid calculation
+          const idx = def.spriteIdx;
+          const gridW = 6;
+          const cellW = sheet.width / gridW;
+          const cellH = sheet.height / gridW;
+          sx_src = (idx % gridW) * cellW;
+          sy_src = Math.floor(idx / gridW) * cellH;
+          sw = cellW;
+          sh = cellH;
+          frames = def.spriteFrames || 1;
+        } else {
+          sx_src = def.sprite.x;
+          sy_src = def.sprite.y;
+          sw = def.sprite.w || 128;
+          sh = def.sprite.h || 128;
+          frames = def.sprite.frames || 1;
+        }
+
+        const frame = def.anim ? (Math.floor(t * 6) % frames) : 0;
+        ctx.drawImage(
+          sheet, 
+          sx_src + (frame * sw), sy_src, sw, sh,
+          sx, sy, tw, th
+        );
+        return;
+      }
+    }
+
+    // 2. Procedural / Procedural-Fallback
     let ofx = 0;
     if (def.name === 'deep water' || def.name === 'lava-floor') {
       ofx = Math.sin(t * 2.2) * 1.5;
@@ -168,19 +211,27 @@ const MapEngine = (() => {
 
   function _drawTileShadow(sx, sy, c, r, tiles) {
     if (!_shadowAbove) _bakeShadowSprites();
-    const aboveId = tiles[r-1]?.[c];
-    if (aboveId !== undefined && TILE_DEFS[aboveId] && !TILE_DEFS[aboveId].walkable) {
+    const layers = MapData.getLayers(_map);
+    // Check current layer AND decoration layer (1) for shadow-casters
+    const checkShadow = (tx, ty) => {
+      for (let l = layers.length - 1; l >= 0; l--) {
+        const id = layers[l]?.[ty]?.[tx];
+        if (id && TILE_DEFS[id] && !TILE_DEFS[id].walkable) return true;
+      }
+      return false;
+    };
+
+    if (checkShadow(c, r - 1)) {
       _ctx.drawImage(_shadowAbove, sx, sy);
     }
-    const leftId = tiles[r]?.[c-1];
-    if (leftId !== undefined && TILE_DEFS[leftId] && !TILE_DEFS[leftId].walkable) {
+    if (checkShadow(c - 1, r)) {
       _ctx.drawImage(_shadowLeft, sx, sy);
     }
   }
 
   /* ── Tile rendering ─────────────────────────────────── */
   function _renderTiles(layerIdx = 0) {
-    const layers = _map.layers || [_map.tiles];
+    const layers = MapData.getLayers(_map);
     const tiles = layers[layerIdx];
     if (!tiles) return;
 
@@ -194,7 +245,8 @@ const MapEngine = (() => {
         const row = tiles[r];
         if (!row) continue;
         const tileId = row[c];
-        if (tileId === undefined || tileId === null || tileId === -1) continue;
+        // SKIP: Skip empty/transparent tiles (0) and void (-1)
+        if (!tileId || tileId === -1) continue;
 
         const def = TILE_DEFS[tileId] || TILE_DEFS[0];
         const sx = c * TILE - cam.x;
@@ -498,7 +550,7 @@ const MapEngine = (() => {
     mctx.fillRect(0, 0, MM_W, MM_H);
     for (let r = 0; r < _map.height; r++) {
       for (let c2 = 0; c2 < _map.width; c2++) {
-        const tid = _map.tiles[r]?.[c2] ?? 0;
+        const tid = MapData.getTileAt(_map, c2, r);
         mctx.fillStyle = (TILE_DEFS[tid] || TILE_DEFS[0]).color;
         mctx.fillRect(c2 * tw, r * th, Math.max(tw, 1), Math.max(th, 1));
       }
@@ -707,20 +759,23 @@ const MapEngine = (() => {
     _ctx.fillStyle = _map.bgColor || '#080606';
     _ctx.fillRect(0, 0, _canvas.width, _canvas.height);
     
-    // 1. Base + Overlay
+    // 1. Layer 0: Ground
     _renderTiles(0);
-    if (_map.layers && _map.layers[1]) _renderTiles(1);
+    
+    // 2. Layer 1: Decoration (below entities)
+    const layers = MapData.getLayers(_map);
+    if (layers[1]) _renderTiles(1);
     
     _renderObjectiveMarkers();
     _renderCampMarker();
     
-    // 2. Entities
+    // 3. Entities
     MapEntities.renderEnemies(_ctx, cam, TILE, _map, _inVision.bind(null));
     MapEntities.renderNPCs(_ctx, cam, TILE, _inVision.bind(null));
     MapPlayer.render(_ctx, cam, TILE);
 
-    // 3. Fringe (Overhead)
-    if (_map.layers && _map.layers[2]) _renderTiles(2);
+    // 4. Layer 2: Overhead (above entities)
+    if (layers[2]) _renderTiles(2);
     
     _renderAtmosphere();
     _renderFog();
@@ -762,7 +817,8 @@ const MapEngine = (() => {
     // Detect step landing → footstep SFX
     if (_prevMoving && !MapPlayer.moving) {
       if (_footstepCooldown <= 0 && typeof SFX !== 'undefined') {
-        SFX.footstep(_tileToSurface(_map.tiles[MapPlayer.ty]?.[MapPlayer.tx] ?? 0));
+        const tid = MapData.getTileAt(_map, MapPlayer.tx, MapPlayer.ty);
+        SFX.footstep(_tileToSurface(tid));
         _footstepCooldown = 0.14;
       }
     }
@@ -1056,6 +1112,19 @@ const MapEngine = (() => {
 
   function loadMap(mapId) {
     _map = MAP_DEFS[mapId] || MAP_DEFS['verdant_vale'];
+    
+    if (!_map) {
+      console.warn(`⚠️ Map definition not found: ${mapId}. Falling back to default.`);
+      _map = Object.values(MAP_DEFS)[0]; 
+      if (!_map) return;
+    }
+
+    // Support new Architect Pro Metadata
+    if (_map.metadata && _map.metadata.dimensions) {
+      _map.width = _map.metadata.dimensions.width;
+      _map.height = _map.metadata.dimensions.height;
+    }
+
     const titleEl = document.getElementById('explore-map-name');
     if (titleEl) titleEl.textContent = `✦ ${_map.name.toUpperCase()} ✦`;
     _invalidateCache();
