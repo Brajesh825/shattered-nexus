@@ -34,12 +34,31 @@ const AssetPreloader = (() => {
       'world_map_bg'
     ],
     environment: [
+      // Core (IDs 200–212)
       'oak', 'pine', 'shrub', 'boulder', 'mushroom', 'flower', 'crystal', 'lily', 'dead_tree', 'well', 'market', 'chest', 'statue',
+      // Expanded props (IDs 220–229)
       'fountain', 'obelisk', 'tombstone', 'pillar_broken', 'wagon', 'tent', 'campfire', 'signpost', 'street_lamp', 'archway',
+      // Dark fantasy POI (IDs 230–248)
       'void_rift', 'cursed_idol', 'skeleton', 'floating_crystal', 'ancient_pillar', 'withered_vine', 'sacrificial_altar', 'void_spires', 'iron_maiden', 'magic_circle', 'tower', 'castle', 'noble_house', 'ruined_tower', 'ruined_castle', 'shattered_throne', 'broken_knight', 'cursed_well', 'withered_tree',
+      // Furniture / interior (IDs 300–309)
       'royal_table', 'wooden_chair', 'stone_bench', 'throne_gold', 'alchemy_table', 'bookshelf', 'fireplace', 'armor_stand', 'weapon_rack', 'bed_fancy',
+      // Castle outdoors (IDs 310–321)
       'knight_statue', 'iron_gate', 'training_dummy', 'catapult', 'hanging_cage', 'royal_banner', 'castle_wall', 'drawbridge', 'gallows', 'archery_target',
       'archery_range', 'stable', 'tavern', 'chapel', 'wall_section', 'healer_hut', 'farmhouse', 'library',
+      // Nature (IDs 350–356)
+      'apple_tree', 'palm_tree', 'cherry_blossom', 'giant_mushroom', 'cactus', 'bamboo', 'vine_cluster',
+      // Dark fantasy extras (IDs 357–363)
+      'rune_stone', 'bone_pile', 'dark_altar', 'cursed_tree', 'spectral_flame', 'soul_lantern', 'eldritch_eye',
+      // Town props (IDs 364–370)
+      'barrel', 'hay_bale', 'water_trough', 'fence_section', 'notice_board', 'flower_pot', 'market_cart',
+      // Dungeon props (IDs 371–375)
+      'stalactite', 'dungeon_door', 'cell_bars', 'spike_trap', 'poison_mushroom',
+      // Combat & siege (IDs 376–377)
+      'cannon', 'bonfire',
+      // Coastal (IDs 378–381)
+      'dock_post', 'rowboat', 'lighthouse', 'fishing_net',
+      // Arcane (IDs 382–384)
+      'arcane_pedestal', 'crystal_orb', 'spell_rune',
       ...MILITARY_ASSETS,
       ...CIVILIAN_ASSETS,
       ...NOBLE_ASSETS
@@ -111,21 +130,8 @@ const AssetPreloader = (() => {
       loadBatch(ASSETS.bgm, loadAudio, '', (id) => `audio/bgm/${id}.mp3`, true),
       // 4. UI
       loadBatch(ASSETS.ui, loadImage, 'ui_', (id) => `images/ui/${id}.png`),
-      // 5. Environment (SVGs)
-      loadBatch(ASSETS.environment, loadImage, 'env_', (id) => {
-        const extension = [
-          'oak', 'pine', 'shrub', 'boulder', 'mushroom', 'flower', 'crystal', 'lily', 'dead_tree', 'well', 'market', 'chest', 'statue',
-          'fountain', 'obelisk', 'tombstone', 'pillar_broken', 'wagon', 'tent', 'campfire', 'signpost', 'street_lamp', 'archway',
-          'void_rift', 'cursed_idol', 'skeleton', 'floating_crystal', 'ancient_pillar', 'withered_vine', 'sacrificial_altar', 'void_spires', 'iron_maiden', 'magic_circle', 'tower', 'castle', 'noble_house', 'ruined_tower', 'ruined_castle', 'shattered_throne', 'broken_knight', 'cursed_well', 'withered_tree',
-          'royal_table', 'wooden_chair', 'stone_bench', 'throne_gold', 'alchemy_table', 'bookshelf', 'fireplace', 'armor_stand', 'weapon_rack', 'bed_fancy',
-          'knight_statue', 'iron_gate', 'training_dummy', 'catapult', 'hanging_cage', 'royal_banner', 'castle_wall', 'drawbridge', 'gallows', 'archery_target',
-          'archery_range', 'stable', 'tavern', 'chapel', 'wall_section', 'healer_hut', 'farmhouse', 'library',
-          ...MILITARY_ASSETS,
-          ...CIVILIAN_ASSETS,
-          ...NOBLE_ASSETS
-        ].includes(id) ? 'svg' : 'png';
-        return extension === 'svg' ? `images/environment/svg/${id}.svg` : `images/environment/${id}.png`;
-      })
+      // 5. Environment (all SVGs)
+      loadBatch(ASSETS.environment, loadImage, 'env_', (id) => `images/environment/svg/${id}.svg`)
     ]);
 
     return cache;
