@@ -1,0 +1,27 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bp-bone" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f5f5f5"/>
+      <stop offset="100%" style="stop-color:#bdbdbd"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="32" cy="58" rx="22" ry="5" fill="#1a1a1a" opacity="0.35"/>
+  <g fill="url(#bp-bone)" stroke="#9e9e9e" stroke-width="0.5">
+    <ellipse cx="12" cy="55" rx="7" ry="3" transform="rotate(-20 12 55)"/>
+    <ellipse cx="50" cy="54" rx="7" ry="3" transform="rotate(15 50 54)"/>
+    <ellipse cx="30" cy="56" rx="9" ry="3.5" transform="rotate(-8 30 56)"/>
+    <ellipse cx="22" cy="52" rx="8" ry="3" transform="rotate(30 22 52)"/>
+    <ellipse cx="44" cy="50" rx="8" ry="3" transform="rotate(-25 44 50)"/>
+    <ellipse cx="35" cy="48" rx="7" ry="2.5" transform="rotate(10 35 48)"/>
+    <ellipse cx="18" cy="46" rx="6" ry="2.5" transform="rotate(-35 18 46)"/>
+  </g>
+  <circle cx="26" cy="42" r="7" fill="#f5f5f5" stroke="#9e9e9e" stroke-width="0.7"/>
+  <circle cx="26" cy="42" r="7" fill="none" stroke="#757575" stroke-width="0.5" stroke-dasharray="2,2"/>
+  <circle cx="23" cy="40" r="1.8" fill="#424242"/>
+  <circle cx="29" cy="40" r="1.8" fill="#424242"/>
+  <path d="M23 45 Q26 47 29 45" fill="none" stroke="#757575" stroke-width="0.8"/>
+  <path d="M23 45 L21 48 M24 46 L23 49 M26 46 L26 49 M28 46 L29 49 M29 45 L31 48" stroke="#9e9e9e" stroke-width="0.6"/>
+  <circle cx="44" cy="40" r="5.5" fill="#f5f5f5" stroke="#9e9e9e" stroke-width="0.7"/>
+  <circle cx="42" cy="39" r="1.5" fill="#424242"/>
+  <circle cx="46" cy="39" r="1.5" fill="#424242"/>
+</svg>

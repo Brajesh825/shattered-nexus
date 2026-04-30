@@ -1,0 +1,26 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="fp-pot" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#bf360c"/>
+      <stop offset="45%" style="stop-color:#e64a19"/>
+      <stop offset="100%" style="stop-color:#bf360c"/>
+    </linearGradient>
+    <linearGradient id="fp-soil" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#5d4037"/>
+      <stop offset="100%" style="stop-color:#3e2723"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="32" cy="62" rx="14" ry="3" fill="#1a1a1a" opacity="0.3"/>
+  <path d="M18 38 Q16 52 18 58 Q24 64 40 64 Q50 60 46 58 Q48 52 46 38 Z" fill="url(#fp-pot)"/>
+  <rect x="16" y="34" width="32" height="6" rx="3" fill="url(#fp-pot)"/>
+  <ellipse cx="32" cy="38" rx="16" ry="5" fill="url(#fp-soil)"/>
+  <path d="M22 56 Q24 54 22 52 M42 56 Q44 54 42 52" stroke="#a1887f" stroke-width="0.6" fill="none" opacity="0.4"/>
+  <path d="M32 38 Q32 28 28 20 Q24 16 26 12 Q30 8 32 14 Q34 8 38 12 Q40 16 36 20 Q32 28 32 38Z" fill="#4caf50"/>
+  <path d="M32 32 Q22 24 18 18 Q20 14 24 16 Q28 18 32 30Z" fill="#66bb6a"/>
+  <path d="M32 28 Q42 20 46 14 Q48 10 44 12 Q40 14 32 26Z" fill="#66bb6a"/>
+  <circle cx="32" cy="12" r="5" fill="#f06292"/>
+  <circle cx="28" cy="10" r="3.5" fill="#ec407a"/>
+  <circle cx="36" cy="10" r="3.5" fill="#ec407a"/>
+  <circle cx="32" cy="8" r="3" fill="#f48fb1"/>
+  <circle cx="32" cy="12" r="2" fill="#fff176"/>
+</svg>

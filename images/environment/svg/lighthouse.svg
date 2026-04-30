@@ -1,0 +1,40 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="lh-tower" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#90a4ae"/>
+      <stop offset="50%" style="stop-color:#cfd8dc"/>
+      <stop offset="100%" style="stop-color:#90a4ae"/>
+    </linearGradient>
+    <linearGradient id="lh-stripe" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#c62828"/>
+      <stop offset="50%" style="stop-color:#ef5350"/>
+      <stop offset="100%" style="stop-color:#c62828"/>
+    </linearGradient>
+    <radialGradient id="lh-light" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#fff176;stop-opacity:1"/>
+      <stop offset="60%" style="stop-color:#ffca28;stop-opacity:0.6"/>
+      <stop offset="100%" style="stop-color:#ff8f00;stop-opacity:0"/>
+    </radialGradient>
+    <filter id="lh-glow"><feGaussianBlur stdDeviation="3"/></filter>
+  </defs>
+  <path d="M20 64 Q18 48 22 16 Q26 8 32 6 Q38 8 42 16 Q46 48 44 64 Z" fill="url(#lh-tower)"/>
+  <path d="M20 64 Q18 48 22 16 Q26 8 32 6 Q38 8 42 16 Q46 48 44 64 Z" fill="url(#lh-stripe)" opacity="0.4" style="mask: repeating-linear-gradient(transparent 0, transparent 8px, rgba(0,0,0,0.5) 8px, rgba(0,0,0,0.5) 16px)"/>
+  <g fill="url(#lh-stripe)">
+    <path d="M21 36 Q32 33 43 36 L43 44 Q32 41 21 44 Z"/>
+    <path d="M20 52 Q32 49 44 52 L44 58 Q32 55 20 58 Z"/>
+  </g>
+  <rect x="18" y="10" width="28" height="8" rx="3" fill="#546e7a"/>
+  <rect x="20" y="12" width="24" height="4" rx="2" fill="#1a2a30"/>
+  <circle cx="32" cy="14" r="8" fill="#ffee58" opacity="0.9">
+    <animate attributeName="opacity" values="0.7;1;0.7" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="32" cy="14" r="10" fill="url(#lh-light)" filter="url(#lh-glow)" opacity="0.8">
+    <animate attributeName="opacity" values="0.5;0.9;0.5" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <path d="M32 14 L4 30 M32 14 L4 6" stroke="#fff176" stroke-width="0.8" opacity="0.4">
+    <animate attributeName="opacity" values="0.2;0.5;0.2" dur="2s" repeatCount="indefinite"/>
+  </path>
+  <rect x="16" y="8" width="32" height="4" rx="2" fill="#37474f"/>
+  <rect x="14" y="56" width="36" height="8" rx="2" fill="#546e7a"/>
+  <rect x="24" y="42" width="16" height="14" rx="1" fill="#37474f" opacity="0.4"/>
+</svg>

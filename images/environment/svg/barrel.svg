@@ -1,0 +1,28 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="br-wood" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#5d4037"/>
+      <stop offset="45%" style="stop-color:#8d6e63"/>
+      <stop offset="100%" style="stop-color:#5d4037"/>
+    </linearGradient>
+    <linearGradient id="br-cap" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#8d6e63"/>
+      <stop offset="100%" style="stop-color:#4e342e"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="32" cy="61" rx="14" ry="3.5" fill="#1a1a1a" opacity="0.35"/>
+  <path d="M18 22 Q14 32 14 42 Q14 52 18 58 Q32 62 46 58 Q50 52 50 42 Q50 32 46 22 Q32 18 18 22Z" fill="url(#br-wood)"/>
+  <ellipse cx="32" cy="22" rx="14" ry="5" fill="url(#br-cap)"/>
+  <ellipse cx="32" cy="58" rx="14" ry="5" fill="#4e342e"/>
+  <g stroke="#3e2723" stroke-width="3" fill="none" opacity="0.8">
+    <path d="M18 30 Q32 27 46 30"/>
+    <path d="M16 40 Q32 37 48 40"/>
+    <path d="M18 50 Q32 47 46 50"/>
+  </g>
+  <g stroke="#795548" stroke-width="1" fill="none" opacity="0.4">
+    <line x1="24" y1="18" x2="22" y2="62"/>
+    <line x1="32" y1="17" x2="32" y2="63"/>
+    <line x1="40" y1="18" x2="42" y2="62"/>
+  </g>
+  <path d="M30 22 Q32 20 34 22 L34 58 Q32 60 30 58 Z" fill="#a1887f" opacity="0.15"/>
+</svg>

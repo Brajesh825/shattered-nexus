@@ -144,6 +144,82 @@ TILE_DEFS[337] = { name: 'Old Bakery',      walkable: false, svgAsset: 'bakery',
 TILE_DEFS[338] = { name: 'Fisherman Hut',   walkable: false, svgAsset: 'fisherman_hut',  color: '#a1887f', vScale: 3.2, footprint: [[0,0], [1,0], [2,0]] };
 TILE_DEFS[339] = { name: 'Village Hall',    walkable: false, svgAsset: 'village_hall',   color: '#cfd8dc', vScale: 5.0, footprint: [[0,0], [1,0], [2,0], [0,1], [1,1], [2,1]], collisionMask: ['XXX', 'XXX'] };
 
+// ── [EXPANSION] MILITARY BARRACKS (IDs 320-329) ─────────────────
+TILE_DEFS[320] = { name: 'Soldier Tent',    walkable: false, svgAsset: 'military_tent',  color: '#5d4037', vScale: 2.5, footprint: [[0,0], [1,0]] };
+TILE_DEFS[321] = { name: 'Training Ring',   walkable: true,  svgAsset: 'training_ring',  color: '#8d6e63', vScale: 4.0 };
+TILE_DEFS[322] = { name: 'Weapon Rack',     walkable: false, svgAsset: 'weapon_rack',    color: '#4e342e', vScale: 1.5 };
+TILE_DEFS[323] = { name: 'Supply Crate',    walkable: false, svgAsset: 'supply_crate',   color: '#795548', vScale: 1.2 };
+TILE_DEFS[324] = { name: 'Guard Tower',     walkable: false, svgAsset: 'watchtower',     color: '#455a64', vScale: 5.5, footprint: [[0,0]] };
+TILE_DEFS[325] = { name: 'Officer Quarters',walkable: false, svgAsset: 'barracks',       color: '#37474f', vScale: 4.5, footprint: [[0,0], [1,0], [2,0]] };
+
+// ── [EXPANSION] CIVILIAN VILLAGE (IDs 330-339) ──────────────────
+TILE_DEFS[330] = { name: 'Windmill',        walkable: false, svgAsset: 'windmill',       color: '#a1887f', vScale: 6.0, footprint: [[0,0], [1,0]] };
+TILE_DEFS[331] = { name: 'Granary',         walkable: false, svgAsset: 'granary',        color: '#8d6e63', vScale: 4.5, footprint: [[0,0], [1,0]] };
+TILE_DEFS[332] = { name: 'Village Well',    walkable: false, svgAsset: 'well_house',     color: '#b0bec5', vScale: 2.2 };
+TILE_DEFS[333] = { name: 'Blacksmith',      walkable: false, svgAsset: 'blacksmith',     color: '#4e342e', vScale: 4.0, footprint: [[0,0], [1,0]] };
+TILE_DEFS[334] = { name: 'Market Stall',    walkable: true,  svgAsset: 'merchant_store', color: '#ffccbc', vScale: 2.5 };
+TILE_DEFS[335] = { name: 'Thatch Cottage',  walkable: false, svgAsset: 'cottage',        color: '#d7ccc8', vScale: 3.5, footprint: [[0,0], [1,0]] };
+TILE_DEFS[336] = { name: 'Stone Workshop',  walkable: false, svgAsset: 'workshop',       color: '#90a4ae', vScale: 4.2, footprint: [[0,0], [1,0], [2,0]] };
+TILE_DEFS[337] = { name: 'Bakery',          walkable: false, svgAsset: 'bakery',         color: '#ffe0b2', vScale: 3.8, footprint: [[0,0], [1,0]] };
+TILE_DEFS[338] = { name: 'Fisherman Hut',   walkable: false, svgAsset: 'fisherman_hut',  color: '#a1887f', vScale: 3.2, footprint: [[0,0], [1,0], [2,0]] };
+TILE_DEFS[339] = { name: 'Village Hall',    walkable: false, svgAsset: 'village_hall',   color: '#cfd8dc', vScale: 5.0, footprint: [[0,0], [1,0], [2,0], [0,1], [1,1], [2,1]], collisionMask: ['XXX', 'XXX'] };
+
+// ── [EXPANSION] NOBLE ESTATE (IDs 340-349) ──────────────────────
+TILE_DEFS[340] = { name: 'Grand Manor',     walkable: false, svgAsset: 'estate_manor',   color: '#cfd8dc', vScale: 6.5, footprint: [[0,0], [1,0], [2,0], [0,1], [1,1], [2,1]], collisionMask: ['XXX', 'XXX'] };
+TILE_DEFS[341] = { name: 'Glass Conservatory',walkable: false, svgAsset: 'conservatory',  color: 'rgba(144,202,249,0.4)', vScale: 3.5, footprint: [[0,0], [1,0]] };
+TILE_DEFS[342] = { name: 'Guest Villa',     walkable: false, svgAsset: 'noble_villa',    color: '#eceff1', vScale: 3.8, footprint: [[0,0], [1,0], [2,0]] };
+TILE_DEFS[343] = { name: 'Garden Gazebo',   walkable: true,  svgAsset: 'gazebo',         color: '#cfd8dc', vScale: 3.0 };
+TILE_DEFS[344] = { name: 'Triumphal Arch',  walkable: true,  svgAsset: 'triumphal_arch', color: '#cfd8dc', vScale: 4.5, footprint: [[0,0], [1,0], [2,0]], collisionMask: ['X.X'] };
+
+// ── NATURE (IDs 350+) ────────────────────────────────────────
+TILE_DEFS[350] = { name: 'Apple Tree',     walkable: false, svgAsset: 'apple_tree',     color: '#2e7d32', vScale: 2.5 };
+TILE_DEFS[351] = { name: 'Palm Tree',      walkable: false, svgAsset: 'palm_tree',      color: '#33691e', vScale: 3.5 };
+TILE_DEFS[352] = { name: 'Cherry Blossom', walkable: false, svgAsset: 'cherry_blossom', color: '#ad1457', vScale: 2.8 };
+TILE_DEFS[353] = { name: 'Giant Mushroom', walkable: false, svgAsset: 'giant_mushroom', color: '#7f0000', vScale: 2.5 };
+TILE_DEFS[354] = { name: 'Cactus',         walkable: false, svgAsset: 'cactus',         color: '#33691e', vScale: 2.2 };
+TILE_DEFS[355] = { name: 'Bamboo',         walkable: false, svgAsset: 'bamboo',         color: '#558b2f', vScale: 2.8 };
+TILE_DEFS[356] = { name: 'Vine Cluster',   walkable: false, svgAsset: 'vine_cluster',   color: '#1b5e20', vScale: 2.0 };
+
+// ── DARK FANTASY (IDs 357+) ──────────────────────────────────
+TILE_DEFS[357] = { name: 'Rune Stone',     walkable: false, svgAsset: 'rune_stone',     color: '#455a64', vScale: 2.5, glows: '#00e5ff30' };
+TILE_DEFS[358] = { name: 'Bone Pile',      walkable: true,  svgAsset: 'bone_pile',      color: '#bdbdbd', vScale: 1.5 };
+TILE_DEFS[359] = { name: 'Dark Altar',     walkable: false, svgAsset: 'dark_altar',     color: '#1a1a2e', vScale: 2.8, glows: '#b71c1c40', footprint: [[0,0], [1,0]] };
+TILE_DEFS[360] = { name: 'Cursed Tree',    walkable: false, svgAsset: 'cursed_tree',    color: '#1a0a00', vScale: 3.0 };
+TILE_DEFS[361] = { name: 'Spectral Flame', walkable: true,  svgAsset: 'spectral_flame', color: '#006064', vScale: 2.0, anim: true, glows: '#00e5ff40' };
+TILE_DEFS[362] = { name: 'Soul Lantern',   walkable: true,  svgAsset: 'soul_lantern',   color: '#1a2a2a', vScale: 2.5, anim: true, glows: '#69f0ae30' };
+TILE_DEFS[363] = { name: 'Eldritch Eye',   walkable: true,  svgAsset: 'eldritch_eye',   color: '#4a148c', vScale: 2.2, anim: true, glows: '#ff6f0040' };
+
+// ── TOWN PROPS (IDs 364+) ────────────────────────────────────
+TILE_DEFS[364] = { name: 'Barrel',         walkable: false, svgAsset: 'barrel',         color: '#5d4037', vScale: 1.8 };
+TILE_DEFS[365] = { name: 'Hay Bale',       walkable: false, svgAsset: 'hay_bale',       color: '#f9a825', vScale: 1.8 };
+TILE_DEFS[366] = { name: 'Water Trough',   walkable: false, svgAsset: 'water_trough',   color: '#0288d1', vScale: 1.5, footprint: [[0,0], [1,0]] };
+TILE_DEFS[367] = { name: 'Fence Section',  walkable: false, svgAsset: 'fence_section',  color: '#8d6e63', vScale: 1.5, footprint: [[0,0], [1,0]] };
+TILE_DEFS[368] = { name: 'Notice Board',   walkable: false, svgAsset: 'notice_board',   color: '#795548', vScale: 2.2, interactive: true };
+TILE_DEFS[369] = { name: 'Flower Pot',     walkable: true,  svgAsset: 'flower_pot',     color: '#bf360c', vScale: 1.8 };
+TILE_DEFS[370] = { name: 'Market Cart',    walkable: false, svgAsset: 'market_cart',    color: '#e65100', vScale: 2.5, footprint: [[0,0], [1,0]] };
+
+// ── DUNGEON PROPS (IDs 371+) ─────────────────────────────────
+TILE_DEFS[371] = { name: 'Stalactite',     walkable: false, svgAsset: 'stalactite',     color: '#37474f', vScale: 2.0 };
+TILE_DEFS[372] = { name: 'Dungeon Door',   walkable: true,  svgAsset: 'dungeon_door',   color: '#1a2a30', vScale: 2.5, interactive: true };
+TILE_DEFS[373] = { name: 'Cell Bars',      walkable: false, svgAsset: 'cell_bars',      color: '#263238', vScale: 2.0 };
+TILE_DEFS[374] = { name: 'Spike Trap',     walkable: true,  svgAsset: 'spike_trap',     color: '#455a64', vScale: 1.5 };
+TILE_DEFS[375] = { name: 'Poison Mushroom',walkable: true,  svgAsset: 'poison_mushroom',color: '#4a0000', vScale: 1.8, glows: '#76ff0330' };
+
+// ── COMBAT & SIEGE (IDs 376+) ────────────────────────────────
+TILE_DEFS[376] = { name: 'Iron Cannon',    walkable: false, svgAsset: 'cannon',         color: '#37474f', vScale: 2.5, footprint: [[0,0], [1,0]] };
+TILE_DEFS[377] = { name: 'Bonfire',        walkable: true,  svgAsset: 'bonfire',        color: '#e65100', vScale: 2.2, anim: true, glows: '#ff6f0050' };
+
+// ── COASTAL (IDs 378+) ───────────────────────────────────────
+TILE_DEFS[378] = { name: 'Dock Posts',     walkable: true,  svgAsset: 'dock_post',      color: '#4e342e', vScale: 2.0, footprint: [[0,0], [1,0]] };
+TILE_DEFS[379] = { name: 'Rowboat',        walkable: false, svgAsset: 'rowboat',        color: '#8d6e63', vScale: 2.0, footprint: [[0,0], [1,0]] };
+TILE_DEFS[380] = { name: 'Lighthouse',     walkable: false, svgAsset: 'lighthouse',     color: '#cfd8dc', vScale: 4.5, anim: true, glows: '#fff17640', footprint: [[0,0]] };
+TILE_DEFS[381] = { name: 'Fishing Net',    walkable: false, svgAsset: 'fishing_net',    color: '#8d6e63', vScale: 2.0, footprint: [[0,0], [1,0]] };
+
+// ── ARCANE (IDs 382+) ────────────────────────────────────────
+TILE_DEFS[382] = { name: 'Arcane Pedestal',walkable: false, svgAsset: 'arcane_pedestal',color: '#1e1e3a', vScale: 2.5, glows: '#7c4dff40', interactive: true };
+TILE_DEFS[383] = { name: 'Crystal Orb',    walkable: false, svgAsset: 'crystal_orb',    color: '#01579b', vScale: 2.5, anim: true, glows: '#40c4ff50', interactive: true };
+TILE_DEFS[384] = { name: 'Spell Rune',     walkable: true,  svgAsset: 'spell_rune',     color: '#4a148c', vScale: 2.0, anim: true, glows: '#ea80fc40', footprint: [[0,0],[1,0],[0,1],[1,1]] };
+
 // ── SYSTEM TILES (IDs 250+) ──────────────────────────────────
 TILE_DEFS[250] = { name: 'Blocker',      walkable: false, color: 'transparent', hidden: true };
 

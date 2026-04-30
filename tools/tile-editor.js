@@ -276,11 +276,11 @@ class TileEditor {
             if (id == this.state.currentTile) swatch.classList.add('active');
             
             const canvas = document.createElement('canvas');
-            canvas.width = 64;
-            canvas.height = 64;
+            canvas.width = 128;
+            canvas.height = 128;
             const ctx = canvas.getContext('2d');
-            
-            this.drawPreview(ctx, id, 64);
+
+            this.drawPreview(ctx, id, 128);
 
             const label = document.createElement('div');
             label.className = 'swatch-label';
@@ -312,11 +312,11 @@ class TileEditor {
             if (id == this.state.currentTile) swatch.classList.add('active');
             
             const canvas = document.createElement('canvas');
-            canvas.width = 64;
-            canvas.height = 64;
+            canvas.width = 128;
+            canvas.height = 128;
             const ctx = canvas.getContext('2d');
-            
-            this.drawPreview(ctx, id, 64);
+
+            this.drawPreview(ctx, id, 128);
 
             const label = document.createElement('div');
             label.className = 'swatch-label';
@@ -341,9 +341,9 @@ class TileEditor {
             swatch.className = 'swatch';
             
             const canvas = document.createElement('canvas');
-            canvas.width = 64;
-            canvas.height = 64;
-            this.drawStampPreview(canvas.getContext('2d'), stamp, 64);
+            canvas.width = 128;
+            canvas.height = 128;
+            this.drawStampPreview(canvas.getContext('2d'), stamp, 128);
 
             const label = document.createElement('div');
             label.className = 'swatch-label';
@@ -406,16 +406,20 @@ class TileEditor {
                 this.state.spaceDown = true;
                 this.elements.canvas.style.cursor = 'grab';
             }
-            const keyMap = { 'b': 'brush', 'g': 'fill', 'r': 'rect', 'i': 'eyedropper', 'c': 'collision' };
+            const keyMap = { 'b': 'brush', 'g': 'fill', 'r': 'rect', 'i': 'eyedropper', 'e': 'eraser', 'c': 'collision' };
             if (keyMap[e.key]) {
                 if (e.key === 'c') this.toggleCollision();
                 else this.setTool(keyMap[e.key]);
             }
-            if (e.key === 'x' || e.key === 'Delete') {
-                this.state.currentTile = 0;
-                this.state.currentStamp = null;
-                document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
-                this.updateBrushPreview();
+            if (e.key === 'x' || e.key === 'Delete' || e.key === 'Backspace') {
+                if (this.state.selection) {
+                    this.deleteSelection(e.shiftKey);
+                } else {
+                    this.state.currentTile = 0;
+                    this.state.currentStamp = null;
+                    document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+                    this.updateBrushPreview();
+                }
             }
             if (e.ctrlKey && e.key === 's') {
                 e.preventDefault();
@@ -484,7 +488,7 @@ class TileEditor {
                     const y2 = Math.max(this.state.selectionStart.y, ty);
                     this.state.selection = { x: x1, y: y1, w: x2 - x1 + 1, h: y2 - y1 + 1 };
                     this.render();
-                } else if (this.state.currentTool === 'brush') {
+                } else if (this.state.currentTool === 'brush' || e.buttons === 2 || this.state.currentTool === 'eraser') {
                     this.handleAction(e);
                 }
             } else if (this.state.currentTool === 'stamp') {
@@ -572,8 +576,8 @@ class TileEditor {
 
         if (x < 0 || y < 0 || x >= this.config.width || y >= this.config.height) return;
 
-        // Right-click always erases (sets to 0)
-        const activeTile = (e.buttons === 2) ? 0 : this.state.currentTile;
+        // Erase if: Right-click OR Eraser tool is active
+        const activeTile = (e.buttons === 2 || this.state.currentTool === 'eraser') ? 0 : this.state.currentTile;
 
         if (this.state.currentTool === 'select') {
             this.state.isSelecting = true;
@@ -592,9 +596,13 @@ class TileEditor {
             return;
         }
 
-        if (e.buttons === 2) {
-            // Eraser Mode
-            this.state.map[this.state.currentLayer][y][x] = 0;
+        if (e.buttons === 2 || this.state.currentTool === 'eraser') {
+            // Eraser Mode: Support Shift+Click for Global Wipe (All Layers)
+            if (e.shiftKey) {
+                for (let l = 0; l < 3; l++) this.state.map[l][y][x] = 0;
+            } else {
+                this.state.map[this.state.currentLayer][y][x] = 0;
+            }
         } else if (this.state.currentStamp) {
             this.applyStamp(x, y, this.state.currentStamp);
         } else if (this.state.currentTool === 'brush' || this.state.currentTool === 'rect') {
@@ -604,6 +612,26 @@ class TileEditor {
         }
         
         this.render();
+    }
+
+    deleteSelection(isGlobal = false) {
+        if (!this.state.selection) return;
+        this.saveHistory();
+        const s = this.state.selection;
+        
+        // Deep Wipe: Delete from ALL layers if Shift is held, otherwise just current
+        const startLayer = isGlobal ? 0 : this.state.currentLayer;
+        const endLayer = isGlobal ? 2 : this.state.currentLayer;
+
+        for (let l = startLayer; l <= endLayer; l++) {
+            for (let y = s.y; y < s.y + s.h; y++) {
+                for (let x = s.x; x < s.x + s.w; x++) {
+                    if (this.state.map[l][y]) this.state.map[l][y][x] = 0;
+                }
+            }
+        }
+        this.render();
+        console.log(`🧹 Wiped layers ${startLayer}-${endLayer} in selection: ${s.w}x${s.h}`);
     }
 
     floodFill(startX, startY, newId) {
@@ -678,7 +706,11 @@ class TileEditor {
                 const drawH = drawW * (img.naturalHeight / img.naturalWidth);
                 const dx = (size - drawW) / 2;
                 const dy = Math.max(0, size - drawH); // bottom-anchor like the game engine
-                ctx.drawImage(img, dx, dy, drawW, Math.min(drawH, size));
+                
+                // Safe Draw: Ensure image is not in a broken state
+                if (img.complete && img.naturalWidth > 0) {
+                    ctx.drawImage(img, dx, dy, drawW, Math.min(drawH, size));
+                }
             }
         }
 
@@ -718,38 +750,30 @@ class TileEditor {
         
         const c = this.elements.canvas;
         const s = this.config.tileSize * this.config.zoom;
+        
+        // Match canvas dimensions to map data
         c.width = this.config.width * s;
         c.height = this.config.height * s;
         
         this.ctx.clearRect(0, 0, c.width, c.height);
 
+        // Universal Composite: Loop through all 3 layers
         for (let l = 0; l < 3; l++) {
-            // LAYER ISOLATION: Only render current if not in "Show All" mode
-            if (!this.state.showAll && l !== this.state.currentLayer) continue; 
+            const isCurrent = this.state.currentLayer === l;
             
-            // If in isolation mode and on Layer 1 or 2, maybe we want a tiny hint of Layer 0?
-            // For now, full transparency as requested.
-
-            const layer = this.state.map[l];
-            for (let y = 0; y < this.config.height; y++) {
-                for (let x = 0; x < this.config.width; x++) {
-                    const id = layer[y][x];
-                    if (id === 0) {
-                        if (l === 0) {
-                            this.ctx.fillStyle = '#05070a';
-                            this.ctx.fillRect(x * s, y * s, s, s);
-                        }
-                        continue;
-                    }
-                    this.drawTile(this.ctx, id, x * s, y * s, s);
-                }
-            }
+            // Apply Opacity Masking:
+            // - If showAll is ON: All layers at 100% (Game Preview)
+            // - If showAll is OFF: Non-active layers at 40% (Editor Focus)
+            this.ctx.globalAlpha = (this.state.showAll || isCurrent) ? 1.0 : 0.4;
+            this.renderLayer(l, s);
         }
+        
+        this.ctx.globalAlpha = 1.0;
 
+        // Overlays
         if (this.state.showCollision) {
             this.renderCollisionOverlay(s);
         }
-
         this.renderEntities(s);
         
         if (this.state.selection) {
@@ -761,6 +785,26 @@ class TileEditor {
         }
 
         this.updateMinimap();
+    }
+
+    renderLayer(l, s) {
+        const layer = this.state.map[l];
+        for (let y = 0; y < this.config.height; y++) {
+            for (let x = 0; x < this.config.width; x++) {
+                const id = layer[y][x];
+                
+                if (id === 0) {
+                    // Draw base void for Layer 0
+                    if (l === 0) {
+                        this.ctx.fillStyle = '#05070a';
+                        this.ctx.fillRect(x * s, y * s, s, s);
+                    }
+                    continue;
+                }
+                
+                this.drawTile(this.ctx, id, x * s, y * s, s);
+            }
+        }
     }
 
     renderSelectionBox(s) {
@@ -995,12 +1039,6 @@ class TileEditor {
         }
     }
 
-    updateCanvasSize() {
-        const s = this.config.tileSize * this.state.zoom;
-        this.elements.canvas.width = this.config.width * s;
-        this.elements.canvas.height = this.config.height * s;
-    }
-
     exportJSON() {
         // Custom stringifier to keep the map in a readable grid format
         const map = this.state.map;
@@ -1229,8 +1267,11 @@ class TileEditor {
             // Anchor logic: Assets are usually anchored to bottom-center in VV engine
             const dx = x + (s - sw) / 2;
             const dy = y + s - sh;
-            
-            ctx.drawImage(img, dx, dy, sw, sh);
+
+            // Safe Draw: Ensure image is not in a broken state
+            if (img.complete && img.naturalWidth > 0) {
+                ctx.drawImage(img, dx, dy, sw, sh);
+            }
         }
     }
 

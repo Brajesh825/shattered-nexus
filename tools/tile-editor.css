@@ -135,7 +135,7 @@ body {
 
 /* ── SIDEBAR ────────────────────────────────────────────────── */
 #sidebar {
-    width: 360px;
+    width: 400px;
     background: var(--bg-panel);
     backdrop-filter: var(--glass);
     border-right: 1px solid var(--border);
@@ -199,7 +199,7 @@ body {
 .grid-palette {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
+    gap: 12px;
 }
 
 .swatch {
@@ -233,21 +233,21 @@ body {
 .swatch canvas, .swatch img {
     width: 100%;
     height: auto;
-    max-height: 60px;
     image-rendering: pixelated;
     margin-bottom: 6px;
     filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
 }
 
 .swatch-label {
-    font-size: 0.65rem;
+    font-size: 0.75rem;
     color: var(--text-dim);
     text-align: center;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     width: 100%;
-    font-weight: 500;
+    margin-top: 6px;
+    font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
@@ -309,8 +309,9 @@ body {
 }
 
 .minimap-container {
-    width: 100%;
-    aspect-ratio: 1;
+    width: 180px;
+    height: 180px;
+    margin: 0 auto;
     background: #000;
     border: 1px solid var(--border);
     border-radius: 8px;
