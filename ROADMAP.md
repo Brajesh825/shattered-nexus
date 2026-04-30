@@ -1,6 +1,9 @@
 # RPG+ Development Roadmap
 
 ## ✅ Completed Milestones
+- **[2026-04-30] Universal SVG Asset Engine & Map Stability**: Standardized all environment assets to SVG format across the engine and preloader. Fixed 404 loading regressions and ensured directory parity (`images/environment/svg/`).
+- **[2026-04-30] Architect Pro (M4) Implementation**: Completed high-fidelity browser-based tile editor with advanced tools (Brush, Fill, Rectangle, Eyedropper) and multi-layer support.
+- **[2026-04-30] Story.js Refactor (N3)**: Extracted cutscene rendering into `js/cutscene.js` for improved code modularity and maintainability.
 - **[2026-04-28] System Audit & Roadmap Refresh**: Full codebase audit.
 - **[2026-04-28] Level Range Comment Audit (M8)**: Corrected `map-data.js` comments to strictly match `STORY_PROGRESSION.md`.
 - **[2026-04-27] Encounter Data Migration & Overworld Declutter**: Removed legacy `enemies_pool` from Arc JSONs, routing Skirmishes and Bestiary directly to `MAP_DEFS.encounterTemplates`. Curated overworld enemies down to 4-5 sentinels per map in favor of the new 8% random encounter system.
@@ -69,10 +72,10 @@ Add an optional `"mode"` field to arc JSON chapters for distinct visual treatmen
 - `"combat_flashback"` — battle sprite visible + screen shake (for action recall moments)
 - Driven entirely by a CSS class toggle in `story.js` — no new engine work
 
-### N3 — Story.js Refactor (Code Health)
-- Extract cutscene rendering into a dedicated `js/cutscene.js`
-- `story.js` becomes an orchestrator; `cutscene.js` owns portrait management, typewriter, and dialogue queue
-- Resolves the current 1643-line monolith mixing save/load/world-map/cutscene logic
+### ~~N3 — Story.js Refactor (Code Health)~~ (Done)
+- Extracted cutscene rendering into a dedicated `js/cutscene.js`
+- `story.js` remains as an orchestrator; `cutscene.js` owns portrait management, typewriter, and dialogue queue
+- Resolves the 1643-line monolith mixing save/load/world-map/cutscene logic
 
 ### ~~N4 — Intra-Party Chemistry Beats~~ (Done)
 - Added 2–3 party chemistry moments per arc, triggered after boss defeat
@@ -99,10 +102,10 @@ Add an optional `"mode"` field to arc JSON chapters for distinct visual treatmen
 ### M3 — Interactive Map Puzzles
 - Environmental puzzles (switches, blocks, traps)
 
-### M4 — Browser-Based Tile Editor (Priority: High)
-- All 15 map layouts are hand-coded JS tile arrays — largest maintainability risk in the codebase
-- Build a minimal HTML canvas tile editor: click-to-paint tiles, export to existing JS array format
-- Check `tools/` folder for any existing foundation to build on
+### ~~M4 — Browser-Based Tile Editor~~ (Done)
+- Completed high-fidelity HTML canvas tile editor in `tools/tile-editor.html`.
+- Features: Brush (B), Bucket Fill (G), Rectangle (R), Eyedropper (I), and Multi-layer map editing.
+- Supports data-driven asset loading via `sprites.json` and SVG support.
 
 ### M5 — Fast Travel System
 - Add world-map fast-travel unlocked after first visit to a region
@@ -179,4 +182,4 @@ Four factions defined with history, goals, and relationship to Valdris:
 
 ---
 
-*Last audited: 2026-04-28. Priority order: Browser-Based Tile Editor (M4) → Story Refactor (N3) → Action Handler Refactor (B5) → Fast Travel (M5).*
+*Last audited: 2026-04-30. Priority order: Fast Travel (M5) → Action Handler Refactor (B5) → Vanguard Intercept UI (B1).*
