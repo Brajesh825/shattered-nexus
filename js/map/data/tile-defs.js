@@ -96,6 +96,8 @@ TILE_DEFS[245] = { name: 'Shattered Throne', walkable: false, svgAsset: 'shatter
 TILE_DEFS[246] = { name: 'Broken Knight', walkable: false, svgAsset: 'broken_knight', color: '#718096', vScale: 2.5 };
 TILE_DEFS[247] = { name: 'Cursed Well', walkable: false, svgAsset: 'cursed_well', color: '#6a1b9a', vScale: 2.2, anchor: 'bottom-left', collisionMask: ['XXX'] };
 TILE_DEFS[248] = { name: 'Withered Tree', walkable: false, svgAsset: 'withered_tree', color: '#e2e8f0', vScale: 4.0 };
+TILE_DEFS[250] = { name: 'Crystal Stairs Down', walkable: true, svgAsset: 'void_rift', color: '#6200ea', glows: 'rgba(100, 200, 255, 0.4)', vScale: 3.5, anchor: 'bottom-left' };
+TILE_DEFS[251] = { name: 'Crystal Stairs Up',   walkable: true, svgAsset: 'void_rift', color: '#ff9800', glows: 'rgba(255, 200, 100, 0.4)', vScale: 3.5, anchor: 'bottom-left' };
 
 // ── FURNITURE & INTERIOR (IDs 300+) ──────────────────────────
 TILE_DEFS[300] = { name: 'Royal Table',   walkable: false, svgAsset: 'royal_table', color: '#5d4037', vScale: 2.2, footprint: [[0,0], [1,0]] };
