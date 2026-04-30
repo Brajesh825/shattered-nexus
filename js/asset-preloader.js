@@ -13,22 +13,6 @@ const AssetPreloader = (() => {
   const CIVILIAN_ASSETS = ['windmill', 'granary', 'well_house', 'blacksmith', 'merchant_store', 'cottage', 'workshop', 'bakery', 'fisherman_hut', 'village_hall'];
   const NOBLE_ASSETS    = ['estate_manor', 'conservatory', 'noble_villa', 'gazebo', 'triumphal_arch'];
 
-  // ARCHITECT PRO: Definitive SVG Registry to prevent PNG pathing errors
-  const SVG_REGISTRY = new Set([
-    'void_rift', 'cursed_idol', 'skeleton', 'floating_crystal', 'ancient_pillar', 
-    'withered_vine', 'sacrificial_altar', 'void_spires', 'iron_maiden', 'magic_circle', 
-    'tower', 'castle', 'noble_house', 'ruined_tower', 'ruined_castle', 'shattered_throne', 
-    'broken_knight', 'cursed_well', 'withered_tree', 'royal_table', 'wooden_chair', 
-    'stone_bench', 'throne_gold', 'alchemy_table', 'bookshelf', 'fireplace', 
-    'armor_stand', 'weapon_rack', 'bed_fancy', 'knight_statue', 'iron_gate', 
-    'training_dummy', 'catapult', 'hanging_cage', 'royal_banner', 'castle_wall', 
-    'drawbridge', 'gallows', 'archery_target',
-    'archery_range', 'stable', 'tavern', 'chapel', 'wall_section', 'healer_hut', 'farmhouse', 'library',
-    ...MILITARY_ASSETS,
-    ...CIVILIAN_ASSETS,
-    ...NOBLE_ASSETS
-  ]);
-
   const ASSETS = {
     // Character spirit portraits
     spirits: [
@@ -146,11 +130,8 @@ const AssetPreloader = (() => {
       loadBatch(ASSETS.bgm, loadAudio, '', (id) => `audio/bgm/${id}.mp3`, true),
       // 4. UI
       loadBatch(ASSETS.ui, loadImage, 'ui_', (id) => `images/ui/${id}.png`),
-      // 5. Environment (Automatic Pathing)
-      loadBatch(ASSETS.environment, loadImage, 'env_', (id) => {
-        const isSvg = SVG_REGISTRY.has(id);
-        return isSvg ? `images/environment/svg/${id}.svg` : `images/environment/${id}.png`;
-      })
+      // 5. Environment — all assets are SVGs in images/environment/svg/
+      loadBatch(ASSETS.environment, loadImage, 'env_', (id) => `images/environment/svg/${id}.svg`)
     ]);
 
     return cache;
