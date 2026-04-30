@@ -45,7 +45,7 @@ class TileEditor {
         };
 
         this.ctx = this.elements.canvas.getContext('2d');
-        
+
         // Cache for rendering
         this.cache = {
             spritesheet: new Image(),
@@ -54,6 +54,9 @@ class TileEditor {
             dead_tree: new Image(), well: new Image(), market: new Image(), chest: new Image(),
             statue: new Image()
         };
+
+        // Registry: svgAsset key -> [{ctx, id, size}] for palette/asset swatches that need refresh
+        this.svgSwatchRegistry = {};
 
         this.init();
         
@@ -140,9 +143,16 @@ class TileEditor {
         uniqueSvgs.forEach(key => {
             if (!this.cache[key]) this.cache[key] = new Image();
             this.cache[key].src = `../images/environment/svg/${key}.svg`;
-            this.cache[key].onload = () => this.render();
+            this.cache[key].onload = () => {
+                this.render();
+                this._refreshSwatchesForAsset(key);
+            };
             this.cache[key].onerror = () => {
                 this.cache[key].src = `../images/environment/${key}.png`;
+                this.cache[key].onload = () => {
+                    this.render();
+                    this._refreshSwatchesForAsset(key);
+                };
             };
         });
         
@@ -251,10 +261,16 @@ class TileEditor {
 
     initPalette() {
         this.elements.palette.innerHTML = '';
-        const terrainIds = Object.keys(TILE_DEFS).filter(id => !TILE_DEFS[id].svgAsset);
+        // Show ALL terrain-style tiles (ID < 200 or no svgAsset)
+        const terrainIds = Object.keys(TILE_DEFS).filter(id => {
+            const numId = parseInt(id);
+            return numId < 200 || !TILE_DEFS[id].svgAsset;
+        });
         
         terrainIds.forEach(id => {
             const def = TILE_DEFS[id];
+            if (def.hidden) return;
+
             const swatch = document.createElement('div');
             swatch.className = 'swatch';
             if (id == this.state.currentTile) swatch.classList.add('active');
@@ -264,14 +280,13 @@ class TileEditor {
             canvas.height = 64;
             const ctx = canvas.getContext('2d');
             
-            // Draw with a slight brightness boost for the UI
             this.drawPreview(ctx, id, 64);
-            ctx.fillStyle = 'rgba(255,255,255,0.05)';
-            ctx.fillRect(0, 0, 64, 64);
-            
+
+            const label = document.createElement('div');
+            label.className = 'swatch-label';
+            label.textContent = def.name;
             swatch.appendChild(canvas);
-            const labelText = def.name.length > 10 ? def.name.slice(0, 8) + '..' : def.name;
-            swatch.innerHTML += `<div class="swatch-label">${labelText}</div>`;
+            swatch.appendChild(label);
             swatch.onclick = () => {
                 this.state.currentTile = id;
                 this.state.currentStamp = null;
@@ -285,39 +300,35 @@ class TileEditor {
 
     initAssets() {
         this.elements.assets.innerHTML = '';
-        const envAssets = [
-            'oak', 'pine', 'shrub', 'boulder', 'mushroom', 'flower', 'crystal', 'lily', 'dead_tree', 'well', 'market', 'chest', 'statue',
-            'fountain', 'obelisk', 'tombstone', 'pillar_broken', 'wagon', 'tent', 'campfire', 'signpost', 'street_lamp', 'archway',
-            'void_rift', 'cursed_idol', 'skeleton', 'floating_crystal', 'ancient_pillar', 'withered_vine', 'sacrificial_altar', 'void_spires', 'iron_maiden', 'magic_circle', 'tower', 'castle', 'noble_house', 'ruined_tower', 'ruined_castle', 'shattered_throne', 'broken_knight', 'cursed_well', 'withered_tree',
-            'royal_table', 'wooden_chair', 'stone_bench', 'throne_gold', 'alchemy_table', 'bookshelf', 'fireplace', 'armor_stand', 'weapon_rack', 'bed_fancy',
-            'knight_statue', 'iron_gate', 'training_dummy', 'catapult', 'hanging_cage', 'royal_banner', 'castle_wall', 'drawbridge', 'gallows', 'archery_target'
-        ];
+        // Dynamically find all IDs with SVG assets
+        const assetIds = Object.keys(TILE_DEFS).filter(id => TILE_DEFS[id].svgAsset);
 
-        // Filter TILE_DEFS to find IDs matching these assets
-        const assetMap = {};
-        Object.keys(TILE_DEFS).forEach(id => {
+        assetIds.forEach(id => {
             const def = TILE_DEFS[id];
-            if (def.svgAsset) assetMap[def.svgAsset] = id;
-        });
-
-        envAssets.forEach(key => {
-            const id = assetMap[key];
-            if (!id) return;
+            if (def.hidden) return;
 
             const swatch = document.createElement('div');
             swatch.className = 'swatch';
+            if (id == this.state.currentTile) swatch.classList.add('active');
             
-            const img = document.createElement('img');
-            img.src = `../images/environment/svg/${key}.svg`;
-            img.onerror = () => { img.src = `../images/environment/${key}.png`; };
+            const canvas = document.createElement('canvas');
+            canvas.width = 64;
+            canvas.height = 64;
+            const ctx = canvas.getContext('2d');
             
-            swatch.appendChild(img);
-            swatch.innerHTML += `<div class="swatch-label">${key}</div>`;
+            this.drawPreview(ctx, id, 64);
+
+            const label = document.createElement('div');
+            label.className = 'swatch-label';
+            label.textContent = def.name;
+            swatch.appendChild(canvas);
+            swatch.appendChild(label);
             swatch.onclick = () => {
                 this.state.currentTile = id;
                 this.state.currentStamp = null;
                 document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
                 swatch.classList.add('active');
+                this.updateBrushPreview();
             };
             this.elements.assets.appendChild(swatch);
         });
@@ -333,9 +344,12 @@ class TileEditor {
             canvas.width = 64;
             canvas.height = 64;
             this.drawStampPreview(canvas.getContext('2d'), stamp, 64);
-            
+
+            const label = document.createElement('div');
+            label.className = 'swatch-label';
+            label.textContent = stamp.name;
             swatch.appendChild(canvas);
-            swatch.innerHTML += `<div class="swatch-label">${stamp.name}</div>`;
+            swatch.appendChild(label);
             swatch.onclick = () => {
                 this.state.currentStamp = stamp;
                 document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
@@ -633,13 +647,51 @@ class TileEditor {
     drawPreview(ctx, id, size) {
         const def = TILE_DEFS[id];
         if (!def) return;
-        
+
         ctx.clearRect(0, 0, size, size);
+        ctx.imageSmoothingEnabled = true;
+
+        // Subtle background border for contrast
+        ctx.fillStyle = 'rgba(255,255,255,0.06)';
+        ctx.fillRect(0, 0, size, size);
+
+        // Always draw terrain color as base
         this.drawTerrainTexture(ctx, id, 0, 0, size);
 
-        if (def.svgAsset && this.cache[def.svgAsset]) {
-            ctx.drawImage(this.cache[def.svgAsset], 0, 0, size, size);
+        if (def.svgAsset) {
+            const img = this.cache[def.svgAsset];
+            const isReady = img && img.complete && img.naturalWidth > 0;
+
+            // Register this canvas for refresh when the SVG finishes loading
+            if (!this.svgSwatchRegistry[def.svgAsset]) {
+                this.svgSwatchRegistry[def.svgAsset] = [];
+            }
+            const already = this.svgSwatchRegistry[def.svgAsset].some(e => e.ctx === ctx);
+            if (!already) {
+                this.svgSwatchRegistry[def.svgAsset].push({ ctx, id, size });
+            }
+
+            if (isReady) {
+                // Scale large-vScale assets to fit snugly; normal assets fill the box
+                const vScale = def.vScale || 1;
+                const drawW = vScale > 1.5 ? size * 0.85 : size;
+                const drawH = drawW * (img.naturalHeight / img.naturalWidth);
+                const dx = (size - drawW) / 2;
+                const dy = Math.max(0, size - drawH); // bottom-anchor like the game engine
+                ctx.drawImage(img, dx, dy, drawW, Math.min(drawH, size));
+            }
         }
+
+        ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+        ctx.strokeRect(0.5, 0.5, size - 1, size - 1);
+    }
+
+    _refreshSwatchesForAsset(svgKey) {
+        const entries = this.svgSwatchRegistry[svgKey];
+        if (!entries) return;
+        entries.forEach(({ ctx, id, size }) => {
+            this.drawPreview(ctx, id, size);
+        });
     }
 
     drawStampPreview(ctx, stamp, size) {
@@ -1182,8 +1234,10 @@ class TileEditor {
         }
     }
 
-    drawTerrainTexture(ctx, id, x, y, s) {
+    drawTerrainTexture(ctx, id, x, y, s, t = 0) {
         const def = TILE_DEFS[id];
+        if (!def) return;
+        const name = (def.name || "").toLowerCase();
         const color = def.color || '#1a1a2e';
         const hi = def.hi || color;
         const shadow = def.shadow || color;
@@ -1209,17 +1263,23 @@ class TileEditor {
             ctx.beginPath();
             ctx.moveTo(x + 2, y + s/3);
             ctx.bezierCurveTo(x + s/3, y + 2, x + 2*s/3, y + s/3, x + s - 2, y + 2);
+            const wave = Math.sin(t * 2 + x/10) * 3;
+            ctx.moveTo(x + 2, y + s/3 + wave);
+            ctx.bezierCurveTo(x + s/3, y + 2 + wave, x + 2*s/3, y + s/3 + wave, x + s - 2, y + 2 + wave);
             ctx.stroke();
-        } else if (def.name.includes('stone') || def.name.includes('wall') || def.name.includes('mountain')) {
+        } else if (name.includes('stone') || name.includes('wall') || name.includes('mountain')) {
             ctx.fillStyle = shadow;
             ctx.fillRect(x, y + s - 4, s, 4);
             ctx.fillStyle = hi;
             ctx.fillRect(x, y, s, 2);
-        } else if (def.name.includes('path') || def.name.includes('sand')) {
+        } else if (name.includes('path') || name.includes('sand')) {
             ctx.fillStyle = hi;
+            const seed = x * 13 + y * 7;
             for(let i=0; i<5; i++) {
+                const rx = ((seed + i * 17) % 100) / 100 * s;
+                const ry = ((seed + i * 31) % 100) / 100 * s;
                 ctx.beginPath();
-                ctx.arc(x + Math.random()*s, y + Math.random()*s, 1.5, 0, Math.PI*2);
+                ctx.arc(x + rx, y + ry, 1.2, 0, Math.PI*2);
                 ctx.fill();
             }
         }

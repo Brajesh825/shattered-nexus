@@ -117,9 +117,20 @@ TILE_DEFS[313] = { name: 'Siege Catapult', walkable: false, svgAsset: 'catapult'
 TILE_DEFS[314] = { name: 'Hanging Cage',   walkable: true,  svgAsset: 'hanging_cage',   color: '#37474f', vScale: 2.8, vOffset: { x: 0, y: -20 } };
 TILE_DEFS[315] = { name: 'Royal Banner',   walkable: false, svgAsset: 'royal_banner',   color: '#4a148c', vScale: 4.5 };
 TILE_DEFS[316] = { name: 'Castle Wall',    walkable: false, svgAsset: 'castle_wall',    color: '#90a4ae', vScale: 3.0, footprint: [[0,0], [1,0]], collisionMask: ['XX'] };
-TILE_DEFS[317] = { name: 'Drawbridge',     walkable: true,  svgAsset: 'drawbridge',     color: '#5d4037', vScale: 4.0, footprint: [[0,0], [1,0], [0,1], [1,1]] };
-TILE_DEFS[318] = { name: 'Stone Gallows',  walkable: false, svgAsset: 'gallows',        color: '#795548', vScale: 3.8, footprint: [[0,0], [1,0]], collisionMask: ['XX'] };
+TILE_DEFS[318] = { name: 'Drawbridge',     walkable: true,  svgAsset: 'drawbridge',     color: '#5d4037', vScale: 4.0, footprint: [[0,0], [1,0], [0,1], [1,1]] };
 TILE_DEFS[319] = { name: 'Archery Target', walkable: false, svgAsset: 'archery_target', color: '#ffe082', vScale: 2.2 };
+
+// ── BUILDINGS & BARRACKS (IDs 320+) ──────────────────────────
+TILE_DEFS[320] = { name: 'Soldier Barracks', walkable: false, svgAsset: 'barracks', color: '#5d4037', vScale: 4.0, footprint: [[0,0], [1,0], [2,0]], collisionMask: ['XXX'] };
+TILE_DEFS[321] = { name: 'Archery Range',   walkable: false, svgAsset: 'archery_range', color: '#8d6e63', vScale: 3.5, footprint: [[0,0], [1,0], [2,0]] };
+TILE_DEFS[322] = { name: 'Blacksmith',      walkable: false, svgAsset: 'blacksmith', color: '#455a64', vScale: 3.2, glows: '#ff572230', footprint: [[0,0], [1,0]] };
+TILE_DEFS[323] = { name: 'Royal Stable',    walkable: false, svgAsset: 'stable', color: '#795548', vScale: 3.8, footprint: [[0,0], [1,0], [2,0]] };
+TILE_DEFS[324] = { name: 'Village Tavern',   walkable: false, svgAsset: 'tavern', color: '#5d4037', vScale: 4.2, footprint: [[0,0], [1,0], [2,0]], collisionMask: ['XXX'] };
+TILE_DEFS[325] = { name: 'Old Chapel',      walkable: false, svgAsset: 'chapel', color: '#cfd8dc', vScale: 4.5, footprint: [[0,0], [1,0]] };
+TILE_DEFS[326] = { name: 'Watchtower',      walkable: false, svgAsset: 'watchtower', color: '#5d4037', vScale: 5.0, footprint: [[0,0]] };
+TILE_DEFS[327] = { name: 'Stone Wall Seg',  walkable: false, svgAsset: 'wall_section', color: '#90a4ae', vScale: 2.5, footprint: [[0,0]] };
+TILE_DEFS[328] = { name: 'Circular Granary', walkable: false, svgAsset: 'granary', color: '#b0bec5', vScale: 3.0 };
+TILE_DEFS[329] = { name: 'Healer Hut',      walkable: false, svgAsset: 'healer_hut', color: '#5d4037', vScale: 3.0, footprint: [[0,0], [1,0]] };
 
 // ── SYSTEM TILES (IDs 250+) ──────────────────────────────────
 TILE_DEFS[250] = { name: 'Blocker',      walkable: false, color: 'transparent', hidden: true };
