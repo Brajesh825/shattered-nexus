@@ -26,7 +26,7 @@ const Save = {
       // 2. Workspace Sync (Architect Pro Feature)
       // If the sync server is running, we also backup to the filesystem
       try {
-        await fetch('http://localhost:3000/sync', {
+        await fetch('http://127.0.0.1:3000/sync', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
