@@ -144,8 +144,16 @@ const MapPlayer = (() => {
         
         if (_encounterCooldown > 0) {
             _encounterCooldown--;
-        } else if (Math.random() < 0.08) {
-            _pendingRandomEncounter = true;
+        } else {
+            // ARCHITECT PRO: Data-driven Safe Zone Check
+            const isSafe = (map.safeZones || []).some(zone => 
+                tx >= zone.xMin && tx <= zone.xMax &&
+                ty >= zone.yMin && ty <= zone.yMax
+            );
+            
+            if (!isSafe && Math.random() < 0.08) {
+                _pendingRandomEncounter = true;
+            }
         }
 
         // Apply queued direction immediately
@@ -225,7 +233,7 @@ const MapPlayer = (() => {
 
   // charId → chosen variant suffix for this map session e.g. '_3' or ''
   const _variantMap = {};
-  const MAX_VARIANTS = 20;
+  const MAX_VARIANTS = 0;
 
   // Called once per map load — picks a random variant for every party member
   function pickVariants() {

@@ -10,6 +10,9 @@ MAP_DEFS.verdant_vale = {
     arcId: 1,
     width: 60,
     height: 60,
+    safeZones: [
+        { xMin: 0, xMax: 30, yMin: 0, yMax: 60, name: "Sacred West" }
+    ],
     playerStart: { x: 7, y: 10 },
     bgColor: '#0a1a05',
     ambientLight: 'rgba(60,180,60,0.04)',
