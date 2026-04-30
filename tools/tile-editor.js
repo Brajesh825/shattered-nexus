@@ -1070,7 +1070,9 @@ class TileEditor {
     async switchMap(mapId) {
         const paths = {
             'verdant_vale': { json: '../js/map/data/map-verdant-vale.json', js: '../js/map/data/map-verdant-vale.js' },
-            'crystal_cavern': { js: '../js/map/data/map-crystal-cavern.js' },
+            'crystal_cavern_f1': { json: '../js/map/data/map-crystal-cavern-f1.json', js: '../js/map/data/map-crystal-cavern-f1.js' },
+            'crystal_cavern_f2': { json: '../js/map/data/map-crystal-cavern-f2.json', js: '../js/map/data/map-crystal-cavern-f2.js' },
+            'crystal_cavern_f3': { json: '../js/map/data/map-crystal-cavern-f3.json', js: '../js/map/data/map-crystal-cavern-f3.js' },
             'ember_wastes': { js: '../js/map/data/map-ember-wastes.js' },
             'sunken_temple': { js: '../js/map/data/map-sunken-temple.js' },
             'shadow_reach': { js: '../js/map/data/map-shadow-reach.js' },
@@ -1172,7 +1174,9 @@ class TileEditor {
     async syncToWorkspace() {
         const paths = {
             'verdant_vale': { json: 'js/map/data/map-verdant-vale.json', js: 'js/map/data/map-verdant-vale.js' },
-            'crystal_cavern': { js: 'js/map/data/map-crystal-cavern.js' },
+            'crystal_cavern_f1': { js: 'js/map/data/map-crystal-cavern-f1.js' },
+            'crystal_cavern_f2': { js: 'js/map/data/map-crystal-cavern-f2.js' },
+            'crystal_cavern_f3': { js: 'js/map/data/map-crystal-cavern-f3.js' },
             'ember_wastes': { js: 'js/map/data/map-ember-wastes.js' },
             'sunken_temple': { js: 'js/map/data/map-sunken-temple.js' },
             'shadow_reach': { js: 'js/map/data/map-shadow-reach.js' },

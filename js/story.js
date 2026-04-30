@@ -15,7 +15,7 @@ function _charIdForSpeaker(name) {
 /* World map places in 1024x1024 image space. The first three are the fixed route. */
 const MAP_PLACES = [
   { x: 306, y: 632, label: 'Verdant Vale', arcIdx: 0, color: '#1f6a2c' },
-  { x: 506, y: 574, label: 'Crystal Cavern', arcIdx: 1, color: '#5c7ee8' },
+  { x: 506, y: 574, label: 'Crystal Cavern F1', arcIdx: 1, color: '#5c7ee8' },
   { x: 708, y: 704, label: 'Ember Wastes', arcIdx: 2, color: '#c56820' },
   { x: 208, y: 360, label: 'Sunken Temple', arcIdx: 3, color: '#1e8ac0' },
   { x: 610, y: 446, label: 'Shadow Reach', arcIdx: 4, color: '#5630a8' },
@@ -40,7 +40,7 @@ const MAP_SIDE_ROUTES = [
 /* Explore map linked to each arc (index = arcIdx 0-based) */
 const ARC_MAP_ID = [
   'verdant_vale',      // Arc 1
-  'crystal_cavern',    // Arc 2
+  'crystal_cavern_f1',    // Arc 2
   'ember_wastes',      // Arc 3
   'sunken_temple',     // Arc 4
   'shadow_reach',      // Arc 5

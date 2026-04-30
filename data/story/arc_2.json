@@ -109,7 +109,7 @@
       "id": "arc2_ch3",
       "title": "The Cinder Passage",
       "type": "explore",
-      "map": "crystal_cavern",
+      "map": "crystal_cavern_f1",
       "background": "scorched_wastes",
       "cast": [
         "Aya",

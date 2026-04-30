@@ -1066,6 +1066,13 @@ const MapEngine = (() => {
         _firedTriggers.add(id);
         if (trig.type === 'dialogue' && trig.lines) {
           _openGenericDialogue(trig.lines);
+        } else if (trig.type === 'teleport' && trig.targetMapId) {
+          // Multi-floor/Map teleportation
+          loadMap(trig.targetMapId);
+          if (trig.targetX !== undefined && trig.targetY !== undefined) {
+            MapPlayer.reset(trig.targetX, trig.targetY);
+          }
+          if (trig.msg) MapUI.showMsg(trig.msg, 1500);
         }
       }
     });
