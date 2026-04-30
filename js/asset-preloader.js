@@ -8,6 +8,11 @@ const AssetPreloader = (() => {
     audio: {}
   };
 
+  // ── [EXPANSION PACKS] ──────────────────────────
+  const MILITARY_ASSETS = ['military_tent', 'training_ring', 'supply_crate', 'watchtower', 'barracks'];
+  const CIVILIAN_ASSETS = ['windmill', 'granary', 'well_house', 'blacksmith', 'merchant_store', 'cottage', 'workshop', 'bakery', 'fisherman_hut', 'village_hall'];
+  const NOBLE_ASSETS    = ['estate_manor', 'conservatory', 'noble_villa', 'gazebo', 'triumphal_arch'];
+
   const ASSETS = {
     // Character spirit portraits
     spirits: [
@@ -34,8 +39,10 @@ const AssetPreloader = (() => {
       'void_rift', 'cursed_idol', 'skeleton', 'floating_crystal', 'ancient_pillar', 'withered_vine', 'sacrificial_altar', 'void_spires', 'iron_maiden', 'magic_circle', 'tower', 'castle', 'noble_house', 'ruined_tower', 'ruined_castle', 'shattered_throne', 'broken_knight', 'cursed_well', 'withered_tree',
       'royal_table', 'wooden_chair', 'stone_bench', 'throne_gold', 'alchemy_table', 'bookshelf', 'fireplace', 'armor_stand', 'weapon_rack', 'bed_fancy',
       'knight_statue', 'iron_gate', 'training_dummy', 'catapult', 'hanging_cage', 'royal_banner', 'castle_wall', 'drawbridge', 'gallows', 'archery_target',
-      'barracks', 'archery_range', 'blacksmith', 'stable', 'tavern', 'chapel', 'watchtower', 'wall_section', 'granary', 'healer_hut',
-      'cottage', 'farmhouse', 'windmill', 'well_house', 'workshop', 'merchant_store', 'library', 'bakery', 'fisherman_hut', 'village_hall'
+      'archery_range', 'stable', 'tavern', 'chapel', 'wall_section', 'healer_hut', 'farmhouse', 'library',
+      ...MILITARY_ASSETS,
+      ...CIVILIAN_ASSETS,
+      ...NOBLE_ASSETS
     ]
   };
 
@@ -112,8 +119,10 @@ const AssetPreloader = (() => {
           'void_rift', 'cursed_idol', 'skeleton', 'floating_crystal', 'ancient_pillar', 'withered_vine', 'sacrificial_altar', 'void_spires', 'iron_maiden', 'magic_circle', 'tower', 'castle', 'noble_house', 'ruined_tower', 'ruined_castle', 'shattered_throne', 'broken_knight', 'cursed_well', 'withered_tree',
           'royal_table', 'wooden_chair', 'stone_bench', 'throne_gold', 'alchemy_table', 'bookshelf', 'fireplace', 'armor_stand', 'weapon_rack', 'bed_fancy',
           'knight_statue', 'iron_gate', 'training_dummy', 'catapult', 'hanging_cage', 'royal_banner', 'castle_wall', 'drawbridge', 'gallows', 'archery_target',
-          'barracks', 'archery_range', 'blacksmith', 'stable', 'tavern', 'chapel', 'watchtower', 'wall_section', 'granary', 'healer_hut',
-          'cottage', 'farmhouse', 'windmill', 'well_house', 'workshop', 'merchant_store', 'library', 'bakery', 'fisherman_hut', 'village_hall'
+          'archery_range', 'stable', 'tavern', 'chapel', 'wall_section', 'healer_hut', 'farmhouse', 'library',
+          ...MILITARY_ASSETS,
+          ...CIVILIAN_ASSETS,
+          ...NOBLE_ASSETS
         ].includes(id) ? 'svg' : 'png';
         return extension === 'svg' ? `images/environment/svg/${id}.svg` : `images/environment/${id}.png`;
       })

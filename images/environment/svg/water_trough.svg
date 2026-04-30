@@ -1,0 +1,27 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="wt-wood" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#5d4037"/>
+      <stop offset="100%" style="stop-color:#4e342e"/>
+    </linearGradient>
+    <linearGradient id="wt-water" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4fc3f7"/>
+      <stop offset="100%" style="stop-color:#0288d1"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="32" cy="62" rx="24" ry="3" fill="#1a1a1a" opacity="0.3"/>
+  <rect x="8" y="50" width="48" height="10" rx="3" fill="url(#wt-wood)"/>
+  <rect x="6" y="36" width="52" height="16" rx="4" fill="url(#wt-wood)"/>
+  <rect x="8" y="38" width="48" height="12" rx="3" fill="#3e2723"/>
+  <rect x="9" y="39" width="46" height="10" rx="2.5" fill="url(#wt-water)" opacity="0.9"/>
+  <path d="M9 41 Q20 39 32 41 Q44 43 55 41" fill="none" stroke="#b3e5fc" stroke-width="1" opacity="0.7"/>
+  <path d="M9 44 Q22 42 32 44 Q42 46 55 44" fill="none" stroke="#b3e5fc" stroke-width="0.8" opacity="0.5"/>
+  <rect x="8" y="34" width="7" height="18" rx="2" fill="url(#wt-wood)"/>
+  <rect x="49" y="34" width="7" height="18" rx="2" fill="url(#wt-wood)"/>
+  <g stroke="#6d4c41" stroke-width="1.2" fill="none">
+    <line x1="14" y1="38" x2="14" y2="60"/>
+    <line x1="26" y1="36" x2="26" y2="60"/>
+    <line x1="38" y1="36" x2="38" y2="60"/>
+    <line x1="50" y1="38" x2="50" y2="60"/>
+  </g>
+</svg>
