@@ -185,19 +185,64 @@ const MapEngine = (() => {
   /* ── Tile pixel-art painter ─────────────────────────── */
   // Each tile defines its own render(ctx, sx, sy, tw, th, t) in TILE_DEFS.
   // t = elapsed seconds (for animations). Falls back to _defaultRender.
-  function _defaultRender(ctx, def, sx, sy, tw, th) {
-    ctx.fillStyle = def.color; ctx.fillRect(sx, sy, tw, th);
-    ctx.fillStyle = def.hi;
-    ctx.fillRect(sx, sy, tw, 2); ctx.fillRect(sx, sy, 2, th);
-    ctx.fillStyle = def.shadow;
-    ctx.fillRect(sx, sy + th - 2, tw, 2); ctx.fillRect(sx + tw - 2, sy, 2, th);
+  function _defaultRender(ctx, def, sx, sy, tw, th, t = 0) {
+    const color = def.color || '#1a1a2e';
+    const hi = def.hi || color;
+    const shadow = def.shadow || color;
+
+    ctx.fillStyle = color;
+    ctx.fillRect(sx, sy, tw, th);
+
+    // Add Premium Procedural Details (Ported from Architect Pro)
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(sx, sy, tw, th);
+    ctx.clip();
+
+    const name = (def.name || "").toLowerCase();
+
+    if (name.includes('grass')) {
+        ctx.fillStyle = hi;
+        for(let i=0; i<3; i++) {
+            ctx.fillRect(sx + (i*tw/3) + 2, sy + 4, 2, th/3);
+            ctx.fillRect(sx + (i*tw/3) + 6, sy + th/2, 2, th/4);
+        }
+    } else if (name.includes('water')) {
+        ctx.strokeStyle = hi;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        const wave = Math.sin(t * 2 + sx/10) * 3;
+        ctx.moveTo(sx + 2, sy + th/3 + wave);
+        ctx.bezierCurveTo(sx + tw/3, sy + 2 + wave, sx + 2*tw/3, sy + th/3 + wave, sx + tw - 2, sy + 2 + wave);
+        ctx.stroke();
+    } else if (name.includes('stone') || name.includes('wall') || name.includes('mountain')) {
+        ctx.fillStyle = shadow;
+        ctx.fillRect(sx, sy + th - 4, tw, 4);
+        ctx.fillStyle = hi;
+        ctx.fillRect(sx, sy, tw, 2);
+    } else if (name.includes('path') || name.includes('sand')) {
+        ctx.fillStyle = hi;
+        // Deterministic random-ish dots based on position
+        const seed = sx * 13 + sy * 7;
+        for(let i=0; i<5; i++) {
+            const rx = ((seed + i * 17) % 100) / 100 * tw;
+            const ry = ((seed + i * 31) % 100) / 100 * th;
+            ctx.beginPath();
+            ctx.arc(sx + rx, sy + ry, 1.2, 0, Math.PI*2);
+            ctx.fill();
+        }
+    }
+
+    ctx.restore();
   }
 
   function _paintTile(ctx, def, sx, sy, tw, th, t) {
     if (!def || def.hidden) return;
     
-    // 1. Sprite Support (High Fidelity)
-    if (def.svgAsset) {
+    // 1. SVG Asset Support (High Fidelity Scaling)
+    // Note: Most SVGs are handled in _renderRow for dynamic scaling, 
+    // but some small 1x1 ones might be baked here.
+    if (def.svgAsset && !def.vScale) {
       const svg = AssetPreloader.getImage(`env_${def.svgAsset}`);
       if (svg) {
         ctx.drawImage(svg, sx, sy, tw, th);
@@ -205,13 +250,13 @@ const MapEngine = (() => {
       }
     }
 
+    // 2. Sprite Support
     if (def.sprite || def.spriteIdx !== undefined) {
       const sheet = AssetPreloader.getImage('env_sprites');
       if (sheet) {
         let sw, sh, sx_src, sy_src, frames;
 
         if (def.spriteIdx !== undefined) {
-          // Standard 6x6 grid calculation
           const idx = def.spriteIdx;
           const gridW = 6;
           const cellW = sheet.width / gridW;
@@ -239,7 +284,7 @@ const MapEngine = (() => {
       }
     }
 
-    // 2. Procedural / Procedural-Fallback
+    // 3. Procedural / Procedural-Fallback
     let ofx = 0;
     if (def.name === 'deep water' || def.name === 'lava-floor') {
       ofx = Math.sin(t * 2.2) * 1.5;
@@ -247,7 +292,7 @@ const MapEngine = (() => {
 
     const fn = typeof TILE_RENDERS !== 'undefined' && TILE_RENDERS[def.name];
     if (fn) fn(ctx, def, sx + ofx, sy, tw, th, t);
-    else _defaultRender(ctx, def, sx + ofx, sy, tw, th);
+    else _defaultRender(ctx, def, sx + ofx, sy, tw, th, t);
   }
 
   // Pre-baked shadow sprites — created once, reused every frame via drawImage
@@ -317,23 +362,41 @@ const MapEngine = (() => {
       const sy = r * TILE - cam.y;
 
       if (def.vScale) {
+          // 1. Draw base terrain first (Matching Editor rule)
+          if (layerIdx === 0) {
+              _ctx.drawImage(_getTileCanvas(tileId), sx, sy);
+          }
+
           const scale = def.vScale || 1.0;
           const ox = (def.vOffset?.x || 0);
           const oy = (def.vOffset?.y || 0);
           const dw = TILE * scale;
-          const dh = TILE * scale;
           
-          let dx = sx + ox;
-          const dy = sy + (TILE - dh) + oy;
-
-          // Default to Bottom-Center if not specified as Bottom-Left
-          if (def.anchor !== 'bottom-left') {
-              dx += (TILE - dw) / 2;
-          }
-
           if (def.svgAsset) {
               const img = AssetPreloader.getImage(`env_${def.svgAsset}`);
-              if (img) _ctx.drawImage(img, dx, dy, dw, dh);
+              if (img) {
+                  // Preserve Aspect Ratio (Matching Editor rule)
+                  const sh = dw * (img.height / img.width || 1);
+                  
+                  // Always Bottom-Center (Matching Editor rule - ignoring def.anchor)
+                  const dx = sx + (TILE - dw) / 2 + ox;
+                  const dy = sy + TILE - sh + oy;
+
+                  // Draw Glow
+                  if (def.glows) {
+                      const pulse = 0.8 + 0.2 * Math.sin(_time * 2.5);
+                      const grad = _ctx.createRadialGradient(dx + dw/2, dy + sh/2, 0, dx + dw/2, dy + sh/2, dw * 0.8 * pulse);
+                      grad.addColorStop(0, def.glows);
+                      grad.addColorStop(1, 'rgba(0,0,0,0)');
+                      _ctx.save();
+                      _ctx.globalCompositeOperation = 'screen';
+                      _ctx.fillStyle = grad;
+                      _ctx.fillRect(dx - dw/2, dy - sh/2, dw * 2, sh * 2);
+                      _ctx.restore();
+                  }
+
+                  _ctx.drawImage(img, dx, dy, dw, sh);
+              }
           }
       } else {
           if (def.anim) {
