@@ -23,7 +23,14 @@ class TileEditor {
             showCollision: false,
             showAll: false,
             spaceDown: false,
-            history: []
+            history: [],
+            enemies: [],
+            npcs: [],
+            enemyData: [],
+            selection: null, // {x, y, w, h}
+            clipboard: null, // {tiles: [L0, L1, L2], w, h}
+            isSelecting: false,
+            selectionStart: null
         };
 
         this.elements = {
@@ -56,6 +63,7 @@ class TileEditor {
 
     async init() {
         this.initMap();
+        await this.loadEnemyData();
         this.loadCache();
         this.initTabs();
         this.initTools();
@@ -63,8 +71,63 @@ class TileEditor {
         this.initAssets();
         this.initStamps();
         this.initLayerControls();
+        this.initResizeUI();
         this.initEvents();
         this.render();
+    }
+
+    initResizeUI() {
+        document.getElementById('map-w').value = this.config.width;
+        document.getElementById('map-h').value = this.config.height;
+    }
+
+    resizeMapFromUI() {
+        const w = parseInt(document.getElementById('map-w').value);
+        const h = parseInt(document.getElementById('map-h').value);
+        if (isNaN(w) || isNaN(h) || w < 1 || h < 1) return;
+        this.resizeMap(w, h);
+    }
+
+    resizeMap(newW, newH) {
+        const oldW = this.config.width;
+        const oldH = this.config.height;
+
+        // Create new layers and copy data
+        const newMap = [];
+        for (let l = 0; l < 3; l++) {
+            const layer = [];
+            for (let y = 0; y < newH; y++) {
+                layer[y] = new Array(newW).fill(0);
+                if (y < oldH) {
+                    for (let x = 0; x < oldW; x++) {
+                        layer[y][x] = this.state.map[l][y][x];
+                    }
+                }
+            }
+            newMap[l] = layer;
+        }
+
+        this.state.map = newMap;
+        this.config.width = newW;
+        this.config.height = newH;
+        this.updateCanvasSize();
+        this.render();
+        console.log(`[ArchitectPro] Map expanded to ${newW}x${newH}`);
+    }
+
+    updateCanvasSize() {
+        this.elements.canvas.width = this.config.width * this.config.tileSize;
+        this.elements.canvas.height = this.config.height * this.config.tileSize;
+    }
+
+    async loadEnemyData() {
+        try {
+            const res = await fetch('../data/enemies.json');
+            this.state.enemyData = await res.json();
+            console.log(`[ArchitectPro] Loaded ${this.state.enemyData.length} enemy definitions`);
+        } catch (e) {
+            console.error("Failed to load enemy data:", e);
+        }
     }
 
     loadCache() {
@@ -138,6 +201,50 @@ class TileEditor {
         });
     }
 
+    copySelectionToClipboard() {
+        if (!this.state.selection) return;
+        const s = this.state.selection;
+        const layers = { 0: [], 1: [], 2: [] };
+        
+        for (let l = 0; l < 3; l++) {
+            for (let y = 0; y < s.h; y++) {
+                layers[l][y] = [];
+                for (let x = 0; x < s.w; x++) {
+                    layers[l][y][x] = this.state.map[l][s.y + y][s.x + x];
+                }
+            }
+        }
+        
+        this.state.clipboard = { 
+            name: "Clipboard Stamp",
+            layers: layers, 
+            size: { w: s.w, h: s.h } 
+        };
+        this.state.currentStamp = this.state.clipboard;
+        console.log(`📋 Copied ${s.w}x${s.h} area to clipboard as stamp`);
+        this.setTool('stamp');
+    }
+
+    pasteStamp(targetX, targetY) {
+        if (!this.state.clipboard) return;
+        const cb = this.state.clipboard;
+        
+        this.saveHistory();
+        
+        for (let l = 0; l < 3; l++) {
+            for (let y = 0; y < cb.h; y++) {
+                for (let x = 0; x < cb.w; x++) {
+                    const my = targetY + y;
+                    const mx = targetX + x;
+                    if (my >= 0 && my < this.config.height && mx >= 0 && mx < this.config.width) {
+                        this.state.map[l][my][mx] = cb.tiles[l][y][x];
+                    }
+                }
+            }
+        }
+        this.render();
+    }
+
     setTool(tool) {
         document.querySelector(`.tool-btn[data-tool="${tool}"]`)?.click();
     }
@@ -181,7 +288,9 @@ class TileEditor {
         const envAssets = [
             'oak', 'pine', 'shrub', 'boulder', 'mushroom', 'flower', 'crystal', 'lily', 'dead_tree', 'well', 'market', 'chest', 'statue',
             'fountain', 'obelisk', 'tombstone', 'pillar_broken', 'wagon', 'tent', 'campfire', 'signpost', 'street_lamp', 'archway',
-            'void_rift', 'cursed_idol', 'skeleton', 'floating_crystal', 'ancient_pillar', 'withered_vine', 'sacrificial_altar', 'void_spires', 'iron_maiden', 'magic_circle'
+            'void_rift', 'cursed_idol', 'skeleton', 'floating_crystal', 'ancient_pillar', 'withered_vine', 'sacrificial_altar', 'void_spires', 'iron_maiden', 'magic_circle', 'tower', 'castle', 'noble_house', 'ruined_tower', 'ruined_castle', 'shattered_throne', 'broken_knight', 'cursed_well', 'withered_tree',
+            'royal_table', 'wooden_chair', 'stone_bench', 'throne_gold', 'alchemy_table', 'bookshelf', 'fireplace', 'armor_stand', 'weapon_rack', 'bed_fancy',
+            'knight_statue', 'iron_gate', 'training_dummy', 'catapult', 'hanging_cage', 'royal_banner', 'castle_wall', 'drawbridge', 'gallows', 'archery_target'
         ];
 
         // Filter TILE_DEFS to find IDs matching these assets
@@ -330,23 +439,48 @@ class TileEditor {
 
         window.onmouseup = () => {
             this.state.isMouseDown = false;
-            this.state.isPanning = false;
+            if (this.state.currentTool === 'select' && this.state.isSelecting) {
+                this.state.isSelecting = false;
+                this.copySelectionToClipboard();
+                return;
+            }
+            this.state.isDrawing = false;
             this.elements.canvas.style.cursor = this.state.spaceDown ? 'grab' : 'crosshair';
         };
 
         c.onmousemove = (e) => {
             this.updateCoords(e);
+            const s = this.config.tileSize * this.config.zoom;
+            const tx = Math.floor(e.offsetX / s);
+            const ty = Math.floor(e.offsetY / s);
+
+            this.state.mousePos = { x: e.offsetX, y: e.offsetY };
+
             if (this.state.isPanning) {
                 const dx = e.clientX - this.state.lastMousePos.x;
                 const dy = e.clientY - this.state.lastMousePos.y;
-                const wrapper = this.elements.wrapper;
-                wrapper.scrollLeft -= dx;
-                wrapper.scrollTop -= dy;
+                this.elements.wrapper.scrollLeft -= dx;
+                this.elements.wrapper.scrollTop -= dy;
                 this.state.lastMousePos = { x: e.clientX, y: e.clientY };
-                return;
+            } else if (this.state.isMouseDown) {
+                if (this.state.currentTool === 'select' && this.state.isSelecting) {
+                    const x1 = Math.min(this.state.selectionStart.x, tx);
+                    const y1 = Math.min(this.state.selectionStart.y, ty);
+                    const x2 = Math.max(this.state.selectionStart.x, tx);
+                    const y2 = Math.max(this.state.selectionStart.y, ty);
+                    this.state.selection = { x: x1, y: y1, w: x2 - x1 + 1, h: y2 - y1 + 1 };
+                    this.render();
+                } else if (this.state.currentTool === 'brush') {
+                    this.handleAction(e);
+                }
+            } else if (this.state.currentTool === 'stamp') {
+                this.render();
             }
-            if (this.state.isMouseDown) this.handleAction(e);
             this.updateBrushPreview(e);
+        };
+
+        c.onmouseleave = () => {
+            this.elements.brushPreview.classList.add('hidden');
         };
     }
 
@@ -361,35 +495,59 @@ class TileEditor {
 
     updateBrushPreview(e) {
         const p = this.elements.brushPreview;
-        const rect = this.elements.canvas.getBoundingClientRect();
         const s = this.config.tileSize * this.config.zoom;
         
         if (!e) {
             p.innerHTML = '';
-            if (!this.state.currentStamp) {
-                const canvas = document.createElement('canvas');
-                canvas.width = 64; canvas.height = 64;
-                canvas.style.width = '100%'; canvas.style.height = '100%';
-                this.drawPreview(canvas.getContext('2d'), this.state.currentTile, 64);
-                p.appendChild(canvas);
-            }
+            const canvas = document.createElement('canvas');
+            canvas.width = 64; canvas.height = 64;
+            canvas.style.width = '100%'; canvas.style.height = '100%';
+            this.drawPreview(canvas.getContext('2d'), this.state.currentTile, 64);
+            p.appendChild(canvas);
             return;
         }
 
         const x = Math.floor(e.offsetX / s);
         const y = Math.floor(e.offsetY / s);
-        p.style.left = (x * s + 500) + 'px'; // +500 for wrapper padding
-        p.style.top = (y * s + 500) + 'px';
+        
+        // Dynamic Positioning: Account for centered canvas and scrolling
+        const c = this.elements.canvas;
+        p.style.left = (x * s + c.offsetLeft) + 'px';
+        p.style.top = (y * s + c.offsetTop) + 'px';
+
+        p.innerHTML = '';
+        const canvas = document.createElement('canvas');
+        p.appendChild(canvas);
+        const pCtx = canvas.getContext('2d');
 
         if (this.state.currentStamp) {
-            p.innerHTML = '';
-            p.style.width = (this.state.currentStamp.size.w * s) + 'px';
-            p.style.height = (this.state.currentStamp.size.h * s) + 'px';
+            const { w, h } = this.state.currentStamp.size;
+            p.style.width = (w * s) + 'px';
+            p.style.height = (h * s) + 'px';
+            canvas.width = w * s;
+            canvas.height = h * s;
+            this.drawStampPreview(pCtx, this.state.currentStamp, Math.max(w * s, h * s));
         } else {
-            p.style.width = s + 'px';
+            const def = TILE_DEFS[this.state.currentTile];
+            const scale = def ? (def.vScale || def.scale || 1) : 1;
+            const visualSize = s * scale;
+            
+            p.style.width = s + 'px'; // Base tile size for click area
             p.style.height = s + 'px';
-            if (!p.querySelector('canvas')) this.updateBrushPreview();
+            canvas.width = visualSize;
+            canvas.height = visualSize;
+            
+            // Draw scaled preview anchored to bottom
+            this.drawPreview(pCtx, this.state.currentTile, visualSize);
+            
+            // Adjust canvas position if scaled
+            canvas.style.position = 'absolute';
+            canvas.style.bottom = '0';
+            canvas.style.left = '50%';
+            canvas.style.transform = 'translateX(-50%)';
         }
+        
+        p.style.opacity = '0.6';
         p.classList.remove('hidden');
     }
 
@@ -402,6 +560,13 @@ class TileEditor {
 
         // Right-click always erases (sets to 0)
         const activeTile = (e.buttons === 2) ? 0 : this.state.currentTile;
+
+        if (this.state.currentTool === 'select') {
+            this.state.isSelecting = true;
+            this.state.selectionStart = { x, y };
+            this.state.selection = { x, y, w: 1, h: 1 };
+            return;
+        }
 
         if (this.state.currentTool === 'eyedropper') {
             const id = this.state.map[this.state.currentLayer][y][x];
@@ -444,12 +609,16 @@ class TileEditor {
     }
 
     applyStamp(startX, startY, stamp) {
+        if (!stamp || !stamp.layers) return;
+        
+        this.saveHistory();
+        
         for (const [lStr, data] of Object.entries(stamp.layers)) {
             const l = parseInt(lStr);
             for (let y = 0; y < stamp.size.h; y++) {
                 for (let x = 0; x < stamp.size.w; x++) {
                     const id = data[y][x];
-                    if (id === 0) continue;
+                    if (id === 0 && l > 0) continue; // Transparency for upper layers
                     const ty = startY + y;
                     const tx = startX + x;
                     if (tx < this.config.width && ty < this.config.height) {
@@ -458,6 +627,7 @@ class TileEditor {
                 }
             }
         }
+        this.render();
     }
 
     drawPreview(ctx, id, size) {
@@ -528,7 +698,147 @@ class TileEditor {
             this.renderCollisionOverlay(s);
         }
 
+        this.renderEntities(s);
+        
+        if (this.state.selection) {
+            this.renderSelectionBox(s);
+        }
+        
+        if (this.state.currentTool === 'stamp' && this.state.currentStamp) {
+            this.renderStampPreview(s);
+        }
+
         this.updateMinimap();
+    }
+
+    renderSelectionBox(s) {
+        const sel = this.state.selection;
+        this.ctx.strokeStyle = '#4ade80';
+        this.ctx.lineWidth = 2;
+        this.ctx.setLineDash([5, 5]);
+        this.ctx.strokeRect(sel.x * s, sel.y * s, sel.w * s, sel.h * s);
+        this.ctx.setLineDash([]);
+        
+        this.ctx.fillStyle = 'rgba(74, 222, 128, 0.1)';
+        this.ctx.fillRect(sel.x * s, sel.y * s, sel.w * s, sel.h * s);
+    }
+
+    renderStampPreview(s) {
+        const stamp = this.state.currentStamp;
+        if (!stamp || !this.state.mousePos || !stamp.layers) return;
+        const tileX = Math.floor(this.state.mousePos.x / s);
+        const tileY = Math.floor(this.state.mousePos.y / s);
+        
+        this.ctx.save();
+        this.ctx.globalAlpha = 0.5;
+        
+        for (let l = 0; l < 3; l++) {
+            const data = stamp.layers[l];
+            if (!data) continue;
+            for (let y = 0; y < stamp.size.h; y++) {
+                for (let x = 0; x < stamp.size.w; x++) {
+                    const tileId = data[y][x];
+                    if (tileId === 0 && l > 0) continue; // Don't draw empty overheads
+                    this.drawTile(this.ctx, tileId, (tileX + x) * s, (tileY + y) * s, s);
+                }
+            }
+        }
+        this.ctx.restore();
+        
+        // Draw outline
+        this.ctx.strokeStyle = '#60a5fa';
+        this.ctx.lineWidth = 2;
+        this.ctx.strokeRect(tileX * s, tileY * s, stamp.size.w * s, stamp.size.h * s);
+    }
+
+    renderEntities(s) {
+        if (!this.state.enemies && !this.state.npcs) return;
+
+        // Render Enemies
+        this.state.enemies.forEach(e => {
+            const def = this.state.enemyData.find(d => d.id === e.id);
+            if (!def) return;
+
+            const canvas = SpriteRenderer.drawEnemyToCanvas(e.id, def.palette);
+            const x = e.x * s;
+            const y = e.y * s;
+            
+            // Draw a highlight ring for editor visibility
+            this.ctx.strokeStyle = 'rgba(255, 50, 50, 0.5)';
+            this.ctx.lineWidth = 2;
+            this.ctx.beginPath();
+            this.ctx.arc(x + s/2, y + s/2, s * 0.7, 0, Math.PI * 2);
+            this.ctx.stroke();
+
+            // Draw Sprite (scaled to fit tile)
+            this.ctx.drawImage(canvas, x - s/2, y - s, s * 2, s * 2.3);
+            
+            // Draw Label
+            this.ctx.fillStyle = '#fff';
+            this.ctx.font = 'bold 10px Outfit';
+            this.ctx.textAlign = 'center';
+            this.ctx.fillText(def.name, x + s/2, y - 5);
+        });
+
+        // Render NPCs
+        this.state.npcs?.forEach(n => {
+            const charId = n.id || 'aria';
+            const canvas = SpriteRenderer.drawHeroToCanvas(charId, { skin_color: '#f0c0a0', hair_color: '#402010' }, null);
+            const x = n.x * s;
+            const y = n.y * s;
+
+            this.ctx.strokeStyle = 'rgba(50, 255, 50, 0.5)';
+            this.ctx.lineWidth = 2;
+            this.ctx.beginPath();
+            this.ctx.arc(x + s/2, y + s/2, s * 0.7, 0, Math.PI * 2);
+            this.ctx.stroke();
+
+            this.ctx.drawImage(canvas, x - s/4, y - s/2, s * 1.5, s * 1.8);
+
+            this.ctx.fillStyle = '#4ade80';
+            this.ctx.font = 'bold 10px Outfit';
+            this.ctx.textAlign = 'center';
+            this.ctx.fillText(n.name || n.id, x + s/2, y - 5);
+        });
+    }
+
+    async importMapJS(file) {
+        if (!file) return;
+        const text = await file.text();
+        
+        try {
+            // Very basic parser: looking for MAP_DEFS[...] = { ... }
+            // We'll use a safer approach: extract the object literal string and parse it as JSON-like or eval it in a sandbox
+            // For now, let's try to extract the main properties using regex or simple string manipulation
+            
+            const startIdx = text.indexOf('{');
+            const endIdx = text.lastIndexOf('}');
+            if (startIdx === -1 || endIdx === -1) throw new Error("Invalid JS Map Format");
+            
+            const objStr = text.substring(startIdx, endIdx + 1);
+            
+            // Note: Since this is JS, it might have comments, trailing commas, or function calls.
+            // We'll use a trick: create a temporary function to evaluate the object
+            const data = new Function(`return ${objStr}`)();
+            
+            if (data.layers || (data.r0 && data.r1 && data.r2)) {
+                this.state.map = data.layers || [data.r0, data.r1, data.r2];
+                this.config.width = data.width || this.state.map[0][0].length;
+                this.config.height = data.height || this.state.map[0].length;
+                this.state.enemies = data.enemies || [];
+                this.state.npcs = data.npcs || [];
+                
+                this.updateCanvasSize();
+                this.initResizeUI();
+                this.render();
+                alert(`✅ IMPORTED: ${data.name || file.name}\n\nEnemies: ${this.state.enemies.length}\nNPCs: ${this.state.npcs.length}`);
+            } else {
+                throw new Error("Missing layer data in JS file");
+            }
+        } catch (e) {
+            console.error("Import failed:", e);
+            alert("❌ FAILED TO IMPORT JS:\n" + e.message);
+        }
     }
 
     renderCollisionOverlay(s) {
@@ -634,7 +944,7 @@ class TileEditor {
     }
 
     updateCanvasSize() {
-        const s = this.config.tileSize * this.config.zoom;
+        const s = this.config.tileSize * this.state.zoom;
         this.elements.canvas.width = this.config.width * s;
         this.elements.canvas.height = this.config.height * s;
     }
@@ -669,60 +979,153 @@ class TileEditor {
 
     async switchMap(mapId) {
         const paths = {
-            'verdant_vale': '../js/map/data/map-verdant-vale.json',
-            'iron_hold': '../js/map/data/map-iron-hold.json'
+            'verdant_vale': { json: '../js/map/data/map-verdant-vale.json', js: '../js/map/data/map-verdant-vale.js' },
+            'crystal_cavern': { js: '../js/map/data/map-crystal-cavern.js' },
+            'ember_wastes': { js: '../js/map/data/map-ember-wastes.js' },
+            'sunken_temple': { js: '../js/map/data/map-sunken-temple.js' },
+            'shadow_reach': { js: '../js/map/data/map-shadow-reach.js' },
+            'sky_ruins': { js: '../js/map/data/map-sky-ruins.js' },
+            'void_citadel': { js: '../js/map/data/map-void-citadel.js' },
+            'ashen_foothills': { js: '../js/map/data/map-ashen-foothills.js' },
+            'northern_highlands': { js: '../js/map/data/map-northern-highlands.js' },
+            'riverlands_crossing': { js: '../js/map/data/map-riverlands-crossing.js' },
+            'eternal_void': { js: '../js/map/data/map-eternal-void.js' }
         };
-        const path = paths[mapId];
-        if (!path) return alert("Map path unknown: " + mapId);
+        const config = paths[mapId];
+        if (!config) return alert("Map path unknown: " + mapId);
         
         try {
-            const response = await fetch(path);
-            const data = await response.json();
+            let layers = null;
+            let entities = { enemies: [], npcs: [] };
+            let name = mapId;
             
-            // Handle both raw arrays and object wrappers
-            const layers = Array.isArray(data) ? data : (data.layers || [data.r0, data.r1, data.r2]);
-            
-            // Auto-detect dimensions from data
-            this.config.height = layers[0].length;
-            this.config.width = layers[0][0].length;
-            
-            this.state.map = layers;
-            this.state.mapId = mapId;
-            this.state.mapPath = path.replace('../', ''); // Store relative to project root
-            
-            this.saveHistory();
-            this.updateCanvasSize();
-            this.render();
-            
-            console.log(`🗺️ Switched to: ${mapId} (${this.state.mapPath})`);
+            // Reset dimensions for fresh detection from map data
+            this.config.width = 0;
+            this.config.height = 0;
+
+            // 1. Handle JS-only or JS-augmented maps
+            if (config.js) {
+                const jsRes = await fetch(config.js);
+                const text = await jsRes.text();
+                
+                // Robust execution: Load into a sandbox-like MAP_DEFS
+                const tempMAP_DEFS = {};
+                try {
+                    // Create a function that exposes MAP_DEFS to the script
+                    const executor = new Function('MAP_DEFS', text);
+                    executor(tempMAP_DEFS);
+                    
+                    const data = Object.values(tempMAP_DEFS)[0];
+                    if (data) {
+                        const foundLayers = data.layers || data.tiles || (data.r0 ? [data.r0, data.r1, data.r2] : null);
+                        if (foundLayers) layers = foundLayers;
+                        
+                        entities.enemies = data.enemies || [];
+                        entities.npcs = data.npcs || [];
+                        name = data.name || name;
+                        this.config.width = data.width || 0;
+                        this.config.height = data.height || 0;
+                    }
+                } catch (err) {
+                    console.error("Failed to execute map JS:", err);
+                }
+            }
+
+            // 2. Load JSON if available (Verdant Vale fallback)
+            if (!layers && config.json) {
+                const response = await fetch(config.json);
+                const data = await response.json();
+                layers = Array.isArray(data) ? data : (data.layers || [data.r0, data.r1, data.r2]);
+            }
+
+            if (layers && layers[0]) {
+                // Ensure layers is a 3-layer array
+                if (layers.length > 0 && layers[0][0] !== undefined && !Array.isArray(layers[0][0])) {
+                    // If single layer, wrap it
+                    if (!Array.isArray(layers[0])) layers = [layers]; // 1D case (rare)
+                    if (typeof layers[0][0] === 'number') layers = [layers, null, null]; // 2D case -> Layer 0
+                }
+                
+                // Auto-detect dimensions if not already set by JS data
+                if (!this.config.width || !this.config.height) {
+                    this.config.height = layers[0].length;
+                    this.config.width = layers[0][0].length;
+                }
+
+                // Pad missing layers
+                for(let i=0; i<3; i++) {
+                    if (!layers[i]) {
+                        layers[i] = Array.from({length: this.config.height}, () => new Array(this.config.width).fill(0));
+                    }
+                }
+
+                this.state.map = layers;
+                this.state.enemies = entities.enemies;
+                this.state.npcs = entities.npcs;
+                this.state.mapId = mapId;
+                this.state.mapPath = (config.js || config.json).replace('../', '');
+
+                this.saveHistory();
+                this.updateCanvasSize();
+                this.initResizeUI();
+                this.render();
+                console.log(`🗺️ Switched to: ${name} (${this.state.mapPath})`);
+            } else {
+                throw new Error("Could not extract map layers from available files.");
+            }
         } catch (e) {
             console.error("Failed to load map:", e);
+            alert("❌ FAILED TO LOAD MAP: " + e.message);
         }
     }
 
     async syncToWorkspace() {
-        const json = this.exportJSON();
-        const path = this.state.mapPath || 'js/map/data/map-verdant-vale.json';
+        const paths = {
+            'verdant_vale': { json: 'js/map/data/map-verdant-vale.json', js: 'js/map/data/map-verdant-vale.js' },
+            'crystal_cavern': { js: 'js/map/data/map-crystal-cavern.js' },
+            'ember_wastes': { js: 'js/map/data/map-ember-wastes.js' },
+            'sunken_temple': { js: 'js/map/data/map-sunken-temple.js' },
+            'shadow_reach': { js: 'js/map/data/map-shadow-reach.js' },
+            'sky_ruins': { js: 'js/map/data/map-sky-ruins.js' },
+            'void_citadel': { js: 'js/map/data/map-void-citadel.js' },
+            'ashen_foothills': { js: 'js/map/data/map-ashen-foothills.js' },
+            'northern_highlands': { js: 'js/map/data/map-northern-highlands.js' },
+            'riverlands_crossing': { js: 'js/map/data/map-riverlands-crossing.js' },
+            'eternal_void': { js: 'js/map/data/map-eternal-void.js' }
+        };
 
-        console.log("💎 ARCHITECT PRO: SYNC DATA READY");
-        
+        const config = paths[this.state.mapId];
+        if (!config) return alert("❌ SYNC FAILED: Map path unknown for " + this.state.mapId);
+
+        // PREFER .json for terrain data sync (Prevents overwriting JS metadata)
+        const targetPath = config.json || config.js;
+        let data = this.exportJSON();
+
+        // If saving to a .js file, we MUST wrap it in the MAP_DEFS assignment
+        if (targetPath.endsWith('.js')) {
+            data = `MAP_DEFS.${this.state.mapId}.tiles = ${data};`;
+        }
+
+        this.showLoader(`Syncing to ${targetPath}...`);
+
         try {
             const response = await fetch('http://localhost:3000/sync', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ path: path, data: json })
+                body: JSON.stringify({ path: targetPath, data })
             });
 
             if (response.ok) {
-                alert(`✅ SYNC SUCCESSFUL!\n\n${path} has been updated and backed up.`);
-                console.log("✅ Live Sync Success!");
+                console.log(`✅ SYNC SUCCESS: Updated ${targetPath}`);
+                setTimeout(() => this.hideLoader(), 500);
             } else {
-                throw new Error("Server rejected request");
+                const err = await response.text();
+                throw new Error(err);
             }
         } catch (e) {
-            console.warn("⚠️ Live Sync Bridge not detected. Falling back to Manual Sync.");
-            console.log(json);
-            alert(`💎 Live Sync Bridge is not running.\n\n1. Run: node tools/sync-server.js\n2. Or copy the data from the console and ask me to sync it manually!`);
+            this.hideLoader();
+            console.error("❌ SYNC FAILED:", e);
+            alert("❌ SYNC FAILED: " + e.message + "\n\nIs 'node tools/sync-server.js' running?");
         }
     }
 
@@ -732,7 +1135,7 @@ class TileEditor {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'map-verdant-vale.json';
+        a.download = `${this.state.mapId}.json`;
         a.click();
         URL.revokeObjectURL(url);
     }
@@ -767,7 +1170,7 @@ class TileEditor {
         // Assets
         if (def.svgAsset && this.cache[def.svgAsset]) {
             const img = this.cache[def.svgAsset];
-            const scale = def.scale || 1;
+            const scale = def.vScale || def.scale || 1;
             const sw = s * scale;
             const sh = s * scale * (img.height / img.width || 1);
             

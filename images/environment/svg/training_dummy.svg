@@ -1,0 +1,22 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="straw" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffe082;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ffb300;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Wooden Post -->
+  <rect x="30" y="45" width="4" height="19" fill="#5d4037" />
+  <rect x="22" y="60" width="20" height="4" rx="2" fill="#3e2723" />
+  <!-- Body (Straw Torso) -->
+  <path d="M 22 20 Q 32 15 42 20 L 45 45 Q 32 50 19 45 Z" fill="url(#straw)" stroke="#795548" stroke-width="1.5" />
+  <!-- Arms (Wooden Plank) -->
+  <rect x="10" y="28" width="44" height="6" rx="1" fill="#8d6e63" stroke="#5d4037" stroke-width="1" />
+  <!-- Shield on Arm -->
+  <circle cx="15" cy="31" r="8" fill="#5d4037" stroke="#3e2723" stroke-width="2" />
+  <path d="M 10 31 L 20 31 M 15 26 L 15 36" stroke="#3e2723" stroke-width="1" />
+  <!-- Head -->
+  <circle cx="32" cy="15" r="6" fill="#cfd8dc" stroke="#90a4ae" stroke-width="1" />
+  <!-- Stitching -->
+  <path d="M 25 35 L 28 38 M 36 40 L 39 43" stroke="rgba(0,0,0,0.2)" stroke-width="1" />
+</svg>

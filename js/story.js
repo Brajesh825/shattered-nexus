@@ -29,7 +29,6 @@ const MAP_PLACES = [
   { x: 930, y: 175, label: 'Sky Ruins', color: '#7750c8', lore: 'Crumbling floating islands suspended in a perpetual storm. Critical: Align the Aerolith Crystals and defeat the Storm Sentinel.' },
   { x: 160, y: 780, label: 'Southern Isles', color: '#2c8a72', lore: 'Tropical archipelago masking a deep-sea trench. Critical: Use the Tide-Caller Shell and face the Sunken Leviathan.' },
   { x: 470, y: 492, label: 'Riverlands Crossing', color: '#4c9fc0', lore: 'A strategic junction of rushing rivers and crumbling bridges. Critical: Repair the Great Stone Bridge and defeat the River King.' },
-
 ];
 
 const MAP_MAIN_ROUTE = [0, 1, 2, 3, 4, 5, 6, 7];
@@ -779,7 +778,7 @@ const Story = {
     showScreen('explore-screen');
     if (typeof _dockPersistentBtns === 'function') _dockPersistentBtns(true);
 
-    requestAnimationFrame(() => requestAnimationFrame(() => {
+    requestAnimationFrame(() => requestAnimationFrame(async () => {
       const wrap = document.getElementById('explore-canvas-wrap');
       const canvas = document.getElementById('explore-canvas');
       if (!wrap || !canvas) return;
@@ -795,7 +794,9 @@ const Story = {
       const overlay = document.getElementById('map-select-overlay');
       if (overlay) overlay.style.display = 'none';
 
-      MapEngine.start(chap.map);
+      // CRITICAL: Await map loading so its internal default reset finishes
+      // before we apply our saved restoration coordinates.
+      await MapEngine.start(chap.map);
 
       // Restore tile position — must use MapPlayer.reset() as tx/ty are read-only getters
       if (restoreX != null && restoreY != null && typeof MapPlayer !== 'undefined') {
@@ -815,6 +816,7 @@ const Story = {
     G.mode = 'story';
     const chap = this._exploreChap;
     this._exploreChap = null;
+    
     this._showLines((chap && chap.post_dialogue) || [], () => this._nextChapter());
     showScreen('story-screen');
   },
@@ -1031,6 +1033,7 @@ const Story = {
     const mapX = (mapId && typeof MapPlayer !== 'undefined') ? MapPlayer.tx : null;
     const mapY = (mapId && typeof MapPlayer !== 'undefined') ? MapPlayer.ty : null;
 
+    console.log(`[Story] Saving state to slot ${this._activeSlot ?? 0}. Pos: (${mapX}, ${mapY})`);
     Save.write({
       arcIdx: this.arcIdx,
       chapIdx: this.chapIdx,
@@ -1053,7 +1056,7 @@ const Story = {
       mapId,
       mapX,
       mapY,
-    }, this._activeSlot !== undefined ? this._activeSlot : 0);
+    }, this._activeSlot ?? 0);
   },
 
   /* ════════════════════════════════════════════════════════════════════════

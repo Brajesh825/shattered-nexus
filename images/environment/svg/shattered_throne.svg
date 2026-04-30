@@ -1,0 +1,18 @@
+<svg width="100" height="120" viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
+  <!-- Stone Dais (Base) -->
+  <path d="M10 110 L90 110 L85 90 L15 90 Z" fill="#4a5568" stroke="#1a202c" stroke-width="2"/>
+  
+  <!-- Throne Back (Shattered) -->
+  <path d="M30 90 L30 30 L50 45 L70 20 L70 90 Z" fill="#fbbf24" stroke="#d97706" stroke-width="2"/>
+  <path d="M40 35 L45 50" stroke="#d97706" stroke-width="2" fill="none"/> <!-- Crack -->
+
+  <!-- Throne Seat -->
+  <path d="M30 90 L70 90 L65 70 L35 70 Z" fill="#d97706" stroke="#92400e" stroke-width="2"/>
+  
+  <!-- Void Corruption (Vines) -->
+  <path d="M15 110 Q25 90 35 100" stroke="#4a148c" stroke-width="2" fill="none" opacity="0.7"/>
+  <path d="M85 110 Q75 95 65 105" stroke="#4a148c" stroke-width="2" fill="none" opacity="0.7"/>
+  
+  <!-- Emerald Gem (Cracked) -->
+  <rect x="45" y="55" width="10" height="10" rx="2" fill="#4ade80" opacity="0.4"/>
+</svg>

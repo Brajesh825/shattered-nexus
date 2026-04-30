@@ -1,0 +1,28 @@
+<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <!-- Foundation Shadow -->
+  <ellipse cx="60" cy="110" rx="55" ry="10" fill="#000" opacity="0.3"/>
+
+  <!-- First Floor (Stone) -->
+  <path d="M20 110 L100 110 L100 70 L20 70 Z" fill="#4a5568" stroke="#1a202c" stroke-width="2"/>
+  <rect x="30" y="85" width="8" height="4" fill="#718096" opacity="0.3"/>
+  <rect x="80" y="95" width="8" height="4" fill="#718096" opacity="0.3"/>
+
+  <!-- Second Floor (Timber Frame) -->
+  <path d="M25 70 L95 70 L95 40 L25 40 Z" fill="#e2e8f0" stroke="#1a202c" stroke-width="2"/>
+  <!-- Timber Beams -->
+  <rect x="25" y="40" width="4" height="30" fill="#4a3728"/>
+  <rect x="91" y="40" width="4" height="30" fill="#4a3728"/>
+  <rect x="58" y="40" width="4" height="30" fill="#4a3728"/>
+  <rect x="25" y="52" width="70" height="4" fill="#4a3728"/>
+
+  <!-- Roof -->
+  <path d="M15 45 L60 5 L105 45 Z" fill="#9b2c2c" stroke="#4a1d1d" stroke-width="2"/>
+  
+  <!-- Windows -->
+  <rect x="40" y="48" width="12" height="15" rx="1" fill="#0c0a15" stroke="#4ade80" stroke-opacity="0.2"/>
+  <rect x="68" y="48" width="12" height="15" rx="1" fill="#0c0a15" stroke="#4ade80" stroke-opacity="0.2"/>
+  
+  <!-- Grand Door -->
+  <path d="M52 110 L68 110 L68 85 Q60 80 52 85 Z" fill="#4a3728" stroke="#000" stroke-width="1"/>
+  <circle cx="64" cy="98" r="1.5" fill="#fbbf24"/>
+</svg>

@@ -1,0 +1,24 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="weathered-wood" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#795548;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3e2723;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Platform -->
+  <rect x="8" y="50" width="48" height="14" fill="url(#weathered-wood)" stroke="#2d1d1a" stroke-width="1.5" />
+  <rect x="12" y="50" width="40" height="2" fill="rgba(0,0,0,0.4)" />
+  <!-- Posts -->
+  <rect x="12" y="10" width="4" height="40" fill="#3e2723" />
+  <rect x="48" y="10" width="4" height="40" fill="#3e2723" />
+  <!-- Crossbar -->
+  <rect x="10" y="10" width="44" height="4" rx="1" fill="#3e2723" stroke="#1a110e" stroke-width="1" />
+  <!-- Rope -->
+  <path d="M 32 14 L 32 30" stroke="#ffecb3" stroke-width="1.5" />
+  <path d="M 32 35 A 4 6 0 1 1 31.9 35" fill="none" stroke="#ffecb3" stroke-width="2" /> <!-- Noose loop -->
+  <!-- Support Braces -->
+  <path d="M 16 20 L 22 14" stroke="#2d1d1a" stroke-width="2" />
+  <path d="M 48 20 L 42 14" stroke="#2d1d1a" stroke-width="2" />
+  <!-- Details -->
+  <rect x="15" y="55" width="34" height="1.5" fill="rgba(0,0,0,0.2)" />
+</svg>

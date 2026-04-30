@@ -1,0 +1,31 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffd700;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#ffea00;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ffa000;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="royal-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#9c27b0;stop-opacity:0.4" />
+      <stop offset="100%" style="stop-color:#9c27b0;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+  <!-- Back Radiation -->
+  <path d="M 32 32 L 10 5 L 54 5 Z" fill="url(#royal-glow)" />
+  <!-- High Back Frame -->
+  <path d="M 12 45 L 12 10 Q 32 0 52 10 L 52 45 Z" fill="url(#gold)" stroke="#d97706" stroke-width="1.5" />
+  <!-- Back Inset Decor -->
+  <path d="M 20 40 L 20 15 Q 32 8 44 15 L 44 40" fill="none" stroke="#d97706" stroke-width="0.5" stroke-dasharray="2,2" />
+  <!-- Purple Cushion -->
+  <rect x="18" y="32" width="28" height="15" rx="4" fill="#4a148c" stroke="#d97706" stroke-width="1" />
+  <!-- Arms -->
+  <path d="M 12 35 L 20 35 L 20 45 L 12 45 Z" fill="url(#gold)" stroke="#d97706" />
+  <path d="M 44 35 L 52 35 L 52 45 L 44 45 Z" fill="url(#gold)" stroke="#d97706" />
+  <!-- Legs -->
+  <path d="M 14 45 L 10 60 L 18 60 Z" fill="#d97706" />
+  <path d="M 50 45 L 54 60 L 46 60 Z" fill="#d97706" />
+  <!-- Gemstones -->
+  <circle cx="32" cy="12" r="2.5" fill="#e91e63" stroke="#fff" stroke-width="0.5" />
+  <circle cx="15" cy="35" r="1.5" fill="#2196f3" />
+  <circle cx="49" cy="35" r="1.5" fill="#2196f3" />
+</svg>

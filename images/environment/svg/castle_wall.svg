@@ -1,0 +1,22 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="wall-stone" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#90a4ae;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#455a64;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Main Base -->
+  <rect x="0" y="20" width="64" height="44" fill="url(#wall-stone)" stroke="#263238" stroke-width="1.5" />
+  <!-- Crenelations -->
+  <rect x="4" y="4" width="16" height="16" fill="url(#wall-stone)" stroke="#263238" stroke-width="1.5" />
+  <rect x="24" y="4" width="16" height="16" fill="url(#wall-stone)" stroke="#263238" stroke-width="1.5" />
+  <rect x="44" y="4" width="16" height="16" fill="url(#wall-stone)" stroke="#263238" stroke-width="1.5" />
+  <!-- Bricks / Texture -->
+  <rect x="8" y="30" width="12" height="6" rx="1" fill="rgba(0,0,0,0.1)" />
+  <rect x="40" y="30" width="12" height="6" rx="1" fill="rgba(0,0,0,0.1)" />
+  <rect x="24" y="45" width="16" height="8" rx="1" fill="rgba(0,0,0,0.1)" />
+  <!-- Shadow Under Battlements -->
+  <rect x="0" y="20" width="64" height="4" fill="rgba(0,0,0,0.3)" />
+  <!-- Cracks -->
+  <path d="M 50 24 L 54 30 L 52 35" fill="none" stroke="rgba(0,0,0,0.2)" stroke-width="0.8" />
+</svg>

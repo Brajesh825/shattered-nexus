@@ -9,7 +9,7 @@ MAP_DEFS.verdant_vale = {
     name: 'Verdant Vale',
     arcId: 1,
     width: 60,
-    height: 50, 
+    height: 60,
     playerStart: { x: 7, y: 10 },
     bgColor: '#0a1a05',
     ambientLight: 'rgba(60,180,60,0.04)',
@@ -35,47 +35,47 @@ MAP_DEFS.verdant_vale = {
     ],
 
     enemies: [
-        { id: 'bat',            x: 34,  y: 13, patrol: 'vertical',   range: 3, speed: 1.8 },
-        { id: 'wolf',           x: 42,  y: 22, patrol: 'random',     range: 4, speed: 1.4 },
-        { id: 'zombie_soldier', x: 40,  y: 18, patrol: 'horizontal', range: 3, speed: 0.8 },
-        { id: 'goblin',         x: 48,  y: 6,  patrol: 'random',     range: 2, speed: 1.1 },
-        { id: 'galdor_king',    x: 52, y: 41, patrol: 'horizontal', range: 2, speed: 0.9, isBoss: true }
+        { id: 'bat', x: 34, y: 13, patrol: 'vertical', range: 3, speed: 1.8 },
+        { id: 'wolf', x: 42, y: 22, patrol: 'random', range: 4, speed: 1.4 },
+        { id: 'zombie_soldier', x: 40, y: 18, patrol: 'horizontal', range: 3, speed: 0.8 },
+        { id: 'goblin', x: 48, y: 6, patrol: 'random', range: 2, speed: 1.1 },
+        { id: 'galdor_king', x: 52, y: 54, patrol: 'horizontal', range: 2, speed: 0.9, isBoss: true }
     ],
 
     jsonFile: 'js/map/data/map-verdant-vale.json',
 
     npcs: [
-        { id: 'essabella',    x: 44, y: 22, dialogueKey: 'verdant_vale', behavior: 'wander', range: 3 },
-        { id: 'elder_maren',  x: 6,  y: 8,  dialogueKey: 'elder_maren', behavior: 'stationary' },
-        { id: 'soldier_1',    x: 23, y: 13, dialogueKey: 'soldier_chat', behavior: 'patrol', waypoints: [{x:23,y:13}, {x:26,y:13}] }, 
-        { id: 'soldier_2',    x: 15, y: 6,  dialogueKey: 'soldier_chat', behavior: 'stationary' }, 
-        { id: 'soldier_3',    x: 17, y: 15, dialogueKey: 'soldier_chat', behavior: 'patrol', waypoints: [{x:17,y:15}, {x:17,y:12}] }, 
-        { id: 'lira',         x: 8,  y: 7,  dialogueKey: 'verdant_vale', behavior: 'wander', range: 2 }, 
+        { id: 'essabella', x: 44, y: 22, dialogueKey: 'verdant_vale', behavior: 'wander', range: 3 },
+        { id: 'elder_maren', x: 6, y: 8, dialogueKey: 'elder_maren', behavior: 'stationary' },
+        { id: 'soldier_1', x: 23, y: 13, dialogueKey: 'soldier_chat', behavior: 'patrol', waypoints: [{ x: 23, y: 13 }, { x: 26, y: 13 }] },
+        { id: 'soldier_2', x: 15, y: 6, dialogueKey: 'soldier_chat', behavior: 'stationary' },
+        { id: 'soldier_3', x: 17, y: 15, dialogueKey: 'soldier_chat', behavior: 'patrol', waypoints: [{ x: 17, y: 15 }, { x: 17, y: 12 }] },
+        { id: 'lira', x: 8, y: 7, dialogueKey: 'verdant_vale', behavior: 'wander', range: 2 },
     ],
 
     triggers: [
         {
             id: 'bridge_realization',
-            x: 29, y: 13, w: 3, h: 3, 
+            x: 29, y: 13, w: 3, h: 3,
             type: 'dialogue',
             lines: [
-                { speaker: 'Rei',  text: 'Wait... do you feel that?' },
-                { speaker: 'Tao',  text: 'The air... it\'s heavy. And look at the stone. It\'s scorched.' },
-                { speaker: 'Aya',  text: 'Scorched by void, not fire. These aren\'t just ruins... everyone is already dead in here.' },
+                { speaker: 'Rei', text: 'Wait... do you feel that?' },
+                { speaker: 'Tao', text: 'The air... it\'s heavy. And look at the stone. It\'s scorched.' },
+                { speaker: 'Aya', text: 'Scorched by void, not fire. These aren\'t just ruins... everyone is already dead in here.' },
                 { speaker: 'Lulu', text: 'Davan was right. The Void Knight didn\'t just pass through. He turned this place into a tomb.' },
-                { speaker: 'Rei',  text: 'Keep your guard up. Whatever did this is still around, and it\'s hungry.' },
+                { speaker: 'Rei', text: 'Keep your guard up. Whatever did this is still around, and it\'s hungry.' },
             ]
         },
         {
             id: 'aethelgard_mystery',
-            x: 40, y: 34, w: 5, h: 2, 
+            x: 40, y: 34, w: 5, h: 2,
             type: 'dialogue',
             lines: [
                 { speaker: 'narrator', text: 'The grass gives way to jagged stone—not natural formations, but the bones of a city swallowed by the earth.' },
-                { speaker: 'Lulu',     text: 'It feels... heavy here. Like the air is made of lead.' },
+                { speaker: 'Lulu', text: 'It feels... heavy here. Like the air is made of lead.' },
                 { speaker: 'narrator', text: 'A stifling weight of ancient gold hangs over the ruins. Somewhere within the labyrinth of stone, a rhythmic clinking of coins echoes against the wind.' },
-                { speaker: 'Rei',      text: 'I don\'t like this. These ruins shouldn\'t be here. They aren\'t on any map.' },
-                { speaker: 'Aya',      text: 'Stay close. Whatever lived here once... it hasn\'t left.' }
+                { speaker: 'Rei', text: 'I don\'t like this. These ruins shouldn\'t be here. They aren\'t on any map.' },
+                { speaker: 'Aya', text: 'Stay close. Whatever lived here once... it hasn\'t left.' }
             ]
         }
     ],

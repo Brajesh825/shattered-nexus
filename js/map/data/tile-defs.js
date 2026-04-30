@@ -87,6 +87,39 @@ TILE_DEFS[236] = { name: 'Sac Altar',     walkable: false, svgAsset: 'sacrificia
 TILE_DEFS[237] = { name: 'Void Spires',   walkable: false, svgAsset: 'void_spires', color: '#1a1a1a', vScale: 3.5, footprint: [[0,0], [0,-1]] };
 TILE_DEFS[238] = { name: 'Iron Maiden',   walkable: false, svgAsset: 'iron_maiden', color: '#263238', vScale: 1.8 };
 TILE_DEFS[239] = { name: 'Magic Circle',  walkable: true,  svgAsset: 'magic_circle', color: '#7b1fa2', anim: true, glows: '#ba68c830', vScale: 4.5, footprint: [[-1,-1], [0,-1], [1,-1], [-1,0], [0,0], [1,0], [-1,1], [0,1], [1,1]] };
+TILE_DEFS[240] = { name: 'Stone Tower',  walkable: false, svgAsset: 'tower', color: '#2d3748', vScale: 4.5, anchor: 'bottom-left', collisionMask: ['XXX', 'XXX'] };
+TILE_DEFS[241] = { name: 'Royal Castle', walkable: false, svgAsset: 'castle', color: '#4a5568', vScale: 6.0, anchor: 'bottom-left', collisionMask: ['XXXXX', 'XXXXX'] };
+TILE_DEFS[242] = { name: 'Noble Estate', walkable: false, svgAsset: 'noble_house', color: '#e2e8f0', vScale: 4.0, anchor: 'bottom-left', collisionMask: ['XXXX', 'XXXX'] };
+TILE_DEFS[243] = { name: 'Ruined Tower', walkable: false, svgAsset: 'ruined_tower', color: '#2d3748', vScale: 4.5, anchor: 'bottom-left', collisionMask: ['XXX', 'XXX'] };
+TILE_DEFS[244] = { name: 'Ruined Castle', walkable: false, svgAsset: 'ruined_castle', color: '#4a5568', vScale: 6.0, anchor: 'bottom-left', collisionMask: ['XXXXX', 'XXXXX'] };
+TILE_DEFS[245] = { name: 'Shattered Throne', walkable: false, svgAsset: 'shattered_throne', color: '#fbbf24', vScale: 3.5, anchor: 'bottom-left', collisionMask: ['XXX', 'XXX'] };
+TILE_DEFS[246] = { name: 'Broken Knight', walkable: false, svgAsset: 'broken_knight', color: '#718096', vScale: 2.5 };
+TILE_DEFS[247] = { name: 'Cursed Well', walkable: false, svgAsset: 'cursed_well', color: '#6a1b9a', vScale: 2.2, anchor: 'bottom-left', collisionMask: ['XXX'] };
+TILE_DEFS[248] = { name: 'Withered Tree', walkable: false, svgAsset: 'withered_tree', color: '#e2e8f0', vScale: 4.0 };
+
+// ── FURNITURE & INTERIOR (IDs 300+) ──────────────────────────
+TILE_DEFS[300] = { name: 'Royal Table',   walkable: false, svgAsset: 'royal_table', color: '#5d4037', vScale: 2.2, footprint: [[0,0], [1,0]] };
+TILE_DEFS[301] = { name: 'Wooden Chair',  walkable: true,  svgAsset: 'wooden_chair', color: '#8d6e63', vScale: 1.5 };
+TILE_DEFS[302] = { name: 'Stone Bench',   walkable: false, svgAsset: 'stone_bench',  color: '#b0bec5', vScale: 1.2, footprint: [[0,0], [1,0]] };
+TILE_DEFS[303] = { name: 'Golden Throne', walkable: false, svgAsset: 'throne_gold',   color: '#fbbf24', vScale: 3.5, footprint: [[0,0], [1,0]], collisionMask: ['XXX'] };
+TILE_DEFS[304] = { name: 'Alchemy Table', walkable: false, svgAsset: 'alchemy_table',color: '#5d4037', vScale: 2.2, footprint: [[0,0], [1,0]], glows: '#00bcd430' };
+TILE_DEFS[305] = { name: 'Bookshelf',     walkable: false, svgAsset: 'bookshelf',    color: '#4e342e', vScale: 3.0, footprint: [[0,0], [1,0]], collisionMask: ['XXX'] };
+TILE_DEFS[306] = { name: 'Fireplace',     walkable: false, svgAsset: 'fireplace',    color: '#37474f', vScale: 3.0, anim: true, glows: '#ff980040', footprint: [[0,0], [1,0]], collisionMask: ['XXX'] };
+TILE_DEFS[307] = { name: 'Armor Stand',   walkable: false, svgAsset: 'armor_stand',  color: '#eceff1', vScale: 2.0 };
+TILE_DEFS[308] = { name: 'Weapon Rack',   walkable: false, svgAsset: 'weapon_rack',  color: '#3e2723', vScale: 2.0, footprint: [[0,0], [1,0]] };
+TILE_DEFS[309] = { name: 'Fancy Bed',     walkable: false, svgAsset: 'bed_fancy',    color: '#ef5350', vScale: 3.5, footprint: [[0,0], [1,0]], collisionMask: ['XXX', 'XXX'] };
+
+// ── CASTLE OUTDOORS (IDs 310+) ──────────────────────────────
+TILE_DEFS[310] = { name: 'Knight Statue',  walkable: false, svgAsset: 'knight_statue', color: '#cfd8dc', vScale: 3.5, footprint: [[0,0]] };
+TILE_DEFS[311] = { name: 'Iron Gate',      walkable: false, svgAsset: 'iron_gate',     color: '#37474f', vScale: 4.5, footprint: [[0,0], [1,0]], collisionMask: ['XX'] };
+TILE_DEFS[312] = { name: 'Training Dummy', walkable: false, svgAsset: 'training_dummy', color: '#ffe082', vScale: 2.5 };
+TILE_DEFS[313] = { name: 'Siege Catapult', walkable: false, svgAsset: 'catapult',       color: '#4e342e', vScale: 4.0, footprint: [[0,0], [1,0], [0,1], [1,1]], collisionMask: ['XX', 'XX'] };
+TILE_DEFS[314] = { name: 'Hanging Cage',   walkable: true,  svgAsset: 'hanging_cage',   color: '#37474f', vScale: 2.8, vOffset: { x: 0, y: -20 } };
+TILE_DEFS[315] = { name: 'Royal Banner',   walkable: false, svgAsset: 'royal_banner',   color: '#4a148c', vScale: 4.5 };
+TILE_DEFS[316] = { name: 'Castle Wall',    walkable: false, svgAsset: 'castle_wall',    color: '#90a4ae', vScale: 3.0, footprint: [[0,0], [1,0]], collisionMask: ['XX'] };
+TILE_DEFS[317] = { name: 'Drawbridge',     walkable: true,  svgAsset: 'drawbridge',     color: '#5d4037', vScale: 4.0, footprint: [[0,0], [1,0], [0,1], [1,1]] };
+TILE_DEFS[318] = { name: 'Stone Gallows',  walkable: false, svgAsset: 'gallows',        color: '#795548', vScale: 3.8, footprint: [[0,0], [1,0]], collisionMask: ['XX'] };
+TILE_DEFS[319] = { name: 'Archery Target', walkable: false, svgAsset: 'archery_target', color: '#ffe082', vScale: 2.2 };
 
 // ── SYSTEM TILES (IDs 250+) ──────────────────────────────────
 TILE_DEFS[250] = { name: 'Blocker',      walkable: false, color: 'transparent', hidden: true };
@@ -183,6 +216,77 @@ const OBJECT_STAMPS = {
     size: { w: 2, h: 2 },
     layers: {
       1: [[250, 250], [220, 250]]
+    }
+  },
+  'royal_tower': {
+    name: 'Royal Tower',
+    size: { w: 3, h: 3 },
+    layers: {
+      1: [[0, 0, 0], [0, 0, 0], [250, 240, 250]] 
+    }
+  },
+  'royal_castle': {
+    name: 'High King\'s Citadel',
+    size: { w: 5, h: 4 },
+    layers: {
+      1: [
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0],
+        [250, 250, 241, 250, 250]
+      ]
+    }
+  },
+  'noble_estate': {
+    name: 'Noble Estate',
+    size: { w: 4, h: 4 },
+    layers: {
+      1: [
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [250, 250, 242, 250]
+      ]
+    }
+  },
+  'ruined_tower': {
+    name: 'Ruined Watchtower',
+    size: { w: 3, h: 3 },
+    layers: {
+      1: [[0, 0, 0], [0, 0, 0], [250, 243, 250]]
+    }
+  },
+  'fallen_citadel': {
+    name: 'Fallen Citadel',
+    size: { w: 5, h: 4 },
+    layers: {
+      1: [
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0],
+        [250, 250, 244, 250, 250]
+      ]
+    }
+  },
+  'shattered_throne': {
+    name: 'Royal Throne Room',
+    size: { w: 3, h: 3 },
+    layers: {
+      1: [[0, 0, 0], [0, 0, 0], [250, 245, 250]]
+    }
+  },
+  'knight_memorial': {
+    name: 'Knight\'s Memorial',
+    size: { w: 1, h: 1 },
+    layers: {
+      1: [[246]]
+    }
+  },
+  'cursed_well_stamp': {
+    name: 'Cursed Village Well',
+    size: { w: 3, h: 2 },
+    layers: {
+      1: [[0, 0, 0], [250, 247, 250]]
     }
   }
 };

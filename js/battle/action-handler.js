@@ -86,7 +86,9 @@ function resolveOffensiveAction(actor, target, targetIdx, action, element) {
   }
   const isCrit = Battle.rollCrit(actor);
   const _em = Battle.elemMult(element, target);
-  const _stab = (element === actor.cls?.element) ? 1.25 : 1.0;
+  // Guard: Use optional chaining and default to null for class element comparison
+  const _clsElem = actor.cls?.element || null;
+  const _stab = (element !== 'physical' && element === _clsElem) ? 1.25 : 1.0;
   const _fireAmp = element === 'fire' ? (actor.statuses?.find(s => s.type === 'fire_amp')?.value || 1.0) : 1.0;
   const _hpPercent = actor.hp / actor.maxHp;
   const _lowHpMult = 1 + (1 - _hpPercent) * (e.lowHpDmgBonus || 0);
@@ -151,10 +153,10 @@ function resolveOffensiveAction(actor, target, targetIdx, action, element) {
       BattleUI.addLog(`🔥 ${target.name} is Burning!`, 'dmg');
     }
   }
-  if (reactionEffects.defShattered) BattleUI.addLog(`ðŸ›¡ï¸  ${target.name}'s DEF shattered!`, 'magic');
-  if (reactionEffects.stunned) BattleUI.addLog(`ðŸ’« ${target.name} is Conductive! (Stunned)`, 'magic');
-  if (reactionEffects.burning) BattleUI.addLog(`ðŸ”¥ ${target.name} is Burning!`, 'dmg');
-  if (reactionEffects.swirlTargets.length) BattleUI.addLog(`ðŸŒ€ ${reactionEffects.swirlAura.toUpperCase()} aura dispersed to ${reactionEffects.swirlTargets.length} foe(s)!`, 'magic');
+  if (reactionEffects.defShattered) BattleUI.addLog(`🛡️ ${target.name}'s DEF shattered!`, 'magic');
+  if (reactionEffects.stunned) BattleUI.addLog(`💫 ${target.name} is Conductive! (Stunned)`, 'magic');
+  if (reactionEffects.burning) BattleUI.addLog(`🔥 ${target.name} is Burning!`, 'dmg');
+  if (reactionEffects.swirlTargets.length) BattleUI.addLog(`🌀 ${reactionEffects.swirlAura.toUpperCase()} aura dispersed to ${reactionEffects.swirlTargets.length} foe(s)!`, 'magic');
 
   if (isCrit) {
     BattleUI.addLog(`⭐ ${isMagic ? 'CRITICAL MAGIC!' : 'CRITICAL HIT!'}`, 'hi');
@@ -310,10 +312,10 @@ function resolveEnemyOffensiveAction(actor, target, targetIdx, ab, element) {
     }
     if (reaction.isDampened) BattleUI.addLog('(Effect dampened by resistance)', 'regen');
   }
-  if (enemyReactionEffects.defShattered) BattleUI.addLog(`ðŸ›¡ï¸  ${target.displayName}'s DEF shattered!`, 'dmg');
-  if (enemyReactionEffects.stunned) BattleUI.addLog(`ðŸ’« ${target.displayName} is Conductive! (Stunned)`, 'dmg');
-  if (enemyReactionEffects.burning) BattleUI.addLog(`ðŸ”¥ ${target.displayName} is Burning!`, 'dmg');
-  if (enemyReactionEffects.swirlTargets.length) BattleUI.addLog(`ðŸŒ€ ${enemyReactionEffects.swirlAura.toUpperCase()} aura dispersed to ${enemyReactionEffects.swirlTargets.length} ally(s)!`, 'dmg');
+  if (enemyReactionEffects.defShattered) BattleUI.addLog(`🛡️ ${target.displayName}'s DEF shattered!`, 'dmg');
+  if (enemyReactionEffects.stunned) BattleUI.addLog(`💫 ${target.displayName} is Conductive! (Stunned)`, 'dmg');
+  if (enemyReactionEffects.burning) BattleUI.addLog(`🔥 ${target.displayName} is Burning!`, 'dmg');
+  if (enemyReactionEffects.swirlTargets.length) BattleUI.addLog(`🌀 ${enemyReactionEffects.swirlAura.toUpperCase()} aura dispersed to ${enemyReactionEffects.swirlTargets.length} ally(s)!`, 'dmg');
 
   if (isCrit) {
     BattleUI.addLog(`⭐ ${isMagic ? 'ENEMY CRITICAL MAGIC!' : 'ENEMY CRITICAL!'}`, isMagic ? 'magic' : 'dmg');

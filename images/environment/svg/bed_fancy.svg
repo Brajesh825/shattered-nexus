@@ -1,0 +1,28 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="silk" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ef5350;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#b71c1c;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Bed Frame Legs -->
+  <rect x="8" y="45" width="4" height="15" fill="#3e2723" />
+  <rect x="52" y="45" width="4" height="15" fill="#3e2723" />
+  <rect x="8" y="5" width="4" height="10" fill="#3e2723" />
+  <rect x="52" y="5" width="4" height="10" fill="#3e2723" />
+  <!-- Mattress / Base -->
+  <rect x="8" y="35" width="48" height="12" rx="2" fill="#eeeeee" stroke="#bdbdbd" stroke-width="1" />
+  <!-- Canopy Top -->
+  <rect x="6" y="2" width="52" height="6" rx="1" fill="url(#silk)" stroke="#b71c1c" stroke-width="1" />
+  <!-- Side Curtains -->
+  <path d="M 8 8 L 12 8 L 12 40 Q 10 42 8 40 Z" fill="url(#silk)" opacity="0.9" />
+  <path d="M 52 8 L 56 8 L 56 40 Q 54 42 52 40 Z" fill="url(#silk)" opacity="0.9" />
+  <!-- Pillows -->
+  <rect x="12" y="32" width="12" height="6" rx="2" fill="#ffcdd2" />
+  <rect x="26" y="32" width="12" height="6" rx="2" fill="#ffcdd2" />
+  <!-- Blanket -->
+  <path d="M 10 40 L 54 40 L 54 52 Q 32 55 10 52 Z" fill="url(#silk)" stroke="#ffd700" stroke-width="0.5" />
+  <!-- Gold Details -->
+  <circle cx="10" cy="5" r="1.5" fill="#ffd700" />
+  <circle cx="54" cy="5" r="1.5" fill="#ffd700" />
+</svg>
