@@ -132,6 +132,18 @@ TILE_DEFS[327] = { name: 'Stone Wall Seg',  walkable: false, svgAsset: 'wall_sec
 TILE_DEFS[328] = { name: 'Circular Granary', walkable: false, svgAsset: 'granary', color: '#b0bec5', vScale: 3.0 };
 TILE_DEFS[329] = { name: 'Healer Hut',      walkable: false, svgAsset: 'healer_hut', color: '#5d4037', vScale: 3.0, footprint: [[0,0], [1,0]] };
 
+// ── CIVILIAN BUILDINGS (IDs 330+) ──────────────────────────
+TILE_DEFS[330] = { name: 'Small Cottage',   walkable: false, svgAsset: 'cottage',       color: '#a1887f', vScale: 2.8, footprint: [[0,0], [1,0]] };
+TILE_DEFS[331] = { name: 'Large Farmhouse', walkable: false, svgAsset: 'farmhouse',      color: '#8d6e63', vScale: 4.2, footprint: [[0,0], [1,0], [2,0]], collisionMask: ['XXX'] };
+TILE_DEFS[332] = { name: 'Village Windmill',walkable: false, svgAsset: 'windmill',       color: '#cfd8dc', vScale: 5.5, footprint: [[0,0], [1,0], [0,1], [1,1]], collisionMask: ['XX', 'XX'] };
+TILE_DEFS[333] = { name: 'Covered Well',    walkable: false, svgAsset: 'well_house',     color: '#90a4ae', vScale: 2.5 };
+TILE_DEFS[334] = { name: 'Wood Workshop',   walkable: false, svgAsset: 'workshop',       color: '#8d6e63', vScale: 3.2, footprint: [[0,0], [1,0]] };
+TILE_DEFS[335] = { name: 'General Store',   walkable: false, svgAsset: 'merchant_store', color: '#5d4037', vScale: 3.8, footprint: [[0,0], [1,0], [2,0]], collisionMask: ['XXX'] };
+TILE_DEFS[336] = { name: 'Village Library', walkable: false, svgAsset: 'library',        color: '#cfd8dc', vScale: 4.8, footprint: [[0,0], [1,0]] };
+TILE_DEFS[337] = { name: 'Old Bakery',      walkable: false, svgAsset: 'bakery',         color: '#d7ccc8', vScale: 3.5, footprint: [[0,0], [1,0]] };
+TILE_DEFS[338] = { name: 'Fisherman Hut',   walkable: false, svgAsset: 'fisherman_hut',  color: '#a1887f', vScale: 3.2, footprint: [[0,0], [1,0], [2,0]] };
+TILE_DEFS[339] = { name: 'Village Hall',    walkable: false, svgAsset: 'village_hall',   color: '#cfd8dc', vScale: 5.0, footprint: [[0,0], [1,0], [2,0], [0,1], [1,1], [2,1]], collisionMask: ['XXX', 'XXX'] };
+
 // ── SYSTEM TILES (IDs 250+) ──────────────────────────────────
 TILE_DEFS[250] = { name: 'Blocker',      walkable: false, color: 'transparent', hidden: true };
 
