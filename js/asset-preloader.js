@@ -34,7 +34,8 @@ const AssetPreloader = (() => {
       'void_rift', 'cursed_idol', 'skeleton', 'floating_crystal', 'ancient_pillar', 'withered_vine', 'sacrificial_altar', 'void_spires', 'iron_maiden', 'magic_circle', 'tower', 'castle', 'noble_house', 'ruined_tower', 'ruined_castle', 'shattered_throne', 'broken_knight', 'cursed_well', 'withered_tree',
       'royal_table', 'wooden_chair', 'stone_bench', 'throne_gold', 'alchemy_table', 'bookshelf', 'fireplace', 'armor_stand', 'weapon_rack', 'bed_fancy',
       'knight_statue', 'iron_gate', 'training_dummy', 'catapult', 'hanging_cage', 'royal_banner', 'castle_wall', 'drawbridge', 'gallows', 'archery_target',
-      'barracks', 'archery_range', 'blacksmith', 'stable', 'tavern', 'chapel', 'watchtower', 'wall_section', 'granary', 'healer_hut'
+      'barracks', 'archery_range', 'blacksmith', 'stable', 'tavern', 'chapel', 'watchtower', 'wall_section', 'granary', 'healer_hut',
+      'cottage', 'farmhouse', 'windmill', 'well_house', 'workshop', 'merchant_store', 'library', 'bakery', 'fisherman_hut', 'village_hall'
     ]
   };
 
@@ -111,7 +112,8 @@ const AssetPreloader = (() => {
           'void_rift', 'cursed_idol', 'skeleton', 'floating_crystal', 'ancient_pillar', 'withered_vine', 'sacrificial_altar', 'void_spires', 'iron_maiden', 'magic_circle', 'tower', 'castle', 'noble_house', 'ruined_tower', 'ruined_castle', 'shattered_throne', 'broken_knight', 'cursed_well', 'withered_tree',
           'royal_table', 'wooden_chair', 'stone_bench', 'throne_gold', 'alchemy_table', 'bookshelf', 'fireplace', 'armor_stand', 'weapon_rack', 'bed_fancy',
           'knight_statue', 'iron_gate', 'training_dummy', 'catapult', 'hanging_cage', 'royal_banner', 'castle_wall', 'drawbridge', 'gallows', 'archery_target',
-          'barracks', 'archery_range', 'blacksmith', 'stable', 'tavern', 'chapel', 'watchtower', 'wall_section', 'granary', 'healer_hut'
+          'barracks', 'archery_range', 'blacksmith', 'stable', 'tavern', 'chapel', 'watchtower', 'wall_section', 'granary', 'healer_hut',
+          'cottage', 'farmhouse', 'windmill', 'well_house', 'workshop', 'merchant_store', 'library', 'bakery', 'fisherman_hut', 'village_hall'
         ].includes(id) ? 'svg' : 'png';
         return extension === 'svg' ? `images/environment/svg/${id}.svg` : `images/environment/${id}.png`;
       })
