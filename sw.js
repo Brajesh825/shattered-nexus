@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nexus-cache-v4.8';
+const CACHE_NAME = 'nexus-cache-v4.9';
 
 // Core shell — always pre-cached regardless of quality setting
 const SHELL_ASSETS = [
@@ -219,7 +219,7 @@ self.addEventListener('install', event => {
       console.log('✅ [SW] Shell pre-cache complete');
     })()
   );
-  // Don't skipWaiting here — wait for user to confirm update via toast
+  self.skipWaiting();
 });
 
 // Activate: remove old caches
