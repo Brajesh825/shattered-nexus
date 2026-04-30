@@ -1,0 +1,27 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="heavy-wood" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4e342e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2d1d1a;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Wheels -->
+  <circle cx="15" cy="55" r="8" fill="#212121" stroke="#4e342e" stroke-width="2" />
+  <circle cx="49" cy="55" r="8" fill="#212121" stroke="#4e342e" stroke-width="2" />
+  <circle cx="15" cy="55" r="1.5" fill="#5d4037" />
+  <circle cx="49" cy="55" r="1.5" fill="#5d4037" />
+  <!-- Main Frame -->
+  <rect x="10" y="45" width="44" height="10" rx="2" fill="url(#heavy-wood)" stroke="#1a110e" stroke-width="1.5" />
+  <rect x="28" y="25" width="8" height="25" fill="url(#heavy-wood)" stroke="#1a110e" />
+  <!-- Throwing Arm -->
+  <rect x="30" y="5" width="4" height="45" rx="1" fill="#5d4037" transform="rotate(-20 32 45)" stroke="#2d1d1a" />
+  <!-- Bucket -->
+  <path d="M 12 10 Q 20 2 28 10 L 25 20 Q 20 25 15 20 Z" fill="#263238" stroke="#000" transform="rotate(-20 32 45)" />
+  <!-- Stone in Bucket -->
+  <circle cx="17" cy="12" r="4" fill="#78909c" transform="rotate(-20 32 45)" />
+  <!-- Ropes / Tension -->
+  <path d="M 32 45 L 50 48 M 32 45 L 48 40" stroke="#795548" stroke-width="1.5" stroke-dasharray="2,1" />
+  <!-- Gears -->
+  <circle cx="50" cy="48" r="4" fill="#263238" />
+  <path d="M 47 48 L 53 48 M 50 45 L 50 51" stroke="#455a64" stroke-width="1" />
+</svg>

@@ -1,0 +1,19 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="stone" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#b0bec5;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#455a64;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Base Supports -->
+  <rect x="12" y="45" width="10" height="15" rx="2" fill="#263238" />
+  <rect x="42" y="45" width="10" height="15" rx="2" fill="#263238" />
+  <!-- Seat Shadow -->
+  <rect x="6" y="42" width="52" height="10" rx="3" fill="rgba(0,0,0,0.5)" />
+  <!-- Seat Slab -->
+  <rect x="6" y="35" width="52" height="10" rx="3" fill="url(#stone)" stroke="#263238" stroke-width="1.5" />
+  <!-- Weathering Details -->
+  <path d="M 15 35 L 18 40 M 45 35 L 48 42" stroke="rgba(0,0,0,0.2)" stroke-width="1" />
+  <circle cx="20" cy="38" r="1.5" fill="rgba(76,175,80,0.3)" /> <!-- Moss spot -->
+  <circle cx="45" cy="42" r="1" fill="rgba(76,175,80,0.2)" /> <!-- Moss spot -->
+</svg>

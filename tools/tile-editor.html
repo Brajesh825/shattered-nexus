@@ -14,7 +14,16 @@
             <h1 class="logo">ARCHITECT<span>PRO</span></h1>
             <select id="map-selector" class="map-picker" onchange="editor.switchMap(this.value)">
                 <option value="verdant_vale">Verdant Vale</option>
-                <option value="iron_hold">Iron Hold (TBD)</option>
+                <option value="crystal_cavern">Crystal Cavern</option>
+                <option value="ember_wastes">Ember Wastes</option>
+                <option value="sunken_temple">Sunken Temple</option>
+                <option value="shadow_reach">Shadow Reach</option>
+                <option value="sky_ruins">Sky Ruins</option>
+                <option value="void_citadel">Void Citadel</option>
+                <option value="ashen_foothills">Ashen Foothills</option>
+                <option value="northern_highlands">Northern Highlands</option>
+                <option value="riverlands_crossing">Riverlands Crossing</option>
+                <option value="eternal_void">Eternal Void</option>
             </select>
         </div>
         
@@ -25,6 +34,8 @@
             <button class="tool-btn" data-tool="eraser" title="Eraser (E)">🧹</button>
             <button class="tool-btn" data-tool="fill" title="Bucket Fill (G)">🪣</button>
             <button class="tool-btn" data-tool="eyedropper" title="Eyedropper (I)">🧪</button>
+            <button class="tool-btn" data-tool="select" title="Select Area (S)">✂️</button>
+            <button class="tool-btn" data-tool="stamp" title="Paste Stamp (V)">📋</button>
             <button class="tool-btn" data-tool="collision" title="Toggle Collision (C)">🛡️</button>
         </div>
 
@@ -33,6 +44,8 @@
         <div class="action-group">
             <button class="action-btn undo" onclick="editor.undo()" title="Undo (Ctrl+Z)">⏪</button>
             <button class="action-btn sync" onclick="editor.syncToWorkspace()" title="Sync to Workspace">🔄 SYNC</button>
+            <input type="file" id="map-js-input" style="display:none" accept=".js" onchange="editor.importMapJS(this.files[0])">
+            <button class="action-btn" onclick="document.getElementById('map-js-input').click()" title="Import Map JS File">📂 IMPORT JS</button>
         </div>
 
         <div class="divider"></div>
@@ -92,6 +105,14 @@
                 <div class="minimap-container">
                     <canvas id="minimap"></canvas>
                 </div>
+                <div class="resize-manager" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.05);">
+                    <h3 style="margin-bottom: 10px; font-size: 11px; opacity: 0.6; letter-spacing: 1px;">DIMENSIONS</h3>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="number" id="map-w" class="glass-input" style="width: 50px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px; border-radius: 4px;" placeholder="W">
+                        <input type="number" id="map-h" class="glass-input" style="width: 50px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px; border-radius: 4px;" placeholder="H">
+                        <button onclick="editor.resizeMapFromUI()" class="action-btn" style="flex: 1; font-size: 10px; background: var(--accent); color: #000; font-weight: bold; border-radius: 4px;">RESIZE</button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -103,8 +124,10 @@
     </div>
 
     <!-- Script Imports -->
+    <script>window.G = { settings: { graphicsQuality: 'high' } };</script>
     <script src="../js/asset-preloader.js"></script>
     <script src="../js/map/data/tile-defs.js"></script>
+    <script src="../js/sprites.js"></script>
     <script src="tile-editor.js"></script>
 </body>
 </html>

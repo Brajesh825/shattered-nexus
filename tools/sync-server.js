@@ -27,7 +27,7 @@ const server = http.createServer((req, res) => {
         req.on('end', () => {
             try {
                 const { path: targetPath, data } = JSON.parse(body);
-                const absolutePath = path.resolve(targetPath);
+                const absolutePath = path.join(__dirname, '..', targetPath);
 
                 // 1. Create Backup
                 if (fs.existsSync(absolutePath)) {

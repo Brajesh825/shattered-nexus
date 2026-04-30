@@ -1,0 +1,18 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- Tripod Stand -->
+  <path d="M 32 30 L 20 62 M 32 30 L 44 62 M 32 30 L 32 64" stroke="#5d4037" stroke-width="2" />
+  <!-- Target Bale -->
+  <circle cx="32" cy="30" r="22" fill="#ffe082" stroke="#795548" stroke-width="2" />
+  <!-- Straw Texture Rings -->
+  <circle cx="32" cy="30" r="18" fill="none" stroke="rgba(0,0,0,0.1)" stroke-width="1" stroke-dasharray="2,2" />
+  <circle cx="32" cy="30" r="14" fill="none" stroke="rgba(0,0,0,0.1)" stroke-width="1" stroke-dasharray="2,2" />
+  <!-- Painted Rings -->
+  <circle cx="32" cy="30" r="12" fill="none" stroke="#212121" stroke-width="3" opacity="0.8" />
+  <circle cx="32" cy="30" r="8" fill="none" stroke="#d32f2f" stroke-width="3" opacity="0.8" />
+  <circle cx="32" cy="30" r="4" fill="#ffd700" /> <!-- Bullseye -->
+  <!-- Arrows -->
+  <path d="M 45 15 L 35 25" stroke="#3e2723" stroke-width="1.5" stroke-linecap="round" />
+  <path d="M 45 15 L 48 12" stroke="#eeeeee" stroke-width="2" opacity="0.8" /> <!-- Fletching -->
+  <path d="M 20 10 L 30 22" stroke="#3e2723" stroke-width="1.5" stroke-linecap="round" />
+  <path d="M 20 10 L 17 7" stroke="#eeeeee" stroke-width="2" opacity="0.8" />
+</svg>

@@ -1,0 +1,22 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="statue-stone" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#cfd8dc;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#546e7a;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Pedestal -->
+  <rect x="16" y="52" width="32" height="12" rx="1" fill="#37474f" stroke="#263238" stroke-width="1"/>
+  <!-- Shield -->
+  <path d="M 12 30 Q 20 28 28 30 L 28 45 Q 20 50 12 45 Z" fill="url(#statue-stone)" stroke="#263238" stroke-width="0.5" />
+  <!-- Body -->
+  <path d="M 24 52 L 20 20 Q 32 15 44 20 L 40 52 Z" fill="url(#statue-stone)" stroke="#263238" stroke-width="1" />
+  <!-- Helmet -->
+  <path d="M 26 20 Q 32 10 38 20 L 38 28 L 26 28 Z" fill="url(#statue-stone)" stroke="#263238" stroke-width="1" />
+  <rect x="30" y="22" width="4" height="1.5" fill="#263238" />
+  <!-- Sword -->
+  <path d="M 45 15 L 45 52" stroke="#455a64" stroke-width="2.5" stroke-linecap="round" />
+  <rect x="42" y="15" width="6" height="1.5" fill="#263238" />
+  <!-- Highlights -->
+  <path d="M 32 12 Q 35 11 38 12" fill="none" stroke="#fff" opacity="0.3" stroke-width="0.5" />
+</svg>
