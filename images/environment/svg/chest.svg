@@ -5,6 +5,9 @@
       <stop offset="100%" style="stop-color:#5d4037;stop-opacity:1" />
     </linearGradient>
   </defs>
+  <ellipse cx="32" cy="57" rx="22" ry="4" fill="#120b08" opacity="0.32"/>
+  <!-- Lid -->
+  <path d="M12 33 Q14 22 32 22 Q50 22 52 33 Z" fill="#8d6e63" stroke="#3e2723" stroke-width="1.5"/>
   <!-- Body -->
   <rect x="12" y="32" width="40" height="24" rx="2" fill="url(#chest-wood)"/>
   <!-- Iron Bindings -->
@@ -12,9 +15,13 @@
   <rect x="12" y="52" width="40" height="4" fill="#37474f"/>
   <rect x="18" y="32" width="4" height="24" fill="#37474f"/>
   <rect x="42" y="32" width="4" height="24" fill="#37474f"/>
+  <path d="M14 40 H50 M14 48 H50" stroke="#4e342e" stroke-width="1" opacity="0.45"/>
+  <path d="M22 28 Q32 24 42 28" stroke="#c7a27c" stroke-width="1" fill="none" opacity="0.45"/>
   <!-- Lock -->
-  <rect x="30" y="40" width="4" height="6" rx="1" fill="#fbbf24"/>
-  <circle cx="32" cy="43" r="1" fill="#3e2723"/>
+  <rect x="28" y="39" width="8" height="8" rx="1.5" fill="#fbbf24" stroke="#7a5200" stroke-width="0.8"/>
+  <circle cx="32" cy="43" r="1.2" fill="#3e2723"/>
+  <path d="M29 39 Q32 35 35 39" fill="none" stroke="#fbbf24" stroke-width="1.1"/>
   <!-- Shine -->
   <path d="M15 35 L49 35" stroke="#fff" stroke-width="0.5" opacity="0.3"/>
+  <circle cx="47" cy="27" r="1.1" fill="#ffe082" opacity="0.75"/>
 </svg>

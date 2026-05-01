@@ -16,6 +16,15 @@
 - [ ] **UI Scaling**: Ensure the "Item Submenu" in battle is perfectly readable on iPhone SE/XR.
 - [ ] **Gold Balance**: Tune enemy gold drops to ensure shops feel meaningful.
 
+### SVG Art Upgrade Pass (Arcs 1-2)
+- [ ] **SVG Audit Rule**: Prioritize high-use or visibly basic SVGs; skip already-large/detailed assets unless they need optimization, file cleanup, or style matching.
+- [ ] **Verdant Vale Core Props**: Upgrade `oak.svg`, `pine.svg`, `lily.svg`, `flower.svg`, `signpost.svg`, `well.svg`, `market.svg`, and `statue.svg` with stronger silhouettes, shadows, texture, and map-scale readability.
+- [ ] **Crystal Cavern Core Props**: Upgrade `crystal.svg`, `ancient_pillar.svg`, `stone_bench.svg`, `supply_crate.svg`, `weapon_rack.svg`, `chest.svg`, and `bone_pile.svg` for richer ruins, crystal facets, and better depth.
+- [ ] **Archive & Lab Props**: Upgrade `bookshelf.svg`, `alchemy_table.svg`, `wooden_chair.svg`, `royal_table.svg`, `barrel.svg`, `market_cart.svg`, `crystal_orb.svg`, `hole.svg`, and `staircase.svg`.
+- [ ] **Basic House & Village Props**: Improve simple settlement SVGs such as `cottage.svg`, `farmhouse.svg`, `village_hall.svg`, `merchant_store.svg`, `market_cart.svg`, `bakery.svg`, `workshop.svg`, `blacksmith.svg`, `fisherman_hut.svg`, `well_house.svg`, `granary.svg`, and `windmill.svg`.
+- [ ] **Frozen Core Props**: Upgrade `pine_frozen.svg`, `frozen_house.svg`, `market_cart_frozen.svg`, `notice_board_frozen.svg`, and `well_frozen.svg` with frost buildup, broken silhouettes, and blue-violet cavern lighting.
+- [ ] **Large Detailed SVG Policy**: Do not add detail to already-heavy assets like `ice_castle.svg`; instead optimize/simplify them into lighter in-game versions if performance or style consistency requires it.
+
 ### 🔷 Phase 3: Release Readiness
 - [ ] **Walkthrough Update**: Finalize the step-by-step guide for Arc 1 and Arc 2.
 - [ ] **Beta Lock**: Set `MAX_REACHABLE_ARC: 1` in `release-config.js` for the public itch.io push.

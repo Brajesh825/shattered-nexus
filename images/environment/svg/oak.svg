@@ -11,9 +11,10 @@
       <stop offset="100%" style="stop-color:#1b5e20;stop-opacity:1" />
     </radialGradient>
   </defs>
+  <ellipse cx="32" cy="60" rx="17" ry="3" fill="#061008" opacity="0.35"/>
   <!-- Trunk with Grain -->
-  <path d="M28 60 Q32 58 36 60 L35 40 Q32 38 29 40 Z" fill="url(#bark)"/>
-  <path d="M30 55 L31 45 M33 58 L34 42" stroke="#2b1b17" stroke-width="0.5" opacity="0.3"/>
+  <path d="M27 60 Q32 56 37 60 L36 39 Q32 36 28 40 Z" fill="url(#bark)"/>
+  <path d="M30 56 L31 45 M34 58 L34 42 M29 47 Q32 49 35 46" stroke="#2b1b17" stroke-width="0.7" opacity="0.42" fill="none"/>
   <!-- Roots -->
   <path d="M28 60 Q20 62 18 60 M36 60 Q44 62 46 60" fill="none" stroke="#3e2723" stroke-width="2"/>
   <!-- Leaf Clusters -->
@@ -21,7 +22,13 @@
   <circle cx="20" cy="30" r="12" fill="url(#leaves)"/>
   <circle cx="44" cy="30" r="12" fill="url(#leaves)"/>
   <circle cx="32" cy="15" r="10" fill="url(#leaves)"/>
+  <circle cx="25" cy="19" r="9" fill="#3f9c45" opacity="0.75"/>
+  <circle cx="40" cy="22" r="10" fill="#1f6b2a" opacity="0.55"/>
+  <circle cx="32" cy="35" r="14" fill="#245f27" opacity="0.45"/>
   <!-- Highlights on Leaves -->
   <path d="M25 15 Q32 10 39 15" fill="none" stroke="#a5d6a7" stroke-width="1" opacity="0.4"/>
   <path d="M15 25 Q20 20 25 25" fill="none" stroke="#a5d6a7" stroke-width="1" opacity="0.4"/>
+  <path d="M39 18 Q45 20 48 26 M22 36 Q29 39 36 36" fill="none" stroke="#081f0d" stroke-width="1.1" opacity="0.25"/>
+  <circle cx="26" cy="28" r="1.2" fill="#c5e88b" opacity="0.55"/>
+  <circle cx="38" cy="13" r="1" fill="#c5e88b" opacity="0.45"/>
 </svg>
