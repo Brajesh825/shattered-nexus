@@ -1,17 +1,21 @@
 <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="pine-grad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#2e7d32;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#003300;stop-opacity:1" />
+    <linearGradient id="pine-grad" x1="24" y1="8" x2="40" y2="58" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#63b85f"/>
+      <stop offset="0.55" stop-color="#1f6f35"/>
+      <stop offset="1" stop-color="#052f19"/>
+    </linearGradient>
+    <linearGradient id="pine-shadow" x1="14" y1="32" x2="50" y2="56" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0e4624"/>
+      <stop offset="1" stop-color="#02180d"/>
     </linearGradient>
   </defs>
-  <!-- Trunk -->
-  <rect x="30" y="50" width="4" height="10" fill="#3e2723"/>
-  <!-- Layers -->
-  <path d="M12 52 L32 30 L52 52 Z" fill="url(#pine-grad)"/>
-  <path d="M16 40 L32 20 L48 40 Z" fill="url(#pine-grad)"/>
-  <path d="M20 28 L32 10 L44 28 Z" fill="url(#pine-grad)"/>
-  <!-- Pine Needles Detail -->
-  <path d="M25 45 L30 45 M34 45 L39 45" stroke="#a5d6a7" stroke-width="1" opacity="0.2"/>
-  <path d="M28 35 L32 35 M32 25 L32 25" stroke="#a5d6a7" stroke-width="1" opacity="0.2"/>
+  <ellipse cx="32" cy="59" rx="15" ry="3" fill="#050d08" opacity="0.35"/>
+  <path d="M29 59 L30 48 H35 L36 59 Z" fill="#4a2b1f"/>
+  <path d="M31 58 L32 48" stroke="#25140f" stroke-width="0.8" opacity="0.6"/>
+  <path d="M10 53 L22 39 L17 40 L29 27 L24 28 L32 10 L41 28 L36 27 L48 40 L43 39 L55 53 Z" fill="url(#pine-shadow)"/>
+  <path d="M13 50 L25 37 L20 38 L31 25 L27 26 L32 11 L38 26 L34 25 L45 38 L40 37 L52 50 Z" fill="url(#pine-grad)" stroke="#0b3d20" stroke-width="0.8"/>
+  <path d="M25 38 C29 40 35 40 39 38 M20 49 C27 52 38 52 45 49 M28 27 C31 29 34 29 37 27" fill="none" stroke="#9bd58f" stroke-width="1" opacity="0.32"/>
+  <path d="M32 13 L32 51" stroke="#072b17" stroke-width="0.8" opacity="0.35"/>
+  <path d="M24 45 L18 49 M40 45 L47 49 M27 33 L22 36 M37 33 L42 36" stroke="#c4f3b3" stroke-width="0.9" stroke-linecap="round" opacity="0.35"/>
 </svg>

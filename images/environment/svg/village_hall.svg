@@ -1,9 +1,28 @@
 <svg width="350" height="250" viewBox="0 0 350 250" xmlns="http://www.w3.org/2000/svg">
-  <rect x="40" y="100" width="270" height="130" fill="#cfd8dc" stroke="#455a64" stroke-width="5"/>
-  <path d="M40 100 L175 20 L310 100 Z" fill="#455a64"/>
-  <rect x="150" y="150" width="50" height="80" fill="#3e2723"/>
-  <rect x="165" y="30" width="20" height="40" fill="#90a4ae"/>
-  <circle cx="175" cy="45" r="5" fill="#ffd700"/>
-  <rect x="70" y="130" width="40" height="40" fill="#90caf9" stroke="#455a64"/>
-  <rect x="240" y="130" width="40" height="40" fill="#90caf9" stroke="#455a64"/>
+  <defs>
+    <linearGradient id="hall-wall" x1="40" y1="92" x2="310" y2="235" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#e3edf1"/>
+      <stop offset="1" stop-color="#91a6ad"/>
+    </linearGradient>
+    <linearGradient id="hall-roof" x1="55" y1="20" x2="295" y2="112" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#607d8b"/>
+      <stop offset="1" stop-color="#263238"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="175" cy="234" rx="132" ry="10" fill="#0b1114" opacity="0.26"/>
+  <rect x="40" y="100" width="270" height="130" rx="3" fill="url(#hall-wall)" stroke="#455a64" stroke-width="5"/>
+  <path d="M28 104 L175 17 L322 104 L304 117 L175 43 L46 117 Z" fill="url(#hall-roof)" stroke="#263238" stroke-width="5" stroke-linejoin="round"/>
+  <rect x="156" y="33" width="38" height="54" rx="2" fill="#78909c" stroke="#37474f" stroke-width="3"/>
+  <circle cx="175" cy="53" r="8" fill="#ffd75a" stroke="#8c6412" stroke-width="2"/>
+  <path d="M175 45 V53 L181 58" stroke="#8c6412" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <rect x="148" y="149" width="54" height="81" rx="3" fill="#3e2723" stroke="#24140f" stroke-width="3"/>
+  <path d="M175 149 V230 M154 176 H196" stroke="#6b4634" stroke-width="1.5"/>
+  <circle cx="188" cy="190" r="2.4" fill="#d8b46a"/>
+  <g fill="#b9e6ff" stroke="#455a64" stroke-width="3">
+    <rect x="68" y="128" width="44" height="43" rx="2"/>
+    <rect x="238" y="128" width="44" height="43" rx="2"/>
+  </g>
+  <path d="M90 128 V171 M68 150 H112 M260 128 V171 M238 150 H282" stroke="#607d8b" stroke-width="1.4"/>
+  <path d="M65 112 H285 M58 207 H292" stroke="#607d8b" stroke-width="2" opacity="0.35"/>
+  <path d="M86 92 C122 80 145 91 175 72 C205 91 229 80 264 94" fill="none" stroke="#cfd8dc" stroke-width="2" opacity="0.35"/>
 </svg>

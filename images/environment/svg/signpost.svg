@@ -5,12 +5,16 @@
       <stop offset="100%" style="stop-color:#5d4037;stop-opacity:1" />
     </linearGradient>
   </defs>
+  <ellipse cx="32" cy="61" rx="11" ry="2.5" fill="#0b0604" opacity="0.3"/>
   <!-- Post -->
-  <rect x="30" y="20" width="4" height="40" fill="#3e2723"/>
+  <rect x="29" y="19" width="6" height="41" rx="1" fill="#3e2723"/>
+  <path d="M32 20 L31 59" stroke="#8d6e63" stroke-width="0.8" opacity="0.35"/>
   <!-- Sign 1 -->
-  <path d="M20 22 L42 22 L48 26 L42 30 L20 30 Z" fill="url(#sign-wood)"/>
-  <path d="M22 24 L38 24" stroke="#3e2723" stroke-width="0.5" opacity="0.4"/>
+  <path d="M19 21 L42 21 L49 26 L42 31 L19 31 Z" fill="url(#sign-wood)" stroke="#3e2723" stroke-width="1"/>
+  <path d="M23 24 L39 24 M23 28 L36 28" stroke="#3e2723" stroke-width="0.7" opacity="0.45"/>
   <!-- Sign 2 -->
-  <path d="M44 34 L22 34 L16 38 L22 42 L44 42 Z" fill="url(#sign-wood)" opacity="0.9"/>
-  <path d="M22 36 L38 36" stroke="#3e2723" stroke-width="0.5" opacity="0.4"/>
+  <path d="M45 34 L22 34 L15 39 L22 44 L45 44 Z" fill="url(#sign-wood)" stroke="#3e2723" stroke-width="1" opacity="0.95"/>
+  <path d="M23 37 L40 37 M26 41 L39 41" stroke="#3e2723" stroke-width="0.7" opacity="0.45"/>
+  <circle cx="24" cy="26" r="1" fill="#2d1d1a"/>
+  <circle cx="40" cy="39" r="1" fill="#2d1d1a"/>
 </svg>

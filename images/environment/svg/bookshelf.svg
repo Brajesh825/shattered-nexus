@@ -1,15 +1,22 @@
 <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <linearGradient id="wood-dark" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#4e342e;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#2d1d1a;stop-opacity:1" />
+      <stop offset="0%" style="stop-color:#5d4037;stop-opacity:1" />
+      <stop offset="55%" style="stop-color:#3b2721;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#20120f;stop-opacity:1" />
     </linearGradient>
+    <radialGradient id="book-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#80eaff" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#80eaff" stop-opacity="0"/>
+    </radialGradient>
   </defs>
+  <ellipse cx="32" cy="61" rx="24" ry="3" fill="#050303" opacity="0.32"/>
   <!-- Frame -->
   <rect x="8" y="4" width="48" height="56" rx="2" fill="url(#wood-dark)" stroke="#1a110e" stroke-width="1.5" />
+  <rect x="11" y="7" width="42" height="50" rx="1" fill="#180d0b" opacity="0.26"/>
   <!-- Shelves -->
-  <rect x="10" y="20" width="44" height="2" fill="#1a110e" />
-  <rect x="10" y="40" width="44" height="2" fill="#1a110e" />
+  <rect x="10" y="20" width="44" height="3" fill="#1a110e" />
+  <rect x="10" y="40" width="44" height="3" fill="#1a110e" />
   <!-- Books Top Shelf -->
   <rect x="12" y="6" width="4" height="14" fill="#b71c1c" rx="0.5" />
   <rect x="16" y="8" width="5" height="12" fill="#0d47a1" rx="0.5" />
@@ -17,16 +24,21 @@
   <rect x="27" y="10" width="4" height="10" fill="#fbc02d" rx="0.5" />
   <rect x="35" y="6" width="3" height="14" fill="#4a148c" rx="0.5" />
   <rect x="42" y="7" width="5" height="13" fill="#3e2723" rx="0.5" />
+  <rect x="48" y="11" width="3" height="9" fill="#9e6f32" rx="0.5" />
   <!-- Books Mid Shelf -->
   <rect x="15" y="22" width="4" height="18" fill="#c62828" rx="0.5" />
   <rect x="20" y="25" width="6" height="15" fill="#1565c0" rx="0.5" />
   <rect x="30" y="22" width="3" height="18" fill="#2e7d32" rx="0.5" />
+  <rect x="34" y="26" width="4" height="14" fill="#5d4037" rx="0.5" />
   <rect x="40" y="24" width="5" height="16" fill="#6a1b9a" rx="0.5" />
   <!-- Books Bottom Shelf -->
   <rect x="10" y="42" width="4" height="18" fill="#4e342e" rx="0.5" />
   <rect x="18" y="45" width="5" height="15" fill="#37474f" rx="0.5" />
   <rect x="25" y="42" width="6" height="18" fill="#b71c1c" rx="0.5" />
   <rect x="35" y="44" width="4" height="16" fill="#f9a825" rx="0.5" />
+  <path d="M43 47 L54 51 L53 57 L42 53 Z" fill="#d7c090" stroke="#7a6237" stroke-width="0.5"/>
+  <circle cx="49" cy="52" r="7" fill="url(#book-glow)"/>
   <!-- Dust / Detail -->
-  <path d="M 12 6 L 12 20 M 26 5 L 26 20 M 40 24 L 40 40" stroke="rgba(255,255,255,0.1)" stroke-width="0.5" />
+  <path d="M 12 6 L 12 20 M 26 5 L 26 20 M 40 24 L 40 40 M 15 50 L 22 50" stroke="rgba(255,255,255,0.16)" stroke-width="0.5" />
+  <path d="M11 16 C17 14 22 17 29 15 M12 35 C18 33 23 36 30 34" fill="none" stroke="#c2a77a" stroke-width="0.5" opacity="0.25"/>
 </svg>
