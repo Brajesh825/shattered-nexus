@@ -42,8 +42,7 @@ MAP_DEFS.crystal_cavern_f3 = {
 
   encounterTemplates: [
     { weight: 4, enemies: ['skeleton', 'ghost'] },
-    { weight: 2, enemies: ['cyclops', 'lich'] },
-    { weight: 1, enemies: ['spectral_guardian'] },
+    { weight: 2, enemies: ['cyclops', 'lich' ,'skeleton'] },
   ],
 
   objective: {
