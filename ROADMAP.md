@@ -1,5 +1,30 @@
 # RPG+ Development Roadmap
 
+---
+
+## 🔧 Technical Debt (from May 2026 audit)
+
+### ✅ Done in `fix/audit-cleanup`
+- [x] Remove dead `if (false && reaction)` blocks in `action-handler.js` — superseded by `ReactionEffects`, silently bypassed.
+- [x] NaN / finite guards on both damage chains — a single `undefined` multiplier previously produced silent NaN damage.
+- [x] `validateEnemy()` on load (`data-loader.js`) — loud `console.error` for any enemy missing required fields. Catches `enemies.json` typos at startup, not mid-battle.
+- [x] JSDoc on `G` object and `Battle` helper — properties and methods documented for editor autocomplete.
+- [x] Brain/ cleanup — one-off generator scripts deleted.
+
+### 🔶 Next sprint
+- [ ] **Encapsulate turn state** — replace loose `G.turnIdx` / `G.activeMemberIdx` / `G.targetEnemyIdx` / `G.busy` with `G.turn = { queueIdx, activeMember, targetEnemy, locked }`. Prevents index-desync bugs.
+- [ ] **Named modifier object for damage chain** — replace 9-way `dmg * _em * _stab * ...` with a named object so each factor is debuggable and rebalancing is safe.
+- [ ] **Consistent null-guard pattern** — standardise all `G.party[idx]` accesses to `G.party[idx]?.prop ?? fallback`. Currently mixed between `?.` and bare access.
+- [ ] **`@param`/`@returns` JSDoc on `resolveOffensiveAction` / `resolveEnemyOffensiveAction`** — both have 5 untyped parameters.
+
+### 🔷 When the project grows
+- [ ] **Bundler (Vite)** — replace 50+ `<script>` load-order tags with ES modules. 1–2 days effort.
+- [ ] **TypeScript (incremental)** — start with `combat-engine.js` + `passive-system.js` (pure functions, easiest to type). Use `checkJs: true` first, zero rewrite needed.
+- [ ] **Cache story arc JSON in service worker** — `arc_1.json`–`arc_8.json` not pre-cached; offline players lose story mid-arc.
+- [ ] **`Promise.race` timeout on `loadAllGameData()`** — currently hangs indefinitely on slow connections.
+
+---
+
 ## ✅ Completed Milestones
 - **[2026-04-30] Multi-Floor Engine & Arc 2 Expansion**: Implemented high-fidelity `teleport` trigger system and `kill_boss` objective logic in `MapEngine`. Expanded Crystal Cavern into a 3-floor suite (`f1`, `f2`, `f3`) with thematic biomes, seamless transitions, and synchronized narrative progression (Chapters 1–4) leading to the Demon Lord climax.
 - **[2026-04-30] Universal SVG Asset Engine & Map Stability**: Standardized all environment assets to SVG format across the engine and preloader. Fixed 404 loading regressions and ensured directory parity (`images/environment/svg/`).
