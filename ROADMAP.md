@@ -10,6 +10,9 @@
 - [x] `validateEnemy()` on load (`data-loader.js`) — loud `console.error` for any enemy missing required fields. Catches `enemies.json` typos at startup, not mid-battle.
 - [x] JSDoc on `G` object and `Battle` helper — properties and methods documented for editor autocomplete.
 - [x] Brain/ cleanup — one-off generator scripts deleted.
+- [x] **Fix `getStat('reduction')` silent bug** (`combat-engine.js`) — reduction statuses modified `pMult` after `cappedPassive` was already captured, so all status-based damage reduction (guardian, ward, etc.) had zero effect. Fixed by tracking `reductionMult` separately.
+- [x] **Remove double-application workarounds** (`action-handler.js`) — deleted the redundant `getStat('reduction')` guard and hardcoded `dmg *= 0.7` guardian check that were compensating for the broken getStat.
+- [x] **Test suite: 38/38 passing** — fixed 3 failing tests: two exposed the real reduction bug (now fixed in engine); one asserted a 4.0x total cap that was never in the design (corrected to test the actual 2.5x passive + 8.0x absolute caps).
 
 ### 🔶 Next sprint
 - [ ] **Encapsulate turn state** — replace loose `G.turnIdx` / `G.activeMemberIdx` / `G.targetEnemyIdx` / `G.busy` with `G.turn = { queueIdx, activeMember, targetEnemy, locked }`. Prevents index-desync bugs.
@@ -26,6 +29,8 @@
 ---
 
 ## ✅ Completed Milestones
+- **[2026-05-01] Test Suite Audit & Fixes** — Ran full test suite (38 tests). Found 3 failures: two exposed a silent `getStat('reduction')` bug where all status-based damage reduction (guardian, ward, etc.) had zero effect; one asserted a 4.0x total status cap that was never in the design. Fixed the engine bug, removed the compensating workarounds in `action-handler.js`, and corrected the test. Suite now 38/38.
+- **[2026-05-01] May 2026 Technical Audit & Cleanup** — Full codebase audit (20,300 lines). Dead code removed, NaN guards added to all 4 damage chains, `validateEnemy()` added to data loader, JSDoc written for the `G` state object, and all one-off generator/refactor scripts deleted from `brain/` and `scratch/`. See Technical Debt section above.
 - **[2026-04-30] Multi-Floor Engine & Arc 2 Expansion**: Implemented high-fidelity `teleport` trigger system and `kill_boss` objective logic in `MapEngine`. Expanded Crystal Cavern into a 3-floor suite (`f1`, `f2`, `f3`) with thematic biomes, seamless transitions, and synchronized narrative progression (Chapters 1–4) leading to the Demon Lord climax.
 - **[2026-04-30] Universal SVG Asset Engine & Map Stability**: Standardized all environment assets to SVG format across the engine and preloader. Fixed 404 loading regressions and ensured directory parity (`images/environment/svg/`).
 - **[2026-04-30] Architect Pro (M4) Implementation**: Completed high-fidelity browser-based tile editor with advanced tools (Brush, Fill, Rectangle, Eyedropper) and multi-layer support.

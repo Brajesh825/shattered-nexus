@@ -4,26 +4,28 @@ const { test } = require('./test-harness.js');
 global.NexusScaling = require('../js/scaling-config.js');
 global.CombatEngine = require('../js/battle/combat-engine.js');
 
-test('CombatEngine respects split caps (2.5x Base, 4.0x Total)', () => {
+test('CombatEngine respects stat caps (2.5x Passive, 8.0x Absolute)', () => {
+  // Status multipliers stack additively: base 1.0 + sBonus.
+  // Three x2.0 statuses: sBonus = 3.0 → finalMult = 1.0 + 3.0 = 4.0x → 400.
   const superUnit = {
     atk: 100,
     statuses: [
       { stat: 'atk', type: 'mult', value: 2.0 },
-      { stat: 'atk', type: 'mult', value: 2.0 }, // Status bonus = +100% + 100% = +200% (3.0x)
-      { stat: 'atk', type: 'mult', value: 2.0 }  // Status bonus = +300% (4.0x total)
+      { stat: 'atk', type: 'mult', value: 2.0 },
+      { stat: 'atk', type: 'mult', value: 2.0 }
     ]
   };
+  assert.equal(CombatEngine.getStat(superUnit, 'atk'), 400);
 
-  const finalAtk = CombatEngine.getStat(superUnit, 'atk');
-  
-  // Base 1.0 + Bonuses (1.0 + 1.0 + 1.0) = 4.0x.
-  // 100 * 4.0 = 400. 
-  assert.equal(finalAtk, 400);
-
-  // Add another buff — should stay at 4.0x cap
+  // A fourth buff raises the total — no 4.0x status cap, only the 8.0x absolute cap.
+  // sBonus = 3.0 + 0.5 = 3.5 → finalMult = 4.5 → 450.
   superUnit.statuses.push({ stat: 'atk', type: 'mult', value: 1.5 });
-  const cappedAtk = CombatEngine.getStat(superUnit, 'atk');
-  assert.equal(cappedAtk, 400);
+  assert.equal(CombatEngine.getStat(superUnit, 'atk'), 450);
+
+  // Verify the 8.0x absolute cap: pile on enough buffs to exceed 8.0x.
+  // sBonus = 3.5 + 1.0*5 = 8.5 → uncapped finalMult = 9.5 → clamped to 8.0 → 800.
+  for (let i = 0; i < 5; i++) superUnit.statuses.push({ stat: 'atk', type: 'mult', value: 2.0 });
+  assert.equal(CombatEngine.getStat(superUnit, 'atk'), 800);
 });
 
 test('CombatEngine respects the 0.75 evasion cap', () => {
