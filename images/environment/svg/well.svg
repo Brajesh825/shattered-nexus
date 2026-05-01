@@ -1,0 +1,27 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="stone" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#90a4ae;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#455a64;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="water" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#4fc3f7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0277bd;stop-opacity:1" />
+    </radialGradient>
+  </defs>
+  <!-- Stone Base -->
+  <rect x="18" y="48" width="28" height="12" rx="2" fill="url(#stone)"/>
+  <path d="M22 48 L22 60 M28 48 L28 60 M36 48 L36 60 M42 48 L42 60" stroke="#263238" stroke-width="0.5" opacity="0.3"/>
+  <!-- Well Rim -->
+  <ellipse cx="32" cy="48" rx="14" ry="4" fill="#37474f"/>
+  <ellipse cx="32" cy="48" rx="12" ry="3" fill="url(#water)">
+    <animate attributeName="opacity" values="0.8; 1; 0.8" dur="3s" repeatCount="indefinite"/>
+  </ellipse>
+  <!-- Wooden Pillars -->
+  <rect x="20" y="24" width="4" height="24" fill="#5d4037"/>
+  <rect x="40" y="24" width="4" height="24" fill="#5d4037"/>
+  <!-- Roof -->
+  <path d="M16 28 L32 12 L48 28 Z" fill="#8d6e63"/>
+  <path d="M16 28 L32 12 L48 28 Z" fill="none" stroke="#5d4037" stroke-width="1"/>
+  <path d="M20 25 L32 16 L44 25" fill="none" stroke="#d7ccc8" stroke-width="0.5" opacity="0.4"/>
+</svg>

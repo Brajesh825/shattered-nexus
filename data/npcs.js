@@ -61,6 +61,15 @@ const NPC_DEFS = {
         { speaker: 'Lady Essabella', text: 'Is it freed? Or is it simply ended? The distinction matters.' },
         { speaker: 'Lady Essabella', text: 'In any case — be careful in the east wing. The floor above the throne room is unstable. Go through the lower passage.' },
       ],
+      crystal_cavern_f3: [
+        { speaker: 'Aya', text: 'Lady Essabella. We did not expect to find you here.' },
+        { speaker: 'Lady Essabella', text: 'The corruption spreads underground as readily as above. I follow it where it goes.' },
+        { speaker: 'Lady Essabella', text: 'The Spectral Guardian blocks the path to the surface. Defeat it, and you will reach the undercroft of Ashveil palace.' },
+        { speaker: 'Lady Essabella', text: 'The Demon Lord waits above in the throne room. The fire Fragment is fused to him. He believes it makes him permanent. It does not.' },
+        { speaker: 'Lady Essabella', text: 'The Fragment — when you take it from him, what do you intend to do with it? Destroy it, as the Oracle commands? Or do you see the loss in that destruction?' },
+        { speaker: 'Lulu', text: 'We... we just want to help the people.' },
+        { speaker: 'Lady Essabella', text: 'Helping people often requires understanding the tools you are breaking. Go. The guardian is waiting.' },
+      ],
 
       // ── ARC 3 — Ember Wastes ──────────────────────────────────────
       // Essabella is no longer pretending to stumble across them.
@@ -310,6 +319,11 @@ const NPC_DEFS = {
         { speaker: 'The Archivist', text: 'Precisely. Or hit him with the opposite — ice, cryo. Elemental contradiction causes a reaction he cannot suppress. Either way works. Either way hurts him.' },
         { speaker: 'The Archivist', text: 'That is all I have left to give. Go. Finish the record I could not.' },
       ],
+      crystal_cavern_f1: [
+        { speaker: 'The Archivist', text: 'Still here. Still here. I have been cataloguing the resonance patterns for… how long has it been.' },
+        { speaker: 'The Archivist', text: 'You seek the core. Go deeper. The Resonance Depths below are thick with the echo of the Fire Seal.' },
+        { speaker: 'The Archivist', text: 'Beware the Spectral Guardian at the frozen core. It guards the path to Ashveil.' },
+      ],
       sky_ruins: [
         { speaker: 'The Archivist', text: 'The storm hums with the same frequency as the Void Citadel. These ruins predate the five civilizations — I never finished documenting them.' },
         { speaker: 'Aya', text: 'Is this where the first rift opened?' },
@@ -338,6 +352,11 @@ const NPC_DEFS = {
         { speaker: 'Ghost Knight', text: 'The passage is clear now. You can go through. That is what I was holding it for, I think. Someone like you.' },
         { speaker: 'Lulu', text: 'You can rest now. You held long enough.' },
         { speaker: 'Ghost Knight', text: '...Yes. I suppose I did.' },
+      ],
+      crystal_cavern_f2: [
+        { speaker: 'Ghost Knight', text: '...You are warm. I remember warm.' },
+        { speaker: 'Ghost Knight', text: 'I was holding the passage to the core. But the shadows... they are thicker now.' },
+        { speaker: 'Ghost Knight', text: 'Go. The Frozen Core is just beyond the next descent. The guardian waits for those who carry life.' },
       ],
     },
   },

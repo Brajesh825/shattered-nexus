@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Wood frame (frozen/pale) -->
+  <rect x="20" y="60" width="60" height="15" fill="#cfd8dc" stroke="#90a4ae" stroke-width="2"/>
+  <!-- Wheels -->
+  <circle cx="30" cy="75" r="10" fill="#78909c" stroke="#455a64"/>
+  <circle cx="70" cy="75" r="10" fill="#78909c" stroke="#455a64"/>
+  <!-- Snow/Ice layers on top -->
+  <path d="M20 60 Q50 45 80 60" fill="#e1f5fe" stroke="#ffffff" stroke-width="2"/>
+  <!-- Icicles -->
+  <path d="M25 60 L27 75 L29 60 M40 60 L42 70 L44 60 M65 60 L67 80 L69 60" fill="#ffffff" opacity="0.8"/>
+</svg>

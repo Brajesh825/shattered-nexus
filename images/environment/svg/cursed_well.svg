@@ -1,0 +1,22 @@
+<svg width="80" height="100" viewBox="0 0 80 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- Base Stone -->
+  <path d="M10 90 Q40 100 70 90 L70 70 Q40 80 10 70 Z" fill="#2d3748" stroke="#111" stroke-width="2"/>
+  
+  <!-- Void Water (Glow) -->
+  <path d="M15 75 Q40 82 65 75" fill="none" stroke="#6a1b9a" stroke-width="8" opacity="0.6">
+    <animate attributeName="stroke" values="#6a1b9a;#4a148c;#6a1b9a" dur="3s" repeatCount="indefinite" />
+  </path>
+  
+  <!-- Wooden Posts -->
+  <rect x="15" y="40" width="6" height="40" fill="#4a3728"/>
+  <rect x="59" y="40" width="6" height="40" fill="#4a3728"/>
+  
+  <!-- Roof (Broken) -->
+  <path d="M10 45 L40 25 L65 40" fill="none" stroke="#4a3728" stroke-width="4"/>
+  <path d="M15 45 L40 30 L65 45" fill="#301d10" opacity="0.8"/>
+
+  <!-- Corruption Vines -->
+  <path d="M60 90 Q70 70 65 50" stroke="#4a148c" stroke-width="2" fill="none">
+    <animate attributeName="stroke-width" values="2;3;2" dur="2s" repeatCount="indefinite" />
+  </path>
+</svg>

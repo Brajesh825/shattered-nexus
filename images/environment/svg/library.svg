@@ -1,0 +1,52 @@
+<svg width="400" height="600" viewBox="0 0 400 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Window Gradient for a "glassy" look -->
+    <linearGradient id="glassGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#e0f7ff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#a2d2ff;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Brick Pattern -->
+    <pattern id="brickPattern" x="0" y="0" width="40" height="20" patternUnits="userSpaceOnUse">
+      <rect width="40" height="20" fill="#f4f4f4" stroke="#d1d1d1" stroke-width="0.5"/>
+      <line x1="20" y1="0" x2="20" y2="20" stroke="#d1d1d1" stroke-width="0.5" />
+    </pattern>
+  </defs>
+
+  <!-- Main House Body -->
+  <path d="M40,580 L360,580 L360,160 L200,40 L40,160 Z" fill="#e9ecef" stroke="#343a40" stroke-width="4"/>
+  
+  <!-- Brick Overlay -->
+  <path d="M40,580 L360,580 L360,160 L200,40 L40,160 Z" fill="url(#brickPattern)" opacity="0.4"/>
+
+  <!-- Roof Trim -->
+  <path d="M20,170 L200,30 L380,170" fill="none" stroke="#495057" stroke-width="8" stroke-linecap="round"/>
+
+  <!-- Windows with Frames -->
+  <!-- Top Left -->
+  <rect x="80" y="210" width="80" height="110" fill="#495057" />
+  <rect x="85" y="215" width="70" height="100" fill="url(#glassGradient)" />
+  <line x1="120" y1="215" x2="120" y2="315" stroke="#495057" stroke-width="2"/>
+  
+  <!-- Top Right -->
+  <rect x="240" y="210" width="80" height="110" fill="#495057" />
+  <rect x="245" y="215" width="70" height="100" fill="url(#glassGradient)" />
+  <line x1="280" y1="215" x2="280" y2="315" stroke="#495057" stroke-width="2"/>
+
+  <!-- Bottom Left -->
+  <rect x="80" y="380" width="80" height="110" fill="#495057" />
+  <rect x="85" y="385" width="70" height="100" fill="url(#glassGradient)" />
+  <line x1="120" y1="385" x2="120" y2="485" stroke="#495057" stroke-width="2"/>
+
+  <!-- Bottom Right -->
+  <rect x="240" y="380" width="80" height="110" fill="#495057" />
+  <rect x="245" y="385" width="70" height="100" fill="url(#glassGradient)" />
+  <line x1="280" y1="385" x2="280" y2="485" stroke="#495057" stroke-width="2"/>
+
+  <!-- Door -->
+  <rect x="165" y="470" width="70" height="110" fill="#4b2e2e" stroke="#2b1a1a" stroke-width="2"/>
+  <circle cx="220" cy="530" r="4" fill="#ffd700"/> <!-- Door Knob -->
+  
+  <!-- Ground -->
+  <line x1="10" y1="582" x2="390" y2="582" stroke="#343a40" stroke-width="4" stroke-linecap="round"/>
+</svg>

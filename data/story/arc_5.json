@@ -11,14 +11,6 @@
     "description": "A near-black crystal shot through with veins of violet light. The last piece. It does not hum. It waits.",
     "color": "#a855f7"
   },
-  "enemies_pool": [
-    "void_knight",
-    "bone_dragon",
-    "necromancer",
-    "demon_lord",
-    "dark_phoenix",
-    "void_knight"
-  ],
   "boss_enemy": "fallen_angel",
   "chapters": [
     {
@@ -170,43 +162,130 @@
       "title": "Through the Shadow Reach",
       "type": "explore",
       "map": "shadow_reach",
-      "map_hint": "Cross the Shadow Reach — Valdris's sanctum lies beyond the darkness.",
+      "map_hint": "Cross the Shadow Reach \u2014 Valdris's sanctum lies beyond the darkness.",
       "pre_dialogue": [
-        { "speaker": "narrator", "emotion": "ominous", "text": "The Shadow Reach is where Valdris's power is absolute — perpetual half-dark, where even shadows cast shadows. His voice fills the air, not through sound, but through the space between thoughts." },
-        { "speaker": "Rei", "emotion": "cold", "text": "He speaks to distract. It will not work. Move." },
-        { "speaker": "Tao", "emotion": "focused", "text": "Knowing someone and stopping them are very different problems. He knows us. We are about to stop him. Advantage: ours." },
-        { "speaker": "Aya", "emotion": "resolved", "text": "Together. That is what he cannot replicate." }
+        {
+          "speaker": "narrator",
+          "emotion": "ominous",
+          "text": "The Shadow Reach is where Valdris's power is absolute \u2014 perpetual half-dark, where even shadows cast shadows. His voice fills the air, not through sound, but through the space between thoughts."
+        },
+        {
+          "speaker": "Rei",
+          "emotion": "cold",
+          "text": "He speaks to distract. It will not work. Move."
+        },
+        {
+          "speaker": "Tao",
+          "emotion": "focused",
+          "text": "Knowing someone and stopping them are very different problems. He knows us. We are about to stop him. Advantage: ours."
+        },
+        {
+          "speaker": "Aya",
+          "emotion": "resolved",
+          "text": "Together. That is what he cannot replicate."
+        }
       ],
       "post_dialogue": [
-        { "speaker": "narrator", "emotion": "climactic", "text": "The Shadow Reach opens into the Emperor's inner sanctum. Vast. Ancient. And Valdris is here — not hiding, not watching from a distance. Present. Waiting." },
-        { "speaker": "narrator", "emotion": "sinister", "text": "Valdris: I will add your worlds to my silence. Every memory of you that exists anywhere. I will end it cleanly." },
-        { "speaker": "Rei", "emotion": "ferocious", "text": "There is nothing after you. Because you end here." },
-        { "speaker": "Tao", "emotion": "fierce", "text": "I am terrified. And I am going to fight you anyway. That is the difference between you and us." }
+        {
+          "speaker": "narrator",
+          "emotion": "climactic",
+          "text": "The Shadow Reach opens into the Emperor's inner sanctum. Vast. Ancient. And Valdris is here \u2014 not hiding, not watching from a distance. Present. Waiting."
+        },
+        {
+          "speaker": "narrator",
+          "emotion": "sinister",
+          "text": "Valdris: I will add your worlds to my silence. Every memory of you that exists anywhere. I will end it cleanly."
+        },
+        {
+          "speaker": "Rei",
+          "emotion": "ferocious",
+          "text": "There is nothing after you. Because you end here."
+        },
+        {
+          "speaker": "Tao",
+          "emotion": "fierce",
+          "text": "I am terrified. And I am going to fight you anyway. That is the difference between you and us."
+        }
       ]
     }
   ],
-
   "boss_chapter": {
     "title": "The Shadow Emperor",
     "background": "emperor_throne",
-    "cast": ["Aya", "Tao", "Lulu", "Rei"],
+    "cast": [
+      "Aya",
+      "Tao",
+      "Lulu",
+      "Rei"
+    ],
     "pre_dialogue": [
-      { "speaker": "narrator", "emotion": "final", "text": "Four Seal Fragments reclaimed. Four anchors destroyed. And now, at last — the Shadow Emperor himself, unbound from his anchors, standing alone." },
-      { "speaker": "narrator", "emotion": "ominous", "text": "Valdris: You freed my Fragments. You took my anchors. You made it so I cannot hide in your world any longer. Well done." },
-      { "speaker": "Aya", "emotion": "fierce", "text": "Your reign ends here. For Aethoria. For all the worlds you have consumed." },
-      { "speaker": "Tao", "emotion": "determined", "text": "For the people who will not be remembered unless we remember them." },
-      { "speaker": "Lulu", "emotion": "unwavering", "text": "For the beauty you tried to destroy." },
-      { "speaker": "Rei", "emotion": "resolute", "text": "And for the karma you will finally pay." }
+      {
+        "speaker": "narrator",
+        "emotion": "final",
+        "text": "Four Seal Fragments reclaimed. Four anchors destroyed. And now, at last \u2014 the Shadow Emperor himself, unbound from his anchors, standing alone."
+      },
+      {
+        "speaker": "narrator",
+        "emotion": "ominous",
+        "text": "Valdris: You freed my Fragments. You took my anchors. You made it so I cannot hide in your world any longer. Well done."
+      },
+      {
+        "speaker": "Aya",
+        "emotion": "fierce",
+        "text": "Your reign ends here. For Aethoria. For all the worlds you have consumed."
+      },
+      {
+        "speaker": "Tao",
+        "emotion": "determined",
+        "text": "For the people who will not be remembered unless we remember them."
+      },
+      {
+        "speaker": "Lulu",
+        "emotion": "unwavering",
+        "text": "For the beauty you tried to destroy."
+      },
+      {
+        "speaker": "Rei",
+        "emotion": "resolute",
+        "text": "And for the karma you will finally pay."
+      }
     ],
     "post_dialogue": [
-      { "speaker": "narrator", "emotion": "solemn", "text": "The Fallen Angel staggers. The darkness holding Commander Veleth together fractures — and for a single breath, something like recognition crosses what was once a face." },
-      { "speaker": "Lulu", "emotion": "soft", "text": "Veleth. I am sorry it took us so long." },
-      { "speaker": "narrator", "emotion": "heavy", "text": "The form dissolves. Not with peace — with the sound of something that had been held too long finally releasing. The Shadow Seal Fragment pulses once in the dark, recovered." },
-      { "speaker": "Tao", "emotion": "sombre", "text": "We have the Fragment. That was the first gate. Not the last." },
-      { "speaker": "Rei", "emotion": "grim", "text": "He retreated. He was never here to stop us — he was here to measure us. Valdris knows what we are capable of now." },
-      { "speaker": "Aya", "emotion": "controlled", "text": "Then he also knows we are coming. The Void Citadel is ahead. His fortress. His last line." },
-      { "speaker": "narrator", "emotion": "ominous", "text": "In the far dark, behind walls of obsidian that have stood for six centuries, the Living Core stirs — and for the first time since it consumed its first world, something in Valdris's architecture registers the faint signal it has not felt in an age. Danger." }
+      {
+        "speaker": "narrator",
+        "emotion": "solemn",
+        "text": "The Fallen Angel staggers. The darkness holding Commander Veleth together fractures \u2014 and for a single breath, something like recognition crosses what was once a face."
+      },
+      {
+        "speaker": "Lulu",
+        "emotion": "soft",
+        "text": "Veleth. I am sorry it took us so long."
+      },
+      {
+        "speaker": "narrator",
+        "emotion": "heavy",
+        "text": "The form dissolves. Not with peace \u2014 with the sound of something that had been held too long finally releasing. The Shadow Seal Fragment pulses once in the dark, recovered."
+      },
+      {
+        "speaker": "Tao",
+        "emotion": "sombre",
+        "text": "We have the Fragment. That was the first gate. Not the last."
+      },
+      {
+        "speaker": "Rei",
+        "emotion": "grim",
+        "text": "He retreated. He was never here to stop us \u2014 he was here to measure us. Valdris knows what we are capable of now."
+      },
+      {
+        "speaker": "Aya",
+        "emotion": "controlled",
+        "text": "Then he also knows we are coming. The Void Citadel is ahead. His fortress. His last line."
+      },
+      {
+        "speaker": "narrator",
+        "emotion": "ominous",
+        "text": "In the far dark, behind walls of obsidian that have stood for six centuries, the Living Core stirs \u2014 and for the first time since it consumed its first world, something in Valdris's architecture registers the faint signal it has not felt in an age. Danger."
+      }
     ]
   }
 }
-

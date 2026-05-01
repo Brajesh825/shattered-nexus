@@ -157,6 +157,10 @@
             <span class="tbtn-icon">🗺</span>
             <span class="tbtn-label">EXPLORE</span>
           </button>
+          <button class="title-btn title-btn-system" onclick="systemReinstall()">
+            <span class="tbtn-icon">⚙️</span>
+            <span class="tbtn-label">REINSTALL</span>
+          </button>
         </div>
       </div>
 
@@ -354,7 +358,7 @@
     <!-- ═══════════════════════════════════════
        STORY SCREEN
        ═══════════════════════════════════════ -->
-    <div id="story-screen" class="screen">
+    <div id="story-screen" class="screen" onclick="Story.handleScreenClick(event)">
       <div id="story-bg" class="story-bg bg--default">
         <!-- Character scene layer -->
         <div class="s-scene-layer" id="s-scene-layer"></div>
@@ -675,7 +679,9 @@
   <script src="js/map/data/tile-renders.js"></script>
   <script src="js/map/map-data.js"></script>
   <script src="js/map/data/map-verdant-vale.js"></script>
-  <script src="js/map/data/map-crystal-cavern.js"></script>
+  <script src="js/map/data/map-crystal-cavern-f1.js"></script>
+  <script src="js/map/data/map-crystal-cavern-f2.js"></script>
+  <script src="js/map/data/map-crystal-cavern-f3.js"></script>
   <script src="js/map/data/map-ember-wastes.js"></script>
   <script src="js/map/data/map-sunken-temple.js"></script>
   <script src="js/map/data/map-shadow-reach.js"></script>
@@ -727,6 +733,7 @@
   <script src="js/ui/world-explorer.js"></script>
   <script src="js/ui/weather-engine.js"></script>
   <script src="js/ui/credits-screen.js"></script>
+  <script src="js/cutscene.js"></script>
   <script src="js/story.js"></script>
   <script src="js/ui/home-engine.js"></script>
   <script>
@@ -1039,6 +1046,54 @@
         };
       }
     });
+
+    /** 
+     * System Reinstall: Clears everything EXCEPT save files 
+     * Use this if the cache is stuck or assets are broken.
+     */
+    async function systemReinstall() {
+      if (!confirm("✦ SYSTEM REINSTALL ✦\n\nThis will clear all cached assets and refresh the game engine to the latest version.\n\nNOTE: Your save files will NOT be deleted.\n\nProceed with reinstall?")) return;
+
+      try {
+        console.log("🛠️ Starting System Reinstall...");
+        
+        // 1. Clear Browser Caches
+        if ('caches' in window) {
+          const keys = await caches.keys();
+          await Promise.all(keys.map(key => {
+            console.log("🗑️ Deleting cache:", key);
+            return caches.delete(key);
+          }));
+        }
+
+        // 2. Unregister Service Workers
+        if ('serviceWorker' in navigator) {
+          const registrations = await navigator.serviceWorker.getRegistrations();
+          await Promise.all(registrations.map(reg => {
+            console.log("🔌 Unregistering SW:", reg.scope);
+            return reg.unregister();
+          }));
+        }
+
+        // 3. Clear localStorage (Protecting Saves)
+        const keys = Object.keys(localStorage);
+        const savePrefix = "cc_save_"; // Prefix from Save._key() and Save._LEGACY_KEY
+        
+        keys.forEach(key => {
+          if (!key.startsWith(savePrefix)) {
+            console.log("🧹 Clearing storage key:", key);
+            localStorage.removeItem(key);
+          }
+        });
+
+        // 4. Final Reload
+        console.log("🔄 Reinstall complete. Reloading...");
+        window.location.reload();
+      } catch (e) {
+        console.error("❌ Reinstall failed:", e);
+        alert("Reinstall failed. Please clear your browser cache manually.");
+      }
+    }
   </script>
 
   <!-- CREDITS OVERLAY -->

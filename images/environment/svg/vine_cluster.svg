@@ -1,0 +1,31 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="vc-vine" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#558b2f"/>
+      <stop offset="100%" style="stop-color:#1b5e20"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="64" height="8" rx="2" fill="#4e342e"/>
+  <path d="M10 8 Q8 25 12 40 Q10 50 8 62" fill="none" stroke="url(#vc-vine)" stroke-width="3" stroke-linecap="round"/>
+  <path d="M22 8 Q18 20 22 35 Q20 48 18 62" fill="none" stroke="url(#vc-vine)" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M34 8 Q32 22 36 38 Q34 50 32 62" fill="none" stroke="url(#vc-vine)" stroke-width="3" stroke-linecap="round"/>
+  <path d="M46 8 Q44 20 48 36 Q46 50 44 62" fill="none" stroke="url(#vc-vine)" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M57 8 Q56 24 58 42 Q57 52 56 62" fill="none" stroke="url(#vc-vine)" stroke-width="2" stroke-linecap="round"/>
+  <g fill="#4caf50" opacity="0.9">
+    <ellipse cx="10" cy="20" rx="5" ry="3" transform="rotate(-20 10 20)"/>
+    <ellipse cx="14" cy="35" rx="4" ry="2.5" transform="rotate(15 14 35)"/>
+    <ellipse cx="22" cy="15" rx="4.5" ry="2.5" transform="rotate(-30 22 15)"/>
+    <ellipse cx="20" cy="30" rx="4" ry="2.5" transform="rotate(10 20 30)"/>
+    <ellipse cx="34" cy="22" rx="5" ry="3" transform="rotate(-15 34 22)"/>
+    <ellipse cx="36" cy="38" rx="4" ry="2.5" transform="rotate(20 36 38)"/>
+    <ellipse cx="46" cy="18" rx="4.5" ry="3" transform="rotate(-25 46 18)"/>
+    <ellipse cx="44" cy="32" rx="4" ry="2.5" transform="rotate(10 44 32)"/>
+    <ellipse cx="58" cy="26" rx="4" ry="2.5" transform="rotate(-10 58 26)"/>
+  </g>
+  <g fill="#388e3c" opacity="0.5">
+    <ellipse cx="8" cy="48" rx="3.5" ry="2"/>
+    <ellipse cx="20" cy="46" rx="3" ry="2"/>
+    <ellipse cx="32" cy="50" rx="3.5" ry="2"/>
+    <ellipse cx="44" cy="47" rx="3" ry="2"/>
+  </g>
+</svg>

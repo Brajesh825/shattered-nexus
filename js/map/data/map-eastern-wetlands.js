@@ -13,15 +13,22 @@ MAP_DEFS.eastern_wetlands = {
     weather: 'mist',
     enemyLevelRange: [30, 38],
     encounterTemplates: [
-        { weight: 3, enemies: ['mushroom'] },
-        { weight: 2, enemies: ['spider'] },
-        { weight: 1, enemies: ['mushroom', 'spider'] }
+        { weight: 4, enemies: ['mushroom', 'mushroom'] },
+        { weight: 3, enemies: ['spider'] },
+        { weight: 2, enemies: ['mushroom', 'spider'] },
+        { weight: 2, enemies: ['slug'] },
+        { weight: 1, enemies: ['spider', 'spider'] },
+        { weight: 1, enemies: ['mushroom', 'mushroom', 'spider'] },
+        { weight: 1, enemies: ['slug', 'mushroom'] }
     ],
     enemies: [
-        { id: 'mushroom', x: 20, y: 15, patrol: 'random', range: 5, speed: 0.8 },
-        { id: 'spider',   x: 40, y: 25, patrol: 'horizontal', range: 12, speed: 1.4 },
-        { id: 'spider',   x: 60, y: 15, patrol: 'random', range: 5, speed: 1.2 },
-        { id: 'mushroom', x: 25, y: 30, patrol: 'random', range: 6, speed: 0.9 },
+        // --- MIRE SENTINELS ---
+        { id: 'mushroom',    x: 20, y: 15, patrol: 'random',     range: 5,  speed: 0.8 },
+        { id: 'spider',      x: 40, y: 25, patrol: 'horizontal', range: 12, speed: 1.4 },
+        { id: 'mushroom',    x: 25, y: 30, patrol: 'random',     range: 6,  speed: 0.9 },
+        // --- BORDER PATROL ---
+        { id: 'spider',      x: 60, y: 15, patrol: 'random',     range: 5,  speed: 1.2 },
+        // --- MAP BOSS ---
         { id: 'abomination', x: 65, y: 10, patrol: 'stationary', isBoss: true, label: 'Flesh Abomination' }
     ],
     tiles: (function () {
@@ -89,8 +96,8 @@ MAP_DEFS.eastern_wetlands = {
         return rows;
     })(),
     npcs: [
-        { id: 'mire_witch', x: 10, y: 20, dialogueKey: 'witch_alchemy', behavior: 'stationary' },
-        { id: 'lost_soul', x: 50, y: 20, dialogueKey: 'ghost_plea', behavior: 'wander', range: 4 }
+        { id: 'mire_witch', x: 10, y: 20, dialogueKey: 'eastern_wetlands', behavior: 'stationary' },
+        { id: 'lost_soul', x: 50, y: 20, dialogueKey: 'eastern_wetlands', behavior: 'wander', range: 4 }
     ],
     triggers: [
         {
@@ -110,13 +117,23 @@ MAP_DEFS.eastern_wetlands = {
                 { speaker: 'narrator', text: 'A massive shape rises from the black mud. Stitched flesh groans with every movement.' },
                 { speaker: 'Aya', text: 'It\'s... it\'s a nightmare made real. Get back!' }
             ]
+        },
+        {
+            id: 'abomination_approach',
+            x: 57, y: 8, w: 16, h: 6,
+            type: 'dialogue',
+            lines: [
+                { speaker: 'Tao', text: 'Stitched from the survivors of five different civilizations, the Witch said. Valdris assembled grief until it had weight and called it a guardian.' },
+                { speaker: 'Lulu', text: 'It is not guarding anything. It is just in pain.' },
+                { speaker: 'Aya', text: 'Then we are not slaying a monster. We are ending something that should have ended a long time ago.' }
+            ]
         }
     ],
     objective: {
         type: 'reach',
         target: { x: 65, y: 10 },
         label: 'Slay the Flesh Abomination',
-        completeMsg: '✦ The Abomination has been put to rest. The mire is silent.',
+        completeMsg: '✦ The Abomination dissolves into the mire. The mire does not absorb it — it simply opens and lets it go. The Eastern Wetlands are quiet.',
     },
     voiceLines: {
         ambient: [

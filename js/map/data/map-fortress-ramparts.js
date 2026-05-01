@@ -110,31 +110,15 @@ MAP_DEFS.fortress_ramparts = (function() {
         ],
         tiles: tiles,
         enemies: [
-            // TIER 1 PATROLS
-            { id: 'fallen_angel', x: 40, y: 14, patrol: 'horizontal', range: 15, speed: 1.0 },
-            { id: 'dark_phoenix', x: 70, y: 14, patrol: 'random',     range: 6,  speed: 1.3 },
-
-            // CONNECTOR 1
-            { id: 'shadow_wraith', x: 86, y: 20, patrol: 'vertical',   range: 8,  speed: 1.2 },
-
-            // TIER 2 PATROLS (The Hub)
-            { id: 'fallen_angel',  x: 50, y: 34, patrol: 'random',     range: 10, speed: 1.1 },
-            { id: 'dark_phoenix',  x: 30, y: 34, patrol: 'horizontal', range: 12, speed: 1.4 },
-            { id: 'dark_phoenix',  x: 70, y: 34, patrol: 'horizontal', range: 12, speed: 1.4 },
-
-            // CONNECTOR 2
+            // --- NORTH BATTLEMENTS ---
+            { id: 'fallen_angel',  x: 40, y: 14, patrol: 'horizontal', range: 15, speed: 1.0 },
+            // --- WEST TOWER SENTINEL ---
             { id: 'shadow_wraith', x: 14, y: 40, patrol: 'vertical',   range: 8,  speed: 1.2 },
-
-            // TIER 3 PATROLS
-            { id: 'fallen_angel',  x: 40, y: 54, patrol: 'horizontal', range: 20, speed: 1.0 },
-            { id: 'shadow_wraith', x: 60, y: 54, patrol: 'vertical',   range: 5,  speed: 1.2 },
-
-            // BASTION GUARDIANS
-            { id: 'dark_phoenix',  x: 85, y: 65, patrol: 'random',     range: 5,  speed: 1.5 },
-            { id: 'fallen_angel',  x: 95, y: 65, patrol: 'random',     range: 5,  speed: 1.5 },
-            { id: 'shadow_wraith', x: 90, y: 55, patrol: 'horizontal', range: 8,  speed: 1.3 },
-
-            // MAP BOSS — Void Colossus, crystallised weight of six centuries of absorbed data
+            // --- CENTRAL COURTYARD ---
+            { id: 'dark_phoenix',  x: 50, y: 34, patrol: 'random',     range: 10, speed: 1.3 },
+            // --- INNER GATE GUARDIAN ---
+            { id: 'fallen_angel',  x: 50, y: 54, patrol: 'horizontal', range: 10, speed: 1.0 },
+            // --- MAP BOSS ---
             { id: 'void_colossus', x: 50, y: 70, patrol: 'stationary', isBoss: true, label: 'Void Colossus' }
         ],
 

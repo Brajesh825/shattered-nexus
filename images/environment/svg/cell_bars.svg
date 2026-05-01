@@ -1,0 +1,30 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="cb-iron" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#37474f"/>
+      <stop offset="50%" style="stop-color:#607d8b"/>
+      <stop offset="100%" style="stop-color:#37474f"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="64" height="64" fill="#1a1428" opacity="0.7"/>
+  <rect x="2" y="4" width="60" height="6" rx="3" fill="url(#cb-iron)"/>
+  <rect x="2" y="54" width="60" height="6" rx="3" fill="url(#cb-iron)"/>
+  <g fill="url(#cb-iron)" stroke="#263238" stroke-width="0.5">
+    <rect x="6" y="4" width="7" height="56" rx="3.5"/>
+    <rect x="18" y="4" width="7" height="56" rx="3.5"/>
+    <rect x="30" y="4" width="7" height="56" rx="3.5"/>
+    <rect x="42" y="4" width="7" height="56" rx="3.5"/>
+    <rect x="54" y="4" width="7" height="56" rx="3.5"/>
+  </g>
+  <g fill="#90a4ae" opacity="0.3">
+    <rect x="8" y="4" width="2" height="56"/>
+    <rect x="20" y="4" width="2" height="56"/>
+    <rect x="32" y="4" width="2" height="56"/>
+    <rect x="44" y="4" width="2" height="56"/>
+    <rect x="56" y="4" width="2" height="56"/>
+  </g>
+  <rect x="2" y="28" width="60" height="8" rx="3" fill="url(#cb-iron)" opacity="0.9"/>
+  <circle cx="51" cy="32" r="4" fill="#4e342e" stroke="#8d6e63" stroke-width="1.5"/>
+  <circle cx="51" cy="32" r="2" fill="#2d1b00"/>
+  <rect x="47" y="30" width="4" height="4" rx="1" fill="#5d4037" opacity="0.5"/>
+</svg>

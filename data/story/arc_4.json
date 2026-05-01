@@ -11,14 +11,6 @@
     "description": "A swirling green-gold crystal that moves like trapped breath. It whispers \u00e2\u20ac\u201d not words, just the impression of them.",
     "color": "#86efac"
   },
-  "enemies_pool": [
-    "necromancer",
-    "bone_dragon",
-    "void_knight",
-    "abomination",
-    "titan",
-    "merman"
-  ],
   "boss_enemy": "kraken",
   "chapters": [
     {
@@ -134,54 +126,160 @@
       "title": "The Great Sunken Temple",
       "type": "explore",
       "map": "sunken_temple",
-      "map_hint": "Descend through the Sunken Temple — the Kraken and the Wind Fragment wait in the depths.",
+      "map_hint": "Descend through the Sunken Temple \u2014 the Kraken and the Wind Fragment wait in the depths.",
       "pre_dialogue": [
-        { "speaker": "narrator", "emotion": "heavy", "text": "The Shadow Reach gives way to the drowned labyrinth of the Great Sunken Temple — corridors held up by nothing but old magic, shadow-creatures patrolling every passage." },
-        { "speaker": "Rei", "emotion": "somber", "text": "The Fallen Angel is ahead. She was something sacred once. The shadow takes what is strong and breaks it into tools." },
-        { "speaker": "Aya", "emotion": "resolved", "text": "Then we undo what he made of her. One way or another." },
-        { "speaker": "Tao", "emotion": "focused", "text": "Careful through the corridors. Whatever is in here does not want us reaching the bottom." }
+        {
+          "speaker": "narrator",
+          "emotion": "heavy",
+          "text": "The Shadow Reach gives way to the drowned labyrinth of the Great Sunken Temple \u2014 corridors held up by nothing but old magic, shadow-creatures patrolling every passage."
+        },
+        {
+          "speaker": "Rei",
+          "emotion": "somber",
+          "text": "The Fallen Angel is ahead. She was something sacred once. The shadow takes what is strong and breaks it into tools."
+        },
+        {
+          "speaker": "Aya",
+          "emotion": "resolved",
+          "text": "Then we undo what he made of her. One way or another."
+        },
+        {
+          "speaker": "Tao",
+          "emotion": "focused",
+          "text": "Careful through the corridors. Whatever is in here does not want us reaching the bottom."
+        }
       ],
       "post_dialogue": [
-        { "speaker": "narrator", "emotion": "solemn", "text": "The deepest chamber opens before them. The water is still here — ancient, black, lit from below by the pulse of the Wind Seal Fragment. And beneath the surface, something immense circles." },
-        { "speaker": "Lulu", "emotion": "moved", "text": "The water here is grief-soaked. Something ancient was bound to this place against its will. I can feel it." },
-        { "speaker": "Rei", "emotion": "quiet", "text": "The Kraken. Pre-dates Valdris. He corrupted it when he broke the Seal — turned a guardian into a jailer." },
-        { "speaker": "Aya", "emotion": "resolved", "text": "Then we free it. That is what we do. Together." }
+        {
+          "speaker": "narrator",
+          "emotion": "solemn",
+          "text": "The deepest chamber opens before them. The water is still here \u2014 ancient, black, lit from below by the pulse of the Wind Seal Fragment. And beneath the surface, something immense circles."
+        },
+        {
+          "speaker": "Lulu",
+          "emotion": "moved",
+          "text": "The water here is grief-soaked. Something ancient was bound to this place against its will. I can feel it."
+        },
+        {
+          "speaker": "Rei",
+          "emotion": "quiet",
+          "text": "The Oracle's records mention the Kraken. It pre-dates Valdris. He corrupted it when he broke the Seal \u2014 turned a guardian into a jailer."
+        },
+        {
+          "speaker": "Aya",
+          "emotion": "resolved",
+          "text": "Then we free it. That is what we do. Together."
+        }
       ]
     }
   ],
-
   "boss_chapter": {
     "title": "The Guardian of the Deep",
     "background": "sunken_temple",
-    "cast": ["Aya", "Tao", "Lulu", "Rei"],
+    "cast": [
+      "Aya",
+      "Tao",
+      "Lulu",
+      "Rei"
+    ],
     "pre_dialogue": [
-      { "speaker": "narrator", "emotion": "heavy", "text": "The Kraken rises from the black water — ancient, immense, its body threaded through with shadow-corruption that pulses in time with the Wind Seal Fragment. It does not want to be here. It has no choice." },
-      { "speaker": "Rei", "emotion": "grave", "text": "It was a guardian once. This temple, these depths — they were its charge. Valdris broke the Seal and broke the creature with it." },
-      { "speaker": "Lulu", "emotion": "determined", "text": "I can feel what it feels. It is not anger. It is grief. We end this for its sake." },
-      { "speaker": "Tao", "emotion": "ready", "text": "For its sake, and for ours. Together." }
+      {
+        "speaker": "narrator",
+        "emotion": "heavy",
+        "text": "The Kraken rises from the black water \u2014 ancient, immense, its body threaded through with shadow-corruption that pulses in time with the Wind Seal Fragment. It does not want to be here. It has no choice."
+      },
+      {
+        "speaker": "Rei",
+        "emotion": "grave",
+        "text": "The Oracle told us it was a guardian once. This temple, these depths \u2014 they were its charge. Valdris broke the Seal and broke the creature with it."
+      },
+      {
+        "speaker": "Lulu",
+        "emotion": "determined",
+        "text": "I can feel what it feels. It is not anger. It is grief. We end this for its sake."
+      },
+      {
+        "speaker": "Tao",
+        "emotion": "ready",
+        "text": "For its sake, and for ours. Together."
+      }
     ],
     "post_dialogue": [
-      { "speaker": "narrator", "emotion": "melancholy", "text": "The Kraken falls. As its shadow-form dissolves, the Wind Seal Fragment rises from the depths — clear and cold, lit with the memory of open air." },
-      { "speaker": "Rei", "emotion": "quiet", "text": "The karma lifts. It can finally rest. After so long." },
-      { "speaker": "Lulu", "emotion": "bittersweet", "text": "I am glad it is free. I just wish there had been another way." },
-      { "speaker": "Aya", "emotion": "gentle", "text": "Sometimes the only kindness left is the one that ends suffering. It is not comfortable. But it is true." },
-      { "speaker": "Tao", "emotion": "solemn", "text": "Four Fragments. One more. And then we face him directly." }
+      {
+        "speaker": "narrator",
+        "emotion": "melancholy",
+        "text": "The Kraken falls. As its shadow-form dissolves, the Wind Seal Fragment rises from the depths \u2014 clear and cold, lit with the memory of open air."
+      },
+      {
+        "speaker": "Rei",
+        "emotion": "quiet",
+        "text": "The karma lifts. It can finally rest. After so long."
+      },
+      {
+        "speaker": "Lulu",
+        "emotion": "bittersweet",
+        "text": "I am glad it is free. I just wish there had been another way."
+      },
+      {
+        "speaker": "Aya",
+        "emotion": "gentle",
+        "text": "Sometimes the only kindness left is the one that ends suffering. It is not comfortable. But it is true."
+      },
+      {
+        "speaker": "Tao",
+        "emotion": "solemn",
+        "text": "Four Fragments. One more. And then we face him directly."
+      }
     ],
     "onVictory": [
-      { "type": "recruit", "charId": "rex" }
+      {
+        "type": "recruit",
+        "charId": "rex"
+      }
     ],
     "character_moment": {
       "background": "sunken_temple",
       "dialogue": [
-        { "speaker": null, "text": "As the water stills, a figure steps from the flooded alcove at the chamber's edge — draped in gold and ancient authority, armor marked with a crest that predates every kingdom any of them have heard of." },
-        { "speaker": "Rex", "emotion": "commanding", "text": "I have been held in these depths longer than I can account for. The moment the guardian fell — a chain snapped. I could breathe again. I am Rex, a king from an age before this war. I will not stand still while darkness finishes what it started." },
-        { "speaker": "Aya", "emotion": "awed", "text": "An immortal king, kept prisoner in a sunken temple. You have borne witness to ages. Why stand with us now?" },
-        { "speaker": "Rex", "emotion": "resolute", "text": "Because you are the first ones in two centuries who came here to free something rather than take something. I would follow that." },
-        { "speaker": "Tao", "emotion": "respectful", "text": "From warden to dragoon to immortal king. We gather well." },
-        { "speaker": "Rei", "emotion": "quiet", "text": "Six. The number holds weight." },
-        { "speaker": "Valka", "emotion": "solemn", "text": "Then we are complete. What comes next — we face it together." }
+        {
+          "speaker": null,
+          "text": "As the water stills, a figure steps from the flooded alcove at the chamber's edge \u2014 draped in gold and ancient authority, armor marked with a crest that predates every kingdom any of them have heard of."
+        },
+        {
+          "speaker": "Rex",
+          "emotion": "commanding",
+          "text": "I am Rex. I ruled a golden nation in another world. When I was pulled into this rift, Valdris chained me in these depths to witness the Kraken's grief\u2014a creature that sacrificed everything to save its people, just as I once did for mine."
+        },
+        {
+          "speaker": "Aya",
+          "emotion": "awed",
+          "text": "An immortal king. He kept you prisoner to watch a guardian suffer?"
+        },
+        {
+          "speaker": "Rex",
+          "emotion": "resolute",
+          "text": "To watch it fail. The burden of immortality is outliving the people you lead, and Valdris thought that would break me. But you have broken his chain instead."
+        },
+        {
+          "speaker": "Tao",
+          "emotion": "respectful",
+          "text": "A cruel punishment. But you are unchained now."
+        },
+        {
+          "speaker": "Rex",
+          "emotion": "steady",
+          "text": "Yes. Because you are the first ones who came to these depths to free something rather than take something. You gave a suffering guardian rest."
+        },
+        {
+          "speaker": "Rei",
+          "emotion": "quiet",
+          "text": "Six. The number holds weight."
+        },
+        {
+          "speaker": "Valka",
+          "emotion": "solemn",
+          "text": "Then we are complete. What comes next \u2014 we face it together."
+        }
       ]
     }
   }
 }
-

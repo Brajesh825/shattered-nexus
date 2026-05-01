@@ -1,0 +1,19 @@
+<svg width="80" height="120" viewBox="0 0 80 120" xmlns="http://www.w3.org/2000/svg">
+  <!-- Plinth (Base) -->
+  <rect x="20" y="100" width="40" height="15" fill="#4a5568" stroke="#1a202c" stroke-width="2"/>
+  
+  <!-- Statue Body (Headless) -->
+  <path d="M30 100 L50 100 L55 60 L45 50 L35 50 L25 60 Z" fill="#718096" stroke="#2d3748" stroke-width="2"/>
+  
+  <!-- Cape (Tattered) -->
+  <path d="M25 60 L15 90 L25 85 L35 95 L30 60" fill="#2d3748" opacity="0.6"/>
+
+  <!-- Broken Sword -->
+  <line x1="55" y1="80" x2="65" y2="60" stroke="#4a5568" stroke-width="4"/>
+  <path d="M65 60 L70 50" stroke="#4a5568" stroke-width="3" stroke-dasharray="2,2"/> <!-- Fragmented Edge -->
+
+  <!-- Moss Detail -->
+  <circle cx="35" cy="102" r="4" fill="#1a3d15" opacity="0.7"/>
+  <circle cx="45" cy="105" r="3" fill="#1a3d15" opacity="0.7"/>
+  <path d="M30 70 Q35 75 40 70" stroke="#1a3d15" stroke-width="2" fill="none" opacity="0.5"/>
+</svg>

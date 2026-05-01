@@ -1,0 +1,44 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="cn-iron" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#546e7a"/>
+      <stop offset="50%" style="stop-color:#37474f"/>
+      <stop offset="100%" style="stop-color:#263238"/>
+    </linearGradient>
+    <linearGradient id="cn-barrel" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" style="stop-color:#455a64"/>
+      <stop offset="50%" style="stop-color:#607d8b"/>
+      <stop offset="100%" style="stop-color:#37474f"/>
+    </linearGradient>
+    <linearGradient id="cn-wheel" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#5d4037"/>
+      <stop offset="100%" style="stop-color:#3e2723"/>
+    </linearGradient>
+  </defs>
+  <circle cx="14" cy="52" r="10" fill="url(#cn-wheel)" stroke="#4e342e" stroke-width="2"/>
+  <circle cx="14" cy="52" r="4" fill="#3e2723"/>
+  <g stroke="#6d4c41" stroke-width="1.5">
+    <line x1="14" y1="42" x2="14" y2="62"/>
+    <line x1="4" y1="52" x2="24" y2="52"/>
+    <line x1="7" y1="45" x2="21" y2="59"/>
+    <line x1="21" y1="45" x2="7" y2="59"/>
+  </g>
+  <circle cx="50" cy="52" r="10" fill="url(#cn-wheel)" stroke="#4e342e" stroke-width="2"/>
+  <circle cx="50" cy="52" r="4" fill="#3e2723"/>
+  <g stroke="#6d4c41" stroke-width="1.5">
+    <line x1="50" y1="42" x2="50" y2="62"/>
+    <line x1="40" y1="52" x2="60" y2="52"/>
+    <line x1="43" y1="45" x2="57" y2="59"/>
+    <line x1="57" y1="45" x2="43" y2="59"/>
+  </g>
+  <rect x="10" y="44" width="44" height="10" rx="2" fill="url(#cn-iron)"/>
+  <path d="M14 36 Q14 28 18 26 L52 26 Q58 26 58 30 L58 44 Q54 48 14 48 Z" fill="url(#cn-barrel)"/>
+  <ellipse cx="58" cy="35" rx="5" ry="8" fill="#37474f" stroke="#546e7a" stroke-width="1"/>
+  <ellipse cx="56" cy="35" rx="3" ry="6" fill="#1a2a30"/>
+  <g stroke="#455a64" stroke-width="0.8" fill="none" opacity="0.5">
+    <line x1="18" y1="26" x2="18" y2="48"/>
+    <line x1="28" y1="26" x2="28" y2="48"/>
+    <line x1="38" y1="26" x2="38" y2="48"/>
+    <line x1="48" y1="26" x2="48" y2="48"/>
+  </g>
+</svg>

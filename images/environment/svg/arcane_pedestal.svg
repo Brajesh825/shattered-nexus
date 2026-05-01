@@ -1,0 +1,35 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="ap-stone" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4a4a6a"/>
+      <stop offset="100%" style="stop-color:#1e1e3a"/>
+    </linearGradient>
+    <radialGradient id="ap-orb" cx="40%" cy="35%" r="60%">
+      <stop offset="0%" style="stop-color:#e1f5fe"/>
+      <stop offset="40%" style="stop-color:#7c4dff"/>
+      <stop offset="100%" style="stop-color:#311b92"/>
+    </radialGradient>
+    <radialGradient id="ap-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#7c4dff;stop-opacity:0.7"/>
+      <stop offset="100%" style="stop-color:#7c4dff;stop-opacity:0"/>
+    </radialGradient>
+    <filter id="ap-blur"><feGaussianBlur stdDeviation="2"/></filter>
+  </defs>
+  <ellipse cx="32" cy="62" rx="16" ry="3" fill="#1a1a1a" opacity="0.4"/>
+  <rect x="16" y="54" width="32" height="8" rx="3" fill="url(#ap-stone)"/>
+  <rect x="20" y="44" width="24" height="12" rx="2" fill="url(#ap-stone)"/>
+  <rect x="18" y="42" width="28" height="4" rx="2" fill="#5c5c8a"/>
+  <path d="M24 42 L20 44 M40 42 L44 44" stroke="#6a6a9a" stroke-width="1"/>
+  <g stroke="#4a4a8a" stroke-width="0.8" fill="none" opacity="0.5">
+    <line x1="22" y1="44" x2="22" y2="54"/>
+    <line x1="32" y1="44" x2="32" y2="54"/>
+    <line x1="42" y1="44" x2="42" y2="54"/>
+  </g>
+  <circle cx="32" cy="30" r="12" fill="url(#ap-glow)" filter="url(#ap-blur)" opacity="0.8">
+    <animate attributeName="opacity" values="0.5;0.9;0.5" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="32" cy="30" r="10" fill="url(#ap-orb)"/>
+  <circle cx="28" cy="26" r="4" fill="#e1f5fe" opacity="0.4"/>
+  <path d="M28 26 Q32 22 36 26 Q40 30 36 34 Q32 38 28 34 Q24 30 28 26Z" fill="none" stroke="#b388ff" stroke-width="0.8" opacity="0.6"/>
+  <path d="M20 42 Q28 38 32 30 Q36 38 44 42" fill="none" stroke="#7c4dff" stroke-width="1" opacity="0.7"/>
+</svg>

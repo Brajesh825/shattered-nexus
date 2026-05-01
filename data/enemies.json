@@ -4248,5 +4248,29 @@
       { "item": "Archive Key", "chance": 0.85 },
       { "item": "Storm Crystal", "chance": 0.45 }
     ]
+  },
+  {
+    "id": "shadow_emperor",
+    "name": "Shadow Emperor",
+    "subtitle": "The fallen sovereign of a forgotten empire",
+    "element": "shadow",
+    "weakTo": ["holy", "light"],
+    "resistTo": ["shadow", "physical"],
+    "tier": 4,
+    "isBoss": true,
+    "aiRole": "mage",
+    "stats": { "hp": 1200, "atk": 45, "def": 40, "spd": 22, "mag": 65 },
+    "reward": { "exp": 2500, "gold": 500 },
+    "palette": { "body": "#2a1a40", "dark": "#100820", "cape": "#4b0082", "eye": "#ff00ff", "shine": "#9933ff" },
+    "abilities": [
+      { "id": "shadow_flare", "name": "Shadow Flare", "type": "magic_damage", "weight": 40, "dmgMultiplier": 2.2, "effect": { "aoe": true } },
+      { "id": "eternal_darkness", "name": "Eternal Darkness", "type": "debuff", "weight": 30, "effect": { "blind": true, "aoe": true } },
+      { "id": "sovereigns_decree", "name": "Sovereign's Decree", "type": "magic_damage", "weight": 30, "dmgMultiplier": 2.5 }
+    ],
+    "lore": "The Shadow Emperor was once King Galdor the Kind, the ruler of the Verdant Vale before it was verdant. When the Void Knight first whispered to the kings of the world, Galdor was the first to listen—not out of greed, but out of a desperate desire to protect his people from a famine no one else saw coming. He offered his soul to buy his kingdom another year of rain. Valdris accepted. The rain came, but it was black. The empire fell in a single night. Now he sits on a shattered throne in a kingdom that no longer exists, still believing he is protecting his subjects by keeping them in the dark.",
+    "drops": [
+      { "item": "Fallen Crown", "chance": 1.0 },
+      { "item": "Shadow Essence", "chance": 0.5 }
+    ]
   }
-]
+]

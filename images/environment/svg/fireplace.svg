@@ -1,0 +1,31 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="fire-glow" cx="50%" cy="80%" r="60%">
+      <stop offset="0%" style="stop-color:#ff9800;stop-opacity:0.6" />
+      <stop offset="100%" style="stop-color:#ff9800;stop-opacity:0" />
+    </radialGradient>
+    <linearGradient id="mantle" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#78909c;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#455a64;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Main Hearth Structure -->
+  <rect x="8" y="10" width="48" height="50" rx="2" fill="#37474f" stroke="#263238" stroke-width="1.5" />
+  <!-- Mantle -->
+  <rect x="6" y="10" width="52" height="6" rx="1" fill="url(#mantle)" stroke="#263238" stroke-width="1" />
+  <!-- Firebox Opening -->
+  <path d="M 16 60 L 16 35 Q 32 25 48 35 L 48 60 Z" fill="#1a1a1a" stroke="#000" stroke-width="1" />
+  <!-- Fire Glow -->
+  <rect x="16" y="30" width="32" height="30" fill="url(#fire-glow)" />
+  <!-- Embers / Logs -->
+  <rect x="22" y="55" width="20" height="4" rx="1" fill="#3e2723" />
+  <path d="M 25 55 L 32 40 L 39 55 Z" fill="#f44336" opacity="0.8">
+    <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite" />
+  </path>
+  <path d="M 28 55 L 32 45 L 36 55 Z" fill="#ff9800">
+    <animate attributeName="opacity" values="0.8;1;0.8" dur="1.5s" repeatCount="indefinite" />
+  </path>
+  <!-- Stone Details -->
+  <rect x="12" y="18" width="8" height="4" rx="1" fill="rgba(0,0,0,0.2)" />
+  <rect x="44" y="24" width="8" height="4" rx="1" fill="rgba(0,0,0,0.2)" />
+</svg>

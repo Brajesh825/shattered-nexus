@@ -24,9 +24,9 @@ const ReleaseConfig = {
   IS_DEV: false,
 
   // UI Strings for the "End of Version" screen
-  BETA_END_TITLE: "ARC 1 COMPLETE",
-  BETA_END_SUBTITLE: "THE ADVENTURE CONTINUES SOON",
-  BETA_END_TEXT: "You have successfully restored the first Elemental Seal. The path to the Crystal Caverns remains shrouded in shadow... for now.\n\nThank you for playing the Shattered Nexus Beta! Follow the project on itch.io for the Arc 2 update.",
+  BETA_END_TITLE: "ARC 2 COMPLETE",
+  BETA_END_SUBTITLE: "THE VOID IS RECOLLECTING...",
+  BETA_END_TEXT: "The Spectral Guardian has fallen, and the Resonance of the Crystal Caverns is restored. But the Demon Lord's influence spreads to the Ember Wastes.\n\nThank you for playing the Shattered Nexus Beta! Arc 3 development is underway.",
 
   // External link for the "Under Development" screen
   ITCH_URL: "https://brajesh825.itch.io/shattered-nexus"

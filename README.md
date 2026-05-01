@@ -418,6 +418,29 @@ Dark Knight, Venom Wyvern, Werewolf, Harpy, Minotaur, Necromancer, Fire Elementa
 
 ---
 
+## 🛠️ Architect Pro (Map Editor)
+
+RPG+ includes a high-fidelity **Architect Pro** map editor for creating and modifying game regions. It features a modern glassmorphic UI, high-fidelity SVG assets, and advanced editing tools.
+
+- **URL**: `tools/tile-editor.html`
+- **Features**: 
+    - **Bucket Fill (G)** and **Rectangle (R)** tools for rapid terrain creation.
+    - **Eyedropper (I)** for instant tile sampling.
+    - **Master Manifest**: Data-driven asset loading via `sprites.json`.
+    - **SVG Support**: Integration of premium vector assets for environmental storytelling.
+
+### Map Data Schema (V1.1)
+
+Maps are exported as JSON with the following structure:
+
+- **Metadata**: Dimensions, versioning, and palette reference.
+- **Data (3D Array)**: `[Layer][Y][X]`
+    - **Layer 0**: Ground terrain (Grass, Water, Path).
+    - **Layer 1**: Objects & Decoration (Trees, Rocks, SVGs).
+    - **Layer 2**: Overhead / Canopy (Tree tops, arches).
+
+---
+
 ## 📁 Project Structure
 
 ```

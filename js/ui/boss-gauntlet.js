@@ -158,6 +158,9 @@ const BossGauntlet = {
         const s = Save.read(slot);
         if (!s) return;
 
+        // CRITICAL: Bind the active slot so subsequent saves (if any) target the right place
+        if (typeof Story !== 'undefined') Story._activeSlot = slot;
+
         // Hydrate G state
         G.selectedChar = s.selectedChar || (G.chars[0] && G.chars[0].id);
         G.selectedClass = s.selectedClass || (G.classes[0] && G.classes[0].id);

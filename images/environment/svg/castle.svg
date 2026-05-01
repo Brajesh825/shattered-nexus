@@ -1,0 +1,49 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="castleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4a5568;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1a202c;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Ground Shadow -->
+  <ellipse cx="100" cy="180" rx="90" ry="20" fill="#000" opacity="0.4"/>
+
+  <!-- Left Defensive Tower -->
+  <path d="M20 180 L50 180 L45 60 L25 60 Z" fill="url(#castleGrad)" stroke="#111" stroke-width="2"/>
+  <path d="M20 65 L20 45 L27.5 45 L27.5 55 L35 55 L35 45 L42.5 45 L42.5 55 L50 55 L50 65 Z" fill="#1a202c" stroke="#000" stroke-width="1.5"/>
+
+  <!-- Right Defensive Tower -->
+  <path d="M150 180 L180 180 L175 60 L155 60 Z" fill="url(#castleGrad)" stroke="#111" stroke-width="2"/>
+  <path d="M150 65 L150 45 L157.5 45 L157.5 55 L165 55 L165 45 L172.5 45 L172.5 55 L180 55 L180 65 Z" fill="#1a202c" stroke="#000" stroke-width="1.5"/>
+
+  <!-- Main Keep (Center) -->
+  <path d="M45 180 L155 180 L145 40 L55 40 Z" fill="url(#castleGrad)" stroke="#111" stroke-width="2"/>
+  
+  <!-- Central Great Hall (Top) -->
+  <path d="M60 40 L60 20 L70 20 L70 30 L85 30 L85 20 L115 20 L115 30 L130 30 L130 20 L140 20 L140 40 Z" fill="#1a202c" stroke="#000" stroke-width="2"/>
+
+  <!-- Grand Arched Entrance -->
+  <path d="M80 180 L120 180 L120 140 Q100 120 80 140 Z" fill="#0c0a15" stroke="#4ade80" stroke-width="2" opacity="0.9"/>
+  <path d="M85 180 L115 180 L115 150 Q100 135 85 150 Z" fill="#1a1428" opacity="0.5"/>
+
+  <!-- Emerald Accents & Banners -->
+  <rect x="20" y="60" width="30" height="3" fill="#4ade80" opacity="0.6"/>
+  <rect x="150" y="60" width="30" height="3" fill="#4ade80" opacity="0.6"/>
+  <rect x="60" y="35" width="80" height="4" fill="#4ade80" opacity="0.8"/>
+
+  <!-- Windows -->
+  <g fill="#000" stroke="#4ade80" stroke-opacity="0.2">
+    <rect x="65" y="60" width="8" height="15" rx="2"/>
+    <rect x="95" y="60" width="10" height="20" rx="2"/>
+    <rect x="127" y="60" width="8" height="15" rx="2"/>
+  </g>
+
+  <!-- Flying Banners -->
+  <g stroke="#8d6e63" stroke-width="2">
+    <line x1="100" y1="20" x2="100" y2="0"/>
+    <path d="M100 0 L130 10 L100 20 Z" fill="#4ade80" stroke="#2d6a4f">
+      <animate attributeName="d" values="M100 0 L130 10 L100 20 Z; M100 0 L125 15 L100 20 Z; M100 0 L130 10 L100 20 Z" dur="2s" repeatCount="indefinite" />
+    </path>
+  </g>
+</svg>

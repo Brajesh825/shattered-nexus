@@ -79,7 +79,17 @@
       "Bash(node -e \"const fs=require\\('fs'\\); const src=fs.readFileSync\\('data/npcs.js','utf8'\\); const fn=new Function\\(src+'; return NPC_DEFS;'\\); const d=fn\\(\\); console.log\\('Keys:', Object.keys\\(d\\)\\); console.log\\('Essabella maps:', Object.keys\\(d.essabella.dialogues\\)\\); console.log\\('verdant lines:', d.essabella.dialogues.verdant_vale.length\\); console.log\\('eternal lines:', d.essabella.dialogues.eternal_void.length\\);\")",
       "Bash(node -e \"const fs=require\\('fs'\\); const src=fs.readFileSync\\('data/npcs.js','utf8'\\); const fn=new Function\\(src+'; return NPC_DEFS;'\\); const d=fn\\(\\); console.log\\('Keys:', Object.keys\\(d\\)\\); console.log\\('Archivist lines:', d.the_archivist.dialogues.crystal_cavern.length\\); console.log\\('Ghost Knight lines:', d.ghost_knight.dialogues.crystal_cavern.length\\);\")",
       "Bash(node -e ' *)",
-      "Bash(git rm *)"
+      "Bash(git rm *)",
+      "Bash(awk 'NR>=3700 && NR<=3700+120' \"C:/Users/ASUS/VVI/rpg+/data/enemies.json\")",
+      "Bash(grep -v \"//\")",
+      "Bash(bash /tmp/audit_check.sh)",
+      "Bash(grep -E \"^\\(69|253|575|2678|2760|3108|3456|3742|3809|[0-9]{1,4}\\):\")",
+      "Bash(awk 'NR>=2728 && NR<=2760' C:/Users/ASUS/VVI/rpg+/data/enemies.json)",
+      "Bash(awk 'NR>=3195 && NR<=3215' C:/Users/ASUS/VVI/rpg+/data/enemies.json)",
+      "Bash(awk 'NR>=3540 && NR<=3560' C:/Users/ASUS/VVI/rpg+/data/enemies.json)",
+      "Bash(awk 'NR>=3790 && NR<=3810' C:/Users/ASUS/VVI/rpg+/data/enemies.json)",
+      "Bash(git checkout *)",
+      "Bash(grep -E \"\\\\.\\(md|json|js\\)$\")"
     ]
   }
 }

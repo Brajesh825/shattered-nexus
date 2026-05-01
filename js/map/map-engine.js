@@ -21,6 +21,75 @@ const MapEngine = (() => {
     return 64;               // desktop / large tablets
   }
 
+  function _isBlocked(tx, ty) {
+    if (!_map) return true;
+    if (tx < 0 || ty < 0 || tx >= _map.width || ty >= _map.height) return true;
+
+    const layers = MapData.getLayers(_map);
+    if (!layers || !layers[0] || !Array.isArray(layers[0])) return true; // Map data not ready
+    
+    // 1. Direct Hit Check (Layer-by-layer)
+    for (const layer of layers) {
+      if (!layer) continue;
+      const tid = layer?.[ty]?.[tx] ?? 0;
+      if (tid !== 0) {
+        const def = TILE_DEFS[tid] || TILE_DEFS[0];
+        if (!def.walkable) return true;
+      }
+    }
+
+    // 2. Footprint / Mask Check (Scan neighbors for large assets)
+    const R = 4; // Slightly larger scan for big assets
+    for (let dy = -R; dy <= R; dy++) {
+      for (let dx = -R; dx <= R; dx++) {
+        const nx = tx + dx, ny = ty + dy;
+        if (nx < 0 || ny < 0 || nx >= (_map?.width || 0) || ny >= (_map?.height || 0)) continue;
+
+        for (const layer of layers) {
+          const tid = layer?.[ny]?.[nx];
+          if (!tid) continue;
+          const def = TILE_DEFS[tid];
+          if (!def) continue;
+
+          // A: Standard Footprint List
+          if (def.footprint) {
+            for (const [fx, fy] of def.footprint) {
+              if (nx + fx === tx && ny + fy === ty) return true;
+            }
+          }
+
+          // B: Granular Collision Mask
+          if (def.collisionMask) {
+            const mask = def.collisionMask;
+            const h = mask.length;
+            const w = mask[0].length;
+            const anchor = def.anchor || 'bottom-center';
+
+            // Calculate relative offset of (tx, ty) from the anchor (nx, ny)
+            let relX = tx - nx;
+            let relY = ty - ny;
+
+            // Adjust relative coords based on anchor type
+            if (anchor === 'bottom-center') {
+              relX += Math.floor(w / 2);
+            }
+            // Bottom-Left: relX is already correct (0 is left)
+            
+            // Invert relY because mask[0] is the top row, but ty is the bottom anchor
+            // relY is negative for tiles above the anchor
+            const maskY = (h - 1) + relY; 
+            const maskX = relX;
+
+            if (maskY >= 0 && maskY < h && maskX >= 0 && maskX < w) {
+              if (mask[maskY][maskX] === 'X') return true;
+            }
+          }
+        }
+      }
+    }
+    return false;
+  }
+
   let _canvas = null, _ctx = null;
   let _map = null;
   let _rafId = null, _lastTs = 0, _running = false;
@@ -116,18 +185,106 @@ const MapEngine = (() => {
   /* ── Tile pixel-art painter ─────────────────────────── */
   // Each tile defines its own render(ctx, sx, sy, tw, th, t) in TILE_DEFS.
   // t = elapsed seconds (for animations). Falls back to _defaultRender.
-  function _defaultRender(ctx, def, sx, sy, tw, th) {
-    ctx.fillStyle = def.color; ctx.fillRect(sx, sy, tw, th);
-    ctx.fillStyle = def.hi;
-    ctx.fillRect(sx, sy, tw, 2); ctx.fillRect(sx, sy, 2, th);
-    ctx.fillStyle = def.shadow;
-    ctx.fillRect(sx, sy + th - 2, tw, 2); ctx.fillRect(sx + tw - 2, sy, 2, th);
+  function _defaultRender(ctx, def, sx, sy, tw, th, t = 0) {
+    const color = def.color || '#1a1a2e';
+    const hi = def.hi || color;
+    const shadow = def.shadow || color;
+
+    ctx.fillStyle = color;
+    ctx.fillRect(sx, sy, tw, th);
+
+    // Add Premium Procedural Details (Ported from Architect Pro)
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(sx, sy, tw, th);
+    ctx.clip();
+
+    const name = (def.name || "").toLowerCase();
+
+    if (name.includes('grass')) {
+        ctx.fillStyle = hi;
+        for(let i=0; i<3; i++) {
+            ctx.fillRect(sx + (i*tw/3) + 2, sy + 4, 2, th/3);
+            ctx.fillRect(sx + (i*tw/3) + 6, sy + th/2, 2, th/4);
+        }
+    } else if (name.includes('water')) {
+        ctx.strokeStyle = hi;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        const wave = Math.sin(t * 2 + sx/10) * 3;
+        ctx.moveTo(sx + 2, sy + th/3 + wave);
+        ctx.bezierCurveTo(sx + tw/3, sy + 2 + wave, sx + 2*tw/3, sy + th/3 + wave, sx + tw - 2, sy + 2 + wave);
+        ctx.stroke();
+    } else if (name.includes('stone') || name.includes('wall') || name.includes('mountain')) {
+        ctx.fillStyle = shadow;
+        ctx.fillRect(sx, sy + th - 4, tw, 4);
+        ctx.fillStyle = hi;
+        ctx.fillRect(sx, sy, tw, 2);
+    } else if (name.includes('path') || name.includes('sand')) {
+        ctx.fillStyle = hi;
+        // Deterministic random-ish dots based on position
+        const seed = sx * 13 + sy * 7;
+        for(let i=0; i<5; i++) {
+            const rx = ((seed + i * 17) % 100) / 100 * tw;
+            const ry = ((seed + i * 31) % 100) / 100 * th;
+            ctx.beginPath();
+            ctx.arc(sx + rx, sy + ry, 1.2, 0, Math.PI*2);
+            ctx.fill();
+        }
+    }
+
+    ctx.restore();
   }
 
   function _paintTile(ctx, def, sx, sy, tw, th, t) {
-    if (!def) return;
+    if (!def || def.hidden) return;
     
-    // Procedural water ripples (sx/sy are 0 when rendering to offscreen cache)
+    // 1. SVG Asset Support (High Fidelity Scaling)
+    // Note: Most SVGs are handled in _renderRow for dynamic scaling, 
+    // but some small 1x1 ones might be baked here.
+    if (def.svgAsset && !def.vScale) {
+      const svg = AssetPreloader.getImage(`env_${def.svgAsset}`);
+      if (svg) {
+        ctx.drawImage(svg, sx, sy, tw, th);
+        return;
+      }
+    }
+
+    // 2. Sprite Support
+    if (def.sprite || def.spriteIdx !== undefined) {
+      const sheet = AssetPreloader.getImage('env_sprites');
+      if (sheet) {
+        let sw, sh, sx_src, sy_src, frames;
+
+        if (def.spriteIdx !== undefined) {
+          const idx = def.spriteIdx;
+          const gridW = 6;
+          const cellW = sheet.width / gridW;
+          const cellH = sheet.height / gridW;
+          sx_src = (idx % gridW) * cellW;
+          sy_src = Math.floor(idx / gridW) * cellH;
+          sw = cellW;
+          sh = cellH;
+          frames = def.spriteFrames || 1;
+        } else {
+          sx_src = def.sprite.x;
+          sy_src = def.sprite.y;
+          sw = def.sprite.w || 128;
+          sh = def.sprite.h || 128;
+          frames = def.sprite.frames || 1;
+        }
+
+        const frame = def.anim ? (Math.floor(t * 6) % frames) : 0;
+        ctx.drawImage(
+          sheet, 
+          sx_src + (frame * sw), sy_src, sw, sh,
+          sx, sy, tw, th
+        );
+        return;
+      }
+    }
+
+    // 3. Procedural / Procedural-Fallback
     let ofx = 0;
     if (def.name === 'deep water' || def.name === 'lava-floor') {
       ofx = Math.sin(t * 2.2) * 1.5;
@@ -135,7 +292,7 @@ const MapEngine = (() => {
 
     const fn = typeof TILE_RENDERS !== 'undefined' && TILE_RENDERS[def.name];
     if (fn) fn(ctx, def, sx + ofx, sy, tw, th, t);
-    else _defaultRender(ctx, def, sx + ofx, sy, tw, th);
+    else _defaultRender(ctx, def, sx + ofx, sy, tw, th, t);
   }
 
   // Pre-baked shadow sprites — created once, reused every frame via drawImage
@@ -168,46 +325,100 @@ const MapEngine = (() => {
 
   function _drawTileShadow(sx, sy, c, r, tiles) {
     if (!_shadowAbove) _bakeShadowSprites();
-    const aboveId = tiles[r-1]?.[c];
-    if (aboveId !== undefined && TILE_DEFS[aboveId] && !TILE_DEFS[aboveId].walkable) {
+    const layers = MapData.getLayers(_map);
+    // Check current layer AND decoration layer (1) for shadow-casters
+    const checkShadow = (tx, ty) => {
+      for (let l = layers.length - 1; l >= 0; l--) {
+        const id = layers[l]?.[ty]?.[tx];
+        if (id && TILE_DEFS[id] && !TILE_DEFS[id].walkable) return true;
+      }
+      return false;
+    };
+
+    if (checkShadow(c, r - 1)) {
       _ctx.drawImage(_shadowAbove, sx, sy);
     }
-    const leftId = tiles[r]?.[c-1];
-    if (leftId !== undefined && TILE_DEFS[leftId] && !TILE_DEFS[leftId].walkable) {
+    if (checkShadow(c - 1, r)) {
       _ctx.drawImage(_shadowLeft, sx, sy);
     }
   }
 
   /* ── Tile rendering ─────────────────────────────────── */
+  function _renderRow(layerIdx, r) {
+    const layers = MapData.getLayers(_map);
+    const tiles = layers[layerIdx];
+    if (!tiles || !tiles[r]) return;
+
+    const startC = Math.max(0, Math.floor(cam.x / TILE) - 1);
+    const endC = Math.min(_map.width - 1, Math.ceil((cam.x + _canvas.width) / TILE) + 1);
+
+    const row = tiles[r];
+    for (let c = startC; c <= endC; c++) {
+      const tileId = row[c];
+      if (!tileId || tileId === -1) continue;
+
+      const def = TILE_DEFS[tileId] || TILE_DEFS[0];
+      const sx = c * TILE - cam.x;
+      const sy = r * TILE - cam.y;
+
+      if (def.vScale) {
+          // 1. Draw base terrain first (Matching Editor rule)
+          if (layerIdx === 0) {
+              _ctx.drawImage(_getTileCanvas(tileId), sx, sy);
+          }
+
+          const scale = def.vScale || 1.0;
+          const ox = (def.vOffset?.x || 0);
+          const oy = (def.vOffset?.y || 0);
+          const dw = TILE * scale;
+          
+          if (def.svgAsset) {
+              const img = AssetPreloader.getImage(`env_${def.svgAsset}`);
+              if (img) {
+                  // Preserve Aspect Ratio (Matching Editor rule)
+                  const sh = dw * (img.height / img.width || 1);
+                  
+                  // Always Bottom-Center (Matching Editor rule - ignoring def.anchor)
+                  const dx = sx + (TILE - dw) / 2 + ox;
+                  const dy = sy + TILE - sh + oy;
+
+                  // Draw Glow
+                  if (def.glows) {
+                      const pulse = 0.8 + 0.2 * Math.sin(_time * 2.5);
+                      const grad = _ctx.createRadialGradient(dx + dw/2, dy + sh/2, 0, dx + dw/2, dy + sh/2, dw * 0.8 * pulse);
+                      grad.addColorStop(0, def.glows);
+                      grad.addColorStop(1, 'rgba(0,0,0,0)');
+                      _ctx.save();
+                      _ctx.globalCompositeOperation = 'screen';
+                      _ctx.fillStyle = grad;
+                      _ctx.fillRect(dx - dw/2, dy - sh/2, dw * 2, sh * 2);
+                      _ctx.restore();
+                  }
+
+                  _ctx.drawImage(img, dx, dy, dw, sh);
+              }
+          }
+      } else {
+          if (def.anim) {
+              _ctx.drawImage(_getAnimTileCanvas(tileId, _time), sx, sy);
+          } else {
+              _ctx.drawImage(_getTileCanvas(tileId), sx, sy);
+          }
+      }
+      if (layerIdx === 0 && def.walkable) _drawTileShadow(sx, sy, c, r, tiles);
+    }
+  }
+
   function _renderTiles(layerIdx = 0) {
-    const layers = _map.layers || [_map.tiles];
+    const layers = MapData.getLayers(_map);
     const tiles = layers[layerIdx];
     if (!tiles) return;
 
-    const startC = Math.max(0, Math.floor(cam.x / TILE) - 1);
     const startR = Math.max(0, Math.floor(cam.y / TILE) - 1);
-    const endC = Math.min(_map.width - 1, Math.ceil((cam.x + _canvas.width) / TILE) + 1);
     const endR = Math.min(_map.height - 1, Math.ceil((cam.y + _canvas.height) / TILE) + 1);
 
     for (let r = startR; r <= endR; r++) {
-      for (let c = startC; c <= endC; c++) {
-        const row = tiles[r];
-        if (!row) continue;
-        const tileId = row[c];
-        if (tileId === undefined || tileId === null || tileId === -1) continue;
-
-        const def = TILE_DEFS[tileId] || TILE_DEFS[0];
-        const sx = c * TILE - cam.x;
-        const sy = r * TILE - cam.y;
-
-        if (def.anim) {
-          _ctx.drawImage(_getAnimTileCanvas(tileId, _time), sx, sy);
-        } else {
-          _ctx.drawImage(_getTileCanvas(tileId), sx, sy);
-        }
-
-        if (layerIdx === 0 && def.walkable) _drawTileShadow(sx, sy, c, r, tiles);
-      }
+      _renderRow(layerIdx, r);
     }
   }
 
@@ -255,6 +466,8 @@ const MapEngine = (() => {
 
     } else if (obj.type === 'kill_all') {
       if (MapEntities.allCleared()) _completeObjective();
+    } else if (obj.type === 'kill_boss') {
+      if (MapEntities.bossCleared()) _completeObjective();
     }
   }
 
@@ -498,7 +711,7 @@ const MapEngine = (() => {
     mctx.fillRect(0, 0, MM_W, MM_H);
     for (let r = 0; r < _map.height; r++) {
       for (let c2 = 0; c2 < _map.width; c2++) {
-        const tid = _map.tiles[r]?.[c2] ?? 0;
+        const tid = MapData.getTileAt(_map, c2, r);
         mctx.fillStyle = (TILE_DEFS[tid] || TILE_DEFS[0]).color;
         mctx.fillRect(c2 * tw, r * th, Math.max(tw, 1), Math.max(th, 1));
       }
@@ -707,20 +920,35 @@ const MapEngine = (() => {
     _ctx.fillStyle = _map.bgColor || '#080606';
     _ctx.fillRect(0, 0, _canvas.width, _canvas.height);
     
-    // 1. Base + Overlay
+    // 1. Ground Layer (Always below)
     _renderTiles(0);
-    if (_map.layers && _map.layers[1]) _renderTiles(1);
+    
+    // 2. Interleaved Y-Sorting
+    const layers = MapData.getLayers(_map);
+    const startR = Math.max(0, Math.floor(cam.y / TILE) - 1);
+    const endR = Math.min(_map.height - 1, Math.ceil((cam.y + _canvas.height) / TILE) + 1);
+
+    if (typeof MapEntities !== 'undefined' && MapEntities.prepareBuckets) {
+      MapEntities.prepareBuckets(startR, endR);
+    }
+
+    for (let r = startR; r <= endR; r++) {
+      // Draw Decor row
+      if (layers[1]) _renderRow(1, r);
+      
+      // Draw entities that are on this row (Y-Sorting)
+      if (typeof MapEntities !== 'undefined') {
+        if (MapEntities.renderEnemiesForRow) MapEntities.renderEnemiesForRow(_ctx, cam, TILE, r, _inVision.bind(null));
+        if (MapEntities.renderNPCsForRow) MapEntities.renderNPCsForRow(_ctx, cam, TILE, r, _inVision.bind(null));
+      }
+      if (MapPlayer.ty === r) MapPlayer.render(_ctx, cam, TILE);
+
+      // Draw Overhead row
+      if (layers[2]) _renderRow(2, r);
+    }
     
     _renderObjectiveMarkers();
     _renderCampMarker();
-    
-    // 2. Entities
-    MapEntities.renderEnemies(_ctx, cam, TILE, _map, _inVision.bind(null));
-    MapEntities.renderNPCs(_ctx, cam, TILE, _inVision.bind(null));
-    MapPlayer.render(_ctx, cam, TILE);
-
-    // 3. Fringe (Overhead)
-    if (_map.layers && _map.layers[2]) _renderTiles(2);
     
     _renderAtmosphere();
     _renderFog();
@@ -728,7 +956,6 @@ const MapEngine = (() => {
     _renderBubbles();
     
     if (typeof WeatherEngine !== 'undefined') WeatherEngine.draw(_ctx);
-    
     _renderMinimap();
   }
 
@@ -762,7 +989,8 @@ const MapEngine = (() => {
     // Detect step landing → footstep SFX
     if (_prevMoving && !MapPlayer.moving) {
       if (_footstepCooldown <= 0 && typeof SFX !== 'undefined') {
-        SFX.footstep(_tileToSurface(_map.tiles[MapPlayer.ty]?.[MapPlayer.tx] ?? 0));
+        const tid = MapData.getTileAt(_map, MapPlayer.tx, MapPlayer.ty);
+        SFX.footstep(_tileToSurface(tid));
         _footstepCooldown = 0.14;
       }
     }
@@ -840,6 +1068,21 @@ const MapEngine = (() => {
         _firedTriggers.add(id);
         if (trig.type === 'dialogue' && trig.lines) {
           _openGenericDialogue(trig.lines);
+        } else if (trig.type === 'msg' && trig.msg) {
+          MapUI.showMsg(trig.msg, 1500);
+        } else if (trig.type === 'teleport' && trig.targetMapId) {
+          // loadMap is async (fetches JSON). All post-load work must run inside
+          // .then() — otherwise loadMap's own MapPlayer.reset(playerStart) fires
+          // last and stomps whatever targetX/targetY we set.
+          loadMap(trig.targetMapId).then(() => {
+            if (trig.targetX !== undefined && trig.targetY !== undefined) {
+              MapPlayer.reset(trig.targetX, trig.targetY);
+            }
+            if (trig.msg) MapUI.showMsg(trig.msg, 1500);
+            if (G.mode === 'story_explore' && typeof Story !== 'undefined') {
+              Story.onMapTeleport(trig.targetMapId);
+            }
+          });
         }
       }
     });
@@ -923,6 +1166,7 @@ const MapEngine = (() => {
         MapPlayer.reset(_map.playerStart.x, _map.playerStart.y);
         _campUnlocked = false; _atCamp = false;
         showScreen('explore-screen');
+        MapPlayer.setCooldown(8); // Grace period
         resume();
         if (typeof MapUI !== 'undefined') MapUI.showMsg('💀 Defeated — returned to camp.', 2400);
       } else {
@@ -936,6 +1180,7 @@ const MapEngine = (() => {
     }
     MapEntities.removeEncountered();
     showScreen('explore-screen');
+    MapPlayer.setCooldown(8); // Grace period
     resume();
     if (typeof MapUI !== 'undefined') MapUI.showMsg('Victory!', 1200);
   }
@@ -1036,10 +1281,6 @@ const MapEngine = (() => {
       }, { passive: false });
     }
 
-
-
-
-
     window.addEventListener('resize', () => {
       _canvas.width = _canvas.offsetWidth || window.innerWidth;
       _canvas.height = _canvas.offsetHeight || window.innerHeight;
@@ -1052,8 +1293,90 @@ const MapEngine = (() => {
     });
   }
 
-  function loadMap(mapId) {
+  function _showLoader() {
+    let loader = document.getElementById('map-loader');
+    if (!loader) {
+        loader = document.createElement('div');
+        loader.id = 'map-loader';
+        loader.innerHTML = `
+            <div class="loader-content">
+                <div class="loader-spinner"></div>
+                <div class="loader-text">MANIFESTING THE VALE...</div>
+            </div>
+        `;
+        document.body.appendChild(loader);
+        
+        const style = document.createElement('style');
+        style.id = 'map-loader-style';
+        style.textContent = `
+            #map-loader {
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(10, 26, 5, 0.95);
+                display: flex; align-items: center; justify-content: center;
+                z-index: 9999; color: #4ade80; font-family: 'Outfit', sans-serif;
+                transition: opacity 0.5s ease;
+            }
+            .loader-content { text-align: center; }
+            .loader-spinner {
+                width: 50px; height: 50px; border: 3px solid rgba(74, 222, 128, 0.1);
+                border-top-color: #4ade80; border-radius: 50%;
+                animation: spin 1s linear infinite; margin: 0 auto 20px;
+            }
+            .loader-text { letter-spacing: 4px; font-size: 14px; font-weight: 600; text-shadow: 0 0 10px rgba(74, 222, 128, 0.5); }
+            @keyframes spin { to { transform: rotate(360deg); } }
+        `;
+        document.head.appendChild(style);
+    }
+    loader.style.opacity = '1';
+    loader.style.display = 'flex';
+  }
+
+  function _hideLoader() {
+    const loader = document.getElementById('map-loader');
+    if (loader) {
+        loader.style.opacity = '0';
+        setTimeout(() => { loader.style.display = 'none'; }, 500);
+    }
+  }
+
+  async function loadMap(mapId) {
+    _showLoader();
     _map = MAP_DEFS[mapId] || MAP_DEFS['verdant_vale'];
+    
+    if (!_map) {
+      console.warn(`⚠️ Map definition not found: ${mapId}. Falling back to default.`);
+      _map = Object.values(MAP_DEFS)[0]; 
+      if (!_map) return;
+    }
+
+    // Support External JSON Data
+    if (_map.jsonFile) {
+        try {
+            const response = await fetch(_map.jsonFile);
+            const jsonData = await response.json();
+            _map.data = jsonData;
+            console.log(`[MapEngine] Successfully fetched JSON data for: ${_map.name}`);
+        } catch (e) {
+            console.error(`❌ Failed to fetch map JSON: ${_map.jsonFile}`, e);
+        }
+    }
+
+    // Initialize layers: handle both raw arrays and Architect Pro wrappers
+    if (_map.generate && typeof _map.generate === 'function') {
+      _map.generate();
+    } else if (_map.data) {
+      const layers = Array.isArray(_map.data) ? _map.data : (_map.data.data || _map.data.layers);
+      if (layers && Array.isArray(layers)) {
+          _map.layers = layers;
+      }
+    }
+    
+    // Support new Architect Pro Metadata
+    if (_map.metadata && _map.metadata.dimensions) {
+      _map.width = _map.metadata.dimensions.width;
+      _map.height = _map.metadata.dimensions.height;
+    }
+
     const titleEl = document.getElementById('explore-map-name');
     if (titleEl) titleEl.textContent = `✦ ${_map.name.toUpperCase()} ✦`;
     _invalidateCache();
@@ -1081,10 +1404,26 @@ const MapEngine = (() => {
     if (typeof AmbientEngine !== 'undefined') {
       AmbientEngine.setMap(_map.id);
     }
+    _hideLoader();
+    // Emergency Force Hide: ensures game is never stuck even if assets 404
+    setTimeout(_hideLoader, 1000);
   }
 
-  function start(mapId) {
-    if (mapId) loadMap(mapId);
+  function getLayers(map) {
+    const data = map.data || map;
+    if (Array.isArray(data) && Array.isArray(data[0]) && Array.isArray(data[0][0])) return data;
+    if (data.layers && Array.isArray(data.layers)) return data.layers;
+    return [data.r0, data.r1, data.r2];
+  }
+
+  async function start(mapId) {
+    if (mapId) await loadMap(mapId);
+
+    // Notify Story Engine of map change to handle continuous progression
+    if (G.mode === 'story_explore' && typeof Story !== 'undefined') {
+      Story.onMapTeleport(mapId);
+    }
+
     if (_running) return;
     _running = true;
     _lastTs = performance.now();
@@ -1237,12 +1576,11 @@ const MapEngine = (() => {
     }
   }
 
-
-
   return {
     init, loadMap, start, stop, resume, onBattleComplete,
     getMap, getCam, getTile, isRunning, resetFog, fogProgress, npcDialogueNext,
     interact,
+    isBlocked: _isBlocked,
     openDialogue: _openGenericDialogue,
     hasTriggerFired: id => _firedTriggers.has(id),
     // Optional callback — wire this up after init to handle encounter transitions:

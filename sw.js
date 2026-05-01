@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nexus-cache-v4.7';
+const CACHE_NAME = 'nexus-cache-v5.8';
 
 // Core shell — always pre-cached regardless of quality setting
 const SHELL_ASSETS = [
@@ -219,7 +219,7 @@ self.addEventListener('install', event => {
       console.log('✅ [SW] Shell pre-cache complete');
     })()
   );
-  // Don't skipWaiting here — wait for user to confirm update via toast
+  self.skipWaiting();
 });
 
 // Activate: remove old caches
@@ -269,7 +269,7 @@ self.addEventListener('fetch', event => {
           const clone = response.clone();
           caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
           return response;
-        }).catch(() => caches.match('./index.html'));
+        }).catch(() => new Response('', { status: 503, statusText: 'Service Unavailable' }));
       })
     );
   } else {

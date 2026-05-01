@@ -1,0 +1,30 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="pm-cap" cx="38%" cy="28%" r="60%">
+      <stop offset="0%" style="stop-color:#e57373"/>
+      <stop offset="50%" style="stop-color:#c62828"/>
+      <stop offset="100%" style="stop-color:#4a0000"/>
+    </radialGradient>
+    <radialGradient id="pm-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#76ff03;stop-opacity:0.4"/>
+      <stop offset="100%" style="stop-color:#76ff03;stop-opacity:0"/>
+    </radialGradient>
+    <filter id="pm-blur"><feGaussianBlur stdDeviation="2"/></filter>
+  </defs>
+  <ellipse cx="32" cy="62" rx="12" ry="3" fill="#1a1a1a" opacity="0.3"/>
+  <path d="M26 58 Q28 50 30 46 Q32 44 34 46 Q36 50 38 58 Z" fill="#f5f5e0"/>
+  <path d="M28 58 L29 48 M34 58 L35 48" stroke="#c5c5a0" stroke-width="0.5" opacity="0.4"/>
+  <ellipse cx="32" cy="46" rx="12" ry="3.5" fill="#ffccbc" opacity="0.5"/>
+  <path d="M20 46 Q22 22 32 18 Q42 22 44 46 Q38 50 26 50 Z" fill="url(#pm-cap)"/>
+  <circle cx="26" cy="30" r="2.5" fill="#fff" opacity="0.8"/>
+  <circle cx="38" cy="26" r="2" fill="#fff" opacity="0.8"/>
+  <circle cx="32" cy="24" r="1.5" fill="#fff" opacity="0.7"/>
+  <circle cx="22" cy="38" r="1.8" fill="#fff" opacity="0.7"/>
+  <circle cx="42" cy="36" r="2" fill="#fff" opacity="0.7"/>
+  <ellipse cx="32" cy="56" rx="18" ry="6" fill="url(#pm-glow)" filter="url(#pm-blur)"/>
+  <g fill="#76ff03" opacity="0.6">
+    <circle cx="22" cy="56" r="1.5"><animate attributeName="opacity" values="0.4;0.9;0.4" dur="1.5s" repeatCount="indefinite"/></circle>
+    <circle cx="38" cy="58" r="1"><animate attributeName="opacity" values="0.6;1;0.6" dur="1.2s" repeatCount="indefinite"/></circle>
+    <circle cx="28" cy="60" r="1.2"><animate attributeName="opacity" values="0.3;0.8;0.3" dur="1.8s" repeatCount="indefinite"/></circle>
+  </g>
+</svg>

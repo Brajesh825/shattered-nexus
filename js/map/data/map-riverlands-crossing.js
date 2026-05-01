@@ -13,16 +13,22 @@ MAP_DEFS.riverlands_crossing = {
     weather: 'rain',
     enemyLevelRange: [10, 18],
     encounterTemplates: [
-        { weight: 3, enemies: ['bandit'] },
-        { weight: 2, enemies: ['wisp'] },
-        { weight: 1, enemies: ['bandit', 'bandit', 'bandit'] }
+        { weight: 4, enemies: ['bandit', 'bandit'] },
+        { weight: 3, enemies: ['wisp'] },
+        { weight: 2, enemies: ['bandit', 'wisp'] },
+        { weight: 2, enemies: ['harpy'] },
+        { weight: 1, enemies: ['bandit', 'bandit', 'bandit'] },
+        { weight: 1, enemies: ['wisp', 'wisp'] },
+        { weight: 1, enemies: ['harpy', 'bandit'] }
     ],
     enemies: [
-        { id: 'bandit', x: 10, y: 25,  patrol: 'horizontal', range: 4, speed: 1.0 },
-        { id: 'bandit', x: 70, y: 29, patrol: 'random', range: 3, speed: 1.1 },
-        { id: 'wisp',   x: 40, y: 15, patrol: 'vertical', range: 8, speed: 1.5 },
-        { id: 'bandit', x: 25, y: 35, patrol: 'random', range: 4, speed: 1.0 },
-        { id: 'wisp',   x: 60, y: 32, patrol: 'horizontal', range: 10, speed: 1.6 },
+        // --- BRIDGE SENTINELS ---
+        { id: 'bandit', x: 10, y: 25,  patrol: 'horizontal', range: 4,  speed: 1.0 },
+        { id: 'bandit', x: 70, y: 29,  patrol: 'random',     range: 3,  speed: 1.1 },
+        // --- WATERFALL PATROL ---
+        { id: 'wisp',   x: 40, y: 15,  patrol: 'vertical',   range: 8,  speed: 1.5 },
+        { id: 'wisp',   x: 60, y: 32,  patrol: 'horizontal', range: 10, speed: 1.6 },
+        // --- MAP BOSS ---
         { id: 'river_king', x: 40, y: 27, patrol: 'stationary', isBoss: true, label: 'River King' }
     ],
     tiles: (function () {
@@ -95,9 +101,9 @@ MAP_DEFS.riverlands_crossing = {
         return rows;
     })(),
     npcs: [
-        { id: 'merchant', x: 15, y: 25, dialogueKey: 'river_merchant', behavior: 'stationary' },
-        { id: 'old_guard', x: 2, y: 26, dialogueKey: 'bridge_guard', behavior: 'stationary' },
-        { id: 'ghost_soldier', x: 75, y: 27, dialogueKey: 'ghost_chat', behavior: 'wander', range: 2 }
+        { id: 'merchant', x: 15, y: 25, dialogueKey: 'riverlands_crossing', behavior: 'stationary' },
+        { id: 'old_guard', x: 2, y: 26, dialogueKey: 'riverlands_crossing', behavior: 'stationary' },
+        { id: 'ghost_soldier', x: 75, y: 27, dialogueKey: 'riverlands_crossing', behavior: 'wander', range: 2 }
     ],
     triggers: [
         {
@@ -127,13 +133,23 @@ MAP_DEFS.riverlands_crossing = {
                 { speaker: 'narrator', text: 'You notice a faint path behind the crashing water...' },
                 { speaker: 'Rei', text: 'A hidden grotto. Classic.' }
             ]
+        },
+        {
+            id: 'river_king_approach',
+            x: 38, y: 26, w: 4, h: 2,
+            type: 'dialogue',
+            lines: [
+                { speaker: 'Aya', text: 'The Old Guard said it tried to stay neutral. That the corruption took it through the deal itself, not the malice.' },
+                { speaker: 'Rex', text: 'A lesson for all of us. The choice to avoid choosing is still a choice.' },
+                { speaker: 'Rei', text: 'Then we end what that choice made. And we remember why it went wrong.' }
+            ]
         }
     ],
     objective: {
         type: 'reach',
         target: { x: 77, y: 27 },
         label: 'Cross the Great Expanse',
-        completeMsg: '✦ The Great Expanse has been conquered. The crossing is secure.',
+        completeMsg: '✦ The River King sinks back into the water. The crossing is quiet for the first time in years. The river sounds different without it.',
     },
     voiceLines: {
         ambient: [

@@ -1,0 +1,25 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="pt-trunk" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#6d4c41"/>
+      <stop offset="50%" style="stop-color:#a1887f"/>
+      <stop offset="100%" style="stop-color:#6d4c41"/>
+    </linearGradient>
+    <linearGradient id="pt-frond" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#81c784"/>
+      <stop offset="100%" style="stop-color:#1b5e20"/>
+    </linearGradient>
+  </defs>
+  <path d="M30 62 Q32 58 34 62 Q36 40 38 20 Q32 18 26 20 Q28 40 30 62Z" fill="url(#pt-trunk)"/>
+  <line x1="29" y1="55" x2="29" y2="25" stroke="#5d4037" stroke-width="0.4" opacity="0.4"/>
+  <line x1="33" y1="55" x2="33" y2="25" stroke="#5d4037" stroke-width="0.4" opacity="0.4"/>
+  <path d="M32 18 Q12 10 4 16 Q14 12 32 22Z" fill="url(#pt-frond)" stroke="#2e7d32" stroke-width="0.5"/>
+  <path d="M32 18 Q52 10 60 16 Q50 12 32 22Z" fill="url(#pt-frond)" stroke="#2e7d32" stroke-width="0.5"/>
+  <path d="M32 18 Q20 4 24 0 Q22 8 32 20Z" fill="url(#pt-frond)" stroke="#2e7d32" stroke-width="0.5"/>
+  <path d="M32 18 Q44 4 40 0 Q42 8 32 20Z" fill="url(#pt-frond)" stroke="#2e7d32" stroke-width="0.5"/>
+  <path d="M32 18 Q8 20 6 28 Q16 20 32 24Z" fill="url(#pt-frond)" stroke="#2e7d32" stroke-width="0.5"/>
+  <path d="M32 18 Q56 20 58 28 Q48 20 32 24Z" fill="url(#pt-frond)" stroke="#2e7d32" stroke-width="0.5"/>
+  <circle cx="24" cy="19" r="2.5" fill="#f9a825" opacity="0.8"/>
+  <circle cx="40" cy="20" r="2" fill="#f9a825" opacity="0.8"/>
+  <circle cx="32" cy="16" r="2.5" fill="#f9a825" opacity="0.8"/>
+</svg>
