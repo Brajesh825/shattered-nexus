@@ -44,9 +44,9 @@ MAP_DEFS.crystal_cavern_f2 = {
 
   objective: {
     type: 'reach',
-    target: { x: 53, y: 31 },
-    label: 'Descend to Floor 3',
-    completeMsg: '✦ FLOOR 2 CLEAR ✦\nYou have found the path to the deepest level.'
+    target: { x: 52, y: 31 },
+    label: 'Reach the Descent Well',
+    completeMsg: '✦ PATH TO FLOOR 3 OPEN ✦\nThe resonance guides you to the final descent.'
   },
 
   enemies: [
@@ -81,7 +81,7 @@ MAP_DEFS.crystal_cavern_f2 = {
       x: 8, y: 30, w: 1, h: 1,
       type: 'teleport',
       targetMapId: 'crystal_cavern_f1',
-      targetX: 53, targetY: 30,
+      targetX: 54, targetY: 10,
       msg: '✦ Returning to the Azure Entrance...'
     },
     {
