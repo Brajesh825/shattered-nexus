@@ -44,7 +44,7 @@ RPG+ is a full-featured JRPG running entirely in the browser:
 - **World map exploration** with animated character sprites, random encounters, and boss nodes
 - **Formation system** — Vanguard intercepts, Rearguard evades
 - **Relic system** — permanent stat bonuses unlocked by beating bosses
-- **Inventory** — 16 item types, usable in and out of battle
+- **Inventory** — 80+ items across 4 categories (consumables, valuables, key items, trophies), usable in and out of battle
 - **Party screen** — live stat viewer, passive descriptions, relic slots
 
 ---
@@ -95,14 +95,25 @@ Battles are turn-based. Turn order is determined by each unit's SPD stat.
 
 ### Damage Formula
 
+**Physical:**
 ```
-physDmg  = ATK × multiplier × (100 / (100 + target.DEF)) × critMult
-magicDmg = MAG × multiplier × (100 / (100 + target.RES)) × critMult
+scaledATK = ATK + (level × 1.2)
+scaledDEF = DEF + (level × 0.6)
+base      = max(1, scaledATK − scaledDEF × 0.75)
+physDmg   = floor(base × variance[0.85–1.15] × multiplier × critMult)
 ```
 
-- **Crit chance**: base 10% + SPD/200 modifier
-- **Crit multiplier**: 1.8×
-- **Evasion**: base 5% + DEF/300; Rearguard position adds 30%
+**Magic:**
+```
+scaledMAG = MAG + (level × 0.8)
+magDef    = (mDEF + level × 0.3) × 0.55
+base      = max(1, scaledMAG − magDef)
+magicDmg  = floor(base × variance[0.90–1.10] × multiplier × passiveBonus × critMult)
+```
+
+- **Crit chance**: base 5% + LCK × 1%, capped at 85%
+- **Crit multiplier**: 2.0×
+- **Hit / Evasion**: `hitChance = max(10%, accuracy − evasion)`; default accuracy 95%, default evasion 0%; Rearguard adds +30% evasion
 
 ### MP Regeneration
 
@@ -118,11 +129,13 @@ Hitting a target with one element **primes** an aura on them. A follow-up strike
 |------|-----------|----------|--------|
 | Ice | Physical / Earth | **SHATTER** | 1.5× damage; DEF debuff applied |
 | Ice | Fire | **MELT** | 2.0× damage |
-| Fire | Nature | **CONFLAGRATION** | 1.25× damage; hits all enemies (AOE) |
+| Fire | Nature | **CONFLAGRATION** | 1.5× damage; hits all enemies (AOE) |
 | Fire | Water | **VAPORIZE** | 2.0× damage |
 | Fire | Ice | **MELT** | 1.5× damage |
 | Water | Lightning | **CONDUCTIVE** | 1.3× damage; stun applied |
+| Water | Fire | **VAPORIZE** | 1.5× damage |
 | Nature | Fire | **BURNING** | 1.2× damage; burn DOT applied |
+| Any Aura | Wind | **SWIRL** | 1.2× damage; disperses aura to nearby enemies (AOE) |
 
 **Elemental affinity** modifies reaction multipliers: hitting a resistant target weakens the bonus; hitting a weakness amplifies it by an additional 1.5×.
 
@@ -138,7 +151,7 @@ Auras are **consumed** on reaction. Only one aura can exist on a target at a tim
 |--------|------|--------|-----------------|
 | Regen | 🌿 | +8% max HP per turn | 3 turns |
 | Mend | 💖 | Healing output ×1.5 | 3 turns |
-| Guardian | 🛡️ | Incoming damage ×0.5 | 3 turns |
+| Guardian | 🛡️ | Incoming damage ×0.5 | 1 turn (Guard action) / 3 turns (abilities) |
 | Empower | ⚔️ | ATK ×1.3 | 3 turns |
 | Fortify | 🛡️ | DEF ×1.3 | 3 turns |
 
@@ -148,7 +161,7 @@ Auras are **consumed** on reaction. Only one aura can exist on a target at a tim
 |--------|------|--------|----------|
 | Stunned | 💫 | Skip turn | 1 turn |
 | Frozen | ❄️ | Skip turn | 2 turns |
-| Burn | 🔥 | DOT damage per turn | Until removed |
+| Burn | 🔥 | DOT damage per turn | 3 turns |
 | Shattered | ❄️ | DEF ×0.7 | 3 turns |
 
 ### Elemental Auras *(reaction primers)*
@@ -205,7 +218,7 @@ The world of Aethoria is in crisis. **Valdris**, the Shadow Emperor, has consume
 
 ## 🗺 Maps
 
-The world map features 8 explorable zones. Each zone has random encounters and a boss node that unlocks story progression and a boss relic.
+The world map features 8 main story zones and 7 optional expansion regions (15 total). Each zone has random encounters and a boss node that unlocks story progression and a boss relic.
 
 | Map | Biome | Boss | Relic Reward |
 |-----|-------|------|-------------|
