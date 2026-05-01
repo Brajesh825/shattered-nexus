@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120">
+  <!-- Trunk -->
+  <rect x="45" y="90" width="10" height="25" fill="#455a64"/>
+  <!-- Snowy Pine Layers -->
+  <polygon points="50,10 20,50 80,50" fill="#e1f5fe" stroke="#ffffff" stroke-width="1.5"/>
+  <polygon points="50,30 15,75 85,75" fill="#b3e5fc" stroke="#ffffff" stroke-width="1.5"/>
+  <polygon points="50,55 10,100 90,100" fill="#81d4fa" stroke="#ffffff" stroke-width="1.5"/>
+  <!-- Ice Shimmer -->
+  <circle cx="50" cy="40" r="2" fill="white" opacity="0.6"/>
+  <circle cx="30" cy="70" r="2" fill="white" opacity="0.6"/>
+</svg>

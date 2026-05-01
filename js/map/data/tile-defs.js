@@ -262,6 +262,17 @@ for (let i = 0; i < 36; i++) {
   };
 }
 
+// ── FLOOR 3 PREMIUM ASSETS (IDs 385+) ──────────────────────────
+TILE_DEFS[385] = { name: 'Frozen Estate', walkable: false, svgAsset: 'frozen_house', color: '#b2ebf2', vScale: 3.5, footprint: [[0, 0], [1, 0]], collisionMask: ['XX'] };
+TILE_DEFS[386] = { name: 'Ice Palace', walkable: false, svgAsset: 'ice_castle', color: '#e1f5fe', vScale: 6.5, anchor: 'bottom-left', footprint: [[0, 0], [1, 0], [2, 0]], collisionMask: ['XXX'] };
+TILE_DEFS[387] = { name: 'Labyrinth Gate', walkable: true, svgAsset: 'labyrinth_gate', color: '#4dd0e1', vScale: 4.0, anchor: 'bottom-left', collisionMask: ['X.X'] };
+
+// ── FROZEN VARIANTS (IDs 390+) ────────────────────────────────
+TILE_DEFS[390] = { name: 'Frozen Cart', walkable: false, svgAsset: 'market_cart_frozen', vScale: 2.5 };
+TILE_DEFS[391] = { name: 'Frozen Pine', walkable: false, svgAsset: 'pine_frozen', vScale: 4.5 };
+TILE_DEFS[392] = { name: 'Frozen Notice Board', walkable: false, svgAsset: 'notice_board_frozen', vScale: 2.0 };
+TILE_DEFS[393] = { name: 'Frozen Well', walkable: false, svgAsset: 'well_frozen', vScale: 2.8 };
+
 const OBJECT_STAMPS = {
   'grand_oak': {
     name: 'Grand Oak',
