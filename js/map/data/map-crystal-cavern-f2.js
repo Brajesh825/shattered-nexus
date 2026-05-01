@@ -44,7 +44,7 @@ MAP_DEFS.crystal_cavern_f2 = {
 
   objective: {
     type: 'reach',
-    target: { x: 55, y: 35 },
+    target: { x: 53, y: 31 },
     label: 'Enter the Resonant Well',
     completeMsg: '✦ ASCENSION ✦\nYou step into the well. The world blurs as you are pulled toward the heart of the kingdom.'
   },
@@ -61,7 +61,7 @@ MAP_DEFS.crystal_cavern_f2 = {
   triggers: [
     // --- REGION ANNOUNCEMENTS ---
     {
-      id: 'f2_seg_center', x: 28, y: 18, w: 19, h: 27,
+      id: 'f2_seg_center', x: 22, y: 17, w: 26, h: 28,
       type: 'msg', msg: '✦ Entering: The Forbidden Scriptum'
     },
     {
@@ -78,14 +78,14 @@ MAP_DEFS.crystal_cavern_f2 = {
     },
     // --- TELEPORT ---
     {
-      x: 5, y: 30, w: 1, h: 1,
+      x: 8, y: 30, w: 1, h: 1,
       type: 'teleport',
       targetMapId: 'crystal_cavern_f1',
       targetX: 53, targetY: 30,
       msg: '✦ Returning to the Azure Entrance...'
     },
     {
-      x: 53, y: 30, w: 1, h: 1,
+      x: 53, y: 31, w: 1, h: 1,
       type: 'teleport',
       targetMapId: 'crystal_cavern_f3',
       targetX: 7, targetY: 30,
