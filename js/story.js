@@ -33,8 +33,11 @@ const MAP_PLACES = [
 
 const MAP_MAIN_ROUTE = [0, 1, 2, 3, 4, 5, 6, 7];
 const MAP_SIDE_ROUTES = [
-  [0, 14], [0, 13], [5, 9], [1, 14], [1, 10],
-  [2, 10], [3, 8], [4, 11], [5, 12],
+  [0, 13], [0, 14], // After Arc 1: Southern Isles, Riverlands
+  [2, 10],         // After Arc 3: Ashen Foothills
+  [3, 8],          // After Arc 4: Lighthouse Isles
+  [4, 11],         // After Arc 5: Eastern Wetlands
+  [5, 9], [5, 12], // After Arc 6: Northern Highlands, Sky Ruins
 ];
 
 /* Explore map linked to each arc (index = arcIdx 0-based) */
