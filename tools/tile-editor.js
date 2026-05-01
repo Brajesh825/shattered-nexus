@@ -909,23 +909,27 @@ class TileEditor {
             ctx.setLineDash([]);
         });
 
-        // Render Teleports (Portals)
-        this.state.triggers?.filter(t => t.type === 'teleport').forEach(t => {
+        // Render Triggers (Portals & Messages)
+        this.state.triggers?.forEach(t => {
             const tx = t.x * s;
             const ty = t.y * s;
             const tw = (t.w || 1) * s;
             const th = (t.h || 1) * s;
 
-            ctx.fillStyle = 'rgba(168, 85, 247, 0.3)';
+            const isTeleport = t.type === 'teleport';
+            ctx.fillStyle = isTeleport ? 'rgba(168, 85, 247, 0.2)' : 'rgba(34, 211, 238, 0.15)';
             ctx.fillRect(tx, ty, tw, th);
-            ctx.strokeStyle = '#a855f7';
+            ctx.strokeStyle = isTeleport ? '#a855f7' : '#22d3ee';
+            ctx.setLineDash([5, 5]);
             ctx.lineWidth = 2;
             ctx.strokeRect(tx, ty, tw, th);
+            ctx.setLineDash([]);
 
-            ctx.fillStyle = '#f3e8ff';
-            ctx.font = 'bold 10px Outfit';
+            ctx.fillStyle = isTeleport ? '#f3e8ff' : '#cffafe';
+            ctx.font = 'bold 9px Outfit';
             ctx.textAlign = 'center';
-            ctx.fillText(`🌀 TO: ${t.targetMapId}`, tx + tw/2, ty - 5);
+            const label = isTeleport ? `🌀 ${t.targetMapId}` : `💬 MSG: ${t.id || 'Trigger'}`;
+            ctx.fillText(label, tx + tw/2, ty - 4);
         });
 
         // Render Enemies
