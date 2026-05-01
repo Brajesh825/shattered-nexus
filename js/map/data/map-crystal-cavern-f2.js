@@ -1,72 +1,80 @@
 /**
  * map-crystal-cavern-f2.js
  * FLOOR 2: THE RESONANT DEPTHS
- * --- EXTREME PREMIUM UPGRADE ---
- * Geometry: Obsidian ravines leading to the Ruined Archive.
- * Layers: L0 (Ravine/Ruin), L1 (Obsidian Walls/Pillars), L2 (Fog).
+ * --- LORE: THE ECHOING ARCHIVES (FLOOR 2) ---
+ * Once the intellectual sanctuary of Ashveil, this floor houses the Royal Library. 
+ * Massive crystals here were used to harvest 'Resonance'—a method of storing memories in stone.
+ * Scholars died at their desks when the void broke through, and their spirits still patrol the stacks.
+ * 
+ * Geometry: Grand stone halls overtaken by crystalline 'memory leaks'.
+ * Layers: L0 (Marble/Crystals), L1 (Bookshelves/Large Statues), L2 (Spectral Fog).
  */
 
 MAP_DEFS.crystal_cavern_f2 = {
   id: 'crystal_cavern_f2',
-  name: 'The Resonant Depths',
+  name: 'The Echoing Archives',
   arcId: 2,
   width: 60,
   height: 60,
   playerStart: { x: 7, y: 30 },
   bgColor: '#020005',
-  ambientLight: 'rgba(180,80,255,0.12)',
+  ambientLight: 'rgba(100, 150, 255, 0.15)', // Cooler, scholarly blue
   weather: 'fog',
-  enemyLevelRange: [12, 16],
+  enemyLevelRange: [14, 18],
   jsonFile: 'js/map/data/map-crystal-cavern-f2.json',
 
   mutationConfig: {
-    corruptThreshold: 80,
-    mutantThreshold: 160,
-    corruptChance: 0.04,
-    mutantChance: 0.02,
+    corruptThreshold: 85,
+    mutantThreshold: 170,
+    corruptChance: 0.05,
+    mutantChance: 0.025,
   },
 
   // --- SEGMENTATION: LORE-DRIVEN REGIONS ---
-  // Safe zones prevent random encounters in narrative-heavy areas
   safeZones: [
-    { xMin: 21, xMax: 40, yMin: 0, yMax: 60, name: "The Prismatic Archive" } // Lore hub
+    { xMin: 5, xMax: 15, yMin: 25, yMax: 35, name: "The Archivist's Landing" }  // Entry safe point
   ],
 
   encounterTemplates: [
-    { weight: 4, enemies: ['skeleton', 'skeleton'] },
-    { weight: 3, enemies: ['ghost', 'ghost', 'bat'] },
-    { weight: 1, enemies: ['gem_mimic'] },
+    { weight: 4, enemies: ['ghost', 'ghost'] },       // Spectral Scholars
+    { weight: 3, enemies: ['lich', 'ghost'] },        // Archive Overseers
+    { weight: 2, enemies: ['crystal_shard', 'bat'] }, // Natural pests
+    { weight: 1, enemies: ['gem_mimic'] },            // Cursed scrolls
   ],
-  
+
   objective: {
     type: 'reach',
-    target: { x: 53, y: 30 },
-    label: 'Descent to the Frozen Core',
-    completeMsg: '✦ THE COLD DEEPENS ✦\nThe resonance is deafening here. The Frozen Core lies just ahead.'
+    target: { x: 55, y: 35 },
+    label: 'Enter the Resonant Well',
+    completeMsg: '✦ ASCENSION ✦\nYou step into the well. The world blurs as you are pulled toward the heart of the kingdom.'
   },
 
   enemies: [
-    { id: 'ghost',    x: 15, y: 15, patrol: 'random', range: 5, speed: 1.5 },
-    { id: 'skeleton', x: 45, y: 45, patrol: 'random', range: 5, speed: 1.2 },
+    { id: 'ghost', x: 20, y: 15, patrol: 'random', range: 5, speed: 1.2 },        // Top corridor phantom
+    { id: 'skeleton', x: 45, y: 55, patrol: 'horizontal', range: 8, speed: 1.0 }, // Bottom workshop knight
   ],
 
   npcs: [
-    { id: 'ghost_knight', x: 25, y: 25, dialogueKey: 'crystal_cavern_f2' },
+    { id: 'ghost_knight', x: 34, y: 32, dialogueKey: 'crystal_cavern_f2_knight' },
   ],
 
   triggers: [
     // --- REGION ANNOUNCEMENTS ---
     {
-      id: 'f2_seg_1', x: 0, y: 0, w: 20, h: 60,
-      type: 'msg', msg: '✦ Entering: The Echoing Ravine'
+      id: 'f2_seg_center', x: 28, y: 18, w: 19, h: 27,
+      type: 'msg', msg: '✦ Entering: The Forbidden Scriptum'
     },
     {
-      id: 'f2_seg_2', x: 21, y: 0, w: 20, h: 60,
-      type: 'msg', msg: '✦ Entering: The Prismatic Archive'
+      id: 'f2_seg_north', x: 15, y: 5, w: 40, h: 10,
+      type: 'msg', msg: 'The Great Stacks — Centuries of lost history surround you.'
     },
     {
-      id: 'f2_seg_3', x: 41, y: 0, w: 19, h: 60,
-      type: 'msg', msg: '✦ Entering: The Frozen Threshold'
+      id: 'f2_seg_south', x: 15, y: 48, w: 40, h: 10,
+      type: 'msg', msg: 'Resonance Labs — The air hums with unstable magic.'
+    },
+    {
+      id: 'f2_exit_warning', x: 50, y: 30, w: 10, h: 10,
+      type: 'msg', msg: 'The resonance from the well is deafening...'
     },
     // --- TELEPORT ---
     {
