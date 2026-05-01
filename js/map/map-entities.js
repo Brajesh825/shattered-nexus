@@ -1110,6 +1110,10 @@ const MapEntities = (() => {
     return _enemies.length === 0 || _enemies.every(e => !e.alive);
   }
 
+  function bossCleared() {
+    return _enemies.every(e => !e.isBoss || !e.alive);
+  }
+
   function remaining() {
     return _enemies.filter(e => e.alive).length;
   }
@@ -1127,7 +1131,7 @@ const MapEntities = (() => {
 
   return { 
     init, clear, updateEnemies, renderEnemies, renderEnemiesForRow, checkEncounter, removeEncountered, 
-    allCleared, remaining, hasEnemyAt, prepareBuckets,
+    allCleared, bossCleared, remaining, hasEnemyAt, prepareBuckets,
     initNPCs, renderNPCs, renderNPCsForRow, checkNPCAt, getNPCDialogue, markNPCTalked,
     getNPCs: () => MapNPCs.getNPCs()
   };

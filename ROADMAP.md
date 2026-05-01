@@ -1,7 +1,7 @@
 # RPG+ Development Roadmap
 
 ## ✅ Completed Milestones
-- **[2026-04-30] Multi-Floor Engine & Arc 2 Expansion**: Implemented high-fidelity `teleport` trigger system in `MapEngine`. Expanded Crystal Cavern into a 3-floor suite (`f1`, `f2`, `f3`) with thematic biomes and seamless transitions.
+- **[2026-04-30] Multi-Floor Engine & Arc 2 Expansion**: Implemented high-fidelity `teleport` trigger system and `kill_boss` objective logic in `MapEngine`. Expanded Crystal Cavern into a 3-floor suite (`f1`, `f2`, `f3`) with thematic biomes, seamless transitions, and synchronized narrative progression (Chapters 1–4) leading to the Demon Lord climax.
 - **[2026-04-30] Universal SVG Asset Engine & Map Stability**: Standardized all environment assets to SVG format across the engine and preloader. Fixed 404 loading regressions and ensured directory parity (`images/environment/svg/`).
 - **[2026-04-30] Architect Pro (M4) Implementation**: Completed high-fidelity browser-based tile editor with advanced tools (Brush, Fill, Rectangle, Eyedropper) and multi-layer support.
 - **[2026-04-30] Story.js Refactor (N3)**: Extracted cutscene rendering into `js/cutscene.js` for improved code modularity and maintainability.

@@ -26,7 +26,7 @@
       ],
       "scenes": [
         {
-          "narration": "The path from the Sacred Ruins leads north \u2014 through old roads and broken bridges \u2014 until the horizon turns orange. Not dawn. The smoke reaches them first, then the heat, then the silence where a city used to be.",
+          "narration": "The path from the Sacred Ruins leads north — through old roads and broken bridges — until the horizon turns orange. Not dawn. The smoke reaches them first, then the heat, then the silence where a city used to be.",
           "dialogue": []
         },
         {
@@ -34,7 +34,7 @@
           "dialogue": []
         },
         {
-          "narration": "Lulu kneels beside the remains of a public garden \u2014 flowers reduced to ash, a fountain cracked and dry.",
+          "narration": "Lulu kneels beside the remains of a public garden — flowers reduced to ash, a fountain cracked and dry.",
           "dialogue": [
             {
               "speaker": "Lulu",
@@ -64,7 +64,7 @@
             {
               "speaker": "Rei",
               "emotion": "direct",
-              "text": "The demon lord who did this \u2014 where is he?"
+              "text": "The demon lord who did this — where is he?"
             },
             {
               "speaker": "narrator",
@@ -79,7 +79,7 @@
             {
               "speaker": "narrator",
               "emotion": "hollow",
-              "text": "Old Keeper: Two did. A summoner and a winged warrior \u2014 radiant things, not from here. They fought him in the undercroft before the city fell. He did not kill them. He kept them. Said their power was too rare to waste."
+              "text": "Old Keeper: Two did. A summoner and a winged warrior — radiant things, not from here. They fought him in the undercroft before the city fell. He did not kill them. He kept them. Said their power was too rare to waste."
             },
             {
               "speaker": "Rei",
@@ -99,82 +99,83 @@
             {
               "speaker": "Aya",
               "emotion": "resolved",
-              "text": "Then we go through the cinder passage. If he is hunting us, we make him come to us on ground we choose \u2014 and we free whoever he is holding."
+              "text": "Then we go through the cinder passage. If he is hunting us, we make him come to us on ground we choose — and we free whoever he is holding."
             }
           ]
         }
       ]
     },
     {
-      "id": "arc2_ch3",
-      "title": "The Cinder Passage",
+      "id": "arc2_ch2",
+      "title": "The Azure Entrance",
       "type": "explore",
       "map": "crystal_cavern_f1",
       "background": "scorched_wastes",
-      "cast": [
-        "Aya",
-        "Tao",
-        "Lulu",
-        "Rei"
-      ],
+      "cast": ["Aya", "Tao", "Lulu", "Rei"],
       "pre_dialogue": [
         {
           "speaker": "narrator",
           "emotion": "tense",
-          "text": "The direct path through Ashveil is impassable \u2014 streets collapsed, bridges burned, shadow-creatures swarming every open road. The old cinder passage runs beneath the city, carved when Ashveil was young."
+          "text": "The old cinder passage runs beneath the city, carved when Ashveil was young. The entrance is choked with crystalline growth."
         },
         {
           "speaker": "Aya",
           "emotion": "resolved",
-          "text": "Underground. Through the passage. We come up on the other side of the city and draw him out."
-        },
-        {
-          "speaker": "Rei",
-          "emotion": "alert",
-          "text": "He will feel us moving beneath. Stay sharp \u2014 the passage will not be empty."
-        },
-        {
-          "speaker": "Tao",
-          "emotion": "focused",
-          "text": "Crawling through burning tunnels hunting a demon lord. This is absolutely a normal Tuesday. Move."
-        },
-        {
-          "speaker": "Lulu",
-          "emotion": "steady",
-          "text": "Together. We go together."
+          "text": "The heat is rising already. Stay focused."
         }
       ],
-      "map_hint": "Cross the cinder passage \u2014 find the tunnel exit on the far side.",
+      "map_hint": "Navigate Floor 1 — Find the descent to the Resonant Depths.",
+      "post_dialogue": [
+        {
+          "speaker": "Tao",
+          "emotion": "alert",
+          "text": "The air is vibrating. We are getting closer to the core."
+        }
+      ]
+    },
+    {
+      "id": "arc2_ch3",
+      "title": "The Resonant Depths",
+      "type": "explore",
+      "map": "crystal_cavern_f2",
+      "background": "scorched_wastes",
+      "cast": ["Aya", "Tao", "Lulu", "Rei"],
+      "pre_dialogue": [
+        {
+          "speaker": "Lulu",
+          "emotion": "uneasy",
+          "text": "The resonance is stronger here. It feels like the cavern itself is watching us."
+        }
+      ],
+      "map_hint": "Navigate Floor 2 — Find the stairs to the Frozen Core.",
+      "post_dialogue": [
+        {
+          "speaker": "Rei",
+          "emotion": "sharp",
+          "text": "I feel a presence below. Something ancient. Not the Demon Lord."
+        }
+      ]
+    },
+    {
+      "id": "arc2_ch4",
+      "title": "The Frozen Core",
+      "type": "explore",
+      "map": "crystal_cavern_f3",
+      "background": "scorched_wastes",
+      "cast": ["Aya", "Tao", "Lulu", "Rei"],
+      "pre_dialogue": [
+        {
+          "speaker": "narrator",
+          "emotion": "ominous",
+          "text": "The heart of the cavern is a tomb of ice and crystal. The relay hums with stolen power."
+        }
+      ],
+      "map_hint": "Navigate Floor 3 — Confront the Spectral Guardian and find the way into Ashveil's Undercroft.",
       "post_dialogue": [
         {
           "speaker": "narrator",
           "emotion": "tense",
-          "text": "The tunnel narrows then opens \u2014 a collapsed section, a gap of scorched sky above. They are through. The undercroft of Ashveil surrounds them, silent and hot."
-        },
-        {
-          "speaker": "Lulu",
-          "emotion": "uneasy",
-          "text": "Something is wrong. It is too quiet. He should have sent something by now."
-        },
-        {
-          "speaker": "Rei",
-          "emotion": "tense",
-          "text": "He did not send anything. He came himself."
-        },
-        {
-          "speaker": "narrator",
-          "emotion": "ominous",
-          "text": "A sound \u2014 not footsteps but pressure, the air thickening with heat that has nothing to do with the fires above. The Demon Lord steps from the shadows of the undercroft. Not waiting on a throne. Waiting here. For them."
-        },
-        {
-          "speaker": "Tao",
-          "emotion": "quiet",
-          "text": "...He knew exactly where we would come out."
-        },
-        {
-          "speaker": "Aya",
-          "emotion": "controlled",
-          "text": "Then we do not make him wait any longer. Form up."
+          "text": "The Spectral Guardian shatters, its resonance returning to the cavern. The path to the palace undercroft is open."
         }
       ]
     }

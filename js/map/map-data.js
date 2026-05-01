@@ -27,10 +27,32 @@
  *   map-northern-highlands.js  Exp 6   Lv 35-43
  *   map-sky-ruins.js           Exp 7   Lv 35-43
  *
- * Each map file registers itself via MAP_DEFS.<id> = { ... }
+/**
+ * Map Data Schema Explanation:
+ * ----------------------------
+ * Each map in MAP_DEFS uses a data-driven schema that the MapEngine and MapEntities 
+ * modules consume to handle mechanics, atmosphere, and narrative.
+ * 
+ * CORE PROPERTIES:
+ * - id: Unique string matching the key in MAP_DEFS.
+ * - name: Display name for headers.
+ * - arcId: Links map to Story Arc progression (1-8).
+ * - enemyLevelRange: [min, max] levels for random encounter scaling.
+ * 
+ * SEGMENTATION & SAFETY:
+ * - safeZones: Array of {xMin, xMax, yMin, yMax, name}.
+ *   Used by MapEntities to suppress random encounter spawns in narrative areas.
+ * - triggers: Array of region-based effects.
+ *   - type 'msg': Shows MapUI notification when entered (used for segment names).
+ *   - type 'dialogue': Triggers a multi-line conversation.
+ *   - type 'teleport': Floor/Map transition.
+ * 
+ * DYNAMIC ATMOSPHERE:
+ * - weather: 'leaves', 'sparks', 'fog', or null.
+ * - fog: {delay, peak, max, vision} - Controls the darkness/exploration mechanic.
  */
 
-// Populated by the individual map data files below.
+// Populated by the individual map data files in js/map/data/
 const MAP_DEFS = {};
 
 const MapData = {

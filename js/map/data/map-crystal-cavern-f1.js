@@ -1,12 +1,15 @@
 /**
  * map-crystal-cavern-f1.js
  * FLOOR 1: THE AZURE ENTRANCE
+ * --- EXTREME PREMIUM UPGRADE ---
+ * Geometry: Winding crystal path over a void abyss.
+ * Layers: L0 (Path/Void), L1 (Crystals/Walls), L2 (Overhead Stalactites).
  */
 
 MAP_DEFS.crystal_cavern_f1 = {
   id: 'crystal_cavern_f1',
   name: 'The Azure Entrance',
-  arcId: 1,
+  arcId: 2,
   width: 60,
   height: 60,
   playerStart: { x: 7, y: 30 },
@@ -23,11 +26,25 @@ MAP_DEFS.crystal_cavern_f1 = {
     mutantChance: 0.015,
   },
 
+  // --- SEGMENTATION: LORE-DRIVEN REGIONS ---
+  // Safe zones prevent random encounters in narrative-heavy areas
+  safeZones: [
+    { xMin: 0,  xMax: 15, yMin: 0, yMax: 60, name: "The Whispering Hall" }, // Entry area
+    { xMin: 46, xMax: 60, yMin: 0, yMax: 60, name: "The Descent Gate" }    // Exit area
+  ],
+
   encounterTemplates: [
     { weight: 4, enemies: ['crystal_shard', 'crystal_shard'] },
     { weight: 3, enemies: ['skeleton', 'skeleton', 'bat'] },
     { weight: 1, enemies: ['gem_mimic'] },
   ],
+
+  objective: {
+    type: 'reach',
+    target: { x: 55, y: 30 },
+    label: 'Descent to Floor 2',
+    completeMsg: '✦ THE PASSAGE OPENS ✦\nThe cavern floor shifts as you descend deeper into the Resonant Depths.'
+  },
 
   enemies: [
     { id: 'skeleton',        x: 15,  y: 15, patrol: 'random',     range: 4, speed: 1.0 },
@@ -40,6 +57,25 @@ MAP_DEFS.crystal_cavern_f1 = {
   ],
 
   triggers: [
+    // --- REGION ANNOUNCEMENTS ---
+    {
+      id: 'f1_seg_1', x: 0, y: 0, w: 15, h: 60,
+      type: 'msg', msg: '✦ Entering: The Whispering Hall'
+    },
+    {
+      id: 'f1_seg_2', x: 16, y: 0, w: 30, h: 60,
+      type: 'msg', msg: '✦ Entering: The Resonant Spire'
+    },
+    {
+      id: 'f1_seg_3', x: 46, y: 0, w: 14, h: 60,
+      type: 'msg', msg: '✦ Entering: The Descent Gate'
+    },
+    // --- NARRATIVE TRIGGERS ---
+    {
+      x: 15, y: 20, w: 2, h: 2,
+      type: 'msg', msg: '✦ You notice a pile of weathered bones. "These travelers never made it to the core... the crystals grew right through them."'
+    },
+    // --- TELEPORT ---
     {
       x: 55, y: 30, w: 1, h: 1,
       type: 'teleport',
