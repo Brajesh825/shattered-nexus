@@ -23,6 +23,7 @@ const TILE_DEFS = {
   16: { name: 'ember-pit', walkable: false, color: '#a53815', hi: '#c54a20', shadow: '#6a2008', anim: true },
   17: { name: 'obsidian-wall', walkable: false, color: '#1a1628', hi: '#2a2438', shadow: '#0d0a12' },
   18: { name: 'shallow-water', walkable: true, color: '#4e86b0', hi: '#6e96c0', shadow: '#2e5680', anim: true },
+  19: { name: 'frozen-snow', walkable: true, color: '#e0f7fa', hi: '#ffffff', shadow: '#b2ebf2', detail: 'frost' },
   22: { name: 'rapids', walkable: false, color: '#a0c0ff', hi: '#ffffff', shadow: '#70a0ff', anim: true },
 
   // ── VEGETATION ────────────────────────────────────────────────

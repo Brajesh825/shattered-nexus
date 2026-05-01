@@ -1,9 +1,17 @@
 /**
  * map-crystal-cavern-f3.js
  * FLOOR 3: THE FROZEN CORE
- * --- EXTREME PREMIUM UPGRADE ---
- * Geometry: Frozen lake arena with starlit reflections.
- * Layers: L0 (Frozen Lake), L1 (Crystal Outcrops/Boss Circle), L2 (Glow).
+ * --- LORE: THE SUNKEN SANCTUM (FINAL FLOOR) ---
+ * The absolute heart of the Ashveil Kingdom. The temperature here is sub-zero, 
+ * kept frozen by the 'Resonance' that has turned to pure ice.
+ * 
+ * Sections:
+ * 1. THE RUINED STACKS: The library ends here, crumbling into the residential district.
+ * 2. THE SUNKEN COMMONS: Ruined estates where the High Scholars lived.
+ * 3. THE IMPERIAL SANCTUM: The Royal Palace. Home to the SPECTRAL GUARDIAN.
+ * 4. THE CRYSTAL HEART: The exit rift that leads to the Eastern Wilds.
+ * 
+ * Narrative: Defeating the Guardian triggers the "Void Ambush" narrative sequence.
  */
 
 MAP_DEFS.crystal_cavern_f3 = {
@@ -14,9 +22,9 @@ MAP_DEFS.crystal_cavern_f3 = {
   height: 60,
   playerStart: { x: 7, y: 30 },
   bgColor: '#010002',
-  ambientLight: 'rgba(220,150,255,0.15)',
+  ambientLight: 'rgba(200, 150, 255, 0.1)', // Cold, imperial violet
   weather: 'fog',
-  enemyLevelRange: [14, 16],
+  enemyLevelRange: [16, 20],
   jsonFile: 'js/map/data/map-crystal-cavern-f3.json',
 
   mutationConfig: {
@@ -27,22 +35,22 @@ MAP_DEFS.crystal_cavern_f3 = {
   },
 
   // --- SEGMENTATION: LORE-DRIVEN REGIONS ---
-  // Safe zones prevent random encounters in narrative-heavy areas
   safeZones: [
-    { xMin: 0,  xMax: 20, yMin: 0, yMax: 60, name: "The Starlit Vault" },   // Prep area
-    { xMin: 46, xMax: 60, yMin: 0, yMax: 60, name: "The Undercroft Passage" } // Post-boss
+    { xMin: 0,  xMax: 15, yMin: 20, yMax: 40, name: "The Ruined Stacks" },    // Entry area
+    { xMin: 48, xMax: 60, yMin: 20, yMax: 40, name: "The Crystal Heart" }    // Post-boss exit
   ],
 
   encounterTemplates: [
     { weight: 4, enemies: ['skeleton', 'ghost'] },
-    { weight: 2, enemies: ['cyclops', 'minotaur'] },
+    { weight: 2, enemies: ['cyclops', 'lich'] },
     { weight: 1, enemies: ['spectral_guardian'] },
   ],
 
   objective: {
     type: 'kill_boss',
+    bossId: 'spectral_guardian',
     label: 'Defeat the Spectral Guardian',
-    completeMsg: '✦ THE CORE IS REACHED ✦\nThe Spectral Guardian falls. The path to Ashveil lies ahead.'
+    completeMsg: '✦ THE CORE IS REACHED ✦\nThe Spectral Guardian falls. The path to the Eastern Wilds lies ahead.'
   },
 
   enemies: [
@@ -58,23 +66,27 @@ MAP_DEFS.crystal_cavern_f3 = {
   triggers: [
     // --- REGION ANNOUNCEMENTS ---
     {
-      id: 'f3_seg_1', x: 0, y: 0, w: 20, h: 60,
-      type: 'msg', msg: '✦ Entering: The Starlit Vault'
+      id: 'f3_seg_1', x: 0, y: 0, w: 15, h: 60,
+      type: 'msg', msg: '✦ Entering: The Ruined Stacks'
     },
     {
-      id: 'f3_seg_2', x: 21, y: 0, w: 24, h: 60,
-      type: 'msg', msg: '✦ Entering: The Guardian\'s Path'
+      id: 'f3_seg_2', x: 16, y: 0, w: 15, h: 60,
+      type: 'msg', msg: '✦ Entering: The Sunken Commons'
     },
     {
-      id: 'f3_seg_3', x: 46, y: 0, w: 14, h: 60,
-      type: 'msg', msg: '✦ Entering: The Undercroft Passage'
+      id: 'f3_seg_3', x: 32, y: 0, w: 15, h: 60,
+      type: 'msg', msg: '✦ Entering: The Imperial Sanctum'
+    },
+    {
+      id: 'f3_seg_4', x: 48, y: 0, w: 12, h: 60,
+      type: 'msg', msg: '✦ Entering: The Crystal Heart'
     },
     // --- TELEPORT ---
     {
-      x: 5, y: 30, w: 1, h: 1,
+      x: 7, y: 30, w: 1, h: 1,
       type: 'teleport',
       targetMapId: 'crystal_cavern_f2',
-      targetX: 53, targetY: 30,
+      targetX: 53, targetY: 31,
       msg: '✦ Retreating to the Resonant Depths...'
     }
   ],
