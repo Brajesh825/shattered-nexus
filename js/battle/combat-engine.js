@@ -41,10 +41,13 @@ const CombatEngine = (() => {
     const cappedPassive = Math.min(NexusScaling.caps.statMult || 2.5, pMult);
 
     // 2. Calculate Status Bonuses (Additive Stacking for Moves - Uncapped by Base)
+    // reductionMult is tracked separately because cappedPassive is already captured above;
+    // multiplying pMult here would have no effect on finalMult.
+    let reductionMult = 1.0;
     (unit.statuses || []).forEach(s => {
       if (s.stat === stat || s.type === stat) {
         if (s.type === 'mult') sBonus += (s.value - 1.0);
-        else if (s.type === 'reduction') pMult *= s.value; // Mitigation stays multiplicative
+        else if (s.type === 'reduction') reductionMult *= s.value;
         else if (s.type === 'flat') flat += s.value;
       }
     });
@@ -71,7 +74,7 @@ const CombatEngine = (() => {
     // 4. Handle Float-based Combat Stats
     if (stat === 'accuracy') return Math.max(NexusScaling.caps.accuracyMin, Math.min(1.0, result));
     if (stat === 'critRate') return Math.min(NexusScaling.caps.critRate, result);
-    if (stat === 'reduction') return Math.max(1 - NexusScaling.caps.mitigation, result);
+    if (stat === 'reduction') return Math.max(1 - NexusScaling.caps.mitigation, reductionMult);
     if (stat === 'evasion') return Math.min(NexusScaling.caps.evasion || 0.75, result);
 
     const floor = Math.max(1, Math.floor(result)); // Minimum 1 for primary stats

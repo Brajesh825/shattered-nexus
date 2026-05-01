@@ -306,13 +306,10 @@ function resolveEnemyOffensiveAction(actor, target, targetIdx, ab, element) {
   }
 
   // 6. Passive reductions & Final Rounding
+  // Note: status-based reduction (including guardian) is already applied via _reduction
+  // earlier in the damage chain. Only apply passive trait and relic reductions here.
   const _passResist = 1 - PassiveSystem.val(target, 'DAMAGE_REDUCTION', 0);
   dmg *= _passResist;
-  if (Battle.getStat(target, 'reduction') < 1) dmg *= Battle.getStat(target, 'reduction');
-  if (StatusSystem.has(target, 'status_guardian')) {
-    dmg *= 0.7;
-    BattleUI.addLog(`(Guardian Mitigated -30%)`, 'hi');
-  }
   // Relic: Cinder of Ashveil — fire damage reduction
   if (element === 'fire' && target._fireResist) {
     dmg *= (1 - target._fireResist);
