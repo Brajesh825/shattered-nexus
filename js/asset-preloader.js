@@ -59,6 +59,7 @@ const AssetPreloader = (() => {
       'dock_post', 'rowboat', 'lighthouse', 'fishing_net',
       // Arcane (IDs 382–384)
       'arcane_pedestal', 'crystal_orb', 'spell_rune',
+      'large_castle', 'large_fishman_hut', 'large_noble_villa', 'large_military_tent',
       ...MILITARY_ASSETS,
       ...CIVILIAN_ASSETS,
       ...NOBLE_ASSETS

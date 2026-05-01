@@ -1,0 +1,221 @@
+<svg width="680" height="480" viewBox="0 0 680 480" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <linearGradient id="fabricL" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#7a8c5a"/>
+    <stop offset="60%" stop-color="#5c6e3a"/>
+    <stop offset="100%" stop-color="#3e5228"/>
+  </linearGradient>
+  <linearGradient id="fabricR" x1="1" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#6a7c4e"/>
+    <stop offset="60%" stop-color="#4e6030"/>
+    <stop offset="100%" stop-color="#38481e"/>
+  </linearGradient>
+  <linearGradient id="fabricFront" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#8a9c6a"/>
+    <stop offset="100%" stop-color="#5c6e3c"/>
+  </linearGradient>
+  <linearGradient id="groundG" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#6b5a3a"/>
+    <stop offset="100%" stop-color="#4a3c22"/>
+  </linearGradient>
+  <linearGradient id="sandbagG" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#a89060"/>
+    <stop offset="100%" stop-color="#7a6438"/>
+  </linearGradient>
+  <linearGradient id="poleG" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0%" stop-color="#8a7a5a"/>
+    <stop offset="50%" stop-color="#c8b880"/>
+    <stop offset="100%" stop-color="#8a7a5a"/>
+  </linearGradient>
+  <pattern id="camoPat" width="40" height="40" patternUnits="userSpaceOnUse">
+    <rect width="40" height="40" fill="none"/>
+    <ellipse cx="8" cy="8" rx="7" ry="5" fill="#3a4c22" opacity="0.5"/>
+    <ellipse cx="28" cy="18" rx="9" ry="6" fill="#2a3c14" opacity="0.45"/>
+    <ellipse cx="14" cy="30" rx="6" ry="4" fill="#4a5c2a" opacity="0.4"/>
+    <ellipse cx="36" cy="6" rx="5" ry="4" fill="#3a4820" opacity="0.45"/>
+    <ellipse cx="22" cy="36" rx="8" ry="5" fill="#2e3e18" opacity="0.4"/>
+  </pattern>
+  <pattern id="groundPat" width="24" height="12" patternUnits="userSpaceOnUse">
+    <rect width="24" height="12" fill="none"/>
+    <line x1="0" y1="6" x2="24" y2="6" stroke="rgba(0,0,0,0.08)" stroke-width="1"/>
+    <circle cx="6" cy="3" r="1.5" fill="rgba(0,0,0,0.1)"/>
+    <circle cx="18" cy="9" r="1" fill="rgba(0,0,0,0.08)"/>
+  </pattern>
+</defs>
+
+<!-- GROUND -->
+<rect x="0" y="390" width="680" height="90" fill="url(#groundG)"/>
+<rect x="0" y="390" width="680" height="90" fill="url(#groundPat)" opacity="0.8"/>
+<rect x="0" y="388" width="680" height="5" fill="#5a4c2a" opacity="0.6"/>
+<ellipse cx="220" cy="408" rx="60" ry="6" fill="#3e3018" opacity="0.35"/>
+<ellipse cx="480" cy="415" rx="50" ry="5" fill="#3e3018" opacity="0.3"/>
+
+<!-- GUY ROPES BACK -->
+<rect x="96" y="382" width="6" height="18" fill="#7a6840" rx="1" transform="rotate(-12,99,391)"/>
+<line x1="99" y1="384" x2="218" y2="252" stroke="#c8b870" stroke-width="1.5" opacity="0.7" stroke-dasharray="5,3"/>
+<rect x="576" y="382" width="6" height="18" fill="#7a6840" rx="1" transform="rotate(12,579,391)"/>
+<line x1="579" y1="384" x2="462" y2="252" stroke="#c8b870" stroke-width="1.5" opacity="0.7" stroke-dasharray="5,3"/>
+
+<!-- MAIN TENT PANELS -->
+<polygon points="340,68 118,390 340,390" fill="url(#fabricL)"/>
+<polygon points="340,68 118,390 340,390" fill="url(#camoPat)" opacity="0.6"/>
+<polygon points="340,68 562,390 340,390" fill="url(#fabricR)"/>
+<polygon points="340,68 562,390 340,390" fill="url(#camoPat)" opacity="0.55"/>
+
+<!-- Fabric crease lines -->
+<line x1="340" y1="68" x2="200" y2="390" stroke="rgba(0,0,0,0.12)" stroke-width="1.5"/>
+<line x1="340" y1="68" x2="160" y2="390" stroke="rgba(0,0,0,0.09)" stroke-width="1"/>
+<line x1="340" y1="68" x2="260" y2="390" stroke="rgba(0,0,0,0.07)" stroke-width="1"/>
+<line x1="340" y1="68" x2="480" y2="390" stroke="rgba(0,0,0,0.12)" stroke-width="1.5"/>
+<line x1="340" y1="68" x2="520" y2="390" stroke="rgba(0,0,0,0.09)" stroke-width="1"/>
+<line x1="340" y1="68" x2="420" y2="390" stroke="rgba(0,0,0,0.07)" stroke-width="1"/>
+
+<!-- Ridge and eave seams -->
+<line x1="340" y1="68" x2="340" y2="390" stroke="#2e3c1a" stroke-width="3" opacity="0.7"/>
+<line x1="118" y1="390" x2="340" y2="68" stroke="#3a4c22" stroke-width="5" opacity="0.5"/>
+<line x1="562" y1="390" x2="340" y2="68" stroke="#3a4c22" stroke-width="5" opacity="0.5"/>
+
+<!-- FRONT FACE -->
+<polygon points="192,340 488,340 488,390 192,390" fill="url(#fabricFront)"/>
+<polygon points="192,340 488,340 488,390 192,390" fill="url(#camoPat)" opacity="0.5"/>
+<line x1="192" y1="340" x2="488" y2="340" stroke="#3a4c22" stroke-width="3" opacity="0.6"/>
+<polygon points="186,340 494,340 500,348 180,348" fill="#2a3818" opacity="0.25"/>
+
+<!-- Door -->
+<polygon points="284,340 284,390 396,390 396,340" fill="#1a2210" opacity="0.85"/>
+<path d="M284,340 Q270,355 272,390 L284,390 Z" fill="#6a7c4a"/>
+<path d="M284,340 Q270,355 272,390 L284,390 Z" fill="url(#camoPat)" opacity="0.5"/>
+<path d="M396,340 Q410,355 408,390 L396,390 Z" fill="#5c6e3c"/>
+<path d="M396,340 Q410,355 408,390 L396,390 Z" fill="url(#camoPat)" opacity="0.5"/>
+<path d="M284,356 Q270,362 265,370" fill="none" stroke="#c8b870" stroke-width="2"/>
+<path d="M396,356 Q410,362 415,370" fill="none" stroke="#c8b870" stroke-width="2"/>
+<rect x="285" y="341" width="110" height="49" fill="#0e1a08" opacity="0.7"/>
+<ellipse cx="340" cy="375" rx="28" ry="12" fill="#c8830a" opacity="0.18"/>
+<ellipse cx="340" cy="370" rx="14" ry="8" fill="#e8a020" opacity="0.15"/>
+
+<!-- Mesh vents -->
+<rect x="210" y="350" width="46" height="28" rx="2" fill="#1a2210" opacity="0.7"/>
+<line x1="210" y1="350" x2="256" y2="378" stroke="#3a4c22" stroke-width="1" opacity="0.6"/>
+<line x1="256" y1="350" x2="210" y2="378" stroke="#3a4c22" stroke-width="1" opacity="0.6"/>
+<line x1="233" y1="350" x2="233" y2="378" stroke="#3a4c22" stroke-width="1" opacity="0.5"/>
+<line x1="210" y1="364" x2="256" y2="364" stroke="#3a4c22" stroke-width="1" opacity="0.5"/>
+<rect x="210" y="350" width="46" height="28" rx="2" fill="none" stroke="#4a5c2a" stroke-width="2"/>
+<rect x="424" y="350" width="46" height="28" rx="2" fill="#1a2210" opacity="0.7"/>
+<line x1="424" y1="350" x2="470" y2="378" stroke="#3a4c22" stroke-width="1" opacity="0.6"/>
+<line x1="470" y1="350" x2="424" y2="378" stroke="#3a4c22" stroke-width="1" opacity="0.6"/>
+<line x1="447" y1="350" x2="447" y2="378" stroke="#3a4c22" stroke-width="1" opacity="0.5"/>
+<line x1="424" y1="364" x2="470" y2="364" stroke="#3a4c22" stroke-width="1" opacity="0.5"/>
+<rect x="424" y="350" width="46" height="28" rx="2" fill="none" stroke="#4a5c2a" stroke-width="2"/>
+
+<!-- RIDGE POLE -->
+<rect x="335" y="60" width="10" height="332" fill="url(#poleG)" rx="2"/>
+<rect x="330" y="55" width="20" height="8" fill="#b0a070" rx="2"/>
+<circle cx="340" cy="52" r="7" fill="#c8b880"/>
+<circle cx="340" cy="52" r="4" fill="#a89860"/>
+<rect x="340" y="24" width="2" height="30" fill="#8a7a5a"/>
+<polygon points="342,24 368,32 342,40" fill="#8a1a1a"/>
+
+<!-- FRONT SUPPORT POLES -->
+<rect x="186" y="260" width="9" height="132" fill="url(#poleG)" rx="2"/>
+<rect x="182" y="257" width="17" height="6" fill="#b0a070" rx="2"/>
+<rect x="485" y="260" width="9" height="132" fill="url(#poleG)" rx="2"/>
+<rect x="481" y="257" width="17" height="6" fill="#b0a070" rx="2"/>
+
+<!-- GUY ROPES FRONT -->
+<line x1="186" y1="270" x2="118" y2="390" stroke="#c8b870" stroke-width="2" opacity="0.8"/>
+<rect x="112" y="384" width="6" height="16" fill="#7a6840" rx="1" transform="rotate(-8,115,392)"/>
+<line x1="186" y1="290" x2="90" y2="390" stroke="#c8b870" stroke-width="1.5" opacity="0.65"/>
+<rect x="84" y="383" width="6" height="16" fill="#7a6840" rx="1" transform="rotate(-14,87,391)"/>
+<line x1="494" y1="270" x2="562" y2="390" stroke="#c8b870" stroke-width="2" opacity="0.8"/>
+<rect x="558" y="384" width="6" height="16" fill="#7a6840" rx="1" transform="rotate(8,561,392)"/>
+<line x1="494" y1="290" x2="590" y2="390" stroke="#c8b870" stroke-width="1.5" opacity="0.65"/>
+<rect x="586" y="383" width="6" height="16" fill="#7a6840" rx="1" transform="rotate(14,589,391)"/>
+
+<!-- CAMO NETTING -->
+<polygon points="118,390 200,280 310,200 340,68" fill="#4a5c2a" opacity="0.18"/>
+<polygon points="118,390 200,280 310,200 340,68" fill="url(#camoPat)" opacity="0.55"/>
+<line x1="118" y1="390" x2="280" y2="240" stroke="#3a4c1a" stroke-width="1" opacity="0.35" stroke-dasharray="6,4"/>
+<line x1="140" y1="390" x2="300" y2="210" stroke="#3a4c1a" stroke-width="1" opacity="0.3" stroke-dasharray="6,4"/>
+<line x1="200" y1="390" x2="330" y2="140" stroke="#3a4c1a" stroke-width="1" opacity="0.3" stroke-dasharray="6,4"/>
+<line x1="118" y1="350" x2="310" y2="300" stroke="#3a4c1a" stroke-width="1" opacity="0.3" stroke-dasharray="6,4"/>
+<line x1="118" y1="310" x2="300" y2="268" stroke="#3a4c1a" stroke-width="1" opacity="0.28" stroke-dasharray="6,4"/>
+
+<!-- SANDBAGS LEFT -->
+<ellipse cx="144" cy="393" rx="26" ry="9" fill="#7a6838" opacity="0.9"/>
+<rect x="118" y="381" width="52" height="14" fill="url(#sandbagG)" rx="6"/>
+<ellipse cx="130" cy="381" rx="13" ry="6" fill="#a08850" opacity="0.8"/>
+<ellipse cx="156" cy="381" rx="13" ry="6" fill="#987e48" opacity="0.8"/>
+<rect x="112" y="368" width="60" height="14" fill="#907840" rx="6" opacity="0.95"/>
+<ellipse cx="124" cy="368" rx="14" ry="5.5" fill="#a08850" opacity="0.7"/>
+<ellipse cx="152" cy="368" rx="14" ry="5.5" fill="#987840" opacity="0.7"/>
+<ellipse cx="170" cy="368" rx="10" ry="5" fill="#a08448" opacity="0.7"/>
+<line x1="130" y1="375" x2="130" y2="382" stroke="#6a5828" stroke-width="1.5" opacity="0.6"/>
+<line x1="156" y1="375" x2="156" y2="382" stroke="#6a5828" stroke-width="1.5" opacity="0.6"/>
+
+<!-- SANDBAGS RIGHT -->
+<ellipse cx="536" cy="393" rx="26" ry="9" fill="#7a6838" opacity="0.9"/>
+<rect x="510" y="381" width="52" height="14" fill="url(#sandbagG)" rx="6"/>
+<ellipse cx="522" cy="381" rx="13" ry="6" fill="#a08850" opacity="0.8"/>
+<ellipse cx="550" cy="381" rx="13" ry="6" fill="#987e48" opacity="0.8"/>
+<rect x="504" y="368" width="60" height="14" fill="#907840" rx="6" opacity="0.95"/>
+<ellipse cx="516" cy="368" rx="14" ry="5.5" fill="#a08850" opacity="0.7"/>
+<ellipse cx="544" cy="368" rx="14" ry="5.5" fill="#987840" opacity="0.7"/>
+<ellipse cx="562" cy="368" rx="10" ry="5" fill="#a08448" opacity="0.7"/>
+<line x1="522" y1="375" x2="522" y2="382" stroke="#6a5828" stroke-width="1.5" opacity="0.6"/>
+<line x1="550" y1="375" x2="550" y2="382" stroke="#6a5828" stroke-width="1.5" opacity="0.6"/>
+
+<!-- FRONT DOOR SANDBAGS -->
+<rect x="256" y="376" width="38" height="14" fill="url(#sandbagG)" rx="5"/>
+<ellipse cx="268" cy="376" rx="11" ry="5" fill="#a08850" opacity="0.75"/>
+<ellipse cx="285" cy="376" rx="10" ry="5" fill="#987848" opacity="0.75"/>
+<rect x="398" y="376" width="38" height="14" fill="url(#sandbagG)" rx="5"/>
+<ellipse cx="410" cy="376" rx="11" ry="5" fill="#a08850" opacity="0.75"/>
+<ellipse cx="428" cy="376" rx="10" ry="5" fill="#987848" opacity="0.75"/>
+
+<!-- WOODEN CRATE LEFT -->
+<rect x="56" y="356" width="52" height="38" fill="#8a7040" rx="2"/>
+<rect x="56" y="356" width="52" height="38" fill="none" stroke="#5a4820" stroke-width="1.5"/>
+<line x1="82" y1="356" x2="82" y2="394" stroke="#5a4820" stroke-width="1.5"/>
+<line x1="56" y1="373" x2="108" y2="373" stroke="#5a4820" stroke-width="1.5"/>
+<rect x="58" y="358" width="22" height="13" fill="rgba(0,0,0,0.08)"/>
+<rect x="84" y="358" width="22" height="13" fill="rgba(0,0,0,0.06)"/>
+<rect x="58" y="375" width="22" height="17" fill="rgba(0,0,0,0.06)"/>
+<rect x="84" y="375" width="22" height="17" fill="rgba(0,0,0,0.05)"/>
+<rect x="64" y="360" width="12" height="3" fill="#3a2e10" opacity="0.6" rx="1"/>
+<rect x="66" y="365" width="8" height="3" fill="#3a2e10" opacity="0.6" rx="1"/>
+
+<!-- JERRY CAN + BARREL RIGHT -->
+<rect x="590" y="348" width="28" height="44" fill="#5a6c3a" rx="3"/>
+<rect x="590" y="348" width="28" height="44" fill="none" stroke="#3a4c22" stroke-width="1.5" rx="3"/>
+<rect x="595" y="353" width="18" height="6" fill="#4a5c2e" rx="1"/>
+<rect x="595" y="365" width="18" height="6" fill="#4a5c2e" rx="1"/>
+<rect x="595" y="377" width="18" height="9" fill="#4a5c2e" rx="1"/>
+<rect x="601" y="344" width="6" height="6" fill="#7a8c5a" rx="1"/>
+<circle cx="604" cy="341" r="4" fill="#5a6c3a" stroke="#3a4c22" stroke-width="1"/>
+<ellipse cx="630" cy="368" rx="22" ry="8" fill="#6a5030"/>
+<rect x="608" y="368" width="44" height="28" fill="#7a6038"/>
+<ellipse cx="630" cy="396" rx="22" ry="8" fill="#5a4028"/>
+<line x1="608" y1="376" x2="652" y2="376" stroke="#4a3018" stroke-width="2"/>
+<line x1="608" y1="385" x2="652" y2="385" stroke="#4a3018" stroke-width="2"/>
+<line x1="614" y1="368" x2="614" y2="396" stroke="#5a4028" stroke-width="1.5" opacity="0.5"/>
+<line x1="646" y1="368" x2="646" y2="396" stroke="#5a4028" stroke-width="1.5" opacity="0.5"/>
+
+<!-- LANTERNS -->
+<line x1="284" y1="342" x2="278" y2="324" stroke="#8a7a5a" stroke-width="2"/>
+<rect x="270" y="308" width="16" height="22" rx="3" fill="#2a1c08"/>
+<rect x="272" y="310" width="12" height="18" rx="2" fill="#d4820a" opacity="0.65"/>
+<rect x="272" y="304" width="12" height="6" fill="#8a7a5a" rx="1"/>
+<ellipse cx="278" cy="322" rx="12" ry="10" fill="#d4820a" opacity="0.15"/>
+<line x1="396" y1="342" x2="402" y2="324" stroke="#8a7a5a" stroke-width="2"/>
+<rect x="394" y="308" width="16" height="22" rx="3" fill="#2a1c08"/>
+<rect x="396" y="310" width="12" height="18" rx="2" fill="#d4820a" opacity="0.65"/>
+<rect x="396" y="304" width="12" height="6" fill="#8a7a5a" rx="1"/>
+<ellipse cx="402" cy="322" rx="12" ry="10" fill="#d4820a" opacity="0.15"/>
+
+<!-- RIDGE ROPE LINES -->
+<line x1="340" y1="52" x2="186" y2="260" stroke="#c8b870" stroke-width="1.5" opacity="0.55" stroke-dasharray="4,3"/>
+<line x1="340" y1="52" x2="494" y2="260" stroke="#c8b870" stroke-width="1.5" opacity="0.55" stroke-dasharray="4,3"/>
+
+<!-- GROUND SHADOW -->
+<ellipse cx="340" cy="395" rx="220" ry="10" fill="#2a1e0a" opacity="0.3"/>
+</svg>

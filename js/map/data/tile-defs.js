@@ -96,7 +96,10 @@ TILE_DEFS[245] = { name: 'Shattered Throne', walkable: false, svgAsset: 'shatter
 TILE_DEFS[246] = { name: 'Broken Knight', walkable: false, svgAsset: 'broken_knight', color: '#718096', vScale: 2.5 };
 TILE_DEFS[247] = { name: 'Cursed Well', walkable: false, svgAsset: 'cursed_well', color: '#6a1b9a', vScale: 2.2, anchor: 'bottom-left', collisionMask: ['XXX'] };
 TILE_DEFS[248] = { name: 'Withered Tree', walkable: false, svgAsset: 'withered_tree', color: '#e2e8f0', vScale: 4.0 };
-TILE_DEFS[249] = { name: 'Large Castle', walkable: false, svgAsset: 'large_castle', color: '#6b7280', vScale: 8.0, anchor: 'bottom-left', collisionMask: ['XXXXXXXXXX', 'XXXXXXXXXX'] };
+TILE_DEFS[249] = { name: 'Grand Castle', walkable: false, svgAsset: 'large_castle', color: '#6b7280', vScale: 9.0, anchor: 'bottom-left', collisionMask: ['XXXXXXXXXX', 'XXXXXXXXXX', 'XXXXXXXXXX'] };
+TILE_DEFS[252] = { name: 'Giant Fishman Hut', walkable: false, svgAsset: 'large_fishman_hut', color: '#795548', vScale: 5.0, anchor: 'bottom-left', collisionMask: ['XXXXX', 'XXXXX'] };
+TILE_DEFS[253] = { name: 'Grand Noble Villa', walkable: false, svgAsset: 'large_noble_villa', color: '#eceff1', vScale: 5.0, anchor: 'bottom-left', collisionMask: ['XXXXX', 'XXXXX'] };
+TILE_DEFS[254] = { name: 'Imperial Command Tent', walkable: false, svgAsset: 'large_military_tent', color: '#546e7a', vScale: 3.0, anchor: 'bottom-left', collisionMask: ['XXX', 'XXX'] };
 TILE_DEFS[250] = { name: 'Crystal Stairs Down', walkable: true, svgAsset: 'void_rift', color: '#6200ea', glows: 'rgba(100, 200, 255, 0.4)', vScale: 3.5, anchor: 'bottom-left' };
 TILE_DEFS[251] = { name: 'Crystal Stairs Up', walkable: true, svgAsset: 'void_rift', color: '#ff9800', glows: 'rgba(255, 200, 100, 0.4)', vScale: 3.5, anchor: 'bottom-left' };
 
@@ -389,6 +392,41 @@ const OBJECT_STAMPS = {
     size: { w: 3, h: 2 },
     layers: {
       1: [[0, 0, 0], [250, 247, 250]]
+    }
+  },
+  'grand_imperial_castle': {
+    name: 'Grand Imperial Castle',
+    size: { w: 10, h: 5 },
+    layers: {
+      1: [[0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0,0], [250,250,250,250,250,250,250,250,250,250], [250,250,250,250,249,250,250,250,250,250]]
+    }
+  },
+  'noble_grand_villa': {
+    name: 'Noble Grand Villa',
+    size: { w: 5, h: 3 },
+    layers: {
+      1: [[0,0,0,0,0], [250,250,250,250,250], [250,250,253,250,250]]
+    }
+  },
+  'fishman_colony_hut': {
+    name: 'Fishman Colony Hut',
+    size: { w: 5, h: 3 },
+    layers: {
+      1: [[0,0,0,0,0], [250,250,250,250,250], [250,250,252,250,250]]
+    }
+  },
+  'imperial_command_center': {
+    name: 'Imperial Command Center',
+    size: { w: 3, h: 2 },
+    layers: {
+      1: [[250,250,250], [250,254,250]]
+    }
+  },
+  'village_windmill_poi': {
+    name: 'Village Windmill',
+    size: { w: 3, h: 3 },
+    layers: {
+      1: [[0,0,0], [0,0,0], [250, 332, 250]]
     }
   }
 };

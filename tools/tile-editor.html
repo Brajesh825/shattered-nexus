@@ -45,9 +45,10 @@
 
         <div class="action-group">
             <button class="action-btn undo" onclick="editor.undo()" title="Undo (Ctrl+Z)">⏪</button>
-            <button class="action-btn sync" onclick="editor.syncToWorkspace()" title="Sync to Workspace">🔄 SYNC</button>
+            <button class="action-btn sync" onclick="editor.syncToWorkspace()" title="Sync">🔄 SYNC</button>
+            <button class="action-btn export" onclick="editor.exportPNG()" title="Export PNG">📸 PNG</button>
             <input type="file" id="map-js-input" style="display:none" accept=".js" onchange="editor.importMapJS(this.files[0])">
-            <button class="action-btn" onclick="document.getElementById('map-js-input').click()" title="Import Map JS File">📂 IMPORT JS</button>
+            <button class="action-btn" onclick="document.getElementById('map-js-input').click()" title="Import JS">📂 IMPORT</button>
         </div>
 
         <div class="divider"></div>
