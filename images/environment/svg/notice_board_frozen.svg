@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Post -->
+  <rect x="47" y="50" width="6" height="45" fill="#546e7a"/>
+  <!-- Board -->
+  <rect x="20" y="10" width="60" height="40" fill="#cfd8dc" stroke="#90a4ae" stroke-width="2"/>
+  <!-- Frozen Notices (Translucent Ice) -->
+  <rect x="25" y="15" width="15" height="20" fill="rgba(225,245,254,0.6)" stroke="white"/>
+  <rect x="45" y="18" width="12" height="15" fill="rgba(225,245,254,0.6)" stroke="white"/>
+  <rect x="62" y="15" width="15" height="25" fill="rgba(225,245,254,0.6)" stroke="white"/>
+  <!-- Icicle trim -->
+  <path d="M20 10 L25 20 L30 10 L35 25 L40 10" fill="none" stroke="white" stroke-width="1.5"/>
+</svg>
