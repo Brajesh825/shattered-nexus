@@ -423,7 +423,11 @@ class TileEditor {
             }
             if (e.ctrlKey && e.key === 's') {
                 e.preventDefault();
-                this.downloadMap();
+                this.syncToWorkspace();
+            }
+            if (e.ctrlKey && e.shiftKey && e.key === 'E') {
+                e.preventDefault();
+                this.exportPNG();
             }
             if (e.ctrlKey && e.key === 'z') {
                 e.preventDefault();
@@ -765,16 +769,16 @@ class TileEditor {
             // - If showAll is ON: All layers at 100% (Game Preview)
             // - If showAll is OFF: Non-active layers at 40% (Editor Focus)
             this.ctx.globalAlpha = (this.state.showAll || isCurrent) ? 1.0 : 0.4;
-            this.renderLayer(l, s);
+            this.renderLayer(this.ctx, l, s);
         }
         
         this.ctx.globalAlpha = 1.0;
 
         // Overlays
         if (this.state.showCollision) {
-            this.renderCollisionOverlay(s);
+            this.renderCollisionOverlay(this.ctx, s);
         }
-        this.renderEntities(s);
+        this.renderEntities(this.ctx, s);
         
         if (this.state.selection) {
             this.renderSelectionBox(s);
@@ -787,7 +791,7 @@ class TileEditor {
         this.updateMinimap();
     }
 
-    renderLayer(l, s) {
+    renderLayer(ctx, l, s) {
         const layer = this.state.map[l];
         for (let y = 0; y < this.config.height; y++) {
             for (let x = 0; x < this.config.width; x++) {
@@ -796,13 +800,13 @@ class TileEditor {
                 if (id === 0) {
                     // Draw base void for Layer 0
                     if (l === 0) {
-                        this.ctx.fillStyle = '#05070a';
-                        this.ctx.fillRect(x * s, y * s, s, s);
+                        ctx.fillStyle = '#05070a';
+                        ctx.fillRect(x * s, y * s, s, s);
                     }
                     continue;
                 }
                 
-                this.drawTile(this.ctx, id, x * s, y * s, s);
+                this.drawTile(ctx, id, x * s, y * s, s);
             }
         }
     }
@@ -847,7 +851,7 @@ class TileEditor {
         this.ctx.strokeRect(tileX * s, tileY * s, stamp.size.w * s, stamp.size.h * s);
     }
 
-    renderEntities(s) {
+    renderEntities(ctx, s) {
         if (!this.state.enemies && !this.state.npcs) return;
 
         // Render Player Start (Entry)
@@ -856,18 +860,18 @@ class TileEditor {
             const px = x * s;
             const py = y * s;
             
-            this.ctx.fillStyle = 'rgba(100, 200, 255, 0.4)';
-            this.ctx.beginPath();
-            this.ctx.arc(px + s/2, py + s/2, s * 0.8, 0, Math.PI * 2);
-            this.ctx.fill();
-            this.ctx.strokeStyle = '#60a5fa';
-            this.ctx.lineWidth = 2;
-            this.ctx.stroke();
+            ctx.fillStyle = 'rgba(100, 200, 255, 0.4)';
+            ctx.beginPath();
+            ctx.arc(px + s/2, py + s/2, s * 0.8, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#60a5fa';
+            ctx.lineWidth = 2;
+            ctx.stroke();
 
-            this.ctx.fillStyle = '#fff';
-            this.ctx.font = 'bold 10px Outfit';
-            this.ctx.textAlign = 'center';
-            this.ctx.fillText('🏁 ENTRY', px + s/2, py - 5);
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 10px Outfit';
+            ctx.textAlign = 'center';
+            ctx.fillText('🏁 ENTRY', px + s/2, py - 5);
         }
 
         // Render Objective (Goal)
@@ -876,18 +880,18 @@ class TileEditor {
             const gx = x * s;
             const gy = y * s;
 
-            this.ctx.fillStyle = 'rgba(251, 191, 36, 0.4)';
-            this.ctx.beginPath();
-            this.ctx.arc(gx + s/2, gy + s/2, s * 0.8, 0, Math.PI * 2);
-            this.ctx.fill();
-            this.ctx.strokeStyle = '#fbbf24';
-            this.ctx.lineWidth = 2;
-            this.ctx.stroke();
+            ctx.fillStyle = 'rgba(251, 191, 36, 0.4)';
+            ctx.beginPath();
+            ctx.arc(gx + s/2, gy + s/2, s * 0.8, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#fbbf24';
+            ctx.lineWidth = 2;
+            ctx.stroke();
 
-            this.ctx.fillStyle = '#fbbf24';
-            this.ctx.font = 'bold 10px Outfit';
-            this.ctx.textAlign = 'center';
-            this.ctx.fillText('⭐ GOAL', gx + s/2, gy - 5);
+            ctx.fillStyle = '#fbbf24';
+            ctx.font = 'bold 10px Outfit';
+            ctx.textAlign = 'center';
+            ctx.fillText('⭐ GOAL', gx + s/2, gy - 5);
         }
 
         // Render Safe Zones
@@ -897,18 +901,12 @@ class TileEditor {
             const zw = (z.xMax - z.xMin + 1) * s;
             const zh = (z.yMax - z.yMin + 1) * s;
 
-            this.ctx.fillStyle = 'rgba(34, 197, 94, 0.15)';
-            this.ctx.fillRect(zx, zy, zw, zh);
-            this.ctx.strokeStyle = '#22c55e';
-            this.ctx.lineWidth = 1;
-            this.ctx.setLineDash([5, 5]);
-            this.ctx.strokeRect(zx, zy, zw, zh);
-            this.ctx.setLineDash([]);
-
-            this.ctx.fillStyle = '#4ade80';
-            this.ctx.font = 'italic 10px Outfit';
-            this.ctx.textAlign = 'left';
-            this.ctx.fillText(`🛡️ ${z.name || 'Safe Zone'}`, zx + 5, zy + 15);
+            ctx.fillStyle = 'rgba(34, 197, 94, 0.15)';
+            ctx.fillRect(zx, zy, zw, zh);
+            ctx.strokeStyle = '#22c55e';
+            ctx.setLineDash([4, 4]);
+            ctx.strokeRect(zx, zy, zw, zh);
+            ctx.setLineDash([]);
         });
 
         // Render Teleports (Portals)
@@ -918,16 +916,16 @@ class TileEditor {
             const tw = (t.w || 1) * s;
             const th = (t.h || 1) * s;
 
-            this.ctx.fillStyle = 'rgba(168, 85, 247, 0.3)';
-            this.ctx.fillRect(tx, ty, tw, th);
-            this.ctx.strokeStyle = '#a855f7';
-            this.ctx.lineWidth = 2;
-            this.ctx.strokeRect(tx, ty, tw, th);
+            ctx.fillStyle = 'rgba(168, 85, 247, 0.3)';
+            ctx.fillRect(tx, ty, tw, th);
+            ctx.strokeStyle = '#a855f7';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(tx, ty, tw, th);
 
-            this.ctx.fillStyle = '#f3e8ff';
-            this.ctx.font = 'bold 10px Outfit';
-            this.ctx.textAlign = 'center';
-            this.ctx.fillText(`🌀 TO: ${t.targetMapId}`, tx + tw/2, ty - 5);
+            ctx.fillStyle = '#f3e8ff';
+            ctx.font = 'bold 10px Outfit';
+            ctx.textAlign = 'center';
+            ctx.fillText(`🌀 TO: ${t.targetMapId}`, tx + tw/2, ty - 5);
         });
 
         // Render Enemies
@@ -941,18 +939,18 @@ class TileEditor {
             const x = e.x * s;
             const y = e.y * s;
             
-            this.ctx.strokeStyle = isBoss ? 'rgba(251, 191, 36, 0.7)' : 'rgba(255, 50, 50, 0.5)';
-            this.ctx.lineWidth = isBoss ? 3 : 2;
-            this.ctx.beginPath();
-            this.ctx.arc(x + s/2, y + s/2, s * (isBoss ? 1.0 : 0.7), 0, Math.PI * 2);
-            this.ctx.stroke();
+            ctx.strokeStyle = isBoss ? 'rgba(251, 191, 36, 0.7)' : 'rgba(255, 50, 50, 0.5)';
+            ctx.lineWidth = isBoss ? 3 : 2;
+            ctx.beginPath();
+            ctx.arc(x + s/2, y + s/2, s * (isBoss ? 1.0 : 0.7), 0, Math.PI * 2);
+            ctx.stroke();
 
-            if (canvas) this.ctx.drawImage(canvas, x - s/2, y - s, s * 2, s * 2.3);
+            if (canvas) ctx.drawImage(canvas, x - s/2, y - s, s * 2, s * 2.3);
             
-            this.ctx.fillStyle = isBoss ? '#fbbf24' : '#fff';
-            this.ctx.font = 'bold 10px Outfit';
-            this.ctx.textAlign = 'center';
-            this.ctx.fillText(isBoss ? `👑 ${def.name}` : def.name, x + s/2, y - 5);
+            ctx.fillStyle = isBoss ? '#fbbf24' : '#fff';
+            ctx.font = 'bold 10px Outfit';
+            ctx.textAlign = 'center';
+            ctx.fillText(isBoss ? `👑 ${def.name}` : def.name, x + s/2, y - 5);
         });
 
         // Render NPCs
@@ -962,20 +960,21 @@ class TileEditor {
             const x = n.x * s;
             const y = n.y * s;
 
-            this.ctx.strokeStyle = 'rgba(50, 255, 50, 0.5)';
-            this.ctx.lineWidth = 2;
-            this.ctx.beginPath();
-            this.ctx.arc(x + s/2, y + s/2, s * 0.7, 0, Math.PI * 2);
-            this.ctx.stroke();
+            ctx.strokeStyle = 'rgba(50, 255, 50, 0.5)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(x + s/2, y + s/2, s * 0.7, 0, Math.PI * 2);
+            ctx.stroke();
 
-            if (canvas) this.ctx.drawImage(canvas, x - s/4, y - s/2, s * 1.5, s * 1.8);
+            if (canvas) ctx.drawImage(canvas, x - s/4, y - s/2, s * 1.5, s * 1.8);
 
-            this.ctx.fillStyle = '#4ade80';
-            this.ctx.font = 'bold 10px Outfit';
-            this.ctx.textAlign = 'center';
-            this.ctx.fillText(n.name || n.id, x + s/2, y - 5);
+            ctx.fillStyle = '#4ade80';
+            ctx.font = 'bold 10px Outfit';
+            ctx.textAlign = 'center';
+            ctx.fillText(n.name || n.id, x + s/2, y - 5);
         });
     }
+
 
     async importMapJS(file) {
         if (!file) return;
@@ -1016,8 +1015,8 @@ class TileEditor {
         }
     }
 
-    renderCollisionOverlay(s) {
-        this.ctx.save();
+    renderCollisionOverlay(ctx, s) {
+        ctx.save();
         for (let y = 0; y < this.config.height; y++) {
             for (let x = 0; x < this.config.width; x++) {
                 const isBlocked = this.isTileBlocked(x, y);
@@ -1027,25 +1026,25 @@ class TileEditor {
 
                 if (isBlocked) {
                     // Draw Red X
-                    this.ctx.strokeStyle = '#ff3333';
-                    this.ctx.lineWidth = 3;
-                    this.ctx.beginPath();
+                    ctx.strokeStyle = '#ff3333';
+                    ctx.lineWidth = 3;
+                    ctx.beginPath();
                     const pad = s * 0.3;
-                    this.ctx.moveTo(x * s + pad, y * s + pad);
-                    this.ctx.lineTo((x + 1) * s - pad, (y + 1) * s - pad);
-                    this.ctx.moveTo((x + 1) * s - pad, y * s + pad);
-                    this.ctx.lineTo(x * s + pad, (y + 1) * s - pad);
-                    this.ctx.stroke();
+                    ctx.moveTo(x * s + pad, y * s + pad);
+                    ctx.lineTo((x + 1) * s - pad, (y + 1) * s - pad);
+                    ctx.moveTo((x + 1) * s - pad, y * s + pad);
+                    ctx.lineTo(x * s + pad, (y + 1) * s - pad);
+                    ctx.stroke();
                 } else {
                     // Draw Green Dot
-                    this.ctx.fillStyle = '#33ff33';
-                    this.ctx.beginPath();
-                    this.ctx.arc(cx, cy, s * 0.1, 0, Math.PI * 2);
-                    this.ctx.fill();
+                    ctx.fillStyle = '#33ff33';
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, s * 0.1, 0, Math.PI * 2);
+                    ctx.fill();
                 }
             }
         }
-        this.ctx.restore();
+        ctx.restore();
     }
 
     isTileBlocked(tx, ty) {
@@ -1319,6 +1318,40 @@ class TileEditor {
         a.download = `${this.state.mapId}.json`;
         a.click();
         URL.revokeObjectURL(url);
+    }
+
+    exportPNG() {
+        this.showLoader("Generating PNG Export...");
+        
+        // Use a consistent tile size for high quality (32px native)
+        const s = 32; 
+        const w = this.config.width * s;
+        const h = this.config.height * s;
+        
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = w;
+        tempCanvas.height = h;
+        const tCtx = tempCanvas.getContext('2d');
+        
+        // Render all layers at full opacity
+        for (let l = 0; l < 3; l++) {
+            this.renderLayer(tCtx, l, s);
+        }
+        
+        // Render entities (NPCs, Enemies, Objectives)
+        this.renderEntities(tCtx, s);
+        
+        // Trigger download
+        const url = tempCanvas.toDataURL('image/png');
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `map_export_${this.state.mapId}_${Date.now()}.png`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        
+        this.hideLoader();
+        console.log(`📸 MAP EXPORT: Saved ${w}x${h} PNG`);
     }
 
     saveHistory() {

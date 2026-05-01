@@ -471,6 +471,18 @@
   to { box-shadow: 0 0 25px rgba(0, 242, 255, 0.3); border-color: var(--cyan); }
 }
 
+/* System — gray/slate (REINSTALL) */
+.title-btn-system {
+  color: #64748b;
+  border-color: rgba(100, 116, 139, 0.2);
+}
+
+.title-btn-system:hover {
+  background: rgba(100, 116, 139, 0.1);
+  border-color: #94a3b8;
+  color: #f43f5e;
+}
+
 .ver-tag {
   position: absolute;
   bottom: 0.8rem;
@@ -480,6 +492,19 @@
   color: #2a2050;
   letter-spacing: 1px;
   z-index: 1;
+}
+
+.reinstall-link {
+  cursor: pointer;
+  color: #4a4070;
+  margin-left: 10px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.2s ease;
+}
+
+.reinstall-link:hover {
+  color: #fb7185;
 }
 
 /* ── Title responsive — tablet (≤ 920px) ────────────────── */
