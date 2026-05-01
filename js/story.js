@@ -810,6 +810,29 @@ const Story = {
     }));
   },
 
+  /** Called by MapEngine when a teleport occurs during story_explore mode */
+  onMapTeleport(newMapId) {
+    if (!this.arc) return;
+    const nextChap = this.arc.chapters[this.chapIdx + 1];
+
+    // If we teleported to the map of the next chapter, advance state quietly
+    if (nextChap && nextChap.map === newMapId) {
+      console.log('[Story] Seamlessly advancing chapter to:', nextChap.id);
+      this.chapIdx++;
+      this.currentChap = nextChap;
+      this._doSave();
+
+      const lbl = document.getElementById('explore-map-name');
+      const m = MapEngine.getMap();
+      if (lbl && m) lbl.textContent = `✦ ${m.name.toUpperCase()} ✦`;
+
+      // Show the new floor's objective hint so the player knows what to do next
+      if (nextChap.map_hint && typeof MapUI !== 'undefined') {
+        MapUI.showMsg(nextChap.map_hint, 2500);
+      }
+    }
+  },
+
   /** Called by MapEngine when story_explore mode battle/explore ends */
   onExploreComplete() {
     MapEngine.stop();

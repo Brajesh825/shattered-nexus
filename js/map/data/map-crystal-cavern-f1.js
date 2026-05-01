@@ -43,12 +43,7 @@ MAP_DEFS.crystal_cavern_f1 = {
     { weight: 1, enemies: ['gem_mimic'] },
   ],
 
-  objective: {
-    type: 'reach',
-    target: { x: 55, y: 10 },
-    label: 'Descent to Floor 2',
-    completeMsg: '✦ THE PASSAGE OPENS ✦\nThe cavern floor shifts as you descend deeper into the Resonant Depths.'
-  },
+  objective: null,
 
   enemies: [
     { id: 'skeleton', x: 10, y: 30, patrol: 'random', range: 4, speed: 1.0 },
@@ -65,7 +60,8 @@ MAP_DEFS.crystal_cavern_f1 = {
     {
       x: 6, y: 10, w: 1, h: 1,
       type: 'teleport',
-      targetMapId: 'world_map',
+      targetMapId: 'verdant_vale',
+      targetX: 52, targetY: 29,
       msg: '✦ Returning to the surface...'
     },
     // --- REGION ANNOUNCEMENTS ---

@@ -47,10 +47,9 @@ MAP_DEFS.crystal_cavern_f3 = {
   ],
 
   objective: {
-    type: 'reach',
-    target: { x: 55, y: 30 },
-    label: 'Reach the Undercroft Portal',
-    completeMsg: '✦ THE CORE IS CROSSED ✦\nYou emerge into the scorched air of the surface. The Demon Lord is close.'
+    type: 'kill_boss',
+    label: 'Defeat the Spectral Guardian',
+    completeMsg: '✦ THE GUARDIAN FALLS ✦\nThe crystal heart shatters. The path to the undercroft is open — the Demon Lord awaits.'
   },
 
   enemies: [
@@ -83,17 +82,11 @@ MAP_DEFS.crystal_cavern_f3 = {
     },
     // --- TELEPORT ---
     {
-      x: 7, y: 30, w: 1, h: 1,
+      x: 2, y: 30, w: 1, h: 1,
       type: 'teleport',
       targetMapId: 'crystal_cavern_f2',
-      targetX: 53, targetY: 31,
+      targetX: 51, targetY: 31,
       msg: '✦ Retreating to the Resonant Depths...'
-    },
-    {
-      x: 55, y: 30, w: 2, h: 2,
-      type: 'teleport',
-      targetMapId: 'eastern_wilds',
-      msg: '✦ Emerging from the cavern into the scorched outskirts of Ashveil...'
     }
   ],
 
