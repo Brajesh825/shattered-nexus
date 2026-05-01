@@ -45,8 +45,8 @@ MAP_DEFS.crystal_cavern_f2 = {
   objective: {
     type: 'reach',
     target: { x: 53, y: 31 },
-    label: 'Enter the Resonant Well',
-    completeMsg: '✦ ASCENSION ✦\nYou step into the well. The world blurs as you are pulled toward the heart of the kingdom.'
+    label: 'Descend to Floor 3',
+    completeMsg: '✦ FLOOR 2 CLEAR ✦\nYou have found the path to the deepest level.'
   },
 
   enemies: [
