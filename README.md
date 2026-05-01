@@ -204,7 +204,7 @@ The world of Aethoria is in crisis. **Valdris**, the Shadow Emperor, has consume
 | 3 | **The Scorched Spiral** | Ember Wastes | Endurance, buried truths | Dark Phoenix | Seal of Earth |
 | 4 | **The Weeping Depths** | Sunken Temple | Perseverance, hidden truths | Sea Kraken | Seal of Wind |
 | 5 | **The Shadow's Heart** | Emperor's Sanctum → Core | Sacrifice, triumph | Fallen Angel | Seal of Shadow |
-| 6 | **The Fortress Gates** | Valdris's Outer Fortress | Unity, courage | Void Warden | — |
+| 6 | **The Fortress Gates** | Valdris's Outer Fortress | Unity, courage | Void Warden | Seal of the Void |
 | 7 | **The Inner Sanctum** | Valdris's Core Chamber | Sacrifice, revelation | Shadow Titan | — |
 | 8 | **The Shadow Emperor** | The Eternal Void | Redemption, end of eternity | **Shadow Emperor** *(final)* | — |
 
