@@ -35,7 +35,7 @@ const AssetPreloader = (() => {
     ],
     environment: [
       // Core (IDs 200–212)
-      'oak', 'pine', 'shrub', 'boulder', 'mushroom', 'flower', 'crystal', 'lily', 'dead_tree', 'well', 'market', 'chest', 'statue',
+      'oak', 'pine', 'shrub', 'boulder', 'mushroom', 'flower', 'crystal', 'lily', 'dead_tree', 'well', 'market', 'chest', 'statue', 'hole', 'staircase',
       // Expanded props (IDs 220–229)
       'fountain', 'obelisk', 'tombstone', 'pillar_broken', 'wagon', 'tent', 'campfire', 'signpost', 'street_lamp', 'archway',
       // Dark fantasy POI (IDs 230–248)
@@ -60,6 +60,7 @@ const AssetPreloader = (() => {
       // Arcane (IDs 382–384)
       'arcane_pedestal', 'crystal_orb', 'spell_rune',
       'large_castle', 'large_fishman_hut', 'large_noble_villa', 'large_military_tent',
+      'frozen_house', 'ice_castle', 'labyrinth_gate', 'market_cart_frozen', 'pine_frozen', 'notice_board_frozen', 'well_frozen',
       ...MILITARY_ASSETS,
       ...CIVILIAN_ASSETS,
       ...NOBLE_ASSETS

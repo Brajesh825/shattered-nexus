@@ -47,7 +47,12 @@ const TILE_DEFS = {
   88: { name: 'altar', walkable: false, color: '#484060', hi: '#585070', shadow: '#2d2840', detail: 'altar', interactive: true, svgAsset: 'statue' },
   110: { name: 'rubble', walkable: true, color: '#4a4a5a', hi: '#5a5a6a', shadow: '#2a2a3a', detail: 'debris' },
   111: { name: 'chest', walkable: true, color: '#8d6e63', svgAsset: 'chest' },
-  112: { name: 'mossy-stone', walkable: true, color: '#2d4a1e', hi: '#3d5a28', shadow: '#1d2a12' }
+  112: { name: 'mossy-stone', walkable: true, color: '#2d4a1e', hi: '#3d5a28', shadow: '#1d2a12' },
+  
+  // ── TRANSITION TILES (NEW) ───────────────────────────────────
+  400: { name: 'Descent Hole', walkable: true, svgAsset: 'hole', color: '#1a1428', hi: '#2a1f40' },
+  401: { name: 'Ascent Stairs', walkable: true, svgAsset: 'staircase', color: '#3a2850' },
+  402: { name: 'Abyssal Gate', walkable: true, svgAsset: 'magic_circle', color: '#6200ea', anim: true, glows: '#8860ff40' }
 };
 
 // ── SVG ASSET MAPPING (IDs 200+) ─────────────────────────────
