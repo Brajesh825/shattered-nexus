@@ -40,7 +40,7 @@ const MAP_SIDE_ROUTES = [
 /* Explore map linked to each arc (index = arcIdx 0-based) */
 const ARC_MAP_ID = [
   'verdant_vale',      // Arc 1
-  'crystal_cavern_f1',    // Arc 2
+  'crystal_cavern_f3',    // Arc 2
   'ember_wastes',      // Arc 3
   'sunken_temple',     // Arc 4
   'shadow_reach',      // Arc 5

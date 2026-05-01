@@ -61,6 +61,13 @@ MAP_DEFS.crystal_cavern_f1 = {
   ],
 
   triggers: [
+    // --- RETURN TO SURFACE ---
+    {
+      x: 6, y: 10, w: 1, h: 1,
+      type: 'teleport',
+      targetMapId: 'world_map',
+      msg: '✦ Returning to the surface...'
+    },
     // --- REGION ANNOUNCEMENTS ---
     {
       id: 'f1_seg_1', x: 6, y: 8, w: 13, h: 7,
