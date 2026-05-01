@@ -890,6 +890,27 @@ class TileEditor {
             this.ctx.fillText('⭐ GOAL', gx + s/2, gy - 5);
         }
 
+        // Render Safe Zones
+        this.state.safeZones?.forEach(z => {
+            const zx = z.xMin * s;
+            const zy = z.yMin * s;
+            const zw = (z.xMax - z.xMin + 1) * s;
+            const zh = (z.yMax - z.yMin + 1) * s;
+
+            this.ctx.fillStyle = 'rgba(34, 197, 94, 0.15)';
+            this.ctx.fillRect(zx, zy, zw, zh);
+            this.ctx.strokeStyle = '#22c55e';
+            this.ctx.lineWidth = 1;
+            this.ctx.setLineDash([5, 5]);
+            this.ctx.strokeRect(zx, zy, zw, zh);
+            this.ctx.setLineDash([]);
+
+            this.ctx.fillStyle = '#4ade80';
+            this.ctx.font = 'italic 10px Outfit';
+            this.ctx.textAlign = 'left';
+            this.ctx.fillText(`🛡️ ${z.name || 'Safe Zone'}`, zx + 5, zy + 15);
+        });
+
         // Render Teleports (Portals)
         this.state.triggers?.filter(t => t.type === 'teleport').forEach(t => {
             const tx = t.x * s;
@@ -1146,7 +1167,7 @@ class TileEditor {
         
         try {
             let layers = null;
-            let entities = { enemies: [], npcs: [] };
+            let entities = { enemies: [], npcs: [], safeZones: [] };
             let name = mapId;
             
             // Reset dimensions for fresh detection from map data
@@ -1175,6 +1196,7 @@ class TileEditor {
                         entities.playerStart = data.playerStart || null;
                         entities.triggers = data.triggers || [];
                         entities.objective = data.objective || null;
+                        entities.safeZones = data.safeZones || [];
                         name = data.name || name;
                         this.config.width = data.width || 0;
                         this.config.height = data.height || 0;
@@ -1218,6 +1240,7 @@ class TileEditor {
                 this.state.playerStart = entities.playerStart;
                 this.state.triggers = entities.triggers;
                 this.state.objective = entities.objective;
+                this.state.safeZones = entities.safeZones;
                 this.state.mapId = mapId;
                 this.state.mapPath = (config.js || config.json).replace('../', '');
 
@@ -1238,9 +1261,9 @@ class TileEditor {
     async syncToWorkspace() {
         const paths = {
             'verdant_vale': { json: 'js/map/data/map-verdant-vale.json', js: 'js/map/data/map-verdant-vale.js' },
-            'crystal_cavern_f1': { js: 'js/map/data/map-crystal-cavern-f1.js' },
-            'crystal_cavern_f2': { js: 'js/map/data/map-crystal-cavern-f2.js' },
-            'crystal_cavern_f3': { js: 'js/map/data/map-crystal-cavern-f3.js' },
+            'crystal_cavern_f1': { json: 'js/map/data/map-crystal-cavern-f1.json', js: 'js/map/data/map-crystal-cavern-f1.js' },
+            'crystal_cavern_f2': { json: 'js/map/data/map-crystal-cavern-f2.json', js: 'js/map/data/map-crystal-cavern-f2.js' },
+            'crystal_cavern_f3': { json: 'js/map/data/map-crystal-cavern-f3.json', js: 'js/map/data/map-crystal-cavern-f3.js' },
             'ember_wastes': { js: 'js/map/data/map-ember-wastes.js' },
             'sunken_temple': { js: 'js/map/data/map-sunken-temple.js' },
             'shadow_reach': { js: 'js/map/data/map-shadow-reach.js' },

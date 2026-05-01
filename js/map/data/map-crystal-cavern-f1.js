@@ -1,9 +1,13 @@
 /**
  * map-crystal-cavern-f1.js
- * FLOOR 1: THE AZURE ENTRANCE
+ * FLOOR 1: THE WHISPERING HALL (Ashveil Kingdom Entrance)
  * --- EXTREME PREMIUM UPGRADE ---
- * Geometry: Winding crystal path over a void abyss.
- * Layers: L0 (Path/Void), L1 (Crystals/Walls), L2 (Overhead Stalactites).
+ * Geometry: Grand imperial foyer and residential chambers carved into the mountain.
+ * Content: 
+ * - The Whispering Hall: The grand entrance where guests and scholars were received.
+ * - Garrison Alcoves: Ruined chambers to the west where the mountain guard once resided.
+ * - The Archive Annex: Scholar's work area on the northern edge.
+ * - The Prismatic Core: A central island where the first major resonance point is located.
  */
 
 MAP_DEFS.crystal_cavern_f1 = {
@@ -12,7 +16,7 @@ MAP_DEFS.crystal_cavern_f1 = {
   arcId: 2,
   width: 60,
   height: 60,
-  playerStart: { x: 7, y: 30 },
+  playerStart: { x: 7, y: 10 },
   bgColor: '#04010a',
   ambientLight: 'rgba(140,80,255,0.08)',
   weather: 'sparks',
@@ -29,8 +33,8 @@ MAP_DEFS.crystal_cavern_f1 = {
   // --- SEGMENTATION: LORE-DRIVEN REGIONS ---
   // Safe zones prevent random encounters in narrative-heavy areas
   safeZones: [
-    { xMin: 0,  xMax: 15, yMin: 0, yMax: 60, name: "The Whispering Hall" }, // Entry area
-    { xMin: 46, xMax: 60, yMin: 0, yMax: 60, name: "The Descent Gate" }    // Exit area
+    { xMin: 6, xMax: 19, yMin: 8, yMax: 15, name: "The Whispering Hall" }, // Entry area
+    { xMin: 45, xMax: 60, yMin: 8, yMax: 15, name: "The Descent Gate" }    // Exit area
   ],
 
   encounterTemplates: [
@@ -41,15 +45,15 @@ MAP_DEFS.crystal_cavern_f1 = {
 
   objective: {
     type: 'reach',
-    target: { x: 55, y: 30 },
+    target: { x: 55, y: 10 },
     label: 'Descent to Floor 2',
     completeMsg: '✦ THE PASSAGE OPENS ✦\nThe cavern floor shifts as you descend deeper into the Resonant Depths.'
   },
 
   enemies: [
-    { id: 'skeleton',        x: 15,  y: 15, patrol: 'random',     range: 4, speed: 1.0 },
-    { id: 'bat',             x: 45,  y: 45, patrol: 'vertical',   range: 6, speed: 1.8 },
-    { id: 'crystal_shard',  x: 30,  y: 30, patrol: 'random',     range: 5, speed: 2.0 },
+    { id: 'skeleton', x: 10, y: 30, patrol: 'random', range: 4, speed: 1.0 },
+    { id: 'bat', x: 45, y: 45, patrol: 'vertical', range: 6, speed: 1.8 },
+    { id: 'crystal_shard', x: 30, y: 30, patrol: 'random', range: 5, speed: 2.0 },
   ],
 
   npcs: [
@@ -59,15 +63,15 @@ MAP_DEFS.crystal_cavern_f1 = {
   triggers: [
     // --- REGION ANNOUNCEMENTS ---
     {
-      id: 'f1_seg_1', x: 0, y: 0, w: 15, h: 60,
+      id: 'f1_seg_1', x: 6, y: 8, w: 13, h: 7,
       type: 'msg', msg: '✦ Entering: The Whispering Hall'
     },
     {
-      id: 'f1_seg_2', x: 16, y: 0, w: 30, h: 60,
+      id: 'f1_seg_2', x: 20, y: 0, w: 24, h: 60,
       type: 'msg', msg: '✦ Entering: The Resonant Spire'
     },
     {
-      id: 'f1_seg_3', x: 46, y: 0, w: 14, h: 60,
+      id: 'f1_seg_3', x: 45, y: 8, w: 15, h: 7,
       type: 'msg', msg: '✦ Entering: The Descent Gate'
     },
     // --- NARRATIVE TRIGGERS ---
@@ -77,7 +81,7 @@ MAP_DEFS.crystal_cavern_f1 = {
     },
     // --- TELEPORT ---
     {
-      x: 55, y: 30, w: 1, h: 1,
+      x: 55, y: 10, w: 1, h: 1,
       type: 'teleport',
       targetMapId: 'crystal_cavern_f2',
       targetX: 7, targetY: 30,
