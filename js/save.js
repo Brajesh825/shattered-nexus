@@ -14,13 +14,37 @@ const Save = {
   /* ─── Core I/O ─────────────────────────────────────────────── */
 
   /** Write state to a slot and show toast */
-  write(state, slot = 0) {
+  async write(state, slot = 0) {
     try {
       const version = (typeof ReleaseConfig !== 'undefined') ? ReleaseConfig.SAVE_VERSION : '1.0';
       const data = { ...state, slot, timestamp: Date.now(), version };
-      localStorage.setItem(this._key(slot), JSON.stringify(data));
+      const json = JSON.stringify(data);
+      
+      // 1. Browser Persistence
+      localStorage.setItem(this._key(slot), json);
+      
+      // 2. Workspace Sync (Architect Pro Feature)
+      // If the sync server is running, we also backup to the filesystem
+      try {
+        await fetch('http://127.0.0.1:3000/sync', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            path: `saves/slot_${slot}.json`,
+            data: json
+          })
+        });
+        console.log(`[Save] Sync successful for slot ${slot}`);
+      } catch (syncErr) {
+        // Silent fail for sync — the localStorage write already succeeded
+        console.warn('[Save] Sync bridge not available.');
+      }
+
       this._showToast('Progress saved');
-    } catch(e) { console.warn('Save.write failed:', e); }
+    } catch(e) { 
+      console.error('Save.write failed:', e);
+      this._showToast('Save failed!');
+    }
   },
 
   /** Read a slot — migrates legacy save on first access of slot 0 */
@@ -36,7 +60,14 @@ const Save = {
       const raw = localStorage.getItem(this._key(slot));
       if (!raw) return null;
       
-      const s = JSON.parse(raw);
+      let s;
+      try {
+        s = JSON.parse(raw);
+      } catch (parseErr) {
+        console.error(`[Save] Corrupt data in slot ${slot}`);
+        return { slot, corrupt: true };
+      }
+
       // Migration: Map old character IDs to new ones
       if (typeof migrateCharId === 'function') {
         if (s.selectedChar) s.selectedChar = migrateCharId(s.selectedChar);
@@ -61,14 +92,17 @@ const Save = {
     if (slot === 0 && !localStorage.getItem(this._key(0))) {
       return !!localStorage.getItem(this._LEGACY_KEY);
     }
-    return !!localStorage.getItem(this._key(slot));
+    const raw = localStorage.getItem(this._key(slot));
+    return !!raw;
   },
 
   /** Returns array of info objects for all 3 slots */
   listAll() {
     return Array.from({ length: this.SLOTS }, (_, i) => {
       const s = this.read(i);
-      return s ? { slot: i, empty: false, ...s } : { slot: i, empty: true };
+      if (!s) return { slot: i, empty: true };
+      if (s.corrupt) return { slot: i, empty: false, corrupt: true, arcName: 'CORRUPT DATA' };
+      return { slot: i, empty: false, ...s };
     });
   },
 
@@ -77,7 +111,7 @@ const Save = {
   /** Trigger a browser download of the slot data as JSON */
   exportSlot(slot = 0) {
     const s = this.read(slot);
-    if (!s) return;
+    if (!s || s.corrupt) return;
     const label = (s.arcName || `slot${slot}`).replace(/[^a-z0-9]/gi, '_');
     const blob  = new Blob([JSON.stringify(s, null, 2)], { type: 'application/json' });
     const url   = URL.createObjectURL(blob);
@@ -92,7 +126,7 @@ const Save = {
     reader.onload = (e) => {
       try {
         const data = JSON.parse(e.target.result);
-        if (typeof data.arcIdx === 'undefined') throw new Error('Not a valid Shattered Nexus save.');
+        if (typeof data.arcIdx === 'undefined' && !data.corrupt) throw new Error('Not a valid Shattered Nexus save.');
         data.slot = slot;
         data.timestamp = data.timestamp || Date.now();
         localStorage.setItem(this._key(slot), JSON.stringify(data));

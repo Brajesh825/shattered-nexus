@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="iceGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#e1f5fe;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4dd0e1;stop-opacity:1" />
+    </linearGradient>
+    <filter id="f1" x="0" y="0">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="1" />
+    </filter>
+  </defs>
+  <path d="M20 85 L20 45 L50 15 L80 45 L80 85 Z" fill="url(#iceGrad)" stroke="#00bcd4" stroke-width="0.5"/>
+  <path d="M50 15 L50 85 M20 45 L80 45" stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
+  <path d="M35 85 L35 65 L65 65 L65 85" fill="#00363a" stroke="#4dd0e1" stroke-width="1"/>
+  <rect x="28" y="52" width="12" height="12" fill="#006064" stroke="#e0f7fa" stroke-width="0.5" rx="2"/>
+  <rect x="60" y="52" width="12" height="12" fill="#006064" stroke="#e0f7fa" stroke-width="0.5" rx="2"/>
+  <path d="M20 45 L24 62 L28 45 L32 68 L36 45 L40 58 L44 45 L48 70 L52 45 L56 60 L60 45 L64 66 L68 45 L72 58 L76 45 L80 45" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" opacity="0.9"/>
+  <circle cx="50" cy="30" r="3" fill="#ffffff" filter="url(#f1)"/>
+</svg>

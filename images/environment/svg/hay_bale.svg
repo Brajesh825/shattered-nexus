@@ -1,0 +1,30 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="hb-hay" cx="40%" cy="40%" r="60%">
+      <stop offset="0%" style="stop-color:#ffe082"/>
+      <stop offset="60%" style="stop-color:#f9a825"/>
+      <stop offset="100%" style="stop-color:#e65100"/>
+    </radialGradient>
+    <linearGradient id="hb-rope" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#8d6e63"/>
+      <stop offset="100%" style="stop-color:#6d4c41"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="32" cy="62" rx="20" ry="4" fill="#1a1a1a" opacity="0.3"/>
+  <ellipse cx="32" cy="38" rx="22" ry="22" fill="url(#hb-hay)"/>
+  <g stroke="#e65100" stroke-width="0.5" fill="none" opacity="0.5">
+    <line x1="14" y1="32" x2="50" y2="32"/>
+    <line x1="12" y1="38" x2="52" y2="38"/>
+    <line x1="14" y1="44" x2="50" y2="44"/>
+    <line x1="16" y1="26" x2="48" y2="26"/>
+    <line x1="20" y1="20" x2="44" y2="20"/>
+    <line x1="18" y1="50" x2="46" y2="50"/>
+    <line x1="22" y1="56" x2="42" y2="56"/>
+  </g>
+  <rect x="10" y="30" width="44" height="6" rx="3" fill="url(#hb-rope)" opacity="0.85"/>
+  <rect x="30" y="16" width="4" height="44" rx="2" fill="url(#hb-rope)" opacity="0.85"/>
+  <circle cx="32" cy="33" r="3" fill="#6d4c41" opacity="0.7"/>
+  <circle cx="32" cy="43" r="3" fill="#6d4c41" opacity="0.7"/>
+  <path d="M14 38 Q10 36 10 33" fill="none" stroke="#ffe082" stroke-width="0.8" opacity="0.6"/>
+  <path d="M50 38 Q54 36 54 33" fill="none" stroke="#ffe082" stroke-width="0.8" opacity="0.6"/>
+</svg>

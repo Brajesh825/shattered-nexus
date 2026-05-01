@@ -1,0 +1,30 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="ba-stalk" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#558b2f"/>
+      <stop offset="40%" style="stop-color:#8bc34a"/>
+      <stop offset="100%" style="stop-color:#33691e"/>
+    </linearGradient>
+  </defs>
+  <rect x="17" y="4" width="7" height="58" rx="3.5" fill="url(#ba-stalk)"/>
+  <rect x="29" y="10" width="7" height="52" rx="3.5" fill="url(#ba-stalk)"/>
+  <rect x="41" y="2" width="7" height="60" rx="3.5" fill="url(#ba-stalk)"/>
+  <g fill="#2e7d32" opacity="0.6">
+    <rect x="17" y="16" width="7" height="2"/>
+    <rect x="17" y="28" width="7" height="2"/>
+    <rect x="17" y="40" width="7" height="2"/>
+    <rect x="17" y="52" width="7" height="2"/>
+    <rect x="29" y="22" width="7" height="2"/>
+    <rect x="29" y="34" width="7" height="2"/>
+    <rect x="29" y="46" width="7" height="2"/>
+    <rect x="41" y="14" width="7" height="2"/>
+    <rect x="41" y="26" width="7" height="2"/>
+    <rect x="41" y="38" width="7" height="2"/>
+    <rect x="41" y="50" width="7" height="2"/>
+  </g>
+  <path d="M24 16 Q34 12 36 6" fill="none" stroke="#8bc34a" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M17 28 Q8 24 6 18" fill="none" stroke="#8bc34a" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M36 22 Q46 18 50 12" fill="none" stroke="#8bc34a" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M24 40 Q14 36 10 30" fill="none" stroke="#8bc34a" stroke-width="2" stroke-linecap="round"/>
+  <path d="M48 26 Q58 22 60 16" fill="none" stroke="#8bc34a" stroke-width="2" stroke-linecap="round"/>
+</svg>

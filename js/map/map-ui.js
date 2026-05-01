@@ -164,8 +164,9 @@ const MapUI = (() => {
 
     for (let r = 0; r < map.height; r++) {
       for (let c = 0; c < map.width; c++) {
-        const tid = map.tiles[r]?.[c] ?? 0;
-        mctx.fillStyle = (TILE_DEFS[tid] || TILE_DEFS[0]).color;
+        const tid = MapData.getTileAt(map, c, r);
+        const def = TILE_DEFS[tid] || TILE_DEFS[0];
+        mctx.fillStyle = def.color;
         mctx.fillRect(c * tw, r * th, Math.max(tw, 1), Math.max(th, 1));
       }
     }

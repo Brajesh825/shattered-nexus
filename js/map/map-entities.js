@@ -60,6 +60,9 @@ const MapPlayer = (() => {
   let _queuedDir = null;
   let _stepDir   = null; // {dx,dy} of current step
 
+  let _encounterCooldown = 0;
+  let _pendingRandomEncounter = false;
+
   // Last known facing direction (persists when idle)
   let _facing = { dx: 0, dy: 1 }; // default: facing down
 
@@ -90,6 +93,8 @@ const MapPlayer = (() => {
     moving = false; moveTimer = 0;
     _queuedDir = null; _stepDir = null;
     _frame = 0; _frameTimer = 0;
+    _encounterCooldown = 0;
+    _pendingRandomEncounter = false;
   }
 
   function findNearestSafeTile(targetX, targetY, map) {
@@ -108,14 +113,14 @@ const MapPlayer = (() => {
 
   function _canMove(nx, ny, map) {
     if (nx < 0 || ny < 0 || nx >= map.width || ny >= map.height) return false;
-    const tiles = map.layers ? map.layers[0] : map.tiles;
-    if (!tiles) return false;
-    const tid = tiles[ny]?.[nx] ?? 0;
-    if (!(TILE_DEFS[tid] || TILE_DEFS[0]).walkable) return false;
-    // Block on NPCs
+    
+    // 1. World Geometry & Footprints (Unified Service)
+    if (MapEngine.isBlocked(nx, ny)) return false;
+
+    // 2. Entity Collisions
     if (MapEntities.checkNPCAt && MapEntities.checkNPCAt(nx, ny)) return false;
-    // Block on alive enemies
     if (MapEntities.hasEnemyAt && MapEntities.hasEnemyAt(nx, ny)) return false;
+    
     return true;
   }
 
@@ -136,6 +141,21 @@ const MapPlayer = (() => {
       if (moveTimer >= MOVE_DURATION) {
         px = tx * TILE; py = ty * TILE;
         moving = false; moveTimer = 0;
+        
+        if (_encounterCooldown > 0) {
+            _encounterCooldown--;
+        } else {
+            // ARCHITECT PRO: Data-driven Safe Zone Check
+            const isSafe = (map.safeZones || []).some(zone => 
+                tx >= zone.xMin && tx <= zone.xMax &&
+                ty >= zone.yMin && ty <= zone.yMax
+            );
+            
+            if (!isSafe && Math.random() < 0.08) {
+                _pendingRandomEncounter = true;
+            }
+        }
+
         // Apply queued direction immediately
         if (_queuedDir) {
           const d = _queuedDir; _queuedDir = null;
@@ -213,7 +233,7 @@ const MapPlayer = (() => {
 
   // charId → chosen variant suffix for this map session e.g. '_3' or ''
   const _variantMap = {};
-  const MAX_VARIANTS = 20;
+  const MAX_VARIANTS = 0;
 
   // Called once per map load — picks a random variant for every party member
   function pickVariants() {
@@ -315,6 +335,10 @@ const MapPlayer = (() => {
     const ox = Math.round((TILE - dw) / 2);
     const oy = Math.round(TILE - dh);       // anchor bottom of sprite to tile bottom
 
+    if (_encounterCooldown > 0) {
+      ctx.globalAlpha = 0.6 + 0.2 * Math.sin(Date.now() / 150);
+    }
+
     if (info && info.sheet) {
       // Left strip is stored reversed (walk2,walk1,idle), so mirror the index
       const frameIdx = info.rev ? (FRAME_COUNT - 1 - _frame) : _frame;
@@ -344,6 +368,10 @@ const MapPlayer = (() => {
       ctx.fillRect(sx + 6, sy + 6 + bounce, TILE - 12, TILE - 12);
     }
 
+    if (_encounterCooldown > 0) {
+      ctx.globalAlpha = 1.0;
+    }
+
     // Name tag
     if (!moving) {
       if (hero) {
@@ -371,6 +399,13 @@ const MapPlayer = (() => {
     get py() { return py; },
     get moving() { return moving; },
     getFacing: () => ({ dx: _facing.dx, dy: _facing.dy }),
+    getCooldown: () => _encounterCooldown,
+    setCooldown: (val) => { _encounterCooldown = val; _pendingRandomEncounter = false; },
+    checkRandomEncounter: () => { 
+       const ret = _pendingRandomEncounter; 
+       _pendingRandomEncounter = false; 
+       return ret; 
+    },
     reset, update, render, dpad, pickVariants, rescale,
   };
 })();
@@ -399,7 +434,21 @@ const MapEntities = (() => {
   }
 
   function init(map) {
-    _enemies = (map.enemies || []).map((e, i) => ({
+    let normalCount = 0;
+    const filteredEnemies = (map.enemies || []).filter(e => {
+      // Check if boss or elite
+      const raw = (G && G.enemies) ? G.enemies.find(r => r.id === e.id) : null;
+      const isElite = raw ? (raw.isBoss || raw.tier >= 3) : (e.isBoss || e.id.includes('boss'));
+      
+      if (isElite) return true;
+      if (normalCount < 4) {
+        normalCount++;
+        return true;
+      }
+      return false;
+    });
+
+    _enemies = filteredEnemies.map((e, i) => ({
       id:      e.id,
       idx:     i,
       name:    (() => { const d = G && G.enemies && G.enemies.find(r => r.id === e.id); return d ? d.name.slice(0, 8) : e.id; })(),
@@ -444,9 +493,8 @@ const MapEntities = (() => {
   }
 
   function _canMoveTo(tx, ty, map) {
-    if (tx < 0 || ty < 0 || tx >= map.width || ty >= map.height) return false;
-    const tid = map.tiles[ty]?.[tx] ?? 0;
-    return (TILE_DEFS[tid] || TILE_DEFS[0]).walkable;
+    // Standardized check for enemies as well
+    return !MapEngine.isBlocked(tx, ty);
   }
 
   function _decideMove(enemy, map) {
@@ -604,7 +652,10 @@ const MapEntities = (() => {
   }
 
   function checkEncounter(map) {
+    if (MapPlayer.getCooldown() > 0) return null;
+
     const ptx = MapPlayer.tx, pty = MapPlayer.ty;
+    // 1. Check physical enemies (Bosses / Elites / specific patrols)
     for (let i = 0; i < _enemies.length; i++) {
       const en = _enemies[i];
       if (!en.alive) continue;
@@ -615,22 +666,37 @@ const MapEntities = (() => {
           enemies: ids, 
           mutation: en.mutation || null, 
           mutantTraits: en.mutantTraits || null,
-          isBoss: en.isBoss || false // Pass through the map-level boss flag
+          isBoss: en.isBoss || false
         };
       }
     }
+
+    // 2. Check random invisible encounters
+    if (MapPlayer.checkRandomEncounter()) {
+      _encounteredIdx = -1;
+      const ids = _buildEncounterGroup(null, map);
+      return {
+        enemies: ids,
+        mutation: null,
+        mutantTraits: null,
+        isBoss: false
+      };
+    }
+
     return null;
   }
 
   // Build a 1–4 enemy encounter group from the triggered enemy + map pool
   function _buildEncounterGroup(triggerId, map) {
     const mapEnemyIds = (map.encounters || map.enemies || []).map(e => e.id);
-    const pool        = mapEnemyIds.length ? mapEnemyIds : [triggerId];
+    const pool = mapEnemyIds.length ? mapEnemyIds : (triggerId ? [triggerId] : ['slime']);
 
-    // --- LOGIC FIX: Respect Bosses and Tier 3 Alphas ---
-    const raw = (G && G.enemies) ? G.enemies.find(r => r.id === triggerId) : null;
-    if (raw && (raw.isBoss || raw.tier >= 3)) {
-        return [triggerId]; // Bosses/Alphas always fight solo or as defined by trigger
+    if (triggerId) {
+      // --- LOGIC FIX: Respect Bosses and Tier 3 Alphas ---
+      const raw = (G && G.enemies) ? G.enemies.find(r => r.id === triggerId) : null;
+      if (raw && (raw.isBoss || raw.tier >= 3)) {
+          return [triggerId]; // Bosses/Alphas always fight solo or as defined by trigger
+      }
     }
 
     // Use encounter templates if defined on the map, else roll random group size
@@ -644,7 +710,7 @@ const MapEntities = (() => {
       }
     }
 
-    // Fallback: triggered enemy is always first; roll group size 1–4
+    // Fallback: triggered enemy is always first; roll group size 1-4
     const r = Math.random();
     let groupSize;
     if      (r < 0.25) groupSize = 1;   // 25% solo
@@ -652,7 +718,8 @@ const MapEntities = (() => {
     else if (r < 0.85) groupSize = 3;   // 25% trio
     else               groupSize = 4;   // 15% quad (horde)
 
-    const ids = [triggerId];
+    const firstEnemy = triggerId || pool[Math.floor(Math.random() * pool.length)];
+    const ids = [firstEnemy];
     while (ids.length < groupSize) {
       ids.push(pool[Math.floor(Math.random() * pool.length)]);
     }
@@ -687,8 +754,7 @@ const MapEntities = (() => {
     return null; // not ready yet — renders nothing this frame, appears next frame
   }
 
-  function renderEnemies(ctx, cam, TILE, map, inVision) {
-    _enemies.forEach(en => {
+  function _renderEnemy(ctx, cam, TILE, en, inVision) {
       if (!en.alive) return;
       if (typeof inVision === 'function' && !inVision(en.tx, en.ty)) return;
       const sx = en.px - cam.x;
@@ -696,14 +762,12 @@ const MapEntities = (() => {
       if (sx < -TILE || sy < -TILE || sx > ctx.canvas.width + TILE || sy > ctx.canvas.height + TILE) return;
 
       const bounce = en.moving ? Math.sin(en.frame / 4 * Math.PI * 2) * 3 : 0;
-      const mut    = en.mutation; // null | 'corrupted' | 'mutant'
+      const mut    = en.mutation; 
 
-      // ── Base size: bosses are enormous, regular enemies match player size ──
       const bossScale = en.isBoss ? 2.2 : 1.0;
       const _edw = Math.round(TILE * 1.2 * bossScale);
       const _edh = Math.round(TILE * 2.0 * bossScale);
 
-      // ── Mutation scale on top of boss scale ──────────
       const mutScale = mut === 'mutant' ? 1.65 : mut === 'corrupted' ? 1.32 : 1.0;
       const scale    = bossScale * mutScale;
       const edw      = Math.round(_edw * mutScale);
@@ -711,7 +775,6 @@ const MapEntities = (() => {
       const eox      = Math.round((TILE - edw) / 2);
       const eoy      = TILE - edh;
 
-      // ── Glow ring for mutated enemies ────────────────
       if (mut) {
         const pulse  = 0.5 + 0.5 * Math.sin(en.mutationPhase * (mut === 'mutant' ? 4.0 : 2.5));
         const glowR  = mut === 'mutant' ? Math.round(TILE * 0.85 * bossScale) : Math.round(TILE * 0.60 * bossScale);
@@ -727,14 +790,11 @@ const MapEntities = (() => {
         ctx.restore();
       }
 
-      // ── Shadow ───────────────────────────────────────
       ctx.fillStyle = mut ? 'rgba(0,0,0,0.45)' : 'rgba(0,0,0,0.28)';
       ctx.beginPath();
       ctx.ellipse(sx + TILE / 2, sy + TILE - 3, TILE * 0.35 * scale, 6 * scale * 0.6, 0, 0, Math.PI * 2);
       ctx.fill();
 
-
-      // ── Sprite (with optional canvas filter for mutations) ──
       const spr = _getEnemySprite(en.id);
       if (spr) {
         ctx.save();
@@ -743,7 +803,6 @@ const MapEntities = (() => {
         if (mut === 'corrupted') {
           ctx.filter = 'hue-rotate(220deg) saturate(2.2) brightness(0.85)';
         } else if (mut === 'mutant') {
-          // Slight wobble distortion via skew on canvas transform
           const wobble = Math.sin(en.mutationPhase * 7.0) * 0.04;
           ctx.transform(1, wobble, 0, 1, 0, 0);
           ctx.filter = 'hue-rotate(100deg) saturate(3.0) brightness(1.15) contrast(1.3)';
@@ -752,7 +811,6 @@ const MapEntities = (() => {
         ctx.restore();
       }
 
-      // ── Aggro indicator ──────────────────────────────
       const dist = Math.abs(en.tx - MapPlayer.tx) + Math.abs(en.ty - MapPlayer.ty);
       if (dist <= _aggroRange()) {
         ctx.fillStyle = mut === 'mutant' ? '#60ff40' : mut === 'corrupted' ? '#c060ff' : '#ffff40';
@@ -762,7 +820,6 @@ const MapEntities = (() => {
         ctx.textAlign = 'left';
       }
 
-      // ── Name tag ─────────────────────────────────────
       const label = mut === 'mutant'    ? `⚠ ${en.name}`
                   : mut === 'corrupted' ? `✦ ${en.name}`
                   : en.name;
@@ -774,6 +831,35 @@ const MapEntities = (() => {
       ctx.textAlign = 'center';
       ctx.fillText(label, sx + TILE / 2, sy + TILE + 11);
       ctx.textAlign = 'left';
+  }
+
+  function renderEnemies(ctx, cam, TILE, map, inVision) {
+    _enemies.forEach(en => _renderEnemy(ctx, cam, TILE, en, inVision));
+  }
+
+  // ── ROW-BASED RENDERING OPTIMIZATION ────────────────────────
+  let _enemyBuckets = {};
+
+  function prepareBuckets(rStart, rEnd) {
+    _enemyBuckets = {};
+    _enemies.forEach(e => {
+      if (!e.alive) return;
+      if (e.ty >= rStart && e.ty <= rEnd) {
+        if (!_enemyBuckets[e.ty]) _enemyBuckets[e.ty] = [];
+        _enemyBuckets[e.ty].push(e);
+      }
+    });
+    // Let NPC manager handle its own buckets
+    if (typeof MapNPCs !== 'undefined' && MapNPCs.prepareBuckets) {
+        MapNPCs.prepareBuckets(rStart, rEnd);
+    }
+  }
+
+  function renderEnemiesForRow(ctx, cam, TILE, r, inVision) {
+    const list = _enemyBuckets[r];
+    if (!list) return;
+    list.forEach(e => {
+        if (inVision(e.tx, e.ty)) _renderEnemy(ctx, cam, TILE, e);
     });
   }
 
@@ -906,7 +992,7 @@ const MapEntities = (() => {
 
     function _canNPCMove(nx, ny, map) {
       if (nx < 0 || ny < 0 || nx >= map.width || ny >= map.height) return false;
-      const tid = map.tiles[ny]?.[nx] ?? 0;
+      const tid = MapData.getTileAt(map, nx, ny);
       if (!(TILE_DEFS[tid] || TILE_DEFS[0]).walkable) return false;
       if (nx === MapPlayer.tx && ny === MapPlayer.ty) return false;
       return true;
@@ -930,8 +1016,7 @@ const MapEntities = (() => {
       else              return { cx: 0,       cy: h / 2,  rev: false }; // right
     }
 
-    function render(ctx, cam, TILE, inVision) {
-      _npcs.forEach(n => {
+    function _renderNPC(ctx, cam, TILE, n, inVision) {
         if (typeof inVision === 'function' && !inVision(n.tx, n.ty)) return;
         const sx = n.px - cam.x, sy = n.py - cam.y;
         if (sx < -TILE || sy < -TILE || sx > ctx.canvas.width + TILE || sy > ctx.canvas.height + TILE) return;
@@ -985,7 +1070,28 @@ const MapEntities = (() => {
         ctx.textAlign = 'center';
         ctx.fillText(n.name || n.id, sx + TILE / 2, sy + TILE + 11);
         ctx.textAlign = 'left';
+    }
+
+    function render(ctx, cam, TILE, inVision) {
+      _npcs.forEach(n => _renderNPC(ctx, cam, TILE, n, inVision));
+    }
+
+    let _npcBuckets = {};
+
+    function prepareBuckets(rStart, rEnd) {
+      _npcBuckets = {};
+      _npcs.forEach(n => {
+        if (n.ty >= rStart && n.ty <= rEnd) {
+          if (!_npcBuckets[n.ty]) _npcBuckets[n.ty] = [];
+          _npcBuckets[n.ty].push(n);
+        }
       });
+    }
+
+    function renderForRow(ctx, cam, TILE, r, inVision) {
+      const list = _npcBuckets[r];
+      if (!list) return;
+      list.forEach(n => _renderNPC(ctx, cam, TILE, n, inVision));
     }
 
     function markTalked(id) {
@@ -994,7 +1100,7 @@ const MapEntities = (() => {
     }
 
     return {
-      init, update, render, getDialogue, markTalked,
+      init, update, render, renderForRow, getDialogue, markTalked, prepareBuckets,
       checkNPCAt: (x,y) => _npcs.find(n => n.tx === x && n.ty === y),
       getNPCs: () => _npcs
     };
@@ -1002,6 +1108,10 @@ const MapEntities = (() => {
 
   function allCleared() {
     return _enemies.length === 0 || _enemies.every(e => !e.alive);
+  }
+
+  function bossCleared() {
+    return _enemies.every(e => !e.isBoss || !e.alive);
   }
 
   function remaining() {
@@ -1014,14 +1124,15 @@ const MapEntities = (() => {
 
   function initNPCs(map) { MapNPCs.init(map); }
   function renderNPCs(ctx, cam, TILE, inVision) { MapNPCs.render(ctx, cam, TILE, inVision); }
+  function renderNPCsForRow(ctx, cam, TILE, r, inVision) { MapNPCs.renderForRow(ctx, cam, TILE, r, inVision); }
   function checkNPCAt(x, y) { return MapNPCs.checkNPCAt(x, y); }
   function getNPCDialogue(id) { return MapNPCs.getDialogue(id); }
   function markNPCTalked(id) { MapNPCs.markTalked(id); }
 
   return { 
-    init, clear, updateEnemies, renderEnemies, checkEncounter, removeEncountered, 
-    allCleared, remaining, hasEnemyAt, 
-    initNPCs, renderNPCs, checkNPCAt, getNPCDialogue, markNPCTalked,
+    init, clear, updateEnemies, renderEnemies, renderEnemiesForRow, checkEncounter, removeEncountered, 
+    allCleared, bossCleared, remaining, hasEnemyAt, prepareBuckets,
+    initNPCs, renderNPCs, renderNPCsForRow, checkNPCAt, getNPCDialogue, markNPCTalked,
     getNPCs: () => MapNPCs.getNPCs()
   };
 })();

@@ -3,55 +3,11 @@
  * Drives cutscenes, battles, events and arc progression from story.json
  */
 
-/* ── Speaker colours ──────────────────────────────────────────────────────── */
-const SPEAKER_COLOR = {
-  Aya: '#7dd3fc',
-  Tao: '#ef4444',
-  Lulu: '#2dd4bf',
-  Rei: '#4ade80',
-  Ria: '#a78bfa',
-  Valka: '#e879f9',
-  Drake: '#0ea5e9',
-  Rex: '#fbbf24',
-};
-
-/* ── Alias → charId mapping for image file lookups ──────────────────────── */
-const ALIAS_TO_CHARID = {
-  aya: 'aya',
-  tao: 'tao',
-  lulu: 'lulu',
-  rei: 'rei',
-  ria: 'ria',
-  valka: 'valka',
-  drake: 'drake',
-  rex: 'rex',
-};
-
+/* ── Helpers migrated to cutscene.js ── */
 function _charIdForSpeaker(name) {
-  return ALIAS_TO_CHARID[name.toLowerCase()] || name.toLowerCase();
+  return Cutscene.ALIAS_TO_CHARID[name.toLowerCase()] || name.toLowerCase();
 }
 
-/* ── Speaker portrait images ─────────────────────────────────────────────── */
-function _spiritSrc(name) {
-  const q = localStorage.getItem('spriteQuality') || 'normal';
-  const suffix = q === 'low' ? '_sprite_low.webp' : '_sprite.png';
-  return `images/characters/spirits/${name.toLowerCase()}${suffix}`;
-}
-const SPEAKER_IMG = {
-  get Aya() { return _spiritSrc('aya'); },
-  get Tao() { return _spiritSrc('tao'); },
-  get Lulu() { return _spiritSrc('lulu'); },
-  get Rei() { return _spiritSrc('rei'); },
-  get Ria() { return _spiritSrc('ria'); },
-  get Valka() { return _spiritSrc('valka'); },
-  get Drake() { return _spiritSrc('drake'); },
-  get Rex() { return _spiritSrc('rex'); },
-};
-
-/* ── Speaker portrait emojis (narrator fallback) ────────────────────────── */
-const SPEAKER_PORTRAIT = {
-  narrator: '📖',
-};
 
 /* ══════════════════════════════════════════════════════════════════════════
    STORY ENGINE
@@ -59,7 +15,7 @@ const SPEAKER_PORTRAIT = {
 /* World map places in 1024x1024 image space. The first three are the fixed route. */
 const MAP_PLACES = [
   { x: 306, y: 632, label: 'Verdant Vale', arcIdx: 0, color: '#1f6a2c' },
-  { x: 506, y: 574, label: 'Crystal Cavern', arcIdx: 1, color: '#5c7ee8' },
+  { x: 506, y: 574, label: 'Crystal Cavern F1', arcIdx: 1, color: '#5c7ee8' },
   { x: 708, y: 704, label: 'Ember Wastes', arcIdx: 2, color: '#c56820' },
   { x: 208, y: 360, label: 'Sunken Temple', arcIdx: 3, color: '#1e8ac0' },
   { x: 610, y: 446, label: 'Shadow Reach', arcIdx: 4, color: '#5630a8' },
@@ -73,7 +29,6 @@ const MAP_PLACES = [
   { x: 930, y: 175, label: 'Sky Ruins', color: '#7750c8', lore: 'Crumbling floating islands suspended in a perpetual storm. Critical: Align the Aerolith Crystals and defeat the Storm Sentinel.' },
   { x: 160, y: 780, label: 'Southern Isles', color: '#2c8a72', lore: 'Tropical archipelago masking a deep-sea trench. Critical: Use the Tide-Caller Shell and face the Sunken Leviathan.' },
   { x: 470, y: 492, label: 'Riverlands Crossing', color: '#4c9fc0', lore: 'A strategic junction of rushing rivers and crumbling bridges. Critical: Repair the Great Stone Bridge and defeat the River King.' },
-
 ];
 
 const MAP_MAIN_ROUTE = [0, 1, 2, 3, 4, 5, 6, 7];
@@ -85,7 +40,7 @@ const MAP_SIDE_ROUTES = [
 /* Explore map linked to each arc (index = arcIdx 0-based) */
 const ARC_MAP_ID = [
   'verdant_vale',      // Arc 1
-  'crystal_cavern',    // Arc 2
+  'crystal_cavern_f3',    // Arc 2
   'ember_wastes',      // Arc 3
   'sunken_temple',     // Arc 4
   'shadow_reach',      // Arc 5
@@ -122,17 +77,8 @@ const Story = {
 
   currentChap: null,
   _allEnemies: [],
-  _activeLines: [],   // current dialogue/narration array being rendered
-  _onLinesDone: null, // callback when _activeLines exhausted
   _retrying: false,
 
-  // Scene character management
-  _charAppeared: {},  // tracks which characters have appeared: { "Aya": true, ... }
-  _charPositions: {}, // character positions: { "Aya": "left", "Tao": "center", ... }
-  _posCounter: 0,     // counter for distributing positions
-
-  // Typewriter
-  _tw: { timer: null, full: '', done: true },
 
   /* ── Element shortcut ── */
   el: id => document.getElementById(id),
@@ -498,10 +444,18 @@ const Story = {
   /* ════════════════════════════════════════════════════════════════════════
      CONTINUE BUTTON (called from HTML onclick)
   ════════════════════════════════════════════════════════════════════════ */
-  advance() {
-    // Skip typewriter first if still running
-    if (!this._tw.done) { this._skipTw(); return; }
+  handleScreenClick(e) {
+    if (e.target.closest('button')) return;
+    if (G.mode === 'story') {
+      if (this.phase === 'arc_intro') {
+        this.advance();
+      } else {
+        Cutscene.advance();
+      }
+    }
+  },
 
+  advance() {
     if (this.phase === 'arc_intro') {
       // For Arc 1, go directly to first chapter (no character selection)
       // For Arc 2+, show character selection
@@ -523,17 +477,10 @@ const Story = {
     if (this.phase === 'epilogue_cards') {
       this._endStory(); return;
     }
-
-    // Advance through the current active lines array
-    this.lineIdx++;
-    if (this.lineIdx < this._activeLines.length) {
-      this._renderActiveLine();
-    } else if (this._onLinesDone) {
-      const cb = this._onLinesDone;
-      this._onLinesDone = null;
-      cb();
-    }
+    
+    Cutscene.advance();
   },
+
 
   /* ════════════════════════════════════════════════════════════════════════
      ARC INTRO
@@ -607,52 +554,29 @@ const Story = {
     this.currentChap = chap;
     this.sceneIdx = 0;
     this.lineIdx = 0;
-    this._charAppeared = {};  // reset character appearances
-    this._charPositions = {}; // reset character positions
-    this._posCounter = 0;     // reset position counter
-    this._clearSceneLayer();  // clear scene characters
-
-    // Clear dialogue content
-    const dialogue = this.el('s-dialogue');
-    if (dialogue) {
-      dialogue.style.display = 'none';
-      this.el('s-speaker').textContent = '';
-      this.el('s-text').textContent = '';
-      // s-portrait-img (img tag) removed in favor of spirit-based rendering
-    }
+    Cutscene.clear();
 
     this._setHeader(`Arc ${this.arc.number}: ${this.arc.name}`, chap.title || '');
     this._setBg(chap.background);
     console.log('[Story._loadChapter] Processing chapter type:', chap.type);
 
     if (chap.type === 'cutscene') {
-      console.log('[Story._loadChapter] Building scene lines...');
       this.phase = 'cutscene';
-      this._buildSceneLines(chap.scenes);
-      console.log('[Story._loadChapter] Setting onLinesDone callback...');
-      this._onLinesDone = () => this._nextChapter();
-      console.log('[Story._loadChapter] Rendering active line...');
-      this._renderActiveLine();
-      console.log('[Story._loadChapter] Showing dialogue section...');
-      this._showSection('s-dialogue');
-      console.log('[Story._loadChapter] Cutscene loaded');
+      const lines = this._buildSceneLines(chap.scenes);
+      Cutscene.start(lines, () => this._nextChapter());
     } else if (chap.type === 'battle') {
       this.phase = 'pre_battle';
       this._showLines(chap.pre_dialogue || [], () => this._launchStoryBattle(chap.enemy_id));
-      console.log('[Story._loadChapter] Battle loaded');
     } else if (chap.type === 'event') {
       this.phase = 'event';
       this._renderEvent(chap);
-      console.log('[Story._loadChapter] Event loaded');
     } else if (chap.type === 'boss_battle') {
       this.phase = 'pre_battle';
       this._showLines(chap.pre_dialogue || [], () => this._launchStoryBattle(chap.enemy_id));
-      console.log('[Story._loadChapter] Boss battle loaded');
     } else if (chap.type === 'explore') {
       this.phase = 'exploring';
       this._showLines(chap.pre_dialogue || [], () => this._launchExplore(chap));
-      console.log('[Story._loadChapter] Explore loaded, returning');
-      return; // _launchExplore will switch screens
+      return;
     }
     showScreen('story-screen');
     console.log('[Story._loadChapter] Finished');
@@ -671,44 +595,17 @@ const Story = {
         }
       });
     });
-    this._activeLines = lines;
-    this._onLinesDone = null;
-    this.lineIdx = 0;
+    return lines;
   },
+
 
   /* ════════════════════════════════════════════════════════════════════════
      GENERIC LINE LIST RENDERER
   ════════════════════════════════════════════════════════════════════════ */
   _showLines(lines, onDone) {
-    const flat = [];
-    (lines || []).forEach(l => {
-      if (l.is_narration || (!l.speaker && l.narration)) {
-        flat.push({ speaker: null, text: l.narration || l.text });
-      } else {
-        flat.push({ speaker: l.speaker, text: l.text });
-      }
-    });
-
-    this._activeLines = flat;
-    this._onLinesDone = onDone;
-    this.lineIdx = 0;
-
-    if (flat.length === 0) { onDone && onDone(); return; }
-
-    this._renderActiveLine();
-    this._showSection('s-dialogue');
-    this._setContinue('▶ CONTINUE');
+    Cutscene.start(lines, onDone);
   },
 
-  _renderActiveLine() {
-    console.log('[_renderActiveLine] lineIdx:', this.lineIdx, 'total lines:', this._activeLines.length);
-    const l = this._activeLines[this.lineIdx];
-    if (!l) { console.log('[_renderActiveLine] No line found, returning'); return; }
-    console.log('[_renderActiveLine] Rendering line:', l.text.substring(0, 50));
-    this._renderLine(l.speaker || null, l.text || '');
-    this._setContinue('▶ CONTINUE');
-    console.log('[_renderActiveLine] Finished');
-  },
 
   /* ════════════════════════════════════════════════════════════════════════
      EVENT RENDERER
@@ -768,15 +665,13 @@ const Story = {
     this.currentBossChapter = boss;  // Store for onVictory event processing
     this.lineIdx = 0;
     this.phase = 'boss_pre';
-    this._charAppeared = {};  // reset character appearances
-    this._charPositions = {}; // reset character positions
-    this._posCounter = 0;     // reset position counter
-    this._clearSceneLayer();  // clear scene characters
+    Cutscene.clear();
     this._setHeader(`Arc ${this.arc.number}: ${this.arc.name}`, `⚔ BOSS: ${boss.title}`);
     this._setBg(boss.background);
     this._showLines(boss.pre_dialogue || [], () => this._launchBoss());
     showScreen('story-screen');
   },
+
 
   _launchBoss() {
     this.phase = 'boss_in';
@@ -802,17 +697,9 @@ const Story = {
     if (!raw) { console.warn('Story: enemy not found:', enemyId); this.onBattleWon(); return; }
     const def = this._scaleEnemy(raw);
 
-    // Build enemy group: boss/mid-boss is solo; regular battles add 1 weak add from arc pool
+    // Build enemy group: boss is always solo
     const defs = [def];
     const isBoss = (this.phase === 'boss_in');
-    if (!isBoss && this.arcIdx >= 1) {
-      const pool = (this.arc.enemies_pool || []).filter(id => id !== enemyId);
-      if (pool.length) {
-        const addId = pool[Math.floor(Math.random() * pool.length)];
-        const addRaw = this._allEnemies.find(e => e.id === addId);
-        if (addRaw) defs.push(this._scaleEnemy(addRaw));
-      }
-    }
 
     // Calculate spawn level based on arc and whether this is a boss fight
     // Regular: Arc 1→1, 2→3, 3→6, 4→10, 5→14, 6→18, 7→22, 8→26
@@ -891,7 +778,7 @@ const Story = {
     showScreen('explore-screen');
     if (typeof _dockPersistentBtns === 'function') _dockPersistentBtns(true);
 
-    requestAnimationFrame(() => requestAnimationFrame(() => {
+    requestAnimationFrame(() => requestAnimationFrame(async () => {
       const wrap = document.getElementById('explore-canvas-wrap');
       const canvas = document.getElementById('explore-canvas');
       if (!wrap || !canvas) return;
@@ -907,7 +794,9 @@ const Story = {
       const overlay = document.getElementById('map-select-overlay');
       if (overlay) overlay.style.display = 'none';
 
-      MapEngine.start(chap.map);
+      // CRITICAL: Await map loading so its internal default reset finishes
+      // before we apply our saved restoration coordinates.
+      await MapEngine.start(chap.map);
 
       // Restore tile position — must use MapPlayer.reset() as tx/ty are read-only getters
       if (restoreX != null && restoreY != null && typeof MapPlayer !== 'undefined') {
@@ -921,12 +810,36 @@ const Story = {
     }));
   },
 
+  /** Called by MapEngine when a teleport occurs during story_explore mode */
+  onMapTeleport(newMapId) {
+    if (!this.arc) return;
+    const nextChap = this.arc.chapters[this.chapIdx + 1];
+
+    // If we teleported to the map of the next chapter, advance state quietly
+    if (nextChap && nextChap.map === newMapId) {
+      console.log('[Story] Seamlessly advancing chapter to:', nextChap.id);
+      this.chapIdx++;
+      this.currentChap = nextChap;
+      this._doSave();
+
+      const lbl = document.getElementById('explore-map-name');
+      const m = MapEngine.getMap();
+      if (lbl && m) lbl.textContent = `✦ ${m.name.toUpperCase()} ✦`;
+
+      // Show the new floor's objective hint so the player knows what to do next
+      if (nextChap.map_hint && typeof MapUI !== 'undefined') {
+        MapUI.showMsg(nextChap.map_hint, 2500);
+      }
+    }
+  },
+
   /** Called by MapEngine when story_explore mode battle/explore ends */
   onExploreComplete() {
     MapEngine.stop();
     G.mode = 'story';
     const chap = this._exploreChap;
     this._exploreChap = null;
+    
     this._showLines((chap && chap.post_dialogue) || [], () => this._nextChapter());
     showScreen('story-screen');
   },
@@ -979,12 +892,11 @@ const Story = {
     this.phase = 'outro';
     const bg = arc.outro.background || arc.outro.scenes[0]?.background || 'default';
     this._setBg(bg);
-    this._buildSceneLines(arc.outro.scenes);
-    this._onLinesDone = () => this._showArcEnd();
-    this._renderActiveLine();
-    this._showSection('s-dialogue');
+    const lines = this._buildSceneLines(arc.outro.scenes);
+    Cutscene.start(lines, () => this._showArcEnd());
     showScreen('story-screen');
   },
+
 
   /* ════════════════════════════════════════════════════════════════════════
      ARC END (shard card)
@@ -1068,10 +980,8 @@ const Story = {
     this.phase = 'epilogue';
 
     if (epi.scenes && epi.scenes.length) {
-      this._buildSceneLines(epi.scenes);
-      this._onLinesDone = () => this._showEpilogueCards();
-      this._renderActiveLine();
-      this._showSection('s-dialogue');
+      const lines = this._buildSceneLines(epi.scenes);
+      Cutscene.start(lines, () => this._showEpilogueCards());
       this._setHeader(epi.title || 'EPILOGUE', '');
       this._setBg('epilogue');
       showScreen('story-screen');
@@ -1079,6 +989,7 @@ const Story = {
       this._showEpilogueCards();
     }
   },
+
 
   _showEpilogueCards() {
     const epi = this.data.epilogue;
@@ -1145,6 +1056,7 @@ const Story = {
     const mapX = (mapId && typeof MapPlayer !== 'undefined') ? MapPlayer.tx : null;
     const mapY = (mapId && typeof MapPlayer !== 'undefined') ? MapPlayer.ty : null;
 
+    console.log(`[Story] Saving state to slot ${this._activeSlot ?? 0}. Pos: (${mapX}, ${mapY})`);
     Save.write({
       arcIdx: this.arcIdx,
       chapIdx: this.chapIdx,
@@ -1167,7 +1079,7 @@ const Story = {
       mapId,
       mapX,
       mapY,
-    }, this._activeSlot !== undefined ? this._activeSlot : 0);
+    }, this._activeSlot ?? 0);
   },
 
   /* ════════════════════════════════════════════════════════════════════════
@@ -1384,23 +1296,27 @@ const Story = {
     if (typeof MapUI !== 'undefined') MapUI.showMsg(`Entering ${MAP_DEFS[mapId].name}…`, 1500);
   },
 
-  /* ── Skirmish: battle using an arc's enemy pool at current party LV ─── */
+  /* ── Skirmish: battle using the map's encounter templates at current party LV ─── */
   startRegionSkirmish(arcIdx) {
-    const arc = this.data.arcs[arcIdx];
-    if (!arc) return;
-    const pool = arc.enemies_pool || [];
-    if (!pool.length || !G.party.length) return;
+    if (!G.party.length) return;
 
-    /* Pick 1-2 random enemy templates from that arc's pool */
-    const count = 1 + (Math.random() < 0.45 ? 1 : 0);
+    // Find the map that belongs to this arc (arcId is 1-indexed, arcIdx is 0-indexed)
+    const mapDef = typeof MAP_DEFS !== 'undefined'
+      ? Object.values(MAP_DEFS).find(m => m.arcId === arcIdx + 1)
+      : null;
+    const templates = mapDef ? (mapDef.encounterTemplates || []) : [];
+    if (!templates.length) return;
+
+    // Weighted random pick of a template
+    const total = templates.reduce((s, t) => s + (t.weight || 1), 0);
+    let roll = Math.random() * total;
+    let template = templates[0];
+    for (const t of templates) { roll -= (t.weight || 1); if (roll <= 0) { template = t; break; } }
+
     const partyLv = Math.max(...G.party.map(m => m.lv || 1));
-    const picks = [];
-
-    for (let i = 0; i < count; i++) {
-      const id = pool[Math.floor(Math.random() * pool.length)];
-      const template = (G.enemies || []).find(e => e.id === id);
-      if (template) picks.push(template);
-    }
+    const picks = template.enemies
+      .map(id => (G.enemies || []).find(e => e.id === id))
+      .filter(Boolean);
     if (!picks.length) return;
 
     /* buildEnemyGroup is a global function in game.js — sets G.enemyGroup */
@@ -1424,11 +1340,9 @@ const Story = {
      SKIP
   ════════════════════════════════════════════════════════════════════════ */
   skip() {
-    // Skip current chapter and go to next
-    this._skipTw();
-    this.lineIdx = 999; // Set to high number to skip all lines
-    this._onLinesDone && this._onLinesDone();
+    Cutscene.skip();
   },
+
 
   /* ════════════════════════════════════════════════════════════════════════
      UI HELPERS
@@ -1444,173 +1358,18 @@ const Story = {
   },
 
   _showSection(id) {
-    console.log('[_showSection] Showing section:', id);
-    // Hide all main sections first
-    ['s-arc-intro', 's-dialogue', 's-event', 's-arc-end', 's-epilogue'].forEach(sid => {
-      const e = this.el(sid);
-      if (e) e.style.display = sid === id ? '' : 'none';
-    });
-    console.log('[_showSection] Finished');
+    Cutscene._showSection(id);
   },
 
   _setContinue(label) {
-    console.log('[_setContinue] Setting continue button to:', label);
-    const btn = this.el('s-continue');
-    if (!btn) { console.log('[_setContinue] Button not found'); return; }
-    btn.textContent = label;
-    btn.style.display = 'inline-block';
-    console.log('[_setContinue] Finished, button display:', btn.style.display);
+    Cutscene._setContinue(label);
   },
 
   _hideContinue() {
-    const btn = this.el('s-continue');
-    if (btn) btn.style.display = 'none';
-  },
-
-  _renderLine(speaker, text) {
-    const box = this.el('s-dialogue');
-    const spkEl = this.el('s-speaker');
-    const txtEl = this.el('s-text');
-    const emojiEl = this.el('s-portrait-emoji');
-    const spiritsRow = this.el('s-dialogue-spirits-row');
-    if (!box) return;
-
-    box.style.display = '';
-    if (typeof SFX !== 'undefined') SFX.dialogue();
-    if (typeof TTS !== 'undefined') TTS.stop();
-
-    // Render scene characters
-    if (speaker && this.currentChap && this.currentChap.cast) {
-      this._renderSceneCharacters(speaker);
-    }
-
-    if (speaker) {
-      spkEl.textContent = speaker.toUpperCase();
-      spkEl.style.color = SPEAKER_COLOR[speaker] || '#f0f0f8';
-      spkEl.style.display = 'block';
-      box.dataset.speaker = speaker.toLowerCase();
-
-      // Get speaker character ID for face image path (alias → charId)
-      const speakerCharId = _charIdForSpeaker(speaker);
-
-      // Use emoji fallback only (face images removed)
-      if (emojiEl) {
-        emojiEl.style.display = 'block';
-        emojiEl.textContent = '💬';
-      }
-    } else {
-      spkEl.style.display = 'none';
-      box.dataset.speaker = 'narrator';
-      if (emojiEl) {
-        emojiEl.style.display = 'block';
-        emojiEl.textContent = SPEAKER_PORTRAIT.narrator;
-      }
-    }
-    // TTS speaks full text; typewriter shows it character-by-character in parallel
-    if (typeof TTS !== 'undefined') TTS.speak(speaker || 'narrator', text || '');
-    this._typewrite(txtEl, text || '');
-  },
-
-  _typewrite(el, text) {
-    if (this._tw.timer) clearTimeout(this._tw.timer);
-    this._tw.full = text;
-    this._tw.done = false;
-    let idx = 0;
-    el.textContent = '';
-
-    const baseDelay = this._twDelay || 22;
-    let isPaused = 0;
-
-    const tick = () => {
-      if (isPaused > 0) {
-        isPaused--;
-      } else {
-        idx = Math.min(idx + 1, text.length); // render 1 char per tick for smoother pacing
-        const char = text.charAt(idx - 1);
-        el.textContent = text.slice(0, idx);
-
-        // Pacing logic for punctuation
-        if (char === '.' || char === '!' || char === '?') {
-          isPaused = 12;
-        } else if (char === ',') {
-          isPaused = 6;
-        }
-
-        if (idx >= text.length) {
-          this._tw.done = true;
-          this._tw.timer = null;
-          return;
-        }
-      }
-      this._tw.timer = setTimeout(tick, baseDelay);
-    };
-
-    this._tw.timer = setTimeout(tick, baseDelay);
-  },
-
-  _skipTw() {
-    if (this._tw.timer) clearTimeout(this._tw.timer);
-    this._tw.done = true;
-    if (typeof TTS !== 'undefined') TTS.stop();
-    const el = this.el('s-text');
-    if (el) el.textContent = this._tw.full;
-  },
-
-  _clearSceneLayer() {
-    const layer = this.el('s-scene-layer');
-    if (layer) layer.innerHTML = '';
-  },
-
-  _renderSceneCharacters(speaker) {
-    if (!this.currentChap || !this.currentChap.cast) return;
-
-    const layer = this.el('s-scene-layer');
-    if (!layer) return;
-
-    const cast = this.currentChap.cast;
-
-    cast.forEach(charName => {
-      if (!charName) return;
-
-      // First appearance - create character element
-      if (!this._charAppeared[charName]) {
-        this._charAppeared[charName] = true;
-
-        const charEl = document.createElement('div');
-        charEl.className = 's-scene-char';
-        charEl.id = `s-scene-char-${charName.toLowerCase()}`;
-
-        const spriteEl = document.createElement('div');
-        spriteEl.className = 's-scene-sprite';
-        const speakerCharId = _charIdForSpeaker(charName);
-        const vHeight = window.innerHeight;
-        const isLandscape = window.innerWidth > vHeight;
-        const portraitHeight = Math.max(300, Math.floor(vHeight * (isLandscape ? 0.75 : 0.52)));
-        SpriteRenderer.setFrame(spriteEl, speakerCharId, 'idle', portraitHeight);
-
-        const nameEl = document.createElement('div');
-        nameEl.className = 's-scene-char-name';
-        nameEl.textContent = charName;
-
-        charEl.appendChild(spriteEl);
-        charEl.appendChild(nameEl);
-        layer.appendChild(charEl);
-      }
-
-      // Update active/dimmed state
-      const charEl = this.el(`s-scene-char-${charName.toLowerCase()}`);
-      if (charEl) {
-        if (speaker && speaker.toLowerCase() === charName.toLowerCase()) {
-          charEl.classList.add('active');
-          charEl.classList.remove('dimmed');
-        } else {
-          charEl.classList.remove('active');
-          charEl.classList.add('dimmed');
-        }
-      }
-    });
+    Cutscene._hideContinue();
   },
 };
+
 
 /* ── Global entry point called from title screen button ─────────────────── */
 function startStoryMode() {

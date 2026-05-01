@@ -68,14 +68,20 @@ const Archive = {
    * Check if an arc is fully mastered (seen all enemies + 5 kills each)
    */
   isArcMastered(arcIdx) {
-    if (typeof Story === 'undefined' || !Story.data) return false;
-    const arc = Story.data.arcs[arcIdx];
-    if (!arc) return false;
-    const pool = arc.enemies_pool || [];
-    if (pool.length === 0) return false;
+    // Derive enemy list from the map that belongs to this arc (single source of truth)
+    const mapDef = typeof MAP_DEFS !== 'undefined'
+      ? Object.values(MAP_DEFS).find(m => m.arcId === arcIdx + 1)
+      : null;
+    if (!mapDef) return false;
 
-    // Must have seen and killed at least 5 of every enemy in the pool
-    return pool.every(enemyId => {
+    // Collect all unique non-boss enemy IDs from encounter templates
+    const enemyIds = [...new Set(
+      (mapDef.encounterTemplates || []).flatMap(t => t.enemies || [])
+    )];
+    if (enemyIds.length === 0) return false;
+
+    // Must have seen and killed at least 5 of every enemy in the template pool
+    return enemyIds.every(enemyId => {
       const entry = this.getEntry(enemyId);
       return entry && entry.seen && entry.kills >= 5;
     });

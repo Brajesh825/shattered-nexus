@@ -111,25 +111,13 @@ MAP_DEFS.void_citadel = (function() {
         ],
         tiles: tiles,
         enemies: [
-            // HUB DEFENDERS
+            // --- HUB SENTINELS ---
             { id: 'void_knight', x: 55, y: 60, patrol: 'random', range: 8, speed: 1.1 },
             { id: 'void_knight', x: 65, y: 60, patrol: 'random', range: 8, speed: 1.1 },
-            { id: 'necromancer', x: 60, y: 55, patrol: 'horizontal', range: 10, speed: 0.8 },
-
-            // WEST WING (Lab)
+            // --- WING GUARDIANS ---
             { id: 'necromancer', x: 15, y: 60, patrol: 'random', range: 5, speed: 0.8 },
-            { id: 'void_knight', x: 30, y: 60, patrol: 'vertical', range: 10, speed: 1.0 },
-
-            // EAST WING (Dragon Roost)
             { id: 'bone_dragon', x: 105, y: 60, patrol: 'random', range: 7, speed: 0.9 },
-            { id: 'void_knight', x: 80, y: 60, patrol: 'vertical', range: 10, speed: 1.0 },
-
-            // SOUTH WING (Portal Guard)
-            { id: 'bone_dragon', x: 60, y: 90, patrol: 'horizontal', range: 15, speed: 0.9 },
-            { id: 'necromancer', x: 50, y: 105, patrol: 'random', range: 5, speed: 0.8 },
-            { id: 'necromancer', x: 70, y: 105, patrol: 'random', range: 5, speed: 0.8 },
-
-            // MAP BOSS — Consumed Angel guards the inner gate
+            // --- MAP BOSS ---
             { id: 'consumed_angel', x: 60, y: 90, patrol: 'stationary', isBoss: true, label: 'Consumed Angel' }
         ],
 

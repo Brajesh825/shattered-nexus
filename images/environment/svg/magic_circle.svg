@@ -1,0 +1,21 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="magic-bloom">
+      <feGaussianBlur stdDeviation="1.5" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  <!-- Outer Rings -->
+  <circle cx="32" cy="32" r="28" fill="none" stroke="#9c27b0" stroke-width="1.5" stroke-dasharray="2,4">
+    <animateTransform attributeName="transform" type="rotate" from="0 32 32" to="360 32 32" dur="8s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="32" cy="32" r="24" fill="none" stroke="#e1bee7" stroke-width="0.5" opacity="0.4"/>
+  <!-- Pentagram/Sigil -->
+  <path d="M32 8 L54 48 L10 48 Z" fill="none" stroke="#ba68c8" stroke-width="1" filter="url(#magic-bloom)"/>
+  <path d="M32 56 L10 16 L54 16 Z" fill="none" stroke="#ba68c8" stroke-width="1" filter="url(#magic-bloom)"/>
+  <!-- Core Pulse -->
+  <circle cx="32" cy="32" r="4" fill="#f3e5f5" filter="url(#magic-bloom)">
+    <animate attributeName="r" values="4; 8; 4" dur="2s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="1; 0.5; 1" dur="2s" repeatCount="indefinite"/>
+  </circle>
+</svg>

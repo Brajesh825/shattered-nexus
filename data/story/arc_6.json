@@ -5,8 +5,12 @@
   "subtitle": "The first assault on the seat of darkness",
   "theme": "Unity / Courage / Breaking the seal",
   "location": "Valdris's Outer Fortress",
-  "shard": null,
-  "enemies_pool": ["void_knight", "bone_dragon", "necromancer", "fallen_angel", "dark_phoenix"],
+  "shard": {
+    "id": "seal_void",
+    "name": "Seal Fragment of the Void",
+    "description": "A shard of pure absence \u2014 not dark, not cold, simply without. Holding it feels like standing at the edge of something that does not end.",
+    "color": "#6d28d9"
+  },
   "boss_enemy": "void_warden",
   "chapters": [
     {
@@ -14,18 +18,39 @@
       "title": "The Fortress Revealed",
       "type": "cutscene",
       "background": "fortress_gates",
-      "cast": ["Aya", "Tao", "Lulu", "Rei"],
+      "cast": [
+        "Aya",
+        "Tao",
+        "Lulu",
+        "Rei"
+      ],
       "scenes": [
         {
-          "narration": "The fortress materializes before them like a wound in the sky — black stone that seems to swallow light, towers that twist in ways that hurt to look at. It is not built. It is grown. Fed. Alive."
+          "narration": "The fortress materializes before them like a wound in the sky \u2014 black stone that seems to swallow light, towers that twist in ways that hurt to look at. It is not built. It is grown. Fed. Alive."
         },
         {
-          "narration": "Aya stands at the front, the four Seal Fragments held in her hands. They pulse with light — answering each other, drawing closer to completion.",
+          "narration": "Aya stands at the front, the four Seal Fragments held in her hands. They pulse with light \u2014 answering each other, drawing closer to completion.",
           "dialogue": [
-            { "speaker": "Aya", "emotion": "resolute", "text": "Four pieces broken and reclaimed. One fragment remains — inside that darkness. And one more answer: why." },
-            { "speaker": "Tao", "emotion": "focused", "text": "I have guided the dead across the veil for so long. I can feel the weight of souls trapped in that place. Screaming." },
-            { "speaker": "Rei", "emotion": "determined", "text": "Then we give them peace. We give them freedom. We tear down this monument to fear." },
-            { "speaker": "Lulu", "emotion": "steady", "text": "Six of us. One darkness. The math is simple." }
+            {
+              "speaker": "Aya",
+              "emotion": "resolute",
+              "text": "Four pieces broken and reclaimed. One fragment remains \u2014 inside that darkness. And one more answer: why."
+            },
+            {
+              "speaker": "Tao",
+              "emotion": "focused",
+              "text": "I have guided the dead across the veil for so long. I can feel the weight of souls trapped in that place. Screaming."
+            },
+            {
+              "speaker": "Rei",
+              "emotion": "determined",
+              "text": "Then we give them peace. We give them freedom. We tear down this monument to fear."
+            },
+            {
+              "speaker": "Lulu",
+              "emotion": "steady",
+              "text": "Six of us. One darkness. The math is simple."
+            }
           ]
         }
       ]
@@ -35,37 +60,232 @@
       "title": "The Void Citadel",
       "type": "explore",
       "map": "void_citadel",
-      "map_hint": "Push through the Void Citadel — the Void Warden guards the fortress gate beyond.",
+      "map_hint": "Push through the Void Citadel \u2014 the Void Warden guards the fortress gate beyond.",
       "pre_dialogue": [
-        { "speaker": "narrator", "emotion": "intense", "text": "The Void Citadel stretches before them — black stone that swallows light, towers that twist in ways that hurt to look at. Shadow-creatures pour from every passage, guardians of the outer ring." },
-        { "speaker": "Rei", "emotion": "ready", "text": "Let them come. We break through." },
-        { "speaker": "Ria", "emotion": "calm", "text": "The eidolons say this place was not always dark. Once, it held light. They remember singing in its halls." },
-        { "speaker": "Valka", "emotion": "resolute", "text": "Then we reclaim it. Not for ourselves — for what was stolen from it." }
+        {
+          "speaker": "narrator",
+          "emotion": "intense",
+          "text": "The Void Citadel stretches before them \u2014 black stone that swallows light, towers that twist in ways that hurt to look at. Shadow-creatures pour from every passage, guardians of the outer ring."
+        },
+        {
+          "speaker": "Rei",
+          "emotion": "ready",
+          "text": "Let them come. We break through."
+        },
+        {
+          "speaker": "Ria",
+          "emotion": "calm",
+          "text": "The eidolons sense the echoes. This place was not always dark. Once, it held light. They can feel what used to sing in its halls."
+        },
+        {
+          "speaker": "Valka",
+          "emotion": "resolute",
+          "text": "Then we reclaim it. Not for ourselves \u2014 for what was stolen from it."
+        }
       ],
       "post_dialogue": [
-        { "speaker": "narrator", "emotion": "grave", "text": "At the heart of the citadel, a figure coalesces from shadow — ancient, vast, wearing robes of starlight corrupted to ash. The Void Warden." },
-        { "speaker": "narrator", "emotion": "cold", "text": "Void Warden: Valdris is pleased you reached this far. He did not think you would." },
-        { "speaker": "Aya", "emotion": "sharp", "text": "Then he has learned nothing about us." },
-        { "speaker": "Tao", "emotion": "determined", "text": "Enough talk. We unmake it." }
+        {
+          "speaker": "narrator",
+          "emotion": "grave",
+          "text": "At the heart of the citadel, a figure coalesces from shadow \u2014 ancient, vast, wearing robes of starlight corrupted to ash. The Void Warden."
+        },
+        {
+          "speaker": "narrator",
+          "emotion": "cold",
+          "text": "Void Warden: Valdris is pleased you reached this far. He did not think you would."
+        },
+        {
+          "speaker": "Aya",
+          "emotion": "sharp",
+          "text": "Then he has learned nothing about us."
+        },
+        {
+          "speaker": "Tao",
+          "emotion": "determined",
+          "text": "Enough talk. We unmake it."
+        }
+      ]
+    },
+    {
+      "id": "arc6_ch1b",
+      "title": "What It Used to Be",
+      "type": "cutscene",
+      "background": "fortress_interior",
+      "cast": [
+        "Aya",
+        "Tao",
+        "Lulu",
+        "Rei",
+        "Ria",
+        "Valka",
+        "Rex",
+        "Drake"
+      ],
+      "scenes": [
+        {
+          "narration": "Inside the outer walls, the fortress is different to what they expected. Not a weapon. Not a dungeon. A palace, once \u2014 its bones still visible beneath the corruption. Arched corridors that were meant to carry light. Libraries with empty shelves where knowledge used to live. Someone built this place to be beautiful.",
+          "dialogue": [
+            {
+              "speaker": "Tao",
+              "emotion": "quiet",
+              "text": "This was not a fortress. It was a home."
+            },
+            {
+              "speaker": "Ria",
+              "emotion": "aching",
+              "text": "The eidolons sense the tragedy here. A place that was meant to be beautiful, now corrupted into a weapon."
+            },
+            {
+              "speaker": "Rei",
+              "emotion": "heavy",
+              "text": "The Oracle's records say he built this. Before the hunger. When he was still someone who built things."
+            }
+          ]
+        },
+        {
+          "narration": "At the centre of the first courtyard, suspended in shadow like a wound held open, something vast and winged turns slowly. The Consumed Angel \u2014 what was once a scholar's companion, the last created thing Valdris loved before love became impossible for him. Its face is gone. But its wings still remember the shape of flight.",
+          "dialogue": [
+            {
+              "speaker": "Lulu",
+              "emotion": "stricken",
+              "text": "What \u2014 what is that?"
+            },
+            {
+              "speaker": "Valka",
+              "emotion": "solemn",
+              "text": "Once, a being of light. Something he made \u2014 or found \u2014 or loved. Before. I can see what it was through the corruption. It was meant to be a guardian. A protector."
+            },
+            {
+              "speaker": "Aya",
+              "emotion": "controlled",
+              "text": "He consumed it too."
+            },
+            {
+              "speaker": "Tao",
+              "emotion": "very quiet",
+              "text": "...Yes. Even the things he loved. They were not safe from what he became."
+            },
+            {
+              "speaker": "Lulu",
+              "emotion": "resolute",
+              "text": "Then we free it. Whatever is left inside \u2014 we free it."
+            }
+          ]
+        }
       ]
     }
   ],
   "boss_chapter": {
     "title": "The Gate Guardian",
     "background": "fortress_entrance",
-    "cast": ["Aya", "Tao", "Lulu", "Rei"],
+    "cast": [
+      "Aya",
+      "Tao",
+      "Lulu",
+      "Rei",
+      "Ria",
+      "Valka",
+      "Rex",
+      "Drake"
+    ],
     "pre_dialogue": [
-      { "speaker": "narrator", "emotion": "ominous", "text": "The Void Warden solidifies fully — a creature of pure shadow, wielding authority over this realm." },
-      { "speaker": "Rei", "emotion": "grim", "text": "It is not alive. It is purpose given form." },
-      { "speaker": "Tao", "emotion": "determined", "text": "Then we unmake it." }
+      {
+        "speaker": "narrator",
+        "emotion": "ominous",
+        "text": "The Consumed Angel descends. Not attacking \u2014 not yet. It circles them once, as if remembering a shape it used to protect. Then the corruption overwhelms the memory, and it becomes a weapon."
+      },
+      {
+        "speaker": "Aya",
+        "emotion": "sharp",
+        "text": "It is not choosing this. That matters. It also does not change what we have to do."
+      },
+      {
+        "speaker": "Rei",
+        "emotion": "grim",
+        "text": "Purpose consumed. Will erased. This is what Valdris does to everything he touches \u2014 it forgets itself. We remind it what it was."
+      },
+      {
+        "speaker": "Valka",
+        "emotion": "resolute",
+        "text": "If there is anything left of what it chose to be, this will free it. Hold nothing back."
+      },
+      {
+        "speaker": "Lulu",
+        "emotion": "fierce_grief",
+        "text": "It was meant to protect. We will end what is trapping it here. That is the most we can give it."
+      },
+      {
+        "speaker": "Tao",
+        "emotion": "determined",
+        "text": "For the scholar who made it. For whoever it was before. And for everything he took from himself by consuming it."
+      }
     ],
     "post_dialogue": [
-      { "speaker": "narrator", "emotion": "quiet", "text": "The Void Warden dissolves, its form unraveling like burning paper. The outer gates of the fortress groan, the dark energy holding them shut beginning to fracture." },
-      { "speaker": "Lulu", "emotion": "hopeful", "text": "The gates are breaking. The fortress is... weakening. We can feel the light from the Fragments reaching inside." },
-      { "speaker": "Aya", "emotion": "resolved", "text": "Then we continue. We have breached the outer ring. The Shadow Emperor's inner sanctum lies just beyond these ramparts." },
-      { "speaker": "Drake", "emotion": "strong", "text": "The air here is thick with his influence, but it is not absolute. We push forward. Together." }
-    ]
+      {
+        "speaker": "narrator",
+        "emotion": "quiet",
+        "text": "The Consumed Angel dissolves \u2014 not with violence, but with the slow release of something that has been held past the point of endurance. Its wings scatter into light. For one breath, the courtyard is bright."
+      },
+      {
+        "speaker": "Lulu",
+        "emotion": "quiet_grief",
+        "text": "...There it is. That was what it was supposed to be."
+      },
+      {
+        "speaker": "Aya",
+        "emotion": "steady",
+        "text": "The outer ring is broken. The fortress is weakening at its core. We have the Fragment. We do not stop."
+      },
+      {
+        "speaker": "Rei",
+        "emotion": "grim",
+        "text": "He will feel this. He built that thing, and now it is gone. Even if he cannot feel grief, he will feel the gap where it was. Good."
+      },
+      {
+        "speaker": "Drake",
+        "emotion": "forward",
+        "text": "The inner sanctum. The Shadow Titan. Whatever is left of the man inside that darkness \u2014 we face it now. Together."
+      }
+    ],
+    "character_moment": {
+      "background": "fortress_entrance",
+      "dialogue": [
+        {
+          "speaker": "narrator",
+          "emotion": "quiet",
+          "text": "The communication stone pulses. For the first time since they entered the Citadel, Essabella's voice cuts through the static."
+        },
+        {
+          "speaker": "narrator",
+          "emotion": "heavy",
+          "text": "Essabella: The guardian you just unmade. The Consumed Angel. That was Commander Veleth. The first to join me when I fell."
+        },
+        {
+          "speaker": "Rei",
+          "emotion": "grim",
+          "text": "Those were your soldiers in the outer ring. He didn't just kill them. He kept them."
+        },
+        {
+          "speaker": "narrator",
+          "emotion": "cold",
+          "text": "Essabella: Yes. They were my soldiers."
+        },
+        {
+          "speaker": "Lulu",
+          "emotion": "soft",
+          "text": "We freed them, Essabella. I am so sorry."
+        },
+        {
+          "speaker": "narrator",
+          "emotion": "aching",
+          "text": "Essabella: I made calculations that were wrong. I thought she had more time. That is my weight to carry. You must carry yourselves to the inner sanctum. Do not let her ending be for nothing."
+        },
+        {
+          "speaker": "Aya",
+          "emotion": "steady",
+          "text": "We won't. We finish this."
+        }
+      ]
+    }
   }
 }
-
-

@@ -1,0 +1,25 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="gm-cap" cx="40%" cy="30%" r="60%">
+      <stop offset="0%" style="stop-color:#ef9a9a"/>
+      <stop offset="50%" style="stop-color:#e53935"/>
+      <stop offset="100%" style="stop-color:#7f0000"/>
+    </radialGradient>
+    <linearGradient id="gm-stem" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#f5f5f5"/>
+      <stop offset="50%" style="stop-color:#fafafa"/>
+      <stop offset="100%" style="stop-color:#e0e0e0"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="32" cy="57" rx="12" ry="3.5" fill="#1a1a1a" opacity="0.35"/>
+  <path d="M24 58 Q28 48 32 46 Q36 48 40 58 Q38 62 26 62 Z" fill="url(#gm-stem)"/>
+  <path d="M28 58 L28 50 M34 58 L34 50" stroke="#bdbdbd" stroke-width="0.6" opacity="0.5"/>
+  <ellipse cx="32" cy="46" rx="14" ry="4" fill="#ffcdd2" opacity="0.6"/>
+  <path d="M18 46 Q20 20 32 16 Q44 20 46 46 Q40 50 24 50 Z" fill="url(#gm-cap)"/>
+  <circle cx="26" cy="28" r="3" fill="#fff" opacity="0.7"/>
+  <circle cx="38" cy="24" r="2.5" fill="#fff" opacity="0.7"/>
+  <circle cx="32" cy="20" r="2" fill="#fff" opacity="0.6"/>
+  <circle cx="22" cy="38" r="2" fill="#fff" opacity="0.65"/>
+  <circle cx="42" cy="36" r="2.5" fill="#fff" opacity="0.65"/>
+  <path d="M18 46 Q20 40 32 36 Q44 40 46 46" fill="none" stroke="#ef9a9a" stroke-width="1" opacity="0.5"/>
+</svg>

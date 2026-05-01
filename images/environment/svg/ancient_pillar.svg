@@ -1,0 +1,16 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="column-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#546e7a;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#cfd8dc;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#546e7a;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Pillar Body -->
+  <rect x="22" y="10" width="20" height="46" fill="url(#column-grad)"/>
+  <!-- Fluting -->
+  <path d="M26 10 L26 56 M32 10 L32 56 M38 10 L38 56" stroke="#37474f" stroke-width="0.5" opacity="0.2"/>
+  <!-- Base and Capital -->
+  <rect x="18" y="52" width="28" height="6" fill="#37474f"/>
+  <rect x="18" y="6" width="28" height="6" fill="#90a4ae"/>
+</svg>

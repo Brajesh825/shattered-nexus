@@ -13,15 +13,22 @@ MAP_DEFS.lighthouse_isles = {
     weather: 'mist',
     enemyLevelRange: [25, 33],
     encounterTemplates: [
-        { weight: 3, enemies: ['crab'] },
-        { weight: 2, enemies: ['merman'] },
-        { weight: 1, enemies: ['crab', 'merman'] }
+        { weight: 4, enemies: ['crab', 'crab'] },
+        { weight: 3, enemies: ['merman'] },
+        { weight: 2, enemies: ['crab', 'merman'] },
+        { weight: 2, enemies: ['wisp'] },
+        { weight: 1, enemies: ['merman', 'merman'] },
+        { weight: 1, enemies: ['crab', 'crab', 'merman'] },
+        { weight: 1, enemies: ['wisp', 'merman'] }
     ],
     enemies: [
-        { id: 'crab',   x: 10, y: 30, patrol: 'random', range: 5, speed: 0.6 },
+        // --- COASTAL SENTINELS ---
+        { id: 'crab',   x: 10, y: 30, patrol: 'random',     range: 5,  speed: 0.6 },
         { id: 'merman', x: 40, y: 30, patrol: 'horizontal', range: 10, speed: 1.2 },
-        { id: 'crab',   x: 70, y: 20, patrol: 'random', range: 5, speed: 0.6 },
-        { id: 'merman', x: 20, y: 15, patrol: 'vertical', range: 8, speed: 1.3 },
+        // --- OUTER ISLE PATROL ---
+        { id: 'crab',   x: 70, y: 20, patrol: 'random',     range: 5,  speed: 0.6 },
+        { id: 'merman', x: 20, y: 15, patrol: 'vertical',   range: 8,  speed: 1.3 },
+        // --- MAP BOSS ---
         { id: 'abyssal_kraken', x: 40, y: 12, patrol: 'stationary', isBoss: true, label: 'Abyssal Kraken' }
     ],
     tiles: (function () {
@@ -103,8 +110,8 @@ MAP_DEFS.lighthouse_isles = {
         return rows;
     })(),
     npcs: [
-        { id: 'old_mariner', x: 12, y: 36, dialogueKey: 'mariner_tales', behavior: 'stationary' },
-        { id: 'sea_spirit', x: 60, y: 25, dialogueKey: 'sea_wisdom', behavior: 'wander', range: 3 }
+        { id: 'old_mariner', x: 12, y: 36, dialogueKey: 'lighthouse_isles', behavior: 'stationary' },
+        { id: 'sea_spirit', x: 60, y: 25, dialogueKey: 'lighthouse_isles', behavior: 'wander', range: 3 }
     ],
     triggers: [
         {
@@ -124,13 +131,23 @@ MAP_DEFS.lighthouse_isles = {
                 { speaker: 'narrator', text: 'A massive shadow passes beneath the bridge. The ocean itself seems to breathe.' },
                 { speaker: 'Tao', text: 'Please tell me that was a very large dolphin. A VERY large dolphin.' }
             ]
+        },
+        {
+            id: 'abyssal_kraken_approach',
+            x: 36, y: 13, w: 8, h: 5,
+            type: 'dialogue',
+            lines: [
+                { speaker: 'Lulu', text: 'Oremis. The Sea Spirit told us — he wanted to heal people using the deep water\'s knowledge. That was real. That desire was real.' },
+                { speaker: 'Aya', text: 'What is real does not stop being dangerous.' },
+                { speaker: 'Lulu', text: 'No. But it means we owe it a clean ending, not just a fast one.' }
+            ]
         }
     ],
     objective: {
         type: 'reach',
         target: { x: 40, y: 10 },
         label: 'Storm the Lighthouse',
-        completeMsg: '✦ The Lighthouse door creaks open. The path is set.',
+        completeMsg: '✦ The lighthouse pulses once — bright, clear, and steady. For the first time in years, it is guiding something home.',
     },
     voiceLines: {
         ambient: [

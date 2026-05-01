@@ -1,0 +1,30 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="rb-hull" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#8d6e63"/>
+      <stop offset="100%" style="stop-color:#4e342e"/>
+    </linearGradient>
+    <linearGradient id="rb-water" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1565c0"/>
+      <stop offset="100%" style="stop-color:#0d47a1"/>
+    </linearGradient>
+    <linearGradient id="rb-inside" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#6d4c41"/>
+      <stop offset="100%" style="stop-color:#3e2723"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="46" width="64" height="18" fill="url(#rb-water)"/>
+  <path d="M0 46 Q16 42 32 46 Q48 50 64 46" fill="none" stroke="#1976d2" stroke-width="1.5" opacity="0.6"/>
+  <path d="M8 38 Q6 46 8 52 Q32 58 56 52 Q58 46 56 38 Q32 34 8 38Z" fill="url(#rb-hull)"/>
+  <path d="M8 38 Q32 34 56 38 Q54 36 32 32 Q10 36 8 38Z" fill="#a1887f" opacity="0.5"/>
+  <path d="M10 40 Q32 36 54 40 Q52 38 32 34 Q12 38 10 40Z" fill="url(#rb-inside)" opacity="0.9"/>
+  <rect x="14" y="42" width="36" height="4" rx="2" fill="#5d4037" stroke="#4e342e" stroke-width="0.5"/>
+  <rect x="10" y="48" width="44" height="3" rx="1.5" fill="#6d4c41"/>
+  <g fill="#4e342e" stroke="#3e2723" stroke-width="0.5">
+    <rect x="16" y="38" width="4" height="14" rx="1.5" transform="rotate(-5 18 45)"/>
+    <rect x="44" y="38" width="4" height="14" rx="1.5" transform="rotate(5 46 45)"/>
+  </g>
+  <rect x="30" y="28" width="4" height="20" rx="2" fill="#5d4037"/>
+  <path d="M34 28 Q50 32 52 36 Q48 36 34 34 Z" fill="#e53935" opacity="0.8"/>
+  <path d="M34 28 Q50 32 52 36 Q48 36 34 34 Z" fill="none" stroke="#ef9a9a" stroke-width="0.5"/>
+</svg>

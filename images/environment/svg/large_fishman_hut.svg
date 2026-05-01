@@ -1,0 +1,305 @@
+<svg width="680" height="520" viewBox="0 0 680 520" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <!-- Wood gradients -->
+  <linearGradient id="wallWood" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#a0714f"/>
+    <stop offset="100%" stop-color="#6b4423"/>
+  </linearGradient>
+  <linearGradient id="roofWood" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#5c3d1e"/>
+    <stop offset="100%" stop-color="#3b2108"/>
+  </linearGradient>
+  <linearGradient id="dockWood" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#8b5e3c"/>
+    <stop offset="100%" stop-color="#5c3d1e"/>
+  </linearGradient>
+  <linearGradient id="pillarWood" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0%" stop-color="#7a4f2d"/>
+    <stop offset="100%" stop-color="#5c3519"/>
+  </linearGradient>
+  <linearGradient id="stoneChi" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#9ca3af"/>
+    <stop offset="100%" stop-color="#6b7280"/>
+  </linearGradient>
+  <linearGradient id="roofShingle" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#4a3520"/>
+    <stop offset="100%" stop-color="#2c1f0e"/>
+  </linearGradient>
+  <linearGradient id="doorGrad" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#3b2a1a"/>
+    <stop offset="100%" stop-color="#1c130a"/>
+  </linearGradient>
+  <linearGradient id="windowGlow" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#fff9c4"/>
+    <stop offset="100%" stop-color="#f59e0b"/>
+  </linearGradient>
+  <linearGradient id="waterSurf" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#2563a8" stop-opacity="0.7"/>
+    <stop offset="100%" stop-color="#1e3a5f" stop-opacity="0.9"/>
+  </linearGradient>
+  <!-- Wood plank texture pattern -->
+  <pattern id="plankH" width="1" height="18" patternUnits="userSpaceOnUse">
+    <rect width="999" height="17" fill="none"/>
+    <line x1="0" y1="17" x2="999" y2="17" stroke="rgba(0,0,0,0.18)" stroke-width="1"/>
+    <line x1="0" y1="9" x2="999" y2="9" stroke="rgba(0,0,0,0.06)" stroke-width="0.5"/>
+  </pattern>
+  <pattern id="plankV" width="18" height="1" patternUnits="userSpaceOnUse">
+    <rect width="17" height="999" fill="none"/>
+    <line x1="17" y1="0" x2="17" y2="999" stroke="rgba(0,0,0,0.15)" stroke-width="1"/>
+  </pattern>
+  <pattern id="shinglePat" width="30" height="20" patternUnits="userSpaceOnUse">
+    <rect width="30" height="20" fill="none"/>
+    <rect x="0" y="0" width="28" height="18" rx="2" fill="rgba(0,0,0,0.12)"/>
+    <rect x="15" y="10" width="14" height="9" rx="1" fill="rgba(0,0,0,0.08)"/>
+  </pattern>
+  <!-- Smoke filter -->
+  <filter id="smokeBlur">
+    <feGaussianBlur stdDeviation="3"/>
+  </filter>
+</defs>
+
+<!-- ═══════════════════════════ WATER / DOCK BASE ═══════════════════════════ -->
+<!-- Water surface -->
+<rect x="0" y="420" width="680" height="100" fill="url(#waterSurf)" rx="0"/>
+<!-- Water ripples -->
+<ellipse cx="200" cy="440" rx="80" ry="6" fill="none" stroke="#60a5fa" stroke-width="1" opacity="0.3"/>
+<ellipse cx="200" cy="440" rx="55" ry="4" fill="none" stroke="#93c5fd" stroke-width="0.8" opacity="0.2"/>
+<ellipse cx="480" cy="455" rx="60" ry="5" fill="none" stroke="#60a5fa" stroke-width="1" opacity="0.25"/>
+<ellipse cx="340" cy="465" rx="100" ry="7" fill="none" stroke="#60a5fa" stroke-width="0.8" opacity="0.15"/>
+<!-- Subtle water shimmer lines -->
+<line x1="80" y1="448" x2="160" y2="448" stroke="#93c5fd" stroke-width="0.7" opacity="0.25"/>
+<line x1="300" y1="460" x2="420" y2="460" stroke="#93c5fd" stroke-width="0.7" opacity="0.2"/>
+<line x1="500" y1="442" x2="600" y2="442" stroke="#93c5fd" stroke-width="0.7" opacity="0.2"/>
+
+<!-- ═══════════════════════════ DOCK PILLARS ═══════════════════════════ -->
+<rect x="128" y="400" width="14" height="120" fill="url(#pillarWood)"/>
+<rect x="128" y="400" width="14" height="120" fill="url(#plankV)" opacity="0.5"/>
+<rect x="174" y="390" width="14" height="130" fill="url(#pillarWood)"/>
+<rect x="174" y="390" width="14" height="130" fill="url(#plankV)" opacity="0.5"/>
+<rect x="348" y="400" width="14" height="120" fill="url(#pillarWood)"/>
+<rect x="348" y="400" width="14" height="120" fill="url(#plankV)" opacity="0.5"/>
+<rect x="394" y="395" width="14" height="125" fill="url(#pillarWood)"/>
+<rect x="394" y="395" width="14" height="125" fill="url(#plankV)" opacity="0.5"/>
+<!-- Pillar cross-braces -->
+<line x1="142" y1="430" x2="174" y2="415" stroke="#5c3519" stroke-width="3" opacity="0.8"/>
+<line x1="142" y1="415" x2="174" y2="430" stroke="#5c3519" stroke-width="3" opacity="0.8"/>
+<line x1="362" y1="430" x2="394" y2="415" stroke="#5c3519" stroke-width="3" opacity="0.8"/>
+<line x1="362" y1="415" x2="394" y2="430" stroke="#5c3519" stroke-width="3" opacity="0.8"/>
+
+<!-- ═══════════════════════════ DOCK PLATFORM ═══════════════════════════ -->
+<!-- Main dock deck -->
+<rect x="110" y="390" width="460" height="30" fill="url(#dockWood)" rx="2"/>
+<rect x="110" y="390" width="460" height="30" fill="url(#plankH)" opacity="0.6"/>
+<!-- Dock edge trim -->
+<rect x="108" y="388" width="464" height="5" fill="#7a4f2d" rx="1"/>
+<rect x="108" y="415" width="464" height="4" fill="#4a2e10" rx="1"/>
+<!-- Dock plank lines -->
+<line x1="150" y1="390" x2="150" y2="420" stroke="rgba(0,0,0,0.2)" stroke-width="1.5"/>
+<line x1="190" y1="390" x2="190" y2="420" stroke="rgba(0,0,0,0.2)" stroke-width="1.5"/>
+<line x1="230" y1="390" x2="230" y2="420" stroke="rgba(0,0,0,0.2)" stroke-width="1.5"/>
+<line x1="270" y1="390" x2="270" y2="420" stroke="rgba(0,0,0,0.2)" stroke-width="1.5"/>
+<line x1="310" y1="390" x2="310" y2="420" stroke="rgba(0,0,0,0.2)" stroke-width="1.5"/>
+<line x1="350" y1="390" x2="350" y2="420" stroke="rgba(0,0,0,0.2)" stroke-width="1.5"/>
+<line x1="390" y1="390" x2="390" y2="420" stroke="rgba(0,0,0,0.2)" stroke-width="1.5"/>
+<line x1="430" y1="390" x2="430" y2="420" stroke="rgba(0,0,0,0.2)" stroke-width="1.5"/>
+<line x1="470" y1="390" x2="470" y2="420" stroke="rgba(0,0,0,0.2)" stroke-width="1.5"/>
+<line x1="510" y1="390" x2="510" y2="420" stroke="rgba(0,0,0,0.2)" stroke-width="1.5"/>
+<line x1="550" y1="390" x2="550" y2="420" stroke="rgba(0,0,0,0.2)" stroke-width="1.5"/>
+
+<!-- Dock railing -->
+<rect x="110" y="370" width="6" height="22" fill="#7a4f2d" rx="1"/>
+<rect x="180" y="370" width="6" height="22" fill="#7a4f2d" rx="1"/>
+<rect x="250" y="370" width="6" height="22" fill="#7a4f2d" rx="1"/>
+<!-- Right side railing (beyond hut) -->
+<rect x="440" y="370" width="6" height="22" fill="#7a4f2d" rx="1"/>
+<rect x="510" y="370" width="6" height="22" fill="#7a4f2d" rx="1"/>
+<rect x="564" y="370" width="6" height="22" fill="#7a4f2d" rx="1"/>
+<!-- Railing top rail -->
+<rect x="110" y="368" width="146" height="5" fill="#8b5e3c" rx="2"/>
+<rect x="440" y="368" width="130" height="5" fill="#8b5e3c" rx="2"/>
+
+<!-- ═══════════════════════════ HUT MAIN STRUCTURE ═══════════════════════════ -->
+<!-- Foundation / base platform under hut -->
+<rect x="255" y="374" width="190" height="18" fill="#5c3d1e" rx="2"/>
+<rect x="255" y="374" width="190" height="18" fill="url(#plankH)" opacity="0.5"/>
+
+<!-- Main walls -->
+<rect x="258" y="220" width="184" height="160" fill="url(#wallWood)"/>
+<rect x="258" y="220" width="184" height="160" fill="url(#plankH)" opacity="0.55"/>
+<!-- Wall shadow sides -->
+<rect x="258" y="220" width="12" height="160" fill="rgba(0,0,0,0.18)"/>
+<rect x="430" y="220" width="12" height="160" fill="rgba(0,0,0,0.12)"/>
+
+<!-- Wall trim boards -->
+<rect x="258" y="218" width="184" height="6" fill="#7a4f2d"/>
+<rect x="258" y="374" width="184" height="4" fill="#4a2e10"/>
+<!-- Corner boards -->
+<rect x="257" y="218" width="10" height="160" fill="#7a4f2d"/>
+<rect x="433" y="218" width="10" height="160" fill="#5c3d1e"/>
+
+<!-- ═══════════════════════════ ROOF ═══════════════════════════ -->
+<!-- Roof main shape -->
+<polygon points="230,222 350,100 470,222" fill="url(#roofShingle)"/>
+<polygon points="230,222 350,100 470,222" fill="url(#shinglePat)" opacity="0.6"/>
+<!-- Roof ridge cap -->
+<rect x="344" y="96" width="12" height="128" fill="#2c1810" rx="1"
+  transform="rotate(-0,350,160)"/>
+<!-- Roof edge fascia -->
+<line x1="230" y1="222" x2="350" y2="100" stroke="#1c100a" stroke-width="4"/>
+<line x1="470" y1="222" x2="350" y2="100" stroke="#1c100a" stroke-width="4"/>
+<line x1="228" y1="220" x2="472" y2="220" stroke="#3b2108" stroke-width="5"/>
+<!-- Roof overhang shadow -->
+<line x1="234" y1="224" x2="466" y2="224" stroke="rgba(0,0,0,0.25)" stroke-width="8"/>
+
+<!-- Roof shingle rows (horizontal lines for depth) -->
+<line x1="267" y1="200" x2="433" y2="200" stroke="rgba(0,0,0,0.2)" stroke-width="2"/>
+<line x1="280" y1="178" x2="420" y2="178" stroke="rgba(0,0,0,0.2)" stroke-width="2"/>
+<line x1="295" y1="156" x2="405" y2="156" stroke="rgba(0,0,0,0.2)" stroke-width="2"/>
+<line x1="310" y1="134" x2="390" y2="134" stroke="rgba(0,0,0,0.2)" stroke-width="2"/>
+<line x1="323" y1="114" x2="377" y2="114" stroke="rgba(0,0,0,0.2)" stroke-width="2"/>
+
+<!-- ═══════════════════════════ CHIMNEY ═══════════════════════════ -->
+<rect x="390" y="118" width="36" height="80" fill="url(#stoneChi)"/>
+<!-- Stone texture -->
+<rect x="390" y="118" width="36" height="14" fill="rgba(0,0,0,0.1)"/>
+<rect x="390" y="136" width="36" height="14" fill="rgba(255,255,255,0.05)"/>
+<rect x="390" y="154" width="36" height="14" fill="rgba(0,0,0,0.1)"/>
+<rect x="390" y="172" width="36" height="12" fill="rgba(255,255,255,0.04)"/>
+<line x1="408" y1="118" x2="408" y2="198" stroke="rgba(0,0,0,0.15)" stroke-width="1.5"/>
+<!-- Chimney cap -->
+<rect x="386" y="112" width="44" height="8" fill="#4b5563" rx="1"/>
+<!-- Chimney mortar lines -->
+<line x1="390" y1="130" x2="426" y2="130" stroke="rgba(0,0,0,0.2)" stroke-width="1"/>
+<line x1="390" y1="148" x2="426" y2="148" stroke="rgba(0,0,0,0.2)" stroke-width="1"/>
+<line x1="390" y1="166" x2="426" y2="166" stroke="rgba(0,0,0,0.2)" stroke-width="1"/>
+
+<!-- Smoke puffs -->
+<ellipse cx="406" cy="96" rx="12" ry="10" fill="#d1d5db" opacity="0.45" filter="url(#smokeBlur)">
+  <animate attributeName="cy" values="96;78;60" dur="3s" repeatCount="indefinite"/>
+  <animate attributeName="opacity" values="0.45;0.25;0" dur="3s" repeatCount="indefinite"/>
+  <animate attributeName="rx" values="12;16;20" dur="3s" repeatCount="indefinite"/>
+</ellipse>
+<ellipse cx="410" cy="84" rx="9" ry="8" fill="#e5e7eb" opacity="0.35" filter="url(#smokeBlur)">
+  <animate attributeName="cy" values="84;65;46" dur="3.8s" repeatCount="indefinite"/>
+  <animate attributeName="opacity" values="0.35;0.18;0" dur="3.8s" repeatCount="indefinite"/>
+  <animate attributeName="rx" values="9;14;18" dur="3.8s" repeatCount="indefinite"/>
+</ellipse>
+<ellipse cx="402" cy="72" rx="7" ry="6" fill="#f3f4f6" opacity="0.3" filter="url(#smokeBlur)">
+  <animate attributeName="cy" values="72;52;32" dur="4.5s" repeatCount="indefinite"/>
+  <animate attributeName="opacity" values="0.3;0.15;0" dur="4.5s" repeatCount="indefinite"/>
+</ellipse>
+
+<!-- ═══════════════════════════ DOOR ═══════════════════════════ -->
+<!-- Door frame -->
+<rect x="323" y="300" width="54" height="80" fill="#3b2108" rx="2"/>
+<!-- Door panels -->
+<rect x="326" y="303" width="48" height="74" fill="url(#doorGrad)" rx="2"/>
+<!-- Door panel detail -->
+<rect x="330" y="308" width="18" height="22" rx="2" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+<rect x="352" y="308" width="18" height="22" rx="2" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+<rect x="330" y="336" width="18" height="36" rx="2" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+<rect x="352" y="336" width="18" height="36" rx="2" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+<!-- Door knob -->
+<circle cx="366" cy="344" r="4" fill="#c8a44a"/>
+<circle cx="366" cy="344" r="2.5" fill="#dbb96a"/>
+<!-- Door frame highlight -->
+<line x1="326" y1="303" x2="326" y2="377" stroke="rgba(255,255,255,0.07)" stroke-width="1.5"/>
+
+<!-- ═══════════════════════════ WINDOWS ═══════════════════════════ -->
+<!-- Left window -->
+<rect x="272" y="248" width="56" height="46" rx="3" fill="#1c130a"/>
+<!-- Window glow -->
+<rect x="275" y="251" width="50" height="40" rx="2" fill="url(#windowGlow)" opacity="0.8"/>
+<!-- Window panes (cross) -->
+<line x1="300" y1="251" x2="300" y2="291" stroke="#4a2e10" stroke-width="2.5"/>
+<line x1="275" y1="271" x2="325" y2="271" stroke="#4a2e10" stroke-width="2.5"/>
+<!-- Window frame -->
+<rect x="272" y="248" width="56" height="46" rx="3" fill="none" stroke="#5c3d1e" stroke-width="3"/>
+<!-- Window shutter left -->
+<rect x="258" y="246" width="14" height="50" rx="2" fill="#7a4f2d"/>
+<rect x="258" y="246" width="14" height="50" rx="2" fill="url(#plankH)" opacity="0.5"/>
+<rect x="259" y="258" width="12" height="5" rx="1" fill="#5c3519" opacity="0.6"/>
+<rect x="259" y="272" width="12" height="5" rx="1" fill="#5c3519" opacity="0.6"/>
+
+<!-- Right window -->
+<rect x="372" y="248" width="56" height="46" rx="3" fill="#1c130a"/>
+<rect x="375" y="251" width="50" height="40" rx="2" fill="url(#windowGlow)" opacity="0.6"/>
+<line x1="400" y1="251" x2="400" y2="291" stroke="#4a2e10" stroke-width="2.5"/>
+<line x1="375" y1="271" x2="425" y2="271" stroke="#4a2e10" stroke-width="2.5"/>
+<rect x="372" y="248" width="56" height="46" rx="3" fill="none" stroke="#5c3d1e" stroke-width="3"/>
+<!-- Window shutter right -->
+<rect x="428" y="246" width="14" height="50" rx="2" fill="#7a4f2d"/>
+<rect x="428" y="246" width="14" height="50" rx="2" fill="url(#plankH)" opacity="0.5"/>
+<rect x="429" y="258" width="12" height="5" rx="1" fill="#5c3519" opacity="0.6"/>
+<rect x="429" y="272" width="12" height="5" rx="1" fill="#5c3519" opacity="0.6"/>
+
+<!-- ═══════════════════════════ FISHING ELEMENTS ═══════════════════════════ -->
+<!-- Fishing rod leaning against wall -->
+<line x1="248" y1="230" x2="270" y2="390" stroke="#5c3d1e" stroke-width="3" stroke-linecap="round"/>
+<!-- Rod tip -->
+<line x1="248" y1="230" x2="246" y2="224" stroke="#7a4f2d" stroke-width="2"/>
+<!-- Fishing line -->
+<path d="M246 224 Q200 260 180 340" fill="none" stroke="#d1d5db" stroke-width="1" opacity="0.7"/>
+<!-- Hook -->
+<path d="M180 340 Q175 355 182 358" fill="none" stroke="#9ca3af" stroke-width="1.5"/>
+
+<!-- Crab trap / pot on dock -->
+<rect x="460" y="368" width="40" height="26" rx="4" fill="#5c3d1e" stroke="#3b2108" stroke-width="1.5"/>
+<line x1="462" y1="368" x2="462" y2="394" stroke="#3b2108" stroke-width="1"/>
+<line x1="474" y1="368" x2="474" y2="394" stroke="#3b2108" stroke-width="1"/>
+<line x1="486" y1="368" x2="486" y2="394" stroke="#3b2108" stroke-width="1"/>
+<line x1="498" y1="368" x2="498" y2="394" stroke="#3b2108" stroke-width="1"/>
+<line x1="460" y1="381" x2="500" y2="381" stroke="#3b2108" stroke-width="1"/>
+<!-- Rope coil -->
+<ellipse cx="530" cy="384" rx="18" ry="8" fill="none" stroke="#c8a44a" stroke-width="3" opacity="0.8"/>
+<ellipse cx="530" cy="382" rx="12" ry="5" fill="none" stroke="#c8a44a" stroke-width="2.5" opacity="0.7"/>
+
+<!-- Fish hanging on left side -->
+<ellipse cx="148" cy="362" rx="14" ry="7" fill="#60a5fa" opacity="0.85" transform="rotate(-20,148,362)"/>
+<ellipse cx="148" cy="362" rx="10" ry="5" fill="#93c5fd" opacity="0.5" transform="rotate(-20,148,362)"/>
+<path d="M158 356 L168 352 L164 360 Z" fill="#60a5fa" opacity="0.9"/>
+<circle cx="142" cy="359" r="2" fill="#1e3a5f"/>
+<line x1="148" y1="352" x2="148" y2="340" stroke="#d1d5db" stroke-width="1"/>
+<ellipse cx="168" cy="378" rx="12" ry="6" fill="#818cf8" opacity="0.85" transform="rotate(15,168,378)"/>
+<path d="M178 374 L186 370 L183 378 Z" fill="#818cf8" opacity="0.9"/>
+<circle cx="163" cy="376" r="1.8" fill="#1e3a5f"/>
+<line x1="168" y1="372" x2="165" y2="358" stroke="#d1d5db" stroke-width="1"/>
+
+<!-- Lantern hanging on hook by door -->
+<line x1="320" y1="218" x2="318" y2="238" stroke="#5c3d1e" stroke-width="2"/>
+<path d="M312 238 Q316 234 318 238 L316 262 Q310 266 310 258 Z" fill="#c8a44a"/>
+<rect x="310" y="240" width="16" height="20" rx="3" fill="#1c1300" opacity="0.7"/>
+<rect x="312" y="242" width="12" height="16" rx="2" fill="#fbbf24" opacity="0.6"/>
+<line x1="314" y1="242" x2="314" y2="258" stroke="#92400e" stroke-width="0.8"/>
+<line x1="318" y1="242" x2="318" y2="258" stroke="#92400e" stroke-width="0.8"/>
+<line x1="310" y1="250" x2="326" y2="250" stroke="#92400e" stroke-width="0.8"/>
+<!-- Lantern glow -->
+<ellipse cx="318" cy="252" rx="14" ry="14" fill="#fbbf24" opacity="0.12"/>
+
+<!-- Mooring cleat on dock -->
+<rect x="120" y="386" width="20" height="6" rx="2" fill="#6b7280"/>
+<rect x="118" y="384" width="5" height="10" rx="1" fill="#9ca3af"/>
+<rect x="137" y="384" width="5" height="10" rx="1" fill="#9ca3af"/>
+<!-- Mooring rope -->
+<path d="M130 389 Q118 400 108 430" fill="none" stroke="#c8a44a" stroke-width="2" opacity="0.6" stroke-dasharray="4,3"/>
+
+<!-- Anchor on dock edge -->
+<circle cx="560" cy="378" r="7" fill="none" stroke="#6b7280" stroke-width="2.5"/>
+<line x1="560" y1="371" x2="560" y2="360" stroke="#6b7280" stroke-width="2.5"/>
+<line x1="554" y1="360" x2="566" y2="360" stroke="#6b7280" stroke-width="2"/>
+<line x1="553" y1="378" x2="548" y2="386" stroke="#6b7280" stroke-width="2"/>
+<line x1="567" y1="378" x2="572" y2="386" stroke="#6b7280" stroke-width="2"/>
+<line x1="545" y1="386" x2="551" y2="386" stroke="#6b7280" stroke-width="2"/>
+<line x1="569" y1="386" x2="575" y2="386" stroke="#6b7280" stroke-width="2"/>
+
+<!-- Stacked barrels -->
+<ellipse cx="226" cy="370" rx="20" ry="8" fill="#6b4423"/>
+<rect x="206" y="370" width="40" height="28" fill="#7a4f2d"/>
+<ellipse cx="226" cy="398" rx="20" ry="8" fill="#5c3d1e"/>
+<rect x="208" y="372" width="2" height="26" fill="rgba(0,0,0,0.2)"/>
+<rect x="214" y="372" width="2" height="26" fill="rgba(0,0,0,0.2)"/>
+<rect x="236" y="372" width="2" height="26" fill="rgba(0,0,0,0.2)"/>
+<rect x="242" y="372" width="2" height="26" fill="rgba(0,0,0,0.2)"/>
+<rect x="206" y="380" width="40" height="3" fill="#5c3519" opacity="0.8"/>
+<rect x="206" y="390" width="40" height="3" fill="#5c3519" opacity="0.8"/>
+</svg>

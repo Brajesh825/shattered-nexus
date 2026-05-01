@@ -181,3 +181,93 @@ The game is responsive and cross-platform. UI components MUST be rigorously test
 2. **iPhone XR / 11 (414x896)** - Mid-tier standard mobile.
 3. **iPhone 12/13/14 Pro (390x844)** - Modern portrait standard.
 4. **Desktop / Laptops** - Widescreen layouts, where the main wrapper should gracefully constrain with empty side gutters or an expanded view without stretching character sprites incorrectly.
+
+---
+
+## ⚠️ `loadMap` is Async — Teleport Position Rule
+
+`loadMap(mapId)` in `map-engine.js` does a `await fetch(jsonFile)` internally and calls `MapPlayer.reset(playerStart)` **after** that fetch resolves. Any code that calls `loadMap()` without awaiting it and then immediately calls `MapPlayer.reset(targetX, targetY)` will have its position **silently overwritten** when the fetch completes.
+
+**Rule**: All post-teleport work (position reset, message display, story hooks) MUST go inside `.then()`:
+```js
+loadMap(targetMapId).then(() => {
+  MapPlayer.reset(targetX, targetY);
+  MapUI.showMsg(msg, 1500);
+  Story.onMapTeleport(targetMapId);
+});
+```
+Never call `MapPlayer.reset` on the same tick as `loadMap` — it will be stomped.
+
+---
+
+## 🏰 Multi-Floor Dungeon Pattern (The Crystal Cavern Standard)
+
+When a story arc uses a multi-floor dungeon (several connected maps that together form one arc chapter sequence), follow this exact pattern. Crystal Cavern (Arc 2, Floors 1–3) is the reference implementation.
+
+### Story Data Structure (`data/story/arc_N.json`)
+Each floor is its own **`type: "explore"`** chapter in `arc.chapters[]`. They share the same arc; they are NOT separate arcs.
+
+```json
+{ "id": "ch_f1", "type": "explore", "map": "dungeon_f1", "map_hint": "Navigate Floor 1 — find the descent." },
+{ "id": "ch_f2", "type": "explore", "map": "dungeon_f2", "map_hint": "Navigate Floor 2 — find the stairs." },
+{ "id": "ch_f3", "type": "explore", "map": "dungeon_f3", "map_hint": "Defeat the dungeon guardian." },
+```
+The arc's `boss_chapter` fires immediately after the final floor chapter completes.
+
+### Floor Traversal Rules (Map JS files)
+**Intermediate floors (F1, F2 …):**
+- `objective: null` — no objective needed; chapter advancement is driven by the teleport itself.
+- Descend teleport: any tile/position pointing to the next floor with `targetX`/`targetY`.
+- Return teleport: placed **away from `playerStart`** (use `x: 2` as the convention) so the player cannot land on it on spawn.
+- `playerStart` must NOT coincide with any teleport trigger on that floor.
+
+**Final floor (last before boss):**
+- `objective: { type: 'kill_boss', label: '...', completeMsg: '...' }` — defeating the boss entity triggers `onExploreComplete()` → `_showBossChapter()`.
+- No exit teleport pointing to the next world map. The boss-defeat chain handles the exit.
+- Return teleport back to previous floor is still allowed.
+
+### How Chapter Advancement Works
+`MapEngine` calls `Story.onMapTeleport(newMapId)` every time a `type: 'teleport'` trigger fires. `Story.onMapTeleport` checks if `newMapId` matches `arc.chapters[chapIdx + 1].map` — if so, silently advances `chapIdx` and shows the new chapter's `map_hint`. This means:
+- **F1 → F2 teleport** = story advances to the F2 chapter, F2 hint shown.
+- **F2 → F3 teleport** = story advances to the F3 chapter, F3 hint shown.
+- **F3 → F2 return** = story does NOT regress (only advances forward via `chapIdx + 1`).
+
+### Trigger Placement Rules
+| Trigger | Position rule |
+|---|---|
+| Descent (Fn → Fn+1) | Far end of the floor, inside a safe zone |
+| Return (Fn → Fn-1) | `x: 2, y: <same as playerStart.y>` — west edge, player must walk left deliberately |
+| `playerStart` | Must be ≥ 5 tiles away from any return trigger |
+
+### Objective Types Per Floor Role
+| Floor role | Objective type | Notes |
+|---|---|---|
+| Entry / transit floor | `null` | Chapter advances on teleport exit |
+| Final / boss floor | `kill_boss` | `isBoss: true` enemy required in `enemies[]` |
+| Collection floor | `collect` | Artifacts array required |
+| Survival floor | `survive` | Duration in ms |
+
+> [!CAUTION]
+> **NEVER** put a `type: 'teleport'` trigger and a `type: 'reach'`/`kill_boss` objective on the same tile. They conflict. The final floor uses `kill_boss` objective as the sole exit mechanism — no exit teleport needed.
+
+---
+
+## 🗺️ Map Architect Data Standards (V1.1)
+The **Architect Pro** editor (`tools/tile-editor.html`) is the primary source for region data.
+
+### 📁 Manifest & Dynamic Assets
+- **Manifest**: `images/environment/sprites.json`
+- **Rule**: All new SVG assets MUST be registered in the manifest with a unique ID (200-299) to appear in the editor and game engine.
+- **Paths**: SVGs reside in `images/environment/svg/`.
+
+### 📊 Export Schema
+- **Structure**: `metadata`, `palette_schema`, and `data` (3D array).
+- **Z-Order Indexing**:
+    - `data[0]`: Ground (rendered behind player).
+    - `data[1]`: Decoration/Objects (same-level occlusion).
+    - `data[2]`: Overhead (rendered in front of player).
+- **ID Registry**: 
+    - `0`: Transparent/Empty.
+    - `1-199`: Standard core tiles.
+    - `200-299`: Dynamic SVG assets.
+    - `1000+`: Sprite-based environmental objects.

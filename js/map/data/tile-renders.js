@@ -2054,5 +2054,6 @@ const TILE_RENDERS = (() => {
     'machine-floor':  machineFloor,
     'oil-slick':      oilSlick,
     'conveyor':       conveyor,
+    'throne':         throneRoom,
   };
 })();

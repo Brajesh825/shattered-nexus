@@ -1,0 +1,31 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Ground Shadow -->
+  <ellipse cx="100" cy="180" rx="90" ry="15" fill="#000" opacity="0.3"/>
+
+  <!-- Left Tower (Completely Broken) -->
+  <path d="M20 180 L50 180 L45 140 L35 150 L25 145 Z" fill="#2d3748" stroke="#111" stroke-width="2"/>
+  <path d="M20 180 L25 145" fill="none" stroke="#1a202c" stroke-width="1.5" opacity="0.4"/>
+
+  <!-- Right Tower (Partially Broken) -->
+  <path d="M150 180 L180 180 L175 80 L165 95 L155 85 Z" fill="#2d3748" stroke="#111" stroke-width="2"/>
+  <rect x="150" y="100" width="30" height="2" fill="#4ade80" opacity="0.2"/> <!-- Faded Banner -->
+
+  <!-- Main Keep (Shattered) -->
+  <path d="M45 180 L155 180 L140 100 L110 110 L90 85 L55 100 Z" fill="#4a5568" stroke="#111" stroke-width="2"/>
+  
+  <!-- Great Hall Ruins (Top) -->
+  <path d="M80 85 L100 70 L120 90" fill="none" stroke="#1a202c" stroke-width="2"/>
+
+  <!-- Shattered Gateway -->
+  <path d="M80 180 L120 180 L115 155 Q100 150 85 160 Z" fill="#0c0a15" stroke="#111" stroke-width="2"/>
+  <path d="M85 180 L115 180" fill="none" stroke="#4ade80" stroke-width="1" opacity="0.3"/>
+
+  <!-- Debris Fields -->
+  <circle cx="60" cy="185" r="4" fill="#4a5568"/>
+  <circle cx="140" cy="182" r="5" fill="#4a5568"/>
+  <rect x="100" y="175" width="10" height="6" fill="#4a5568" transform="rotate(20,105,178)"/>
+  
+  <!-- Moss/Overgrowth Detail -->
+  <path d="M30 180 Q35 160 40 180" stroke="#1a3d15" stroke-width="3" fill="none" opacity="0.6"/>
+  <path d="M160 180 Q165 150 170 180" stroke="#1a3d15" stroke-width="3" fill="none" opacity="0.6"/>
+</svg>

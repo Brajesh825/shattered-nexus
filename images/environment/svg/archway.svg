@@ -1,0 +1,17 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="gate-stone" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#cfd8dc;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#546e7a;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Main Arch -->
+  <path d="M10 56 L10 24 Q10 8 32 8 Q54 8 54 24 L54 56" fill="none" stroke="url(#gate-stone)" stroke-width="10"/>
+  <!-- Masonry Lines -->
+  <path d="M10 24 L54 24 M10 36 L54 36 M10 48 L54 48" stroke="#37474f" stroke-width="0.5" opacity="0.3"/>
+  <!-- Keystone -->
+  <rect x="28" y="6" width="8" height="6" fill="#90a4ae"/>
+  <!-- Base Blocks -->
+  <rect x="6" y="52" width="12" height="6" fill="#37474f"/>
+  <rect x="46" y="52" width="12" height="6" fill="#37474f"/>
+</svg>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Architect Pro | RPG+ Map Editor</title>
+    <link rel="stylesheet" href="tile-editor.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Floating Toolbar -->
+    <div id="toolbar" class="glass">
+        <div class="header-group">
+            <h1 class="logo">ARCHITECT<span>PRO</span></h1>
+            <select id="map-selector" class="map-picker" onchange="editor.switchMap(this.value)">
+                <option value="verdant_vale">Verdant Vale</option>
+                <option value="crystal_cavern_f1">Crystal Cavern F1</option>
+                <option value="crystal_cavern_f2">Crystal Cavern F2</option>
+                <option value="crystal_cavern_f3">Crystal Cavern F3</option>
+                <option value="ember_wastes">Ember Wastes</option>
+                <option value="sunken_temple">Sunken Temple</option>
+                <option value="shadow_reach">Shadow Reach</option>
+                <option value="sky_ruins">Sky Ruins</option>
+                <option value="void_citadel">Void Citadel</option>
+                <option value="ashen_foothills">Ashen Foothills</option>
+                <option value="northern_highlands">Northern Highlands</option>
+                <option value="riverlands_crossing">Riverlands Crossing</option>
+                <option value="eternal_void">Eternal Void</option>
+            </select>
+        </div>
+        
+        <div class="divider"></div>
+        
+        <div class="tool-btn-group">
+            <button class="tool-btn active" data-tool="brush" title="Brush (B)">🖌️</button>
+            <button class="tool-btn" data-tool="eraser" title="Eraser (E)">🧹</button>
+            <button class="tool-btn" data-tool="fill" title="Bucket Fill (G)">🪣</button>
+            <button class="tool-btn" data-tool="eyedropper" title="Eyedropper (I)">🧪</button>
+            <button class="tool-btn" data-tool="select" title="Select Area (S)">✂️</button>
+            <button class="tool-btn" data-tool="stamp" title="Paste Stamp (V)">📋</button>
+            <button class="tool-btn" data-tool="collision" title="Toggle Collision (C)">🛡️</button>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="action-group">
+            <button class="action-btn undo" onclick="editor.undo()" title="Undo (Ctrl+Z)">⏪</button>
+            <button class="action-btn sync" onclick="editor.syncToWorkspace()" title="Sync">🔄 SYNC</button>
+            <button class="action-btn export" onclick="editor.exportPNG()" title="Export PNG">📸 PNG</button>
+            <input type="file" id="map-js-input" style="display:none" accept=".js" onchange="editor.importMapJS(this.files[0])">
+            <button class="action-btn" onclick="document.getElementById('map-js-input').click()" title="Import JS">📂 IMPORT</button>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="zoom-group">
+            <span class="label">SCALE</span>
+            <input type="range" id="zoom-slider" min="0.2" max="3" step="0.1" value="1" oninput="editor.setZoom(this.value)">
+            <span id="zoom-value">100%</span>
+        </div>
+
+        <div id="coords" class="status-chip">X: 0, Y: 0</div>
+    </div>
+
+    <div id="main-container">
+        <!-- Sidebar -->
+        <div id="sidebar">
+            <div class="sidebar-header">
+                <h2>Architect Pro</h2>
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="tiles">Tiles</button>
+                    <button class="tab-btn" data-tab="assets">Assets</button>
+                    <button class="tab-btn" data-tab="stamps">Library</button>
+                </div>
+            </div>
+
+            <div class="sidebar-scrollable">
+                <!-- Tab Contents -->
+                <div id="tab-tiles" class="tab-content active">
+                    <div id="palette" class="grid-palette"></div>
+                </div>
+                <div id="tab-assets" class="tab-content">
+                    <div id="assets-gallery" class="grid-palette"></div>
+                </div>
+                <div id="tab-stamps" class="tab-content">
+                    <div id="stamps-menu" class="grid-palette"></div>
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <div class="layer-manager">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h3 style="margin: 0;">Layers</h3>
+                        <button id="toggle-all-layers" class="action-btn" onclick="editor.toggleShowAll()" style="font-size: 10px; padding: 4px 8px; border-radius: 4px; background: rgba(255,255,255,0.05); color: var(--accent); border: 1px solid rgba(74,222,128,0.3);">👁️ SHOW ALL</button>
+                    </div>
+                    <div id="layer-list">
+                        <button class="layer-btn active" data-layer="2">
+                            <span class="l-num">2</span> Overhead
+                        </button>
+                        <button class="layer-btn" data-layer="1">
+                            <span class="l-num">1</span> Decoration
+                        </button>
+                        <button class="layer-btn" data-layer="0">
+                            <span class="l-num">0</span> Ground
+                        </button>
+                    </div>
+                </div>
+                <div class="minimap-container">
+                    <canvas id="minimap"></canvas>
+                </div>
+                <div class="resize-manager" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.05);">
+                    <h3 style="margin-bottom: 10px; font-size: 11px; opacity: 0.6; letter-spacing: 1px;">DIMENSIONS</h3>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="number" id="map-w" class="glass-input" style="width: 50px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px; border-radius: 4px;" placeholder="W">
+                        <input type="number" id="map-h" class="glass-input" style="width: 50px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px; border-radius: 4px;" placeholder="H">
+                        <button onclick="editor.resizeMapFromUI()" class="action-btn" style="flex: 1; font-size: 10px; background: var(--accent); color: #000; font-weight: bold; border-radius: 4px;">RESIZE</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Canvas Area -->
+        <div id="editor-wrapper">
+            <canvas id="editorCanvas"></canvas>
+            <div id="brush-preview" class="hidden"></div>
+        </div>
+    </div>
+
+    <!-- Script Imports -->
+    <script>window.G = { settings: { graphicsQuality: 'high' } };</script>
+    <script src="../js/asset-preloader.js"></script>
+    <script src="../js/map/data/tile-defs.js"></script>
+    <script src="../js/sprites.js"></script>
+    <script src="tile-editor.js"></script>
+</body>
+</html>

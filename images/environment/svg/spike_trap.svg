@@ -1,0 +1,40 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="sp-plate" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#546e7a"/>
+      <stop offset="100%" style="stop-color:#263238"/>
+    </linearGradient>
+    <linearGradient id="sp-spike" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#455a64"/>
+      <stop offset="40%" style="stop-color:#90a4ae"/>
+      <stop offset="100%" style="stop-color:#37474f"/>
+    </linearGradient>
+  </defs>
+  <rect x="4" y="46" width="56" height="14" rx="3" fill="url(#sp-plate)"/>
+  <rect x="4" y="46" width="56" height="4" rx="2" fill="#607d8b" opacity="0.5"/>
+  <g fill="url(#sp-spike)" stroke="#263238" stroke-width="0.5">
+    <polygon points="8,46 12,46 10,8"/>
+    <polygon points="16,46 20,46 18,14"/>
+    <polygon points="24,46 28,46 26,6"/>
+    <polygon points="32,46 36,46 34,10"/>
+    <polygon points="40,46 44,46 42,8"/>
+    <polygon points="48,46 52,46 50,14"/>
+    <polygon points="56,46 60,46 58,10"/>
+  </g>
+  <g fill="#90a4ae" opacity="0.4">
+    <line x1="10" y1="46" x2="10" y2="16" stroke="#90a4ae" stroke-width="0.6"/>
+    <line x1="18" y1="46" x2="18" y2="22" stroke="#90a4ae" stroke-width="0.6"/>
+    <line x1="26" y1="46" x2="26" y2="14" stroke="#90a4ae" stroke-width="0.6"/>
+    <line x1="34" y1="46" x2="34" y2="18" stroke="#90a4ae" stroke-width="0.6"/>
+    <line x1="42" y1="46" x2="42" y2="16" stroke="#90a4ae" stroke-width="0.6"/>
+    <line x1="50" y1="46" x2="50" y2="22" stroke="#90a4ae" stroke-width="0.6"/>
+    <line x1="58" y1="46" x2="58" y2="18" stroke="#90a4ae" stroke-width="0.6"/>
+  </g>
+  <g fill="#b71c1c" opacity="0.5">
+    <circle cx="10" cy="10" r="1.5"/>
+    <circle cx="26" cy="8" r="1.5"/>
+    <circle cx="34" cy="12" r="1.5"/>
+    <circle cx="42" cy="10" r="1.5"/>
+    <circle cx="58" cy="12" r="1.5"/>
+  </g>
+</svg>

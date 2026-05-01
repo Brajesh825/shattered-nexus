@@ -1,0 +1,41 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="nb-post" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#5d4037"/>
+      <stop offset="50%" style="stop-color:#8d6e63"/>
+      <stop offset="100%" style="stop-color:#5d4037"/>
+    </linearGradient>
+    <linearGradient id="nb-board" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#a1887f"/>
+      <stop offset="100%" style="stop-color:#795548"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="32" cy="62" rx="8" ry="2.5" fill="#1a1a1a" opacity="0.3"/>
+  <rect x="29" y="36" width="6" height="28" fill="url(#nb-post)"/>
+  <rect x="8" y="10" width="48" height="28" rx="3" fill="url(#nb-board)"/>
+  <rect x="8" y="10" width="48" height="4" rx="2" fill="#6d4c41"/>
+  <rect x="8" y="34" width="48" height="4" rx="2" fill="#6d4c41"/>
+  <g fill="#ffe0b2" opacity="0.9">
+    <rect x="12" y="16" width="18" height="12" rx="1.5"/>
+    <rect x="34" y="16" width="18" height="12" rx="1.5"/>
+  </g>
+  <g fill="#e64a19" opacity="0.8">
+    <rect x="12" y="16" width="18" height="3" rx="1"/>
+    <rect x="34" y="16" width="18" height="3" rx="1"/>
+  </g>
+  <g stroke="#795548" stroke-width="0.7" fill="none" opacity="0.5">
+    <line x1="14" y1="21" x2="28" y2="21"/>
+    <line x1="14" y1="23" x2="26" y2="23"/>
+    <line x1="14" y1="25" x2="28" y2="25"/>
+    <line x1="36" y1="21" x2="50" y2="21"/>
+    <line x1="36" y1="23" x2="48" y2="23"/>
+    <line x1="36" y1="25" x2="50" y2="25"/>
+  </g>
+  <g fill="#6d4c41" opacity="0.8">
+    <circle cx="10" cy="10" r="2"/>
+    <circle cx="54" cy="10" r="2"/>
+    <circle cx="10" cy="38" r="2"/>
+    <circle cx="54" cy="38" r="2"/>
+  </g>
+  <circle cx="32" cy="36" r="2" fill="#c62828" opacity="0.8"/>
+</svg>

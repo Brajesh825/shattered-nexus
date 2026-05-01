@@ -94,27 +94,13 @@ MAP_DEFS.eternal_void = (function() {
         ],
         tiles: tiles,
         enemies: [
-            // NEXUS DEFENDERS (Central)
-            { id: 'shadow_wraith', x: 50, y: 50, patrol: 'random',     range: 8,  speed: 1.5 },
-            { id: 'necromancer',   x: 45, y: 45, patrol: 'horizontal', range: 5,  speed: 0.9 },
-            { id: 'necromancer',   x: 55, y: 55, patrol: 'horizontal', range: 5,  speed: 0.9 },
-
-            // BRIDGE STALKERS
+            // --- NORTH VOID CORRIDOR ---
             { id: 'dark_phoenix',  x: 50, y: 32, patrol: 'vertical',   range: 10, speed: 1.4 },
-            { id: 'dark_phoenix',  x: 50, y: 68, patrol: 'vertical',   range: 10, speed: 1.4 },
+            // --- WEST APPROACH ---
             { id: 'shadow_wraith', x: 32, y: 50, patrol: 'horizontal', range: 10, speed: 1.5 },
-            { id: 'shadow_wraith', x: 68, y: 50, patrol: 'horizontal', range: 10, speed: 1.5 },
-
-            // WING GUARDIANS
-            { id: 'dark_phoenix',  x: 15, y: 50, patrol: 'random',     range: 6,  speed: 1.3 },
-            { id: 'dark_phoenix',  x: 85, y: 50, patrol: 'random',     range: 6,  speed: 1.3 },
-
-            // FINAL GATEKEEPERS (South Island)
-            { id: 'shadow_wraith', x: 42, y: 85, patrol: 'random',     range: 4,  speed: 1.6 },
-            { id: 'shadow_wraith', x: 58, y: 85, patrol: 'random',     range: 4,  speed: 1.6 },
+            // --- SOUTH DESCENT ---
             { id: 'necromancer',   x: 50, y: 90, patrol: 'horizontal', range: 8,  speed: 1.0 },
-
-            // MAP BOSS — The Unravelling, the Void resisting dissolution
+            // --- MAP BOSS ---
             { id: 'the_unravelling', x: 50, y: 70, patrol: 'stationary', isBoss: true, label: 'The Unravelling' }
         ],
 

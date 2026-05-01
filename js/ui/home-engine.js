@@ -32,7 +32,20 @@ const HomeEngine = {
     // 6. Inject version from ReleaseConfig
     const vTag = document.getElementById('game-version-tag');
     if (vTag && typeof ReleaseConfig !== 'undefined') {
-      vTag.textContent = ReleaseConfig.VERSION;
+      // Find or create the text node to update only the version number, preserving the link
+      const versionText = vTag.firstChild;
+      if (versionText && versionText.nodeType === Node.TEXT_NODE) {
+        versionText.textContent = ReleaseConfig.VERSION + " | ";
+      } else {
+        // Fallback: update only if it doesn't break the structure
+        const existingLink = vTag.querySelector('.reinstall-link');
+        if (existingLink) {
+          vTag.innerHTML = `${ReleaseConfig.VERSION} | `;
+          vTag.appendChild(existingLink);
+        } else {
+          vTag.textContent = ReleaseConfig.VERSION;
+        }
+      }
     }
   },
 

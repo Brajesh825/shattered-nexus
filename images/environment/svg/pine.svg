@@ -1,0 +1,17 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="pine-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#2e7d32;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#003300;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Trunk -->
+  <rect x="30" y="50" width="4" height="10" fill="#3e2723"/>
+  <!-- Layers -->
+  <path d="M12 52 L32 30 L52 52 Z" fill="url(#pine-grad)"/>
+  <path d="M16 40 L32 20 L48 40 Z" fill="url(#pine-grad)"/>
+  <path d="M20 28 L32 10 L44 28 Z" fill="url(#pine-grad)"/>
+  <!-- Pine Needles Detail -->
+  <path d="M25 45 L30 45 M34 45 L39 45" stroke="#a5d6a7" stroke-width="1" opacity="0.2"/>
+  <path d="M28 35 L32 35 M32 25 L32 25" stroke="#a5d6a7" stroke-width="1" opacity="0.2"/>
+</svg>
