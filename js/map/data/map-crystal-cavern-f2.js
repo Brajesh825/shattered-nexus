@@ -32,7 +32,7 @@ MAP_DEFS.crystal_cavern_f2 = {
 
   // --- SEGMENTATION: LORE-DRIVEN REGIONS ---
   safeZones: [
-    { xMin: 5, xMax: 15, yMin: 25, yMax: 35, name: "The Archivist's Landing" }  // Entry safe point
+    { xMin: 6, xMax: 15, yMin: 25, yMax: 35, name: "The Archivist's Landing" }  // Entry safe point
   ],
 
   encounterTemplates: [
@@ -42,12 +42,7 @@ MAP_DEFS.crystal_cavern_f2 = {
     { weight: 1, enemies: ['gem_mimic'] },            // Cursed scrolls
   ],
 
-  objective: {
-    type: 'reach',
-    target: { x: 52, y: 31 },
-    label: 'Reach the Descent Well',
-    completeMsg: '✦ PATH TO FLOOR 3 OPEN ✦\nThe resonance guides you to the final descent.'
-  },
+  objective: null,
 
   enemies: [
     { id: 'ghost', x: 20, y: 15, patrol: 'random', range: 5, speed: 1.2 },        // Top corridor phantom
@@ -78,10 +73,10 @@ MAP_DEFS.crystal_cavern_f2 = {
     },
     // --- TELEPORT ---
     {
-      x: 8, y: 30, w: 1, h: 1,
+      x: 2, y: 30, w: 1, h: 1,
       type: 'teleport',
       targetMapId: 'crystal_cavern_f1',
-      targetX: 54, targetY: 10,
+      targetX: 7, targetY: 10,
       msg: '✦ Returning to the Azure Entrance...'
     },
     {
