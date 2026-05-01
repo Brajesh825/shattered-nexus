@@ -850,30 +850,88 @@ class TileEditor {
     renderEntities(s) {
         if (!this.state.enemies && !this.state.npcs) return;
 
+        // Render Player Start (Entry)
+        if (this.state.playerStart) {
+            const { x, y } = this.state.playerStart;
+            const px = x * s;
+            const py = y * s;
+            
+            this.ctx.fillStyle = 'rgba(100, 200, 255, 0.4)';
+            this.ctx.beginPath();
+            this.ctx.arc(px + s/2, py + s/2, s * 0.8, 0, Math.PI * 2);
+            this.ctx.fill();
+            this.ctx.strokeStyle = '#60a5fa';
+            this.ctx.lineWidth = 2;
+            this.ctx.stroke();
+
+            this.ctx.fillStyle = '#fff';
+            this.ctx.font = 'bold 10px Outfit';
+            this.ctx.textAlign = 'center';
+            this.ctx.fillText('🏁 ENTRY', px + s/2, py - 5);
+        }
+
+        // Render Objective (Goal)
+        if (this.state.objective && this.state.objective.target) {
+            const { x, y } = this.state.objective.target;
+            const gx = x * s;
+            const gy = y * s;
+
+            this.ctx.fillStyle = 'rgba(251, 191, 36, 0.4)';
+            this.ctx.beginPath();
+            this.ctx.arc(gx + s/2, gy + s/2, s * 0.8, 0, Math.PI * 2);
+            this.ctx.fill();
+            this.ctx.strokeStyle = '#fbbf24';
+            this.ctx.lineWidth = 2;
+            this.ctx.stroke();
+
+            this.ctx.fillStyle = '#fbbf24';
+            this.ctx.font = 'bold 10px Outfit';
+            this.ctx.textAlign = 'center';
+            this.ctx.fillText('⭐ GOAL', gx + s/2, gy - 5);
+        }
+
+        // Render Teleports (Portals)
+        this.state.triggers?.filter(t => t.type === 'teleport').forEach(t => {
+            const tx = t.x * s;
+            const ty = t.y * s;
+            const tw = (t.w || 1) * s;
+            const th = (t.h || 1) * s;
+
+            this.ctx.fillStyle = 'rgba(168, 85, 247, 0.3)';
+            this.ctx.fillRect(tx, ty, tw, th);
+            this.ctx.strokeStyle = '#a855f7';
+            this.ctx.lineWidth = 2;
+            this.ctx.strokeRect(tx, ty, tw, th);
+
+            this.ctx.fillStyle = '#f3e8ff';
+            this.ctx.font = 'bold 10px Outfit';
+            this.ctx.textAlign = 'center';
+            this.ctx.fillText(`🌀 TO: ${t.targetMapId}`, tx + tw/2, ty - 5);
+        });
+
         // Render Enemies
-        this.state.enemies.forEach(e => {
+        this.state.enemies?.forEach(e => {
             const def = this.state.enemyData.find(d => d.id === e.id);
             if (!def) return;
+
+            const isBoss = e.isBoss || (this.state.objective?.type === 'kill_boss' && e.id === this.state.objective.bossId);
 
             const canvas = SpriteRenderer.drawEnemyToCanvas(e.id, def.palette);
             const x = e.x * s;
             const y = e.y * s;
             
-            // Draw a highlight ring for editor visibility
-            this.ctx.strokeStyle = 'rgba(255, 50, 50, 0.5)';
-            this.ctx.lineWidth = 2;
+            this.ctx.strokeStyle = isBoss ? 'rgba(251, 191, 36, 0.7)' : 'rgba(255, 50, 50, 0.5)';
+            this.ctx.lineWidth = isBoss ? 3 : 2;
             this.ctx.beginPath();
-            this.ctx.arc(x + s/2, y + s/2, s * 0.7, 0, Math.PI * 2);
+            this.ctx.arc(x + s/2, y + s/2, s * (isBoss ? 1.0 : 0.7), 0, Math.PI * 2);
             this.ctx.stroke();
 
-            // Draw Sprite (scaled to fit tile)
-            this.ctx.drawImage(canvas, x - s/2, y - s, s * 2, s * 2.3);
+            if (canvas) this.ctx.drawImage(canvas, x - s/2, y - s, s * 2, s * 2.3);
             
-            // Draw Label
-            this.ctx.fillStyle = '#fff';
+            this.ctx.fillStyle = isBoss ? '#fbbf24' : '#fff';
             this.ctx.font = 'bold 10px Outfit';
             this.ctx.textAlign = 'center';
-            this.ctx.fillText(def.name, x + s/2, y - 5);
+            this.ctx.fillText(isBoss ? `👑 ${def.name}` : def.name, x + s/2, y - 5);
         });
 
         // Render NPCs
@@ -889,7 +947,7 @@ class TileEditor {
             this.ctx.arc(x + s/2, y + s/2, s * 0.7, 0, Math.PI * 2);
             this.ctx.stroke();
 
-            this.ctx.drawImage(canvas, x - s/4, y - s/2, s * 1.5, s * 1.8);
+            if (canvas) this.ctx.drawImage(canvas, x - s/4, y - s/2, s * 1.5, s * 1.8);
 
             this.ctx.fillStyle = '#4ade80';
             this.ctx.font = 'bold 10px Outfit';
@@ -1114,6 +1172,9 @@ class TileEditor {
                         
                         entities.enemies = data.enemies || [];
                         entities.npcs = data.npcs || [];
+                        entities.playerStart = data.playerStart || null;
+                        entities.triggers = data.triggers || [];
+                        entities.objective = data.objective || null;
                         name = data.name || name;
                         this.config.width = data.width || 0;
                         this.config.height = data.height || 0;
@@ -1154,6 +1215,9 @@ class TileEditor {
                 this.state.map = layers;
                 this.state.enemies = entities.enemies;
                 this.state.npcs = entities.npcs;
+                this.state.playerStart = entities.playerStart;
+                this.state.triggers = entities.triggers;
+                this.state.objective = entities.objective;
                 this.state.mapId = mapId;
                 this.state.mapPath = (config.js || config.json).replace('../', '');
 

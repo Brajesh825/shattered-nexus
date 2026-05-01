@@ -203,19 +203,18 @@ body {
 }
 
 .swatch {
-    aspect-ratio: 1;
     border-radius: 12px;
     border: 1px solid var(--border);
     cursor: pointer;
-    overflow: hidden;
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(0, 0, 0, 0.4);
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     padding: 8px;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
+    min-height: 100px;
 }
 
 .swatch:hover {
@@ -239,17 +238,19 @@ body {
 }
 
 .swatch-label {
-    font-size: 0.75rem;
-    color: var(--text-dim);
+    font-size: 10px;
+    color: var(--text-main);
     text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: normal;
+    word-break: break-word;
     width: 100%;
-    margin-top: 6px;
+    margin-top: 8px;
+    padding-top: 4px;
+    border-top: 1px solid rgba(255,255,255,0.05);
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    opacity: 0.8;
 }
 
 /* ── FOOTER (Layers & Minimap) ─────────────────────────── */

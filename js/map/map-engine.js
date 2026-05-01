@@ -466,6 +466,8 @@ const MapEngine = (() => {
 
     } else if (obj.type === 'kill_all') {
       if (MapEntities.allCleared()) _completeObjective();
+    } else if (obj.type === 'kill_boss') {
+      if (MapEntities.bossCleared()) _completeObjective();
     }
   }
 
