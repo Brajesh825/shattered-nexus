@@ -27,8 +27,7 @@ These abilities exist in class data but have not been verified against the actua
 
 ## Remaining: Assets
 
-- `images/characters/map/sheets/sera_sheet.png` is present as an untracked file. Decide: promote to production and register, or keep it gitignored until final art is ready.
-- If promoted: add both PNG (normal) and WebP (low) variants to `SPRITES_NORMAL` / `SPRITES_LOW` in `sw.js` and bump `CACHE_NAME`.
+- `images/characters/map/sheets/sera_sheet.png` is committed and used by the `azure_commander` NPC. Add both PNG (normal) and WebP (low) variants to `SPRITES_NORMAL` / `SPRITES_LOW` in `sw.js` and bump `CACHE_NAME` so installed PWAs cache the new sprite.
 - If `data/move-animations.json` requires entries for Sera's abilities, add them before Arc 2 testing.
 
 ---
