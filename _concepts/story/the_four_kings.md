@@ -20,10 +20,10 @@ Here are the character backgrounds for the Four Kings, elevating them from "mons
 * **In-Game Vibe:** Desperate and honorable. During the fight, his dialogue should be him begging the party to kill him. *"Turn back! I cannot stop my hands... Please, break the armor!"*
 
 ### 3. The Skeletal Maw (The Bone Dragon)
-* **Who he was:** Vermithrax, the Elder Wyrm.
-* **The Lore:** Before the 5 civilizations, dragons were the protectors of the leylines. When Valdris injected the Void into the leylines, Vermithrax flew to the epicenter and intentionally swallowed the corruption to act as a living filter, trying to save the world's magic.
-* **The Tragedy:** The corruption was too much. It rotted his flesh from the inside out, eating away his majesty until only bones remained. Valdris found the rotting skeleton and simply reanimated it. The noble dragon who tried to save the world is now a feral, rabid beast acting as Valdris's guard dog.
-* **In-Game Vibe:** A creature in endless agony. It doesn't speak in words, but the party (especially a Spirit/Dragon-aligned character like Rei or Lulu) can sense its original noble intent buried under layers of pain.
+* **Who he was:** Vermithrax, First of the Dragoons.
+* **The Lore:** Before the 5 civilizations, the leylines were protected by the Dragoons—elite knights who channeled the spirit of dragons, wearing crystalline armor forged from pure elemental resonance. When Valdris injected the Void into the leylines, Vermithrax flew to the epicenter and intentionally absorbed the corruption into his own armor and body to act as a living filter, trying to save the world's magic.
+* **The Tragedy:** The void energy was too much. It didn't just rot him; it violently mutated his humanoid form, tearing his crystalline armor apart and expanding his bones into a massive, monstrous, feral "Bone Dragon." Valdris simply reanimated the mutated skeleton. The noble Dragoon who sacrificed himself was warped into the very monster he swore to fight against.
+* **In-Game Vibe:** A massive skeletal beast in endless agony, with fragments of purple crystalline armor still fused to its ribs. It doesn't speak in words, but the party (especially Drake, who is a Dragoon) can sense its original noble intent and humanoid origins buried under layers of pain.
 
 ### 4. The Storm Sentinel (The Bound Architect)
 * **Who he was:** The nameless Master Architect of the Sky Ruins.
