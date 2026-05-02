@@ -213,6 +213,10 @@ const NPC_DEFS = {
         { speaker: 'Azure Commander', text: 'Because someone has to remember which way is back.' },
         { speaker: 'Azure Commander', text: 'The thing at the end of that road had a name before Valdris gave him the armor. If you reach him — remember that.' },
       ],
+      verdant_vale_return: [
+        { speaker: 'Azure Commander', text: 'The bridge is still standing. That is more than I expected.' },
+        { speaker: 'Azure Commander', text: 'Go when you are ready. The ruins will not wait forever — and neither will what is inside them.' },
+      ],
     },
   },
 
