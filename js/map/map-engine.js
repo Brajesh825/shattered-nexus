@@ -1088,8 +1088,8 @@ const MapEngine = (() => {
     });
   }
 
-  function _openGenericDialogue(lines) {
-    _npcCurrent = { id: 'system', name: '', sprite: null };
+  function _openGenericDialogue(lines, onComplete) {
+    _npcCurrent = { id: 'system', name: '', sprite: null, onDialogueComplete: onComplete || null };
     _npcLines = lines;
     _npcLineIdx = 0;
     stop();
@@ -1098,6 +1098,20 @@ const MapEngine = (() => {
 
   /* ── Encounter ───────────────────────────────────────── */
   let _shakeTime = 0; // seconds remaining for camera shake
+  let _waveState = null; // { waves, waveIdx, allClearMsg, onAllClear } — set by startWaves()
+
+  function _launchWave() {
+    if (!_waveState || _waveState.waveIdx >= _waveState.waves.length) return;
+    const wave = _waveState.waves[_waveState.waveIdx];
+    const delay = wave.preMsg ? 2200 : 500;
+    if (wave.preMsg) MapUI.showMsg(wave.preMsg, 2000);
+    setTimeout(() => _triggerEncounter({ enemies: wave.enemies, mutation: wave.mutation || null }), delay);
+  }
+
+  function startWaves(cfg) {
+    _waveState = { waves: cfg.waves || [], waveIdx: 0, allClearMsg: cfg.allClearMsg || null, onAllClear: cfg.onAllClear || null };
+    _launchWave();
+  }
 
   function _triggerEncounter(enc) {
     const enemyId = enc.enemies && enc.enemies[0];
@@ -1153,6 +1167,7 @@ const MapEngine = (() => {
 
   function onBattleComplete(victory) {
     if (!victory) {
+      _waveState = null; // abort any active wave sequence on defeat
       // Respawn at map start — restore party to half HP, clear statuses, reset position
       if (_map && _map.playerStart) {
         G.party.forEach(m => {
@@ -1178,9 +1193,35 @@ const MapEngine = (() => {
       }
       return;
     }
+
+    // ── Wave sequence handling ───────────────────────────
+    if (_waveState) {
+      const interMsg = _waveState.waves[_waveState.waveIdx] && _waveState.waves[_waveState.waveIdx].interWaveMsg;
+      _waveState.waveIdx++;
+      showScreen('explore-screen');
+      MapPlayer.setCooldown(4);
+
+      if (_waveState.waveIdx < _waveState.waves.length) {
+        // More waves — brief pause then next
+        if (interMsg) {
+          MapUI.showMsg(interMsg, 2000, () => _launchWave());
+        } else {
+          setTimeout(() => _launchWave(), 800);
+        }
+      } else {
+        // All waves cleared
+        const msg = _waveState.allClearMsg || '✦ The bridge holds!';
+        const cb  = _waveState.onAllClear;
+        _waveState = null;
+        MapUI.showMsg(msg, 2200, () => { if (cb) cb(); else resume(); });
+      }
+      return;
+    }
+
+    // ── Normal battle complete ───────────────────────────
     MapEntities.removeEncountered();
     showScreen('explore-screen');
-    MapPlayer.setCooldown(8); // Grace period
+    MapPlayer.setCooldown(8);
     resume();
     if (typeof MapUI !== 'undefined') MapUI.showMsg('Victory!', 1200);
   }
@@ -1534,12 +1575,17 @@ const MapEngine = (() => {
     if (typeof Focus !== 'undefined') {
       Focus.setContext(null);
     }
+    const completeCb = _npcCurrent && _npcCurrent.onDialogueComplete;
     if (_npcCurrent) {
       MapEntities.markNPCTalked(_npcCurrent.id);
       _npcCurrent._dialogueOpen = false;
       _npcCurrent = null;
     }
-    resume();
+    if (completeCb) {
+      completeCb(); // callback owns map state from here — no resume
+    } else {
+      resume();
+    }
   }
 
   // 0..1 — how far fog has progressed (used by entities to scale aggro/speed)
@@ -1583,6 +1629,8 @@ const MapEngine = (() => {
     isBlocked: _isBlocked,
     openDialogue: _openGenericDialogue,
     hasTriggerFired: id => _firedTriggers.has(id),
+    triggerEncounter: enc => _triggerEncounter(enc),
+    startWaves,
     // Optional callback — wire this up after init to handle encounter transitions:
     // MapEngine.onEncounterStart = function(enc) { ... }
     onEncounterStart: null,
