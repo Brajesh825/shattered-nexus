@@ -1083,6 +1083,20 @@ const MapEngine = (() => {
               Story.onMapTeleport(trig.targetMapId);
             }
           });
+        } else if (trig.type === 'encounter' && trig.enemies) {
+          // Trigger a direct encounter / boss fight from a map zone
+          // Optional: show a pre-battle message before launching
+          const launch = () => _triggerEncounter({
+            enemies: trig.enemies,
+            isBoss: trig.isBoss || false,
+            mutation: trig.mutation || null,
+          });
+          if (trig.preMsg) {
+            MapUI.showMsg(trig.preMsg, 2200);
+            setTimeout(launch, 2400);
+          } else {
+            launch();
+          }
         }
       }
     });
