@@ -7,6 +7,13 @@
   ],
   "recruitable": [
     {
+      "id": "sera",
+      "arc": 1,
+      "chapter": "boss",
+      "name": "Sera the Azure Commander",
+      "description": "Commander of the Azure Remnant, a hidden order descended from the Verdant Vale refugees."
+    },
+    {
       "id": "ria",
       "arc": 2,
       "chapter": "boss",

@@ -6,9 +6,9 @@
   "theme": "Arrival / Trust / Purpose",
   "location": "The Summoning Grounds to Sacred Ruins of Aethoria",
   "shard": {
-    "id": "seal_origin",
-    "name": "Seal Fragment of Origin",
-    "description": "A pale white crystal that pulses like a heartbeat. The echo of a world that once was whole.",
+    "id": "light_seal_fragment",
+    "name": "Light Seal Fragment",
+    "description": "A pale white crystal that pulses like a heartbeat. The memory of the Verdant Throne's light, still trying to draw life upward.",
     "color": "#e0e8ff"
   },
   "boss_enemy": "void_knight",
@@ -104,7 +104,77 @@
         "emotion": "quiet",
         "text": "...So will I."
       }
-    ]
+    ],
+    "onVictory": [
+      {
+        "type": "recruit",
+        "charId": "sera"
+      }
+    ],
+    "character_moment": {
+      "background": "sacred_ruins_boss",
+      "dialogue": [
+        {
+          "speaker": null,
+          "text": "A figure steps from the broken archway at the edge of the ruins, blue cloak snapping in the dead wind. The soldiers of the Vale lower their weapons around her before she raises a hand."
+        },
+        {
+          "speaker": "Azure Commander",
+          "emotion": "quiet",
+          "text": "His name was Arren."
+        },
+        {
+          "speaker": "Tao",
+          "emotion": "soft",
+          "text": "The knight?"
+        },
+        {
+          "speaker": "Azure Commander",
+          "emotion": "steady",
+          "text": "Before the armor. Before the order Valdris left inside him. He held the eastern road while the first refugees fled below the Vale."
+        },
+        {
+          "speaker": "Aya",
+          "emotion": "careful",
+          "text": "You knew him?"
+        },
+        {
+          "speaker": "Azure Commander",
+          "emotion": "somber",
+          "text": "No. I was born six centuries too late for that. But every Azure commander inherits his name."
+        },
+        {
+          "speaker": "Azure Commander",
+          "emotion": "resolved",
+          "text": "We kept the maps. The rolls of the lost. The route into the caverns. We kept surviving because Arren bought us the first hour."
+        },
+        {
+          "speaker": "Rei",
+          "emotion": "low",
+          "text": "And now?"
+        },
+        {
+          "speaker": "Azure Commander",
+          "emotion": "firm",
+          "text": "Now the hour is over."
+        },
+        {
+          "speaker": "Azure Commander",
+          "emotion": "resolved",
+          "text": "You freed him. You carry the Light Seal Fragment. If the Remnant keeps hiding after this, then we are not preserving his oath. We are betraying it."
+        },
+        {
+          "speaker": "Sera",
+          "emotion": "commanding",
+          "text": "I am Sera, commander of the Azure Remnant. My blade and shield are yours, until Valdris learns that the Vale still has living names."
+        },
+        {
+          "speaker": "narrator",
+          "emotion": "triumphant",
+          "text": "Sera joined the party. The Azure Remnant marches again."
+        }
+      ]
+    }
   },
   "chapters": [
     {
