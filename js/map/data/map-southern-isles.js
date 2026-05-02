@@ -31,66 +31,7 @@ MAP_DEFS.southern_isles = {
         // --- MAP BOSS ---
         { id: 'sunken_leviathan', x: 40, y: 8,  patrol: 'stationary', isBoss: true, label: 'Sunken Leviathan' }
     ],
-    tiles: (function () {
-        const rows = [];
-        const W = 80, H = 40;
-        const entityLocs = [
-            {x:20,y:30},{x:60,y:30},{x:40,y:25},{x:15,y:15},{x:65,y:15},{x:40,y:8},
-            {x:45,y:36},{x:40,y:18}
-        ];
-
-        for (let y = 0; y < H; y++) {
-            let row = new Array(W).fill(36); // Dense Jungle (Default)
-            for (let x = 0; x < W; x++) {
-                // 0. SAFETY ZONE (Always walkable platforms)
-                const isSafe = entityLocs.some(loc => Math.abs(loc.x - x) <= 1 && Math.abs(loc.y - y) <= 1);
-                if (isSafe) {
-                    row[x] = 63; // Wood floor
-                    continue;
-                }
-
-                // 1. STARTING LANDING ZONE (Safe Haven)
-                if (y > 32 && Math.abs(x - 40) < 10) {
-                    row[x] = 2; // Wide Dirt Path/Clearing
-                    continue;
-                }
-
-                // 2. THE STILT VILLAGE (The Spine - High Priority)
-                // Vertical Main Spine
-                if (Math.abs(x - 40) < 4 && y >= 10 && y <= 35) {
-                    row[x] = 63; // Wood floor
-                    continue;
-                }
-                // Horizontal Branches
-                if (Math.abs(y - 25) < 3 && x >= 15 && x <= 65) {
-                    row[x] = 104; // Docks
-                    continue;
-                }
-                if (Math.abs(y - 15) < 3 && x >= 10 && x <= 70) {
-                    row[x] = 104; // Docks
-                    continue;
-                }
-
-                // 3. THE LEVIATHAN ARENA
-                if (y < 12 && Math.abs(x - 40) < 15) {
-                    row[x] = 3; // Deep Water
-                    if (Math.abs(x - 40) < 5) row[x] = 63; // Main platform
-                    if (Math.abs(x - 40) > 13) row[x] = 17; // Wall
-                    continue;
-                }
-
-                // 4. THE SWAMP BASIN (Background)
-                const distToCenter = Math.sqrt((x - 40) ** 2 + (y - 20) ** 2);
-                if (distToCenter < 22) {
-                    row[x] = 19; // Swamp
-                    if (Math.random() < 0.1) row[x] = 101; // Wet Sand
-                    continue;
-                }
-            }
-            rows.push(row);
-        }
-        return rows;
-    })(),
+    tiles: 'js/map/data/map-southern-isles.json',
     npcs: [
         { id: 'survivor', x: 45, y: 36, dialogueKey: 'southern_isles', behavior: 'stationary' },
         { id: 'guardian', x: 40, y: 18, dialogueKey: 'southern_isles', behavior: 'stationary' }
