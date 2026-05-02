@@ -1293,7 +1293,7 @@ const Story = {
     if (typeof startExplore === 'undefined' || typeof MAP_DEFS === 'undefined' || !MAP_DEFS[mapId]) return;
     this._closeRegionPanel();
     // startExplore() inits the canvas and shows the explore screen
-    startExplore();
+    startExplore(true);
     // Start the target map
     MapEngine.start(mapId);
     if (typeof MapUI !== 'undefined') MapUI.showMsg(`Entering ${MAP_DEFS[mapId].name}…`, 1500);
