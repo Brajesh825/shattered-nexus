@@ -1,0 +1,17 @@
+<svg width="140" height="110" viewBox="0 0 140 110" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="rock" x1="20" y1="22" x2="120" y2="100" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#78909c"/>
+      <stop offset="1" stop-color="#263238"/>
+    </linearGradient>
+    <linearGradient id="foam" x1="30" y1="20" x2="100" y2="98" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#e0f7fa"/>
+      <stop offset="1" stop-color="#4fc3f7"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="70" cy="98" rx="58" ry="7" fill="#031015" opacity="0.28"/>
+  <path d="M16 92 L32 45 L58 28 L85 38 L111 24 L128 92 Z" fill="url(#rock)" stroke="#1c2529" stroke-width="3"/>
+  <path d="M34 45 L48 84 M84 39 L78 91 M105 31 L114 90" stroke="#90a4ae" stroke-width="1.4" opacity="0.4"/>
+  <path d="M40 24 C38 48 43 70 36 96 M65 30 C68 55 63 73 68 98 M102 20 C98 48 105 72 100 98" fill="none" stroke="url(#foam)" stroke-width="5" stroke-linecap="round" opacity="0.8"/>
+  <path d="M26 91 Q46 82 66 92 Q86 82 114 92" fill="none" stroke="#e0f7fa" stroke-width="2" opacity="0.75"/>
+</svg>
