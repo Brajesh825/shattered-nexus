@@ -52,7 +52,7 @@ const MapEngine = (() => {
           if (!def) continue;
 
           // A: Standard Footprint List
-          if (def.footprint) {
+          if (def.footprint && !def.walkable) {
             for (const [fx, fy] of def.footprint) {
               if (nx + fx === tx && ny + fy === ty) return true;
             }

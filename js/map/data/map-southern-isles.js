@@ -84,9 +84,10 @@ MAP_DEFS.southern_isles = {
         },
         {
             // ── BOSS TRIGGER: Abyssal Gate ──────────────────────────
-            // Player steps here → brief message → Leviathan fight launches
+            // Player steps ON the Abyssal Gate tile (402) at y=12 → fight launches.
+            // Trigger rect sits at y=11-13, centered on x=55-64 (gate footprint).
             id: 'abyssal_gate_boss',
-            x: 55, y: 6, w: 10, h: 4,
+            x: 54, y: 11, w: 12, h: 3,
             type: 'encounter',
             isBoss: true,
             enemies: ['sunken_leviathan'],
