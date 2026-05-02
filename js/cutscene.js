@@ -176,6 +176,7 @@ const Cutscene = {
     if (this._tw.timer) clearTimeout(this._tw.timer);
     this._tw.full = text;
     this._tw.done = false;
+    this._tw.el = el;
     let idx = 0;
     el.textContent = '';
 
@@ -212,7 +213,7 @@ const Cutscene = {
     if (this._tw.timer) clearTimeout(this._tw.timer);
     this._tw.done = true;
     if (typeof TTS !== 'undefined') TTS.stop();
-    const el = this.el('s-text');
+    const el = this._tw.el || this.el('s-text');
     if (el) el.textContent = this._tw.full;
   },
 
