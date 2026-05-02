@@ -3,15 +3,6 @@
 ## 🎯 Current Objective: The First Release
 **Scope**: Full playable experience through Arcs 1 & 2, including the first two Expansion Regions.
 
-### 🔷 Phase 1: Sera Character Integration
-- [x] **Lore Verdict**: Approved after timeline retune. Sera makes sense as the first native Aethorian party bridge if she is the current commander of the Azure Remnant, descended from Verdant Vale refugees rather than a 600-year-old fall survivor. Her tie to Arren/Void Knight should be inherited oath and institutional guilt, not personal guilt.
-- [x] **Lyra Scope Hold**: Keep Lyra in `_concepts/characters/lyra/` as concept material only. Do not add Lyra to active unlocks, story recruitment, balancing, passives, move effects, or release validation until Sera is fully integrated and playtested.
-- [x] **Power Scale**: Keep Sera as a post-Arc 2 defensive specialist, not a default early carry. Current computed Lv1 class-adjusted profile is roughly `HP 147 / DEF 39 / SPD 8`, which is boss-tank territory near Valka's total power. Tune by reducing either `azure_commander.hp` from `1.5` to `1.35` or Sera base HP from `95` to `85` before recruitment becomes active.
-- [x] **Passive Implementation Gap**: Implement and test Sera's `BOSS_DAMAGE_REDUCTION` passive. It is declared in `data/characters.json`, but current battle code only consumes generic `DAMAGE_REDUCTION`, `REFLECT`, `MP_COST_MULT`, stat boosts, summon boosts, and heal/magic style values.
-- [x] **Ability Effect Gap**: Verify `glacial_aegis.damageReduction`, `gravity_anchor.evasion`, and party-wide `cryo_phalanx` behavior are actually supported by `js/battle/action-handler.js` / status handling. If unsupported, convert them to existing status definitions or add explicit handlers.
-- [x] **Recruitment Wiring**: Add Sera to `data/character-unlocks.json`, add Arc 2 dialogue/cameo in `data/story/arc_2.json`, and add a recruit event only after the Azure Remnant enclave is established. Decide whether she joins at Arc 2 boss clear or as an optional Crystal Cavern side objective.
-- [x] **Content & Asset Readiness**: Replace concept watermarked sprite metadata with final Sera filenames, register action/chibi sprites in preload/service-worker manifests, and add missing animation mappings in `data/move-animations.json`.
-- [x] **Validation Tests**: Add content integrity checks that every active playable character has a class, unlock path, implemented passive trait types, ability effect handlers, and valid sprite assets. Concept-only characters should be excluded from this active roster check.
 
 ### 🔷 Phase 2: Expansion Content (Southern Isles & Riverlands)
 - [/] **Southern Isles Terrain**: Base archipelago terrain generated. (Refinement needed).
