@@ -11,6 +11,9 @@ MAP_DEFS.southern_isles = {
     bgColor: '#081a08',
     ambientLight: 'rgba(50,200,100,0.1)',
     weather: 'rain',
+    safeZones: [
+        { xMin: 21, xMax: 103, yMin: 36, yMax: 56, name: 'Survivor Settlement' }
+    ],
     enemyLevelRange: [10, 18],
     encounterTemplates: [
         { weight: 4, enemies: ['naga', 'naga'] },
