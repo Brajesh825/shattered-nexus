@@ -252,6 +252,58 @@ The arc's `boss_chapter` fires immediately after the final floor chapter complet
 
 ---
 
+## 🗟 Map NPC & Event System
+
+### Trigger Types (`map.triggers[]`)
+All triggers fire once per session (stored in `_firedTriggers`). They are checked every player-move tick via `_checkRegionTriggers()`.
+
+| `type` | Required fields | What it does |
+|---|---|---|
+| `dialogue` | `lines: [{speaker, text}]` | Pauses the map, opens the NPC dialogue panel, plays the lines sequentially. Reuses `_openGenericDialogue` — same panel as NPC talk. |
+| `msg` | `msg: string` | Shows a brief HUD notification (`MapUI.showMsg`). Doesn't pause the map. |
+| `teleport` | `targetMapId`, optionally `targetX`/`targetY` | Loads a new map. All post-load work (position reset, story hooks) MUST go inside `.then()`. |
+| `reach` | *(objective target, not a trigger type)* | Completes the `reach` objective when the player steps on `target.x/y`. |
+
+Trigger region shape: `{ id, x, y, w, h, type, ...typeFields }`. `w`/`h` default to 1 if omitted.
+
+### NPC Definition Pattern (`data/npcs.js`)
+```js
+npcKey: {
+  name: 'Display Name',
+  color: '#hexcolor',          // speaker name color in dialogue
+  sprite: 'path/to/sheet.png', // fallback: images/characters/map/sheets/npc/<id>_sheet.png
+  dialogues: {
+    mapId: [
+      { speaker: 'Name', text: 'Line.' },
+    ],
+  },
+}
+```
+Placed in a map via `map.npcs[]`: `{ id: 'npcKey', x, y, dialogueKey: 'mapId', behavior: 'stationary'|'wander'|'patrol', ... }`.
+
+### `hideIfUnlocked` Gate
+Adding `hideIfUnlocked: 'charId'` to an NPC entry in `map.npcs[]` causes `MapEntities.init()` to filter that NPC out when `G.unlockedChars` contains `charId`. Use this to make pre-recruit NPCs disappear once the character has joined the party.
+
+### Narrative 3-Beat Pattern (Verdant Vale / Sera standard)
+For story-relevant NPCs that appear before recruitment, follow this structure:
+1. **First Sighting trigger** — region trigger fires automatically when the player approaches (~10 tiles before the NPC). The character calls out without the player needing to interact. Establishes presence.
+2. **NPC Direct Talk** — player walks up to the NPC sprite and interacts. Full lore dialogue. Can be revisited.
+3. **Gate trigger** — region trigger near the dungeon/boss entrance. Final words before the fight. Plants the emotional setup for the post-boss recruit scene.
+
+All three beats use `type: 'dialogue'` with `speaker: 'Azure Commander'` (or whatever the pre-recruit display name is). The NPC's true name (`Sera`) is only revealed in the post-boss `character_moment` in `arc_N.json`.
+
+### Voice Lines (`map.voiceLines`)
+```js
+voiceLines: {
+  ambient: [...],    // random lines during normal exploration
+  fogRising: [...],  // fired at fog milestone thresholds
+  encounter: [...],  // fired on enemy encounter
+}
+```
+Each entry: `{ char: 'Name', color: '#hex', text: 'Line.' }`. Story NPCs (e.g. Azure Commander) can appear here to reinforce presence without triggering a full dialogue panel. Keep these 1-line atmospheric observations — they are not gated and fire randomly.
+
+---
+
 ## 🗺️ Map Architect Data Standards (V1.1)
 The **Architect Pro** editor (`tools/tile-editor.html`) is the primary source for region data.
 
