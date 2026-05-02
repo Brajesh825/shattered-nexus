@@ -48,6 +48,7 @@ MAP_DEFS.verdant_vale = {
     jsonFile: 'js/map/data/map-verdant-vale.json',
 
     npcs: [
+        { id: 'azure_commander', x: 29, y: 13, dialogueKey: 'verdant_vale', behavior: 'stationary', hideIfUnlocked: 'sera' },
         { id: 'essabella', x: 44, y: 22, dialogueKey: 'verdant_vale', behavior: 'wander', range: 3 },
         { id: 'elder_maren', x: 6, y: 8, dialogueKey: 'elder_maren', behavior: 'stationary' },
         { id: 'soldier_1', x: 23, y: 13, dialogueKey: 'soldier_chat', behavior: 'patrol', waypoints: [{ x: 23, y: 13 }, { x: 26, y: 13 }] },

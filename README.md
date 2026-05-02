@@ -199,7 +199,7 @@ The world of Aethoria is in crisis. **Valdris**, the Shadow Emperor, has consume
 
 | Arc | Title | Location | Theme | Boss | Fragment |
 |-----|-------|----------|-------|------|----------|
-| 1 | **The Rift Awakening** | Summoning Grounds → Sacred Ruins | Arrival, trust, purpose | Void Knight | Seal of Origin |
+| 1 | **The Rift Awakening** | Summoning Grounds → Sacred Ruins | Arrival, trust, purpose | Void Knight | Light Seal Fragment |
 | 2 | **Beneath the Ashes** | Crystal Cavern → Ashveil Kingdom | Loss, resolve, cost of inaction | Demon Lord | Seal of Fire |
 | 3 | **The Scorched Spiral** | Ember Wastes | Endurance, buried truths | Dark Phoenix | Seal of Earth |
 | 4 | **The Weeping Depths** | Sunken Temple | Perseverance, hidden truths | Sea Kraken | Seal of Wind |

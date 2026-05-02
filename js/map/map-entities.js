@@ -895,7 +895,10 @@ const MapEntities = (() => {
     }
 
     function init(map) {
-      _npcs = (map.npcs || []).map(n => {
+      _npcs = (map.npcs || []).filter(n => {
+        if (!n.hideIfUnlocked) return true;
+        return !(G.unlockedChars || []).includes(n.hideIfUnlocked);
+      }).map(n => {
         const def = (typeof NPC_DEFS !== 'undefined') ? NPC_DEFS[n.id] : null;
         const spritePath = def ? def.sprite : `images/characters/map/sheets/npc/${n.id}_sheet.png`;
 
