@@ -39,7 +39,7 @@ Making them tragic characters reinforces the theme of the game: **Valdris doesn'
 Because the Four Kings were originally heroes, their purified will and elemental resonance remain after the Void corruption is burned away. Our four starting characters each inherit the will of a King, claiming their power to face Valdris:
 
 * **Tao & The Pale King**: Tao (The Ghost Guide) puts the Lich to rest. She inherits Kaelen's pristine, logical spirit-magic, upgrading into the **Lunar Deathspeaker**. Her white and crimson robes become infused with cold, calculating lich-magic, giving her mastery over life and death.
-* **Rei & The Ebon Champion**: Rei (The Ancient Warden) breaks General Vane's cursed armor. Because of Rei's karmic weight and stoic nature, he is able to purify and don the black armor, upgrading into the **Ebon Warden**. He wields the crimson-glowing blade, turning the Void's own power against it.
+* **Rei & The Ebon Champion**: Rei (The Ancient Warden) breaks General Vane's cursed armor. Because of Rei's karmic weight and stoic nature, he is able to purify and don the black armor, upgrading into the **Ebon Warden**. The champion's weapon morphed into a dark crimson-glowing spear to match Rei's combat style, allowing him to turn the Void's own power against it.
 * **Drake & The Skeletal Maw**: Drake (The Dragoon) defeats the mutated Bone Dragon, freeing the soul of Vermithrax. Drake inherits the purple crystalline dragon armor of the First Dragoon, upgrading into the **Wyrmfall Knight**.
 * **Aya & The Storm Sentinel**: Aya (The Cryo Princess) calms the raging storm, freeing the bound Architect. She inherits the raw power of the Sky Ruins' weather grid, upgrading into the **Storm-Rime Sovereign**. Her ice magic arcs with crackling blue lightning.
 
