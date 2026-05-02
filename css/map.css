@@ -725,6 +725,32 @@
 }
 .npc-dialogue-next:hover { background: rgba(100,60,200,0.4); border-color: #7c3aed; color: #fff; }
 
+/* ── PC / large-screen dialogue scaling ─────────────── */
+@media (min-width: 1024px) {
+  .npc-dialogue-panel {
+    width: min(760px, 90vw);
+    padding: 24px 30px;
+    gap: 16px;
+  }
+  .npc-portrait {
+    width: 80px;
+    height: 80px;
+  }
+  .npc-dialogue-name {
+    font-size: var(--fs-lg);
+    letter-spacing: 3px;
+  }
+  .npc-dialogue-text {
+    font-size: var(--fs-base);
+    min-height: 72px;
+    line-height: 1.7;
+  }
+  .npc-dialogue-next {
+    font-size: var(--fs-sm);
+    padding: 12px 32px;
+  }
+}
+
 /* ── Camp Menu ───────────────────────────────────────── */
 #camp-menu {
   position: absolute;
