@@ -4,6 +4,10 @@ _utils/
 # Claude worktrees
 .claude/worktrees/
 
+# Generated concept image sheets
+_concepts/**/action/
+_concepts/**/chibi/
+
 # OS
 .DS_Store
 Thumbs.db
