@@ -1493,6 +1493,88 @@ const MapEngine = (() => {
   /* ── NPC dialogue ────────────────────────────────────── */
   let _npcLines = [], _npcLineIdx = 0, _npcCurrent = null;
 
+  const _NPC_PARTY_IDS = ['aya', 'tao', 'lulu', 'rei', 'ria', 'rydia', 'lenneth', 'kain', 'leon', 'sera'];
+
+  function _isPartySpeaker(name) {
+    const sl = (name || '').toLowerCase().replace(/\s+/g, '_');
+    return _NPC_PARTY_IDS.some(id => sl.includes(id));
+  }
+
+  // Responsive character height for scene layer
+  function _npcSceneCharH() {
+    const vh = window.innerHeight;
+    const landscape = window.innerWidth > vh && vh <= 500;
+    if (landscape) return Math.min(120, Math.max(80, Math.round(vh * 0.28)));
+    return Math.min(180, Math.max(110, Math.round(vh * 0.22)));
+  }
+
+  // Draw NPC sprite-sheet frame 0 (front idle) onto a canvas at target height
+  function _drawNPCSceneSprite(canvas, src, targetH) {
+    const img = new Image();
+    img.onload = () => {
+      const frameW = img.naturalWidth / 6;
+      const frameH = img.naturalHeight / 2;
+      const w = Math.round(targetH * (frameW / frameH));
+      canvas.width  = w;
+      canvas.height = targetH;
+      const ctx = canvas.getContext('2d');
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(img, 0, 0, frameW, frameH, 0, 0, w, targetH);
+    };
+    img.src = src;
+  }
+
+  // Build scene layer DOM once when dialogue opens
+  function _buildNPCSceneLayer() {
+    const layer = document.getElementById('npc-scene-layer');
+    if (!layer) return;
+    layer.innerHTML = '';
+    const h = _npcSceneCharH();
+    const seen = new Set();
+    const npcSpeakers = [], partySpeakers = [];
+
+    _npcLines.forEach(l => {
+      if (!l.speaker || l.speaker === 'narrator') return;
+      const key = l.speaker.toLowerCase();
+      if (seen.has(key)) return;
+      seen.add(key);
+      (_isPartySpeaker(l.speaker) ? partySpeakers : npcSpeakers).push(l.speaker);
+    });
+
+    // NPC speakers on left, party on right — max 2 each
+    [...npcSpeakers.slice(0, 2), ...partySpeakers.slice(0, 2)].forEach(name => {
+      const sl = name.toLowerCase().replace(/\s+/g, '_');
+      const charEl = document.createElement('div');
+      charEl.className = 'npc-scene-char';
+      charEl.dataset.speaker = sl;
+
+      if (_isPartySpeaker(name) && typeof SpriteRenderer !== 'undefined') {
+        const spriteDiv = document.createElement('div');
+        spriteDiv.className = 'npc-scene-sprite';
+        const charId = (typeof Cutscene !== 'undefined' && Cutscene.ALIAS_TO_CHARID)
+          ? (Cutscene.ALIAS_TO_CHARID[sl] || sl) : sl;
+        SpriteRenderer.setFrame(spriteDiv, charId, 'idle', h);
+        charEl.appendChild(spriteDiv);
+      } else {
+        const canvas = document.createElement('canvas');
+        canvas.className = 'npc-scene-sprite';
+        if (_npcCurrent && _npcCurrent.sprite) _drawNPCSceneSprite(canvas, _npcCurrent.sprite, h);
+        charEl.appendChild(canvas);
+      }
+      layer.appendChild(charEl);
+    });
+  }
+
+  // Update active/dimmed state every line
+  function _updateNPCSceneLayer(speaker) {
+    const layer = document.getElementById('npc-scene-layer');
+    if (!layer) return;
+    const sl = speaker ? speaker.toLowerCase().replace(/\s+/g, '_') : null;
+    layer.querySelectorAll('.npc-scene-char').forEach(el => {
+      el.classList.toggle('active', !!sl && el.dataset.speaker === sl);
+    });
+  }
+
   function _openNPCDialogue(npc) {
     _npcCurrent = npc;
     const def = (typeof NPC_DEFS !== 'undefined') ? NPC_DEFS[npc.id] : null;
@@ -1504,88 +1586,74 @@ const MapEngine = (() => {
   function _showNPCLine() {
     const el = document.getElementById('npc-dialogue');
     if (!el) return;
-    if (_npcLineIdx >= _npcLines.length) {
-      _closeNPCDialogue();
-      return;
-    }
-    const line = _npcLines[_npcLineIdx];
-    // Portrait — party speakers use face images; NPC uses sheet canvas crop
-    const portrait = document.getElementById('npc-dialogue-portrait');
-    const speaker = line.speaker || '';
-    const speakerLower = speaker.toLowerCase().replace(/\s+/g, '_');
-    const PARTY_IDS = ['aya', 'tao', 'lulu', 'rei', 'ria', 'rydia', 'lenneth', 'kain', 'leon'];
-    const isParty = PARTY_IDS.some(id => speakerLower.includes(id));
+    if (_npcLineIdx >= _npcLines.length) { _closeNPCDialogue(); return; }
 
-    if (portrait) {
-      const size = 52;
-      portrait.width = size;
-      portrait.height = size;
-      portrait.style.display = '';
-      const pctx = portrait.getContext('2d');
-      pctx.clearRect(0, 0, size, size);
+    // Build scene layer once on first line
+    if (_npcLineIdx === 0) _buildNPCSceneLayer();
 
-      if (isParty) {
-        // Use face image same as story cutscenes
-        const faceImg = new Image();
-        faceImg.onload = () => {
-          pctx.clearRect(0, 0, size, size);
-          pctx.drawImage(faceImg, 0, 0, size, size);
-        };
-        faceImg.src = `images/characters/faces/${speakerLower}_face.png`;
-      } else if (_npcCurrent && _npcCurrent.sprite) {
-        // NPC: draw frame 0 front strip, top 30% crop
-        const img = new Image();
-        img.onload = () => {
-          const frameW = img.naturalWidth / 6;
-          const frameH = img.naturalHeight / 2;
-          const cropH = frameH * 0.50;
-          pctx.imageSmoothingEnabled = false;
-          pctx.clearRect(0, 0, size, size);
-          pctx.drawImage(img, 0, 0, frameW, cropH, 0, 0, size, size);
-        };
-        img.src = _npcCurrent.sprite;
+    const line    = _npcLines[_npcLineIdx];
+    const speaker = line.speaker || null;
+    const isNarrator = !speaker;
+
+    // Speaker name + color
+    const nameEl = document.getElementById('npc-dialogue-name');
+    if (nameEl) {
+      if (isNarrator) {
+        nameEl.textContent = '📖';
+        nameEl.style.color = '#8070b0';
       } else {
-        portrait.style.display = 'none';
+        nameEl.textContent = speaker.toUpperCase();
+        const color = (typeof Cutscene !== 'undefined' && Cutscene.SPEAKER_COLOR && Cutscene.SPEAKER_COLOR[speaker])
+          || (_npcCurrent && _npcCurrent.color)
+          || '#c4b5fd';
+        nameEl.style.color = color;
       }
     }
-    document.getElementById('npc-dialogue-name').textContent =
-      (line.speaker || (_npcCurrent && _npcCurrent.name) || '').toUpperCase();
-    document.getElementById('npc-dialogue-text').textContent = line.text || '';
+
+    // Typewriter
+    const textEl = document.getElementById('npc-dialogue-text');
+    if (textEl) {
+      if (typeof Cutscene !== 'undefined') Cutscene._typewrite(textEl, line.text || '');
+      else textEl.textContent = line.text || '';
+    }
+
+    // Button label
     const btn = document.getElementById('npc-dialogue-next');
     if (btn) btn.textContent = (_npcLineIdx >= _npcLines.length - 1) ? '✔ CLOSE' : '▶ CONTINUE';
-    el.style.display = 'flex';
 
-    if (typeof Focus !== 'undefined') {
-      Focus.setContext('npc-dialogue');
-    }
+    // Scene layer active speaker
+    _updateNPCSceneLayer(speaker);
+
+    el.style.display = 'flex';
+    if (typeof Focus !== 'undefined') Focus.setContext('npc-dialogue');
   }
 
   function npcDialogueNext() {
-    _npcLineIdx++;
-    if (_npcLineIdx >= _npcLines.length) {
-      _closeNPCDialogue();
-    } else {
-      _showNPCLine();
+    // First tap skips typewriter; second tap advances
+    if (typeof Cutscene !== 'undefined' && !Cutscene._tw.done) {
+      Cutscene._skipTw();
+      return;
     }
+    _npcLineIdx++;
+    if (_npcLineIdx >= _npcLines.length) _closeNPCDialogue();
+    else _showNPCLine();
   }
 
   function _closeNPCDialogue() {
     const el = document.getElementById('npc-dialogue');
     if (el) el.style.display = 'none';
-    if (typeof Focus !== 'undefined') {
-      Focus.setContext(null);
-    }
+    const layer = document.getElementById('npc-scene-layer');
+    if (layer) layer.innerHTML = '';
+    if (typeof Cutscene !== 'undefined') Cutscene._skipTw();
+    if (typeof Focus !== 'undefined') Focus.setContext(null);
     const completeCb = _npcCurrent && _npcCurrent.onDialogueComplete;
     if (_npcCurrent) {
       MapEntities.markNPCTalked(_npcCurrent.id);
       _npcCurrent._dialogueOpen = false;
       _npcCurrent = null;
     }
-    if (completeCb) {
-      completeCb(); // callback owns map state from here — no resume
-    } else {
-      resume();
-    }
+    if (completeCb) completeCb();
+    else resume();
   }
 
   // 0..1 — how far fog has progressed (used by entities to scale aggro/speed)

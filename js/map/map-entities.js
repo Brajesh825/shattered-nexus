@@ -1033,7 +1033,9 @@ const MapEntities = (() => {
         ctx.ellipse(sx + TILE / 2, sy + TILE - 3, TILE * 0.35, 6, 0, 0, Math.PI * 2);
         ctx.fill();
 
-        const bounce = n.moving ? Math.sin(n.frame / NPC_FRAME_CNT * Math.PI * 2) * 2 : 0;
+        const bounce = n.moving
+          ? Math.sin(n.frame / NPC_FRAME_CNT * Math.PI * 2) * 2
+          : Math.sin(performance.now() / 900) * 1.5;
         
         const img = _loadImg(n.sprite);
         if (img.complete && img.naturalWidth) {

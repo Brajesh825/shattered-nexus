@@ -650,12 +650,76 @@
   position: absolute;
   inset: 0;
   display: flex;
-  align-items: flex-end;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
   padding-bottom: 16px;
   z-index: 55;
   background: rgba(2,1,8,0.55);
   backdrop-filter: blur(2px);
+}
+
+/* ── NPC Scene Layer (full-sprite characters above panel) */
+.npc-scene-layer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 20px;
+  width: min(560px, 96vw);
+  flex-shrink: 0;
+  pointer-events: none;
+  padding-bottom: 6px;
+}
+
+.npc-scene-char {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 0.28;
+  transition: opacity 0.25s ease;
+  flex-shrink: 0;
+  max-width: 38vw;
+}
+
+.npc-scene-char.active {
+  opacity: 1;
+}
+
+.npc-scene-sprite,
+.npc-scene-char canvas.npc-scene-sprite {
+  height: clamp(110px, 22vh, 180px);
+  width: auto;
+  display: block;
+  image-rendering: pixelated;
+}
+
+/* Glow only on tablet+ — saves GPU on mobile */
+@media (min-width: 600px) {
+  .npc-scene-char.active .npc-scene-sprite,
+  .npc-scene-char.active canvas.npc-scene-sprite {
+    filter: drop-shadow(0 0 14px rgba(160, 144, 208, 0.5));
+  }
+  .npc-scene-layer {
+    width: min(760px, 90vw);
+    gap: 32px;
+  }
+}
+
+/* Landscape phones — PWA primary target */
+@media (orientation: landscape) and (max-height: 500px) {
+  .npc-scene-sprite,
+  .npc-scene-char canvas.npc-scene-sprite {
+    height: clamp(80px, 28vh, 115px);
+  }
+  .npc-scene-layer { gap: 12px; padding-bottom: 4px; }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .npc-scene-sprite,
+  .npc-scene-char canvas.npc-scene-sprite {
+    height: clamp(180px, 22vh, 240px);
+  }
 }
 
 .npc-dialogue-panel {
@@ -679,15 +743,6 @@
   padding-bottom: 8px;
 }
 
-.npc-portrait {
-  width: 64px;
-  height: 64px;
-  object-fit: cover;
-  object-position: top;
-  border-radius: 50%;
-  border: 1px solid #3a2070;
-  image-rendering: pixelated;
-}
 
 .npc-dialogue-name {
   font-family: var(--px);

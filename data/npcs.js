@@ -206,12 +206,12 @@ const NPC_DEFS = {
     sprite: 'images/characters/map/sheets/sera_sheet.png',
     dialogues: {
       verdant_vale: [
-        { speaker: 'Azure Commander', text: 'The eastern ruin is not abandoned. It is guarded by an order older than any living soldier.' },
-        { speaker: 'Aya', text: 'You know what waits there?' },
-        { speaker: 'Azure Commander', text: 'My people have watched that road for generations. No one who carried our banner ever returned from the throne of dead light.' },
-        { speaker: 'Rei', text: 'Then why stand here?' },
-        { speaker: 'Azure Commander', text: 'Because retreat is only survival if someone remembers where the road back begins.' },
-        { speaker: 'Azure Commander', text: 'If you go east, do not mistake silence for safety. And if the knight lowers his blade... remember that he had a name before Valdris took it.' },
+        { speaker: 'Azure Commander', text: 'You should not be here.' },
+        { speaker: 'Aya', text: 'We are heading east. To the ruins.' },
+        { speaker: 'Azure Commander', text: 'I know. I watched you cross the river bend. That road has not returned a single soldier in six hundred years.' },
+        { speaker: 'Rei', text: 'Then why are you still standing on it?' },
+        { speaker: 'Azure Commander', text: 'Because someone has to remember which way is back.' },
+        { speaker: 'Azure Commander', text: 'The thing at the end of that road had a name before Valdris gave him the armor. If you reach him — remember that.' },
       ],
     },
   },
