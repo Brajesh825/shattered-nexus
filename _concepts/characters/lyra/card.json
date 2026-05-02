@@ -1,0 +1,41 @@
+{
+  "character_id": "lyra_chronomancer",
+  "name": "Lyra",
+  "title": "The Lunar Chronomancer",
+  "arc_debut": 4,
+  "combat_style": "Hybrid (Loom/Spear)",
+  "attributes": {
+    "element": "Lunar/Time",
+    "weapon_type": "Polearm (Ethereal)",
+    "tool": "Astraeus Loom"
+  },
+  "lore": {
+    "background": "The last of the 'Loom-Menders,' an ancient order that resided in the Sky Ruins. Her ancestors were the architects who wove the elemental resonance of the fragments into a single, cohesive tapestry of time.",
+    "the_fraying": "When Valdris shattered the seals, the 'Threads of Starlight' began to unravel. Lyra now walks the earth not as a person, but as a living needle, seeking the resonance needed to re-stitch reality.",
+    "mission": "She appears in Arc 4 (The Sunken Temple) because the 'Wind' that once powered her loom has gone cold. She joins the party to find the Wind Fragment, which she believes is the 'Spool' needed to reset the world's rhythm.",
+    "combat_philosophy": "Hybrid Precision. She uses the Astraeus Loom to 'snare' the time-stream of her enemies (Slowing/Stunning), then delivers devastating ethereal spear thrusts that bypass physical armor."
+  },
+  "narrative_hook": "She provides the 'Deep Lore' of how the world was actually built. While Sera preserves the names of the people, Lyra remembers the Stars. She is often seen 'weaving' in her idle time, creating maps of light that only she can read.",
+  "action_spritesheet_metadata": {
+    "file": "watermarked_img_15847732324603782476.png",
+    "grid": "2x3",
+    "frame_map": {
+      "0": "idle",
+      "1": "charge_spear",
+      "2": "atk_spear",
+      "3": "magic_recoil",
+      "4": "hurt",
+      "5": "defeated"
+    }
+  },
+  "chibi_spritesheet_metadata": {
+    "file": "watermarked_img_9219629038118233233.png",
+    "grid": "2x6",
+    "animation_loops": {
+      "south_walk": "frames 0-2",
+      "west_walk": "frames 3-5",
+      "east_walk": "frames 6-8",
+      "north_walk": "frames 9-11"
+    }
+  }
+}
