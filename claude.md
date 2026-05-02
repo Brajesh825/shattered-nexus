@@ -326,5 +326,5 @@ The **Architect Pro** editor (`tools/tile-editor.html`) is the primary source fo
 
 ---
 
-## 🎨 Asset Staging & Concepts
-- **`_concepts/`**: This directory contains raw generated artwork and character sheets that could be considered for future integration into the game. Once finalized, assets should be moved to their permanent locations in `images/` and the raw concepts can be safely removed.
+## 🎨 Idea & Asset Staging (`_concepts/`)
+- **`_concepts/`**: This directory serves as a staging ground for **anything** under consideration for future integration. This includes raw generated artwork, draft story documents, lore expansions, and experimental game mechanics. Once finalized, content should be moved to its permanent location in the codebase (e.g., `images/`, `data/`, `js/`), and the raw concepts can be safely removed.
