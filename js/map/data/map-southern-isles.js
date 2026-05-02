@@ -36,7 +36,7 @@ MAP_DEFS.southern_isles = {
     jsonFile: 'js/map/data/map-southern-isles.json',
     npcs: [
         // ── PRIMARY STORY CONTACT ─────────────────────────────────
-        { id: 'survivor',     x: 65, y: 65, dialogueKey: 'southern_isles',         behavior: 'stationary' },
+        { id: 'survivor',     x: 65, y: 65, dialogueKey: 'southern_isles',         behavior: 'stationary', name: 'Survivor' },
 
         // ── SETTLEMENT NPCs ───────────────────────────────────────
         { id: 'si_elder',     x: 55, y: 45, dialogueKey: 'southern_isles',         behavior: 'stationary' },
@@ -44,10 +44,10 @@ MAP_DEFS.southern_isles = {
         { id: 'si_builder',   x: 48, y: 50, dialogueKey: 'southern_isles',         behavior: 'stationary' },
         { id: 'market_ghost', x: 60, y: 52, dialogueKey: 'southern_isles',         behavior: 'stationary' },
 
-        // ── SCATTERED SURVIVORS ───────────────────────────────────
-        { id: 'survivor',     x: 22, y: 48, dialogueKey: 'southern_isles_fisher',  behavior: 'stationary' },
-        { id: 'survivor',     x: 85, y: 40, dialogueKey: 'southern_isles_lookout', behavior: 'stationary' },
-        { id: 'survivor',     x: 50, y: 58, dialogueKey: 'southern_isles_child',   behavior: 'stationary' },
+        // ── SCATTERED SURVIVORS (same NPC_DEFS entry, different dialogueKey + name label) ──
+        { id: 'survivor',     x: 22, y: 48, dialogueKey: 'southern_isles_fisher',  behavior: 'stationary', name: 'Fisherman' },
+        { id: 'survivor',     x: 85, y: 40, dialogueKey: 'southern_isles_lookout', behavior: 'stationary', name: 'Lookout' },
+        { id: 'survivor',     x: 50, y: 58, dialogueKey: 'southern_isles_child',   behavior: 'stationary', name: 'Child' },
 
         // ── GATE KEEPER ───────────────────────────────────────────
         { id: 'guardian',     x: 60, y: 15, dialogueKey: 'southern_isles',         behavior: 'stationary' }
