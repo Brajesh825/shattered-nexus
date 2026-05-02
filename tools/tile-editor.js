@@ -1155,6 +1155,7 @@ class TileEditor {
             'crystal_cavern_f1': { json: '../js/map/data/map-crystal-cavern-f1.json', js: '../js/map/data/map-crystal-cavern-f1.js' },
             'crystal_cavern_f2': { json: '../js/map/data/map-crystal-cavern-f2.json', js: '../js/map/data/map-crystal-cavern-f2.js' },
             'crystal_cavern_f3': { json: '../js/map/data/map-crystal-cavern-f3.json', js: '../js/map/data/map-crystal-cavern-f3.js' },
+            'southern_isles': { json: '../js/map/data/map-southern-isles.json', js: '../js/map/data/map-southern-isles.js' },
             'ember_wastes': { js: '../js/map/data/map-ember-wastes.js' },
             'sunken_temple': { js: '../js/map/data/map-sunken-temple.js' },
             'shadow_reach': { js: '../js/map/data/map-shadow-reach.js' },
@@ -1191,7 +1192,7 @@ class TileEditor {
                     
                     const data = Object.values(tempMAP_DEFS)[0];
                     if (data) {
-                        const foundLayers = data.layers || data.tiles || (data.r0 ? [data.r0, data.r1, data.r2] : null);
+                        let foundLayers = data.layers || (Array.isArray(data.tiles) ? data.tiles : null) || (data.r0 ? [data.r0, data.r1, data.r2] : null);
                         if (foundLayers) layers = foundLayers;
                         
                         entities.enemies = data.enemies || [];
@@ -1267,6 +1268,7 @@ class TileEditor {
             'crystal_cavern_f1': { json: 'js/map/data/map-crystal-cavern-f1.json', js: 'js/map/data/map-crystal-cavern-f1.js' },
             'crystal_cavern_f2': { json: 'js/map/data/map-crystal-cavern-f2.json', js: 'js/map/data/map-crystal-cavern-f2.js' },
             'crystal_cavern_f3': { json: 'js/map/data/map-crystal-cavern-f3.json', js: 'js/map/data/map-crystal-cavern-f3.js' },
+            'southern_isles': { json: 'js/map/data/map-southern-isles.json', js: 'js/map/data/map-southern-isles.js' },
             'ember_wastes': { js: 'js/map/data/map-ember-wastes.js' },
             'sunken_temple': { js: 'js/map/data/map-sunken-temple.js' },
             'shadow_reach': { js: 'js/map/data/map-shadow-reach.js' },

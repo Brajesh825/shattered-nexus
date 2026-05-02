@@ -282,6 +282,7 @@ TILE_DEFS[393] = { name: 'Frozen Well', walkable: false, svgAsset: 'well_frozen'
 TILE_DEFS[394] = { name: 'Stilt House', walkable: false, svgAsset: 'stilt_house', color: '#8d6e63', vScale: 4.2, footprint: [[0, 0], [1, 0], [2, 0]], collisionMask: ['XXX'] };
 TILE_DEFS[395] = { name: 'Mangrove Roots', walkable: false, svgAsset: 'mangrove_root', color: '#4e342e', vScale: 3.0 };
 TILE_DEFS[396] = { name: 'Tide Bell', walkable: false, svgAsset: 'tide_bell', color: '#b8860b', vScale: 3.2, interactive: true, glows: '#90caf940' };
+TILE_DEFS[400] = { name: 'Palm Tree', walkable: false, svgAsset: 'palm_tree', color: '#81c784', vScale: 3.5, footprint: [[0, 0], [1, 0]] };
 TILE_DEFS[397] = { name: 'Rope Bridge', walkable: true, svgAsset: 'rope_bridge', color: '#8d6e63', vScale: 2.4, footprint: [[0, 0], [1, 0], [2, 0]] };
 TILE_DEFS[398] = { name: 'Broken Bridge', walkable: false, svgAsset: 'broken_bridge', color: '#795548', vScale: 2.4, footprint: [[0, 0], [1, 0], [2, 0]] };
 TILE_DEFS[399] = { name: 'Waterfall Shrine', walkable: false, svgAsset: 'waterfall_shrine', color: '#4fc3f7', vScale: 3.5, interactive: true, glows: '#4fc3f740' };
