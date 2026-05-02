@@ -31,7 +31,7 @@ MAP_DEFS.southern_isles = {
         // --- MAP BOSS ---
         { id: 'sunken_leviathan', x: 40, y: 8,  patrol: 'stationary', isBoss: true, label: 'Sunken Leviathan' }
     ],
-    tiles: 'js/map/data/map-southern-isles.json',
+    jsonFile: 'js/map/data/map-southern-isles.json',
     npcs: [
         { id: 'survivor', x: 45, y: 36, dialogueKey: 'southern_isles', behavior: 'stationary' },
         { id: 'guardian', x: 40, y: 18, dialogueKey: 'southern_isles', behavior: 'stationary' }
