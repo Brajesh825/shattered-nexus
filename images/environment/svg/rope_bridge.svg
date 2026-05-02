@@ -1,0 +1,21 @@
+<svg width="180" height="80" viewBox="0 0 180 80" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bridge-plank" x1="0" y1="34" x2="180" y2="54" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#9b6b45"/>
+      <stop offset="1" stop-color="#5d4037"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="90" cy="64" rx="78" ry="5" fill="#061517" opacity="0.22"/>
+  <path d="M8 28 C52 14 128 14 172 28" fill="none" stroke="#6d4c41" stroke-width="5" stroke-linecap="round"/>
+  <path d="M8 58 C52 44 128 44 172 58" fill="none" stroke="#6d4c41" stroke-width="5" stroke-linecap="round"/>
+  <g fill="url(#bridge-plank)" stroke="#3e2723" stroke-width="1.5">
+    <rect x="18" y="34" width="16" height="20" rx="2" transform="rotate(-8 26 44)"/>
+    <rect x="40" y="31" width="16" height="22" rx="2" transform="rotate(-5 48 42)"/>
+    <rect x="63" y="29" width="16" height="23" rx="2" transform="rotate(-2 71 41)"/>
+    <rect x="86" y="29" width="16" height="23" rx="2"/>
+    <rect x="109" y="29" width="16" height="23" rx="2" transform="rotate(2 117 41)"/>
+    <rect x="132" y="31" width="16" height="22" rx="2" transform="rotate(5 140 42)"/>
+    <rect x="154" y="34" width="16" height="20" rx="2" transform="rotate(8 162 44)"/>
+  </g>
+  <path d="M24 30 V58 M48 27 V55 M72 25 V53 M96 24 V53 M120 25 V53 M144 27 V55 M166 30 V58" stroke="#4e342e" stroke-width="2"/>
+</svg>

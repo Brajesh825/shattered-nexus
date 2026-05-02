@@ -246,41 +246,112 @@ const Battle = {
 
 /* ============================================================
    GAME STATE
+   Single source of truth for all runtime state.
+   Only serialisable fields (lv, exp, gold, hp, mp, isKO) are
+   persisted — everything else is recomputed on load.
    ============================================================ */
+
+/**
+ * @typedef {Object} PartyMember
+ * @property {string}   id           — Character ID (e.g. 'aya')
+ * @property {string}   displayName  — UI name
+ * @property {number}   lv           — Current level
+ * @property {number}   hp           — Current HP
+ * @property {number}   maxHp        — Computed max HP
+ * @property {number}   mp           — Current MP
+ * @property {number}   maxMp        — Computed max MP
+ * @property {number}   atk          — Computed ATK
+ * @property {number}   def          — Computed DEF
+ * @property {number}   spd          — Computed SPD
+ * @property {number}   mag          — Computed MAG
+ * @property {boolean}  isKO         — Knocked-out flag
+ * @property {Array}    statuses     — Active status effects
+ * @property {Object}   cooldowns    — { abilityId: turnsRemaining }
+ * @property {Object}   cls          — Class definition (from classes.json)
+ */
+
+/**
+ * @typedef {Object} EnemyUnit
+ * @property {string}   id           — Enemy ID (must match enemies.json)
+ * @property {string}   name         — Display name
+ * @property {number}   level        — Spawn level
+ * @property {number}   hp           — Current HP
+ * @property {number}   maxHp        — Max HP
+ * @property {number}   atk          — ATK stat
+ * @property {number}   def          — DEF stat
+ * @property {number}   mag          — MAG stat
+ * @property {number}   spd          — SPD stat
+ * @property {boolean}  isKO         — Knocked-out flag
+ * @property {Array}    statuses     — Active status effects
+ * @property {string}   [element]    — Primary element (optional)
+ * @property {string}   [aiRole]     — 'attacker'|'tactician'|'predator'|'support'
+ */
+
+/**
+ * @typedef {Object} TurnEntry
+ * @property {'party'|'enemy'} type
+ * @property {number} idx   — Index into G.party or G.enemyGroup
+ * @property {number} spd   — Speed value used to build the queue
+ */
+
+/** @type {{ chars: Array, classes: Array, enemies: Array, items: Array, inventory: Array, relics: Array, ownedRelics: string[], activeRelics: string[], selectedChar: string|null, selectedClass: string|null, selectedChars: string[], unlockedChars: string[], clearedMaps: string[], npcTalked: Object, party: PartyMember[], enemyGroup: EnemyUnit[], turnQueue: TurnEntry[], turnIdx: number, activeMemberIdx: number, targetEnemyIdx: number, busy: boolean, mode: string, activePartyIdx: number, settings: Object }} */
 const G = {
+  /** @type {Array} Loaded character definitions (from characters.json) */
   chars: [],
+  /** @type {Array} Loaded class definitions (from classes.json) */
   classes: [],
+  /** @type {Array} Loaded enemy definitions (from enemies.json) */
   enemies: [],
-  items: [],          // item definitions from ITEMS_DATA
-  inventory: [],          // [{ itemId, qty }] — party's bag (max 20 stacks)
-  relics: [],       // relic definitions from RELICS_DATA
-  ownedRelics: [],       // relic IDs the party has collected
-  activeRelics: [],       // relic IDs currently equipped (max 3)
+  /** @type {Array} Loaded item definitions (from items.json) */
+  items: [],
+  /** @type {Array<{itemId:string, qty:number}>} Party inventory — max 20 stacks */
+  inventory: [],
+  /** @type {Array} Loaded relic definitions (from relics.json) */
+  relics: [],
+  /** @type {string[]} Relic IDs the party has collected */
+  ownedRelics: [],
+  /** @type {string[]} Relic IDs currently equipped (max 3) */
+  activeRelics: [],
   selectedChar: null,
   selectedClass: null,
-  selectedChars: [],   // ordered array of up to 4 char IDs
-  unlockedChars: ['aya', 'tao', 'lulu', 'rei'],  // Characters available for selection
-  clearedMaps: [],   // map IDs whose objective has been completed
-  npcTalked: {},   // { mapId: [npcId, ...] } — persisted across sessions
+  /** @type {string[]} Ordered array of up to 4 character IDs */
+  selectedChars: [],
+  /** @type {string[]} Character IDs available for selection */
+  unlockedChars: ['aya', 'tao', 'lulu', 'rei'],
+  /** @type {string[]} Map IDs whose objective has been completed */
+  clearedMaps: [],
+  /** @type {Object.<string, string[]>} { mapId: [npcId, ...] } — persisted across sessions */
+  npcTalked: {},
 
-  party: [],   // 4 party members (all player-controlled)
-  enemyGroup: [],   // 1–3 enemies
-  turnQueue: [],   // [{type:'party'|'enemy', idx, spd}]
+  /** @type {PartyMember[]} Active party — up to 4 members */
+  party: [],
+  /** @type {EnemyUnit[]} Current enemy encounter — 1–3 enemies */
+  enemyGroup: [],
+  /** @type {TurnEntry[]} Sorted turn queue for the current battle round */
+  turnQueue: [],
+  /** Current index into turnQueue — advances each time a unit acts. @type {number} */
   turnIdx: 0,
-  activeMemberIdx: 0,    // which party member is currently acting
-  targetEnemyIdx: 0,    // which enemy is selected as attack target
+  /** Index of the party member whose turn it currently is. @type {number} */
+  activeMemberIdx: 0,
+  /** Index of the enemy currently selected as the attack target. @type {number} */
+  targetEnemyIdx: 0,
+  /** Global action lock — true while an action animation is in flight. @type {boolean} */
   busy: false,
-  mode: 'free', // 'free' | 'story' | 'explore'
+  /** @type {'free'|'story'|'explore'} Current screen context */
+  mode: 'free',
 
-  activePartyIdx: 0,   // which party member walks the map
+  /** Index of the party member controlling the map avatar. @type {number} */
+  activePartyIdx: 0,
   settings: {
-    graphicsQuality: localStorage.getItem('sn_graphics_quality') || 'auto' // 'auto'|'high'|'low'
+    /** @type {'auto'|'high'|'low'} */
+    graphicsQuality: localStorage.getItem('sn_graphics_quality') || 'auto'
   },
 
-  // Backward-compat accessors for story.js
+  /** The map-walking party member. Falls back through activePartyIdx → isPlayer → index 0. */
   get hero() {
     return this.party[this.activePartyIdx] || this.party.find(m => m.isPlayer) || this.party[0] || null;
   },
+  /** The currently targeted enemy; auto-falls back to first alive enemy. */
   get enemy() {
     const e = this.enemyGroup[this.targetEnemyIdx];
     if (e && Battle.alive(e)) return e;

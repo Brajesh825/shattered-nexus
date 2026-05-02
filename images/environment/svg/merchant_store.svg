@@ -1,8 +1,26 @@
 <svg width="220" height="200" viewBox="0 0 220 200" xmlns="http://www.w3.org/2000/svg">
-  <path d="M20 180 L200 180 L200 90 L110 30 L20 90 Z" fill="#5d4037" stroke="#3e2723" stroke-width="4"/>
-  <rect x="40" y="110" width="70" height="50" fill="#ffe082" stroke="#3e2723" stroke-width="2"/>
-  <rect x="130" y="110" width="40" height="70" fill="#3e2723"/>
-  <path d="M20 90 L110 30 L200 90" fill="none" stroke="#795548" stroke-width="6"/>
-  <circle cx="110" cy="55" r="15" fill="#ffd700" stroke="#b8860b" stroke-width="2"/>
-  <text x="105" y="60" font-family="Arial" font-size="12" font-weight="bold" fill="#b8860b">$</text>
+  <defs>
+    <linearGradient id="store-wall" x1="20" y1="70" x2="200" y2="185" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#74503b"/>
+      <stop offset="1" stop-color="#3e2723"/>
+    </linearGradient>
+    <linearGradient id="awning" x1="35" y1="96" x2="116" y2="128" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff0b3"/>
+      <stop offset="1" stop-color="#d99a32"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="110" cy="184" rx="88" ry="10" fill="#120b08" opacity="0.28"/>
+  <path d="M20 180 L200 180 L200 90 L110 30 L20 90 Z" fill="url(#store-wall)" stroke="#2a1812" stroke-width="4"/>
+  <path d="M16 92 L110 25 L204 92 L190 101 L110 45 L30 101 Z" fill="#7a4f34" stroke="#2a1812" stroke-width="4" stroke-linejoin="round"/>
+  <rect x="36" y="106" width="78" height="56" rx="2" fill="#ffe082" stroke="#2a1812" stroke-width="3"/>
+  <path d="M32 105 H118 L110 126 H40 Z" fill="url(#awning)" stroke="#2a1812" stroke-width="2"/>
+  <path d="M48 106 V124 M65 106 V124 M82 106 V124 M99 106 V124" stroke="#9e2f24" stroke-width="5" opacity="0.75"/>
+  <rect x="130" y="108" width="42" height="72" rx="2" fill="#2d1a14" stroke="#1a0d09" stroke-width="3"/>
+  <path d="M151 108 V180 M134 132 H168" stroke="#6b4634" stroke-width="1.5" opacity="0.65"/>
+  <circle cx="162" cy="144" r="2.2" fill="#d8b46a"/>
+  <circle cx="110" cy="56" r="16" fill="#ffd75a" stroke="#8c6412" stroke-width="3"/>
+  <path d="M103 58 Q110 48 117 58 M103 62 H117" fill="none" stroke="#8c6412" stroke-width="2" stroke-linecap="round"/>
+  <path d="M47 143 H103 M47 151 H103" stroke="#8a5a35" stroke-width="2" opacity="0.35"/>
+  <rect x="52" y="134" width="12" height="10" fill="#7cb342" stroke="#3e5f1d" stroke-width="1"/>
+  <rect x="72" y="132" width="14" height="12" fill="#bf6b34" stroke="#5d3320" stroke-width="1"/>
 </svg>

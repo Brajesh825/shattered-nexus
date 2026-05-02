@@ -278,6 +278,20 @@ TILE_DEFS[391] = { name: 'Frozen Pine', walkable: false, svgAsset: 'pine_frozen'
 TILE_DEFS[392] = { name: 'Frozen Notice Board', walkable: false, svgAsset: 'notice_board_frozen', vScale: 2.0 };
 TILE_DEFS[393] = { name: 'Frozen Well', walkable: false, svgAsset: 'well_frozen', vScale: 2.8 };
 
+// ── EXPANSION SET PIECES (Southern Isles / Riverlands) ───────
+TILE_DEFS[394] = { name: 'Stilt House', walkable: false, svgAsset: 'stilt_house', color: '#8d6e63', vScale: 4.2, footprint: [[0, 0], [1, 0], [2, 0]], collisionMask: ['XXX'] };
+TILE_DEFS[395] = { name: 'Mangrove Roots', walkable: false, svgAsset: 'mangrove_root', color: '#4e342e', vScale: 3.0 };
+TILE_DEFS[396] = { name: 'Tide Bell', walkable: false, svgAsset: 'tide_bell', color: '#b8860b', vScale: 3.2, interactive: true, glows: '#90caf940' };
+TILE_DEFS[397] = { name: 'Rope Bridge', walkable: true, svgAsset: 'rope_bridge', color: '#8d6e63', vScale: 2.4, footprint: [[0, 0], [1, 0], [2, 0]] };
+TILE_DEFS[398] = { name: 'Broken Bridge', walkable: false, svgAsset: 'broken_bridge', color: '#795548', vScale: 2.4, footprint: [[0, 0], [1, 0], [2, 0]] };
+TILE_DEFS[399] = { name: 'Waterfall Shrine', walkable: false, svgAsset: 'waterfall_shrine', color: '#4fc3f7', vScale: 3.5, interactive: true, glows: '#4fc3f740' };
+TILE_DEFS[405] = { name: 'Cascade Rocks', walkable: false, svgAsset: 'cascade_rocks', color: '#607d8b', vScale: 2.8, glows: '#4fc3f730' };
+TILE_DEFS[406] = { name: 'Mist Vent', walkable: true, svgAsset: 'mist_vent', color: '#b3e5fc', vScale: 2.4, anim: true, glows: '#b3e5fc40' };
+TILE_DEFS[407] = { name: 'River Marker', walkable: false, svgAsset: 'river_marker', color: '#78909c', vScale: 2.6, interactive: true };
+TILE_DEFS[408] = { name: 'Waterlogged Cart', walkable: false, svgAsset: 'waterlogged_cart', color: '#795548', vScale: 2.6, footprint: [[0, 0], [1, 0]] };
+TILE_DEFS[409] = { name: 'Grotto Entrance', walkable: true, svgAsset: 'grotto_entrance', color: '#01579b', vScale: 3.4, interactive: true, glows: '#4fc3f740', collisionMask: ['X.X'] };
+TILE_DEFS[410] = { name: 'Keystone Obelisk', walkable: false, svgAsset: 'keystone_obelisk', color: '#90a4ae', vScale: 3.0, interactive: true, glows: '#4fc3f740' };
+
 const OBJECT_STAMPS = {
   'grand_oak': {
     name: 'Grand Oak',

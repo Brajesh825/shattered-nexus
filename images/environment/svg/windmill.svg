@@ -1,14 +1,31 @@
 <svg width="200" height="250" viewBox="0 0 200 250" xmlns="http://www.w3.org/2000/svg">
-  <path d="M60 230 L140 230 L120 80 L80 80 Z" fill="#cfd8dc" stroke="#455a64" stroke-width="4"/>
-  <path d="M80 80 L100 50 L120 80 Z" fill="#455a64"/>
+  <defs>
+    <linearGradient id="mill-stone" x1="60" y1="75" x2="140" y2="235" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#eef5f7"/>
+      <stop offset="1" stop-color="#90a4ae"/>
+    </linearGradient>
+    <linearGradient id="sail-cloth" x1="-60" y1="-15" x2="60" y2="15" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#cfd8dc"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="100" cy="232" rx="48" ry="8" fill="#0b1114" opacity="0.26"/>
+  <path d="M60 230 L140 230 L120 80 L80 80 Z" fill="url(#mill-stone)" stroke="#455a64" stroke-width="4"/>
+  <path d="M80 80 L100 47 L120 80 Z" fill="#455a64" stroke="#263238" stroke-width="3"/>
+  <path d="M73 118 H127 M70 152 H130 M66 190 H134" stroke="#607d8b" stroke-width="1.2" opacity="0.45"/>
+  <path d="M83 87 L74 225 M117 87 L126 225" stroke="#607d8b" stroke-width="1.2" opacity="0.35"/>
   <g transform="translate(100, 80)">
     <g>
       <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="10s" repeatCount="indefinite" />
-      <rect x="-5" y="-70" width="10" height="140" fill="#795548" stroke="#3e2723"/>
-      <rect x="-70" y="-5" width="140" height="10" fill="#795548" stroke="#3e2723"/>
-      <rect x="-60" y="-15" width="50" height="30" fill="#eceff1" opacity="0.8"/>
-      <rect x="10" y="-15" width="50" height="30" fill="#eceff1" opacity="0.8"/>
+      <rect x="-4" y="-72" width="8" height="144" rx="2" fill="#795548" stroke="#3e2723" stroke-width="2"/>
+      <rect x="-72" y="-4" width="144" height="8" rx="2" fill="#795548" stroke="#3e2723" stroke-width="2"/>
+      <path d="M-62 -17 H-10 V17 H-52 Z" fill="url(#sail-cloth)" opacity="0.9" stroke="#90a4ae" stroke-width="1"/>
+      <path d="M10 -17 H62 L52 17 H10 Z" fill="url(#sail-cloth)" opacity="0.9" stroke="#90a4ae" stroke-width="1"/>
+      <path d="M-17 -62 H17 V-10 H-17 Z" fill="url(#sail-cloth)" opacity="0.75" stroke="#90a4ae" stroke-width="1"/>
+      <path d="M-17 10 H17 V62 H-17 Z" fill="url(#sail-cloth)" opacity="0.75" stroke="#90a4ae" stroke-width="1"/>
     </g>
+    <circle cx="0" cy="0" r="8" fill="#5d4037" stroke="#2d1d1a" stroke-width="2"/>
   </g>
-  <rect x="90" y="190" width="20" height="40" fill="#3e2723"/>
+  <rect x="88" y="188" width="24" height="42" rx="2" fill="#3e2723" stroke="#24140f" stroke-width="2"/>
+  <path d="M100 188 V230 M91 208 H109" stroke="#6d4c41" stroke-width="1.2"/>
 </svg>

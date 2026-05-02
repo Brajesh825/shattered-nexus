@@ -1,0 +1,18 @@
+<svg width="120" height="150" viewBox="0 0 120 150" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bell-metal" x1="30" y1="42" x2="90" y2="116" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffe082"/>
+      <stop offset="0.5" stop-color="#b8860b"/>
+      <stop offset="1" stop-color="#5d3a09"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="60" cy="138" rx="35" ry="5" fill="#061517" opacity="0.25"/>
+  <path d="M24 132 V36 L60 12 L96 36 V132" fill="none" stroke="#5d4037" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M32 40 H88" stroke="#8d6e63" stroke-width="5"/>
+  <path d="M60 39 V54" stroke="#3e2723" stroke-width="3"/>
+  <path d="M38 105 Q40 62 60 54 Q80 62 82 105 Z" fill="url(#bell-metal)" stroke="#4e342e" stroke-width="3"/>
+  <ellipse cx="60" cy="105" rx="25" ry="8" fill="#6d4c1a" stroke="#3e2723" stroke-width="2"/>
+  <circle cx="60" cy="107" r="5" fill="#3e2723"/>
+  <path d="M45 72 Q60 64 75 72 M43 90 H77" fill="none" stroke="#fff1a8" stroke-width="1.4" opacity="0.5"/>
+  <path d="M24 132 Q60 122 96 132" fill="none" stroke="#90caf9" stroke-width="2" opacity="0.55"/>
+</svg>

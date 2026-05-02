@@ -6,13 +6,16 @@
     </radialGradient>
   </defs>
   <!-- Leaves -->
+  <ellipse cx="32" cy="54" rx="18" ry="4" fill="#0b2f12" opacity="0.18"/>
   <path d="M32 50 Q20 50 15 40 Q20 30 32 50" fill="#388e3c" opacity="0.6"/>
   <path d="M32 50 Q44 50 49 40 Q44 30 32 50" fill="#388e3c" opacity="0.6"/>
+  <path d="M32 50 Q26 43 19 40 M32 50 Q39 43 46 40" fill="none" stroke="#8bc34a" stroke-width="0.8" opacity="0.45"/>
   <!-- Petals -->
   <circle cx="32" cy="30" r="8" fill="url(#flower-grad)"/>
   <circle cx="24" cy="35" r="7" fill="url(#flower-grad)" opacity="0.9"/>
   <circle cx="40" cy="35" r="7" fill="url(#flower-grad)" opacity="0.9"/>
   <circle cx="32" cy="42" r="8" fill="url(#flower-grad)" opacity="0.8"/>
+  <path d="M32 35 Q32 28 32 23 M32 35 Q25 32 20 36 M32 35 Q39 32 44 36 M32 35 Q32 42 32 48" stroke="#ffb3c8" stroke-width="0.8" opacity="0.45"/>
   <!-- Core -->
   <circle cx="32" cy="35" r="3" fill="#ffeb3b">
     <animate attributeName="r" values="3; 4; 3" dur="1.5s" repeatCount="indefinite"/>
