@@ -17,7 +17,7 @@ Valdris rarely fought physical battles. He sought out the apex leaders of each c
 *Valdris didn't destroy the world. He handed the world the knife it used to cut its own throat.*
 
 ### 2. Time Was His Only Ally
-Valdris didn't conquer the world in a year. The lore states he has been doing this for **1,700 years** (or 600 since the major fall). He is an immortal shadow. 
+Valdris didn't conquer the world in a year. The lore states he has been doing this for **600 years** (since the Shattering of the Nexus). He is an immortal shadow. 
 He waited for civilizations to weaken naturally. For example, he didn't flood the Southern Isles. He waited until the Wind Seal degraded naturally over three generations, shifting the weather and drowning the cities. *Then*, he simply walked into the ruins and bound the Sunken Leviathan to the gate. He is an opportunist.
 
 ### 3. The "Four Kings" Expansion (His Creations)

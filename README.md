@@ -1,6 +1,6 @@
 # RPG+ — Aethoria Chronicles
 
-> *Eight heroes. Five seals. One immortal shadow that has consumed worlds for seventeen centuries.*
+> *Eight heroes. Five seals. One immortal shadow that has consumed worlds for six centuries.*
 
 A browser-based tactical RPG with elemental reaction combat, a full narrative campaign across 8 story arcs, and a living world map — no install required.
 
