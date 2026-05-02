@@ -576,6 +576,37 @@ const NPC_DEFS = {
         { speaker: 'Survivor', text: 'Everything is still there. The market stalls. The dock rings. A bell tower that still rings at high tide because the current moves through it the right way. I can hear it from here on clear nights.' },
         { speaker: 'Survivor', text: 'I stay because I am not ready to stop hearing that bell.' },
       ],
+
+      // The Fisherman — western beach, practical and quiet
+      southern_isles_fisher: [
+        { speaker: 'Survivor', text: 'Still pulling fish from these waters. The storm took the boats, not the fish.' },
+        { speaker: 'Aya', text: 'How long have you been here?' },
+        { speaker: 'Survivor', text: 'Long enough that I stopped thinking of it as being stranded. Long enough that I built this.' },
+        { speaker: 'Survivor', text: 'The western cove — used to be a loading bay. The city sent grain out from there every harvest. It had a name. I can\'t remember it now. That feels like its own kind of flooding.' },
+        { speaker: 'Lulu', text: 'Do you want to leave?' },
+        { speaker: 'Survivor', text: 'I want the Leviathan free and the gate open. After that? Ask me again. I haven\'t had an after that in a very long time.' },
+      ],
+
+      // The Lookout — high ground north, watches the trench obsessively
+      southern_isles_lookout: [
+        { speaker: 'Survivor', text: 'You can see it move from here. If you watch long enough. The water shifts in one direction, then — very slowly — the other. Something enormous breathing.' },
+        { speaker: 'Rex', text: 'You\'ve been watching the Leviathan.' },
+        { speaker: 'Survivor', text: 'Someone had to keep count. Seven years. It surfaces twice a tide cycle and descends again. Always the same depth. Always the same arc.' },
+        { speaker: 'Survivor', text: 'It\'s not restless. It\'s patient. There\'s a difference. Restless means it wants out. Patient means it trusts something will change.' },
+        { speaker: 'Rei', text: 'What does it trust?' },
+        { speaker: 'Survivor', text: 'I used to think it was waiting for the bell. Now I think the bell is how it recognizes that someone worth waiting for has finally arrived.' },
+      ],
+
+      // The Child — near old dock remnants, grew up here after the flooding
+      southern_isles_child: [
+        { speaker: 'Survivor', text: 'My mother told me this used to be a street. Right here. I tried to imagine it but I couldn\'t. There\'s too much sky where the buildings would be.' },
+        { speaker: 'Lulu', text: 'You were born after the flooding?' },
+        { speaker: 'Survivor', text: 'My mother wasn\'t. She remembers the ports. She says the market bell used to ring every morning at the third hour. She says you could hear it across the whole city.' },
+        { speaker: 'Survivor', text: 'Now it only rings at high tide. From underwater. I\'ve only ever heard it that way.' },
+        { speaker: 'Survivor', text: 'She says that\'s sad. I don\'t think it is. I think it\'s the same bell learning to be something different.' },
+        { speaker: 'Aya', text: 'That\'s a good way to think about it.' },
+        { speaker: 'Survivor', text: 'Can you free it? The big creature? It sounds lonely when it breathes.' },
+      ],
     },
   },
 
@@ -665,6 +696,85 @@ const NPC_DEFS = {
         { speaker: 'Spectral Sentinel', text: 'The Storm Sentinel guards the apex — the highest archive. It is not Valdris\'s creature. It is the ruins\' own defense, still running the last instruction it was given: nothing reaches the apex that intends harm to the record.' },
         { speaker: 'Rei', text: 'We do not intend harm to records. We are trying to restore them.' },
         { speaker: 'Spectral Sentinel', text: 'Then the Sentinel will read you correctly. Move forward. The Aerolith Crystals need to be aligned before the upper path will hold weight. Approach each one with elemental resonance, not force. The ruins respond to acknowledgment, not assault.' },
+      ],
+    },
+  },
+
+  // ════════════════════════════════════════════════════════════════
+  //  SOUTHERN ISLES NPCs
+  // ════════════════════════════════════════════════════════════════
+
+  si_elder: {
+    name: 'Elder',
+    color: '#fcd34d',
+    sprite: 'images/characters/map/sheets/npc/soldier_sheet.png',
+    dialogues: {
+      southern_isles: [
+        { speaker: 'Elder', text: 'I was seven when the first market closed. Not because there were no buyers — because the docks were six feet underwater and you needed a skiff to reach the stalls.' },
+        { speaker: 'Aya', text: 'You\'ve been here since before the flooding?' },
+        { speaker: 'Elder', text: 'I have been here since the flooding was a rumor that old sailors laughed at. Then since it was a problem. Then since it was the shape of the world.' },
+        { speaker: 'Elder', text: 'The bell tower. The one you can hear at high tide. Do you know what it was called? The Aethon Bell. Named for the sea current that runs through the trench. Aethon means \'the patient one\' in the old coastal dialect.' },
+        { speaker: 'Rex', text: 'The patient one. Like the Leviathan.' },
+        { speaker: 'Elder', text: 'Or like us. We are all Aethon here. We are all things that stayed when it would have been easier to go.' },
+        { speaker: 'Elder', text: 'Free the creature below. The bell has been ringing for it long enough. It is time the sound meant something again.' },
+      ],
+    },
+  },
+
+  si_healer: {
+    name: 'Healer',
+    color: '#6ee7b7',
+    sprite: 'images/characters/map/sheets/npc/soldier_sheet.png',
+    dialogues: {
+      southern_isles: [
+        { speaker: 'Healer', text: 'I need you to understand something before you go north. The Naga in the water — some of them were ours.' },
+        { speaker: 'Lulu', text: 'What do you mean?' },
+        { speaker: 'Healer', text: 'The shadow resonance from the trench. It bleeds into the water. People who spend too long wading the deep channels start changing. Slower first. Colder. Their eyes take longer to respond to light.' },
+        { speaker: 'Healer', text: 'I have treated the early stages. I have not managed to reverse the late ones. I lost three people this year alone.' },
+        { speaker: 'Tao', text: 'That\'s why you stay on high ground.' },
+        { speaker: 'Healer', text: 'That\'s why I stay on high ground. And why I tell everyone who will listen: don\'t wade the trench water. Don\'t drink from the northern lagoon. Come back before dark.' },
+        { speaker: 'Healer', text: 'When you reach the gate — whatever you do down there, do it quickly. The longer the trench stays active, the more of us it takes.' },
+        { speaker: 'Aya', text: 'We\'ll move fast.' },
+        { speaker: 'Healer', text: 'I know you will. You\'re the first people in seven years who came here with a plan instead of a shipwreck.' },
+      ],
+    },
+  },
+
+  si_builder: {
+    name: 'Builder',
+    color: '#93c5fd',
+    sprite: 'images/characters/map/sheets/npc/soldier_sheet.png',
+    dialogues: {
+      southern_isles: [
+        { speaker: 'Builder', text: 'The northern bridges. Don\'t run on them.' },
+        { speaker: 'Rex', text: 'Why?' },
+        { speaker: 'Builder', text: 'Because I built them and I know which boards are lying about their structural integrity. The third plank from the east on the second span — it sounds fine. It is not fine. Step on the edge.' },
+        { speaker: 'Lulu', text: 'How old are these bridges?' },
+        { speaker: 'Builder', text: 'The original ones? Older than me. I\'ve been replacing planks as they go. It\'s a philosophical question at this point — when you\'ve replaced every board is it still the same bridge? Personally I think yes, because the intention is the same.' },
+        { speaker: 'Builder', text: 'The intention is: get across without drowning. That hasn\'t changed.' },
+        { speaker: 'Builder', text: 'I\'ll be honest with you. I don\'t know how much longer I can maintain the northern spans. If you\'re going to use them, go soon. And step lightly. And don\'t tell me if anything breaks because I won\'t have the materials to fix it and I prefer not knowing.' },
+        { speaker: 'Rei', text: 'That\'s a very specific kind of optimism.' },
+        { speaker: 'Builder', text: 'Fourteen years of structural maintenance will do that to a person.' },
+      ],
+    },
+  },
+
+  market_ghost: {
+    name: 'Market Trader',
+    color: '#e2e8f0',
+    sprite: 'images/characters/map/sheets/npc/soldier_sheet.png',
+    dialogues: {
+      southern_isles: [
+        { speaker: 'Market Trader', text: 'Good morning! Excellent timing — the morning catch just came in. Fresh reef-cod, salted kelp, tide-pearl clusters — all at the standard harbor rate.' },
+        { speaker: 'Aya', text: 'The market... there\'s nothing here. The stall is empty.' },
+        { speaker: 'Market Trader', text: 'Nonsense. I stocked this morning same as always. The reef-cod is on the left. Don\'t let the kelp touch the pearls — the salt transfers and ruins the luster.' },
+        { speaker: 'Lulu', text: 'Can you... can you see us clearly?' },
+        { speaker: 'Market Trader', text: 'Of course. You\'re the first customers of the day. Always good to see travelers. Are you off the northern ferry? The schedule changed — they run every second tide now, not every first.' },
+        { speaker: 'Rex', text: 'There is no northern ferry. The port is underwater.' },
+        { speaker: 'Market Trader', text: '...' },
+        { speaker: 'Market Trader', text: 'The northern ferry runs every second tide.' },
+        { speaker: 'Lulu', text: 'I\'m sorry.' },
+        { speaker: 'Market Trader', text: 'Will you be wanting the reef-cod? It doesn\'t keep past midday.' },
       ],
     },
   },

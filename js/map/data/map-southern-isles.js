@@ -5,9 +5,9 @@
 MAP_DEFS.southern_isles = {
     id: 'southern_isles',
     name: 'Southern Isles',
-    width: 80,
-    height: 40,
-    playerStart: { x: 40, y: 36 },
+    width: 120,
+    height: 80,
+    playerStart: { x: 60, y: 65 },
     bgColor: '#081a08',
     ambientLight: 'rgba(50,200,100,0.1)',
     weather: 'rain',
@@ -23,23 +23,39 @@ MAP_DEFS.southern_isles = {
     ],
     enemies: [
         // --- STILT VILLAGE SENTINELS ---
-        { id: 'naga',   x: 20, y: 30, patrol: 'random',     range: 5,  speed: 1.2 },
-        { id: 'naga',   x: 60, y: 30, patrol: 'random',     range: 5,  speed: 1.2 },
+        { id: 'naga',   x: 30, y: 32, patrol: 'random',     range: 7,  speed: 1.2 },
+        { id: 'naga',   x: 90, y: 32, patrol: 'random',     range: 7,  speed: 1.2 },
+        { id: 'naga',   x: 55, y: 28, patrol: 'random',     range: 5,  speed: 1.1 },
         // --- DOCK GUARDIANS ---
-        { id: 'crab',   x: 40, y: 25, patrol: 'horizontal', range: 10, speed: 0.6 },
-        { id: 'naga',   x: 15, y: 15, patrol: 'vertical',   range: 8,  speed: 1.3 },
+        { id: 'crab',   x: 60, y: 30, patrol: 'horizontal', range: 18, speed: 0.6 },
+        { id: 'naga',   x: 18, y: 20, patrol: 'vertical',   range: 10, speed: 1.3 },
+        { id: 'naga',   x: 102, y: 20, patrol: 'vertical',  range: 10, speed: 1.3 },
         // --- MAP BOSS ---
-        { id: 'sunken_leviathan', x: 40, y: 8,  patrol: 'stationary', isBoss: true, label: 'Sunken Leviathan' }
+        { id: 'sunken_leviathan', x: 60, y: 4,  patrol: 'stationary', isBoss: true, label: 'Sunken Leviathan' }
     ],
     jsonFile: 'js/map/data/map-southern-isles.json',
     npcs: [
-        { id: 'survivor', x: 45, y: 36, dialogueKey: 'southern_isles', behavior: 'stationary' },
-        { id: 'guardian', x: 40, y: 18, dialogueKey: 'southern_isles', behavior: 'stationary' }
+        // ── PRIMARY STORY CONTACT ─────────────────────────────────
+        { id: 'survivor',     x: 65, y: 65, dialogueKey: 'southern_isles',         behavior: 'stationary' },
+
+        // ── SETTLEMENT NPCs ───────────────────────────────────────
+        { id: 'si_elder',     x: 55, y: 45, dialogueKey: 'southern_isles',         behavior: 'stationary' },
+        { id: 'si_healer',    x: 62, y: 46, dialogueKey: 'southern_isles',         behavior: 'stationary' },
+        { id: 'si_builder',   x: 48, y: 50, dialogueKey: 'southern_isles',         behavior: 'stationary' },
+        { id: 'market_ghost', x: 60, y: 52, dialogueKey: 'southern_isles',         behavior: 'stationary' },
+
+        // ── SCATTERED SURVIVORS ───────────────────────────────────
+        { id: 'survivor',     x: 22, y: 48, dialogueKey: 'southern_isles_fisher',  behavior: 'stationary' },
+        { id: 'survivor',     x: 85, y: 40, dialogueKey: 'southern_isles_lookout', behavior: 'stationary' },
+        { id: 'survivor',     x: 50, y: 58, dialogueKey: 'southern_isles_child',   behavior: 'stationary' },
+
+        // ── GATE KEEPER ───────────────────────────────────────────
+        { id: 'guardian',     x: 60, y: 15, dialogueKey: 'southern_isles',         behavior: 'stationary' }
     ],
     triggers: [
         {
             id: 'trench_dialogue',
-            x: 10, y: 22, w: 60, h: 4,
+            x: 10, y: 28, w: 100, h: 4,
             type: 'dialogue',
             lines: [
                 { speaker: 'Lulu', text: 'The swamp is breathing... I can hear the Naga singing in the reeds.' },
@@ -48,7 +64,7 @@ MAP_DEFS.southern_isles = {
         },
         {
             id: 'leviathan_wake',
-            x: 35, y: 12, w: 10, h: 4,
+            x: 45, y: 18, w: 30, h: 5,
             type: 'dialogue',
             lines: [
                 { speaker: 'narrator', text: 'The wooden platforms groan as the Sunken Leviathan begins to surface.' },
@@ -57,7 +73,7 @@ MAP_DEFS.southern_isles = {
         },
         {
             id: 'leviathan_approach',
-            x: 36, y: 9, w: 8, h: 4,
+            x: 50, y: 10, w: 20, h: 5,
             type: 'dialogue',
             lines: [
                 { speaker: 'Rex', text: 'The Survivor said there is still a bell tower down there that rings at high tide. Something in the architecture remembers what it was for.' },
@@ -65,11 +81,21 @@ MAP_DEFS.southern_isles = {
                 { speaker: 'Lulu', text: 'A creature that came to a place because it felt like home. And then got trapped there by someone who needed an anchor.' },
                 { speaker: 'Rex', text: 'Let\'s free it. And give the bell something to ring for.' }
             ]
+        },
+        {
+            // ── BOSS TRIGGER: Abyssal Gate ──────────────────────────
+            // Player steps here → brief message → Leviathan fight launches
+            id: 'abyssal_gate_boss',
+            x: 55, y: 6, w: 10, h: 4,
+            type: 'encounter',
+            isBoss: true,
+            enemies: ['sunken_leviathan'],
+            preMsg: '⚠ The Abyssal Gate trembles. Something vast stirs below…'
         }
     ],
     objective: {
         type: 'reach',
-        target: { x: 40, y: 8 },
+        target: { x: 60, y: 4 },
         label: 'Open the Abyssal Gate',
         completeMsg: '✦ From far below, faint and clear through the water, a bell rings. The sound carries up through the stilts and into your chest.',
     },
