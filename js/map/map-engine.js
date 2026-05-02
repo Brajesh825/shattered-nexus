@@ -1210,7 +1210,7 @@ const MapEngine = (() => {
         }
       } else {
         // All waves cleared
-        const msg = _waveState.allClearMsg || '✦ The bridge holds!';
+        const msg = _waveState.allClearMsg || '✦ All waves cleared!';
         const cb  = _waveState.onAllClear;
         _waveState = null;
         MapUI.showMsg(msg, 2200, () => { if (cb) cb(); else resume(); });
