@@ -323,3 +323,8 @@ The **Architect Pro** editor (`tools/tile-editor.html`) is the primary source fo
     - `1-199`: Standard core tiles.
     - `200-299`: Dynamic SVG assets.
     - `1000+`: Sprite-based environmental objects.
+
+---
+
+## 🎨 Asset Staging & Concepts
+- **`_concepts/`**: This directory contains raw generated artwork and character sheets that could be considered for future integration into the game. Once finalized, assets should be moved to their permanent locations in `images/` and the raw concepts can be safely removed.
