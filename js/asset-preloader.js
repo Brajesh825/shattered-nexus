@@ -63,6 +63,8 @@ const AssetPreloader = (() => {
       'frozen_house', 'ice_castle', 'labyrinth_gate', 'market_cart_frozen', 'pine_frozen', 'notice_board_frozen', 'well_frozen',
       'stilt_house', 'mangrove_root', 'tide_bell', 'rope_bridge', 'broken_bridge', 'waterfall_shrine',
       'cascade_rocks', 'mist_vent', 'river_marker', 'waterlogged_cart', 'grotto_entrance', 'keystone_obelisk',
+      // Southern Isles custom assets
+      'coral_formation', 'shipwreck', 'ancient_column',
       ...MILITARY_ASSETS,
       ...CIVILIAN_ASSETS,
       ...NOBLE_ASSETS

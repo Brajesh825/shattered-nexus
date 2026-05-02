@@ -293,6 +293,11 @@ TILE_DEFS[408] = { name: 'Waterlogged Cart', walkable: false, svgAsset: 'waterlo
 TILE_DEFS[409] = { name: 'Grotto Entrance', walkable: true, svgAsset: 'grotto_entrance', color: '#01579b', vScale: 3.4, interactive: true, glows: '#4fc3f740', collisionMask: ['X.X'] };
 TILE_DEFS[410] = { name: 'Keystone Obelisk', walkable: false, svgAsset: 'keystone_obelisk', color: '#90a4ae', vScale: 3.0, interactive: true, glows: '#4fc3f740' };
 
+// ── SOUTHERN ISLES — custom assets ───────────────────────────────────────
+TILE_DEFS[411] = { name: 'Coral Formation', walkable: false, svgAsset: 'coral_formation', color: '#f06292', vScale: 3.2 };
+TILE_DEFS[412] = { name: 'Shipwreck',       walkable: false, svgAsset: 'shipwreck',       color: '#5d4037', vScale: 3.0, footprint: [[0, 0], [1, 0], [2, 0]], collisionMask: ['XXX'] };
+TILE_DEFS[413] = { name: 'Ancient Column',  walkable: false, svgAsset: 'ancient_column',  color: '#90a4ae', vScale: 4.0 };
+
 const OBJECT_STAMPS = {
   'grand_oak': {
     name: 'Grand Oak',

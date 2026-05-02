@@ -1,0 +1,73 @@
+<svg width="110" height="130" viewBox="0 0 110 130" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="coral-a" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ff6090"/>
+      <stop offset="1" stop-color="#b71c4a"/>
+    </linearGradient>
+    <linearGradient id="coral-b" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ff8f00"/>
+      <stop offset="1" stop-color="#bf360c"/>
+    </linearGradient>
+    <linearGradient id="coral-c" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ce93d8"/>
+      <stop offset="1" stop-color="#6a1b9a"/>
+    </linearGradient>
+    <linearGradient id="reef-base" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#546e7a"/>
+      <stop offset="1" stop-color="#263238"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Ground shadow -->
+  <ellipse cx="55" cy="122" rx="44" ry="6" fill="#061517" opacity="0.3"/>
+
+  <!-- Rocky reef base -->
+  <ellipse cx="55" cy="112" rx="42" ry="10" fill="url(#reef-base)" stroke="#1a2a2e" stroke-width="1.5"/>
+  <path d="M18 112 Q30 104 55 100 Q80 104 92 112" fill="#37474f" stroke="#263238" stroke-width="1.5"/>
+
+  <!-- Algae patches on base -->
+  <ellipse cx="32" cy="108" rx="8" ry="4" fill="#2e7d32" opacity="0.7"/>
+  <ellipse cx="74" cy="110" rx="6" ry="3" fill="#388e3c" opacity="0.6"/>
+
+  <!-- Left coral branch (pink, tall branching) -->
+  <path d="M30 108 Q28 90 26 75 Q22 58 20 44" stroke="url(#coral-a)" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <path d="M26 75 Q18 64 12 58" stroke="url(#coral-a)" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+  <path d="M26 75 Q30 64 28 54" stroke="url(#coral-a)" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+  <path d="M20 44 Q16 36 14 30" stroke="url(#coral-a)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M20 44 Q24 34 22 26" stroke="url(#coral-a)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <!-- Polyp tips (left) -->
+  <circle cx="12" cy="57" r="4" fill="#ff80ab" stroke="#c2185b" stroke-width="1"/>
+  <circle cx="14" cy="29" r="3.5" fill="#ff80ab" stroke="#c2185b" stroke-width="1"/>
+  <circle cx="22" cy="25" r="3" fill="#ff4081" stroke="#ad1457" stroke-width="1"/>
+  <circle cx="28" cy="53" r="3" fill="#f48fb1" stroke="#c2185b" stroke-width="1"/>
+
+  <!-- Center coral (orange, fan shape) -->
+  <path d="M55 108 Q54 88 52 72" stroke="url(#coral-b)" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <path d="M52 72 Q42 58 38 46" stroke="url(#coral-b)" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <path d="M52 72 Q56 58 54 44" stroke="url(#coral-b)" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <path d="M52 72 Q62 60 68 50" stroke="url(#coral-b)" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+  <!-- Fan fronds -->
+  <path d="M38 46 Q35 38 32 32 M38 46 Q42 36 40 28" stroke="#ff8f00" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.85"/>
+  <path d="M54 44 Q50 34 52 26 M54 44 Q58 34 56 26" stroke="#f57c00" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.85"/>
+  <path d="M68 50 Q72 42 70 34" stroke="#ff8f00" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.85"/>
+  <!-- Polyp tips (center) -->
+  <circle cx="32" cy="31" r="3.5" fill="#ffcc80" stroke="#e65100" stroke-width="1"/>
+  <circle cx="40" cy="27" r="3.5" fill="#ffcc80" stroke="#e65100" stroke-width="1"/>
+  <circle cx="52" cy="25" r="4" fill="#ffe082" stroke="#e65100" stroke-width="1"/>
+  <circle cx="56" cy="25" r="3" fill="#ffcc80" stroke="#ef6c00" stroke-width="1"/>
+  <circle cx="70" cy="33" r="3" fill="#ffb74d" stroke="#e65100" stroke-width="1"/>
+
+  <!-- Right coral (purple, shorter) -->
+  <path d="M76 108 Q77 92 80 78 Q82 66 84 56" stroke="url(#coral-c)" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <path d="M80 78 Q74 66 70 60" stroke="url(#coral-c)" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+  <path d="M84 56 Q90 46 94 40" stroke="url(#coral-c)" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M84 56 Q80 46 82 38" stroke="url(#coral-c)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <!-- Polyp tips (right) -->
+  <circle cx="70" cy="59" r="4" fill="#ea80fc" stroke="#7b1fa2" stroke-width="1"/>
+  <circle cx="94" cy="39" r="3.5" fill="#ea80fc" stroke="#7b1fa2" stroke-width="1"/>
+  <circle cx="82" cy="37" r="3" fill="#ce93d8" stroke="#6a1b9a" stroke-width="1"/>
+
+  <!-- Water shimmer at base -->
+  <path d="M18 116 Q36 112 55 116 Q74 120 92 116" fill="none" stroke="#4fc3f7" stroke-width="1.5" opacity="0.45"/>
+  <path d="M24 120 Q40 117 55 120 Q70 123 86 120" fill="none" stroke="#29b6f6" stroke-width="1" opacity="0.3"/>
+</svg>
