@@ -48,7 +48,43 @@ MAP_DEFS.verdant_vale = {
     jsonFile: 'js/map/data/map-verdant-vale.json',
 
     npcs: [
-        { id: 'azure_commander', x: 29, y: 13, dialogueKey: 'verdant_vale', behavior: 'stationary', hideIfUnlocked: 'sera' },
+        {
+            id: 'azure_commander', x: 29, y: 13, dialogueKey: 'verdant_vale',
+            behavior: 'stationary', hideIfUnlocked: 'sera',
+            onDialogueComplete() {
+                MapEngine.openDialogue([
+                    { speaker: 'Azure Commander', text: 'Down — get down!' },
+                    { speaker: null, text: 'A shadow detaches from the tree line. Then another. Then a dozen. Void-touched soldiers pour from the eastern wood toward the bridge in silence.' },
+                    { speaker: 'Tao', text: 'Where did they all come from?!' },
+                    { speaker: 'Azure Commander', text: 'The ruins leak. They have been massing since the fog rose. I was waiting to see if you would run.' },
+                    { speaker: 'Rei', text: 'We are not running.' },
+                    { speaker: 'Azure Commander', text: 'Good. Then hold this bridge with me.' },
+                ], () => {
+                    MapEngine.startWaves({
+                        waves: [
+                            {
+                                enemies: ['zombie_soldier', 'zombie_soldier', 'goblin'],
+                                preMsg: '⚔ Wave 1 — Void-touched surge toward the bridge!',
+                                interWaveMsg: '✦ First wave broken — more incoming!',
+                            },
+                            {
+                                enemies: ['zombie_soldier', 'zombie_soldier', 'wolf', 'bat'],
+                                preMsg: null,
+                            },
+                        ],
+                        allClearMsg: '✦ The bridge holds.',
+                        onAllClear() {
+                            MapEngine.openDialogue([
+                                { speaker: 'Azure Commander', text: 'That was not the worst they can send.' },
+                                { speaker: 'Aya', text: 'No. But it is the worst they sent tonight.' },
+                                { speaker: 'Azure Commander', text: 'You fight well for people who do not know the Vale. I owe you the rest of what I know about the eastern road.' },
+                                { speaker: 'Azure Commander', text: 'When you are ready for the ruins — I will be here.' },
+                            ], () => MapEngine.resume());
+                        },
+                    });
+                });
+            },
+        },
         { id: 'essabella', x: 44, y: 22, dialogueKey: 'verdant_vale', behavior: 'wander', range: 3 },
         { id: 'elder_maren', x: 6, y: 8, dialogueKey: 'elder_maren', behavior: 'stationary' },
         { id: 'soldier_1', x: 23, y: 13, dialogueKey: 'soldier_chat', behavior: 'patrol', waypoints: [{ x: 23, y: 13 }, { x: 26, y: 13 }] },
