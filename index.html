@@ -618,15 +618,14 @@
 
         <!-- NPC dialogue overlay -->
         <div id="npc-dialogue" style="display:none">
+          <div id="npc-scene-layer" class="npc-scene-layer"></div>
           <div class="npc-dialogue-panel">
             <div class="npc-dialogue-header">
-              <canvas id="npc-dialogue-portrait" class="npc-portrait" style="display:none"></canvas>
               <div class="npc-dialogue-name" id="npc-dialogue-name"></div>
             </div>
             <div class="npc-dialogue-text" id="npc-dialogue-text"></div>
             <div class="npc-dialogue-footer">
-              <button class="npc-dialogue-next" id="npc-dialogue-next" onclick="MapEngine.npcDialogueNext()">▶
-                CONTINUE</button>
+              <button class="npc-dialogue-next" id="npc-dialogue-next" onclick="MapEngine.npcDialogueNext()">▶ CONTINUE</button>
             </div>
           </div>
         </div>
