@@ -936,7 +936,7 @@ function leaveExplore() {
   }
 }
 
-function startExplore() {
+function startExplore(skipAutoStart = false) {
   // Need a party first — if none, do a quick auto-build
   if (!G.party || G.party.length === 0) {
     if (!G.chars.length || !G.classes.length) {
@@ -991,7 +991,7 @@ function startExplore() {
   });
 
   // Launch the engine
-  if (!MapEngine.getMap()) {
+  if (!MapEngine.getMap() && !skipAutoStart) {
     MapEngine.start('verdant_vale');
     MapUI.showMsg('Entering Verdant Vale…', 1500);
   }
