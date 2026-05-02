@@ -103,6 +103,7 @@ function resolveOffensiveAction(actor, target, targetIdx, action, element) {
     dmg = Battle.magicDmg(Battle.getStat(actor, 'mag'), _mdef, e.dmgMultiplier || NexusScaling.engine.magicDmgFallback,
       { passiveBonus: _pBoost, magLevel: actor.lv || 1, mdefLevel: target.level || 1, isCrit });
     dmg = Math.floor(dmg * _em * _stab * _fireAmp * _lowHpMult * _summonBonus * _rxMult * _reduction);
+    if (!Number.isFinite(dmg)) { console.error('[MATH-MAGIC] NaN in damage pipeline', { actor: actor.displayName, target: target.name, _em, _stab, _fireAmp, _lowHpMult, _summonBonus, _rxMult, _reduction }); dmg = 1; }
 
     if (window.LogDebug) {
       window.LogDebug(`[MATH-MAGIC] ${actor.displayName} -> ${target.name}: BaseMag=${Battle.getStat(actor, 'mag')}, T-MDef=${Battle.getStat(target, 'mag')}, Mult=${e.dmgMultiplier || 1.5}, Stab=${_stab}, Elem=${_em}, RX=${_rxMult} -> Final=${dmg}`, 'hi');
@@ -119,6 +120,7 @@ function resolveOffensiveAction(actor, target, targetIdx, action, element) {
     dmg = Battle.physDmg(_effAtk + _scaleStat, Battle.getStat(target, 'def'), e.dmgMultiplier || 1,
       { atkLevel: actor.lv || 1, defLevel: target.level || 1, defPen: e.defPen || 0, isCrit });
     dmg = Math.floor(dmg * _em * _stab * _fireAmp * _lowHpMult * _rxMult * _reduction);
+    if (!Number.isFinite(dmg)) { console.error('[MATH-PHYS] NaN in damage pipeline', { actor: actor.displayName, target: target.name, _em, _stab, _fireAmp, _lowHpMult, _rxMult, _reduction }); dmg = 1; }
 
     if (window.LogDebug) {
       window.LogDebug(`[MATH-PHYS] ${actor.displayName} -> ${target.name}: Atk=${_effAtk + _scaleStat}, T-Def=${Battle.getStat(target, 'def')}, Mult=${e.dmgMultiplier || 1}, Stab=${_stab}, Elem=${_em}, RX=${_rxMult} -> Final=${dmg}`, 'hi');
@@ -139,20 +141,6 @@ function resolveOffensiveAction(actor, target, targetIdx, action, element) {
     isAlive: unit => Battle.alive(unit),
     scaling: NexusScaling
   });
-  if (false && reaction) {
-    if (reaction.debuff === 'def') {
-      Battle.addStatus(target, { id: 'debuff_def_shatter', label: 'Shattered', icon: '❄️', stat: 'def', type: 'mult', value: 0.7, turns: 1 });
-      BattleUI.addLog(`🛡️ ${target.name}'s DEF shattered!`, 'magic');
-    }
-    if (reaction.stun) {
-      Battle.addStatus(target, { id: 'status_stunned', label: 'Stunned', icon: '💫', type: 'control', turns: 1 });
-      BattleUI.addLog(`💫 ${target.name} is Conductive! (Stunned)`, 'magic');
-    }
-    if (reaction.dot) {
-      Battle.addStatus(target, { id: 'debuff_burn', label: 'Burn', icon: '🔥', stat: 'hp', type: 'dot', value: Math.floor(dmg * NexusScaling.engine.burnReactionDotPercent), turns: 3 });
-      BattleUI.addLog(`🔥 ${target.name} is Burning!`, 'dmg');
-    }
-  }
   if (reactionEffects.defShattered) BattleUI.addLog(`🛡️ ${target.name}'s DEF shattered!`, 'magic');
   if (reactionEffects.stunned) BattleUI.addLog(`💫 ${target.name} is Conductive! (Stunned)`, 'magic');
   if (reactionEffects.burning) BattleUI.addLog(`🔥 ${target.name} is Burning!`, 'dmg');
@@ -278,6 +266,7 @@ function resolveEnemyOffensiveAction(actor, target, targetIdx, ab, element) {
     dmg = Battle.magicDmg(_eMag, _tMdef, ab.dmgMultiplier || NexusScaling.engine.enemyMagicFallback,
       { magLevel: actor.level || 1, mdefLevel: target.lv || 1, isCrit });
     dmg = _applyEliteResist(Math.floor(dmg * _pm * _rxMult * _reduction));
+    if (!Number.isFinite(dmg)) { console.error('[ENEMY-MATH-MAGIC] NaN in damage pipeline', { actor: actor.name, target: target.displayName, _pm, _rxMult, _reduction }); dmg = 1; }
     if (window.LogDebug) {
       window.LogDebug(`[ENEMY-MATH-MAGIC] ${actor.name} -> ${target.displayName}: BaseMag=${_eMag}, T-MDef=${_tMdef.toFixed(1)}, Mult=${ab.dmgMultiplier || 1.3}, PM=${_pm}, RX=${_rxMult} -> Final=${dmg}`, 'hi');
     }
@@ -288,6 +277,7 @@ function resolveEnemyOffensiveAction(actor, target, targetIdx, ab, element) {
     dmg = Battle.physDmg(_eAtk, _tDef, ab?.dmgMultiplier || 1,
       { atkLevel: actor.level || 1, defLevel: target.lv || 1, isCrit });
     dmg = _applyEliteResist(Math.floor(dmg * _pm * _rxMult * _reduction));
+    if (!Number.isFinite(dmg)) { console.error('[ENEMY-MATH-PHYS] NaN in damage pipeline', { actor: actor.name, target: target.displayName, _pm, _rxMult, _reduction }); dmg = 1; }
     if (window.LogDebug) {
       window.LogDebug(`[ENEMY-MATH-PHYS] ${actor.name} -> ${target.displayName}: Atk=${_eAtk}, T-Def=${_tDef}, Mult=${ab?.dmgMultiplier || 1.4}, PM=${_pm}, RX=${_rxMult} -> Final=${dmg}`, 'hi');
       window.LogDebug(`[STATE-DIAG] ${target.displayName} HP: ${target.hp} pre-hit. [TargetIndex: ${targetIdx}]`, 'passive');
@@ -305,13 +295,6 @@ function resolveEnemyOffensiveAction(actor, target, targetIdx, ab, element) {
     isAlive: unit => Battle.alive(unit),
     scaling: NexusScaling
   });
-  if (false && reaction) {
-    if (reaction.dot) {
-      Battle.addStatus(target, { id: 'debuff_burn', label: 'Burn', icon: '🔥', stat: 'hp', type: 'dot', value: Math.floor(dmg * 0.2), turns: 3 });
-      BattleUI.addLog(`🔥 ${target.displayName} is Burning!`, 'dmg');
-    }
-    if (reaction.isDampened) BattleUI.addLog('(Effect dampened by resistance)', 'regen');
-  }
   if (enemyReactionEffects.defShattered) BattleUI.addLog(`🛡️ ${target.displayName}'s DEF shattered!`, 'dmg');
   if (enemyReactionEffects.stunned) BattleUI.addLog(`💫 ${target.displayName} is Conductive! (Stunned)`, 'dmg');
   if (enemyReactionEffects.burning) BattleUI.addLog(`🔥 ${target.displayName} is Burning!`, 'dmg');
@@ -323,13 +306,10 @@ function resolveEnemyOffensiveAction(actor, target, targetIdx, ab, element) {
   }
 
   // 6. Passive reductions & Final Rounding
+  // Note: status-based reduction (including guardian) is already applied via _reduction
+  // earlier in the damage chain. Only apply passive trait and relic reductions here.
   const _passResist = 1 - PassiveSystem.val(target, 'DAMAGE_REDUCTION', 0);
   dmg *= _passResist;
-  if (Battle.getStat(target, 'reduction') < 1) dmg *= Battle.getStat(target, 'reduction');
-  if (StatusSystem.has(target, 'status_guardian')) {
-    dmg *= 0.7;
-    BattleUI.addLog(`(Guardian Mitigated -30%)`, 'hi');
-  }
   // Relic: Cinder of Ashveil — fire damage reduction
   if (element === 'fire' && target._fireResist) {
     dmg *= (1 - target._fireResist);

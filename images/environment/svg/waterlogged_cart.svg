@@ -1,0 +1,15 @@
+<svg width="150" height="100" viewBox="0 0 150 100" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="wet-wood" x1="28" y1="35" x2="122" y2="78" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8d6e63"/>
+      <stop offset="1" stop-color="#3e2723"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="75" cy="88" rx="58" ry="5" fill="#031015" opacity="0.24"/>
+  <path d="M26 44 L116 32 L126 66 L34 78 Z" fill="url(#wet-wood)" stroke="#2d1d1a" stroke-width="3"/>
+  <path d="M35 48 L43 76 M61 44 L67 72 M91 39 L97 68 M117 35 L123 63" stroke="#5d4037" stroke-width="2" opacity="0.65"/>
+  <circle cx="44" cy="77" r="10" fill="#4e342e" stroke="#2d1d1a" stroke-width="2"/>
+  <circle cx="112" cy="68" r="9" fill="#4e342e" stroke="#2d1d1a" stroke-width="2"/>
+  <path d="M24 74 C48 66 62 84 85 74 C105 66 118 78 132 72" fill="none" stroke="#90caf9" stroke-width="2" opacity="0.7"/>
+  <path d="M16 55 L30 48 M126 31 L142 25" stroke="#5d4037" stroke-width="3" stroke-linecap="round"/>
+</svg>

@@ -1,6 +1,24 @@
 <svg width="220" height="180" viewBox="0 0 220 180" xmlns="http://www.w3.org/2000/svg">
-  <path d="M20 160 L200 160 L200 70 L110 20 L20 70 Z" fill="#d7ccc8" stroke="#5d4037" stroke-width="4"/>
-  <rect x="40" y="90" width="60" height="50" fill="#ffe082" stroke="#5d4037"/>
-  <rect x="120" y="90" width="40" height="70" fill="#5d4037"/>
-  <path d="M40 80 Q70 60 100 80" fill="none" stroke="#ffb74d" stroke-width="4"/>
+  <defs>
+    <linearGradient id="bakery-wall" x1="20" y1="64" x2="200" y2="166" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#efe1d6"/>
+      <stop offset="1" stop-color="#bda99c"/>
+    </linearGradient>
+    <linearGradient id="bakery-roof" x1="24" y1="18" x2="196" y2="82" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#c47a3b"/>
+      <stop offset="1" stop-color="#6d3f24"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="110" cy="164" rx="86" ry="8" fill="#120c08" opacity="0.25"/>
+  <path d="M20 160 L200 160 L200 70 L110 20 L20 70 Z" fill="url(#bakery-wall)" stroke="#5d4037" stroke-width="4"/>
+  <path d="M13 73 L110 16 L207 73 L194 83 L110 37 L26 83 Z" fill="url(#bakery-roof)" stroke="#5d4037" stroke-width="4" stroke-linejoin="round"/>
+  <rect x="40" y="91" width="62" height="51" rx="2" fill="#ffe6a3" stroke="#5d4037" stroke-width="3"/>
+  <path d="M47 105 H95 M47 119 H95 M47 133 H95" stroke="#9b6a3d" stroke-width="1.2" opacity="0.45"/>
+  <rect x="122" y="89" width="42" height="71" rx="3" fill="#5d4037" stroke="#2d1d1a" stroke-width="3"/>
+  <path d="M143 89 V160 M127 115 H159" stroke="#8d6e63" stroke-width="1.3"/>
+  <circle cx="154" cy="126" r="2" fill="#ffd180"/>
+  <path d="M39 80 Q70 58 101 80 Q70 72 39 80 Z" fill="#ffcc80" stroke="#bf6b2f" stroke-width="3"/>
+  <path d="M53 75 Q70 66 88 75" fill="none" stroke="#fff3d0" stroke-width="1.5" opacity="0.65"/>
+  <circle cx="74" cy="128" r="7" fill="#c8873f" stroke="#7a4a24" stroke-width="1"/>
+  <circle cx="88" cy="128" r="5" fill="#d99a4a" stroke="#7a4a24" stroke-width="1"/>
 </svg>

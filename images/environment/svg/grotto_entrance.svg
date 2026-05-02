@@ -1,0 +1,19 @@
+<svg width="150" height="130" viewBox="0 0 150 130" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grotto-rock" x1="20" y1="18" x2="130" y2="122" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#607d8b"/>
+      <stop offset="1" stop-color="#1a2428"/>
+    </linearGradient>
+    <radialGradient id="grotto-dark" cx="50%" cy="72%" r="50%">
+      <stop offset="0" stop-color="#02080a"/>
+      <stop offset="1" stop-color="#01579b" stop-opacity="0.35"/>
+    </radialGradient>
+  </defs>
+  <ellipse cx="75" cy="120" rx="56" ry="7" fill="#031015" opacity="0.28"/>
+  <path d="M14 115 Q20 45 55 22 Q82 4 120 38 Q137 62 136 115 Z" fill="url(#grotto-rock)" stroke="#102027" stroke-width="4"/>
+  <path d="M45 115 Q47 72 75 58 Q103 72 105 115 Z" fill="url(#grotto-dark)" stroke="#4fc3f7" stroke-width="1.5" opacity="0.95"/>
+  <path d="M32 43 L44 53 M101 35 L92 50 M25 79 L39 82 M116 76 L104 84" stroke="#90a4ae" stroke-width="2" opacity="0.45"/>
+  <path d="M51 93 Q75 81 99 93" stroke="#b3e5fc" stroke-width="2" opacity="0.55" fill="none"/>
+  <circle cx="61" cy="76" r="2" fill="#b3e5fc" opacity="0.7"/>
+  <circle cx="91" cy="78" r="1.6" fill="#b3e5fc" opacity="0.6"/>
+</svg>

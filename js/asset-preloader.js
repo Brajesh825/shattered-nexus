@@ -61,6 +61,8 @@ const AssetPreloader = (() => {
       'arcane_pedestal', 'crystal_orb', 'spell_rune',
       'large_castle', 'large_fishman_hut', 'large_noble_villa', 'large_military_tent',
       'frozen_house', 'ice_castle', 'labyrinth_gate', 'market_cart_frozen', 'pine_frozen', 'notice_board_frozen', 'well_frozen',
+      'stilt_house', 'mangrove_root', 'tide_bell', 'rope_bridge', 'broken_bridge', 'waterfall_shrine',
+      'cascade_rocks', 'mist_vent', 'river_marker', 'waterlogged_cart', 'grotto_entrance', 'keystone_obelisk',
       ...MILITARY_ASSETS,
       ...CIVILIAN_ASSETS,
       ...NOBLE_ASSETS
