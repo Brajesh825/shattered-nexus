@@ -187,6 +187,21 @@ function resolveOffensiveAction(actor, target, targetIdx, action, element) {
     Battle.applyAura(target, element);
   }
 
+  // Handle Self-Buffs attached to offensive abilities
+  if (e.damageReduction) {
+    Battle.addStatus(actor, { id: `buff_ward_${action.id}`, label: 'Warded', icon: '💎', type: 'reduction', value: 1 - e.damageReduction, turns: e.duration || 3 });
+    BattleUI.addLog(`🛡️ ${actor.displayName || actor.name} is Warded!`, 'buff');
+  }
+  if (e.spdBuff) {
+    const spdType = e.spdBuff > 1 ? 'mult' : 'flat';
+    Battle.addStatus(actor, { id: `buff_spd_${action.id}`, label: 'SPD Up', icon: '💨', stat: 'spd', type: spdType, value: e.spdBuff, turns: e.duration || 3 });
+    BattleUI.addLog(`💨 ${actor.displayName || actor.name}: SPD up!`, 'buff');
+  }
+  if (e.evasion && e.evasion > 0) {
+    Battle.addStatus(actor, { id: `buff_evasion_${action.id}`, label: 'Evasion', icon: '💨', type: 'evasion', value: e.evasion, turns: e.duration || 2 });
+    BattleUI.addLog(`💨 ${actor.displayName || actor.name}: Evasion up!`, 'buff');
+  }
+
   const _er = Battle.elemResult(element, target);
   if (_er === 'weak') BattleUI.addLog('✦ WEAK!', 'magic');
   else if (_er === 'resist') BattleUI.addLog('▸ Resist', 'regen');
@@ -224,10 +239,14 @@ function mapEnemyAnimation(moveId) {
 function resolveEnemyOffensiveAction(actor, target, targetIdx, ab, element) {
   const isMagic = ab?.type === 'magic_damage';
 
-  // Elite resist helper (Tarnished Wing relic)
-  const _isElite = !!(actor.mutantTraits || actor.isCorrupted);
+  // Elite & Boss resist helper (Tarnished Wing relic & Sera's Passive)
+  const _isElite = !!(actor.mutantTraits || actor.isCorrupted || actor.isBoss);
   const _applyEliteResist = dmg => {
-    const resist = target._eliteResist || 0;
+    let resist = target._eliteResist || 0;
+    if (typeof PassiveSystem !== 'undefined') {
+      const bossResist = PassiveSystem.val(target, 'BOSS_DAMAGE_REDUCTION', 0);
+      if (bossResist > 0) resist += bossResist;
+    }
     return (_isElite && resist > 0) ? Math.max(1, Math.floor(dmg * (1 - resist))) : dmg;
   };
 
@@ -546,6 +565,7 @@ const ActionEngine = {
       if (e.stunLow && enemy.hp <= enemy.maxHp * 0.3) { Battle.addStatus(enemy, { id: `status_stunned${sourceSuffix}`, label: 'Stunned', icon: '💫', type: 'control', turns: 1 }); BattleUI.addLog(`💫 ${enemy.name} is stunned! (Low HP)`, 'magic'); debuffParts.push(`Stun(LowHP)`); }
       if (e.freezeChance && !StatusSystem.has(enemy, 'status_frozen') && Math.random() < e.freezeChance) { Battle.addStatus(enemy, { id: `status_frozen${sourceSuffix}`, label: 'Frozen', icon: '❄️', type: 'control', turns: 2 }); BattleUI.addLog(`❄️ ${enemy.name} is Frozen for 2 turns!`, 'magic'); debuffParts.push(`Freeze(${e.freezeChance*100}%)`); }
       if (e.slowChance && !StatusSystem.has(enemy, 'status_slow') && Math.random() < e.slowChance) { Battle.addStatus(enemy, { ...StatusSystem.DEFS.slow, id: `status_slow${sourceSuffix}` }); BattleUI.addLog(`🐌 ${enemy.name} is Slowed!`, 'magic'); debuffParts.push(`Slow(${e.slowChance*100}%)`); }
+      if (e.evasion) { Battle.addStatus(enemy, { id: `debuff_evasion${sourceSuffix}`, label: 'Weighted', icon: '⚓', type: 'evasion', value: e.evasion, turns: e.duration || 2 }); BattleUI.addLog(`⚓ ${enemy.name} is weighed down!`, 'magic'); debuffParts.push(`Evasion(${e.evasion})`); }
 
       if (window.LogDebug) {
         window.LogDebug(`[DEBUFF] ${actor.displayName || actor.name} uses ${ab.name} -> ${enemy.name}: ${debuffParts.join(', ') || 'no effect'} (${e.duration || 2} turns)`, 'dmg');

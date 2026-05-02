@@ -1089,7 +1089,8 @@ const MapEngine = (() => {
   }
 
   function _openGenericDialogue(lines, onComplete) {
-    _npcCurrent = { id: 'system', name: '', sprite: null, onDialogueComplete: onComplete || null };
+    _npcNextLast = 0;
+    _npcCurrent = { id: 'system', name: '', sprite: null, isTalked: false, onDialogueComplete: onComplete || null };
     _npcLines = lines;
     _npcLineIdx = 0;
     stop();
@@ -1500,85 +1501,90 @@ const MapEngine = (() => {
     return _NPC_PARTY_IDS.some(id => sl.includes(id));
   }
 
-  // Responsive character height for scene layer
+  // Chibi height — 70% visible above panel, ~30% of panel width on mobile
   function _npcSceneCharH() {
     const vh = window.innerHeight;
     const landscape = window.innerWidth > vh && vh <= 500;
-    if (landscape) return Math.min(120, Math.max(80, Math.round(vh * 0.28)));
-    return Math.min(180, Math.max(110, Math.round(vh * 0.22)));
+    if (landscape) return Math.min(100, Math.max(80, Math.round(vh * 0.22)));
+    return Math.min(160, Math.max(140, Math.round(vh * 0.20)));
   }
 
-  // Draw NPC sprite-sheet frame 0 (front idle) onto a canvas at target height
-  function _drawNPCSceneSprite(canvas, src, targetH) {
+  // Render map sprite-sheet frame 0 via CSS background — browser-native scaling, no DPR issues
+  function _drawNPCSceneSprite(el, src, targetH) {
     const img = new Image();
     img.onload = () => {
       const frameW = img.naturalWidth / 6;
       const frameH = img.naturalHeight / 2;
-      const w = Math.round(targetH * (frameW / frameH));
-      canvas.width  = w;
-      canvas.height = targetH;
-      const ctx = canvas.getContext('2d');
-      ctx.imageSmoothingEnabled = false;
-      ctx.drawImage(img, 0, 0, frameW, frameH, 0, 0, w, targetH);
+      const scale  = targetH / frameH;
+      el.style.width           = Math.round(frameW * scale) + 'px';
+      el.style.height          = targetH + 'px';
+      el.style.backgroundImage = `url('${src}')`;
+      el.style.backgroundSize  = `${Math.round(img.naturalWidth * scale)}px ${Math.round(img.naturalHeight * scale)}px`;
+      el.style.backgroundPosition = '0 0';
+      el.style.backgroundRepeat   = 'no-repeat';
     };
     img.src = src;
   }
 
-  // Build scene layer DOM once when dialogue opens
+  // Find a sprite path for any named speaker by scanning NPC_DEFS
+  function _getSpeakerSprite(speakerName) {
+    if (typeof NPC_DEFS === 'undefined') return null;
+    for (const id in NPC_DEFS) {
+      if (NPC_DEFS[id].name === speakerName && NPC_DEFS[id].sprite) return NPC_DEFS[id].sprite;
+    }
+    return null;
+  }
+
+  // Speaker → { src, side } map, built once per dialogue session
+  let _npcSceneSpeakerMap = {};
+
+  // Scan all lines and build the speaker→sprite map.
+  // Skips build entirely if this NPC has already been talked to (one-time scene).
   function _buildNPCSceneLayer() {
-    const layer = document.getElementById('npc-scene-layer');
-    if (!layer) return;
-    layer.innerHTML = '';
-    const h = _npcSceneCharH();
-    const seen = new Set();
-    const npcSpeakers = [], partySpeakers = [];
-
+    if (_npcCurrent && _npcCurrent.isTalked) return; // repeat interaction → plain panel only
+    _npcSceneSpeakerMap = {};
     _npcLines.forEach(l => {
-      if (!l.speaker || l.speaker === 'narrator') return;
-      const key = l.speaker.toLowerCase();
-      if (seen.has(key)) return;
-      seen.add(key);
-      (_isPartySpeaker(l.speaker) ? partySpeakers : npcSpeakers).push(l.speaker);
-    });
-
-    // NPC speakers on left, party on right — max 2 each
-    [...npcSpeakers.slice(0, 2), ...partySpeakers.slice(0, 2)].forEach(name => {
-      const sl = name.toLowerCase().replace(/\s+/g, '_');
-      const charEl = document.createElement('div');
-      charEl.className = 'npc-scene-char';
-      charEl.dataset.speaker = sl;
-
-      if (_isPartySpeaker(name) && typeof SpriteRenderer !== 'undefined') {
-        const spriteDiv = document.createElement('div');
-        spriteDiv.className = 'npc-scene-sprite';
-        const charId = (typeof Cutscene !== 'undefined' && Cutscene.ALIAS_TO_CHARID)
-          ? (Cutscene.ALIAS_TO_CHARID[sl] || sl) : sl;
-        SpriteRenderer.setFrame(spriteDiv, charId, 'idle', h);
-        charEl.appendChild(spriteDiv);
+      if (!l.speaker) return;
+      const key = l.speaker.toLowerCase().replace(/\s+/g, '_');
+      if (_npcSceneSpeakerMap[key]) return;
+      if (_isPartySpeaker(l.speaker)) {
+        const charId = l.speaker.toLowerCase().replace(/\s+/g, '_');
+        _npcSceneSpeakerMap[key] = { src: `images/characters/map/sheets/${charId}_sheet.png`, side: 'left' };
       } else {
-        const canvas = document.createElement('canvas');
-        canvas.className = 'npc-scene-sprite';
-        if (_npcCurrent && _npcCurrent.sprite) _drawNPCSceneSprite(canvas, _npcCurrent.sprite, h);
-        charEl.appendChild(canvas);
+        const src = (_npcCurrent && _npcCurrent.sprite) || _getSpeakerSprite(l.speaker);
+        if (src) _npcSceneSpeakerMap[key] = { src, side: 'right' };
       }
-      layer.appendChild(charEl);
     });
   }
 
-  // Update active/dimmed state every line
+  // Rebuild scene layer with only the active speaker — one chibi, correct side
   function _updateNPCSceneLayer(speaker) {
     const layer = document.getElementById('npc-scene-layer');
     if (!layer) return;
-    const sl = speaker ? speaker.toLowerCase().replace(/\s+/g, '_') : null;
-    layer.querySelectorAll('.npc-scene-char').forEach(el => {
-      el.classList.toggle('active', !!sl && el.dataset.speaker === sl);
-    });
+    layer.innerHTML = '';
+    if (!speaker) return; // narrator line — no sprite
+    const sl = speaker.toLowerCase().replace(/\s+/g, '_');
+    const info = _npcSceneSpeakerMap[sl];
+    if (!info) return;
+    const charEl = document.createElement('div');
+    charEl.className = `npc-scene-char npc-side-${info.side}`;
+    const spriteEl = document.createElement('div');
+    spriteEl.className = 'npc-scene-sprite';
+    _drawNPCSceneSprite(spriteEl, info.src, _npcSceneCharH());
+    charEl.appendChild(spriteEl);
+    layer.appendChild(charEl);
   }
 
   function _openNPCDialogue(npc) {
     _npcCurrent = npc;
+    _npcNextLast = 0; // reset debounce so first click of new session is never blocked
     const def = (typeof NPC_DEFS !== 'undefined') ? NPC_DEFS[npc.id] : null;
-    _npcLines = (def && def.dialogues && def.dialogues[npc.dialogueKey]) || [{ speaker: npc.name || npc.id, text: '...' }];
+    // On repeat visits use a _return dialogue key if defined, else fall back to original
+    const key = npc.isTalked
+      ? (npc.dialogueKey + '_return')
+      : npc.dialogueKey;
+    _npcLines = (def && def.dialogues && (def.dialogues[key] || def.dialogues[npc.dialogueKey]))
+      || [{ speaker: npc.name || npc.id, text: '...' }];
     _npcLineIdx = 0;
     _showNPCLine();
   }
@@ -1628,7 +1634,11 @@ const MapEngine = (() => {
     if (typeof Focus !== 'undefined') Focus.setContext('npc-dialogue');
   }
 
+  let _npcNextLast = 0;
   function npcDialogueNext() {
+    const now = Date.now();
+    if (now - _npcNextLast < 150) return;
+    _npcNextLast = now;
     // First tap skips typewriter; second tap advances
     if (typeof Cutscene !== 'undefined' && !Cutscene._tw.done) {
       Cutscene._skipTw();
@@ -1646,7 +1656,9 @@ const MapEngine = (() => {
     if (layer) layer.innerHTML = '';
     if (typeof Cutscene !== 'undefined') Cutscene._skipTw();
     if (typeof Focus !== 'undefined') Focus.setContext(null);
-    const completeCb = _npcCurrent && _npcCurrent.onDialogueComplete;
+    // Only fire completeCb on the very first interaction — not on repeat visits
+    const firstTime  = _npcCurrent && !_npcCurrent.isTalked;
+    const completeCb = firstTime && _npcCurrent.onDialogueComplete;
     if (_npcCurrent) {
       MapEntities.markNPCTalked(_npcCurrent.id);
       _npcCurrent._dialogueOpen = false;
