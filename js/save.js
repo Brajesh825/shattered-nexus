@@ -25,19 +25,21 @@ const Save = {
       
       // 2. Workspace Sync (Architect Pro Feature)
       // If the sync server is running, we also backup to the filesystem
-      try {
-        await fetch('http://127.0.0.1:3000/sync', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            path: `saves/slot_${slot}.json`,
-            data: json
-          })
-        });
-        console.log(`[Save] Sync successful for slot ${slot}`);
-      } catch (syncErr) {
-        // Silent fail for sync — the localStorage write already succeeded
-        console.warn('[Save] Sync bridge not available.');
+      if (typeof ReleaseConfig !== 'undefined' && ReleaseConfig.IS_DEV) {
+        try {
+          await fetch('http://127.0.0.1:3000/sync', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              path: `saves/slot_${slot}.json`,
+              data: json
+            })
+          });
+          console.log(`[Save] Sync successful for slot ${slot}`);
+        } catch (syncErr) {
+          // Silent fail for sync — the localStorage write already succeeded
+          console.warn('[Save] Sync bridge not available.');
+        }
       }
 
       this._showToast('Progress saved');

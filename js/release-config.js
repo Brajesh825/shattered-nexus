@@ -36,3 +36,21 @@ const ReleaseConfig = {
 function isArcReleased(arcIdx) {
   return arcIdx <= ReleaseConfig.MAX_REACHABLE_ARC;
 }
+
+// --- GLOBAL PRODUCTION GATE ---
+// Silences logs in production unless ?debug=true is present
+(function() {
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('debug') === 'true') {
+    ReleaseConfig.IS_DEV = true;
+  }
+
+  if (!ReleaseConfig.IS_DEV) {
+    const noop = () => {};
+    // Keep error logging available for production troubleshooting
+    window.console.log = noop;
+    window.console.warn = noop;
+    window.console.debug = noop;
+    window.console.info = noop;
+  }
+})();
