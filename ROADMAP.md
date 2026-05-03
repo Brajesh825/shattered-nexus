@@ -5,10 +5,6 @@
 
 
 ### 🔷 Phase 3: Audio & System Polish
-- [ ] **Music Integration**: Add BGM (Background Music) and SFX for the following:
-  - [ ] Map Exploration
-  - [ ] Regular Encounters
-  - [ ] Boss Battles
 - [ ] **Item Audit**: Verify that all 20+ items in `data/items.json` have correct logic in `inventory.js`.
 - [ ] **Boss Balancing**: Perform a final tuning pass on the Spectral Guardian, Sunken Leviathan, and River King.
 - [ ] **Gold Balance**: Tune enemy gold drops to ensure shops feel meaningful.
@@ -52,6 +48,7 @@
 - [x] **Arc 2 (Crystal Cavern)**: Full 3-floor suite (F1-F3) with Spectral Guardian boss.
 - [x] **Expansion Regions**: Southern Isles and Riverlands Crossing lore and map implementations completed.
 - [x] **SVG Asset Standard**: All environmental assets converted and preloaded as high-fidelity SVGs.
+- [x] **Audio System**: Full BGM support with crossfading implemented for Map Exploration, Encounters, and Arc Bosses.
 
 ### ⚙️ Technical Foundations (April 2026)
 - [x] **Combat Engine Audit**: Fixed `getStat('reduction')` bug and stabilized damage multipliers.
