@@ -472,7 +472,8 @@ const BattleUI = {
       w.classList.toggle('active-member', isActive);
       const col = CHAR_COLOR[G.party[i]?.charId] || '#c0b8e8';
       w.style.borderColor = isActive ? col + '50' : 'transparent';
-      w.style.filter = isActive ? `drop-shadow(0 0 6px ${col}80)` : 'none';
+      // Use box-shadow via CSS class instead of dynamic filter to prevent blurring
+      w.style.boxShadow = isActive ? `0 4px 15px rgba(0,0,0,0.5), 0 0 12px ${col}80` : 'none';
     });
   },
 

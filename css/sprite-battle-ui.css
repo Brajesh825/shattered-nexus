@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    sprite-battle-ui.css — Shattered Nexus
    Sprite-based battle UI: party/enemy containers, adaptive
    enemy grid, large-screen and mobile responsive layouts.
@@ -32,7 +32,10 @@
   background: rgba(0, 0, 20, 0.3);
   transition: transform 0.2s ease, filter 0.2s ease, border-color 0.2s ease;
   cursor: default;
-  will-change: transform;
+  will-change: transform, filter;
+  backface-visibility: hidden;
+  transform: translate3d(0,0,0);
+  -webkit-font-smoothing: antialiased;
 }
 
 .party-member.ko-member {
@@ -41,8 +44,9 @@
 }
 
 .party-member.active-member {
-  transform: scale(1.05);
+  transform: translate3d(0, -4px, 0); /* Lift instead of scale to keep pixels sharp */
   border-color: currentColor;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4), 0 0 10px currentColor;
 }
 
 @keyframes focusPulse {
@@ -76,9 +80,11 @@
   width: 96px;
   height: 96px;
   object-fit: contain;
-  image-rendering: auto;
-  transform: scaleX(1);
-  filter: drop-shadow(0 0 10px rgba(100, 60, 200, 0.6));
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  transform: translate3d(0,0,0);
+  filter: drop-shadow(0 0 6px rgba(120, 80, 255, 0.8));
+  backface-visibility: hidden;
 }
 
 .party-info {
@@ -427,10 +433,12 @@
 .enemy-sprite {
   /* width/height set inline by renderEnemyRow based on enemy count */
   object-fit: contain;
-  image-rendering: auto;
-  transform: scaleX(-1);
-  filter: drop-shadow(0 0 12px rgba(200, 60, 100, 0.6));
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  transform: scaleX(-1) translate3d(0,0,0);
+  filter: drop-shadow(0 0 8px rgba(255, 80, 120, 0.7));
   transition: width 0.2s ease, height 0.2s ease;
+  backface-visibility: hidden;
 }
 
 .enemy-info {
