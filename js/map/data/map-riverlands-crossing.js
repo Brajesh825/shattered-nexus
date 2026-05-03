@@ -13,16 +13,28 @@ MAP_DEFS.riverlands_crossing = {
     weather: 'rain',
     enemyLevelRange: [10, 18],
     encounterTemplates: [
+        // Groups of 4 (Rare/Hard Encounters)
+        { weight: 1, enemies: ['bandit', 'bandit', 'bandit', 'bandit'] },
+        { weight: 1, enemies: ['merman', 'merman', 'wisp', 'harpy'] },
+        { weight: 1, enemies: ['bandit', 'bandit', 'wisp', 'wisp'] },
+        
+        // Groups of 3
+        { weight: 2, enemies: ['bandit', 'bandit', 'bandit'] },
+        { weight: 1, enemies: ['merman', 'merman', 'wisp'] },
+        { weight: 1, enemies: ['bandit', 'harpy', 'wisp'] },
+        
+        // Groups of 2
         { weight: 4, enemies: ['bandit', 'bandit'] },
         { weight: 3, enemies: ['merman', 'merman'] },
-        { weight: 3, enemies: ['wisp'] },
         { weight: 2, enemies: ['bandit', 'wisp'] },
         { weight: 2, enemies: ['merman', 'wisp'] },
-        { weight: 2, enemies: ['harpy'] },
-        { weight: 1, enemies: ['bandit', 'bandit', 'bandit'] },
         { weight: 1, enemies: ['wisp', 'wisp'] },
         { weight: 1, enemies: ['harpy', 'bandit'] },
-        { weight: 1, enemies: ['merman', 'harpy'] }
+        { weight: 1, enemies: ['merman', 'harpy'] },
+        
+        // Groups of 1
+        { weight: 3, enemies: ['wisp'] },
+        { weight: 2, enemies: ['harpy'] }
     ],
     enemies: [
         // --- BRIDGE SENTINELS ---
