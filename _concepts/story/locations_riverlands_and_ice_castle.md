@@ -13,13 +13,16 @@ The bridge is guarded by the **River King**, an ancient water spirit that rests 
 
 ---
 
-## 2. The Frozen Core (Ice Castle - Crystal Cavern Floor 3)
+## 2. The Frozen Core (Crystal Cavern Floor 3)
 **Placement in Story**: Arc 2 Climax (Deepest floor of the Crystal Caverns).
 
 ### The Setting
-Players expect the bottom of a crystal cave to just be more crystals. Instead, as they descend from Floor 2 (Echoing Archives) to Floor 3, the cave walls give way to perfectly carved stone. Floor 3 is the **Submerged Palace**, a forgotten, subterranean castle of the Aethelgard Empire that has been completely flash-frozen in absolute zero ice.
+Floor 3 is not just a deeper cave—it was once the main subterranean hub for the ancient **Ash Kingdom** (Aethelgard). Now, the entire area has been flash-frozen, creating a massive, icy cavern filled with dangerous underwater reservoirs. 
 
-### The Lore & The Boss
-When Valdris breached the continent, the loyalists of Aethelgard retreated to this underground fortress to protect the kingdom's greatest treasure (the Azure Banner/Relic). Realizing they could not defeat the Void, the Palace Mages cast a forbidden spell, flash-freezing the entire castle—and themselves—to seal the Void out forever.
-*   **The Visuals**: Elaborate grand halls, frozen chandeliers, and statues of knights encased in unbreakable ice. The ground is slick, requiring careful movement.
-*   **The Spectral Guardian**: The boss of this floor isn't a monster; it is the frozen projection of the Grand Magister who cast the spell. He tests the party's strength to ensure they are worthy of inheriting the Azure Relic before the ice finally shatters.
+The floor is divided into three distinct geographical zones:
+*   **The North (The Ice Castle)**: A massive, abandoned castle of ice looms in the north. The doors are currently sealed solid by magical frost, making it **impassable for now** (this will be an explorable expansion dungeon/map in the future).
+*   **The West (The Outpost)**: A small, desperate human settlement has managed to survive here near the thermal vents, providing a final safe zone and merchant area before the climax.
+*   **The South (The Submerged Ruins)**: A crumbling, frozen ruin that holds the kingdom's greatest treasure. 
+
+### The Guardian
+The southern ruins are guarded by the **Spectral Guardian**, the frozen projection of the Grand Magister who originally cast the spell to freeze the Ash Kingdom and protect the Azure Relic from the Void. The party must defeat him in the southern ruins to prove their worth.
