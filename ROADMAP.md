@@ -13,7 +13,7 @@
 - [ ] **Gamepad on World Map**: Extend gamepad polling to drive cursor movement and node selection on the world map screen.
 
 ### 🔷 Phase 3: Content & Balance
-- [ ] **Boss Balancing**: Final tuning pass on Spectral Guardian, Sunken Leviathan, and River King.
+- [x] **Boss Balancing**: Final tuning pass on Spectral Guardian, Sunken Leviathan, and River King.
 - [ ] **Gold Balance**: Tune enemy gold drops to ensure shops feel meaningful.
 
 ### 🔷 Phase 5: Release Readiness
