@@ -5,20 +5,25 @@
 
 
 ### 🔷 Phase 2: Expansion Content (Southern Isles & Riverlands)
-- [/] **Southern Isles Terrain**: Base archipelago terrain generated. (Refinement needed).
-- [ ] **Southern Isles Beautification**: Add palm trees, water shaders, and stilt-house SVG assets.
-- [/] **Riverlands Crossing Terrain**: Base river & bridge terrain generated. (Refinement needed).
-- [ ] **Riverlands Beautification**: Add stone bridges, flowing water logic, and overgrown grass detail.
-- [ ] **Expansion NPCs**: Add specialized "Survivor" NPCs with unique dialogue for each island/riverbank.
-- [ ] **Boss Balancing**: Perform a final tuning pass on the **Sunken Leviathan** and **River King**.
+- [x] **Southern Isles Lore**: Sunken Leviathan and archipelago concept finalized.
+- [/] **Southern Isles Implementation**: Map `.json` generated, but needs palm trees, water shaders, and stilt-house SVGs.
+- [x] **Riverlands Crossing Lore**: Great Bridge and River King guardian finalized.
+- [/] **Riverlands Implementation**: Base map generated. Needs stone bridges and flowing water visual polish.
 
-### 🔷 Phase 3: System Polish (Items & UI)
+### 🔷 Phase 3: Endgame Mechanics & Lore
+- [x] **Four Kings Lore & Upgrades**: Documented inheritance systems for Tao, Rei, Drake, and Aya. Upgraded character art generated.
+- [x] **Relic Synthesis Concept**: Documented mechanics for Crystal Forger and endgame accessory crafting.
+- [x] **Valdris Concept**: Final boss "Lezard Valeth" inspired concept art generated.
+- [ ] **Implement Class Upgrades**: Hook up evolved passive traits and status multipliers into `data/classes.json`.
+- [ ] **Implement Relic Synthesis**: Build the `ShopUI` crafting tab to handle item combinations.
+- [ ] **The Void Citadel (Arc 4)**: Build the final dungeon map and Valdris boss battle mechanics.
+
+### 🔷 Phase 4: System Polish (Items & UI)
 - [ ] **Item Audit**: Verify that all 20+ items in `data/items.json` have correct logic in `inventory.js`.
 - [ ] **UI Scaling**: Ensure the "Item Submenu" in battle is perfectly readable on iPhone SE/XR.
 - [ ] **Gold Balance**: Tune enemy gold drops to ensure shops feel meaningful.
 
-
-### 🔷 Phase 4: Release Readiness
+### 🔷 Phase 5: Release Readiness
 - [ ] **Walkthrough Update**: Finalize the step-by-step guide for Arc 1 and Arc 2.
 - [ ] **Beta Lock**: Set `MAX_REACHABLE_ARC: 1` in `release-config.js` for the public itch.io push.
 - [ ] **Deployment Script**: Finalize a script to minify/obfuscate core logic for the production build.
