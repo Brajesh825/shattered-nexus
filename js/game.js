@@ -481,34 +481,32 @@ const PartyMenu = (() => {
   };
 
   function open() {
-    // Hide the system/pause menu behind us
-    const pauseEl = document.getElementById('map-pause-menu');
-    if (pauseEl) pauseEl.style.display = 'none';
-    // Also hide camp menu in case it was open
-    const campEl = document.getElementById('camp-menu');
-    if (campEl) campEl.style.display = 'none';
-    _fromPause = !!(pauseEl && pauseEl.style.display === 'none');
+    if (typeof UI !== 'undefined') UI.hideAllOverlays();
 
     _idx = 0;
     const overlay = document.getElementById('party-menu');
     if (overlay) overlay.style.display = 'flex';
     _renderCurrent();
+
+    if (typeof Focus !== 'undefined') Focus.setContext('party-menu');
   }
 
   function close() {
     const overlay = document.getElementById('party-menu');
     if (overlay) overlay.style.display = 'none';
-    // Always return to the System Menu so the player isn't stranded
-    const pauseEl = document.getElementById('map-pause-menu');
-    if (pauseEl) pauseEl.style.display = 'flex';
+
+    // Intelligent restore: only return to system menu if we are actually paused
+    if (typeof MapEngine !== 'undefined' && !MapEngine.isRunning()) {
+      const pauseEl = document.getElementById('map-pause-menu');
+      if (pauseEl) pauseEl.style.display = 'flex';
+      if (typeof Focus !== 'undefined') Focus.setContext('map-pause-menu');
+    } else {
+      if (typeof Focus !== 'undefined') Focus.setContext(null);
+    }
   }
 
   function back() {
-    const overlay = document.getElementById('party-menu');
-    if (overlay) overlay.style.display = 'none';
-    // Re-open the system menu
-    const pauseEl = document.getElementById('map-pause-menu');
-    if (pauseEl) pauseEl.style.display = 'flex';
+    close();
   }
 
   function next() {

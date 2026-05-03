@@ -56,8 +56,7 @@ const InputSettings = (() => {
     const el = document.getElementById('controls-overlay');
     if (!el) return;
 
-    const pauseMenu = document.getElementById('map-pause-menu');
-    if (pauseMenu) pauseMenu.style.display = 'none';
+    if (typeof UI !== 'undefined') UI.hideAllOverlays();
 
     _render();
     el.style.display = 'flex';
@@ -69,9 +68,13 @@ const InputSettings = (() => {
     const el = document.getElementById('controls-overlay');
     if (el) el.style.display = 'none';
 
-    const pauseMenu = document.getElementById('map-pause-menu');
-    if (pauseMenu) pauseMenu.style.display = 'flex';
-    if (typeof Focus !== 'undefined') Focus.setContext('map-pause-menu');
+    if (typeof MapEngine !== 'undefined' && !MapEngine.isRunning()) {
+      const pauseMenu = document.getElementById('map-pause-menu');
+      if (pauseMenu) pauseMenu.style.display = 'flex';
+      if (typeof Focus !== 'undefined') Focus.setContext('map-pause-menu');
+    } else {
+      if (typeof Focus !== 'undefined') Focus.setContext(null);
+    }
   }
 
   function resetAll() {

@@ -40,8 +40,21 @@ const Focus = (() => {
 
     if (Input.justPressed('UP'))    _navigate(0, -1);
     if (Input.justPressed('DOWN'))  _navigate(0, 1);
-    if (Input.justPressed('LEFT'))  _navigate(-1, 0);
-    if (Input.justPressed('RIGHT')) _navigate(1, 0);
+    
+    if (Input.justPressed('LEFT')) {
+      if (_container && _container.id === 'party-menu' && typeof PartyMenu !== 'undefined') {
+        PartyMenu.prev();
+      } else {
+        _navigate(-1, 0);
+      }
+    }
+    if (Input.justPressed('RIGHT')) {
+      if (_container && _container.id === 'party-menu' && typeof PartyMenu !== 'undefined') {
+        PartyMenu.next();
+      } else {
+        _navigate(1, 0);
+      }
+    }
     
     if (Input.justPressed('CONFIRM') && _current) {
       _current.click();
@@ -90,8 +103,20 @@ const Focus = (() => {
   }
 
   function _handleBack() {
-    // Priority sequence for back buttons
-    const backBtn = document.querySelector('.pm-close-btn, .bestiary-close, .pause-btn:last-child, .tutorial-close');
+    // 1. Explicit context-based handling for system menus
+    if (_container && typeof MapUI !== 'undefined') {
+      if (_container.id === 'map-pause-menu') {
+        MapUI.closePauseMenu();
+        return;
+      }
+      if (_container.id === 'camp-menu') {
+        MapUI.closeCampMenu();
+        return;
+      }
+    }
+
+    // 2. Priority sequence for other back buttons
+    const backBtn = document.querySelector('.pm-close-btn, .pms-close, .itm-close, .bestiary-close, .pause-btn:last-child, .tutorial-close');
     if (backBtn && backBtn.offsetParent) {
       backBtn.click();
       return;
@@ -153,7 +178,7 @@ const Focus = (() => {
     const root = _container || document.body;
     // Selection criteria: visible buttons or specific game elements
     // Strictly exclude tabindex="-1" to prevent focus leaks to global utility buttons
-    const candidates = root.querySelectorAll('button:not([tabindex="-1"]), .enemy, .pa-member, .pause-inv-slot, .bestiary-row, .b-tab, .title-btn, .char-card, .class-card, .swap-card, .sc, .sc-action, .tutorial-close, .npc-dialogue-next');
+    const candidates = root.querySelectorAll('button:not([tabindex="-1"]), .enemy, .pa-member, .pause-inv-slot, .itm-entry, .itm-target-card, .bestiary-row, .b-tab, .title-btn, .char-card, .class-card, .swap-card, .sc, .sc-action, .tutorial-close, .npc-dialogue-next');
     return Array.from(candidates).filter(el => {
       const style = window.getComputedStyle(el);
       return style.display !== 'none' && style.visibility !== 'hidden' && el.offsetParent !== null;

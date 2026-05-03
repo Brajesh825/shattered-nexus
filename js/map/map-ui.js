@@ -248,6 +248,7 @@ const MapUI = (() => {
   };
 
   function openPauseMenu() {
+    if (typeof UI !== 'undefined') UI.hideAllOverlays();
     if (MapEngine.isRunning()) MapEngine.stop();
     _toggleDpad(false);
     const el = document.getElementById('map-pause-menu');
@@ -297,6 +298,7 @@ const MapUI = (() => {
 
   /* ── Camp Menu ──────────────────────────────────────── */
   function openCampMenu() {
+    if (typeof UI !== 'undefined') UI.hideAllOverlays();
     if (MapEngine.isRunning()) MapEngine.stop();
     _toggleDpad(false);
     const el = document.getElementById('camp-menu');
