@@ -324,7 +324,7 @@
                 "id": "karmic_barrier",
                 "name": "Karmic Barrier",
                 "icon": "🌀",
-                "mp": 12,
+                "mp": 8,
                 "type": "buff",
                 "description": "Protect all allies — DEF +40%, next ally attacked takes 10% less damage for 2 turns",
                 "effect": {
@@ -505,7 +505,7 @@
                 "id": "transcendent_power",
                 "name": "Transcendent Power",
                 "icon": "✨",
-                "mp": 16,
+                "mp": 10,
                 "type": "buff",
                 "description": "Divine blessing — party ATK +25%, DEF +30%, holy aura for 4 turns",
                 "effect": {
@@ -670,7 +670,7 @@
                 "id": "divine_shield",
                 "name": "Divine Shield",
                 "icon": "🛡️",
-                "mp": 12,
+                "mp": 8,
                 "type": "buff",
                 "description": "Summon god's protection — DEF +45%, reduce damage taken by 20%, 3 turns",
                 "effect": {
@@ -791,7 +791,7 @@
                 "id": "cryo_phalanx",
                 "name": "Cryo Phalanx",
                 "icon": "🛡️",
-                "mp": 16,
+                "mp": 10,
                 "type": "buff",
                 "description": "Defensive formation — Party DEF +50% and small Ice resistance for 3 turns",
                 "effect": {
