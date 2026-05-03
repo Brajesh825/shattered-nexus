@@ -43,7 +43,7 @@ const MAP_SIDE_ROUTES = [
 /* Explore map linked to each arc (index = arcIdx 0-based) */
 const ARC_MAP_ID = [
   'verdant_vale',      // Arc 1
-  'crystal_cavern_f3',    // Arc 2
+  'crystal_cavern_f1',    // Arc 2 (Entrance)
   'ember_wastes',      // Arc 3
   'sunken_temple',     // Arc 4
   'shadow_reach',      // Arc 5
@@ -1248,13 +1248,21 @@ const Story = {
   _openRegionPanel(arcIdx) {
     const arc = this.data.arcs[arcIdx];
     const panel = document.getElementById('map-region-panel');
-    const mapId = ARC_MAP_ID[arcIdx] || '';
     const lore = ARC_LORE[arcIdx] || '';
     const shard = arc.shard;
     const isDone = arcIdx < this.arcIdx;
     const isCur = arcIdx === this.arcIdx;
     const isNext = arcIdx === this.arcIdx + 1;
     const arcComplete = this.phase === 'arc_end' || this.phase === 'epilogue';
+
+    // Determine mapId: use current chapter map for active arc, otherwise default revisit map
+    let mapId = ARC_MAP_ID[arcIdx] || '';
+    if (isCur && arc.chapters) {
+      const curChap = arc.chapters[this.chapIdx];
+      if (curChap && curChap.type === 'explore' && curChap.map) {
+        mapId = curChap.map;
+      }
+    }
 
     panel.innerHTML = `
       <div class="mrp-handle"></div>
