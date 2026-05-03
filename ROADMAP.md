@@ -4,11 +4,9 @@
 **Scope**: Full playable experience through Arcs 1 & 2, including the first two Expansion Regions.
 
 
-### 🔷 Phase 3: Audio & System Polish
-- [ ] **Item Audit**: Verify that all 20+ items in `data/items.json` have correct logic in `inventory.js`.
-- [ ] **Boss Balancing**: Perform a final tuning pass on the Spectral Guardian, Sunken Leviathan, and River King.
+### 🔷 Phase 3: Content & Balance
+- [ ] **Boss Balancing**: Final tuning pass on Spectral Guardian, Sunken Leviathan, and River King.
 - [ ] **Gold Balance**: Tune enemy gold drops to ensure shops feel meaningful.
-- [ ] **UI Scaling**: Ensure the "Item Submenu" in battle is perfectly readable on iPhone SE/XR.
 
 ### 🔷 Phase 5: Release Readiness
 - [ ] **Walkthrough Update**: Finalize the step-by-step guide for Arc 1 and Arc 2.
@@ -43,12 +41,19 @@
 
 ## ✅ Completed Milestones (Condensed)
 
+### 🎨 UX & Systems (May 2026)
+- [x] **Item Vault Overhaul**: Premium, tabbed inventory with visual targeting and unified effect engine.
+- [x] **Data Integrity Audit**: Full scan of all JSON assets; resolved ID conflicts and parsing errors.
+- [x] **Party Menu Overhaul**: Premium, paginated character showcase with ethereal effects and responsive split-views.
+- [x] **Global UX Polish**: Pixel-art cursor, custom scrollbars, and stabilized navigation flows.
+- [x] **Enemy Validation**: Centralized schema check for nested stats to prevent runtime crashes.
+- [x] **Audio System**: Full BGM support with crossfading and placeholder audit completed for all maps.
+
 ### 🌍 World & Map Foundations (May 2026)
 - [x] **Arc 1 (Verdant Vale)**: Narrative, enemies, and Void Knight boss finalized.
 - [x] **Arc 2 (Crystal Cavern)**: Full 3-floor suite (F1-F3) with Spectral Guardian boss.
 - [x] **Expansion Regions**: Southern Isles and Riverlands Crossing lore and map implementations completed.
 - [x] **SVG Asset Standard**: All environmental assets converted and preloaded as high-fidelity SVGs.
-- [x] **Audio System**: Full BGM support with crossfading implemented for Map Exploration, Encounters, and Arc Bosses.
 
 ### ⚙️ Technical Foundations (April 2026)
 - [x] **Combat Engine Audit**: Fixed `getStat('reduction')` bug and stabilized damage multipliers.
