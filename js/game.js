@@ -4,6 +4,7 @@
 
 // --- DIAGNOSTIC LOGGING ---
 window.LogDebug = function (msg, type = 'info') {
+  if (typeof ReleaseConfig !== 'undefined' && !ReleaseConfig.IS_DEV) return;
   const colors = {
     hi: '#4ecfff',
     dmg: '#ff4d4d',

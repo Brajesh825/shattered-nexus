@@ -1,0 +1,90 @@
+[
+  {
+    "id": "winters_last_petal",
+    "name": "Winter's Last Petal",
+    "icon": "⚔️",
+    "element": "ice",
+    "rarity": "rare",
+    "description": "A katana found mid-draw, frozen in the moment its owner fell.",
+    "stats": {
+      "atk": 18,
+      "spd": 10,
+      "def": 6
+    },
+    "passive": {
+      "id": "freeze_start",
+      "name": "First Frost",
+      "description": "First attack each battle always applies Freeze."
+    },
+    "resonance": {
+      "charId": "aya",
+      "description": "Glacial Waltz hits twice on frozen targets."
+    }
+  },
+  {
+    "id": "laughing_lantern",
+    "name": "The Laughing Lantern",
+    "icon": "🏮",
+    "element": "fire",
+    "rarity": "rare",
+    "description": "A funeral lantern that refuses to go out. It smells like incense and iron.",
+    "stats": {
+      "atk": 20,
+      "mag": 10,
+      "hp": 30
+    },
+    "passive": {
+      "id": "blood_bloom_early",
+      "name": "Premature Bloom",
+      "description": "Blood Blossom passive activates at 60% HP instead of 50%."
+    },
+    "resonance": {
+      "charId": "tao",
+      "description": "Spirit Soother steals 50% of damage as HP instead of 35%."
+    }
+  },
+  {
+    "id": "chain_of_nights",
+    "name": "Chain of Ten Thousand Nights",
+    "icon": "⛓️",
+    "element": "wind",
+    "rarity": "rare",
+    "description": "Two thousand years of use have worn it smooth. It weighs nothing to its owner.",
+    "stats": {
+      "atk": 12,
+      "def": 20,
+      "hp": 60
+    },
+    "passive": {
+      "id": "reflect_phys",
+      "name": "Iron Echo",
+      "description": "Reflect 20% of physical damage received back to attacker."
+    },
+    "resonance": {
+      "charId": "rei",
+      "description": "Mastery of Pain also reduces all incoming damage by 15% for 2 turns."
+    }
+  },
+  {
+    "id": "tide_caller",
+    "name": "Tide Caller",
+    "icon": "🌊",
+    "element": "water",
+    "rarity": "rare",
+    "description": "A staff carved from driftwood from a coast that no longer exists.",
+    "stats": {
+      "mag": 16,
+      "mp": 18,
+      "hp": 40
+    },
+    "passive": {
+      "id": "heal_mp_restore",
+      "name": "Oceanic Grace",
+      "description": "Healing abilities restore 5 MP to the target as well."
+    },
+    "resonance": {
+      "charId": "lulu",
+      "description": "Hajra's Hymn cooldown reduced to 1 instead of 2."
+    }
+  }
+]
