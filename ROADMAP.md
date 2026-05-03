@@ -9,10 +9,13 @@
 - [x] **Southern Isles Implementation**: Map `.json` generated, but needs palm trees, water shaders, and stilt-house SVGs.
 - [x] **Riverlands Crossing Lore**: Great Bridge and River King guardian finalized.
 - [x] **Riverlands Implementation**: Base map generated. Needs stone bridges and flowing water visual polish.
-- [ ] **Crystal Caverns F3 Tweaks**: Finalize the ice castle layout and the southern ruins where the Spectral Guardian resides.
+- [x] **Crystal Caverns F3 Tweaks**: Finalized the ice castle layout and the southern ruins where the Spectral Guardian resides.
 
 ### 🔷 Phase 3: Audio & System Polish
-- [ ] **Music & Audio**: Add BGM (Background Music) and SFX (Sound Effects) to maps, menus, and battles.
+- [ ] **Music Integration**: Add BGM (Background Music) and SFX for the following:
+  - [ ] Map Exploration
+  - [ ] Regular Encounters
+  - [ ] Boss Battles
 - [ ] **Item Audit**: Verify that all 20+ items in `data/items.json` have correct logic in `inventory.js`.
 - [ ] **Boss Balancing**: Perform a final tuning pass on the Spectral Guardian, Sunken Leviathan, and River King.
 - [ ] **Gold Balance**: Tune enemy gold drops to ensure shops feel meaningful.
