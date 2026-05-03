@@ -27,6 +27,7 @@
   <link rel="stylesheet" href="css/map.css">
   <link rel="stylesheet" href="css/combat.css">
   <link rel="stylesheet" href="css/party-menu.css">
+  <link rel="stylesheet" href="css/item-menu.css">
   <link rel="icon"
     href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚔️</text></svg>">
   <script>
@@ -606,20 +607,36 @@
           </div>
         </div>
 
-        <!-- Inventory Overlay -->
-        <div id="inventory-overlay" class="bestiary-overlay" style="display:none">
-          <div class="bestiary-bg" onclick="InventoryUI.close()"></div>
-          <div class="bestiary-panel">
-            <div class="bestiary-header">
-              <div class="bestiary-title">INVENTORY</div>
-              <button class="bestiary-close" onclick="InventoryUI.close()">✕</button>
+        <!-- Inventory Overlay (Vault) -->
+        <div id="inventory-overlay" style="display:none">
+          <div class="itm-header">
+            <span class="itm-title">🎒 ITEM VAULT 🎒</span>
+            <button class="itm-close" onclick="InventoryUI.close()">✕</button>
+          </div>
+          
+          <div class="itm-tabs" id="itm-tabs">
+            <button class="itm-tab active" data-cat="consumable" onclick="InventoryUI.setCategory('consumable')">CONSUMABLES</button>
+            <button class="itm-tab" data-cat="trophy" onclick="InventoryUI.setCategory('trophy')">MATERIALS</button>
+            <button class="itm-tab" data-cat="key_item" onclick="InventoryUI.setCategory('key_item')">KEY ITEMS</button>
+          </div>
+
+          <div class="itm-body">
+            <!-- Left: Scrollable list of items -->
+            <div class="itm-list-pane">
+              <div class="itm-list-scroll" id="inventory-list"></div>
             </div>
-            <div class="bestiary-body">
-              <div class="bestiary-sidebar" id="inventory-list"></div>
-              <div class="bestiary-detail" id="inventory-detail">
-                <div class="bestiary-empty-hint">Select an item to view details</div>
-              </div>
+
+            <!-- Right: Detail Showcase -->
+            <div class="itm-detail-pane" id="inventory-detail">
+              <!-- Rendered by JS -->
             </div>
+          </div>
+
+          <!-- Target Picker Overlay (appears when using healing item) -->
+          <div class="itm-target-overlay" id="itm-target-picker">
+            <div class="itm-title" style="margin-bottom: 24px;">SELECT TARGET</div>
+            <div class="itm-target-grid" id="itm-target-grid"></div>
+            <button class="itm-use-btn" style="max-width: 200px; background: rgba(0,0,0,0.5);" onclick="InventoryUI.closeTargetPicker()">CANCEL</button>
           </div>
         </div>
 

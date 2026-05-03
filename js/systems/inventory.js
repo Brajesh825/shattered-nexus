@@ -1,8 +1,109 @@
 /* ============================================================
    INVENTORY SYSTEM
    ============================================================ */
-const MAX_INVENTORY_STACKS = 20;
+const MAX_INVENTORY_STACKS = 30;
 const MAX_STACK_QTY        = 99;
+
+/**
+ * Unified logic to apply item effects to a target (or all).
+ * Returns a result object { success: boolean, msg: string, leveledUp: string[] }
+ */
+const ItemSystem = {
+  apply(def, targetIdx) {
+    const e = def.effect;
+    if (!e) return { success: false, msg: "Item has no effect." };
+
+    const targets = e.target === 'all'
+      ? G.party.filter(m => def.subtype === 'revive' ? m.isKO : !m.isKO)
+      : [G.party[targetIdx]];
+
+    if (!targets.length || targets.every(t => !t)) {
+      return { success: false, msg: "No valid targets." };
+    }
+
+    let used = false;
+    let leveledUp = [];
+
+    targets.forEach(m => {
+      const pIdx = G.party.indexOf(m);
+
+      if (e.stat === 'hp') {
+        if (m.isKO) return;
+        const amt = e.percent ? Math.floor(m.maxHp * e.amount / 100) : e.amount;
+        const oldHp = m.hp;
+        m.hp = Math.min(m.maxHp, m.hp + amt);
+        if (m.hp > oldHp) used = true;
+        // Visuals (if in battle)
+        if (typeof BattleUI !== 'undefined' && BattleUI.popParty) BattleUI.popParty(pIdx, amt, 'heal');
+
+      } else if (e.stat === 'mp') {
+        if (m.isKO) return;
+        const amt = e.percent ? Math.floor(m.maxMp * e.amount / 100) : e.amount;
+        const oldMp = m.mp;
+        m.mp = Math.min(m.maxMp, m.mp + amt);
+        if (m.mp > oldMp) used = true;
+        if (typeof BattleUI !== 'undefined' && BattleUI.popParty) BattleUI.popParty(pIdx, amt, 'regen');
+
+      } else if (e.stat === 'both') {
+        if (m.isKO) return;
+        m.hp = m.maxHp; m.mp = m.maxMp;
+        used = true;
+        if (typeof BattleUI !== 'undefined' && BattleUI.popParty) BattleUI.popParty(pIdx, 0, 'heal');
+
+      } else if (e.stat === 'revive') {
+        if (!m.isKO) return;
+        m.isKO = false;
+        m.hp = Math.max(1, Math.floor(m.maxHp * e.amount / 100));
+        used = true;
+        if (typeof BattleUI !== 'undefined' && BattleUI.popParty) BattleUI.popParty(pIdx, m.hp, 'heal');
+
+      } else if (e.stat === 'debuff') {
+        m.statuses = (m.statuses || []).filter(s =>
+          !s.id.includes('debuff') && s.type !== 'control' && s.type !== 'dot'
+        );
+        used = true;
+        if (typeof BattleUI !== 'undefined' && BattleUI.popParty) BattleUI.popParty(pIdx, 0, 'regen');
+
+      } else if (e.stat === 'atk' || e.stat === 'def') {
+        // Battle-only buffs usually
+        if (typeof Battle !== 'undefined' && Battle.addStatus) {
+          Battle.addStatus(m, {
+            id: `buff_${e.stat}_item`,
+            label: `${e.stat.toUpperCase()} Up`,
+            icon: e.stat === 'atk' ? '⚔️' : '🛡️',
+            stat: e.stat, type: 'mult',
+            value: 1 + (e.amount / 100),
+            turns: e.turns || 3
+          });
+          used = true;
+          if (typeof BattleUI !== 'undefined' && BattleUI.popParty) BattleUI.popParty(pIdx, 0, 'hi');
+        }
+      } else if (e.stat === 'exp') {
+        m.exp += e.amount;
+        used = true;
+        if (typeof checkMemberLevel === 'function') {
+          while (checkMemberLevel(m)) {
+            if (!leveledUp.includes(m.displayName)) leveledUp.push(m.displayName);
+          }
+        }
+      }
+    });
+
+    if (used) {
+      removeFromInventory(def.id);
+      // Sync to source char data
+      G.party.forEach(m => {
+        if (m && m.char) {
+          m.char.hp = m.hp; m.char.mp = m.mp; m.char.isKO = m.isKO;
+          m.char.exp = m.exp; m.char.lv = m.lv;
+        }
+      });
+      return { success: true, msg: `Used ${def.name}!`, leveledUp };
+    } else {
+      return { success: false, msg: "Item had no effect." };
+    }
+  }
+};
 
 function addToInventory(itemId, qty = 1) {
   const def = G.items.find(i => i.id === itemId);
@@ -11,7 +112,7 @@ function addToInventory(itemId, qty = 1) {
   if (existing) {
     existing.qty = Math.min(MAX_STACK_QTY, existing.qty + qty);
   } else {
-    if (G.inventory.length >= MAX_INVENTORY_STACKS) return false; // bag full
+    if (G.inventory.length >= MAX_INVENTORY_STACKS) return false;
     G.inventory.push({ itemId, qty: Math.min(MAX_STACK_QTY, qty) });
   }
   return true;
@@ -25,7 +126,7 @@ function removeFromInventory(itemId, qty = 1) {
   return true;
 }
 
-// Open the item submenu in battle
+/* ── BATTLE ITEM UI ─────────────────────────────────────── */
 function heroItem() {
   if (G.busy) return;
   BattleUI.openSub(null);
@@ -43,10 +144,7 @@ function _buildItemMenu() {
   });
 
   if (!battleItems.length) {
-    const empty = document.createElement('div');
-    empty.className = 'item-empty';
-    empty.textContent = 'No items available.';
-    menu.appendChild(empty);
+    menu.innerHTML = '<div class="item-empty">No usable items.</div>';
     const back = document.createElement('button');
     back.className = 'cmd-btn dim';
     back.textContent = '← BACK';
@@ -59,17 +157,12 @@ function _buildItemMenu() {
   battleItems.forEach(stack => {
     const def = G.items.find(i => i.id === stack.itemId);
     if (!def) return;
-    const needsTarget = def.effect.target === 'single';
     const btn = document.createElement('button');
     btn.className = 'cmd-btn item-btn';
     btn.innerHTML = `<span class="item-icon">${def.icon}</span> ${def.name} <span class="item-qty">×${stack.qty}</span>`;
-    btn.title = def.description;
     btn.onclick = () => {
-      if (needsTarget) {
-        _buildItemTargetMenu(def);
-      } else {
-        _useItem(def, -1);
-      }
+      if (def.effect.target === 'single') _buildItemTargetMenu(def);
+      else _useItemInBattle(def, -1);
     };
     menu.appendChild(btn);
   });
@@ -85,10 +178,8 @@ function _buildItemMenu() {
 function _buildItemTargetMenu(def) {
   const menu = document.getElementById('item-sub');
   menu.innerHTML = '';
-
-  // Filter valid targets based on item subtype
   const isRevive = def.subtype === 'revive';
-  const targets  = G.party.filter((m, i) => isRevive ? m.isKO : Battle.alive(m));
+  const targets  = G.party.filter(m => isRevive ? m.isKO : !m.isKO);
 
   targets.forEach(m => {
     const idx = G.party.indexOf(m);
@@ -97,7 +188,7 @@ function _buildItemTargetMenu(def) {
     btn.className = 'cmd-btn';
     btn.style.borderLeftColor = col;
     btn.innerHTML = `<span style="color:${col}">${m.displayName}</span> <span class="item-qty">${m.hp}/${m.maxHp} HP</span>`;
-    btn.onclick = () => _useItem(def, idx);
+    btn.onclick = () => _useItemInBattle(def, idx);
     menu.appendChild(btn);
   });
 
@@ -108,171 +199,73 @@ function _buildItemTargetMenu(def) {
   menu.appendChild(back);
 }
 
-function _useItem(def, targetIdx) {
+function _useItemInBattle(def, targetIdx) {
   if (G.busy) return;
-  G.busy = true; BattleUI.btns(false);
-  BattleUI.openSub(null);
+  G.busy = true; BattleUI.btns(false); BattleUI.openSub(null);
 
-  const e = def.effect;
-
-  // Escape item
   if (def.subtype === 'escape') {
     removeFromInventory(def.id);
     BattleUI.setLog(['The party vanishes in a cloud of smoke!'], ['hi']);
-    setTimeout(() => showResult('escaped'), 900);
+    setTimeout(() => typeof showResult === 'function' ? showResult('escaped') : advanceTurn(), 900);
     return;
   }
 
-  const targets = e.target === 'all'
-    ? G.party.filter(m => def.subtype === 'revive' ? m.isKO : Battle.alive(m))
-    : [G.party[targetIdx]];
+  const res = ItemSystem.apply(def, targetIdx);
+  if (res.success) {
+    const tName = def.effect.target === 'all' ? 'the party' : G.party[targetIdx]?.displayName || '?';
+    BattleUI.setLog([`Used ${def.icon} ${def.name} on ${tName}!`], ['hi']);
+  } else {
+    BattleUI.setLog([res.msg], ['dim']);
+  }
 
-  targets.forEach((m, i) => {
-    const pIdx = G.party.indexOf(m);
-
-    if (e.stat === 'hp') {
-      const amt = e.percent ? Math.floor(m.maxHp * e.amount / 100) : e.amount;
-      m.hp = Math.min(m.maxHp, m.hp + amt);
-      BattleUI.popParty(pIdx, amt, 'heal');
-
-    } else if (e.stat === 'mp') {
-      const amt = e.percent ? Math.floor(m.maxMp * e.amount / 100) : e.amount;
-      m.mp = Math.min(m.maxMp, m.mp + amt);
-      BattleUI.popParty(pIdx, amt, 'regen');
-
-    } else if (e.stat === 'both') {
-      m.hp = m.maxHp; m.mp = m.maxMp;
-      BattleUI.popParty(pIdx, 0, 'heal');
-
-    } else if (e.stat === 'revive') {
-      m.isKO = false;
-      m.hp   = Math.max(1, Math.floor(m.maxHp * e.amount / 100));
-      BattleUI.popParty(pIdx, m.hp, 'heal');
-
-    } else if (e.stat === 'debuff') {
-      m.statuses = (m.statuses || []).filter(s =>
-        !s.id.includes('debuff') && s.type !== 'control' && s.type !== 'dot'
-      );
-      BattleUI.popParty(pIdx, 0, 'regen');
-
-    } else if (e.stat === 'atk' || e.stat === 'def') {
-      const boost = Math.floor(m[e.stat] * e.amount / 100);
-      Battle.addStatus(m, {
-        id: `buff_${e.stat}_item`,
-        label: `${e.stat.toUpperCase()} Up`,
-        icon: e.stat === 'atk' ? '⚔️' : '🛡️',
-        stat: e.stat, type: 'mult',
-        value: 1 + (e.amount / 100),
-        turns: e.turns || 3
-      });
-      BattleUI.popParty(pIdx, boost, 'hi');
-
-    } else if (e.stat === 'exp') {
-      m.exp += e.amount;
-      BattleUI.popParty(pIdx, e.amount, 'hi');
-      // Sync back immediately for exp
-      const ch = G.chars.find(c => c.id === m.charId);
-      if (ch) ch.exp = m.exp;
-    }
-  });
-
-  removeFromInventory(def.id);
-
-  const tName = e.target === 'all' ? 'the party' : targets[0]?.displayName || '?';
-  BattleUI.setLog([`Used ${def.icon} ${def.name} on ${tName}!`], ['hi']);
   BattleUI.renderPartyStatus();
-
   setTimeout(advanceTurn, 800);
 }
 
-// Award drops from a defeated enemy def
-function _awardDrops(enemyDef) {
-  if (!enemyDef.drops || !enemyDef.drops.length) return [];
-  const awarded = [];
-  enemyDef.drops.forEach(drop => {
-    // chance is stored as 0–1 fraction (e.g. 0.15 = 15%)
-    if (Math.random() > (drop.chance || 0.2)) return;
-
-    // Support both {itemId:"potion"} and legacy {item:"Potion"} formats
-    let itemId = drop.itemId;
-    if (!itemId && drop.item) {
-      // Try name-based lookup in G.items
-      const match = (G.items || []).find(i =>
-        i.name.toLowerCase() === drop.item.toLowerCase() ||
-        i.id === drop.item.toLowerCase().replace(/[- ]/g, '_')
-      );
-      itemId = match?.id;
-    }
-    if (!itemId) return; // Trophy item not in items.json — skip silently
-
-    addToInventory(itemId, drop.qty || 1);
-    awarded.push(itemId);
-  });
-  return awarded;
-}
-
-// Attempt to drop a random common/uncommon relic from enemies
-// elite flag raises the chance
-function _tryRelicDrop(isElite) {
-  const chance = isElite ? 25 : 8;
-  if (Math.random() * 100 > chance) return null;
-  const pool = (G.relics || []).filter(r =>
-    (r.rarity === 'common' || r.rarity === 'uncommon') &&
-    !G.ownedRelics.includes(r.id)
-  );
-  if (!pool.length) return null;
-  const relic = pool[Math.floor(Math.random() * pool.length)];
-  G.ownedRelics.push(relic.id);
-  // Auto-equip if a slot is free
-  if (G.activeRelics.length < 3) G.activeRelics.push(relic.id);
-  return relic;
-}
-
-// Award a specific boss relic by ID (called after arc boss victory)
-function awardBossRelic(relicId) {
-  if (!relicId || G.ownedRelics.includes(relicId)) return null;
-  const relic = (G.relics || []).find(r => r.id === relicId);
-  if (!relic) return null;
-  G.ownedRelics.push(relicId);
-}
-
-/* ============================================================
-   OUT-OF-BATTLE INVENTORY UI
-   ============================================================ */
+/* ── OUT-OF-BATTLE ITEM UI (VAULT) ───────────────────────── */
 const InventoryUI = (() => {
-  let _selectedItemDef = null;
+  let _selectedItem = null;
+  let _category = 'consumable';
 
   function open() {
-    // Close other menus if needed
     if (typeof MapUI !== 'undefined') {
-      const p = document.getElementById('map-pause-menu');
-      if (p) p.style.display = 'none';
-      const c = document.getElementById('camp-menu');
-      if (c) c.style.display = 'none';
+      const p = document.getElementById('map-pause-menu'); if (p) p.style.display = 'none';
+      const c = document.getElementById('camp-menu'); if (c) c.style.display = 'none';
     }
     const el = document.getElementById('inventory-overlay');
     if (el) el.style.display = 'flex';
     
-    _selectedItemDef = null;
-    renderList();
-    renderDetail();
+    _selectedItem = null;
+    render();
   }
 
   function close() {
     const el = document.getElementById('inventory-overlay');
     if (el) el.style.display = 'none';
-    // Re-open pause or camp if we were in them...
-    // Actually MapEngine pause state is enough, the player can just press menu again.
-    // Let's bring them back to pause menu for better UX if it was open.
     if (typeof MapUI !== 'undefined' && typeof MapEngine !== 'undefined' && !MapEngine.isRunning()) {
-      // It's safer to just reopen the camp menu if they are on the camp tile, otherwise pause
       const isCamp = MapData.getTileAt(MapEngine.getMap(), MapPlayer.tx, MapPlayer.ty) === 74;
-      if (isCamp) {
-        document.getElementById('camp-menu').style.display = 'flex';
-      } else {
-        document.getElementById('map-pause-menu').style.display = 'flex';
-      }
+      if (isCamp) document.getElementById('camp-menu').style.display = 'flex';
+      else document.getElementById('map-pause-menu').style.display = 'flex';
     }
+  }
+
+  function setCategory(cat) {
+    _category = cat;
+    _selectedItem = null;
+    render();
+  }
+
+  function render() {
+    renderTabs();
+    renderList();
+    renderDetail();
+  }
+
+  function renderTabs() {
+    const tabs = document.querySelectorAll('.itm-tab');
+    tabs.forEach(t => {
+      t.classList.toggle('active', t.dataset.cat === _category);
+    });
   }
 
   function renderList() {
@@ -280,24 +273,27 @@ const InventoryUI = (() => {
     if (!listEl) return;
     listEl.innerHTML = '';
 
-    if (!G.inventory || !G.inventory.length) {
-      listEl.innerHTML = '<div style="padding: 20px; color: var(--text-dim);">No items in bag.</div>';
+    const items = G.inventory.filter(s => {
+      const def = G.items.find(i => i.id === s.itemId);
+      return def && def.type === _category;
+    });
+
+    if (!items.length) {
+      listEl.innerHTML = `<div style="padding:40px; text-align:center; color:var(--text-dim); font-size:0.8rem">No ${_category} items.</div>`;
       return;
     }
 
-    G.inventory.forEach(stack => {
-      const def = G.items?.find(i => i.id === stack.itemId);
-      if (!def) return;
-      const isSelected = _selectedItemDef && _selectedItemDef.id === def.id;
-      
-      const btn = document.createElement('button');
-      btn.className = 'b-list-item' + (isSelected ? ' active' : '');
-      btn.innerHTML = `<span style="font-size: 1.2em; margin-right: 8px;">${def.icon}</span> ${def.name} <span style="float:right; color:var(--gold)">x${stack.qty}</span>`;
-      btn.onclick = () => {
-        _selectedItemDef = def;
-        renderList();
-        renderDetail();
-      };
+    items.forEach(stack => {
+      const def = G.items.find(i => i.id === stack.itemId);
+      const active = _selectedItem && _selectedItem.id === def.id;
+      const btn = document.createElement('div');
+      btn.className = `itm-entry ${active ? 'active' : ''}`;
+      btn.innerHTML = `
+        <span class="itm-entry-icon">${def.icon}</span>
+        <span class="itm-entry-name">${def.name}</span>
+        <span class="itm-entry-qty">×${stack.qty}</span>
+      `;
+      btn.onclick = () => { _selectedItem = def; render(); };
       listEl.appendChild(btn);
     });
   }
@@ -305,184 +301,110 @@ const InventoryUI = (() => {
   function renderDetail() {
     const detEl = document.getElementById('inventory-detail');
     if (!detEl) return;
-
-    if (!_selectedItemDef) {
-      detEl.innerHTML = '<div class="bestiary-empty-hint">Select an item to view details</div>';
+    if (!_selectedItem) {
+      detEl.innerHTML = '<div style="height:100%; display:flex; align-items:center; justify-content:center; color:var(--text-dim); font-size:0.85rem">Select an item</div>';
       return;
     }
 
-    const def = _selectedItemDef;
-    const stack = G.inventory.find(s => s.itemId === def.id);
-    const qty = stack ? stack.qty : 0;
-    const isUsable = def.usable_in && def.usable_in.includes('map');
+    const def = _selectedItem;
+    const isUsable = def.usable_in?.includes('map');
+    const rarityClass = `rarity-${def.rarity || 'common'}`;
 
     detEl.innerHTML = `
-      <div style="display: flex; align-items: center; margin-bottom: 20px;">
-        <div style="font-size: 48px; margin-right: 20px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; border-radius: 8px;">${def.icon}</div>
-        <div>
-          <h2 style="margin: 0; color: var(--gold); text-shadow: 0 2px 4px rgba(0,0,0,0.8);">${def.name}</h2>
-          <div style="color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; font-size: 12px; margin-top: 4px;">
-            ${def.type} · Owned: ${qty}
-          </div>
-        </div>
-      </div>
-      
-      <div style="line-height: 1.6; font-size: 15px; color: #e2e8f0; margin-bottom: 30px; background: rgba(0,0,0,0.2); padding: 15px; border-left: 3px solid var(--gold);">
-        ${def.description}
-      </div>
-      
-      <div id="inv-action-area">
-        ${isUsable ? `<button class="cmd-btn" style="width: 100%; max-width: 250px; justify-content: center; font-size: 16px; padding: 12px;" onclick="InventoryUI.useSelectedItem()">USE ITEM</button>` : ''}
-      </div>
-      <div id="inv-target-area" style="display:none; margin-top: 20px; border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 20px;"></div>
+      <div class="itm-showcase-box ${rarityClass}">${def.icon}</div>
+      <div class="itm-detail-name">${def.name}</div>
+      <div class="itm-detail-meta">${def.rarity || 'Common'} · ${def.subtype?.replace('_',' ') || 'Item'}</div>
+      <div class="itm-detail-desc">${def.description}</div>
+      <button class="itm-use-btn" ${!isUsable ? 'disabled' : ''} onclick="InventoryUI.onUseClick()">
+        ${isUsable ? 'USE ITEM' : 'CANNOT USE ON MAP'}
+      </button>
     `;
   }
 
-  function useSelectedItem() {
-    if (!_selectedItemDef) return;
-    const def = _selectedItemDef;
-    
-    const needsTarget = def.effect && def.effect.target === 'single';
-
-    if (!needsTarget) {
-      _applyMapItem(def, null);
-    } else {
-      _showTargetPicker(def);
-    }
+  function onUseClick() {
+    if (!_selectedItem) return;
+    const def = _selectedItem;
+    if (def.effect?.target === 'single') openTargetPicker();
+    else useItem(null);
   }
 
-  function _showTargetPicker(def) {
-    document.getElementById('inv-action-area').style.display = 'none';
-    const tgt = document.getElementById('inv-target-area');
-    tgt.style.display = 'block';
-    
-    let html = `<div style="margin-bottom: 12px; color: var(--gold);">Select Target:</div><div style="display: grid; gap: 8px;">`;
-    
-    const CHAR_COLOR_MAP = {
-      aya:'#7dd3fc', tao:'#ef4444', lulu:'#2dd4bf', rei:'#4ade80',
-      rydia:'#a78bfa', lenneth:'#e879f9', kain:'#0ea5e9', leon:'#fbbf24'
-    };
+  function openTargetPicker() {
+    const overlay = document.getElementById('itm-target-picker');
+    const grid = document.getElementById('itm-target-grid');
+    overlay.style.display = 'flex';
+    grid.innerHTML = '';
+
+    const isRevive = _selectedItem.subtype === 'revive';
 
     G.party.forEach((m, i) => {
-      if (!m) return;
-      const col = CHAR_COLOR_MAP[m.charId] || '#a090d0';
-      const isKO = !m.hp || m.isKO;
-      
-      const isReviveItem = def.effect && def.effect.stat === 'revive';
-      if (isReviveItem && !isKO) return;
-      if (!isReviveItem && isKO) return;
+      const col = CHAR_COLOR[m.charId] || '#aaa';
+      const hpPct = (m.hp / m.maxHp) * 100;
+      const mpPct = (m.mp / m.maxMp) * 100;
+      const invalid = isRevive ? !m.isKO : m.isKO;
 
-      html += `<button class="cmd-btn" style="border-left-color: ${col}; justify-content: space-between;" onclick="InventoryUI.applyToTarget(${i})">
-        <span style="color:${col}">${m.displayName}</span>
-        <span style="color:var(--text-dim)">${m.hp}/${m.maxHp} HP</span>
-      </button>`;
+      const card = document.createElement('div');
+      card.className = `itm-target-card ${invalid ? 'disabled' : ''}`;
+      card.innerHTML = `
+        <div class="itm-target-name" style="color:${col}">${m.displayName}</div>
+        <div class="itm-target-bar-bg"><div class="itm-target-bar-fill" style="width:${hpPct}%; background:#4ade80"></div></div>
+        <div class="itm-target-bar-bg"><div class="itm-target-bar-fill" style="width:${mpPct}%; background:#5060ff"></div></div>
+      `;
+      if (!invalid) card.onclick = () => useItem(i);
+      grid.appendChild(card);
     });
-
-    html += `<button class="cmd-btn dim" style="justify-content: center; margin-top: 8px;" onclick="InventoryUI.cancelTarget()">Cancel</button></div>`;
-    tgt.innerHTML = html;
   }
 
-  function cancelTarget() {
-    document.getElementById('inv-action-area').style.display = 'block';
-    document.getElementById('inv-target-area').style.display = 'none';
+  function closeTargetPicker() {
+    document.getElementById('itm-target-picker').style.display = 'none';
   }
 
-  function applyToTarget(memberIdx) {
-    _applyMapItem(_selectedItemDef, memberIdx);
-  }
-
-  function _applyMapItem(def, memberIdx) {
-    const e = def.effect;
-    if (!e) return;
-    
-    const targets = memberIdx !== null
-      ? [G.party[memberIdx]]
-      : G.party.filter(m => m && !m.isKO && m.hp > 0);
-
-    let used = false;
-    let leveledNames = [];
-
-    targets.forEach(m => {
-      if (!m) return;
-      if (e.stat === 'hp' && e.amount) {
-        if (m.isKO || m.hp <= 0) return; // skip KO'd
-        const heal = e.percent ? Math.floor(m.maxHp * e.amount / 100) : e.amount;
-        m.hp = Math.min(m.maxHp, m.hp + heal);
-        used = true;
-      } else if (e.stat === 'mp' && e.amount) {
-        if (m.isKO) return;
-        const restore = e.percent ? Math.floor(m.maxMp * e.amount / 100) : e.amount;
-        m.mp = Math.min(m.maxMp, m.mp + restore);
-        used = true;
-      } else if (e.stat === 'both' && e.amount) {
-        if (m.isKO) return;
-        m.hp = m.maxHp;
-        m.mp = m.maxMp;
-        used = true;
-      } else if (e.stat === 'revive') {
-        if (!m.isKO && m.hp > 0) return;
-        m.isKO = false;
-        m.hp = e.amount ? Math.min(m.maxHp, e.percent ? Math.floor(m.maxHp * e.amount / 100) : e.amount) : 1;
-        if (m.char) m.char.isKO = false;
-        used = true;
-      } else if (e.stat === 'debuff') {
-        if (m.statuses) {
-          m.statuses = m.statuses.filter(s => !s.id.includes('debuff') && s.type !== 'control' && s.type !== 'dot');
-        }
-        used = true;
-      } else if (e.stat === 'exp') {
-        if (m.isKO) return;
-        m.exp += e.amount;
-        used = true;
-        // Level up check
-        if (typeof checkMemberLevel === 'function') {
-          while (checkMemberLevel(m)) {
-            if (!leveledNames.includes(m.displayName)) leveledNames.push(m.displayName);
-          }
-        }
-      }
-    });
-
-    if (!used) return;
-
-    // Consume item
-    removeFromInventory(def.id);
-
-    // Sync char HP/MP/EXP
-    G.party.forEach(m => {
-      if (m && m.char) {
-        m.char.hp = m.hp;
-        m.char.mp = m.mp;
-        m.char.isKO = m.isKO;
-        m.char.exp = m.exp;
-        m.char.lv = m.lv;
-      }
-    });
-
-    if (typeof MapUI !== 'undefined') {
-      if (leveledNames.length > 0) {
-        MapUI.showMsg(`★ ${leveledNames.join(', ')} Leveled Up!`, 2000);
-        if (typeof SFX !== 'undefined') SFX.levelUp();
-      } else {
-        MapUI.showMsg(`Used ${def.icon} ${def.name}!`, 1400);
-      }
+  function useItem(targetIdx) {
+    const res = ItemSystem.apply(_selectedItem, targetIdx);
+    if (res.success) {
+      if (res.leveledUp.length) MapUI.showMsg(`★ ${res.leveledUp.join(', ')} Leveled Up!`, 2000);
+      else MapUI.showMsg(res.msg, 1200);
+      closeTargetPicker();
+      render();
+    } else {
+      MapUI.showMsg(res.msg, 1200);
     }
-
-    // Refresh UI
-    const stack = G.inventory.find(s => s.itemId === def.id);
-    if (!stack) {
-      _selectedItemDef = null;
-    }
-    renderList();
-    renderDetail();
   }
 
-  return {
-    open,
-    close,
-    renderList,
-    useSelectedItem,
-    applyToTarget,
-    cancelTarget
-  };
+  return { open, close, setCategory, onUseClick, closeTargetPicker };
 })();
+
+/* Award drops from a defeated enemy def */
+function _awardDrops(enemyDef) {
+  if (!enemyDef.drops || !enemyDef.drops.length) return [];
+  const awarded = [];
+  enemyDef.drops.forEach(drop => {
+    if (Math.random() > (drop.chance || 0.2)) return;
+    let itemId = drop.itemId;
+    if (!itemId && drop.item) {
+      const match = (G.items || []).find(i =>
+        i.name.toLowerCase() === drop.item.toLowerCase() ||
+        i.id === drop.item.toLowerCase().replace(/[- ]/g, '_')
+      );
+      itemId = match?.id;
+    }
+    if (itemId) { addToInventory(itemId, drop.qty || 1); awarded.push(itemId); }
+  });
+  return awarded;
+}
+
+function _tryRelicDrop(isElite) {
+  const chance = isElite ? 25 : 8;
+  if (Math.random() * 100 > chance) return null;
+  const pool = (G.relics || []).filter(r => (r.rarity === 'common' || r.rarity === 'uncommon') && !G.ownedRelics.includes(r.id));
+  if (!pool.length) return null;
+  const relic = pool[Math.floor(Math.random() * pool.length)];
+  G.ownedRelics.push(relic.id);
+  if (G.activeRelics.length < 3) G.activeRelics.push(relic.id);
+  return relic;
+}
+
+function awardBossRelic(relicId) {
+  if (!relicId || G.ownedRelics.includes(relicId)) return null;
+  const relic = (G.relics || []).find(r => r.id === relicId);
+  if (relic) G.ownedRelics.push(relicId);
+}
