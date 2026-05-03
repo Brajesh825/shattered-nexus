@@ -28,7 +28,9 @@ const AssetPreloader = (() => {
     ],
     // BGM tracks (all of them)
     bgm: [
-      'title', 'story', 'exploration', 'battle'
+      'title', 'story', 'exploration', 'battle',
+      'riverlands_explore', 'riverlands_battle', 'river_king_theme',
+      'vale_explore', 'vale_battle', 'void_knight_theme'
     ],
     ui: [
       'world_map_bg'
