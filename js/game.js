@@ -533,68 +533,76 @@ const PartyMenu = (() => {
       navLabel.textContent = `${m.displayName}  ·  ${_idx + 1} / ${G.party.length}`;
     }
 
-    // Build ability rows
-    const abRows = (m.abilities || []).map(a => {
-      const aCol = col;
-      return `<div class="pm-ab" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
+    // Ability rows — compact single-line; tap toggles description
+    const abRows = (m.abilities || []).map(a =>
+      `<div class="pm-ab" onclick="this.nextElementSibling.classList.toggle('pm-ab-open')">
         <span class="pm-ab-icon">${a.icon || '⚡'}</span>
         <span class="pm-ab-name">${a.name}</span>
-        <span class="pm-ab-cost">${a.type ? '<span class="pm-ab-type">' + a.type + '</span>' : ''} ${a.mp}MP</span>
+        <span class="pm-ab-mp">${a.mp}MP</span>
         <span class="pm-ab-toggle">▾</span>
       </div>
-      <div class="pm-ab-desc" style="display:none; padding:8px 12px; font-size:13px; color:var(--text-dim); background:rgba(0,0,0,0.25); border-left:3px solid ${aCol}; margin-bottom:4px; line-height:1.5;">
+      <div class="pm-ab-drawer">
         ${a.description || 'No description available.'}
-      </div>`;
-    }).join('');
+      </div>`
+    ).join('');
 
+    // 2-col layout: portrait LEFT, everything else RIGHT — no scroll needed
     viewer.innerHTML = `
       <div class="pm-viewer-inner">
-        <!-- Portrait -->
-        <div class="pm-portrait-section" style="border-color:${col}40">
-          <div class="pm-portrait" id="pm-portrait-el" style="height:160px;"></div>
-          <div class="pm-id-block">
-            <div class="pm-card-name" style="color:${col}">${m.displayName} ${m.isKO ? '<span class="pm-ko-badge">KO</span>' : ''}</div>
-            <div class="pm-card-class">${m.cls?.name || ''}</div>
-            <div class="pm-card-lv">LV <span style="color:${col}">${m.lv}</span> &middot; EXP <span style="color:var(--gold)">${m.exp}</span>/<span style="color:var(--text-dim)">${expNext}</span></div>
+
+        <!-- LEFT: Portrait column -->
+        <div class="pm-portrait-col">
+          <div class="pm-portrait" id="pm-portrait-el"></div>
+        </div>
+
+        <!-- RIGHT: All character info -->
+        <div class="pm-info-col">
+
+          <!-- Header: name / class / level -->
+          <div class="pm-char-header" style="border-bottom:1px solid ${col}40;">
+            <div class="pm-card-name" style="color:${col}">${m.displayName}${m.isKO ? ' <span class="pm-ko-badge">KO</span>' : ''}</div>
+            <div class="pm-card-class">${m.cls?.name || ''} &middot; LV <span style="color:${col}">${m.lv}</span></div>
+            <div class="pm-card-exp">EXP <span style="color:var(--gold)">${m.exp}</span>/<span style="color:var(--text-dim)">${expNext}</span></div>
           </div>
-        </div>
 
-        <!-- HP/MP bars -->
-        <div class="pm-bars">
-          <div class="pm-bar-row">HP
-            <div class="pm-bar-bg"><div class="pm-bar-fill" style="width:${hpPct}%;background:${hpCol}"></div></div>
-            <span>${Math.max(0, m.hp)}/${m.maxHp}</span>
+          <!-- HP / MP bars -->
+          <div class="pm-bars">
+            <div class="pm-bar-row">HP
+              <div class="pm-bar-bg"><div class="pm-bar-fill" style="width:${hpPct}%;background:${hpCol}"></div></div>
+              <span>${Math.max(0,m.hp)}/${m.maxHp}</span>
+            </div>
+            <div class="pm-bar-row">MP
+              <div class="pm-bar-bg"><div class="pm-bar-fill" style="width:${mpPct}%;background:#5060ff"></div></div>
+              <span>${m.mp}/${m.maxMp}</span>
+            </div>
           </div>
-          <div class="pm-bar-row">MP
-            <div class="pm-bar-bg"><div class="pm-bar-fill" style="width:${mpPct}%;background:#5060ff"></div></div>
-            <span>${m.mp}/${m.maxMp}</span>
+
+          <!-- Stats grid -->
+          <div class="pm-stats">
+            <div class="pm-stat"><span>ATK</span><span style="color:var(--gold)">${m.atk}</span></div>
+            <div class="pm-stat"><span>DEF</span><span style="color:var(--gold)">${m.def}</span></div>
+            <div class="pm-stat"><span>MAG</span><span style="color:var(--gold)">${m.mag}</span></div>
+            <div class="pm-stat"><span>SPD</span><span style="color:var(--gold)">${m.spd}</span></div>
           </div>
-        </div>
 
-        <!-- Stat grid -->
-        <div class="pm-stats">
-          <div class="pm-stat"><span>ATK</span><span style="color:var(--gold)">${m.atk}</span></div>
-          <div class="pm-stat"><span>DEF</span><span style="color:var(--gold)">${m.def}</span></div>
-          <div class="pm-stat"><span>MAG</span><span style="color:var(--gold)">${m.mag}</span></div>
-          <div class="pm-stat"><span>SPD</span><span style="color:var(--gold)">${m.spd}</span></div>
-        </div>
+          <!-- Passive skill (compact 1-liner) -->
+          ${m.passive ? `<div class="pm-passive-line" style="border-left-color:${col}">
+            <span style="color:var(--gold)">★ ${m.passive.name}:</span>
+            <span class="pm-passive-desc">${m.passive.description}</span>
+          </div>` : ''}
 
-        <!-- Passive -->
-        <div class="pm-passive">
-          <span class="pm-passive-tag">★ ${m.passive?.name || 'Passive'}</span>
-          <span class="pm-passive-desc">${m.passive?.description || ''}</span>
-        </div>
+          <!-- Abilities -->
+          <div class="pm-section-label">ABILITIES</div>
+          <div class="pm-abilities">${abRows || '<div style="color:var(--text-dim);font-size:13px">No abilities.</div>'}</div>
 
-        <!-- Abilities -->
-        <div class="pm-section-label">ABILITIES</div>
-        <div class="pm-abilities">${abRows || '<div style="color:var(--text-dim);font-size:14px;">No abilities.</div>'}</div>
+        </div>
       </div>
     `;
 
-    // Render sprite into the portrait slot
+    // Render the sprite — use available column height
     const portraitEl = document.getElementById('pm-portrait-el');
     if (portraitEl && typeof SpriteRenderer !== 'undefined') {
-      SpriteRenderer.setFrame(portraitEl, m.charId, 'idle', 160);
+      SpriteRenderer.setFrame(portraitEl, m.charId, 'idle', 130);
     }
   }
 
