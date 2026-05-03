@@ -156,6 +156,7 @@ function resolveOffensiveAction(actor, target, targetIdx, action, element) {
   // 5. Apply result
   target.hp = Math.max(0, target.hp - dmg);
   BattleUI.renderEnemyRow(); // Immediate refresh for boss/enemy bars
+  if (typeof _checkStatPhases === 'function') _checkStatPhases(target);
 
   // Strategic Thaw: Attacking a frozen target breaks the ice
   // (Non-Ice attacks only; Ice damage shouldn't thaw ice)
@@ -284,7 +285,7 @@ function resolveEnemyOffensiveAction(actor, target, targetIdx, ab, element) {
     const _reduction = Battle.getStat(target, 'reduction') || 1.0;
     dmg = Battle.magicDmg(_eMag, _tMdef, ab.dmgMultiplier || NexusScaling.engine.enemyMagicFallback,
       { magLevel: actor.level || 1, mdefLevel: target.lv || 1, isCrit });
-    dmg = _applyEliteResist(Math.floor(dmg * _pm * _rxMult * _reduction));
+    dmg = Math.floor(dmg * _pm * _rxMult * _reduction);
     if (!Number.isFinite(dmg)) { console.error('[ENEMY-MATH-MAGIC] NaN in damage pipeline', { actor: actor.name, target: target.displayName, _pm, _rxMult, _reduction }); dmg = 1; }
     if (window.LogDebug) {
       window.LogDebug(`[ENEMY-MATH-MAGIC] ${actor.name} -> ${target.displayName}: BaseMag=${_eMag}, T-MDef=${_tMdef.toFixed(1)}, Mult=${ab.dmgMultiplier || 1.3}, PM=${_pm}, RX=${_rxMult} -> Final=${dmg}`, 'hi');
@@ -295,7 +296,7 @@ function resolveEnemyOffensiveAction(actor, target, targetIdx, ab, element) {
     const _reduction = Battle.getStat(target, 'reduction') || 1.0;
     dmg = Battle.physDmg(_eAtk, _tDef, ab?.dmgMultiplier || 1,
       { atkLevel: actor.level || 1, defLevel: target.lv || 1, isCrit });
-    dmg = _applyEliteResist(Math.floor(dmg * _pm * _rxMult * _reduction));
+    dmg = Math.floor(dmg * _pm * _rxMult * _reduction);
     if (!Number.isFinite(dmg)) { console.error('[ENEMY-MATH-PHYS] NaN in damage pipeline', { actor: actor.name, target: target.displayName, _pm, _rxMult, _reduction }); dmg = 1; }
     if (window.LogDebug) {
       window.LogDebug(`[ENEMY-MATH-PHYS] ${actor.name} -> ${target.displayName}: Atk=${_eAtk}, T-Def=${_tDef}, Mult=${ab?.dmgMultiplier || 1.4}, PM=${_pm}, RX=${_rxMult} -> Final=${dmg}`, 'hi');
@@ -376,10 +377,11 @@ function resolveEnemyOffensiveAction(actor, target, targetIdx, ab, element) {
 
   // 11. Log
   const _pr = Battle.playerElemResult(element, target);
+  const moveLabel = ab ? `uses ${ab.name}` : `attacks`;
   if (isMagic) {
-    BattleUI.setLog([`${actor.name} uses ${ab.name}!`, `${target.displayName} took ${dmg} magic damage!`], ['magic', 'dmg']);
+    BattleUI.setLog([`${actor.name} ${moveLabel}!`, `${target.displayName} took ${dmg} magic damage!`], ['magic', 'dmg']);
   } else {
-    BattleUI.setLog([`${actor.name} attacks ${target.displayName}!`, `${target.displayName} took ${dmg} damage!`], ['', 'dmg']);
+    BattleUI.setLog([`${actor.name} ${moveLabel} ${target.displayName}!`, `${target.displayName} took ${dmg} damage!`], ['', 'dmg']);
   }
   if (_pr === 'weak') BattleUI.addLog('✦ WEAK!', 'dmg');
   else if (_pr === 'resist') BattleUI.addLog('▸ Resist', 'regen');
@@ -1055,4 +1057,34 @@ function heroDefend() {
 
   BattleUI.setSpriteFrame(G.activeMemberIdx, 'prepare');
   ActionEngine.execute(actor, [actor], { id: 'defend', name: 'Defend', type: 'defend' }, 'physical', { actorDuration: 200 }, false);
+}
+
+/**
+ * Checks if a boss has crossed a stat-scaling threshold.
+ * Triggers evolution text and flags the phase as active.
+ */
+function _checkStatPhases(unit) {
+  if (!unit.isBoss || !unit.statPhases || unit.hp <= 0) return;
+  const hpPct = unit.hp / unit.maxHp;
+  let triggeredNew = false;
+
+  unit.statPhases.forEach(p => {
+    if (!p.triggered && hpPct <= p.hp) {
+      p.triggered = true;
+      triggeredNew = true;
+    }
+  });
+
+  if (triggeredNew) {
+    BattleUI.addLog(`⚡ ${unit.name} is evolving!`, 'dmg');
+    if (unit.id === 'spectral_guardian') {
+      BattleUI.addLog(`⚡ THE GUARDIAN SHATTERS!`, 'magic');
+      if (typeof SFX !== 'undefined') SFX.shatter();
+    } else if (unit.id === 'void_knight') {
+      BattleUI.addLog(`💀 HIS GRIEF CONSUMES HIM! The Void Knight abandons all defense!`, 'dmg');
+      if (typeof SFX !== 'undefined') SFX.buff();
+    } else {
+      if (typeof SFX !== 'undefined') SFX.buff();
+    }
+  }
 }

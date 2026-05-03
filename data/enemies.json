@@ -3128,8 +3128,16 @@
     "tier": 3,
     "isBoss": true,
     "aiType": "sequenced",
+    "statPhases": [
+      {
+        "hp": 0.3,
+        "atk": 1.4,
+        "spd": 1.2,
+        "def": 0.8
+      }
+    ],
     "stats": {
-      "hp": 240,
+      "hp": 280,
       "atk": 32,
       "def": 22,
       "spd": 12,
@@ -3773,14 +3781,14 @@
     ],
     "stats": {
       "hp": 680,
-      "atk": 24,
+      "atk": 30,
       "def": 60,
       "spd": 12,
       "mag": 24
     },
     "reward": {
-      "exp": 700,
-      "gold": 150
+      "exp": 1200,
+      "gold": 450
     },
     "palette": {
       "body": "#ffffff",
@@ -3810,7 +3818,11 @@
         "id": "starlit_shield",
         "name": "Starlit Shield",
         "type": "buff_def",
-        "weight": 20
+        "weight": 20,
+        "effect": {
+          "defBuff": 1.5,
+          "duration": 3
+        }
       }
     ],
     "lore": "The Spectral Guardian predates the five civilizations — built by the nameless architects of the Sky Ruins to protect their high-altitude record archive. When Valdris placed the Four Kings in the ruins, he did not corrupt the Guardian. He could not. It has no self to corrupt, no desire to exploit, no leader to seduce. It simply continues the instruction it was given before anyone living was born: nothing reaches the archive that intends harm to it. At 40% HP, it shatters the defensive mass it has been maintaining and redirects everything into a single coherent point of force — the last resort of something that has decided slowing down is no longer an option."
@@ -3833,23 +3845,26 @@
     "statPhases": [
       {
         "hp": 0.75,
+        "atk": 1.25,
         "def": 1.15,
-        "spd": 0.85
+        "spd": 0.95
       },
       {
         "hp": 0.5,
+        "atk": 1.6,
         "def": 1.3,
-        "spd": 0.7
+        "spd": 0.85
       },
       {
         "hp": 0.25,
-        "def": 1.45,
-        "spd": 0.55
+        "atk": 2.0,
+        "def": 1.5,
+        "spd": 0.75
       }
     ],
     "stats": {
-      "hp": 200,
-      "atk": 28,
+      "hp": 250,
+      "atk": 36,
       "def": 16,
       "spd": 8,
       "mag": 10
@@ -3877,7 +3892,11 @@
         "id": "kings_decree",
         "name": "King's Decree",
         "type": "buff_def",
-        "weight": 25
+        "weight": 25,
+        "effect": {
+          "defBuff": 1.4,
+          "duration": 3
+        }
       },
       {
         "id": "avarice_shout",
@@ -3886,7 +3905,8 @@
         "weight": 25,
         "effect": {
           "stat": "atk",
-          "value": 0.8
+          "multiplier": 0.8,
+          "duration": 2
         }
       }
     ],
