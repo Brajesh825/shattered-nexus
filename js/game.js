@@ -471,12 +471,19 @@ function renderPartyMenu() {
     card.className = 'pm-card';
     card.style.borderColor = col + '80';
 
-    const img = document.createElement('img');
-    img.className = 'pm-portrait'; img.alt = m.displayName;
-    if (typeof SpriteRenderer !== 'undefined') SpriteRenderer.drawHero(img, m.charId, m.char, m.cls);
+    const img = document.createElement('div');
+    img.className = 'pm-portrait';
+    if (typeof SpriteRenderer !== 'undefined') SpriteRenderer.setFrame(img, m.charId, 'idle', 140);
 
     const abHtml = (m.abilities || []).map(a =>
-      `<div class="pm-ab"><span class="pm-ab-icon">${a.icon || '⚡'}</span><span class="pm-ab-name">${a.name}</span><span class="pm-ab-mp">${a.mp}MP</span></div>`
+      `<div class="pm-ab" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'block' : 'none'" style="cursor: pointer;">
+        <span class="pm-ab-icon">${a.icon || '⚡'}</span>
+        <span class="pm-ab-name">${a.name}</span>
+        <span class="pm-ab-mp">${a.mp}MP</span>
+      </div>
+      <div class="pm-ab-desc" style="display:none; padding: 8px 12px; font-size: 13px; color: var(--text-dim); background: rgba(0,0,0,0.2); border-left: 2px solid ${col}; margin-bottom: 6px; line-height: 1.4;">
+        ${a.description || 'No description available.'}
+      </div>`
     ).join('');
 
     card.innerHTML = `
