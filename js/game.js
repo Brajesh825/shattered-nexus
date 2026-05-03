@@ -560,12 +560,12 @@ const PartyMenu = (() => {
     }
 
     // ── Sprite ─────────────────────────────────────────────
-    if (spriteEl && typeof SpriteRenderer !== 'undefined') {
-      // Detect sprite height based on viewport
-      const isLandscapeSmall = window.innerHeight < 520 && window.innerWidth > window.innerHeight;
-      const isTablet = window.innerWidth >= 768;
-      const h = isLandscapeSmall ? 110 : isTablet ? 240 : 160;
-      SpriteRenderer.setFrame(spriteEl, m.charId, 'idle', h);
+    if (spriteEl && showcase && typeof SpriteRenderer !== 'undefined') {
+      const showcaseH = showcase.clientHeight || 200;
+      const targetH = Math.floor(showcaseH * 0.7); // 70% height as requested
+      SpriteRenderer.setFrame(spriteEl, m.charId, 'idle', targetH);
+      // Force 45% width to maintain your desired look
+      spriteEl.style.width = '45%';
     }
 
     // ── Info panel ─────────────────────────────────────────
