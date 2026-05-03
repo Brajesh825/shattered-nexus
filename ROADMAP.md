@@ -5,7 +5,7 @@
 
 
 ### 🔷 Phase 6: Visual Fidelity & Asset Polish
-- [ ] **High-Fidelity Sprite Rendering**: Audit battle sprite scaling and CSS filters; eliminate blurring/interpolation artifacts for "neat and clear" character detail.
+- [x] **High-Fidelity Sprite Rendering**: Audit battle sprite scaling and CSS filters; eliminate blurring/interpolation artifacts for "neat and clear" character detail.
 - [ ] **Combat VFX Overhaul**: Standardize ethereal glows and status overlays to ensure they don't obscure character detail.
 - [ ] **Asset Weight Pass**: Convert oversized character/map PNGs to optimized WebP/AVIF for faster high-res loading.
 
@@ -37,6 +37,7 @@
 - [x] **Party Menu Overhaul**: Premium, paginated character showcase with ethereal effects and responsive split-views.
 - [x] **Global UX Polish**: Pixel-art cursor, custom scrollbars, and stabilized navigation flows.
 - [x] **Sprite System Optimization**: Removed 700+ lines of legacy procedural code; standardized all fallbacks to 'aya' (hero) and 'slime' (enemy).
+- [x] **Mobile Landscape Refinement**: Fixed sprite overlapping on mid-sized landscape devices (600-800px) by synchronizing compact layout breakpoints.
 - [x] **Audio System**: Full BGM support with crossfading and placeholder audit completed for all maps.
 - [x] **Camp-Only Saving**: Save removed from pause menu; `💾 SAVE PROGRESS` lives exclusively in the Camp menu.
 - [x] **Echo Quest System**: Data-driven hunt/gather quests from `data/quests.json`; NPC `giveQuest` field; arc auto-unlock via `onArcAdvance`. *(Concept: `world_quests_and_rumors.md`)*
