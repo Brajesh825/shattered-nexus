@@ -4,10 +4,12 @@
 **Placement in Story**: Arc 1 to Arc 2 Transition (Between Verdant Vale and Southern Isles).
 
 ### The Setting
-The Riverlands Crossing takes place at a massive, roaring waterfall. The path requires the party to traverse the perilous, misty ledges, moving continuously from left to right to cross the chasm.
+The Riverlands Crossing takes place at the **Great Cascade**, a massive, deafening waterfall. To cross the chasm into the Southern Isles, the party must traverse the **Great Bridge**, a massive stone structure suspended directly in front of the roaring waters. The misty ledges are dangerous, and hidden grottos exist behind the crashing water for those brave enough to explore.
 
-### The Guardian
-The waterfall is not unguarded. A powerful Waterfall Spirit (or Guardian) blocks the path across. The party must face this Guardian to prove their strength before they are permitted to pass through the roaring waters and continue their journey into the Southern Isles.
+### The Guardian: The River King
+The bridge is guarded by the **River King**, an ancient water spirit that rests upon the bridge's keystone. 
+*   **The Lore**: When Valdris's Void corruption began spreading 600 years ago, the River King attempted to stay entirely neutral to protect his waters. He made a "deal" to avoid the conflict, but the Void's corruption seeped into him through the cowardice of the deal itself, rather than malice. It twisted him into a territorial monster.
+*   **The Theme**: He represents the thematic lesson that "the choice to avoid choosing is still a choice." Defeating him releases his corrupted spirit, finally quieting the raging waters of the crossing for the first time in centuries.
 
 ---
 
