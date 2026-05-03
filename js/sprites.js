@@ -830,7 +830,9 @@ const SpriteRenderer = (() => {
     ria: ['ria'],
     valka: ['valka'],
     drake: ['drake'],
-    rex: ['rex']
+    rex: ['rex'],
+    sera: ['sera'],
+    lyra: ['lyra']
   };
 
   const SPRITE_MANIFEST = {};
@@ -890,7 +892,7 @@ const SpriteRenderer = (() => {
         canvas.width = 48;
         canvas.height = 57;
         const ctx = canvas.getContext('2d');
-        const fn = HEROES[charId] || HEROES['aria'];
+        const fn = HEROES[charId] || HEROES['aya'];
         fn(ctx, charData, classData);
         imgEl.style.backgroundImage = `url(${canvas.toDataURL()})`;
         imgEl.style.backgroundSize = 'contain';
