@@ -154,6 +154,15 @@ Engine status is exposed via `window.LogDebug(msg, type)`.
 
 ---
 
+## 🎵 Audio & Music Handling (BGM)
+The **BGM** module (`js/bgm.js`) handles all background music with crossfading support.
+- **Map Music**: Driven by the `bgm` property in the map definition (e.g., `map-riverlands-crossing.js`). Triggered automatically by `MapEngine.loadMap()`.
+- **Battle Music**: Driven by the map's `battleBgm` or `bossBgm` properties. Initiated when `MapEngine.onEncounterStart()` fires. Returns to map music automatically on `onBattleComplete()`.
+- **Arc Bosses (Story)**: Bypasses the Map Engine. Configure story boss tracks by adding `"bossBgm": "track_name"` or `"battleBgm": "track_name"` directly to the chapter object in `data/story/*.json`. `js/story.js` handles the crossfade.
+- **File Assets**: BGM tracks live in `audio/bgm/`. Always provide MP3 files that match the metadata names.
+
+---
+
 ## 🔄 Service Worker & PWA Update Rules
 
 The game is installable as a PWA. The Service Worker in `sw.js` caches all assets for offline play.
