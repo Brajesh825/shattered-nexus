@@ -252,7 +252,7 @@ const MapUI = (() => {
     _toggleDpad(false);
     const el = document.getElementById('map-pause-menu');
     if (el) el.style.display = 'flex';
-    
+    if (typeof ControlHints !== 'undefined') ControlHints.setContext('menu');
     if (typeof Focus !== 'undefined') {
       Focus.setContext('map-pause-menu');
     }

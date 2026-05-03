@@ -4,6 +4,14 @@
 **Scope**: Full playable experience through Arcs 1 & 2, including the first two Expansion Regions.
 
 
+### 🔷 Phase 4: Input & Accessibility
+- [x] **Mobile Joystick**: Virtual joystick fully wired — touchstart/move/end → `MapInput.setVector` → player movement.
+- [x] **Mobile Action Buttons**: `#btn-x` (✦ Interact) and `#btn-y` (☰ Menu) wired and labelled.
+- [x] **Input Settings Screen**: In-game overlay (`⌨ CONTROLS` in pause menu) shows all keyboard + gamepad bindings; click any row to remap; persists to `localStorage`.
+- [x] **Control Hints Bar**: Contextual hint bar slides up from bottom on keyboard/gamepad input, auto-hides on mouse/touch, updates context per screen.
+- [ ] **Battle Touch**: Tap-to-navigate battle command buttons via on-screen virtual buttons during combat.
+- [ ] **Gamepad on World Map**: Extend gamepad polling to drive cursor movement and node selection on the world map screen.
+
 ### 🔷 Phase 3: Content & Balance
 - [ ] **Boss Balancing**: Final tuning pass on Spectral Guardian, Sunken Leviathan, and River King.
 - [ ] **Gold Balance**: Tune enemy gold drops to ensure shops feel meaningful.
@@ -12,7 +20,7 @@
 - [ ] **Walkthrough Update**: Finalize the step-by-step guide for Arc 1 and Arc 2.
 - [ ] **Beta Lock**: Set `MAX_REACHABLE_ARC: 1` in `release-config.js` for the public itch.io push.
 - [ ] **Deployment Script**: Finalize a script to minify/obfuscate core logic for the production build.
-- [ ] **PWA Cache Fix**: Remove or replace missing `lulu_sheet_1` sprite entries in `sw.js` so offline install does not cache broken URLs.
+- [x] **PWA Cache Fix**: Removed missing `lulu_sheet_1` sprite entries from `sw.js`; cache bumped to v7.0.
 - [ ] **Production Debug Gate**: Route `LogDebug`, story diagnostics, and verbose console output through `ReleaseConfig.IS_DEV` / `?debug=true`.
 - [ ] **Dev-Only Save Sync**: Wrap the `127.0.0.1:3000/sync` save backup bridge behind a development flag so production saves stay local-only.
 
