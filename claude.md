@@ -79,9 +79,14 @@ Final_Stat = floor( ( (Base_Stat × Tier_Mult) + (SpawnLevel - 1) × Tier_Growth
 ### 🛡️ Boss Archetypes (Reference)
 - **Void Knight (Arc 1)**: 240 HP / 22 DEF (The Balanced Start)
 - **Demon Lord (Arc 2)**: 185 HP / 15 DEF (The Magic Menace)
-- **King Galdor (Sideboss)**: 200 HP / 16 DEF (The Greed King - Hardens with HP loss)
-- **Spectral Guardian (Sideboss)**: 480 HP / 60 DEF (The Wall - Shatters into glass cannon at 40% HP)
+- **King Galdor (Map Boss)**: 250 HP / 36 ATK (The Greed King - Scales ATK/DEF with HP loss)
+- **Spectral Guardian (Map Boss)**: 480 HP / 60 DEF (The Wall - Shatters into glass cannon at 40% HP)
 - **Dark Phoenix (Arc 3)**: 170 HP / 10 DEF (The Self-Healer)
+
+### 🗂️ Boss Classification (VVI Standard)
+Maintain the distinction between encounter triggers:
+1. **Arc Bosses**: Driven by `Story.onHeroReady` and `arc_N.json`. Use `boss_enemy` property. Never place directly in `map.enemies[]`.
+2. **Map Bosses**: Placed in `MAP_DEFS[id].enemies[]` with `isBoss: true`. Handled by `MapEngine` / `EnemyScaling`.
 
 ---
 
