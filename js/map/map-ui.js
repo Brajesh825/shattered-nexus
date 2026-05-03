@@ -250,7 +250,6 @@ const MapUI = (() => {
   function openPauseMenu() {
     if (MapEngine.isRunning()) MapEngine.stop();
     _toggleDpad(false);
-    _renderPauseCards();
     const el = document.getElementById('map-pause-menu');
     if (el) el.style.display = 'flex';
     // Only show save button in story mode
@@ -285,53 +284,7 @@ const MapUI = (() => {
     }
   }
 
-  function _renderPauseCards() {
-    const container = document.getElementById('pause-party-cards');
-    if (!container || !G || !G.party.length) return;
-    container.innerHTML = '';
 
-    G.party.forEach((m, i) => {
-      if (!m) return;
-      const col     = CHAR_COLOR_MAP[m.charId] || '#a090d0';
-      const isKO    = !m.hp || m.isKO;
-      const isActive = i === G.activePartyIdx;
-      const hpPct   = Math.max(0, m.hp / m.maxHp * 100);
-      const mpPct   = Math.max(0, m.mp / m.maxMp * 100);
-      const hpCol   = hpPct > 50 ? '#4ade80' : hpPct > 25 ? '#eab308' : '#ef4444';
-      const expNext = typeof getExpThreshold === 'function' ? getExpThreshold(m.lv) : (5 * m.lv * m.lv + 25 * m.lv);
-
-      const card = document.createElement('div');
-      card.className = `pause-member${isKO ? ' ko-member' : ''}${isActive ? ' active-member' : ''}`;
-      card.style.borderColor = isActive ? col : '';
-      card.innerHTML = `
-        <div class="pm-header">
-          <span class="pm-name" style="color:${col}">${m.displayName}</span>
-          <span class="pm-lv">LV ${m.lv}</span>
-        </div>
-        <div class="pm-exp-line">
-          ${m.cls?.name || ''} · EXP ${m.exp}/${expNext}
-        </div>
-        <div class="pm-hp-bar-bg">
-          <div class="pm-hp-bar-fill" style="width:${hpPct}%;background:${hpCol}"></div>
-        </div>
-        <div class="pm-bar-label">${m.hp}/${m.maxHp} HP</div>
-        <div class="pm-mp-bar-bg">
-          <div class="pm-mp-bar-fill" style="width:${mpPct}%"></div>
-        </div>
-        <div class="pm-bar-label mp">${m.mp}/${m.maxMp} MP</div>
-        <div class="pm-stats">
-          <div>ATK <span>${m.atk}</span></div>
-          <div>DEF <span>${m.def}</span></div>
-          <div>MAG <span>${m.mag}</span></div>
-          <div>SPD <span>${m.spd}</span></div>
-          <div>Gold <span>${m.gold || 0}</span></div>
-          ${isKO ? '<div class="pm-status-ko">FALLEN</div>' : '<div class="pm-status-ok">OK</div>'}
-        </div>
-        ${m.passive ? `<div class="pm-passive">★ ${m.passive.name}: ${m.passive.description}</div>` : ''}
-      `;
-      container.appendChild(card);
-    });
-  }
 
 
 
