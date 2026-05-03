@@ -1181,6 +1181,8 @@ const MapEngine = (() => {
   }
 
   function onBattleComplete(victory) {
+    if (typeof BGM !== 'undefined') BGM.playMap(_map);
+
     if (!victory) {
       _waveState = null; // abort any active wave sequence on defeat
       // Respawn at map start — restore party to half HP, clear statuses, reset position
@@ -1459,6 +1461,9 @@ const MapEngine = (() => {
     }
     if (typeof AmbientEngine !== 'undefined') {
       AmbientEngine.setMap(_map.id);
+    }
+    if (typeof BGM !== 'undefined') {
+      BGM.playMap(_map);
     }
     _hideLoader();
     // Emergency Force Hide: ensures game is never stuck even if assets 404
