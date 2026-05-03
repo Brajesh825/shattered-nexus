@@ -382,8 +382,7 @@ function migrateCharId(id) {
   const lower = id.toLowerCase();
   return LEGACY_ID_MAP[lower] || lower;
 }
-const ENEMY_POP_X = [580, 720, 860, 650]; // 4th is between 1st and 2nd for diamond layout
-const PARTY_POP_X = [42, 108, 174, 240];
+
 const TYPE_ICONS = {
   physical: '🗡️',
   magic_damage: '🔮',
