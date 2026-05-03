@@ -1,5 +1,8 @@
 # RPG+ — Aethoria Chronicles
 
+> [!IMPORTANT]
+> **AUTOSAVE IS NOT ALLOWED**: Progress in RPG+ can only be saved manually from the Camp menu (`💾 SAVE PROGRESS`). The game will never automatically save your progress.
+
 > *Eight heroes. Five seals. One immortal shadow that has consumed worlds for six centuries.*
 
 A browser-based tactical RPG with elemental reaction combat, a full narrative campaign across 8 story arcs, and a living world map — no install required.
@@ -253,7 +256,15 @@ Relics grant permanent passive bonuses, awarded for defeating bosses and found a
 
 ## 👹 Enemies
 
-Over **100 unique enemies** across three tiers plus boss encounters. Full enemy roster with stats, abilities, and lore is in `data/enemies.json`. Boss entity IDs and arc assignments are in `STORY_PROGRESSION.md`.
+Over **100 unique enemies** across three tiers plus boss encounters. Full enemy roster with stats, abilities, and lore is in `data/enemies.json`. 
+
+### Boss Hierarchy (VVI)
+Bosses in Aethoria fall into two distinct categories:
+
+1. **Arc Bosses (Story)**: Narrative-driven targets tied to the main campaign arcs. Defeating them is required to progress the story and obtain Seal Fragments. They often have cinematic intros and unique recruit events.
+2. **Map Bosses (Exploration)**: Optional zone guardians found in the wilds. They are defined locally in map files and provide high-tier rewards, relics, and Echo Quest completion without directly blocking story progression.
+
+Boss entity IDs and arc assignments are in `STORY_PROGRESSION.md`.
 
 ---
 
