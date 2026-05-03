@@ -22,6 +22,9 @@ MAP_DEFS.crystal_cavern_f1 = {
   weather: 'sparks',
   enemyLevelRange: [8, 12],
   jsonFile: 'js/map/data/map-crystal-cavern-f1.json',
+  
+  bgm: 'cavern_explore',
+  battleBgm: 'cavern_battle',
 
   mutationConfig: {
     corruptThreshold: 60,
