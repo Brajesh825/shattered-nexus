@@ -2905,7 +2905,7 @@
 }
 
 /* Mobile tweaks */
-@media (max-width: 600px) {
+@media (max-width: 800px) {
   .ult-cd-name { font-size: 16px; letter-spacing: 3px; }
   .ult-cd-number { font-size: 72px; }
   .ult-cd-actor { font-size: 9px; }

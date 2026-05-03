@@ -276,7 +276,7 @@
   flex-shrink: 0;
   cursor: grab;
 }
-@media (max-width: 600px) {
+@media (max-width: 800px) {
   .mrp-handle { display: block; }
 }
 
