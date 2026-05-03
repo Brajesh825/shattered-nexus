@@ -320,6 +320,8 @@ const Story = {
 
   /** Called by checkBattleEnd() (via TurnManager) when all enemies are defeated */
   onBattleWon() {
+    if (typeof BGM !== 'undefined') BGM.crossfade('story');
+    
     /* Skirmish: just return to world map after win */
     if (this._skirmishArcIdx !== undefined) {
       this._skirmishArcIdx = undefined;
@@ -692,6 +694,13 @@ const Story = {
   },
 
   _launchStoryBattle(enemyId) {
+    if (typeof BGM !== 'undefined') {
+      const chap = this.currentChap || {};
+      const isBoss = (this.phase === 'boss_in');
+      const track = isBoss ? (chap.bossBgm || 'boss') : (chap.battleBgm || 'battle');
+      BGM.crossfade(track);
+    }
+
     // Hide dialogue during battle
     const dialogue = this.el('s-dialogue');
     if (dialogue) dialogue.style.display = 'none';
