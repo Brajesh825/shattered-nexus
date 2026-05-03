@@ -1,186 +1,79 @@
-# RPG+ Development Roadmap
+# ⚔️ RPG+ Development Roadmap: Beta 1.0
 
-## ✅ Completed Milestones
-- **[2026-04-30] Multi-Floor Engine & Arc 2 Expansion**: Implemented high-fidelity `teleport` trigger system and `kill_boss` objective logic in `MapEngine`. Expanded Crystal Cavern into a 3-floor suite (`f1`, `f2`, `f3`) with thematic biomes, seamless transitions, and synchronized narrative progression (Chapters 1–4) leading to the Demon Lord climax.
-- **[2026-04-30] Universal SVG Asset Engine & Map Stability**: Standardized all environment assets to SVG format across the engine and preloader. Fixed 404 loading regressions and ensured directory parity (`images/environment/svg/`).
-- **[2026-04-30] Architect Pro (M4) Implementation**: Completed high-fidelity browser-based tile editor with advanced tools (Brush, Fill, Rectangle, Eyedropper) and multi-layer support.
-- **[2026-04-30] Story.js Refactor (N3)**: Extracted cutscene rendering into `js/cutscene.js` for improved code modularity and maintainability.
-- **[2026-04-28] System Audit & Roadmap Refresh**: Full codebase audit.
-- **[2026-04-28] Level Range Comment Audit (M8)**: Corrected `map-data.js` comments to strictly match `STORY_PROGRESSION.md`.
-- **[2026-04-27] Encounter Data Migration & Overworld Declutter**: Removed legacy `enemies_pool` from Arc JSONs, routing Skirmishes and Bestiary directly to `MAP_DEFS.encounterTemplates`. Curated overworld enemies down to 4-5 sentinels per map in favor of the new 8% random encounter system.
-- **[2026-04-27] Critical Story Fixes & Arc Depth (C1–C3, S1–S2)**: Verified Arc 7 cast split was already resolved via `arc7_ch1b` ("Reunited"). Confirmed Arc 5→6 tonal break was already fixed. Arc 6 (`Fortress Gates`): added `seal_void` shard reward, new cutscene "What It Used to Be" (Consumed Angel reveal, all 8 cast), expanded boss pre/post dialogue from 3 to 6 lines. Arc 7 (`Inner Sanctum`): expanded Shadow Titan pre-dialogue from 3 to 7 lines with Rei's parallel with Maren the Still, boss cast expanded to all 8, typo fixed. Boss Gauntlet dynamic registry: auto-scans `Story.data.arcs` + `MAP_DEFS`, kills tracked via `Archive.recordKill` centralized in `Battle.setKO`, discovery gate enforced.
-- **[2026-04-27] Boss Integration Complete**: Added 11 new enemy entries (forge_sentinel, deep_archpriest, void_stalker, consumed_angel, void_colossus, the_unravelling, sunken_leviathan, river_king, molten_golem, abyssal_kraken, storm_sentinel) with full stats, lore, abilities, and statPhases. Fixed 5 proxy ID bugs in expansion maps. Added map boss entities to all Arc 3–8 main maps. Every map now has a two-layer boss structure.
-- **[2026-04-27] Lore & NPC Overhaul**: Rewrote lore_fragments.json (70 fragments) aligned to campaign canon, including 7 Expansion Region specific fragments. Rewrote npcs.js (21 NPCs, 307 dialogue lines). Fixed duplicate void_citadel NPC key (silent Arc 6 dialogue loss). Corrected mire_witch sprite path. Complete lore consistency sweep across all 8 arcs and expansion maps to explicitly align with the "Summoned" premise (main cast learns Aethorian history from Oracle/NPCs rather than knowing it natively).
-- **[2026-04-27] Expansion Region Story Depth (E1)**: Fixed 14 NPC `dialogueKey` mismatches across all 7 expansion maps — expansion NPC dialogue now fully functional. Added boss approach triggers (3–4 lines, referencing lore) to all 7 maps: Ashen Foothills (Molten Golem), Northern Highlands (Shadow Dragon), Lighthouse Isles (Abyssal Kraken), Southern Isles (Sunken Leviathan), Eastern Wetlands (Flesh Abomination), Sky Ruins (Storm Sentinel), Riverlands Crossing (River King). Enriched all 7 `completeMsg` strings from generic to emotionally specific story beats.
-- **[2026-04-26] Smooth-Curve Scaling Audit**: Comprehensive re-leveling of 15 maps (1-8, 7-15, 12-20) to ensure overlapping, accessible progression. Synchronized code with documentation, including the final shift of Northern Highlands to endgame status (Arc 6, Lv 35-43).
-- **[2026-04-26] Story Progression Documentation**: Created a master guide mapping all 8 Narrative Arcs and expansion regions with exact level ranges and unlock triggers.
-- **[2026-04-26] Sky Ruins Overhaul**: Massive 80x40 gauntlet redesigned with a 4-chamber "Four Kings" citadel, obsidian-bridge nexus, and Tier 3 corrupted bosses.
-- **[2026-04-26] World Expansion Finalization**: Completed 5 massive 80x40 "Elite" gauntlets (Highlands, Lighthouse, Southern, Wetlands, Ruins) using a optimized "Clean Slate" tile system for 100% pathing reliability.
-- **[2026-04-26] Production Readiness Audit**: Comprehensive codebase audit for "v1.0-beta" release. Verified enemy scaling (Level 50 boss balance), data integrity, and cross-platform UI stability.
-- **[2026-04-26] Interactive World Map (v2)**: Implemented 1024x1024 high-fidelity physical map with landmark navigation, party tracking (🚩), and responsive scale-to-fit logic for mobile viewports.
-- **[2026-04-26] Save System Guards & Versioning**: Established `SAVE_VERSION` (v4.0) with structural validation and a "Safe Spawn" collision-aware loading guard to prevent out-of-bounds spawning.
-- **[2026-04-26] UI/UX Restoration**: Fixed CSS specificity leaks on screens, restored full-height exploration canvas, and synchronized multi-screen visibility state.
-- **[2026-04-25] Mobile Control Overhaul**: Implementation of virtual joystick, X/Y action buttons, and proximity-based interaction logic for a native-feeling experience.
-- **[2026-04-25] PWA Native Installation**: Integrated high-fidelity icons and a Title Screen "INSTALL" prompt for standalone home-screen play.
-- **[2026-04-25] PWA Offline & Update System**: Overhauled service worker (v4.x) with complete asset list, quality-aware sprite caching (Normal ~37 MB / Low ~1.7 MB), and user-facing update toast with spring-in animation. Fixed response clone bug.
-- **[2026-04-25] Battle UI Overhaul (Phase 1 & 2)**: Party lunge animations, enemy strike archetypes, ghost HP drain bars, status icon rows, screen shake, hit-pause, ability info pane, turn bar polish. Fixed double `TurnManager.advance()` bug.
-- **[2026-04-25] Sprite Quality Mode Selection**: One-time launch modal (Normal PNG ~37 MB / Low WebP ~1.7 MB). Persisted to localStorage; preloader and story portraits both respect the choice.
-- **[2026-04-24] Mobile PWA Stabilization**: Fixed virtual joystick, optimized sprites with WebP downsampling, finalized manifest.
-- **[2026-04-24] NPC Restoration & High-Fidelity Sprites**: Directional spritesheet rendering, state-aware interaction bubbles, robust image caching.
-- **[2026-04-24] Universal Phase System**: HP-triggered stat transformations for bosses (King Galdor, Spectral Guardian).
-- **[2026-04-22] The Ruined Kingdom**: Aethelgard ruins, river-bank geometry, King Galdor mini-boss.
-- **[2026-04-20] Combat Animation Restore**: Fixed `action-handler.js` battle overlays and flow.
+## 🎯 Current Objective: The First Release
+**Scope**: Full playable experience through Arcs 1 & 2, including the first two Expansion Regions.
 
-### M6 — NPC Dialogue → Arc JSON Bridge (Tier 2 Upgrade)
-- The existing `dialogueKey` fix routes to the map NPC panel (existing engine)
-- Tier 2: add an optional `arcDialogue` field that routes to the full Story Screen with character portraits
-- **Not required for arc release cadence** — current NPC panel is sufficient for weekly drops
+
+### 🔷 Phase 4: Input & Accessibility
+- [x] **Mobile Joystick**: Virtual joystick fully wired — touchstart/move/end → `MapInput.setVector` → player movement.
+- [x] **Mobile Action Buttons**: `#btn-x` (✦ Interact) and `#btn-y` (☰ Menu) wired and labelled.
+- [x] **Input Settings Screen**: In-game overlay (`⌨ CONTROLS` in pause menu) shows all keyboard + gamepad bindings; click any row to remap; persists to `localStorage`.
+- [x] **Control Hints Bar**: Contextual hint bar slides up from bottom on keyboard/gamepad input, auto-hides on mouse/touch, updates context per screen.
+- [x] **Battle Touch**: Tap-to-navigate battle command buttons via on-screen virtual buttons during combat.
+- [x] **Gamepad on World Map**: Extend gamepad polling to drive cursor movement and node selection on the world map screen.
+
+### 🔷 Phase 3: Content & Balance
+- [x] **Boss Balancing**: Final tuning pass on Spectral Guardian, Sunken Leviathan, and River King.
+- [ ] **Gold Balance**: Tune enemy gold drops to ensure shops feel meaningful.
+
+### 🔷 Phase 5: Release Readiness
+- [ ] **Walkthrough Update**: Finalize the step-by-step guide for Arc 1 and Arc 2.
+- [ ] **Beta Lock**: Set `MAX_REACHABLE_ARC: 1` in `release-config.js` for the public itch.io push.
+- [ ] **Deployment Script**: Finalize a script to minify/obfuscate core logic for the production build.
+- [x] **PWA Cache Fix**: Removed missing `lulu_sheet_1` sprite entries from `sw.js`; cache bumped to v7.0.
+- [ ] **Production Debug Gate**: Route `LogDebug`, story diagnostics, and verbose console output through `ReleaseConfig.IS_DEV` / `?debug=true`.
+- [ ] **Dev-Only Save Sync**: Wrap the `127.0.0.1:3000/sync` save backup bridge behind a development flag so production saves stay local-only.
 
 ---
 
-## 🟢 Release & Polish
+## 🛠️ Technical Debt & Engineering (Prioritized)
+### P0 - Release Blockers
+- [ ] **Cache Manifest Test**: Add a test that verifies every asset listed in `sw.js` exists on disk, starting with the missing `lulu_sheet_1` entries.
+- [ ] **Content Integrity Tests**: Validate enemy images, story references, item effect handlers, map references, and relic definitions before release.
+- [ ] **Production/Dev Boundary**: Gate localhost save sync, debug battle tools, verbose logs, and diagnostic overlays behind `ReleaseConfig.IS_DEV` / `?debug=true`.
 
-### ~~P1 — Cutscene Skip~~ (Done)
-- Tap once to complete the current typewriter line instantly
-- Tap again to advance to the next line
-- Bound to the entire cutscene screen, excluding choice buttons
+### P1 - Stability & Maintainability
+- [ ] **Encapsulate Turn State**: Replace loose `G.turnIdx`, `G.turnQueue`, and battle locks with a centralized `G.turn` object. (Verified still in use.)
+- [ ] **Named Damage Modifiers**: Refactor the combat damage chain so STAB, affinity, reactions, mitigation, crits, passives, and relics are named steps.
+- [ ] **HTML Injection Guardrails**: Add escaping/DOM-builder helpers for UI generated from imported saves, JSON content, archive entries, and dialogue.
+- [ ] **JSON Loading Standard**: Move story, map, and data loading onto one `DataLoader.loadJson()` helper instead of mixing `fetch` and `XMLHttpRequest`.
+- [ ] **Null Guard Standard**: Standardize optional access and fallback behavior across battle, story, map, and save hydration paths.
 
-### P2 — iOS Safe Area
-- Apply `env(safe-area-inset-*)` padding to fixed UI elements for notch/home-bar devices
-
-### P3 — Landscape Lock UX
-- Improve the rotate-to-landscape prompt for portrait-mode users
-
-### P4 — Scroll Prevention
-- Prevent accidental page scroll during joystick drag and battle interactions
-
-### P5 — Patch Notes Modal
-- "Patch Notes" modal on the Title Screen listing recent updates
-
----
-
-## 🎬 Cutscene & Narrative Presentation
-
-### ~~N1 — Emotion → Portrait Visual Mapping~~ (Done)
-- Map `emotion` values already in arc JSON (e.g. `"grave"`, `"shocked"`) to CSS filter overlays on character portraits
-- Used `hue-rotate`, `brightness`, and `saturate` — no new assets required
-- Dramatically increases scene expressiveness at near-zero cost
-
-### N2 — Cutscene Presentation Modes
-Add an optional `"mode"` field to arc JSON chapters for distinct visual treatments:
-- `"standard"` — current portrait + typewriter (default)
-- `"blackout"` — full black background, centered text only (for Valdris reveals / heavy lore drops)
-- `"combat_flashback"` — battle sprite visible + screen shake (for action recall moments)
-- Driven entirely by a CSS class toggle in `story.js` — no new engine work
-
-### ~~N3 — Story.js Refactor (Code Health)~~ (Done)
-- Extracted cutscene rendering into a dedicated `js/cutscene.js`
-- `story.js` remains as an orchestrator; `cutscene.js` owns portrait management, typewriter, and dialogue queue
-- Resolves the 1643-line monolith mixing save/load/world-map/cutscene logic
-
-### ~~N4 — Intra-Party Chemistry Beats~~ (Done)
-- Added 2–3 party chemistry moments per arc, triggered after boss defeat
-- Arcs 1–5 have strong individual character beats; Arcs 6–8 have none
-- Pure data work in arc JSON — zero engine changes
-- Added Essabella naming the Consumed Angel in Arc 6, Rei and Maren's parallel in Arc 7, and Tao's final eulogy before Arc 8.
-
-### N5 — Character Moment Content Pass
-- Current `char_moment` phases post-boss are structurally defined but content-thin in Arc 5
-- Each moment should reference that arc's specific emotional beat, not use generic text
-- ~~Arc 3: Drake's curse breaking should tie directly to the Dark Phoenix's own trapped cycle~~ (Done)
-- ~~Arc 4: Rex's immortality burden should mirror Oremis's failed attempt to cure his people~~ (Done)
+### P2 - Performance & Architecture
+- [ ] **Asset Weight Pass**: Convert oversized character/map PNGs to optimized WebP/AVIF and default mobile users to low-quality sprite mode.
+- [ ] **Boot Flow Manifest**: Replace the long manual script list in `index.html` with a maintained boot manifest or production bundle pipeline.
+- [ ] **Global State Split**: Separate `G` into `GameState`, `BattleState`, `MapState`, and `ProgressState` once the release blockers are handled.
+- [ ] **Large Module Split**: Break up `svg-animations.js`, `story.js`, `map-engine.js`, and `action-handler.js` by loader, renderer, state, and action responsibilities.
 
 ---
 
-## 🗺️ Map & World
+## ✅ Completed Milestones (Condensed)
 
-### M1 — Smooth Enemy Rendering
-- Remove heavy pixelation from map canvas enemies
+### 🎨 UX & Systems (May 2026)
+- [x] **Item Vault Overhaul**: Premium, tabbed inventory with visual targeting and unified effect engine.
+- [x] **Data Integrity Audit**: Full scan of all JSON assets; resolved ID conflicts and parsing errors.
+- [x] **Party Menu Overhaul**: Premium, paginated character showcase with ethereal effects and responsive split-views.
+- [x] **Global UX Polish**: Pixel-art cursor, custom scrollbars, and stabilized navigation flows.
+- [x] **Sprite System Optimization**: Removed 700+ lines of legacy procedural code; standardized all fallbacks to 'aya' (hero) and 'slime' (enemy).
+- [x] **Audio System**: Full BGM support with crossfading and placeholder audit completed for all maps.
+- [x] **Camp-Only Saving**: Save removed from pause menu; `💾 SAVE PROGRESS` lives exclusively in the Camp menu.
+- [x] **Echo Quest System**: Data-driven hunt/gather quests from `data/quests.json`; NPC `giveQuest` field; arc auto-unlock via `onArcAdvance`. *(Concept: `world_quests_and_rumors.md`)*
+- [x] **World Corruption & Fog**: Time-based corruption accumulation in wild zones, visual void-purple decay, mutant encounter scaling. *(Concept: `corruption_and_infection.md`)*
+- [x] **Character Recruitment Reorder**: Valka → Arc 4 (Sunken Temple), Rex → Arc 5 (Shadow Reach), Drake → Arc 3.
 
-### M2 — Animated Map Tiles
-- Wind-blown grass, flowing water, flickering torches
+### 🌍 World & Map Foundations (May 2026)
+- [x] **Arc 1 (Verdant Vale)**: Narrative, enemies, and Void Knight boss finalized.
+- [x] **Arc 2 (Crystal Cavern)**: Full 3-floor suite (F1-F3) with Spectral Guardian boss.
+- [x] **Multi-Floor Navigation**: Dynamic World Map entry; selectable destinations for multi-floor dungeons; fixed Crystal Cavern floor-skipping bug.
+- [x] **Expansion Regions**: Southern Isles and Riverlands Crossing lore and map implementations completed.
+- [x] **SVG Asset Standard**: All environmental assets converted and preloaded as high-fidelity SVGs.
 
-### M3 — Interactive Map Puzzles
-- Environmental puzzles (switches, blocks, traps)
-
-### ~~M4 — Browser-Based Tile Editor~~ (Done)
-- Completed high-fidelity HTML canvas tile editor in `tools/tile-editor.html`.
-- Features: Brush (B), Bucket Fill (G), Rectangle (R), Eyedropper (I), and Multi-layer map editing.
-- Supports data-driven asset loading via `sprites.json` and SVG support.
-
-### M5 — Fast Travel System
-- Add world-map fast-travel unlocked after first visit to a region
-- Save infrastructure already exists — just requires a `visitedRegions` flag in save state
-- Critical for an 80×40 expanded world where backtracking for side content is high friction
-
-### M6 — NPC Dialogue → Arc JSON Bridge
-- Add an optional `arcDialogue` field to NPC entities in map data
-- When set, `story.js` looks up that key in the arc JSON and renders it through the cutscene engine
-- Prerequisite for advanced expansion story content without a new engine
-
----
-
-## 📜 Quest & Shop Systems
-
-### Q1 — Shop Merchants
-- Merchant UI for buying/selling items with Gold
-
-### Q2 — Quest Log
-- Dedicated UI to track story and side-quest progress
-
-### Q3 — State-Aware Dialogue
-- NPCs react to arc completion state (foundation already in npcs.js per-arc keys)
-
-### Q4 — Per-Character Gear
-- Individual Weapons and Armor with Equipment UI
+### ⚙️ Technical Foundations (April 2026)
+- [x] **Combat Engine Audit**: Fixed `getStat('reduction')` bug and stabilized damage multipliers.
+- [x] **Sera/Lyra Registration**: Standardized sprite-sheet configuration for new heroes to fix 'whole-sheet' rendering bug.
+- [x] **Mobile Controls**: Virtual joystick and X/Y button implementation.
+- [x] **Architect Pro**: Browser-based tile editor for high-fidelity map creation.
+- [x] **Story Refactor**: Extracted cutscene logic into `js/cutscene.js`.
 
 ---
-
-## ⚔️ Battle System
-
-### B1 — Vanguard Intercept UI Feedback
-- Flash a `"VANGUARD INTERCEPT"` indicator when Slot 2 absorbs a redirected attack
-- Matches the existing `CRIT` flash pattern — same implementation effort
-
-### B2 — Status Effect Counterplay
-- Add a Dispel mechanic to at least one hero skill
-- Alternatively allow Swirl reaction to cleanse allied debuffs (infrastructure already in `reaction-effects.js`)
-- Addresses the freeze/stun dead-turn problem
-
-### B3 — EXP Gap Penalty Smoothing
-- Current formula hits 0 EXP at +3 levels — one KO'd member can soft-lock progression
-- Replace with: `max(0.1, 1 - gap / 5)` — always grants at least 10%, linear ramp to gap 5
-
-### B4 — Enemy AI Extraction (Code Health)
-- Extract AI decision logic from `action-handler.js` into a dedicated `js/battle/enemy-ai.js`
-- Define `aiRole` values as priority-weighted action selectors
-- Prerequisite for expanding AI role variety without bloating `action-handler.js`
-
-### B5 — Action Handler Split (Code Health)
-- Split `action-handler.js` (currently 1038 lines) into flow coordinator + `ability-resolver.js`
-- Remove or formalize the "kept for legacy" dispatch path
-
----
-
-## 📖 World Lore & Living World
-
-### ~~L1 — Lore Fragments — Expansion Regions~~ (Done)
-- Added 7 expansion region lore fragments to `lore_fragments.json`.
-
-### L2 — Enemy Lore Completion
-Every Tier 2 enemy and all bosses need a `lore` field covering: what they were, what corruption does to them, whether they remember.
-- New bosses added this session (forge_sentinel, deep_archpriest, void_stalker, consumed_angel, void_colossus, the_unravelling, sunken_leviathan, river_king, molten_golem, abyssal_kraken, storm_sentinel) already have lore — audit older Tier 2 enemies for gaps.
-
-### L3 — Region History Entries
-One "Region Record" per region (15 total) — a paragraph describing what the place was before the Shattering. Shown on the world map as a readable entry. Currently absent for all expansion regions.
-
-### L4 — Faction Codex
-Four factions defined with history, goals, and relationship to Valdris:
-- **The Summoned** (player party): Eight cross-world warriors
-- **The Corrupted** (Valdris's forces): What each enemy type *was* before
-- **The Remnants** (surviving NPCs): Essabella, scattered survivors, Oracle lineage
-- **The Ancient Ones** (pre-Shattering): Green Emperor, Nexus builders, Tide guardians
-
----
-
-*Last audited: 2026-04-30. Priority order: Fast Travel (M5) → Action Handler Refactor (B5) → Vanguard Intercept UI (B1).*
+*Last Audited: 2026-05-03 23:00. Status: Stable. Priority: Resonance Weapons System.*

@@ -116,7 +116,7 @@ const WorldExplorer = {
 
         // 2. Launch the map
         if (typeof startExplore === 'function') {
-            startExplore();
+            startExplore(true);
         }
         
         if (typeof MapEngine !== 'undefined') {

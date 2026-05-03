@@ -248,16 +248,12 @@ const MapUI = (() => {
   };
 
   function openPauseMenu() {
+    if (typeof UI !== 'undefined') UI.hideAllOverlays();
     if (MapEngine.isRunning()) MapEngine.stop();
     _toggleDpad(false);
-    _renderPauseCards();
-    _renderPauseInventory();
     const el = document.getElementById('map-pause-menu');
     if (el) el.style.display = 'flex';
-    // Only show save button in story mode
-    const saveBtn = document.querySelector('#map-pause-menu .save-btn');
-    if (saveBtn) saveBtn.style.display = (typeof Story !== 'undefined' && Story.active) ? '' : 'none';
-
+    if (typeof ControlHints !== 'undefined') ControlHints.setContext('menu');
     if (typeof Focus !== 'undefined') {
       Focus.setContext('map-pause-menu');
     }
@@ -286,203 +282,9 @@ const MapUI = (() => {
     }
   }
 
-  function _renderPauseCards() {
-    const container = document.getElementById('pause-party-cards');
-    if (!container || !G || !G.party.length) return;
-    container.innerHTML = '';
 
-    G.party.forEach((m, i) => {
-      if (!m) return;
-      const col     = CHAR_COLOR_MAP[m.charId] || '#a090d0';
-      const isKO    = !m.hp || m.isKO;
-      const isActive = i === G.activePartyIdx;
-      const hpPct   = Math.max(0, m.hp / m.maxHp * 100);
-      const mpPct   = Math.max(0, m.mp / m.maxMp * 100);
-      const hpCol   = hpPct > 50 ? '#4ade80' : hpPct > 25 ? '#eab308' : '#ef4444';
-      const expNext = typeof getExpThreshold === 'function' ? getExpThreshold(m.lv) : (5 * m.lv * m.lv + 25 * m.lv);
 
-      const card = document.createElement('div');
-      card.className = `pause-member${isKO ? ' ko-member' : ''}${isActive ? ' active-member' : ''}`;
-      card.style.borderColor = isActive ? col : '';
-      card.innerHTML = `
-        <div class="pm-header">
-          <span class="pm-name" style="color:${col}">${m.displayName}</span>
-          <span class="pm-lv">LV ${m.lv}</span>
-        </div>
-        <div class="pm-exp-line">
-          ${m.cls?.name || ''} · EXP ${m.exp}/${expNext}
-        </div>
-        <div class="pm-hp-bar-bg">
-          <div class="pm-hp-bar-fill" style="width:${hpPct}%;background:${hpCol}"></div>
-        </div>
-        <div class="pm-bar-label">${m.hp}/${m.maxHp} HP</div>
-        <div class="pm-mp-bar-bg">
-          <div class="pm-mp-bar-fill" style="width:${mpPct}%"></div>
-        </div>
-        <div class="pm-bar-label mp">${m.mp}/${m.maxMp} MP</div>
-        <div class="pm-stats">
-          <div>ATK <span>${m.atk}</span></div>
-          <div>DEF <span>${m.def}</span></div>
-          <div>MAG <span>${m.mag}</span></div>
-          <div>SPD <span>${m.spd}</span></div>
-          <div>Gold <span>${m.gold || 0}</span></div>
-          ${isKO ? '<div class="pm-status-ko">FALLEN</div>' : '<div class="pm-status-ok">OK</div>'}
-        </div>
-        ${m.passive ? `<div class="pm-passive">★ ${m.passive.name}: ${m.passive.description}</div>` : ''}
-      `;
-      container.appendChild(card);
-    });
-  }
 
-  function _renderPauseInventory() {
-    const grid = document.getElementById('pause-inv-grid');
-    if (!grid) return;
-    grid.innerHTML = '';
-
-    if (!G.inventory || !G.inventory.length) {
-      grid.innerHTML = '<div class="pause-inv-empty">No items in bag.</div>';
-      return;
-    }
-
-    G.inventory.forEach(stack => {
-      const def = G.items?.find(i => i.id === stack.itemId);
-      if (!def) return;
-      const isMapUsable = def.usable_in && def.usable_in.includes('map');
-      const slot = document.createElement('div');
-      slot.className = 'pause-inv-slot' + (isMapUsable ? ' map-usable' : '');
-      slot.title = def.description;
-      slot.innerHTML = `${def.icon} ${def.name} <span class="pi-qty">×${stack.qty}</span>`;
-      if (isMapUsable) {
-        slot.onclick = () => _onMapItemClick(def);
-      }
-      grid.appendChild(slot);
-    });
-  }
-
-  function _onMapItemClick(def) {
-    // Remove any existing picker first
-    const existing = document.getElementById('map-item-picker');
-    if (existing) existing.remove();
-
-    const effects = def.effects || [];
-    const needsTarget = effects.some(e => e.target === 'single');
-
-    if (!needsTarget) {
-      // Apply to all party members immediately
-      _applyMapItem(def, null);
-    } else {
-      _showMapItemTargetPicker(def);
-    }
-  }
-
-  function _showMapItemTargetPicker(def) {
-    const grid = document.getElementById('pause-inv-grid');
-    if (!grid) return;
-
-    const picker = document.createElement('div');
-    picker.id = 'map-item-picker';
-    picker.className = 'map-item-picker';
-    picker.innerHTML = `<div class="mip-title">Use ${def.icon} ${def.name} on:</div>`;
-
-    G.party.forEach((m, i) => {
-      if (!m) return;
-      const col = CHAR_COLOR_MAP[m.charId] || '#a090d0';
-      const isKO = !m.hp || m.isKO;
-      const hpPct = Math.max(0, m.hp / m.maxHp * 100);
-
-      // For phoenix_down-type items, only show KO'd members; for others, only alive
-      const isReviveItem = (def.effects || []).some(e => e.stat === 'revive');
-      if (isReviveItem && !isKO) return;
-      if (!isReviveItem && isKO) return;
-
-      const btn = document.createElement('button');
-      btn.className = 'mip-member-btn';
-      btn.style.borderColor = col;
-      btn.innerHTML = `<span style="color:${col}">${m.displayName}</span> <span class="mip-hp">${m.hp}/${m.maxHp} HP</span>`;
-      btn.onclick = () => {
-        picker.remove();
-        _applyMapItem(def, i);
-      };
-      picker.appendChild(btn);
-    });
-
-    const cancelBtn = document.createElement('button');
-    cancelBtn.className = 'mip-cancel';
-    cancelBtn.textContent = 'Cancel';
-    cancelBtn.onclick = () => picker.remove();
-    picker.appendChild(cancelBtn);
-
-    // Insert after the grid
-    grid.parentNode.insertBefore(picker, grid.nextSibling);
-  }
-
-  function _applyMapItem(def, memberIdx) {
-    const effects = def.effects || [];
-    const targets = memberIdx !== null
-      ? [G.party[memberIdx]]
-      : G.party.filter(m => m && !m.isKO && m.hp > 0);
-
-    let used = false;
-    effects.forEach(e => {
-      targets.forEach(m => {
-        if (!m) return;
-        if (e.stat === 'hp' && e.amount) {
-          if (m.isKO || m.hp <= 0) return; // skip KO'd for heal
-          const heal = e.percent
-            ? Math.floor(m.maxHp * e.amount / 100)
-            : e.amount;
-          m.hp = Math.min(m.maxHp, m.hp + heal);
-          used = true;
-        } else if (e.stat === 'mp' && e.amount) {
-          if (m.isKO) return;
-          const restore = e.percent
-            ? Math.floor(m.maxMp * e.amount / 100)
-            : e.amount;
-          m.mp = Math.min(m.maxMp, m.mp + restore);
-          used = true;
-        } else if (e.stat === 'revive') {
-          if (!m.isKO && m.hp > 0) return;
-          m.isKO = false;
-          m.hp = e.amount
-            ? Math.min(m.maxHp, e.percent ? Math.floor(m.maxHp * e.amount / 100) : e.amount)
-            : 1;
-          if (m.char) m.char.isKO = false;
-          used = true;
-        } else if (e.stat === 'debuff') {
-          if (m.statuses) {
-            m.statuses = m.statuses.filter(s =>
-              !s.id.includes('debuff') && s.type !== 'control' && s.type !== 'dot'
-            );
-          }
-          used = true;
-        }
-      });
-    });
-
-    if (!used) return;
-
-    // Consume one from inventory
-    const stack = G.inventory.find(s => s.itemId === def.id);
-    if (stack) {
-      stack.qty--;
-      if (stack.qty <= 0) {
-        G.inventory = G.inventory.filter(s => s.itemId !== def.id);
-      }
-    }
-
-    // Sync char HP/MP so it carries between battles
-    G.party.forEach(m => {
-      if (m && m.char) {
-        m.char.hp = m.hp;
-        m.char.mp = m.mp;
-        m.char.isKO = m.isKO;
-      }
-    });
-
-    showMsg(`Used ${def.icon} ${def.name}!`, 1400);
-    _renderPauseCards();
-    _renderPauseInventory();
-  }
 
   /* ── Periodic HUD / minimap refresh (called by engine each frame) ── */
   let _hudTick = 0;
@@ -496,6 +298,7 @@ const MapUI = (() => {
 
   /* ── Camp Menu ──────────────────────────────────────── */
   function openCampMenu() {
+    if (typeof UI !== 'undefined') UI.hideAllOverlays();
     if (MapEngine.isRunning()) MapEngine.stop();
     _toggleDpad(false);
     const el = document.getElementById('camp-menu');
@@ -560,6 +363,11 @@ const MapUI = (() => {
     _updatePartyHUD();
     MapEngine.resetFog(); // resting clears the darkness
     showMsg('💊 Party healed — darkness lifted!', 1800);
+    closeCampMenu();
+  }
+
+  function campSave() {
+    pauseSave();
     closeCampMenu();
   }
 
@@ -681,6 +489,7 @@ const MapUI = (() => {
     campWorldMap,
     campChangeParty,
     campHeal,
+    campSave,
     campRelics,
     closeRelics,
   };

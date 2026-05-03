@@ -675,10 +675,30 @@ const MapEntities = (() => {
     if (MapPlayer.checkRandomEncounter()) {
       _encounteredIdx = -1;
       const ids = _buildEncounterGroup(null, map);
+      
+      // --- RANDOM ENCOUNTER MUTATION ---
+      // Roll for mutation based on map exploration time (from MapEngine)
+      let mutation = null;
+      let mutantTraits = null;
+      const mapTime = (typeof MapEngine !== 'undefined') ? MapEngine.getFogTime() : 0;
+      const mc = map.mutationConfig || MUTATION_DEFAULTS;
+      
+      if (mapTime >= (mc.corruptThreshold ?? MUTATION_DEFAULTS.corruptThreshold)) {
+        if (Math.random() < (mc.corruptChance ?? MUTATION_DEFAULTS.corruptChance)) {
+          mutation = 'corrupted';
+        }
+      }
+      if (mutation === 'corrupted' && mapTime >= (mc.mutantThreshold ?? MUTATION_DEFAULTS.mutantThreshold)) {
+        if (Math.random() < (mc.mutantChance ?? MUTATION_DEFAULTS.mutantChance)) {
+          mutation = 'mutant';
+          mutantTraits = _rollMutantTraits();
+        }
+      }
+
       return {
         enemies: ids,
-        mutation: null,
-        mutantTraits: null,
+        mutation,
+        mutantTraits,
         isBoss: false
       };
     }
@@ -895,7 +915,10 @@ const MapEntities = (() => {
     }
 
     function init(map) {
-      _npcs = (map.npcs || []).map(n => {
+      _npcs = (map.npcs || []).filter(n => {
+        if (!n.hideIfUnlocked) return true;
+        return !(G.unlockedChars || []).includes(n.hideIfUnlocked);
+      }).map(n => {
         const def = (typeof NPC_DEFS !== 'undefined') ? NPC_DEFS[n.id] : null;
         const spritePath = def ? def.sprite : `images/characters/map/sheets/npc/${n.id}_sheet.png`;
 
@@ -1030,7 +1053,9 @@ const MapEntities = (() => {
         ctx.ellipse(sx + TILE / 2, sy + TILE - 3, TILE * 0.35, 6, 0, 0, Math.PI * 2);
         ctx.fill();
 
-        const bounce = n.moving ? Math.sin(n.frame / NPC_FRAME_CNT * Math.PI * 2) * 2 : 0;
+        const bounce = n.moving
+          ? Math.sin(n.frame / NPC_FRAME_CNT * Math.PI * 2) * 2
+          : Math.sin(performance.now() / 900) * 1.5;
         
         const img = _loadImg(n.sprite);
         if (img.complete && img.naturalWidth) {

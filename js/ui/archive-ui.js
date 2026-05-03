@@ -6,6 +6,7 @@ const ArchiveUI = {
   activeTab: 'bestiary', // 'bestiary' | 'story'
 
   open() {
+    if (typeof UI !== 'undefined') UI.hideAllOverlays();
     if (typeof MapEngine !== 'undefined' && MapEngine.isRunning()) MapEngine.stop();
     const overlay = document.getElementById('bestiary-overlay');
     if (!overlay) return;
@@ -41,10 +42,24 @@ const ArchiveUI = {
   close() {
     const overlay = document.getElementById('bestiary-overlay');
     if (overlay) overlay.style.display = 'none';
-    if (typeof Focus !== 'undefined') {
-      Focus.setContext(null);
+
+    // Intelligent restore
+    if (typeof MapEngine !== 'undefined' && !MapEngine.isRunning()) {
+      // Check if we should go back to pause menu or camp menu
+      // Inventory UI style detection
+      const isCamp = (typeof MapData !== 'undefined' && typeof MapPlayer !== 'undefined') 
+        ? MapData.getTileAt(MapEngine.getMap(), MapPlayer.tx, MapPlayer.ty) === 74 
+        : false;
+      
+      const parentId = isCamp ? 'camp-menu' : 'map-pause-menu';
+      const parentEl = document.getElementById(parentId);
+      if (parentEl) parentEl.style.display = 'flex';
+      
+      if (typeof Focus !== 'undefined') Focus.setContext(parentId);
+    } else {
+      if (typeof Focus !== 'undefined') Focus.setContext(null);
+      if (typeof MapEngine !== 'undefined') MapEngine.resume();
     }
-    if (typeof MapEngine !== 'undefined') MapEngine.resume();
   },
 
   setTab(tab) {

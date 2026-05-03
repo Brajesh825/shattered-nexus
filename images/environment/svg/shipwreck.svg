@@ -1,0 +1,87 @@
+<svg width="280" height="160" viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="hull" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5d4037"/>
+      <stop offset="1" stop-color="#3e2723"/>
+    </linearGradient>
+    <linearGradient id="hull-side" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#4e342e"/>
+      <stop offset="0.5" stop-color="#6d4c41"/>
+      <stop offset="1" stop-color="#3e2723"/>
+    </linearGradient>
+    <linearGradient id="water-line" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0288d1" stop-opacity="0.6"/>
+      <stop offset="1" stop-color="#01579b" stop-opacity="0.9"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Ground shadow -->
+  <ellipse cx="140" cy="152" rx="120" ry="7" fill="#061517" opacity="0.35"/>
+
+  <!-- Submerged hull lower / water fill -->
+  <path d="M30 110 Q50 118 140 122 Q230 118 250 110 L255 140 Q140 150 25 140 Z" fill="url(#water-line)" stroke="none"/>
+
+  <!-- HULL MAIN BODY (beached, listing to port/right) -->
+  <path d="M28 108 Q30 78 50 62 L230 58 Q252 72 256 108 Q220 116 140 120 Q60 116 28 108 Z" fill="url(#hull)" stroke="#3e2723" stroke-width="3"/>
+  <!-- Hull side planks texture -->
+  <path d="M35 108 Q37 82 55 68 L220 64 Q245 78 248 108" fill="none" stroke="#6d4c41" stroke-width="1" opacity="0.4"/>
+  <path d="M44 108 Q46 86 62 74 L215 70 Q238 84 240 108" fill="none" stroke="#6d4c41" stroke-width="1" opacity="0.35"/>
+  <!-- Hull ribs (structural beams) -->
+  <path d="M70 62 L68 118 M100 60 L99 120 M130 59 L130 121 M160 59 L161 121 M190 60 L192 120 M220 62 L222 118" stroke="#4e342e" stroke-width="2.5" opacity="0.6"/>
+  <!-- Deck top surface -->
+  <path d="M52 62 L228 58 L234 68 Q140 74 50 72 Z" fill="#795548" stroke="#5d4037" stroke-width="2"/>
+  <!-- Deck plank lines -->
+  <path d="M65 62 L63 72 M90 61 L88 72 M115 60 L114 72 M140 59 L140 72 M165 59 L166 72 M190 60 L191 72 M215 60 L218 72" stroke="#6d4c41" stroke-width="1" opacity="0.5"/>
+
+  <!-- BROKEN MAST (snapped, leaning) -->
+  <line x1="148" y1="68" x2="152" y2="14" stroke="#5d4037" stroke-width="8" stroke-linecap="round"/>
+  <!-- Mast snap break -->
+  <path d="M150 38 L168 28" stroke="#4e342e" stroke-width="6" stroke-linecap="round"/>
+  <path d="M150 38 Q155 42 163 36" fill="#5d4037" stroke="#3e2723" stroke-width="1.5"/>
+  <!-- Fallen mast section -->
+  <line x1="163" y1="36" x2="218" y2="56" stroke="#6d4c41" stroke-width="6" stroke-linecap="round"/>
+  <!-- Crossbeam (yard arm) on standing mast -->
+  <line x1="115" y1="24" x2="185" y2="20" stroke="#5d4037" stroke-width="5" stroke-linecap="round"/>
+
+  <!-- TORN SAIL (ragged remnant hanging) -->
+  <path d="M152 14 Q158 18 155 30 Q162 25 160 38" fill="#d7ccc8" stroke="#bcaaa4" stroke-width="1.5" opacity="0.7"/>
+  <path d="M155 30 Q163 35 158 42" fill="#efebe9" stroke="#bcaaa4" stroke-width="1" opacity="0.6"/>
+  <!-- Sail tear marks -->
+  <path d="M153 17 L158 22 M156 28 L161 24" stroke="#8d6e63" stroke-width="1" opacity="0.5"/>
+
+  <!-- HANGING ROPES -->
+  <path d="M148 68 Q130 80 118 88" stroke="#8d6e63" stroke-width="1.5" fill="none" opacity="0.7"/>
+  <path d="M152 14 Q172 30 188 50 L196 64" stroke="#8d6e63" stroke-width="1.5" fill="none" opacity="0.65"/>
+  <path d="M115 24 Q104 48 96 66" stroke="#795548" stroke-width="1.2" fill="none" opacity="0.6"/>
+  <path d="M185 20 Q200 40 212 58" stroke="#795548" stroke-width="1.2" fill="none" opacity="0.6"/>
+
+  <!-- BARNACLES on hull sides -->
+  <g fill="#90a4ae" opacity="0.6">
+    <circle cx="42" cy="96" r="2.5"/>
+    <circle cx="55" cy="104" r="2"/>
+    <circle cx="70" cy="110" r="2.5"/>
+    <circle cx="86" cy="114" r="2"/>
+    <circle cx="230" cy="98" r="2.5"/>
+    <circle cx="244" cy="106" r="2"/>
+    <circle cx="215" cy="112" r="2"/>
+  </g>
+
+  <!-- DEBRIS on deck and water -->
+  <rect x="80" y="62" width="18" height="8" rx="1" fill="#6d4c41" stroke="#4e342e" stroke-width="1" transform="rotate(-5,89,66)"/>
+  <rect x="170" y="64" width="14" height="7" rx="1" fill="#795548" stroke="#5d4037" stroke-width="1" transform="rotate(8,177,68)"/>
+  <!-- Loose barrel on deck -->
+  <ellipse cx="108" cy="67" rx="9" ry="6" fill="#8d6e63" stroke="#5d4037" stroke-width="1.5"/>
+  <path d="M100 67 H116 M104 64 H112" stroke="#6d4c41" stroke-width="1" opacity="0.7"/>
+
+  <!-- BOW FIGUREHEAD (broken, barely visible at left end) -->
+  <path d="M30 90 Q20 84 16 76 Q22 70 32 75" fill="#8d6e63" stroke="#5d4037" stroke-width="2"/>
+  <path d="M16 76 Q12 70 18 66" fill="#795548" stroke="#5d4037" stroke-width="1.5"/>
+
+  <!-- WATERLINE GREEN ALGAE STRIPE -->
+  <path d="M28 110 Q80 118 140 122 Q200 118 256 110" fill="none" stroke="#388e3c" stroke-width="3" opacity="0.45"/>
+  <path d="M30 114 Q85 122 140 126 Q196 122 254 114" fill="none" stroke="#2e7d32" stroke-width="2" opacity="0.3"/>
+
+  <!-- Water surface shimmer -->
+  <path d="M25 136 Q80 132 140 136 Q200 140 255 136" fill="none" stroke="#4fc3f7" stroke-width="1.5" opacity="0.4"/>
+  <path d="M35 142 Q90 138 140 142 Q190 146 245 142" fill="none" stroke="#29b6f6" stroke-width="1" opacity="0.25"/>
+</svg>

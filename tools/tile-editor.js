@@ -959,23 +959,48 @@ class TileEditor {
 
         // Render NPCs
         this.state.npcs?.forEach(n => {
-            const charId = n.id || 'aria';
-            const canvas = SpriteRenderer.drawHeroToCanvas(charId, { skin_color: '#f0c0a0', hair_color: '#402010' }, null);
+            const PARTY_IDS = ['aya','tao','lulu','rei','ria','valka','drake','rex'];
+            const charId = n.id || 'aya';
+            const isPartyChar = PARTY_IDS.includes(charId);
+
+            // Resolve display name and color from NPC_DEFS if available
+            const def = (typeof NPC_DEFS !== 'undefined') ? NPC_DEFS[charId] : null;
+            const displayName = def ? def.name : (n.name || n.id);
+            const npcColor   = def ? (def.color || '#4ade80') : '#4ade80';
+
             const x = n.x * s;
             const y = n.y * s;
 
-            ctx.strokeStyle = 'rgba(50, 255, 50, 0.5)';
+            // Colored ring per NPC type
+            ctx.strokeStyle = npcColor;
             ctx.lineWidth = 2;
             ctx.beginPath();
             ctx.arc(x + s/2, y + s/2, s * 0.7, 0, Math.PI * 2);
             ctx.stroke();
 
-            if (canvas) ctx.drawImage(canvas, x - s/4, y - s/2, s * 1.5, s * 1.8);
+            if (isPartyChar) {
+                // Party character — draw their sprite sheet frame
+                const canvas = SpriteRenderer.drawHeroToCanvas(charId, { skin_color: '#f0c0a0', hair_color: '#402010' }, null);
+                if (canvas) ctx.drawImage(canvas, x - s/4, y - s/2, s * 1.5, s * 1.8);
+            } else {
+                // Generic NPC — colored filled circle with first letter
+                ctx.fillStyle = npcColor;
+                ctx.beginPath();
+                ctx.arc(x + s/2, y + s/2, s * 0.45, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#000000';
+                ctx.font = `bold ${Math.max(8, s * 0.4)}px Outfit`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText((charId || '?')[0].toUpperCase(), x + s/2, y + s/2);
+                ctx.textBaseline = 'alphabetic';
+            }
 
-            ctx.fillStyle = '#4ade80';
+            // Label above the NPC using their NPC_DEFS color
+            ctx.fillStyle = npcColor;
             ctx.font = 'bold 10px Outfit';
             ctx.textAlign = 'center';
-            ctx.fillText(n.name || n.id, x + s/2, y - 5);
+            ctx.fillText(displayName, x + s/2, y - 5);
         });
     }
 
@@ -1155,6 +1180,7 @@ class TileEditor {
             'crystal_cavern_f1': { json: '../js/map/data/map-crystal-cavern-f1.json', js: '../js/map/data/map-crystal-cavern-f1.js' },
             'crystal_cavern_f2': { json: '../js/map/data/map-crystal-cavern-f2.json', js: '../js/map/data/map-crystal-cavern-f2.js' },
             'crystal_cavern_f3': { json: '../js/map/data/map-crystal-cavern-f3.json', js: '../js/map/data/map-crystal-cavern-f3.js' },
+            'southern_isles': { json: '../js/map/data/map-southern-isles.json', js: '../js/map/data/map-southern-isles.js' },
             'ember_wastes': { js: '../js/map/data/map-ember-wastes.js' },
             'sunken_temple': { js: '../js/map/data/map-sunken-temple.js' },
             'shadow_reach': { js: '../js/map/data/map-shadow-reach.js' },
@@ -1162,7 +1188,7 @@ class TileEditor {
             'void_citadel': { js: '../js/map/data/map-void-citadel.js' },
             'ashen_foothills': { js: '../js/map/data/map-ashen-foothills.js' },
             'northern_highlands': { js: '../js/map/data/map-northern-highlands.js' },
-            'riverlands_crossing': { js: '../js/map/data/map-riverlands-crossing.js' },
+            'riverlands_crossing': { json: '../js/map/data/map-riverlands-crossing.json', js: '../js/map/data/map-riverlands-crossing.js' },
             'eternal_void': { js: '../js/map/data/map-eternal-void.js' }
         };
         const config = paths[mapId];
@@ -1191,7 +1217,7 @@ class TileEditor {
                     
                     const data = Object.values(tempMAP_DEFS)[0];
                     if (data) {
-                        const foundLayers = data.layers || data.tiles || (data.r0 ? [data.r0, data.r1, data.r2] : null);
+                        let foundLayers = data.layers || (Array.isArray(data.tiles) ? data.tiles : null) || (data.r0 ? [data.r0, data.r1, data.r2] : null);
                         if (foundLayers) layers = foundLayers;
                         
                         entities.enemies = data.enemies || [];
@@ -1267,6 +1293,7 @@ class TileEditor {
             'crystal_cavern_f1': { json: 'js/map/data/map-crystal-cavern-f1.json', js: 'js/map/data/map-crystal-cavern-f1.js' },
             'crystal_cavern_f2': { json: 'js/map/data/map-crystal-cavern-f2.json', js: 'js/map/data/map-crystal-cavern-f2.js' },
             'crystal_cavern_f3': { json: 'js/map/data/map-crystal-cavern-f3.json', js: 'js/map/data/map-crystal-cavern-f3.js' },
+            'southern_isles': { json: 'js/map/data/map-southern-isles.json', js: 'js/map/data/map-southern-isles.js' },
             'ember_wastes': { js: 'js/map/data/map-ember-wastes.js' },
             'sunken_temple': { js: 'js/map/data/map-sunken-temple.js' },
             'shadow_reach': { js: 'js/map/data/map-shadow-reach.js' },
@@ -1274,7 +1301,7 @@ class TileEditor {
             'void_citadel': { js: 'js/map/data/map-void-citadel.js' },
             'ashen_foothills': { js: 'js/map/data/map-ashen-foothills.js' },
             'northern_highlands': { js: 'js/map/data/map-northern-highlands.js' },
-            'riverlands_crossing': { js: 'js/map/data/map-riverlands-crossing.js' },
+            'riverlands_crossing': { json: 'js/map/data/map-riverlands-crossing.json', js: 'js/map/data/map-riverlands-crossing.js' },
             'eternal_void': { js: 'js/map/data/map-eternal-void.js' }
         };
 

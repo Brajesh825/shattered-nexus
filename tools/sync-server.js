@@ -37,11 +37,11 @@ const server = http.createServer((req, res) => {
                 // 2. Save File
                 fs.writeFileSync(absolutePath, data);
 
-                console.log(`✅ [SYNC] Successfully updated: ${targetPath}`);
+                console.log(`[SYNC] Successfully updated: ${targetPath}`);
                 res.writeHead(200, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ status: 'success', path: targetPath }));
             } catch (e) {
-                console.error(`❌ [SYNC] Failed: ${e.message}`);
+                console.error(`[SYNC ERROR] Failed: ${e.message}`);
                 res.writeHead(500);
                 res.end(e.message);
             }

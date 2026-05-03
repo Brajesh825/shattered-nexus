@@ -1,11 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <ellipse cx="50" cy="86" rx="36" ry="5" fill="#0b3340" opacity="0.22"/>
   <!-- Wood frame (frozen/pale) -->
-  <rect x="20" y="60" width="60" height="15" fill="#cfd8dc" stroke="#90a4ae" stroke-width="2"/>
+  <rect x="20" y="60" width="60" height="15" rx="2" fill="#cfd8dc" stroke="#90a4ae" stroke-width="2"/>
+  <path d="M24 66 H76 M26 72 H74" stroke="#78909c" stroke-width="1" opacity="0.45"/>
   <!-- Wheels -->
   <circle cx="30" cy="75" r="10" fill="#78909c" stroke="#455a64"/>
   <circle cx="70" cy="75" r="10" fill="#78909c" stroke="#455a64"/>
+  <circle cx="30" cy="75" r="4" fill="#cfd8dc"/>
+  <circle cx="70" cy="75" r="4" fill="#cfd8dc"/>
   <!-- Snow/Ice layers on top -->
   <path d="M20 60 Q50 45 80 60" fill="#e1f5fe" stroke="#ffffff" stroke-width="2"/>
+  <path d="M28 58 Q50 50 72 58" fill="none" stroke="#b3e5fc" stroke-width="1.5" opacity="0.65"/>
   <!-- Icicles -->
   <path d="M25 60 L27 75 L29 60 M40 60 L42 70 L44 60 M65 60 L67 80 L69 60" fill="#ffffff" opacity="0.8"/>
+  <path d="M18 55 L12 48 M82 55 L88 48" stroke="#90a4ae" stroke-width="2" stroke-linecap="round"/>
 </svg>

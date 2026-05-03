@@ -1,0 +1,16 @@
+<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="root-bark" x1="20" y1="16" x2="96" y2="112" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#6d4c41"/>
+      <stop offset="1" stop-color="#2f1d17"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="60" cy="108" rx="46" ry="7" fill="#031b1a" opacity="0.3"/>
+  <path d="M54 15 C48 36 52 51 45 68 C39 84 30 93 18 108" fill="none" stroke="url(#root-bark)" stroke-width="9" stroke-linecap="round"/>
+  <path d="M65 18 C69 39 65 55 72 72 C79 89 88 96 103 108" fill="none" stroke="url(#root-bark)" stroke-width="8" stroke-linecap="round"/>
+  <path d="M59 33 C58 55 58 77 60 110" fill="none" stroke="#4a2f24" stroke-width="10" stroke-linecap="round"/>
+  <path d="M47 70 C35 74 27 86 21 101 M73 75 C83 79 91 88 99 101 M58 78 C49 86 44 95 39 108 M62 80 C70 89 75 97 81 109" fill="none" stroke="#5d4037" stroke-width="5" stroke-linecap="round"/>
+  <path d="M50 36 C54 40 61 40 67 35 M43 67 C52 72 62 71 74 66" fill="none" stroke="#9b7658" stroke-width="1.4" opacity="0.45"/>
+  <circle cx="46" cy="54" r="2" fill="#2e7d32" opacity="0.65"/>
+  <circle cx="77" cy="61" r="1.6" fill="#2e7d32" opacity="0.55"/>
+</svg>

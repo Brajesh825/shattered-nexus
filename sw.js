@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nexus-cache-v5.8';
+const CACHE_NAME = 'nexus-cache-v7.1';
 
 // Core shell — always pre-cached regardless of quality setting
 const SHELL_ASSETS = [
@@ -48,9 +48,12 @@ const SHELL_ASSETS = [
   './js/ui/archive-ui.js',
   './js/ui/battle-ui.js',
   './js/ui/boss-gauntlet.js',
+  './js/ui/control-hints.js',
   './js/ui/credits-screen.js',
   './js/ui/home-engine.js',
+  './js/ui/input-settings.js',
   './js/ui/menu-manager.js',
+  './js/ui/quest-ui.js',
   './js/ui/result-ui.js',
   './js/ui/weather-engine.js',
   // Systems
@@ -75,6 +78,7 @@ const SHELL_ASSETS = [
   './data/items.json',
   './data/lore_fragments.json',
   './data/move-animations.json',
+  './data/quests.json',
   './data/npcs.js',
   './data/relics.json',
   // Backgrounds
@@ -163,7 +167,6 @@ const SPRITES_NORMAL = [
   './images/characters/map/sheets/aya_sheet.png',
   './images/characters/map/sheets/drake_sheet.png',
   './images/characters/map/sheets/lulu_sheet.png',
-  './images/characters/map/sheets/lulu_sheet_1.png',
   './images/characters/map/sheets/rei_sheet.png',
   './images/characters/map/sheets/rex_sheet.png',
   './images/characters/map/sheets/ria_sheet.png',
@@ -184,7 +187,6 @@ const SPRITES_LOW = [
   './images/characters/map/sheets/aya_sheet_low.webp',
   './images/characters/map/sheets/drake_sheet_low.webp',
   './images/characters/map/sheets/lulu_sheet_low.webp',
-  './images/characters/map/sheets/lulu_sheet_1_low.webp',
   './images/characters/map/sheets/rei_sheet_low.webp',
   './images/characters/map/sheets/rex_sheet_low.webp',
   './images/characters/map/sheets/ria_sheet_low.webp',

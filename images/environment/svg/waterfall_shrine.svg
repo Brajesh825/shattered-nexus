@@ -1,0 +1,21 @@
+<svg width="150" height="170" viewBox="0 0 150 170" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="shrine-stone" x1="35" y1="48" x2="115" y2="148" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#90a4ae"/>
+      <stop offset="1" stop-color="#37474f"/>
+    </linearGradient>
+    <linearGradient id="fall-water" x1="65" y1="30" x2="85" y2="150" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#e0f7fa"/>
+      <stop offset="1" stop-color="#4fc3f7"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="75" cy="152" rx="52" ry="8" fill="#031015" opacity="0.3"/>
+  <path d="M35 145 V70 Q75 42 115 70 V145" fill="url(#shrine-stone)" stroke="#263238" stroke-width="4"/>
+  <path d="M42 76 Q75 55 108 76" fill="none" stroke="#cfd8dc" stroke-width="2" opacity="0.55"/>
+  <path d="M65 30 C62 70 65 112 60 150 H90 C85 112 88 70 85 30 Z" fill="url(#fall-water)" opacity="0.72"/>
+  <path d="M72 34 C75 72 73 111 76 148 M83 38 C80 76 83 111 80 148" stroke="#ffffff" stroke-width="1" opacity="0.5"/>
+  <rect x="48" y="112" width="54" height="26" rx="2" fill="#263238" opacity="0.85"/>
+  <path d="M55 112 L75 96 L95 112" fill="none" stroke="#b2ebf2" stroke-width="2"/>
+  <circle cx="75" cy="112" r="5" fill="#b2ebf2" opacity="0.9"/>
+  <path d="M45 145 Q75 134 105 145" fill="none" stroke="#90caf9" stroke-width="2" opacity="0.7"/>
+</svg>

@@ -584,6 +584,14 @@
     "description": "Davan's unit of eight soldiers tried to hold the outer bridge when the Void Knight passed through. Seven survived — in the sense that they are still standing, still breathing, still wearing their armor. Their eyes are empty. When Davan looks at his brother among them, his brother looks through him. He has not left the road. He tells the party he is waiting in case his brother wakes up. He does not say whether he believes this is possible. He says the road is the only thing he can hold right now. He is holding it."
   },
   {
+    "id": "npc_sera_azure_remnant",
+    "title": "Sera and the Azure Remnant",
+    "icon": "🛡️",
+    "category": "People",
+    "region": "crystal_cavern",
+    "description": "The Azure Remnant began as a retreat, not a regiment. When the Verdant Vale collapsed, refugees followed old maintenance roads into the Crystal Caverns carrying ledgers, seed names, bridge maps, and the roll of those who did not make it out. Over six centuries, the retreat became an oath: preserve the names, guard the hidden enclave, and wait for a chance to stop running. Arren, the bridge guard who became the Void Knight, is remembered as their founder-martyr, not because he founded an order with words, but because his stand bought the first refugees enough time to become descendants. Sera is the current commander of that inheritance. She did not watch the capital fall. She inherited the route away from it, and the duty to one day walk back."
+  },
+  {
     "id": "npc_mire_witch",
     "title": "The Mire Witch's Collection",
     "icon": "🌿",

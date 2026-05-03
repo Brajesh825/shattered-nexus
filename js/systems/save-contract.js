@@ -21,7 +21,8 @@ const SaveContract = (() => {
       partyStats: serializePartyStats(G.party),
       hero: { lv: G.hero?.lv || 1, exp: G.hero?.exp || 0, gold: G.hero?.gold || 0 },
       unlockedChars: G.unlockedChars || [],
-      inventory: G.inventory || []
+      inventory: G.inventory || [],
+      questState: typeof QuestSystem !== 'undefined' ? QuestSystem.save() : null
     };
   }
 

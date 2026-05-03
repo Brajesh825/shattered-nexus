@@ -103,6 +103,7 @@ function resolveOffensiveAction(actor, target, targetIdx, action, element) {
     dmg = Battle.magicDmg(Battle.getStat(actor, 'mag'), _mdef, e.dmgMultiplier || NexusScaling.engine.magicDmgFallback,
       { passiveBonus: _pBoost, magLevel: actor.lv || 1, mdefLevel: target.level || 1, isCrit });
     dmg = Math.floor(dmg * _em * _stab * _fireAmp * _lowHpMult * _summonBonus * _rxMult * _reduction);
+    if (!Number.isFinite(dmg)) { console.error('[MATH-MAGIC] NaN in damage pipeline', { actor: actor.displayName, target: target.name, _em, _stab, _fireAmp, _lowHpMult, _summonBonus, _rxMult, _reduction }); dmg = 1; }
 
     if (window.LogDebug) {
       window.LogDebug(`[MATH-MAGIC] ${actor.displayName} -> ${target.name}: BaseMag=${Battle.getStat(actor, 'mag')}, T-MDef=${Battle.getStat(target, 'mag')}, Mult=${e.dmgMultiplier || 1.5}, Stab=${_stab}, Elem=${_em}, RX=${_rxMult} -> Final=${dmg}`, 'hi');
@@ -119,6 +120,7 @@ function resolveOffensiveAction(actor, target, targetIdx, action, element) {
     dmg = Battle.physDmg(_effAtk + _scaleStat, Battle.getStat(target, 'def'), e.dmgMultiplier || 1,
       { atkLevel: actor.lv || 1, defLevel: target.level || 1, defPen: e.defPen || 0, isCrit });
     dmg = Math.floor(dmg * _em * _stab * _fireAmp * _lowHpMult * _rxMult * _reduction);
+    if (!Number.isFinite(dmg)) { console.error('[MATH-PHYS] NaN in damage pipeline', { actor: actor.displayName, target: target.name, _em, _stab, _fireAmp, _lowHpMult, _rxMult, _reduction }); dmg = 1; }
 
     if (window.LogDebug) {
       window.LogDebug(`[MATH-PHYS] ${actor.displayName} -> ${target.name}: Atk=${_effAtk + _scaleStat}, T-Def=${Battle.getStat(target, 'def')}, Mult=${e.dmgMultiplier || 1}, Stab=${_stab}, Elem=${_em}, RX=${_rxMult} -> Final=${dmg}`, 'hi');
@@ -139,20 +141,6 @@ function resolveOffensiveAction(actor, target, targetIdx, action, element) {
     isAlive: unit => Battle.alive(unit),
     scaling: NexusScaling
   });
-  if (false && reaction) {
-    if (reaction.debuff === 'def') {
-      Battle.addStatus(target, { id: 'debuff_def_shatter', label: 'Shattered', icon: '❄️', stat: 'def', type: 'mult', value: 0.7, turns: 1 });
-      BattleUI.addLog(`🛡️ ${target.name}'s DEF shattered!`, 'magic');
-    }
-    if (reaction.stun) {
-      Battle.addStatus(target, { id: 'status_stunned', label: 'Stunned', icon: '💫', type: 'control', turns: 1 });
-      BattleUI.addLog(`💫 ${target.name} is Conductive! (Stunned)`, 'magic');
-    }
-    if (reaction.dot) {
-      Battle.addStatus(target, { id: 'debuff_burn', label: 'Burn', icon: '🔥', stat: 'hp', type: 'dot', value: Math.floor(dmg * NexusScaling.engine.burnReactionDotPercent), turns: 3 });
-      BattleUI.addLog(`🔥 ${target.name} is Burning!`, 'dmg');
-    }
-  }
   if (reactionEffects.defShattered) BattleUI.addLog(`🛡️ ${target.name}'s DEF shattered!`, 'magic');
   if (reactionEffects.stunned) BattleUI.addLog(`💫 ${target.name} is Conductive! (Stunned)`, 'magic');
   if (reactionEffects.burning) BattleUI.addLog(`🔥 ${target.name} is Burning!`, 'dmg');
@@ -168,6 +156,7 @@ function resolveOffensiveAction(actor, target, targetIdx, action, element) {
   // 5. Apply result
   target.hp = Math.max(0, target.hp - dmg);
   BattleUI.renderEnemyRow(); // Immediate refresh for boss/enemy bars
+  if (typeof _checkStatPhases === 'function') _checkStatPhases(target);
 
   // Strategic Thaw: Attacking a frozen target breaks the ice
   // (Non-Ice attacks only; Ice damage shouldn't thaw ice)
@@ -197,6 +186,21 @@ function resolveOffensiveAction(actor, target, targetIdx, action, element) {
 
   if (!reaction && element !== 'physical') {
     Battle.applyAura(target, element);
+  }
+
+  // Handle Self-Buffs attached to offensive abilities
+  if (e.damageReduction) {
+    Battle.addStatus(actor, { id: `buff_ward_${action.id}`, label: 'Warded', icon: '💎', type: 'reduction', value: 1 - e.damageReduction, turns: e.duration || 3 });
+    BattleUI.addLog(`🛡️ ${actor.displayName || actor.name} is Warded!`, 'buff');
+  }
+  if (e.spdBuff) {
+    const spdType = e.spdBuff > 1 ? 'mult' : 'flat';
+    Battle.addStatus(actor, { id: `buff_spd_${action.id}`, label: 'SPD Up', icon: '💨', stat: 'spd', type: spdType, value: e.spdBuff, turns: e.duration || 3 });
+    BattleUI.addLog(`💨 ${actor.displayName || actor.name}: SPD up!`, 'buff');
+  }
+  if (e.evasion && e.evasion > 0) {
+    Battle.addStatus(actor, { id: `buff_evasion_${action.id}`, label: 'Evasion', icon: '💨', type: 'evasion', value: e.evasion, turns: e.duration || 2 });
+    BattleUI.addLog(`💨 ${actor.displayName || actor.name}: Evasion up!`, 'buff');
   }
 
   const _er = Battle.elemResult(element, target);
@@ -236,10 +240,14 @@ function mapEnemyAnimation(moveId) {
 function resolveEnemyOffensiveAction(actor, target, targetIdx, ab, element) {
   const isMagic = ab?.type === 'magic_damage';
 
-  // Elite resist helper (Tarnished Wing relic)
-  const _isElite = !!(actor.mutantTraits || actor.isCorrupted);
+  // Elite & Boss resist helper (Tarnished Wing relic & Sera's Passive)
+  const _isElite = !!(actor.mutantTraits || actor.isCorrupted || actor.isBoss);
   const _applyEliteResist = dmg => {
-    const resist = target._eliteResist || 0;
+    let resist = target._eliteResist || 0;
+    if (typeof PassiveSystem !== 'undefined') {
+      const bossResist = PassiveSystem.val(target, 'BOSS_DAMAGE_REDUCTION', 0);
+      if (bossResist > 0) resist += bossResist;
+    }
     return (_isElite && resist > 0) ? Math.max(1, Math.floor(dmg * (1 - resist))) : dmg;
   };
 
@@ -277,7 +285,8 @@ function resolveEnemyOffensiveAction(actor, target, targetIdx, ab, element) {
     const _reduction = Battle.getStat(target, 'reduction') || 1.0;
     dmg = Battle.magicDmg(_eMag, _tMdef, ab.dmgMultiplier || NexusScaling.engine.enemyMagicFallback,
       { magLevel: actor.level || 1, mdefLevel: target.lv || 1, isCrit });
-    dmg = _applyEliteResist(Math.floor(dmg * _pm * _rxMult * _reduction));
+    dmg = Math.floor(dmg * _pm * _rxMult * _reduction);
+    if (!Number.isFinite(dmg)) { console.error('[ENEMY-MATH-MAGIC] NaN in damage pipeline', { actor: actor.name, target: target.displayName, _pm, _rxMult, _reduction }); dmg = 1; }
     if (window.LogDebug) {
       window.LogDebug(`[ENEMY-MATH-MAGIC] ${actor.name} -> ${target.displayName}: BaseMag=${_eMag}, T-MDef=${_tMdef.toFixed(1)}, Mult=${ab.dmgMultiplier || 1.3}, PM=${_pm}, RX=${_rxMult} -> Final=${dmg}`, 'hi');
     }
@@ -287,7 +296,8 @@ function resolveEnemyOffensiveAction(actor, target, targetIdx, ab, element) {
     const _reduction = Battle.getStat(target, 'reduction') || 1.0;
     dmg = Battle.physDmg(_eAtk, _tDef, ab?.dmgMultiplier || 1,
       { atkLevel: actor.level || 1, defLevel: target.lv || 1, isCrit });
-    dmg = _applyEliteResist(Math.floor(dmg * _pm * _rxMult * _reduction));
+    dmg = Math.floor(dmg * _pm * _rxMult * _reduction);
+    if (!Number.isFinite(dmg)) { console.error('[ENEMY-MATH-PHYS] NaN in damage pipeline', { actor: actor.name, target: target.displayName, _pm, _rxMult, _reduction }); dmg = 1; }
     if (window.LogDebug) {
       window.LogDebug(`[ENEMY-MATH-PHYS] ${actor.name} -> ${target.displayName}: Atk=${_eAtk}, T-Def=${_tDef}, Mult=${ab?.dmgMultiplier || 1.4}, PM=${_pm}, RX=${_rxMult} -> Final=${dmg}`, 'hi');
       window.LogDebug(`[STATE-DIAG] ${target.displayName} HP: ${target.hp} pre-hit. [TargetIndex: ${targetIdx}]`, 'passive');
@@ -305,13 +315,6 @@ function resolveEnemyOffensiveAction(actor, target, targetIdx, ab, element) {
     isAlive: unit => Battle.alive(unit),
     scaling: NexusScaling
   });
-  if (false && reaction) {
-    if (reaction.dot) {
-      Battle.addStatus(target, { id: 'debuff_burn', label: 'Burn', icon: '🔥', stat: 'hp', type: 'dot', value: Math.floor(dmg * 0.2), turns: 3 });
-      BattleUI.addLog(`🔥 ${target.displayName} is Burning!`, 'dmg');
-    }
-    if (reaction.isDampened) BattleUI.addLog('(Effect dampened by resistance)', 'regen');
-  }
   if (enemyReactionEffects.defShattered) BattleUI.addLog(`🛡️ ${target.displayName}'s DEF shattered!`, 'dmg');
   if (enemyReactionEffects.stunned) BattleUI.addLog(`💫 ${target.displayName} is Conductive! (Stunned)`, 'dmg');
   if (enemyReactionEffects.burning) BattleUI.addLog(`🔥 ${target.displayName} is Burning!`, 'dmg');
@@ -323,13 +326,10 @@ function resolveEnemyOffensiveAction(actor, target, targetIdx, ab, element) {
   }
 
   // 6. Passive reductions & Final Rounding
+  // Note: status-based reduction (including guardian) is already applied via _reduction
+  // earlier in the damage chain. Only apply passive trait and relic reductions here.
   const _passResist = 1 - PassiveSystem.val(target, 'DAMAGE_REDUCTION', 0);
   dmg *= _passResist;
-  if (Battle.getStat(target, 'reduction') < 1) dmg *= Battle.getStat(target, 'reduction');
-  if (StatusSystem.has(target, 'status_guardian')) {
-    dmg *= 0.7;
-    BattleUI.addLog(`(Guardian Mitigated -30%)`, 'hi');
-  }
   // Relic: Cinder of Ashveil — fire damage reduction
   if (element === 'fire' && target._fireResist) {
     dmg *= (1 - target._fireResist);
@@ -377,10 +377,11 @@ function resolveEnemyOffensiveAction(actor, target, targetIdx, ab, element) {
 
   // 11. Log
   const _pr = Battle.playerElemResult(element, target);
+  const moveLabel = ab ? `uses ${ab.name}` : `attacks`;
   if (isMagic) {
-    BattleUI.setLog([`${actor.name} uses ${ab.name}!`, `${target.displayName} took ${dmg} magic damage!`], ['magic', 'dmg']);
+    BattleUI.setLog([`${actor.name} ${moveLabel}!`, `${target.displayName} took ${dmg} magic damage!`], ['magic', 'dmg']);
   } else {
-    BattleUI.setLog([`${actor.name} attacks ${target.displayName}!`, `${target.displayName} took ${dmg} damage!`], ['', 'dmg']);
+    BattleUI.setLog([`${actor.name} ${moveLabel} ${target.displayName}!`, `${target.displayName} took ${dmg} damage!`], ['', 'dmg']);
   }
   if (_pr === 'weak') BattleUI.addLog('✦ WEAK!', 'dmg');
   else if (_pr === 'resist') BattleUI.addLog('▸ Resist', 'regen');
@@ -566,6 +567,7 @@ const ActionEngine = {
       if (e.stunLow && enemy.hp <= enemy.maxHp * 0.3) { Battle.addStatus(enemy, { id: `status_stunned${sourceSuffix}`, label: 'Stunned', icon: '💫', type: 'control', turns: 1 }); BattleUI.addLog(`💫 ${enemy.name} is stunned! (Low HP)`, 'magic'); debuffParts.push(`Stun(LowHP)`); }
       if (e.freezeChance && !StatusSystem.has(enemy, 'status_frozen') && Math.random() < e.freezeChance) { Battle.addStatus(enemy, { id: `status_frozen${sourceSuffix}`, label: 'Frozen', icon: '❄️', type: 'control', turns: 2 }); BattleUI.addLog(`❄️ ${enemy.name} is Frozen for 2 turns!`, 'magic'); debuffParts.push(`Freeze(${e.freezeChance*100}%)`); }
       if (e.slowChance && !StatusSystem.has(enemy, 'status_slow') && Math.random() < e.slowChance) { Battle.addStatus(enemy, { ...StatusSystem.DEFS.slow, id: `status_slow${sourceSuffix}` }); BattleUI.addLog(`🐌 ${enemy.name} is Slowed!`, 'magic'); debuffParts.push(`Slow(${e.slowChance*100}%)`); }
+      if (e.evasion) { Battle.addStatus(enemy, { id: `debuff_evasion${sourceSuffix}`, label: 'Weighted', icon: '⚓', type: 'evasion', value: e.evasion, turns: e.duration || 2 }); BattleUI.addLog(`⚓ ${enemy.name} is weighed down!`, 'magic'); debuffParts.push(`Evasion(${e.evasion})`); }
 
       if (window.LogDebug) {
         window.LogDebug(`[DEBUFF] ${actor.displayName || actor.name} uses ${ab.name} -> ${enemy.name}: ${debuffParts.join(', ') || 'no effect'} (${e.duration || 2} turns)`, 'dmg');
@@ -1055,4 +1057,34 @@ function heroDefend() {
 
   BattleUI.setSpriteFrame(G.activeMemberIdx, 'prepare');
   ActionEngine.execute(actor, [actor], { id: 'defend', name: 'Defend', type: 'defend' }, 'physical', { actorDuration: 200 }, false);
+}
+
+/**
+ * Checks if a boss has crossed a stat-scaling threshold.
+ * Triggers evolution text and flags the phase as active.
+ */
+function _checkStatPhases(unit) {
+  if (!unit.isBoss || !unit.statPhases || unit.hp <= 0) return;
+  const hpPct = unit.hp / unit.maxHp;
+  let triggeredNew = false;
+
+  unit.statPhases.forEach(p => {
+    if (!p.triggered && hpPct <= p.hp) {
+      p.triggered = true;
+      triggeredNew = true;
+    }
+  });
+
+  if (triggeredNew) {
+    BattleUI.addLog(`⚡ ${unit.name} is evolving!`, 'dmg');
+    if (unit.id === 'spectral_guardian') {
+      BattleUI.addLog(`⚡ THE GUARDIAN SHATTERS!`, 'magic');
+      if (typeof SFX !== 'undefined') SFX.shatter();
+    } else if (unit.id === 'void_knight') {
+      BattleUI.addLog(`💀 HIS GRIEF CONSUMES HIM! The Void Knight abandons all defense!`, 'dmg');
+      if (typeof SFX !== 'undefined') SFX.buff();
+    } else {
+      if (typeof SFX !== 'undefined') SFX.buff();
+    }
+  }
 }

@@ -15,6 +15,9 @@ MAP_DEFS.verdant_vale = {
     ],
     playerStart: { x: 7, y: 10 },
     bgColor: '#0a1a05',
+    bgm: 'vale_explore',
+    battleBgm: 'vale_battle',
+    bossBgm: 'void_knight_theme',
     ambientLight: 'rgba(60,180,60,0.04)',
     weather: 'leaves',
     enemyLevelRange: [1, 8],
@@ -48,8 +51,45 @@ MAP_DEFS.verdant_vale = {
     jsonFile: 'js/map/data/map-verdant-vale.json',
 
     npcs: [
+        {
+            id: 'azure_commander', x: 29, y: 13, dialogueKey: 'verdant_vale',
+            behavior: 'stationary', hideIfUnlocked: 'sera',
+            onDialogueComplete() {
+                MapEngine.openDialogue([
+                    { speaker: 'Azure Commander', text: 'Down — get down!' },
+                    { speaker: null, text: 'A shadow detaches from the tree line. Then another. Then a dozen. Void-touched soldiers pour from the eastern wood toward the bridge in silence.' },
+                    { speaker: 'Tao', text: 'Where did they all come from?!' },
+                    { speaker: 'Azure Commander', text: 'The ruins leak. They have been massing since the fog rose. I was waiting to see if you would run.' },
+                    { speaker: 'Rei', text: 'We are not running.' },
+                    { speaker: 'Azure Commander', text: 'Good. Then hold this bridge with me.' },
+                ], () => {
+                    MapEngine.startWaves({
+                        waves: [
+                            {
+                                enemies: ['zombie_soldier', 'zombie_soldier', 'goblin'],
+                                preMsg: '⚔ Wave 1 — Void-touched surge toward the bridge!',
+                                interWaveMsg: '✦ First wave broken — more incoming!',
+                            },
+                            {
+                                enemies: ['zombie_soldier', 'zombie_soldier', 'wolf', 'bat'],
+                                preMsg: null,
+                            },
+                        ],
+                        allClearMsg: '✦ The bridge holds.',
+                        onAllClear() {
+                            MapEngine.openDialogue([
+                                { speaker: 'Azure Commander', text: 'That was not the worst they can send.' },
+                                { speaker: 'Aya', text: 'No. But it is the worst they sent tonight.' },
+                                { speaker: 'Azure Commander', text: 'You fight well for people who do not know the Vale. I owe you the rest of what I know about the eastern road.' },
+                                { speaker: 'Azure Commander', text: 'When you are ready for the ruins — I will be here.' },
+                            ], () => MapEngine.resume());
+                        },
+                    });
+                });
+            },
+        },
         { id: 'essabella', x: 44, y: 22, dialogueKey: 'verdant_vale', behavior: 'wander', range: 3 },
-        { id: 'elder_maren', x: 6, y: 8, dialogueKey: 'elder_maren', behavior: 'stationary' },
+        { id: 'elder_maren', x: 6, y: 8, dialogueKey: 'elder_maren', behavior: 'stationary', giveQuest: 'goblin_menace' },
         { id: 'soldier_1', x: 23, y: 13, dialogueKey: 'soldier_chat', behavior: 'patrol', waypoints: [{ x: 23, y: 13 }, { x: 26, y: 13 }] },
         { id: 'soldier_2', x: 15, y: 6, dialogueKey: 'soldier_chat', behavior: 'stationary' },
         { id: 'soldier_3', x: 17, y: 15, dialogueKey: 'soldier_chat', behavior: 'patrol', waypoints: [{ x: 17, y: 15 }, { x: 17, y: 12 }] },
@@ -57,6 +97,18 @@ MAP_DEFS.verdant_vale = {
     ],
 
     triggers: [
+        {
+            id: 'azure_commander_first_sight',
+            x: 22, y: 10, w: 4, h: 5,
+            type: 'dialogue',
+            lines: [
+                { speaker: 'Azure Commander', text: 'Hold.' },
+                { speaker: 'Aya', text: 'Who—' },
+                { speaker: 'Azure Commander', text: 'You carry no banner. That means you are either very brave or very lost.' },
+                { speaker: 'Tao', text: 'We are looking for the ruins. To the east.' },
+                { speaker: 'Azure Commander', text: 'I know. I have been watching you since you crossed the river bend. The eastern road is not safe — come to me before you go further.' },
+            ]
+        },
         {
             id: 'bridge_realization',
             x: 29, y: 13, w: 3, h: 3,
@@ -67,6 +119,19 @@ MAP_DEFS.verdant_vale = {
                 { speaker: 'Aya', text: 'Scorched by void, not fire. These aren\'t just ruins... everyone is already dead in here.' },
                 { speaker: 'Lulu', text: 'Davan was right. The Void Knight didn\'t just pass through. He turned this place into a tomb.' },
                 { speaker: 'Rei', text: 'Keep your guard up. Whatever did this is still around, and it\'s hungry.' },
+            ]
+        },
+        {
+            id: 'azure_commander_ruins_gate',
+            x: 48, y: 27, w: 4, h: 5,
+            type: 'dialogue',
+            lines: [
+                { speaker: 'Azure Commander', text: 'Wait.' },
+                { speaker: 'Azure Commander', text: 'The knight inside those ruins — before you face him, understand what you are ending. Six centuries of vigil. The last act of a man who chose silence over surrender.' },
+                { speaker: 'Rei', text: 'You sound like you are asking us to stop.' },
+                { speaker: 'Azure Commander', text: 'No. I am asking you to remember his name when it is over. Arren. He was called Arren.' },
+                { speaker: 'Aya', text: 'We will remember.' },
+                { speaker: 'Azure Commander', text: 'Then go. The road after this one is mine to walk.' },
             ]
         },
         {
@@ -98,12 +163,15 @@ MAP_DEFS.verdant_vale = {
             { char: 'Tao', color: '#ef4444', text: 'Something rustles. Maybe just the wind.' },
             { char: 'Lulu', color: '#2dd4bf', text: 'I can hear the river somewhere ahead.' },
             { char: 'Rei', color: '#4ade80', text: 'Stay alert. This place is not as peaceful as it looks.' },
+            { char: 'Azure Commander', color: '#3b82f6', text: 'The ruins breathe differently at night. Stay on the road.' },
+            { char: 'Azure Commander', color: '#3b82f6', text: 'We have kept watch here for six generations. You are the first outsiders in years.' },
         ],
         fogRising: [
             { char: 'Rei', color: '#4ade80', text: 'A mist is rising. Keep moving.' },
             { char: 'Tao', color: '#ef4444', text: 'Oh good, ominous fog. My favorite.' },
             { char: 'Aya', color: '#7dd3fc', text: 'The light is fading. Stay together.' },
             { char: 'Lulu', color: '#2dd4bf', text: 'I can barely see past the treeline.' },
+            { char: 'Azure Commander', color: '#3b82f6', text: 'The mist here is not natural. The void breathes it out. Move east.' },
         ],
         encounter: [
             { char: 'Rei', color: '#4ade80', text: 'Enemy — don\'t let them surround us!' },

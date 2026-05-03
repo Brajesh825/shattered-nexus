@@ -1,4 +1,28 @@
 /* ============================================================
+   UI OVERLAY MANAGER
+   ============================================================ */
+const UI = {
+  hideAllOverlays: () => {
+    const overlays = [
+      'party-menu',
+      'inventory-overlay',
+      'quest-overlay',
+      'bestiary-overlay',
+      'controls-overlay',
+      'settings-overlay',
+      'relic-panel',
+      'party-swap-overlay',
+      'map-pause-menu',
+      'camp-menu'
+    ];
+    overlays.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+  }
+};
+
+/* ============================================================
    PARTY MENU
    ============================================================ */
 function openPartyMenu() {
@@ -145,6 +169,10 @@ MapEngine.onEncounterStart = (enc, map) => {
         }
       }
     });
+  }
+
+  if (typeof BGM !== 'undefined') {
+    BGM.playBattle(map, isBossEncounter);
   }
 
   _initBattle();

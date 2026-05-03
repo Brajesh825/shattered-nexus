@@ -68,6 +68,7 @@ canvas {
   --fs-h3: 1.55rem;
   --fs-lg: 1.25rem;
   --fs-base: 1.05rem;
+  --fs-md: 1.0rem;
   --fs-sm: 0.9rem;
   --fs-xs: 0.75rem;
   --fs-xxs: 0.65rem;
@@ -2200,6 +2201,106 @@ body {
   flex-shrink: 0;
 }
 
+/* Navigation row with prev/next arrows */
+.pm-nav-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  background: rgba(0,0,0,0.4);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  gap: 8px;
+}
+
+#pm-nav-label {
+  font-family: var(--px);
+  font-size: 0.75rem;
+  color: var(--gold);
+  letter-spacing: 2px;
+  text-align: center;
+  flex: 1;
+}
+
+.pm-arrow-btn {
+  background: linear-gradient(180deg, #1a1650, #0f0c38);
+  border: 1px solid var(--border-hi);
+  color: var(--gold);
+  font-family: var(--vt);
+  font-size: 1.6rem;
+  line-height: 1;
+  width: 56px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+  flex-shrink: 0;
+  touch-action: manipulation;
+}
+
+.pm-arrow-btn:hover, .pm-arrow-btn:focus {
+  background: rgba(255,207,92,0.12);
+  border-color: var(--gold);
+  box-shadow: 0 0 14px var(--gold-glow);
+}
+
+.pm-arrow-btn:active {
+  transform: scale(0.92);
+  filter: brightness(1.4);
+}
+
+/* Portrait section — merged with col, no longer needed separately */
+.pm-portrait-section { display: none; }
+.pm-id-block { display: none; }
+
+/* Make pm-card invisible inside viewer */
+.pm-viewer .pm-card { all: unset; display: contents; }
+
+/* Compact bars in info col */
+.pm-info-col .pm-bars {
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.pm-info-col .pm-bar-row {
+  font-size: 0.82rem;
+}
+
+/* Compact stats grid */
+.pm-info-col .pm-stats {
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.pm-info-col .pm-stat {
+  padding: 4px 3px;
+  font-size: 0.82rem;
+}
+
+/* Section label compact */
+.pm-info-col .pm-section-label {
+  padding-bottom: 3px;
+  flex-shrink: 0;
+}
+
+/* Abilities list in info col */
+.pm-info-col .pm-abilities {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.pm-info-col .pm-ab {
+  padding: 3px 8px;
+  min-height: 26px;
+  font-size: 0.82rem;
+  flex-shrink: 0;
+}
+
 .pm-title {
   font-family: var(--px);
   font-size: var(--fs-sm);
@@ -2226,14 +2327,83 @@ body {
   box-shadow: 0 0 8px #c084fc40;
 }
 
-.pm-cards {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  padding: 12px;
-  overflow-y: auto;
+/* ── Two-column split: portrait LEFT, info RIGHT — always ── */
+.pm-viewer {
+  display: flex;
+  flex-direction: column;
   flex: 1;
+  min-height: 0;
+  overflow: hidden;
 }
+
+.pm-viewer-inner {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Portrait column — fixed width, centers the sprite */
+.pm-portrait-col {
+  width: 130px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid var(--border);
+  background: rgba(0,0,0,0.18);
+  padding: 8px 4px;
+}
+
+/* Info column — all the text, fits without scroll */
+.pm-info-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 14px;
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* Character header block */
+.pm-char-header {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-bottom: 7px;
+  flex-shrink: 0;
+}
+
+.pm-card-exp {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
+
+/* Passive — compact 1-liner with colored left bar */
+.pm-passive-line {
+  font-size: 0.8rem;
+  line-height: 1.3;
+  padding: 5px 8px;
+  background: rgba(0,0,0,0.22);
+  border-left: 2px solid var(--gold-dim);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* Ability drawer (hidden by default, shown on tap) */
+.pm-ab-drawer {
+  display: none;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  padding: 4px 10px 6px;
+  line-height: 1.4;
+  background: rgba(0,0,0,0.2);
+  border-left: 2px solid var(--border-hi);
+}
+
+.pm-ab-drawer.pm-ab-open { display: block; }
 
 .pm-card {
   background: linear-gradient(180deg, #06051e, #04031a);
@@ -8985,4 +9155,70 @@ input[type=range].setting-slider::-webkit-slider-thumb {
   background: linear-gradient(135deg, #fa5c5c 0%, #d62d2d 100%) !important;
   border-color: #ff8080 !important;
   color: #fff !important;
+}
+
+/* ── Party Menu: Landscape Mobile / Tablet Split-View ── */
+/* On short screens (landscape phone) render portrait left, content right */
+@media (max-height: 520px) and (orientation: landscape) {
+  .pm-viewer-inner {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 12px 16px;
+    max-width: 100%;
+  }
+
+  .pm-portrait-section {
+    flex-direction: column;
+    align-items: center;
+    width: 160px;
+    flex-shrink: 0;
+    border-bottom: none;
+    border-right: 1px solid var(--border);
+    padding-bottom: 0;
+    padding-right: 16px;
+  }
+
+  .pm-id-block {
+    align-items: center;
+    text-align: center;
+  }
+
+  .pm-card-right {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 0;
+  }
+
+  /* Stack stats tighter in landscape */
+  .pm-stats {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .pm-nav-row {
+    padding: 5px 12px;
+  }
+
+  #pm-nav-label {
+    font-size: 0.7rem;
+  }
+}
+
+/* Tablet portrait: a bit more breathing room */
+@media (min-width: 600px) and (max-width: 1024px) {
+  .pm-viewer-inner {
+    max-width: 600px;
+  }
+
+  #party-menu .pm-portrait-section {
+    gap: 28px;
+  }
+}
+
+/* Hide old pm-card on the viewer (belt-and-suspenders safety) */
+.pm-viewer .pm-card {
+  all: unset;
 }

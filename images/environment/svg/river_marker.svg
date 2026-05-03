@@ -1,0 +1,13 @@
+<svg width="90" height="120" viewBox="0 0 90 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="marker-stone" x1="20" y1="12" x2="70" y2="108" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#b0bec5"/>
+      <stop offset="1" stop-color="#455a64"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="45" cy="109" rx="29" ry="5" fill="#031015" opacity="0.25"/>
+  <path d="M25 108 L22 34 Q27 14 45 10 Q63 14 68 34 L65 108 Z" fill="url(#marker-stone)" stroke="#263238" stroke-width="3"/>
+  <path d="M30 36 Q45 26 60 36 M32 52 H58 M34 70 H56" stroke="#e0f7fa" stroke-width="1.6" opacity="0.55" fill="none"/>
+  <path d="M45 42 C37 53 39 65 45 75 C51 65 53 53 45 42 Z" fill="#4fc3f7" opacity="0.75" stroke="#0277bd" stroke-width="1"/>
+  <path d="M30 92 Q45 85 60 92" stroke="#2e7d32" stroke-width="2" opacity="0.55" fill="none"/>
+</svg>

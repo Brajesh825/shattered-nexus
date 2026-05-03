@@ -246,41 +246,112 @@ const Battle = {
 
 /* ============================================================
    GAME STATE
+   Single source of truth for all runtime state.
+   Only serialisable fields (lv, exp, gold, hp, mp, isKO) are
+   persisted — everything else is recomputed on load.
    ============================================================ */
+
+/**
+ * @typedef {Object} PartyMember
+ * @property {string}   id           — Character ID (e.g. 'aya')
+ * @property {string}   displayName  — UI name
+ * @property {number}   lv           — Current level
+ * @property {number}   hp           — Current HP
+ * @property {number}   maxHp        — Computed max HP
+ * @property {number}   mp           — Current MP
+ * @property {number}   maxMp        — Computed max MP
+ * @property {number}   atk          — Computed ATK
+ * @property {number}   def          — Computed DEF
+ * @property {number}   spd          — Computed SPD
+ * @property {number}   mag          — Computed MAG
+ * @property {boolean}  isKO         — Knocked-out flag
+ * @property {Array}    statuses     — Active status effects
+ * @property {Object}   cooldowns    — { abilityId: turnsRemaining }
+ * @property {Object}   cls          — Class definition (from classes.json)
+ */
+
+/**
+ * @typedef {Object} EnemyUnit
+ * @property {string}   id           — Enemy ID (must match enemies.json)
+ * @property {string}   name         — Display name
+ * @property {number}   level        — Spawn level
+ * @property {number}   hp           — Current HP
+ * @property {number}   maxHp        — Max HP
+ * @property {number}   atk          — ATK stat
+ * @property {number}   def          — DEF stat
+ * @property {number}   mag          — MAG stat
+ * @property {number}   spd          — SPD stat
+ * @property {boolean}  isKO         — Knocked-out flag
+ * @property {Array}    statuses     — Active status effects
+ * @property {string}   [element]    — Primary element (optional)
+ * @property {string}   [aiRole]     — 'attacker'|'tactician'|'predator'|'support'
+ */
+
+/**
+ * @typedef {Object} TurnEntry
+ * @property {'party'|'enemy'} type
+ * @property {number} idx   — Index into G.party or G.enemyGroup
+ * @property {number} spd   — Speed value used to build the queue
+ */
+
+/** @type {{ chars: Array, classes: Array, enemies: Array, items: Array, inventory: Array, relics: Array, ownedRelics: string[], activeRelics: string[], selectedChar: string|null, selectedClass: string|null, selectedChars: string[], unlockedChars: string[], clearedMaps: string[], npcTalked: Object, party: PartyMember[], enemyGroup: EnemyUnit[], turnQueue: TurnEntry[], turnIdx: number, activeMemberIdx: number, targetEnemyIdx: number, busy: boolean, mode: string, activePartyIdx: number, settings: Object }} */
 const G = {
+  /** @type {Array} Loaded character definitions (from characters.json) */
   chars: [],
+  /** @type {Array} Loaded class definitions (from classes.json) */
   classes: [],
+  /** @type {Array} Loaded enemy definitions (from enemies.json) */
   enemies: [],
-  items: [],          // item definitions from ITEMS_DATA
-  inventory: [],          // [{ itemId, qty }] — party's bag (max 20 stacks)
-  relics: [],       // relic definitions from RELICS_DATA
-  ownedRelics: [],       // relic IDs the party has collected
-  activeRelics: [],       // relic IDs currently equipped (max 3)
+  /** @type {Array} Loaded item definitions (from items.json) */
+  items: [],
+  /** @type {Array<{itemId:string, qty:number}>} Party inventory — max 20 stacks */
+  inventory: [],
+  /** @type {Array} Loaded relic definitions (from relics.json) */
+  relics: [],
+  /** @type {string[]} Relic IDs the party has collected */
+  ownedRelics: [],
+  /** @type {string[]} Relic IDs currently equipped (max 3) */
+  activeRelics: [],
   selectedChar: null,
   selectedClass: null,
-  selectedChars: [],   // ordered array of up to 4 char IDs
-  unlockedChars: ['aya', 'tao', 'lulu', 'rei'],  // Characters available for selection
-  clearedMaps: [],   // map IDs whose objective has been completed
-  npcTalked: {},   // { mapId: [npcId, ...] } — persisted across sessions
+  /** @type {string[]} Ordered array of up to 4 character IDs */
+  selectedChars: [],
+  /** @type {string[]} Character IDs available for selection */
+  unlockedChars: ['aya', 'tao', 'lulu', 'rei'],
+  /** @type {string[]} Map IDs whose objective has been completed */
+  clearedMaps: [],
+  /** @type {Object.<string, string[]>} { mapId: [npcId, ...] } — persisted across sessions */
+  npcTalked: {},
 
-  party: [],   // 4 party members (all player-controlled)
-  enemyGroup: [],   // 1–3 enemies
-  turnQueue: [],   // [{type:'party'|'enemy', idx, spd}]
+  /** @type {PartyMember[]} Active party — up to 4 members */
+  party: [],
+  /** @type {EnemyUnit[]} Current enemy encounter — 1–3 enemies */
+  enemyGroup: [],
+  /** @type {TurnEntry[]} Sorted turn queue for the current battle round */
+  turnQueue: [],
+  /** Current index into turnQueue — advances each time a unit acts. @type {number} */
   turnIdx: 0,
-  activeMemberIdx: 0,    // which party member is currently acting
-  targetEnemyIdx: 0,    // which enemy is selected as attack target
+  /** Index of the party member whose turn it currently is. @type {number} */
+  activeMemberIdx: 0,
+  /** Index of the enemy currently selected as the attack target. @type {number} */
+  targetEnemyIdx: 0,
+  /** Global action lock — true while an action animation is in flight. @type {boolean} */
   busy: false,
-  mode: 'free', // 'free' | 'story' | 'explore'
+  /** @type {'free'|'story'|'explore'} Current screen context */
+  mode: 'free',
 
-  activePartyIdx: 0,   // which party member walks the map
+  /** Index of the party member controlling the map avatar. @type {number} */
+  activePartyIdx: 0,
   settings: {
-    graphicsQuality: localStorage.getItem('sn_graphics_quality') || 'auto' // 'auto'|'high'|'low'
+    /** @type {'auto'|'high'|'low'} */
+    graphicsQuality: localStorage.getItem('sn_graphics_quality') || 'auto'
   },
 
-  // Backward-compat accessors for story.js
+  /** The map-walking party member. Falls back through activePartyIdx → isPlayer → index 0. */
   get hero() {
     return this.party[this.activePartyIdx] || this.party.find(m => m.isPlayer) || this.party[0] || null;
   },
+  /** The currently targeted enemy; auto-falls back to first alive enemy. */
   get enemy() {
     const e = this.enemyGroup[this.targetEnemyIdx];
     if (e && Battle.alive(e)) return e;
@@ -311,8 +382,7 @@ function migrateCharId(id) {
   const lower = id.toLowerCase();
   return LEGACY_ID_MAP[lower] || lower;
 }
-const ENEMY_POP_X = [580, 720, 860, 650]; // 4th is between 1st and 2nd for diamond layout
-const PARTY_POP_X = [42, 108, 174, 240];
+
 const TYPE_ICONS = {
   physical: '🗡️',
   magic_damage: '🔮',
@@ -377,6 +447,15 @@ function showScreen(id) {
 
   if (typeof SFX !== 'undefined') SFX.click();
 
+  // Control hints context
+  if (typeof ControlHints !== 'undefined') {
+    const hintCtx =
+      id === 'battle-screen'  ? 'battle'   :
+      id === 'explore-screen' ? 'explore'  :
+      id === 'map-screen'     ? 'worldmap' : 'menu';
+    ControlHints.setContext(hintCtx);
+  }
+
   // BGM — fade out current track then play the next one
   if (typeof BGM !== 'undefined') {
     const _next =
@@ -388,63 +467,184 @@ function showScreen(id) {
   }
 }
 
-function renderPartyMenu() {
-  const cards = document.getElementById('pm-cards');
-  if (!cards) return;
-  cards.innerHTML = '';
-  G.party.forEach((m, i) => {
-    const col = CHAR_COLOR[m.charId] || '#c0b8e8';
-    const hpPct = Math.max(0, m.hp / m.maxHp * 100);
-    const mpPct = Math.max(0, m.mp / m.maxMp * 100);
-    const hpCol = hpPct > 50 ? 'var(--hp-hi)' : hpPct > 25 ? 'var(--hp-mid)' : 'var(--hp-lo)';
-    const card = document.createElement('div');
-    card.className = 'pm-card';
-    card.style.borderColor = col + '80';
+/* ============================================================
+   PARTY MENU — Paginated single-character viewer
+   ============================================================ */
+const PartyMenu = (() => {
+  let _idx = 0;
+  let _fromPause = false;
 
-    const img = document.createElement('img');
-    img.className = 'pm-portrait'; img.alt = m.displayName;
-    if (typeof SpriteRenderer !== 'undefined') SpriteRenderer.drawHero(img, m.charId, m.char, m.cls);
+  const CHAR_COLOR = {
+    aya:'#7dd3fc', tao:'#ef4444', lulu:'#2dd4bf', rei:'#4ade80',
+    rydia:'#a78bfa', lenneth:'#e879f9', kain:'#0ea5e9', leon:'#fbbf24',
+    drake:'#fb923c', rex:'#94a3b8'
+  };
 
-    const abHtml = (m.abilities || []).map(a =>
-      `<div class="pm-ab"><span class="pm-ab-icon">${a.icon || '⚡'}</span><span class="pm-ab-name">${a.name}</span><span class="pm-ab-mp">${a.mp}MP</span></div>`
+  function open() {
+    if (typeof UI !== 'undefined') UI.hideAllOverlays();
+
+    _idx = 0;
+    const overlay = document.getElementById('party-menu');
+    if (overlay) overlay.style.display = 'flex';
+    _renderCurrent();
+
+    if (typeof Focus !== 'undefined') Focus.setContext('party-menu');
+  }
+
+  function close() {
+    const overlay = document.getElementById('party-menu');
+    if (overlay) overlay.style.display = 'none';
+
+    // Intelligent restore: only return to system menu if we are actually paused
+    if (typeof MapEngine !== 'undefined' && !MapEngine.isRunning()) {
+      const pauseEl = document.getElementById('map-pause-menu');
+      if (pauseEl) pauseEl.style.display = 'flex';
+      if (typeof Focus !== 'undefined') Focus.setContext('map-pause-menu');
+    } else {
+      if (typeof Focus !== 'undefined') Focus.setContext(null);
+    }
+  }
+
+  function back() {
+    close();
+  }
+
+  function next() {
+    if (!G.party.length) return;
+    _idx = (_idx + 1) % G.party.length;
+    _renderCurrent();
+  }
+
+  function prev() {
+    if (!G.party.length) return;
+    _idx = (_idx - 1 + G.party.length) % G.party.length;
+    _renderCurrent();
+  }
+
+  function _renderCurrent() {
+    const navLabel   = document.getElementById('pm-nav-label');
+    const showcase   = document.getElementById('pms-showcase');
+    const spriteEl   = document.getElementById('pms-sprite');
+    const badge      = document.getElementById('pms-char-badge');
+    const particles  = document.getElementById('pms-particles');
+    const infoPanel  = document.getElementById('pms-info');
+
+    if (!infoPanel || !G.party.length) return;
+
+    const m = G.party[_idx];
+    if (!m) return;
+
+    const col     = CHAR_COLOR[m.charId] || '#c0b8e8';
+    const hpPct   = Math.max(0, m.hp / m.maxHp * 100);
+    const mpPct   = Math.max(0, m.mp / m.maxMp * 100);
+    const hpCol   = hpPct > 50 ? '#4ade80' : hpPct > 25 ? '#eab308' : '#ef4444';
+    const expNext = typeof getExpThreshold === 'function' ? getExpThreshold(m.lv) : (5 * m.lv * m.lv + 25 * m.lv);
+    const expPct  = Math.min(100, (m.exp / expNext) * 100);
+
+    // ── Nav label ──────────────────────────────────────────
+    if (navLabel) navLabel.textContent = `${m.displayName}  ·  ${_idx + 1} / ${G.party.length}`;
+
+    // ── Showcase: character colour theming ─────────────────
+    if (showcase) {
+      showcase.style.setProperty('--char-col', col);
+    }
+
+    // ── Badge ──────────────────────────────────────────────
+    if (badge) {
+      badge.textContent = m.displayName;
+      badge.style.color = col;
+    }
+
+    // ── Particles: respawn on character switch ─────────────
+    if (particles) {
+      particles.innerHTML = '';
+      [20, 35, 52, 68, 82].forEach((left, i) => {
+        const p = document.createElement('span');
+        p.className = 'pms-ptcl';
+        p.style.cssText = `left:${left}%;animation-delay:${i * 0.7}s;animation-duration:${2.5 + i * 0.4}s;background:${col};`;
+        particles.appendChild(p);
+      });
+    }
+
+    // ── Sprite ─────────────────────────────────────────────
+    if (spriteEl && showcase && typeof SpriteRenderer !== 'undefined') {
+      const showcaseH = showcase.clientHeight || 200;
+      const targetH = Math.floor(showcaseH * 0.7); // 70% height as requested
+      SpriteRenderer.setFrame(spriteEl, m.charId, 'idle', targetH);
+      // Force 45% width to maintain your desired look
+      spriteEl.style.width = '45%';
+    }
+
+    // ── Info panel ─────────────────────────────────────────
+    const abRows = (m.abilities || []).map(a =>
+      `<div class="pms-ability" onclick="this.classList.toggle('pms-ab-open');this.nextElementSibling.style.display=this.classList.contains('pms-ab-open')?'block':'none'">
+        <span class="pms-ab-icon">${a.icon || '⚡'}</span>
+        <span class="pms-ab-name">${a.name}</span>
+        <span class="pms-ab-mp">${a.mp}MP</span>
+        <span class="pms-ab-toggle">▾</span>
+      </div>
+      <div class="pms-ab-desc" style="display:none">${a.description || 'No description.'}</div>`
     ).join('');
 
-    card.innerHTML = `
-      <div class="pm-card-top" style="border-bottom-color:${col}40">
-        <div class="pm-portrait-wrap"></div>
-        <div class="pm-card-head">
-          <div class="pm-card-name" style="color:${col}">${m.displayName}</div>
-          <div class="pm-card-class">${m.cls.name} ${m.isKO ? '<span class="pm-ko-badge">KO</span>' : ''}</div>
-          <div class="pm-card-lv">LEVEL <span style="color:${col}">${m.lv}</span>
-            · EXP <span style="color:var(--gold)">${m.exp}</span>/<span style="color:var(--text-dim)">${getExpThreshold(m.lv)}</span></div>
-        </div>
+    infoPanel.innerHTML = `
+      <!-- Identity -->
+      <div class="pms-id">
+        <span class="pms-fullname" style="color:${col}">${m.displayName}${m.isKO ? ' <span class="pm-ko-badge">KO</span>' : ''}</span>
+        <span class="pms-lv-badge" style="border-color:${col}60">LV ${m.lv}</span>
       </div>
-      <div class="pm-bars">
-        <div class="pm-bar-row">HP
-          <div class="pm-bar-bg"><div class="pm-bar-fill" style="width:${hpPct}%;background:${hpCol}"></div></div>
-          <span>${Math.max(0, m.hp)}/${m.maxHp}</span>
-        </div>
-        <div class="pm-bar-row">MP
-          <div class="pm-bar-bg"><div class="pm-bar-fill" style="width:${mpPct}%;background:#5060ff"></div></div>
-          <span>${m.mp}/${m.maxMp}</span>
-        </div>
-      </div>
-      <div class="pm-stats">
-        <div class="pm-stat"><span>ATK</span><span style="color:var(--gold)">${m.atk}</span></div>
-        <div class="pm-stat"><span>DEF</span><span style="color:var(--gold)">${m.def}</span></div>
-        <div class="pm-stat"><span>MAG</span><span style="color:var(--gold)">${m.mag}</span></div>
-        <div class="pm-stat"><span>SPD</span><span style="color:var(--gold)">${m.spd}</span></div>
-      </div>
-      <div class="pm-passive">
-        <span class="pm-passive-tag">★ ${m.passive?.name || 'Passive'}</span>
-        <span class="pm-passive-desc">${m.passive?.description || ''}</span>
-      </div>
-      <div class="pm-abilities">${abHtml}</div>`;
+      <div class="pms-class">${m.cls?.name || ''}</div>
 
-    card.querySelector('.pm-portrait-wrap').appendChild(img);
-    cards.appendChild(card);
-  });
-}
+      <!-- EXP bar -->
+      <div class="pms-exp-row">
+        <span class="pms-exp-label">EXP</span>
+        <div class="pms-exp-bg"><div class="pms-exp-fill" style="width:${expPct}%;background:${col}"></div></div>
+        <span class="pms-exp-val">${m.exp}/${expNext}</span>
+      </div>
+
+      <div class="pms-divider"></div>
+
+      <!-- HP / MP -->
+      <div class="pms-bar-row">
+        <span class="pms-bar-label">HP</span>
+        <div class="pms-bar-bg"><div class="pms-bar-fill" style="width:${hpPct}%;background:${hpCol}"></div></div>
+        <span class="pms-bar-val">${Math.max(0,m.hp)}/${m.maxHp}</span>
+      </div>
+      <div class="pms-bar-row">
+        <span class="pms-bar-label">MP</span>
+        <div class="pms-bar-bg"><div class="pms-bar-fill" style="width:${mpPct}%;background:#5060ff"></div></div>
+        <span class="pms-bar-val">${m.mp}/${m.maxMp}</span>
+      </div>
+
+      <div class="pms-divider"></div>
+
+      <!-- Stats -->
+      <div class="pms-stats">
+        <div class="pms-stat"><div class="pms-stat-label">ATK</div><div class="pms-stat-val">${m.atk}</div></div>
+        <div class="pms-stat"><div class="pms-stat-label">DEF</div><div class="pms-stat-val">${m.def}</div></div>
+        <div class="pms-stat"><div class="pms-stat-label">MAG</div><div class="pms-stat-val">${m.mag}</div></div>
+        <div class="pms-stat"><div class="pms-stat-label">SPD</div><div class="pms-stat-val">${m.spd}</div></div>
+      </div>
+
+      ${m.passive ? `
+      <div class="pms-passive" style="border-left-color:${col}80">
+        <span style="color:var(--gold)">★ ${m.passive.name}:</span>
+        <span style="color:var(--text-dim)"> ${m.passive.description}</span>
+      </div>` : ''}
+
+      <div class="pms-section-title">ABILITIES</div>
+      <div class="pms-abilities">${abRows || '<div style="color:var(--text-dim);font-size:0.82rem">No abilities.</div>'}</div>
+    `;
+  }
+
+  function renderCurrent() { _renderCurrent(); }
+  return { open, close, back, next, prev, renderCurrent };
+})();
+
+// Legacy shims for any code still calling the old functions
+function openPartyMenu() { PartyMenu.open(); }
+function closePartyMenu() { PartyMenu.close(); }
+function renderPartyMenu() { PartyMenu.renderCurrent(); }
+
 function buildEnemyGroup(defs, spawnLevel = 1, isBoss = false) {
   G.enemyGroup = defs.slice(0, 4).map(def => {
     const entry = EnemyScaling.buildEnemyEntry(def, spawnLevel, isBoss, defs.length, NexusScaling);
@@ -659,6 +859,17 @@ function heroTurn() { TurnManager.beginHeroTurn(); }
    ============================================================ */
 function heroRun() {
   if (G.busy) return;
+
+  // ── BLOCK FLEE FOR BOSSES & STORY CHAPTERS ─────────────────
+  const isBoss = G.enemyGroup.some(e => e.isBoss);
+  const isStory = (typeof Story !== 'undefined' && Story.active && Story._skirmishArcIdx === undefined);
+  
+  if (isBoss || isStory) {
+    BattleUI.setLog(['Cannot flee from this battle!'], ['dmg']);
+    if (typeof SFX !== 'undefined') SFX.error();
+    return;
+  }
+
   G.busy = true; BattleUI.btns(false);
   BattleUI.openSub(null);
   if (Math.random() < 0.6) {
@@ -789,6 +1000,14 @@ function showResult(type) {
   _clearBattleAtmosphere();
   closePartyMenu();
   G.party.forEach(m => { m.statuses = []; });
+
+  // --- QUEST SYSTEM INTEGRATION ---
+  if (type === 'victory' && typeof QuestSystem !== 'undefined') {
+    (G.enemyGroup || []).forEach(en => {
+      QuestSystem.onKill(en.id, !!(en.mutantTraits && en.mutantTraits.length));
+    });
+  }
+
   ResultUI.show(type, G.party);
 }
 
@@ -865,7 +1084,7 @@ function leaveExplore() {
   }
 }
 
-function startExplore() {
+function startExplore(skipAutoStart = false) {
   // Need a party first — if none, do a quick auto-build
   if (!G.party || G.party.length === 0) {
     if (!G.chars.length || !G.classes.length) {
@@ -920,7 +1139,7 @@ function startExplore() {
   });
 
   // Launch the engine
-  if (!MapEngine.getMap()) {
+  if (!MapEngine.getMap() && !skipAutoStart) {
     MapEngine.start('verdant_vale');
     MapUI.showMsg('Entering Verdant Vale…', 1500);
   }
