@@ -4,37 +4,32 @@
 **Scope**: Full playable experience through Arcs 1 & 2, including the first two Expansion Regions.
 
 
-### 🔷 Phase 5: Release Readiness
-- [ ] **Walkthrough Update**: Finalize the step-by-step guide for Arc 1 and Arc 2.
-- [x] **Beta Lock**: Set `MAX_REACHABLE_ARC: 1` in `release-config.js` for the public itch.io push.
-- [ ] **Deployment Script**: Finalize a script to minify/obfuscate core logic for the production build.
-- [x] **Production Debug Gate**: Route `LogDebug`, story diagnostics, and verbose console output through `ReleaseConfig.IS_DEV` / `?debug=true`.
-- [x] **Dev-Only Save Sync**: Wrap the `127.0.0.1:3000/sync` save backup bridge behind a development flag so production saves stay local-only.
+### 🔷 Phase 6: Visual Fidelity & Asset Polish
+- [ ] **High-Fidelity Sprite Rendering**: Audit battle sprite scaling and CSS filters; eliminate blurring/interpolation artifacts for "neat and clear" character detail.
+- [ ] **Combat VFX Overhaul**: Standardize ethereal glows and status overlays to ensure they don't obscure character detail.
+- [ ] **Asset Weight Pass**: Convert oversized character/map PNGs to optimized WebP/AVIF for faster high-res loading.
 
 ---
 
 ## 🛠️ Technical Debt & Engineering (Prioritized)
 ### P0 - Release Blockers
-- [x] **Cache Manifest Test**: Add a test that verifies every asset listed in `sw.js` exists on disk, starting with the missing `lulu_sheet_1` entries.
-- [x] **Content Integrity Tests**: Validate enemy images, story references, item effect handlers, map references, and relic definitions before release.
-- [x] **Production/Dev Boundary**: Gate localhost save sync, debug battle tools, verbose logs, and diagnostic overlays behind `ReleaseConfig.IS_DEV` / `?debug=true`.
+*(All P0 blockers cleared for Beta 1.0)*
 
 ### P1 - Stability & Maintainability
-- [ ] **Encapsulate Turn State**: Replace loose `G.turnIdx`, `G.turnQueue`, and battle locks with a centralized `G.turn` object. (Verified still in use.)
+- [ ] **Encapsulate Turn State**: Replace loose `G.turnIdx`, `G.turnQueue`, and battle locks with a centralized `G.turn` object.
 - [ ] **Named Damage Modifiers**: Refactor the combat damage chain so STAB, affinity, reactions, mitigation, crits, passives, and relics are named steps.
-- [ ] **HTML Injection Guardrails**: Add escaping/DOM-builder helpers for UI generated from imported saves, JSON content, archive entries, and dialogue.
-- [ ] **JSON Loading Standard**: Move story, map, and data loading onto one `DataLoader.loadJson()` helper instead of mixing `fetch` and `XMLHttpRequest`.
-- [ ] **Null Guard Standard**: Standardize optional access and fallback behavior across battle, story, map, and save hydration paths.
-
-### P2 - Performance & Architecture
-- [ ] **Asset Weight Pass**: Convert oversized character/map PNGs to optimized WebP/AVIF and default mobile users to low-quality sprite mode.
-- [ ] **Boot Flow Manifest**: Replace the long manual script list in `index.html` with a maintained boot manifest or production bundle pipeline.
-- [ ] **Global State Split**: Separate `G` into `GameState`, `BattleState`, `MapState`, and `ProgressState` once the release blockers are handled.
-- [ ] **Large Module Split**: Break up `svg-animations.js`, `story.js`, `map-engine.js`, and `action-handler.js` by loader, renderer, state, and action responsibilities.
+- [ ] **HTML Injection Guardrails**: Add escaping/DOM-builder helpers for UI generated from dialogue and data.
+- [ ] **JSON Loading Standard**: Move all data loading onto a unified `DataLoader` service.
 
 ---
 
 ## ✅ Completed Milestones (Condensed)
+
+### 🚀 Release Readiness (May 2026)
+- [x] **Production Gating**: Silenced debug logs and gated development tools behind `IS_DEV` flag.
+- [x] **CI/CD Pipeline**: Automated production builds via GitHub Actions with isolated `dist/` deployment.
+- [x] **Data Integrity**: Verified all 172 assets, character references, and story links (passed audit).
+- [x] **Story Guide**: Finalized comprehensive mechanics and narrative walkthrough for Arcs 1 & 2.
 
 ### 🎨 UX & Systems (May 2026)
 - [x] **Item Vault Overhaul**: Premium, tabbed inventory with visual targeting and unified effect engine.
