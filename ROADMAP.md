@@ -4,14 +4,6 @@
 **Scope**: Full playable experience through Arcs 1 & 2, including the first two Expansion Regions.
 
 
-### 🔷 Phase 4: Input & Accessibility
-- [x] **Mobile Joystick**: Virtual joystick fully wired — touchstart/move/end → `MapInput.setVector` → player movement.
-- [x] **Mobile Action Buttons**: `#btn-x` (✦ Interact) and `#btn-y` (☰ Menu) wired and labelled.
-- [x] **Input Settings Screen**: In-game overlay (`⌨ CONTROLS` in pause menu) shows all keyboard + gamepad bindings; click any row to remap; persists to `localStorage`.
-- [x] **Control Hints Bar**: Contextual hint bar slides up from bottom on keyboard/gamepad input, auto-hides on mouse/touch, updates context per screen.
-- [x] **Battle Touch**: Tap-to-navigate battle command buttons via on-screen virtual buttons during combat.
-- [x] **Gamepad on World Map**: Extend gamepad polling to drive cursor movement and node selection on the world map screen.
-
 ### 🔷 Phase 3: Content & Balance
 - [x] **Boss Balancing**: Final tuning pass on Spectral Guardian, Sunken Leviathan, and River King.
 - [ ] **Gold Balance**: Tune enemy gold drops to ensure shops feel meaningful.
@@ -71,6 +63,7 @@
 ### ⚙️ Technical Foundations (April 2026)
 - [x] **Combat Engine Audit**: Fixed `getStat('reduction')` bug and stabilized damage multipliers.
 - [x] **Sera/Lyra Registration**: Standardized sprite-sheet configuration for new heroes to fix 'whole-sheet' rendering bug.
+- [x] **Input & Accessibility**: Virtual joystick, mobile action buttons, contextual hint bar, and full gamepad support for World Map navigation.
 - [x] **Mobile Controls**: Virtual joystick and X/Y button implementation.
 - [x] **Architect Pro**: Browser-based tile editor for high-fidelity map creation.
 - [x] **Story Refactor**: Extracted cutscene logic into `js/cutscene.js`.
