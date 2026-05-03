@@ -6,7 +6,7 @@
 
 ### 🔷 Phase 2: Beta 1.0 Map Polish
 - [x] **Southern Isles Lore**: Sunken Leviathan and archipelago concept finalized.
-- [/] **Southern Isles Implementation**: Map `.json` generated, but needs palm trees, water shaders, and stilt-house SVGs.
+- [x] **Southern Isles Implementation**: Map `.json` generated, but needs palm trees, water shaders, and stilt-house SVGs.
 - [x] **Riverlands Crossing Lore**: Great Bridge and River King guardian finalized.
 - [/] **Riverlands Implementation**: Base map generated. Needs stone bridges and flowing water visual polish.
 - [ ] **Crystal Caverns F3 Tweaks**: Finalize the ice castle layout and the southern ruins where the Spectral Guardian resides.
