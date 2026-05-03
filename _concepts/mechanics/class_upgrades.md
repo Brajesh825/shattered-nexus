@@ -22,3 +22,10 @@ Upgrading their class unlocks their ultimate "Inheritance Skill." This is a high
 ### 4. UI Integration
 - When the upgrade occurs, the character's portrait in the `PouchUI`, Battle Screen, and Dialogues automatically swaps to their new, upgraded artwork.
 - Their `class_affinity` string in `characters.json` is updated (e.g., `cryo_bladestorm` -> `storm_rime_sovereign`), changing their title in the status menus.
+
+### 5. What About the Other Characters?
+The Four Kings directly upgrade the 4 starting characters (Aya, Tao, Rei, Drake). But the game has other unlockable characters. How do they compare?
+1. **The Pre-Ascended (Late-Game Unlocks)**: Characters like **Valka** (The Divine Valkyrie) and **Rex** (The Lionheart King) are ancient, god-like beings. They are unlocked very late in the game or via hidden requirements. They **do not need upgrades**—they come "pre-ascended," with base stats and passives that already match the power level of the upgraded starting characters.
+2. **Personal "Echo" Quests (Mid-Game Unlocks)**: Characters like **Lulu**, **Ria**, **Sera**, and **Lyra** receive their class upgrades not from the Four Kings, but from completing hidden **Personal Echo Quests** in the world.
+   - Example: **Sera** (The Azure Commander) finds the lost banner of the first Azure Remnant deep in the Crystal Caverns. By claiming it, she upgrades into the **Azure Vanguard**, gaining her limit break.
+   - Example: **Lyra** (The Lunar Chronomancer) finds a shattered "Time Loom" in the Sky Ruins. Repairing it upgrades her to the **Astral Weaver**.
