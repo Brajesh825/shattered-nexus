@@ -330,3 +330,33 @@ Valdris is absent from most of the game because he is **Phase-Locked**. Within t
 ### 12d — Fractured Reality (Glitched Data)
 Corruption is treated as **Architectural Failure**. Enemies are "glitched" versions of their original selves, with their elemental code overwritten by shadow energy. 
 - **Combat as De-fragmentation**: Freeing a Fragment from a boss "re-tunes" the region, replacing the dark pulse with the world's original elemental laws.
+
+---
+
+## 13. Beta 1.0 Story Guide: Arcs 1 & 2
+
+### Arc 1: The Verdant Vale (Lv. 1–10)
+**Objective**: Stabilize the first pillar of the Nexus by reclaiming the Verdant Fragment.
+
+1. **The Awakening**: Begin in the outskirts of the Vale. Gather the core party (Aya, Tao, Lulu, Rei).
+2. **Wilds Exploration**: Navigate the grassy plains to reach the central command post. 
+3. **The First Gate**: Defeat the Corrupted Vanguard guarding the pass.
+4. **Boss: Void Knight (Lv. 6)**: Encountered at the Sacred Ruins. 
+    * *Tactics*: Focus on physical mitigation (Rei). The Void Knight uses heavy Physical AoE.
+    * *Reward*: Unlocks Arc 2 destinations on the World Map.
+
+### Arc 2: The Crystal Caverns (Lv. 10–20)
+**Objective**: Delve into the deep earth to retrieve the Resonance Shard.
+
+1. **The Descent**: Use the World Map to enter **Crystal Cavern F1**.
+2. **The Multi-Floor Trek**:
+    * **F1**: Navigate the glowing quartz bridges.
+    * **F2**: Solve the pressure plate puzzle to unlock the lift.
+    * **F3 (The Sanctum)**: Reach the heart of the cavern.
+3. **Boss: Spectral Guardian (Lv. 12)**: A massive entity of pure resonant energy.
+    * *Tactics*: Highly resistant to physical damage. Pivot to Aya's Ice and Lulu's Water skills for maximum output.
+    * *Climax*: Defeating the Guardian triggers the **END OF BETA** sequence.
+
+### Side Regions (Exploration Only)
+* **Southern Isles**: A tropical archipelago accessible via the southern coast. Home to high-level T2 elites.
+* **Riverlands Crossing**: A strategic bridge between realms. Features the earliest T3 Apex threats (Dark Knights).
