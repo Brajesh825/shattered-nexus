@@ -1188,7 +1188,7 @@ class TileEditor {
             'void_citadel': { js: '../js/map/data/map-void-citadel.js' },
             'ashen_foothills': { js: '../js/map/data/map-ashen-foothills.js' },
             'northern_highlands': { js: '../js/map/data/map-northern-highlands.js' },
-            'riverlands_crossing': { js: '../js/map/data/map-riverlands-crossing.js' },
+            'riverlands_crossing': { json: '../js/map/data/map-riverlands-crossing.json', js: '../js/map/data/map-riverlands-crossing.js' },
             'eternal_void': { js: '../js/map/data/map-eternal-void.js' }
         };
         const config = paths[mapId];
@@ -1301,7 +1301,7 @@ class TileEditor {
             'void_citadel': { js: 'js/map/data/map-void-citadel.js' },
             'ashen_foothills': { js: 'js/map/data/map-ashen-foothills.js' },
             'northern_highlands': { js: 'js/map/data/map-northern-highlands.js' },
-            'riverlands_crossing': { js: 'js/map/data/map-riverlands-crossing.js' },
+            'riverlands_crossing': { json: 'js/map/data/map-riverlands-crossing.json', js: 'js/map/data/map-riverlands-crossing.js' },
             'eternal_void': { js: 'js/map/data/map-eternal-void.js' }
         };
 
