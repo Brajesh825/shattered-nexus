@@ -571,6 +571,18 @@ const BattleUI = {
     if (typeof Focus !== 'undefined') {
       Focus.setContext('cmd-grid-main');
     }
+
+    // --- FLEE RESTRICTION UI ---
+    const isBoss = G.enemyGroup.some(e => e.isBoss);
+    const isStory = (typeof Story !== 'undefined' && Story.active && Story._skirmishArcIdx === undefined);
+    const runBtn = document.querySelector('.cmd-btn[onclick="heroRun()"]');
+    if (runBtn) {
+      const disabled = isBoss || isStory;
+      runBtn.disabled = disabled;
+      runBtn.style.opacity = disabled ? '0.4' : '1';
+      runBtn.style.pointerEvents = disabled ? 'none' : 'auto';
+      runBtn.title = disabled ? 'Cannot flee from this battle' : '';
+    }
   },
 
   /* ── Floating texts & Overlays ─────────────────────── */

@@ -859,6 +859,17 @@ function heroTurn() { TurnManager.beginHeroTurn(); }
    ============================================================ */
 function heroRun() {
   if (G.busy) return;
+
+  // ── BLOCK FLEE FOR BOSSES & STORY CHAPTERS ─────────────────
+  const isBoss = G.enemyGroup.some(e => e.isBoss);
+  const isStory = (typeof Story !== 'undefined' && Story.active && Story._skirmishArcIdx === undefined);
+  
+  if (isBoss || isStory) {
+    BattleUI.setLog(['Cannot flee from this battle!'], ['dmg']);
+    if (typeof SFX !== 'undefined') SFX.error();
+    return;
+  }
+
   G.busy = true; BattleUI.btns(false);
   BattleUI.openSub(null);
   if (Math.random() < 0.6) {

@@ -28,6 +28,17 @@ const CombatEngine = (() => {
       else base = 0;
     }
 
+    // 0. Boss Phase Modifiers (Non-stacking per stat; takes highest triggered mult)
+    if (unit.statPhases) {
+      let maxPhaseMult = 1.0;
+      unit.statPhases.forEach(p => {
+        if (p.triggered && p[stat] !== undefined) {
+          maxPhaseMult = Math.max(maxPhaseMult, p[stat]);
+        }
+      });
+      base *= maxPhaseMult;
+    }
+
     let pMult = 1.0;
     let sBonus = 0;
     let flat = 0;
