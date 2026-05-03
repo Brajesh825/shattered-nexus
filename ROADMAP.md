@@ -4,13 +4,6 @@
 **Scope**: Full playable experience through Arcs 1 & 2, including the first two Expansion Regions.
 
 
-### 🔷 Phase 2: Beta 1.0 Map Polish
-- [x] **Southern Isles Lore**: Sunken Leviathan and archipelago concept finalized.
-- [x] **Southern Isles Implementation**: Map `.json` generated, but needs palm trees, water shaders, and stilt-house SVGs.
-- [x] **Riverlands Crossing Lore**: Great Bridge and River King guardian finalized.
-- [x] **Riverlands Implementation**: Base map generated. Needs stone bridges and flowing water visual polish.
-- [x] **Crystal Caverns F3 Tweaks**: Finalized the ice castle layout and the southern ruins where the Spectral Guardian resides.
-
 ### 🔷 Phase 3: Audio & System Polish
 - [ ] **Music Integration**: Add BGM (Background Music) and SFX for the following:
   - [ ] Map Exploration
@@ -57,7 +50,7 @@
 ### 🌍 World & Map Foundations (May 2026)
 - [x] **Arc 1 (Verdant Vale)**: Narrative, enemies, and Void Knight boss finalized.
 - [x] **Arc 2 (Crystal Cavern)**: Full 3-floor suite (F1-F3) with Spectral Guardian boss.
-- [x] **Expansion Foundations**: Generated `.json` terrain grids for Southern Isles and Riverlands.
+- [x] **Expansion Regions**: Southern Isles and Riverlands Crossing lore and map implementations completed.
 - [x] **SVG Asset Standard**: All environmental assets converted and preloaded as high-fidelity SVGs.
 
 ### ⚙️ Technical Foundations (April 2026)
