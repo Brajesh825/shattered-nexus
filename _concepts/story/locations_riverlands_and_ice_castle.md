@@ -4,12 +4,10 @@
 **Placement in Story**: Arc 1 to Arc 2 Transition (Between Verdant Vale and Southern Isles).
 
 ### The Setting
-The Riverlands isn't just a simple river; it is a massive, continent-splitting waterway known as the **Weeping Strait**. Due to the 600-year curse of Valdris, the water here runs thick and black with Void Taint. It is impossible to swim across, and any standard boats dissolve upon touching the water. 
+The Riverlands Crossing takes place at a massive, roaring waterfall. The path requires the party to traverse the perilous, misty ledges, moving continuously from left to right to cross the chasm.
 
-### The Lore & The Challenge
-The only way to cross the Weeping Strait is via the **Ancient Ferryman**—a massive, slumbering stone golem built by the original Aethelgard Empire to ferry troops. 
-*   **The Narrative Hook**: The party reaches the river, but the Ferryman's core is dead. The party must delve into a nearby minor dungeon (The River-Torn Ruins) to retrieve an "Aethel-Core." 
-*   **The Vibe**: Foggy, oppressive, and haunting. The river shores are littered with the petrified husks of monsters and soldiers who tried to cross and failed. Once the golem is powered up, the actual crossing acts as a mini-game or dialogue-heavy interlude where the party bonds before reaching the Southern Isles.
+### The Guardian
+The waterfall is not unguarded. A powerful Waterfall Spirit (or Guardian) blocks the path across. The party must face this Guardian to prove their strength before they are permitted to pass through the roaring waters and continue their journey into the Southern Isles.
 
 ---
 
