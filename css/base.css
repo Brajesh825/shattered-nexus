@@ -707,7 +707,7 @@ button:active, .cmd-btn:active, .title-btn:active, .b-list-item:active, .pause-b
 }
 
 /* ── Title responsive — mobile portrait (≤ 600px) ────────── */
-@media (max-width: 600px) {
+@media (max-width: 800px) {
   #title-screen {
     padding: 28px 20px 20px;
     gap: 0;
