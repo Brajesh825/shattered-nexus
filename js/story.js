@@ -853,6 +853,12 @@ const Story = {
     G.mode = 'story';
     const chap = this._exploreChap;
     this._exploreChap = null;
+
+    // Mark current map as cleared so it can be revisited directly from the world map
+    if (chap && chap.map) {
+      if (!Array.isArray(G.clearedMaps)) G.clearedMaps = [];
+      if (!G.clearedMaps.includes(chap.map)) G.clearedMaps.push(chap.map);
+    }
     
     this._showLines((chap && chap.post_dialogue) || [], () => this._nextChapter());
     showScreen('story-screen');
@@ -1255,14 +1261,31 @@ const Story = {
     const isNext = arcIdx === this.arcIdx + 1;
     const arcComplete = this.phase === 'arc_end' || this.phase === 'epilogue';
 
-    // Determine mapId: use current chapter map for active arc, otherwise default revisit map
-    let mapId = ARC_MAP_ID[arcIdx] || '';
+    // Collect all available maps for this region: 
+    // 1. Any map already in G.clearedMaps that belongs to this arc
+    // 2. The current active map if isCur is true
+    const availableMaps = new Set();
+    if (Array.isArray(G.clearedMaps)) {
+      G.clearedMaps.forEach(mId => {
+        const mDef = typeof MAP_DEFS !== 'undefined' ? MAP_DEFS[mId] : null;
+        if (mDef && mDef.arcId === arcIdx + 1) availableMaps.add(mId);
+      });
+    }
     if (isCur && arc.chapters) {
       const curChap = arc.chapters[this.chapIdx];
       if (curChap && curChap.type === 'explore' && curChap.map) {
-        mapId = curChap.map;
+        availableMaps.add(curChap.map);
       }
     }
+
+    // Generate Explore buttons for all available maps
+    let exploreButtons = '';
+    [...availableMaps].forEach(mId => {
+       const mDef = MAP_DEFS[mId];
+       if (!mDef) return;
+       const label = mDef.name || mId;
+       exploreButtons += `<button class="mrp-btn" onclick="Story._exploreRegion('${mId}')">🗺 ${label.toUpperCase()}</button>`;
+    });
 
     panel.innerHTML = `
       <div class="mrp-handle"></div>
@@ -1273,8 +1296,8 @@ const Story = {
       <div class="mrp-lore">${lore}</div>
       <div class="mrp-actions">
         ${isNext ? `<button class="mrp-btn primary" ${arcComplete ? '' : 'disabled'} onclick="Story.proceedFromMap()">${arcComplete ? 'TRAVEL THERE' : 'DEFEAT CURRENT BOSS'}</button>` : ''}
-        ${(isDone || isCur) && mapId ? `<button class="mrp-btn primary" onclick="Story.startRegionSkirmish(${arcIdx})">⚔ SKIRMISH</button>` : ''}
-        ${(isDone || isCur) && mapId ? `<button class="mrp-btn" onclick="Story._exploreRegion('${mapId}')">🗺 EXPLORE</button>` : ''}
+        ${(isDone || isCur) ? `<button class="mrp-btn primary" onclick="Story.startRegionSkirmish(${arcIdx})">⚔ SKIRMISH</button>` : ''}
+        ${exploreButtons}
         <button class="mrp-btn" onclick="Story._closeRegionPanel()">← BACK</button>
       </div>`;
 
