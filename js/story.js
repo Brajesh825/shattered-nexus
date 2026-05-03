@@ -1280,12 +1280,16 @@ const Story = {
 
     // Generate Explore buttons for all available maps
     let exploreButtons = '';
-    [...availableMaps].forEach(mId => {
-       const mDef = MAP_DEFS[mId];
-       if (!mDef) return;
-       const label = mDef.name || mId;
-       exploreButtons += `<button class="mrp-btn" onclick="Story._exploreRegion('${mId}')">🗺 ${label.toUpperCase()}</button>`;
-    });
+    const mapsArray = [...availableMaps];
+    if (mapsArray.length > 0) {
+      exploreButtons += `<div style="font-family:var(--px); font-size:9px; color:#6050a0; margin-top:5px; letter-spacing:1px; text-align:center;">SELECT DESTINATION</div>`;
+      mapsArray.forEach(mId => {
+         const mDef = MAP_DEFS[mId];
+         if (!mDef) return;
+         const label = mDef.name || mId;
+         exploreButtons += `<button class="mrp-btn" onclick="Story._exploreRegion('${mId}')">🗺 ${label.toUpperCase()}</button>`;
+      });
+    }
 
     panel.innerHTML = `
       <div class="mrp-handle"></div>
