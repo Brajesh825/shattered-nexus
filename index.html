@@ -581,6 +581,7 @@
               <button class="pause-btn" onclick="InventoryUI.open()" style="width: 100%; justify-content: center;">🎒 ITEMS</button>
               <button class="pause-btn" onclick="QuestUI.open()" style="width: 100%; justify-content: center;">📜 QUESTS</button>
               <button class="pause-btn" onclick="ArchiveUI.open()" style="width: 100%; justify-content: center;">📖 BESTIARY</button>
+              <button class="pause-btn" onclick="InputSettings.open()" style="width: 100%; justify-content: center;">⌨ CONTROLS</button>
               <button class="pause-btn" onclick="MapUI.closePauseMenu()" style="width: 100%; justify-content: center; margin-top: 12px; border-color: var(--text-dim); color: var(--text-dim);">▶ RESUME</button>
             </div>
           </div>
@@ -596,6 +597,19 @@
             </div>
             <div id="quest-list" class="bestiary-content" style="padding: 16px;">
               <!-- Quests injected here -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Controls Overlay -->
+        <div id="controls-overlay" class="bestiary-overlay" style="display:none">
+          <div class="bestiary-bg" onclick="InputSettings.close()"></div>
+          <div class="bestiary-panel">
+            <div class="bestiary-header">
+              <div class="bestiary-title">⌨ CONTROLS</div>
+              <button class="bestiary-close" onclick="InputSettings.close()">✕</button>
+            </div>
+            <div id="controls-list" class="bestiary-content" style="padding:16px;">
             </div>
           </div>
         </div>
@@ -715,8 +729,8 @@
             </div>
           </div>
           <div class="joystick-right">
-            <button id="btn-y" class="action-btn btn-y">Y</button>
-            <button id="btn-x" class="action-btn btn-x">X</button>
+            <button id="btn-y" class="action-btn btn-y" title="Menu">☰</button>
+            <button id="btn-x" class="action-btn btn-x" title="Interact">✦</button>
           </div>
         </div>
 
@@ -797,6 +811,8 @@
   <script src="js/systems/archive.js"></script>
   <script src="js/ui/archive-ui.js"></script>
   <script src="js/ui/quest-ui.js"></script>
+  <script src="js/ui/input-settings.js"></script>
+  <script src="js/ui/control-hints.js"></script>
   <script src="js/ui/boss-gauntlet.js"></script>
   <script src="js/ui/world-explorer.js"></script>
   <script src="js/ui/weather-engine.js"></script>
@@ -806,6 +822,7 @@
   <script src="js/ui/home-engine.js"></script>
   <script>
     TTS.init();
+    if (typeof ControlHints !== 'undefined') ControlHints.init();
 
     // ── Fullscreen prompt for mobile ─────────────────────────
     (function () {
@@ -1185,6 +1202,10 @@
     </div>
     <button id="credits-close-btn" style="display:none" onclick="Credits.close()">RETURN TO TITLE</button>
   </div>
+
+  <!-- Control Hints Bar -->
+  <div id="control-hints-bar"></div>
+
 </body>
 
 </html>

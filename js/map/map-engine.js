@@ -1349,7 +1349,7 @@ const MapEngine = (() => {
     }
     if (btnY) {
       btnY.addEventListener('touchstart', e => {
-        if (typeof MapUI !== 'undefined') MapUI.cycleCharacter();
+        if (typeof MapUI !== 'undefined') MapUI.openPauseMenu();
         if (e.cancelable) e.preventDefault();
       }, { passive: false });
     }

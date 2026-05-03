@@ -8,12 +8,30 @@ const Input = (() => {
     UP: false, DOWN: false, LEFT: false, RIGHT: false,
     CONFIRM: false, BACK: false, MENU: false, TAB: false,
     TOGGLE_FOCUS: false,
-    X: 0, Y: 0 // Axis movement for map
+    X: 0, Y: 0
   };
-  
-  // Track "Just Pressed" state for menu navigation
+
   const _justPressed = {};
   const _prevIntents = {};
+
+  // Custom bindings — loaded from InputSettings or localStorage
+  let _bindings = null;
+  function _getBindings() {
+    if (!_bindings) reloadBindings();
+    return _bindings;
+  }
+  function reloadBindings() {
+    if (typeof InputSettings !== 'undefined') {
+      _bindings = InputSettings.getBindings();
+    } else {
+      _bindings = null;
+    }
+  }
+  function _hasKey(intent) {
+    const b = _getBindings();
+    if (!b || !b[intent]) return false;
+    return b[intent].keys.some(k => _keys[k]);
+  }
 
   function init() {
     window.addEventListener('keydown', e => {
@@ -46,27 +64,24 @@ const Input = (() => {
       if (Math.abs(stickY) < 0.2) stickY = 0;
     }
 
-    const kbUp    = _keys['ArrowUp']    || _keys['w'] || _keys['W'];
-    const kbDown  = _keys['ArrowDown']  || _keys['s'] || _keys['S'];
-    const kbLeft  = _keys['ArrowLeft']  || _keys['a'] || _keys['A'];
-    const kbRight = _keys['ArrowRight'] || _keys['d'] || _keys['D'];
+    const kbUp    = _hasKey('UP');
+    const kbDown  = _hasKey('DOWN');
+    const kbLeft  = _hasKey('LEFT');
+    const kbRight = _hasKey('RIGHT');
 
     _intents.X = stickX || (kbRight ? 1 : (kbLeft ? -1 : 0));
     _intents.Y = stickY || (kbDown  ? 1 : (kbUp   ? -1 : 0));
 
-    // 2. Discrete Intents
     _intents.UP    = _intents.Y < -0.5;
     _intents.DOWN  = _intents.Y > 0.5;
     _intents.LEFT  = _intents.X < -0.5;
     _intents.RIGHT = _intents.X > 0.5;
 
-    // Buttons
-    _intents.CONFIRM = _keys['Enter'] || _keys[' '] || (gp?.buttons[0]?.pressed); // A / Cross
-    _intents.BACK    = _keys['Escape'] || _keys['Backspace'] || (gp?.buttons[1]?.pressed); // B / Circle
-    _intents.MENU    = _keys['m'] || _keys['M'] || (gp?.buttons[9]?.pressed); // Start / Options
-    _intents.TAB     = _keys['Tab'] || (gp?.buttons[5]?.pressed); // R1 / RB
-    // Use code 'Backquote' for reliability across keyboard layouts
-    _intents.TOGGLE_FOCUS = _keys['`'] || _keys['~'] || _keys['Backquote'] || (gp?.buttons[8]?.pressed); 
+    _intents.CONFIRM      = _hasKey('CONFIRM')      || !!(gp?.buttons[0]?.pressed);
+    _intents.BACK         = _hasKey('BACK')         || !!(gp?.buttons[1]?.pressed);
+    _intents.MENU         = _hasKey('MENU')         || !!(gp?.buttons[9]?.pressed);
+    _intents.TAB          = _hasKey('TAB')          || !!(gp?.buttons[5]?.pressed);
+    _intents.TOGGLE_FOCUS = _hasKey('TOGGLE_FOCUS') || !!(gp?.buttons[8]?.pressed);
 
     // Detect "Just Pressed" (rising edge)
     for (const key in _intents) {
@@ -80,6 +95,7 @@ const Input = (() => {
 
   return {
     init,
+    reloadBindings,
     isDown: (intent) => _intents[intent],
     justPressed: (intent) => _justPressed[intent],
     getAxis: () => ({ x: _intents.X, y: _intents.Y })

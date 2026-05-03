@@ -2,7 +2,7 @@
    ui-overlays.css — Shattered Nexus
    Settings panel, save slot overlay, party swap sheet,
    save toast, overlay nav buttons, reaction popup,
-   bestiary, gauntlet/boss mode.
+   bestiary, gauntlet/boss mode, controls overlay, hint bar.
    ============================================================ */
 /* ══════════════════════════════════════════════════════
    MUTE BUTTON
@@ -1792,3 +1792,106 @@ input[type=range].setting-slider::-webkit-slider-thumb {
   background: #40c0ff;
   color: #000;
 }
+
+/* ══════════════════════════════════════════════════════
+   CONTROLS OVERLAY
+   ══════════════════════════════════════════════════════ */
+.ctrl-section-title {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: rgba(255,255,255,0.3);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.ctrl-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 10px;
+  border-radius: 4px;
+  margin-bottom: 4px;
+  background: rgba(255,255,255,0.03);
+  transition: background 0.15s;
+}
+.ctrl-row.remapping {
+  background: rgba(200,164,90,0.12);
+  border: 1px solid rgba(200,164,90,0.4);
+}
+.ctrl-row-gp { opacity: 0.7; }
+
+.ctrl-label {
+  font-size: 12px;
+  color: rgba(255,255,255,0.7);
+}
+
+.binding-keys {
+  font-size: 11px;
+  font-family: monospace;
+  color: var(--gold);
+  background: rgba(200,164,90,0.1);
+  border: 1px solid rgba(200,164,90,0.25);
+  border-radius: 3px;
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+.binding-keys.custom { color: #7dd3fc; border-color: rgba(125,211,252,0.3); background: rgba(125,211,252,0.08); }
+.binding-keys.gp-key { color: rgba(255,255,255,0.45); border-color: rgba(255,255,255,0.1); background: transparent; }
+
+.ctrl-remap-btn {
+  font-size: 10px;
+  padding: 3px 10px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 3px;
+  color: rgba(255,255,255,0.5);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.ctrl-remap-btn:hover { background: rgba(200,164,90,0.15); border-color: var(--gold); color: var(--gold); }
+
+/* ══════════════════════════════════════════════════════
+   CONTROL HINTS BAR
+   ══════════════════════════════════════════════════════ */
+#control-hints-bar {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%) translateY(100%);
+  z-index: 8000;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 16px;
+  background: rgba(5,4,20,0.82);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
+  backdrop-filter: blur(10px);
+  transition: transform 0.25s ease;
+  pointer-events: none;
+  white-space: nowrap;
+}
+#control-hints-bar.visible { transform: translateX(-50%) translateY(0); }
+
+.hint-item {
+  font-size: 10px;
+  color: rgba(255,255,255,0.45);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.hint-item kbd {
+  font-family: monospace;
+  font-size: 10px;
+  color: rgba(255,255,255,0.7);
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 3px;
+  padding: 1px 5px;
+}
+.hint-sep { color: rgba(255,255,255,0.15); font-size: 10px; }
+
+@media (pointer: coarse) { #control-hints-bar { display: none; } }

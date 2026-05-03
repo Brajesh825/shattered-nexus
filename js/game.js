@@ -447,6 +447,15 @@ function showScreen(id) {
 
   if (typeof SFX !== 'undefined') SFX.click();
 
+  // Control hints context
+  if (typeof ControlHints !== 'undefined') {
+    const hintCtx =
+      id === 'battle-screen'  ? 'battle'   :
+      id === 'explore-screen' ? 'explore'  :
+      id === 'map-screen'     ? 'worldmap' : 'menu';
+    ControlHints.setContext(hintCtx);
+  }
+
   // BGM — fade out current track then play the next one
   if (typeof BGM !== 'undefined') {
     const _next =
