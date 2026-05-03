@@ -1,0 +1,53 @@
+<svg width="90" height="180" viewBox="0 0 90 180" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="scol" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#90a4ae"/>
+      <stop offset="0.45" stop-color="#b0bec5"/>
+      <stop offset="1" stop-color="#546e7a"/>
+    </linearGradient>
+    <linearGradient id="sbase" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#607d8b"/>
+      <stop offset="1" stop-color="#37474f"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="45" cy="172" rx="32" ry="5" fill="#061517" opacity="0.3"/>
+  <!-- Submerged base rubble -->
+  <ellipse cx="45" cy="162" rx="36" ry="10" fill="url(#sbase)" stroke="#263238" stroke-width="1.5"/>
+  <path d="M14 162 Q28 156 45 153 Q62 156 76 162" fill="#546e7a" stroke="#37474f" stroke-width="1.5"/>
+  <!-- Fallen rubble chunks -->
+  <rect x="12" y="153" width="14" height="10" rx="1" fill="#607d8b" stroke="#455a64" stroke-width="1" transform="rotate(-8,19,158)"/>
+  <rect x="64" y="151" width="12" height="9" rx="1" fill="#78909c" stroke="#546e7a" stroke-width="1" transform="rotate(5,70,155)"/>
+  <!-- Algae on base -->
+  <path d="M22 158 Q24 150 22 143 M29 160 Q31 151 29 144 M34 161 Q35 152 34 146" stroke="#2e7d32" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.8"/>
+  <path d="M60 158 Q62 150 60 144 M67 159 Q69 151 68 145" stroke="#388e3c" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.8"/>
+  <!-- Lower column shaft (algae-covered) -->
+  <rect x="28" y="108" width="34" height="50" rx="2" fill="url(#scol)" stroke="#455a64" stroke-width="2"/>
+  <rect x="28" y="108" width="34" height="50" rx="2" fill="#2e7d32" opacity="0.22"/>
+  <!-- Ring bands -->
+  <rect x="26" y="150" width="38" height="6" rx="1" fill="#78909c" stroke="#546e7a" stroke-width="1.5"/>
+  <rect x="26" y="126" width="38" height="5" rx="1" fill="#90a4ae" stroke="#607d8b" stroke-width="1.5"/>
+  <!-- Cracks -->
+  <path d="M36 112 L34 128 M52 118 L54 134" stroke="#37474f" stroke-width="1.2" opacity="0.6"/>
+  <!-- Break point -->
+  <path d="M28 108 L30 90 L62 90 L62 108 Z" fill="#b0bec5" stroke="#607d8b" stroke-width="2"/>
+  <path d="M30 90 L38 96 L46 88 L55 94 L62 90" fill="#cfd8dc" stroke="#90a4ae" stroke-width="1.5"/>
+  <!-- Fallen chunk -->
+  <rect x="64" y="92" width="15" height="12" rx="1" fill="#90a4ae" stroke="#607d8b" stroke-width="1.5" transform="rotate(18,71,98)"/>
+  <!-- Upper shaft (cleaner stone) -->
+  <rect x="32" y="44" width="26" height="48" rx="2" fill="url(#scol)" stroke="#455a64" stroke-width="2"/>
+  <rect x="30" y="38" width="30" height="8" rx="1" fill="#b0bec5" stroke="#78909c" stroke-width="1.5"/>
+  <!-- Fluting -->
+  <path d="M38 44 V90 M45 44 V90 M52 44 V90" stroke="#90a4ae" stroke-width="0.8" opacity="0.45"/>
+  <!-- Barnacles -->
+  <circle cx="34" cy="64" r="2" fill="#78909c" opacity="0.7"/>
+  <circle cx="56" cy="72" r="1.8" fill="#607d8b" opacity="0.7"/>
+  <!-- Broken capital -->
+  <path d="M26 38 L32 22 L58 22 L64 38 Z" fill="#b0bec5" stroke="#78909c" stroke-width="2"/>
+  <path d="M32 22 Q45 16 58 22" fill="#cfd8dc" stroke="#90a4ae" stroke-width="1.5"/>
+  <path d="M30 32 Q45 27 60 32" fill="none" stroke="#78909c" stroke-width="1" opacity="0.55"/>
+  <!-- Chipped corner -->
+  <path d="M60 26 L68 18 L64 22" fill="#90a4ae" stroke="#607d8b" stroke-width="1"/>
+  <!-- Water shimmer -->
+  <path d="M14 165 Q30 162 45 165 Q60 168 76 165" fill="none" stroke="#4fc3f7" stroke-width="1.5" opacity="0.4"/>
+</svg>

@@ -388,5 +388,94 @@
             ]
         },
         "lore": "He lived 200 years as a king, commanding gods and demons alike. When he was pulled into this shadowed realm, even he felt the weight of something beyond his ken. Yet his blade still shines with purpose."
+    },
+    {
+        "id": "sera",
+        "name": "Sera",
+        "alias": "Sera",
+        "title": "The Azure Commander",
+        "gender": "female",
+        "age": 26,
+        "origin": "Aethoria — The Verdant Vale",
+        "description": "The current commander of the Azure Remnant, a hidden order descended from the Verdant Vale refugees. She carries six centuries of inherited names, maps, and unfinished orders in the chill of her blade.",
+        "personality": "Resolute, protective, burdened by inherited duty",
+        "icon": "🛡️",
+        "portrait_color": "#3b82f6",
+        "hair_color": "#a0c0f0",
+        "skin_color": "#f0f8ff",
+        "armor_color": "#1e3a8a",
+        "base_stats": {
+            "hp": 85,
+            "mp": 25,
+            "atk": 17,
+            "def": 22,
+            "spd": 10,
+            "mag": 12,
+            "lck": 10
+        },
+        "stat_bonuses": {
+            "def": 6,
+            "hp": 5
+        },
+        "class_affinity": [
+            "azure_commander"
+        ],
+        "passive": {
+            "id": "azure_resolve",
+            "name": "Azure Resolve",
+            "description": "Takes 15% reduced damage from Elite and Boss enemies. The Regiment never breaks.",
+            "traits": [
+                {
+                    "type": "BOSS_DAMAGE_REDUCTION",
+                    "value": 0.15
+                }
+            ]
+        },
+        "lore": "She did not watch the capital fall; she was born six centuries after it. But every Azure commander inherits the roll of the lost, the route into the caverns, and Arren's unfinished oath. Sera does not seek glory — only the chance to end a retreat her people have been living for generations."
+    },
+    {
+        "id": "lyra",
+        "name": "Lyra",
+        "alias": "Lyra",
+        "title": "The Lunar Chronomancer",
+        "gender": "female",
+        "age": 22,
+        "origin": "Aethoria — Sky Ruins",
+        "description": "A Weaver of the Loom-Menders. She sees the world not as stone and air, but as threads of light that must be re-stitched before they unravel completely.",
+        "personality": "Ethereal, distant, observant",
+        "icon": "🌙",
+        "portrait_color": "#a855f7",
+        "hair_color": "#e0c0ff",
+        "skin_color": "#fafafa",
+        "armor_color": "#4c1d95",
+        "base_stats": {
+            "hp": 55,
+            "mp": 60,
+            "atk": 12,
+            "def": 8,
+            "spd": 22,
+            "mag": 24,
+            "lck": 15
+        },
+        "stat_bonuses": {
+            "mag": 4,
+            "spd": 4,
+            "lck": 2
+        },
+        "class_affinity": [
+            "lunar_chronomancer"
+        ],
+        "passive": {
+            "id": "starlight_threads",
+            "name": "Starlight Threads",
+            "description": "15% chance to reset the cooldown of any ability used. Time is a loop.",
+            "traits": [
+                {
+                    "type": "PROC_CD_RESET",
+                    "value": 0.15
+                }
+            ]
+        },
+        "lore": "She was born in the silence of the Sky Ruins. She descended to the earth when she felt the first thread of the Fire Fragment snap."
     }
 ]

@@ -41,5 +41,10 @@
 
   "void_strike":   { "actorDuration": 560, "overlayDuration": 600, "isUltimate": false },
   "abyssal_tide":  { "actorDuration": 560, "overlayDuration": 800, "isUltimate": false },
-  "void_echo":     { "actorDuration": 560, "overlayDuration": 600, "isUltimate": false }
+  "void_echo":     { "actorDuration": 560, "overlayDuration": 600, "isUltimate": false },
+
+  "glacial_aegis":  { "actorDuration": 600, "overlayDuration": 1200, "isUltimate": false },
+  "gravity_anchor": { "actorDuration": 600, "overlayDuration": 1500, "isUltimate": false },
+  "cryo_phalanx":   { "actorDuration": 600, "overlayDuration": 1800, "isUltimate": false },
+  "event_horizon":  { "actorDuration": 900, "overlayDuration": 3200, "isUltimate": true  }
 }

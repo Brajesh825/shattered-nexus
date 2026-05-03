@@ -8,12 +8,19 @@
       <stop offset="0%" style="stop-color:#a5d6a7;stop-opacity:1" />
       <stop offset="100%" style="stop-color:#2e7d32;stop-opacity:1" />
     </linearGradient>
+    <radialGradient id="arcane-glow" cx="50%" cy="45%" r="50%">
+      <stop offset="0%" stop-color="#b388ff" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#7c4dff" stop-opacity="0"/>
+    </radialGradient>
   </defs>
+  <ellipse cx="32" cy="59" rx="27" ry="4" fill="#100907" opacity="0.28"/>
+  <circle cx="32" cy="31" r="22" fill="url(#arcane-glow)"/>
   <!-- Table Legs -->
   <rect x="10" y="40" width="4" height="20" fill="#3e2723" />
   <rect x="50" y="40" width="4" height="20" fill="#3e2723" />
   <!-- Table Surface -->
   <rect x="4" y="30" width="56" height="10" rx="2" fill="#5d4037" stroke="#2d1d1a" stroke-width="1.5" />
+  <path d="M6 32 H58 M10 39 C18 37 24 39 32 37 M38 38 C45 36 50 38 56 36" stroke="#a87a54" stroke-width="0.8" opacity="0.35" fill="none"/>
   <!-- Drawer -->
   <rect x="22" y="34" width="20" height="4" rx="1" fill="#3e2723" />
   <circle cx="32" cy="36" r="0.8" fill="#ffd700" />
@@ -23,9 +30,15 @@
   
   <path d="M 45 30 L 45 22 Q 45 15 42 15 L 48 15 Q 45 15 45 22 Z" fill="url(#potion-green)" stroke="#1b5e20" stroke-width="0.5" />
   <rect x="42" y="20" width="6" height="10" rx="1" fill="url(#potion-green)" stroke="#1b5e20" stroke-width="0.5" />
+  <path d="M32 30 L30 24 L34 24 Z" fill="#7dd3fc" stroke="#1e88e5" stroke-width="0.6"/>
+  <circle cx="32" cy="23" r="3" fill="#e0f7fa" stroke="#29b6f6" stroke-width="0.5"/>
   <!-- Scroll -->
   <rect x="25" y="22" width="12" height="8" rx="1" fill="#fff9c4" stroke="#fbc02d" stroke-width="0.5" transform="rotate(-10 31 26)" />
+  <path d="M27 25 L34 24 M27 27 L33 27" stroke="#8d6e63" stroke-width="0.4" transform="rotate(-10 31 26)"/>
   <!-- Bubbles -->
   <circle cx="15" cy="18" r="0.5" fill="#fff" opacity="0.6" />
   <circle cx="45" cy="15" r="0.5" fill="#fff" opacity="0.6" />
+  <circle cx="18" cy="15" r="0.8" fill="#b2ebf2" opacity="0.65" />
+  <circle cx="48" cy="11" r="0.9" fill="#dcedc8" opacity="0.65" />
+  <path d="M22 31 Q32 27 42 31" fill="none" stroke="#d1c4e9" stroke-width="0.8" opacity="0.45"/>
 </svg>

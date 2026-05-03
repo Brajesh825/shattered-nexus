@@ -9,97 +9,49 @@ MAP_DEFS.riverlands_crossing = {
     height: 40,
     playerStart: { x: 2, y: 27 },
     bgColor: '#020f12',
+    bgm: 'riverlands_explore',
+    battleBgm: 'riverlands_battle',
+    bossBgm: 'river_king_theme',
     ambientLight: 'rgba(50,150,180,0.1)',
     weather: 'rain',
     enemyLevelRange: [10, 18],
     encounterTemplates: [
+        // Groups of 4 (Rare/Hard Encounters)
+        { weight: 1, enemies: ['bandit', 'bandit', 'bandit', 'bandit'] },
+        { weight: 1, enemies: ['merman', 'merman', 'wisp', 'harpy'] },
+        { weight: 1, enemies: ['bandit', 'bandit', 'wisp', 'wisp'] },
+        
+        // Groups of 3
+        { weight: 2, enemies: ['bandit', 'bandit', 'bandit'] },
+        { weight: 1, enemies: ['merman', 'merman', 'wisp'] },
+        { weight: 1, enemies: ['bandit', 'harpy', 'wisp'] },
+        
+        // Groups of 2
         { weight: 4, enemies: ['bandit', 'bandit'] },
-        { weight: 3, enemies: ['wisp'] },
+        { weight: 3, enemies: ['merman', 'merman'] },
         { weight: 2, enemies: ['bandit', 'wisp'] },
-        { weight: 2, enemies: ['harpy'] },
-        { weight: 1, enemies: ['bandit', 'bandit', 'bandit'] },
+        { weight: 2, enemies: ['merman', 'wisp'] },
         { weight: 1, enemies: ['wisp', 'wisp'] },
-        { weight: 1, enemies: ['harpy', 'bandit'] }
+        { weight: 1, enemies: ['harpy', 'bandit'] },
+        { weight: 1, enemies: ['merman', 'harpy'] },
+        
+        // Groups of 1
+        { weight: 3, enemies: ['wisp'] },
+        { weight: 2, enemies: ['harpy'] }
     ],
     enemies: [
         // --- BRIDGE SENTINELS ---
-        { id: 'bandit', x: 10, y: 25,  patrol: 'horizontal', range: 4,  speed: 1.0 },
+        { id: 'bandit', x: 11, y: 25,  patrol: 'horizontal', range: 4,  speed: 1.0 },
         { id: 'bandit', x: 70, y: 29,  patrol: 'random',     range: 3,  speed: 1.1 },
         // --- WATERFALL PATROL ---
-        { id: 'wisp',   x: 40, y: 15,  patrol: 'vertical',   range: 8,  speed: 1.5 },
-        { id: 'wisp',   x: 60, y: 32,  patrol: 'horizontal', range: 10, speed: 1.6 },
+        { id: 'wisp',   x: 24, y: 26,  patrol: 'vertical',   range: 8,  speed: 1.5 },
+        { id: 'merman', x: 27, y: 28,  patrol: 'horizontal', range: 6,  speed: 1.2 },
+        // --- CANYON CLIFFS ---
+        { id: 'harpy',  x: 60, y: 25,  patrol: 'random',     range: 5,  speed: 1.4 },
         // --- MAP BOSS ---
         { id: 'river_king', x: 40, y: 27, patrol: 'stationary', isBoss: true, label: 'River King' }
     ],
-    tiles: (function () {
-        const rows = [];
-        const W = 80, H = 40;
-        for (let y = 0; y < H; y++) {
-            let row = new Array(W).fill(1); // Grass
-            for (let x = 0; x < W; x++) {
-                // 1. THE NORTHERN CANYON WALLS (Solid 100% - No gaps)
-                if (y < 25) {
-                    if (x < 20 || x > 60) {
-                        row[x] = 6; // Solid Mountain
-                        continue;
-                    }
-                }
-
-                // 2. Forest Borders (Only for the southern half now)
-                if (y >= 37 || (y >= 25 && (x < 2 || x > 77))) {
-                    if (Math.random() < 0.8) row[x] = 5; // Forest
-                    continue;
-                }
-
-                // 3. THE BRIDGE (Moved South)
-                if (y >= 25 && y <= 29) {
-                    const isGate = (x >= 30 && x <= 33) || (x >= 47 && x <= 50);
-                    if (isGate) {
-                        if (y === 25 || y === 29) row[x] = 17; // Walls
-                        else row[x] = 2; // Floor
-                    } else {
-                        row[x] = 4; // Bridge surface
-                    }
-                    continue;
-                }
-
-                // 4. THE GREAT CASCADE & RIVER
-                if (x >= 20 && x <= 60) {
-                    if (y <= 3) {
-                        row[x] = 3; // Upper Reservoir (Deep Water - Impassable)
-                    } else if (y === 4) {
-                        row[x] = 6; // THE PRECIPICE
-                        if (x % 5 > 0) row[x] = 22; // Waterfall drop
-                    } else if (y >= 5 && y <= 15) {
-                        // THE DROP
-                        row[x] = (x % 5 > 0) ? 22 : 6; 
-                    } else if (y >= 16 && y <= 20) {
-                        // THE BASIN
-                        row[x] = 22; 
-                        if (Math.random() < 0.15) row[x] = 6;
-                    } else if (x === 20 || x === 60) {
-                        row[x] = 6; // Canyon rock banks
-                    } else {
-                        row[x] = 3; // Lower River
-                    }
-                    continue;
-                }
-
-                // 5. Secondary Paths (Only on southern half)
-                if (y >= 25) {
-                    if (x === 19 || x === 61) row[x] = 2;
-                }
-
-                // 6. Scattered Rocks and Flowers (Southern half only)
-                if (row[x] === 1) {
-                   if (Math.random() < 0.05) row[x] = 11; // Flowers
-                   if (Math.random() < 0.02) row[x] = 6;  // Small boulders
-                }
-            }
-            rows.push(row);
-        }
-        return rows;
-    })(),
+    jsonFile: 'js/map/data/map-riverlands-crossing.json',
     npcs: [
         { id: 'merchant', x: 15, y: 25, dialogueKey: 'riverlands_crossing', behavior: 'stationary' },
         { id: 'old_guard', x: 2, y: 26, dialogueKey: 'riverlands_crossing', behavior: 'stationary' },
@@ -118,20 +70,11 @@ MAP_DEFS.riverlands_crossing = {
         },
         {
             id: 'waterfall_roar',
-            x: 20, y: 21, w: 40, h: 4,
+            x: 20, y: 21, w: 40, h: 6,
             type: 'dialogue',
             lines: [
                 { speaker: 'narrator', text: 'The deafening roar of the Great Cascade vibrates through the very bridge beneath your feet.' },
                 { speaker: 'Lulu', text: 'It\'s beautiful... but one slip and we\'re history.' }
-            ]
-        },
-        {
-            id: 'secret_grotto',
-            x: 40, y: 2, w: 1, h: 2,
-            type: 'dialogue',
-            lines: [
-                { speaker: 'narrator', text: 'You notice a faint path behind the crashing water...' },
-                { speaker: 'Rei', text: 'A hidden grotto. Classic.' }
             ]
         },
         {

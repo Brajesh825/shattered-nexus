@@ -33,14 +33,17 @@ const MAP_PLACES = [
 
 const MAP_MAIN_ROUTE = [0, 1, 2, 3, 4, 5, 6, 7];
 const MAP_SIDE_ROUTES = [
-  [0, 14], [0, 13], [5, 9], [1, 14], [1, 10],
-  [2, 10], [3, 8], [4, 11], [5, 12],
+  [0, 13], [0, 14], // After Arc 1: Southern Isles, Riverlands
+  [2, 10],         // After Arc 3: Ashen Foothills
+  [3, 8],          // After Arc 4: Lighthouse Isles
+  [4, 11],         // After Arc 5: Eastern Wetlands
+  [5, 9], [5, 12], // After Arc 6: Northern Highlands, Sky Ruins
 ];
 
 /* Explore map linked to each arc (index = arcIdx 0-based) */
 const ARC_MAP_ID = [
   'verdant_vale',      // Arc 1
-  'crystal_cavern_f3',    // Arc 2
+  'crystal_cavern_f1',    // Arc 2 (Entrance)
   'ember_wastes',      // Arc 3
   'sunken_temple',     // Arc 4
   'shadow_reach',      // Arc 5
@@ -160,6 +163,7 @@ const Story = {
       this.chapIdx = -1;
       this.phase = null;
       G.mode = 'story';
+      if (typeof QuestSystem !== 'undefined') QuestSystem.init();
 
       // Load characters if not already loaded
       if (!G.chars || G.chars.length === 0) {
@@ -261,6 +265,7 @@ const Story = {
       if (s.ownedRelics) G.ownedRelics = s.ownedRelics;
       if (s.activeRelics) G.activeRelics = s.activeRelics;
       if (s.archive) { G.archive = s.archive; if (typeof Archive !== 'undefined') Archive.init(); }
+      if (typeof QuestSystem !== 'undefined') QuestSystem.init(s.questState || null);
 
       // If saved from explore map, restore directly to that map (no overlay/selection)
       if (s.mapId) {
@@ -317,6 +322,8 @@ const Story = {
 
   /** Called by checkBattleEnd() (via TurnManager) when all enemies are defeated */
   onBattleWon() {
+    if (typeof BGM !== 'undefined') BGM.crossfade('story');
+    
     /* Skirmish: just return to world map after win */
     if (this._skirmishArcIdx !== undefined) {
       this._skirmishArcIdx = undefined;
@@ -689,6 +696,13 @@ const Story = {
   },
 
   _launchStoryBattle(enemyId) {
+    if (typeof BGM !== 'undefined') {
+      const chap = this.currentChap || {};
+      const isBoss = (this.phase === 'boss_in');
+      const track = isBoss ? (chap.bossBgm || 'boss') : (chap.battleBgm || 'battle');
+      BGM.crossfade(track);
+    }
+
     // Hide dialogue during battle
     const dialogue = this.el('s-dialogue');
     if (dialogue) dialogue.style.display = 'none';
@@ -839,6 +853,12 @@ const Story = {
     G.mode = 'story';
     const chap = this._exploreChap;
     this._exploreChap = null;
+
+    // Mark current map as cleared so it can be revisited directly from the world map
+    if (chap && chap.map) {
+      if (!Array.isArray(G.clearedMaps)) G.clearedMaps = [];
+      if (!G.clearedMaps.includes(chap.map)) G.clearedMaps.push(chap.map);
+    }
     
     this._showLines((chap && chap.post_dialogue) || [], () => this._nextChapter());
     showScreen('story-screen');
@@ -948,6 +968,7 @@ const Story = {
     }
 
     this.arcIdx++;
+    if (typeof QuestSystem !== 'undefined') QuestSystem.onArcAdvance(this.arcIdx);
     G.enemies = this._allEnemies.slice();
     if (this.arcIdx >= this.data.arcs.length) { this._beginEpilogue(); return; }
 
@@ -1076,6 +1097,7 @@ const Story = {
       ownedRelics: G.ownedRelics || [],
       activeRelics: G.activeRelics || [],
       archive: G.archive || {},
+      questState: typeof QuestSystem !== 'undefined' ? QuestSystem.save() : null,
       mapId,
       mapX,
       mapY,
@@ -1089,6 +1111,7 @@ const Story = {
     this._showSection(null);
     this._closeRegionPanel();
     if (typeof MapTouch !== 'undefined') MapTouch.reset();
+    if (typeof Focus !== 'undefined') Focus.setContext('map-area');
 
     const arcs = this.data.arcs;
     const nextIdx = this.arcIdx + 1;
@@ -1232,13 +1255,42 @@ const Story = {
   _openRegionPanel(arcIdx) {
     const arc = this.data.arcs[arcIdx];
     const panel = document.getElementById('map-region-panel');
-    const mapId = ARC_MAP_ID[arcIdx] || '';
     const lore = ARC_LORE[arcIdx] || '';
     const shard = arc.shard;
     const isDone = arcIdx < this.arcIdx;
     const isCur = arcIdx === this.arcIdx;
     const isNext = arcIdx === this.arcIdx + 1;
     const arcComplete = this.phase === 'arc_end' || this.phase === 'epilogue';
+
+    // Collect all available maps for this region: 
+    // 1. Any map already in G.clearedMaps that belongs to this arc
+    // 2. The current active map if isCur is true
+    const availableMaps = new Set();
+    if (Array.isArray(G.clearedMaps)) {
+      G.clearedMaps.forEach(mId => {
+        const mDef = typeof MAP_DEFS !== 'undefined' ? MAP_DEFS[mId] : null;
+        if (mDef && mDef.arcId === arcIdx + 1) availableMaps.add(mId);
+      });
+    }
+    if (isCur && arc.chapters) {
+      const curChap = arc.chapters[this.chapIdx];
+      if (curChap && curChap.type === 'explore' && curChap.map) {
+        availableMaps.add(curChap.map);
+      }
+    }
+
+    // Generate Explore buttons for all available maps
+    let exploreButtons = '';
+    const mapsArray = [...availableMaps];
+    if (mapsArray.length > 0) {
+      exploreButtons += `<div style="font-family:var(--px); font-size:9px; color:#6050a0; margin-top:5px; letter-spacing:1px; text-align:center;">SELECT DESTINATION</div>`;
+      mapsArray.forEach(mId => {
+         const mDef = MAP_DEFS[mId];
+         if (!mDef) return;
+         const label = mDef.name || mId;
+         exploreButtons += `<button class="mrp-btn" onclick="Story._exploreRegion('${mId}')">🗺 ${label.toUpperCase()}</button>`;
+      });
+    }
 
     panel.innerHTML = `
       <div class="mrp-handle"></div>
@@ -1249,13 +1301,14 @@ const Story = {
       <div class="mrp-lore">${lore}</div>
       <div class="mrp-actions">
         ${isNext ? `<button class="mrp-btn primary" ${arcComplete ? '' : 'disabled'} onclick="Story.proceedFromMap()">${arcComplete ? 'TRAVEL THERE' : 'DEFEAT CURRENT BOSS'}</button>` : ''}
-        ${(isDone || isCur) && mapId ? `<button class="mrp-btn primary" onclick="Story.startRegionSkirmish(${arcIdx})">⚔ SKIRMISH</button>` : ''}
-        ${(isDone || isCur) && mapId ? `<button class="mrp-btn" onclick="Story._exploreRegion('${mapId}')">🗺 EXPLORE</button>` : ''}
+        ${(isDone || isCur) ? `<button class="mrp-btn primary" onclick="Story.startRegionSkirmish(${arcIdx})">⚔ SKIRMISH</button>` : ''}
+        ${exploreButtons}
         <button class="mrp-btn" onclick="Story._closeRegionPanel()">← BACK</button>
       </div>`;
 
     panel.classList.add('open');
     if (typeof MapTouch !== 'undefined') MapTouch.initPanelSwipe(panel);
+    if (typeof Focus !== 'undefined') Focus.setContext('map-region-panel');
   },
 
   _openMapPlacePanel(placeIdx) {
@@ -1279,18 +1332,20 @@ const Story = {
 
     panel.classList.add('open');
     if (typeof MapTouch !== 'undefined') MapTouch.initPanelSwipe(panel);
+    if (typeof Focus !== 'undefined') Focus.setContext('map-region-panel');
   },
 
   _closeRegionPanel() {
     const panel = document.getElementById('map-region-panel');
     if (panel) panel.classList.remove('open');
+    if (typeof Focus !== 'undefined') Focus.setContext('map-area');
   },
 
   _exploreRegion(mapId) {
     if (typeof startExplore === 'undefined' || typeof MAP_DEFS === 'undefined' || !MAP_DEFS[mapId]) return;
     this._closeRegionPanel();
     // startExplore() inits the canvas and shows the explore screen
-    startExplore();
+    startExplore(true);
     // Start the target map
     MapEngine.start(mapId);
     if (typeof MapUI !== 'undefined') MapUI.showMsg(`Entering ${MAP_DEFS[mapId].name}…`, 1500);

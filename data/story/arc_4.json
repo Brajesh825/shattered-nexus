@@ -234,7 +234,7 @@
     "onVictory": [
       {
         "type": "recruit",
-        "charId": "rex"
+        "charId": "valka"
       }
     ],
     "character_moment": {
@@ -242,42 +242,56 @@
       "dialogue": [
         {
           "speaker": null,
-          "text": "As the water stills, a figure steps from the flooded alcove at the chamber's edge \u2014 draped in gold and ancient authority, armor marked with a crest that predates every kingdom any of them have heard of."
+          "text": "As the Kraken's shadow-form dissolves, something shifts in the flooded chamber above \u2014 a faint glow, like starlight filtered through deep water, pulsing in a rhythm that does not belong to the darkness here."
         },
         {
-          "speaker": "Rex",
-          "emotion": "commanding",
-          "text": "I am Rex. I ruled a golden nation in another world. When I was pulled into this rift, Valdris chained me in these depths to witness the Kraken's grief\u2014a creature that sacrificed everything to save its people, just as I once did for mine."
+          "speaker": null,
+          "text": "A figure descends through the parting water \u2014 wings folded close, armor still luminous despite months of submersion, chains of shadow-iron fragmenting as the Kraken's binding finally breaks."
         },
         {
-          "speaker": "Aya",
-          "emotion": "awed",
-          "text": "An immortal king. He kept you prisoner to watch a guardian suffer?"
+          "speaker": "Valka",
+          "emotion": "surfacing",
+          "text": "He bound me to anchor it. My light kept the Kraken from simply fading \u2014 Valdris needed the guardian alive enough to suffer, and divine resonance holds things together even when they want to die."
         },
         {
-          "speaker": "Rex",
-          "emotion": "resolute",
-          "text": "To watch it fail. The burden of immortality is outliving the people you lead, and Valdris thought that would break me. But you have broken his chain instead."
+          "speaker": "Lulu",
+          "emotion": "horrified",
+          "text": "You were being used to keep it in pain."
         },
         {
-          "speaker": "Tao",
-          "emotion": "respectful",
-          "text": "A cruel punishment. But you are unchained now."
-        },
-        {
-          "speaker": "Rex",
-          "emotion": "steady",
-          "text": "Yes. Because you are the first ones who came to these depths to free something rather than take something. You gave a suffering guardian rest."
+          "speaker": "Valka",
+          "emotion": "controlled",
+          "text": "Yes. I could not act. I could only witness. Months of witnessing what it means to be bound to grief you did not choose."
         },
         {
           "speaker": "Rei",
           "emotion": "quiet",
-          "text": "Six. The number holds weight."
+          "text": "I know something about carrying weight for longer than any one being should."
         },
         {
           "speaker": "Valka",
-          "emotion": "solemn",
-          "text": "Then we are complete. What comes next \u2014 we face it together."
+          "emotion": "steady",
+          "text": "I know. I could see all of you \u2014 your natures, the weight each of you carries. That is what judgment-sight does. I knew you would come. I did not know if it would be in time."
+        },
+        {
+          "speaker": "Aya",
+          "emotion": "warm",
+          "text": "It was. That is what matters."
+        },
+        {
+          "speaker": "Valka",
+          "emotion": "resolute",
+          "text": "They called me Valka, where I come from. A judge of souls. I do not remember what I was before that \u2014 only what I must do now. Valdris will be judged. When the time comes. I will be here when it does."
+        },
+        {
+          "speaker": "Tao",
+          "emotion": "gentle",
+          "text": "Six. The number holds weight."
+        },
+        {
+          "speaker": "Lulu",
+          "emotion": "hopeful",
+          "text": "Six \u2014 and none of us broken. Something tells me that matters."
         }
       ]
     }

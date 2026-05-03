@@ -79,9 +79,14 @@ Final_Stat = floor( ( (Base_Stat × Tier_Mult) + (SpawnLevel - 1) × Tier_Growth
 ### 🛡️ Boss Archetypes (Reference)
 - **Void Knight (Arc 1)**: 240 HP / 22 DEF (The Balanced Start)
 - **Demon Lord (Arc 2)**: 185 HP / 15 DEF (The Magic Menace)
-- **King Galdor (Sideboss)**: 200 HP / 16 DEF (The Greed King - Hardens with HP loss)
-- **Spectral Guardian (Sideboss)**: 480 HP / 60 DEF (The Wall - Shatters into glass cannon at 40% HP)
+- **King Galdor (Map Boss)**: 250 HP / 36 ATK (The Greed King - Scales ATK/DEF with HP loss)
+- **Spectral Guardian (Map Boss)**: 480 HP / 60 DEF (The Wall - Shatters into glass cannon at 40% HP)
 - **Dark Phoenix (Arc 3)**: 170 HP / 10 DEF (The Self-Healer)
+
+### 🗂️ Boss Classification (VVI Standard)
+Maintain the distinction between encounter triggers:
+1. **Arc Bosses**: Driven by `Story.onHeroReady` and `arc_N.json`. Use `boss_enemy` property. Never place directly in `map.enemies[]`.
+2. **Map Bosses**: Placed in `MAP_DEFS[id].enemies[]` with `isBoss: true`. Handled by `MapEngine` / `EnemyScaling`.
 
 ---
 
@@ -144,6 +149,9 @@ Applied as **flat additions** after `computeStats()` and `applyRelicBonuses()` i
 ### Save / Load Contract
 Only `lv`, `exp`, `gold`, `hp`, `mp`, `isKO` are persisted. On load, all other stats are recomputed via `computeStats()` + `applyRelicBonuses()` + Archive mastery buffs. This prevents corrupted saves from permanently inflating stats.
 
+### Save Trigger Rule
+Saving is **camp-only**. The `💾 SAVE PROGRESS` button lives exclusively in the Camp menu (`MapUI.campSave()`). There is no save button in the pause menu. Do not re-add campfire tile checks or auto-save prompts — they were intentionally removed.
+
 ---
 
 ## 🔍 Debugging & Diagnostics
@@ -151,6 +159,15 @@ Engine status is exposed via `window.LogDebug(msg, type)`.
 - **Reserved Tags**: `[MATH-PHYS]`, `[MATH-MAGIC]`, `[ENEMY-MATH-MAGIC]`, `[ENEMY-MATH-PHYS]`, `[STATE-DIAG]`, `[Aura]`, `[Passive]`, `[Gauntlet]`, `[BUFF]`, `[DEBUFF]`, `[AI-SUPPORT]`, `[HitRoll]`, `[CritRoll]`, `[KO]`.
 - **Gauntlet Mode**: Use for stress-testing AI and new enemy tiers. Accessible from the map screen. Boss list defined in `BossGauntlet.getBossIds()` — add new arc bosses here.
 - **Magic Defense Formula**: `mdef = def×0.25 + mag×0.25 + level×0.5` — both attacker and defender use this blend. Pure DEF tanks and pure MAG mages both get meaningful resistance without immunity.
+
+---
+
+## 🎵 Audio & Music Handling (BGM)
+The **BGM** module (`js/bgm.js`) handles all background music with crossfading support.
+- **Map Music**: Driven by the `bgm` property in the map definition (e.g., `map-riverlands-crossing.js`). Triggered automatically by `MapEngine.loadMap()`.
+- **Battle Music**: Driven by the map's `battleBgm` or `bossBgm` properties. Initiated when `MapEngine.onEncounterStart()` fires. Returns to map music automatically on `onBattleComplete()`.
+- **Arc Bosses (Story)**: Bypasses the Map Engine. Configure story boss tracks by adding `"bossBgm": "track_name"` or `"battleBgm": "track_name"` directly to the chapter object in `data/story/*.json`. `js/story.js` handles the crossfade.
+- **File Assets**: BGM tracks live in `audio/bgm/`. Always provide MP3 files that match the metadata names.
 
 ---
 
@@ -252,6 +269,58 @@ The arc's `boss_chapter` fires immediately after the final floor chapter complet
 
 ---
 
+## 🗟 Map NPC & Event System
+
+### Trigger Types (`map.triggers[]`)
+All triggers fire once per session (stored in `_firedTriggers`). They are checked every player-move tick via `_checkRegionTriggers()`.
+
+| `type` | Required fields | What it does |
+|---|---|---|
+| `dialogue` | `lines: [{speaker, text}]` | Pauses the map, opens the NPC dialogue panel, plays the lines sequentially. Reuses `_openGenericDialogue` — same panel as NPC talk. |
+| `msg` | `msg: string` | Shows a brief HUD notification (`MapUI.showMsg`). Doesn't pause the map. |
+| `teleport` | `targetMapId`, optionally `targetX`/`targetY` | Loads a new map. All post-load work (position reset, story hooks) MUST go inside `.then()`. |
+| `reach` | *(objective target, not a trigger type)* | Completes the `reach` objective when the player steps on `target.x/y`. |
+
+Trigger region shape: `{ id, x, y, w, h, type, ...typeFields }`. `w`/`h` default to 1 if omitted.
+
+### NPC Definition Pattern (`data/npcs.js`)
+```js
+npcKey: {
+  name: 'Display Name',
+  color: '#hexcolor',          // speaker name color in dialogue
+  sprite: 'path/to/sheet.png', // fallback: images/characters/map/sheets/npc/<id>_sheet.png
+  dialogues: {
+    mapId: [
+      { speaker: 'Name', text: 'Line.' },
+    ],
+  },
+}
+```
+Placed in a map via `map.npcs[]`: `{ id: 'npcKey', x, y, dialogueKey: 'mapId', behavior: 'stationary'|'wander'|'patrol', ... }`.
+
+### `hideIfUnlocked` Gate
+Adding `hideIfUnlocked: 'charId'` to an NPC entry in `map.npcs[]` causes `MapEntities.init()` to filter that NPC out when `G.unlockedChars` contains `charId`. Use this to make pre-recruit NPCs disappear once the character has joined the party.
+
+### Narrative 3-Beat Pattern (Verdant Vale / Sera standard)
+For story-relevant NPCs that appear before recruitment, follow this structure:
+1. **First Sighting trigger** — region trigger fires automatically when the player approaches (~10 tiles before the NPC). The character calls out without the player needing to interact. Establishes presence.
+2. **NPC Direct Talk** — player walks up to the NPC sprite and interacts. Full lore dialogue. Can be revisited.
+3. **Gate trigger** — region trigger near the dungeon/boss entrance. Final words before the fight. Plants the emotional setup for the post-boss recruit scene.
+
+All three beats use `type: 'dialogue'` with `speaker: 'Azure Commander'` (or whatever the pre-recruit display name is). The NPC's true name (`Sera`) is only revealed in the post-boss `character_moment` in `arc_N.json`.
+
+### Voice Lines (`map.voiceLines`)
+```js
+voiceLines: {
+  ambient: [...],    // random lines during normal exploration
+  fogRising: [...],  // fired at fog milestone thresholds
+  encounter: [...],  // fired on enemy encounter
+}
+```
+Each entry: `{ char: 'Name', color: '#hex', text: 'Line.' }`. Story NPCs (e.g. Azure Commander) can appear here to reinforce presence without triggering a full dialogue panel. Keep these 1-line atmospheric observations — they are not gated and fire randomly.
+
+---
+
 ## 🗺️ Map Architect Data Standards (V1.1)
 The **Architect Pro** editor (`tools/tile-editor.html`) is the primary source for region data.
 
@@ -271,3 +340,8 @@ The **Architect Pro** editor (`tools/tile-editor.html`) is the primary source fo
     - `1-199`: Standard core tiles.
     - `200-299`: Dynamic SVG assets.
     - `1000+`: Sprite-based environmental objects.
+
+---
+
+## 🎨 Idea & Asset Staging (`_concepts/`)
+- **`_concepts/`**: This directory serves as a staging ground for **anything** under consideration for future integration. This includes raw generated artwork, draft story documents, lore expansions, and experimental game mechanics. Once finalized, content should be moved to its permanent location in the codebase (e.g., `images/`, `data/`, `js/`), and the raw concepts can be safely removed.

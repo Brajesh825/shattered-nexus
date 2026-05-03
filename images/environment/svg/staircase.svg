@@ -5,12 +5,15 @@
       <stop offset="100%" style="stop-color:#2d2240;stop-opacity:1" />
     </linearGradient>
   </defs>
+  <ellipse cx="50" cy="82" rx="42" ry="9" fill="#05020a" opacity="0.28"/>
   <!-- Background shadow -->
   <path d="M10,80 L50,40 L90,80 Z" fill="#1a1428" opacity="0.5" />
   <!-- Steps -->
   <rect x="20" y="70" width="60" height="10" fill="url(#stepGrad)" stroke="#6200ea" stroke-width="1" rx="2" />
   <rect x="30" y="60" width="40" height="10" fill="url(#stepGrad)" stroke="#6200ea" stroke-width="1" rx="2" />
   <rect x="40" y="50" width="20" height="10" fill="url(#stepGrad)" stroke="#6200ea" stroke-width="1" rx="2" />
+  <path d="M22 73 H78 M32 63 H68 M42 53 H58" stroke="#b388ff" stroke-width="0.8" opacity="0.45"/>
+  <path d="M26 70 L18 77 M74 70 L82 77" stroke="#1a1428" stroke-width="2" opacity="0.45"/>
   <!-- Portal Light -->
   <circle cx="50" cy="45" r="5" fill="#b388ff">
     <animate attributeName="r" values="4;6;4" dur="2s" repeatCount="indefinite" />

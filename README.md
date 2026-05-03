@@ -1,6 +1,9 @@
 # RPG+ — Aethoria Chronicles
 
-> *Eight heroes. Five seals. One immortal shadow that has consumed worlds for seventeen centuries.*
+> [!IMPORTANT]
+> **AUTOSAVE IS NOT ALLOWED**: Progress in RPG+ can only be saved manually from the Camp menu (`💾 SAVE PROGRESS`). The game will never automatically save your progress.
+
+> *Eight heroes. Five seals. One immortal shadow that has consumed worlds for six centuries.*
 
 A browser-based tactical RPG with elemental reaction combat, a full narrative campaign across 8 story arcs, and a living world map — no install required.
 
@@ -44,8 +47,11 @@ RPG+ is a full-featured JRPG running entirely in the browser:
 - **World map exploration** with animated character sprites, random encounters, and boss nodes
 - **Formation system** — Vanguard intercepts, Rearguard evades
 - **Relic system** — permanent stat bonuses unlocked by beating bosses
-- **Inventory** — 16 item types, usable in and out of battle
+- **Inventory** — 80+ items across 4 categories (consumables, valuables, key items, trophies), usable in and out of battle
+- **Echo Quests** — hunt/gather side-objectives from NPCs and arc auto-unlocks, tracked in the Echo Log
+- **World Corruption** — time-in-wild accumulates fog/corruption, tinting the screen and scaling enemy mutation chance
 - **Party screen** — live stat viewer, passive descriptions, relic slots
+- **Saving** — progress can only be saved from the Camp menu (`💾 SAVE PROGRESS`)
 
 ---
 
@@ -68,124 +74,17 @@ Eight characters join your party across the campaign. The first four are availab
 | Character | Class | Arc Joined | Role | Passive |
 |-----------|-------|-----------|------|---------|
 | **Ria** | Summoner | Arc 2 | AOE magic / healing | **Eidolon Bond** — Summons +20% stats; MP efficiency +15% |
-| **Valka** | Valkyrie | Arc 2 | Holy attacker / debuffer | **Divine Authority** — DEF +20%; reflects 10% of damage taken |
 | **Drake** | Divine Dragoon | Arc 3 | Speed striker / evader | **Dragon's Leap** — Every 3rd turn, bonus aerial strike; SPD +2 in aerial combat |
-| **Rex** | Grail Guardian | Arc 7 | Demi-god tank / healer | **Divine Blessing** — Grants allies +15% HP regen per turn; takes 12% reduced damage |
+| **Valka** | Valkyrie | Arc 4 | Holy attacker / debuffer | **Divine Authority** — DEF +20%; reflects 10% of damage taken |
+| **Rex** | Grail Guardian | Arc 5 | Demi-god tank / healer | **Divine Blessing** — Grants allies +15% HP regen per turn; takes 12% reduced damage |
 
-### Base Stats (at Level 1)
-
-| Character | HP | MP | ATK | DEF | SPD | MAG |
-|-----------|----|----|-----|-----|-----|-----|
-| Aya   | 65 | 30 | 16 | 12 | 18 | 14 |
-| Tao   | 50 | 22 | 20 | 7  | 14 | 12 |
-| Lulu  | 72 | 42 | 10 | 13 | 11 | 20 |
-| Rei   | 80 | 18 | 18 | 16 | 13 | 8  |
-| Ria   | 58 | 48 | 8  | 9  | 12 | 24 |
-| Valka | 88 | 28 | 19 | 18 | 15 | 16 |
-| Drake | 75 | 20 | 19 | 14 | 16 | 10 |
-| Rex   | 92 | 32 | 22 | 20 | 14 | 18 |
+Full base stats and growth rates are in `data/characters.json`.
 
 ---
 
 ## ⚔ Classes & Abilities
 
-Each character has a fixed class with 4 abilities (3 active + 1 ultimate). Ultimates cost more MP and deliver decisive effects.
-
----
-
-### Cryo Bladestorm — *Aya*
-*Ice and swift strikes. Speed-scaling damage, freeze control.*
-
-| Ability | Type | MP | Effect |
-|---------|------|----|--------|
-| Frostblossom Slash | Physical | 0 | 1.5× ATK; 40% chance to slow target |
-| Glacial Waltz | Physical AOE | 8 | 2.2× to all enemies; scales with SPD; grants SPD buff |
-| Permafrost | Debuff | 6 | 60% freeze; DEF −20% for 2 turns |
-| **Cryoclasm** *(Ultimate)* | Physical | 10 | 3.0× damage + SPD scaling; resets cooldown if target is frozen |
-
----
-
-### Spirit Incinerator — *Tao*
-*Fire and life force. Trade HP for devastating power.*
-
-| Ability | Type | MP | Effect |
-|---------|------|----|--------|
-| Spirit Flame | Physical | 0 | 1.6× ATK; 15% life steal; fire element |
-| Paramita Papilio | Buff | 6 | Costs 30% current HP; ATK +60% for 3 turns |
-| Sanguine Rouge | Buff | 4 | Fire damage +33%; absorbs fire damage as healing for 5 turns |
-| **Spirit Soother** *(Ultimate)* | Physical | 12 | 4.0× dynamic damage scaling with MaxHP & HP lost; massive self-heal |
-
----
-
-### Hydro Performer — *Lulu*
-*Water and grace. The party's primary healer and enabler.*
-
-| Ability | Type | MP | Effect |
-|---------|------|----|--------|
-| Dance of Blessing | Heal | 5 | Restore 35–55 HP; heal output +30% for 3 turns |
-| Water Wheel | Magic AOE | 8 | 2.2× magic to all; heal allies for 50% of damage dealt |
-| Harmony Preservation | Buff | 10 | Party ATK +20%, DEF +20%, +5 HP/turn regen for 4 turns |
-| **Hajra's Hymn** *(Ultimate)* | Heal | 12 | Restore 50% max HP to all; cleanse all debuffs; SPD +1 to party |
-
----
-
-### Ancient Warden — *Rei*
-*Wind and karmic defense. Forces enemies to focus on him.*
-
-| Ability | Type | MP | Effect |
-|---------|------|----|--------|
-| Lancing Strike | Physical | 0 | 1.4× ATK; ignore 20% enemy DEF; wind element |
-| Warden's Valor | Buff | 6 | Incoming damage −25%; 15% reflect for 3 turns |
-| Karmic Barrier | Buff | 8 | All allies DEF +40%; next attacked ally takes 10% less damage for 2 turns |
-| **Mastery of Pain** *(Ultimate)* | Magic | 14 | 3.7× magic + DEF scaling; forces all enemies to target Rei |
-
----
-
-### Summoner — *Ria*
-*Magic and eidolons. Powerful AOE and party-wide healing.*
-
-| Ability | Type | MP | Effect |
-|---------|------|----|--------|
-| Summon Bahamut | Magic AOE | 8 | 2.4× magic to all; fire element |
-| Summon Syldra | Heal AOE | 8 | Restore 40–60 HP to all; cure one debuff; water element |
-| Eidolon Channel | Buff | 10 | MAG +50%; summons +30% damage for 4 turns |
-| **Absolute Summon** *(Ultimate)* | Magic AOE | 14 | 3.8× magic to all; summon phantom guardian for 2 turns |
-
----
-
-### Valkyrie — *Valka*
-*Holy and divine judgment. Debuffs enemies, buffs allies.*
-
-| Ability | Type | MP | Effect |
-|---------|------|----|--------|
-| Valkyrie Strike | Physical | 0 | 1.6× ATK; ignore 15% DEF; holy element |
-| Judgment Seal | Debuff | 7 | Enemy ATK −30%, DEF −20% for 3 turns |
-| Transcendent Power | Buff | 9 | Party ATK +25%, DEF +30%, holy aura for 4 turns |
-| **Divine Execution** *(Ultimate)* | Magic | 13 | 3.6× magic + DEF scaling; stun if enemy HP is low |
-
----
-
-### Divine Dragoon — *Drake*
-*Wind and sky. Aerial evasion, speed snowballing.*
-
-| Ability | Type | MP | Effect |
-|---------|------|----|--------|
-| Dragoon Lance | Physical | 0 | 1.8× ATK; +1 SPD for 2 turns; wind element |
-| Dragon Jump | Physical | 6 | 2.2× ATK; evasion +20% next turn |
-| Divine Flight | Buff | 8 | Evasion +40%; SPD +30%; party SPD +2 for 3 turns |
-| **Heaven's Fall** *(Ultimate)* | Magic | 12 | 4.0× ATK + SPD scaling; area strike |
-
----
-
-### Grail Guardian — *Rex*
-*Holy and divinity. Tanky multi-target sustain.*
-
-| Ability | Type | MP | Effect |
-|---------|------|----|--------|
-| Holy Strike | Physical | 0 | 1.7× ATK; holy element |
-| Divine Shield | Buff | 7 | DEF +45%; damage reduction 20% for 3 turns |
-| Grail Blessing | Heal AOE | 9 | Restore 50–70 HP to all; cleanse all debuffs |
-| **Lionheart Ascendant** *(Ultimate)* | Physical | 14 | 2.5× physical + ATK/DEF scaling; bless all allies |
+Each character has a fixed class with 4 abilities (3 active + 1 ultimate). Ultimates cost more MP and deliver decisive effects. Full ability definitions, MP costs, and effects are in `data/classes.json`.
 
 ---
 
@@ -202,14 +101,25 @@ Battles are turn-based. Turn order is determined by each unit's SPD stat.
 
 ### Damage Formula
 
+**Physical:**
 ```
-physDmg  = ATK × multiplier × (100 / (100 + target.DEF)) × critMult
-magicDmg = MAG × multiplier × (100 / (100 + target.RES)) × critMult
+scaledATK = ATK + (level × 1.2)
+scaledDEF = DEF + (level × 0.6)
+base      = max(1, scaledATK − scaledDEF × 0.75)
+physDmg   = floor(base × variance[0.85–1.15] × multiplier × critMult)
 ```
 
-- **Crit chance**: base 10% + SPD/200 modifier
-- **Crit multiplier**: 1.8×
-- **Evasion**: base 5% + DEF/300; Rearguard position adds 30%
+**Magic:**
+```
+scaledMAG = MAG + (level × 0.8)
+magDef    = (mDEF + level × 0.3) × 0.55
+base      = max(1, scaledMAG − magDef)
+magicDmg  = floor(base × variance[0.90–1.10] × multiplier × passiveBonus × critMult)
+```
+
+- **Crit chance**: base 5% + LCK × 1%, capped at 85%
+- **Crit multiplier**: 2.0×
+- **Hit / Evasion**: `hitChance = max(10%, accuracy − evasion)`; default accuracy 95%, default evasion 0%; Rearguard adds +30% evasion
 
 ### MP Regeneration
 
@@ -225,11 +135,13 @@ Hitting a target with one element **primes** an aura on them. A follow-up strike
 |------|-----------|----------|--------|
 | Ice | Physical / Earth | **SHATTER** | 1.5× damage; DEF debuff applied |
 | Ice | Fire | **MELT** | 2.0× damage |
-| Fire | Nature | **CONFLAGRATION** | 1.25× damage; hits all enemies (AOE) |
+| Fire | Nature | **CONFLAGRATION** | 1.5× damage; hits all enemies (AOE) |
 | Fire | Water | **VAPORIZE** | 2.0× damage |
 | Fire | Ice | **MELT** | 1.5× damage |
 | Water | Lightning | **CONDUCTIVE** | 1.3× damage; stun applied |
+| Water | Fire | **VAPORIZE** | 1.5× damage |
 | Nature | Fire | **BURNING** | 1.2× damage; burn DOT applied |
+| Any Aura | Wind | **SWIRL** | 1.2× damage; disperses aura to nearby enemies (AOE) |
 
 **Elemental affinity** modifies reaction multipliers: hitting a resistant target weakens the bonus; hitting a weakness amplifies it by an additional 1.5×.
 
@@ -245,7 +157,7 @@ Auras are **consumed** on reaction. Only one aura can exist on a target at a tim
 |--------|------|--------|-----------------|
 | Regen | 🌿 | +8% max HP per turn | 3 turns |
 | Mend | 💖 | Healing output ×1.5 | 3 turns |
-| Guardian | 🛡️ | Incoming damage ×0.5 | 3 turns |
+| Guardian | 🛡️ | Incoming damage ×0.5 | 1 turn (Guard action) / 3 turns (abilities) |
 | Empower | ⚔️ | ATK ×1.3 | 3 turns |
 | Fortify | 🛡️ | DEF ×1.3 | 3 turns |
 
@@ -255,7 +167,7 @@ Auras are **consumed** on reaction. Only one aura can exist on a target at a tim
 |--------|------|--------|----------|
 | Stunned | 💫 | Skip turn | 1 turn |
 | Frozen | ❄️ | Skip turn | 2 turns |
-| Burn | 🔥 | DOT damage per turn | Until removed |
+| Burn | 🔥 | DOT damage per turn | 3 turns |
 | Shattered | ❄️ | DEF ×0.7 | 3 turns |
 
 ### Elemental Auras *(reaction primers)*
@@ -293,26 +205,27 @@ The world of Aethoria is in crisis. **Valdris**, the Shadow Emperor, has consume
 
 | Arc | Title | Location | Theme | Boss | Fragment |
 |-----|-------|----------|-------|------|----------|
-| 1 | **The Rift Awakening** | Summoning Grounds → Sacred Ruins | Arrival, trust, purpose | Void Knight | Seal of Origin |
+| 1 | **The Rift Awakening** | Summoning Grounds → Sacred Ruins | Arrival, trust, purpose | Void Knight | Light Seal Fragment |
 | 2 | **Beneath the Ashes** | Crystal Cavern → Ashveil Kingdom | Loss, resolve, cost of inaction | Demon Lord | Seal of Fire |
 | 3 | **The Scorched Spiral** | Ember Wastes | Endurance, buried truths | Dark Phoenix | Seal of Earth |
 | 4 | **The Weeping Depths** | Sunken Temple | Perseverance, hidden truths | Sea Kraken | Seal of Wind |
 | 5 | **The Shadow's Heart** | Emperor's Sanctum → Core | Sacrifice, triumph | Fallen Angel | Seal of Shadow |
-| 6 | **The Fortress Gates** | Valdris's Outer Fortress | Unity, courage | Void Warden | — |
+| 6 | **The Fortress Gates** | Valdris's Outer Fortress | Unity, courage | Void Warden | Seal of the Void |
 | 7 | **The Inner Sanctum** | Valdris's Core Chamber | Sacrifice, revelation | Shadow Titan | — |
 | 8 | **The Shadow Emperor** | The Eternal Void | Redemption, end of eternity | **Shadow Emperor** *(final)* | — |
 
 **Party growth through story:**
 - Arcs 1–2: Aya, Tao, Lulu, Rei (core four)
-- Arc 2: Ria and Valka rescued and recruited
+- Arc 2: Ria recruited
 - Arc 3: Drake joins
-- Arc 7: Rex joins (full party of 8)
+- Arc 4: Valka recruited (Sunken Temple)
+- Arc 5: Rex joins (Shadow Reach) — full party of 8
 
 ---
 
 ## 🗺 Maps
 
-The world map features 8 explorable zones. Each zone has random encounters and a boss node that unlocks story progression and a boss relic.
+The world map features 8 main story zones and 7 optional expansion regions (15 total). Each zone has random encounters and a boss node that unlocks story progression and a boss relic.
 
 | Map | Biome | Boss | Relic Reward |
 |-----|-------|------|-------------|
@@ -331,90 +244,27 @@ Characters are rendered as **animated spritesheet sprites** on the map — 4 dir
 
 ## 🎒 Items
 
-Items are usable from the inventory screen or in battle (select "Item" on your turn).
-
-| Item | Type | Effect | Value |
-|------|------|--------|-------|
-| Potion | Consumable | Restore 80 HP to one member | 50g |
-| Hi-Potion | Consumable | Restore 200 HP to one member | 150g |
-| Ether | Consumable | Restore 40 MP to one member | 80g |
-| Hi-Ether | Consumable | Restore 100 MP to one member | 200g |
-| Tent | Consumable | Restore 50% HP to all (map only) | 120g |
-| Elixir | Consumable | Fully restore HP & MP to one member | 400g |
-| Mega Elixir | Consumable | Fully restore HP & MP to all | 1200g |
-| Antidote | Consumable | Cure all debuffs from one member | 40g |
-| Phoenix Down | Consumable | Revive fallen member at 25% HP | 300g |
-| Strength Tonic | Battle buff | ATK +20% for 3 turns | 100g |
-| Barrier Stone | Battle buff | DEF +20% for 3 turns | 100g |
-| Smoke Bomb | Utility | Guarantee escape from any battle | 60g |
-| Soul Crystal | Utility | Grant 50 EXP to all party members | 500g |
-| Golden Feather | Valuable | Sell for 500 gold | 500g |
-| Shard Fragment | Key item | Story-critical; connected to the seals | — |
+Items are usable from the inventory screen or in battle (select "Item" on your turn). Full item catalog is in `data/items.json`.
 
 ---
 
 ## 💎 Relics
 
-Relics grant permanent passive bonuses. They are awarded for defeating bosses and occasionally found as drops. Each character has relic slots visible in the party screen.
-
-### Boss Relics
-
-| Relic | Source | Bonus |
-|-------|--------|-------|
-| Echo of the Unmade | Arc 1 Boss | SPD +12% · First-strike chance in battle |
-| Cinder of Ashveil | Arc 2 Boss | ATK +10% · Fire damage taken −20% |
-| Scorched Core | Arc 3 Boss | ATK +12% · DEF +6% |
-| Drowned Sigil | Arc 4 Boss | Max HP +15% · Status resistance +25% |
-| Tarnished Wing | Arc 5 Boss | DEF +12% · Damage from elites −15% |
-| Void Crown Shard | Arc 6 Boss | MAG +12% · MP regenerates 10% each turn |
-| Rampart Oath | Arc 7 Boss | DEF +18% · Once per battle: one fallen ally auto-revives at 1 HP |
-| Last Light of Aethoria | Arc 8 Final Boss | HP +10% · ATK +10% · MAG +10% · SPD +10% |
-
-### Common & Uncommon Relics
-
-| Relic | Rarity | Bonus |
-|-------|--------|-------|
-| Shattered Horizon | Uncommon | SPD +8% · ATK +8% · DEF +8% |
-| Warden's Chain | Uncommon | DEF +10% · ATK +5% |
-| Tide Remembrance | Uncommon | All healing +20% |
-| Summoner's Thread | Uncommon | MAG +10% · Max MP +8% |
-| Ashen Shard | Common | DEF +6% |
-| Cracked Talisman | Common | Max HP +8% |
-| Ember Token | Common | ATK +7% |
+Relics grant permanent passive bonuses, awarded for defeating bosses and found as drops. Each character has relic slots visible in the party screen. Full relic catalog is in `data/relics.json`.
 
 ---
 
 ## 👹 Enemies
 
-Over **50 unique enemies** spread across three tiers plus boss encounters.
+Over **100 unique enemies** across three tiers plus boss encounters. Full enemy roster with stats, abilities, and lore is in `data/enemies.json`. 
 
-### Tier 1 — Common Foes
-*Found in early zones; light HP, basic single-target attacks.*
+### Boss Hierarchy (VVI)
+Bosses in Aethoria fall into two distinct categories:
 
-Goblin Scout, Giant Bat, Giant Rat, Spore Mushroom, Fire Imp, Armored Crab, Dire Wolf, Poison Spider, Rotting Zombie, Lost Wisp, Lizardman Scout, Road Bandit, Cursed Scarecrow, and more.
+1. **Arc Bosses (Story)**: Narrative-driven targets tied to the main campaign arcs. Defeating them is required to progress the story and obtain Seal Fragments. They often have cinematic intros and unique recruit events.
+2. **Map Bosses (Exploration)**: Optional zone guardians found in the wilds. They are defined locally in map files and provide high-tier rewards, relics, and Echo Quest completion without directly blocking story progression.
 
-### Tier 2 — Mid-game Threats
-*Multiple abilities, elemental attacks, status application.*
-
-Dark Knight, Venom Wyvern, Werewolf, Harpy, Minotaur, Necromancer, Fire Elemental, Gargoyle, Lesser Demon, Chimera Beast, Golem, Bone Dragon, Merman, Void Knight, Dark Phantom, Shadow Wraith, and more.
-
-### Tier 3 — Bosses & Elites
-*Story bosses and high-HP elites. Multi-phase attacks, elite resistance, passive traits.*
-
-| Boss | Arc | Traits |
-|------|-----|--------|
-| Void Knight | Arc 1 | High DEF; shadow element |
-| Demon Lord | Arc 2 | Fire AOE; summons minions |
-| Dark Phoenix | Arc 3 | Rebirth mechanic; fire/shadow hybrid |
-| Sea Kraken | Arc 4 | AOE tsunami; water/lightning |
-| Fallen Angel Commander | Arc 5 | Holy/shadow duality; multi-target |
-| Void Warden | Arc 6 | Damage reduction aura; void element |
-| Shadow Titan | Arc 7 | Enrage + regenerating traits; AOE |
-| **Shadow Emperor** | Arc 8 | Full elemental repertoire; final boss |
-
-**Mutant traits** (elite enemies):
-- `regenerating` — Recovers HP at the end of each of its turns
-- `enraged` — ATK scales upward as HP decreases
+Boss entity IDs and arc assignments are in `STORY_PROGRESSION.md`.
 
 ---
 
@@ -489,13 +339,7 @@ rpg+/
         └── map/sheets/               ← Chibi walk spritesheets (exploration)
 ```
 
-### Architecture Notes
-
-- **ActionEngine** — Centralised action dispatch. All attacks (hero and enemy) flow through `ActionEngine.execute()` → `ActionEngine._offensive()` → element-specific resolver. No duplicate damage logic.
-- **StatusSystem** — Single source of truth for status application, duration ticking, and aura management. Elemental reactions are resolved here.
-- **showScreen(id)** — All screen transitions go through this function, which handles BGM switching, step-bar visibility, and dialogue cleanup.
-- **ResultUI** — Isolated module for the victory/defeat/escape result screen.
-- **BattleUI** — All in-battle rendering: party bars, enemy row, turn indicator, pop-up floaters.
+Architecture decisions and invariants are documented in `CLAUDE.md`.
 
 ---
 

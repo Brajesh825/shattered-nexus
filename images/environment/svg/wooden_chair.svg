@@ -5,18 +5,21 @@
       <stop offset="100%" style="stop-color:#4e342e;stop-opacity:1" />
     </linearGradient>
   </defs>
+  <ellipse cx="32" cy="61" rx="18" ry="2.5" fill="#0b0604" opacity="0.28"/>
   <!-- Back Legs -->
   <rect x="18" y="10" width="4" height="50" rx="1" fill="#2d1d1a" />
   <rect x="42" y="10" width="4" height="50" rx="1" fill="#2d1d1a" />
   <!-- Back Rest -->
   <rect x="18" y="10" width="28" height="24" rx="2" fill="url(#oak)" stroke="#1a110e" stroke-width="1" />
-  <path d="M 22 15 L 42 15 M 22 20 L 42 20 M 22 25 L 42 25" stroke="rgba(255,255,255,0.1)" stroke-width="0.5" />
+  <path d="M 22 15 L 42 15 M 22 20 L 42 20 M 22 25 L 42 25" stroke="rgba(255,255,255,0.16)" stroke-width="0.5" />
+  <path d="M24 12 L24 33 M40 12 L40 33" stroke="#2d1d1a" stroke-width="0.8" opacity="0.45"/>
   <!-- Seat Shadow -->
   <rect x="16" y="38" width="32" height="6" rx="2" fill="rgba(0,0,0,0.3)" />
   <!-- Seat -->
   <rect x="16" y="34" width="32" height="6" rx="2" fill="url(#oak)" stroke="#1a110e" stroke-width="1" />
   <!-- Cushion -->
   <rect x="20" y="33" width="24" height="4" rx="1" fill="#b71c1c" />
+  <path d="M22 35 H42" stroke="#ff8a80" stroke-width="0.5" opacity="0.55"/>
   <!-- Front Legs -->
   <rect x="18" y="40" width="4" height="20" rx="1" fill="#3e2723" />
   <rect x="42" y="40" width="4" height="20" rx="1" fill="#3e2723" />

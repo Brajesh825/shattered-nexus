@@ -22,6 +22,9 @@ MAP_DEFS.crystal_cavern_f2 = {
   weather: 'fog',
   enemyLevelRange: [14, 18],
   jsonFile: 'js/map/data/map-crystal-cavern-f2.json',
+  
+  bgm: 'cavern_explore',
+  battleBgm: 'cavern_battle',
 
   mutationConfig: {
     corruptThreshold: 85,

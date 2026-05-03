@@ -1,0 +1,62 @@
+[
+  {
+    "id": "mercy_fallen",
+    "label": "Mercy for the Fallen",
+    "desc": "Lay to rest the zombie soldiers wandering the Verdant Vale.",
+    "type": "hunt",
+    "target": "zombie_soldier",
+    "count": 5,
+    "arc": 0,
+    "rewards": { "exp": 150, "gold": 100 }
+  },
+  {
+    "id": "locket_lost",
+    "label": "The Lost Locket",
+    "desc": "Retrieve a family heirloom from the eastern ruins. Look for it among the fallen soldiers.",
+    "type": "gather",
+    "target": "silver_locket",
+    "count": 1,
+    "arc": 0,
+    "rewards": { "exp": 200, "item": "hi_potion" }
+  },
+  {
+    "id": "void_sentinel",
+    "label": "Void Sentinel",
+    "desc": "A Mutant has been sighted near the Vale. Defeat it to study the infection.",
+    "type": "mutant_kill",
+    "target": "any",
+    "count": 1,
+    "arc": 0,
+    "rewards": { "exp": 500, "gold": 250 }
+  },
+  {
+    "id": "goblin_menace",
+    "label": "Goblin Menace",
+    "desc": "Elder Maren asks you to drive back the goblin raiders preying on the refugee camp.",
+    "type": "hunt",
+    "target": "goblin",
+    "count": 4,
+    "giver": "elder_maren",
+    "rewards": { "exp": 200, "gold": 150 }
+  },
+  {
+    "id": "bones_of_the_fallen",
+    "label": "Bones of the Fallen",
+    "desc": "The Archivist needs bone shards to document the soldiers who died in the Crystal Cavern.",
+    "type": "gather",
+    "target": "bone_shard",
+    "count": 3,
+    "giver": "the_archivist",
+    "rewards": { "exp": 300, "item": "ether" }
+  },
+  {
+    "id": "naga_threat",
+    "label": "Drive Back the Naga",
+    "desc": "The Isle Elder needs the naga raiding the survivor settlement pushed back into the sea.",
+    "type": "hunt",
+    "target": "naga",
+    "count": 4,
+    "giver": "si_elder",
+    "rewards": { "exp": 400, "gold": 200 }
+  }
+]

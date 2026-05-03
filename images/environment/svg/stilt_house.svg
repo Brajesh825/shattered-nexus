@@ -1,0 +1,29 @@
+<svg width="220" height="190" viewBox="0 0 220 190" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="stilt-wall" x1="35" y1="70" x2="185" y2="148" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#b48a63"/>
+      <stop offset="1" stop-color="#6d4c41"/>
+    </linearGradient>
+    <linearGradient id="palm-thatch" x1="28" y1="30" x2="192" y2="92" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#d8b45f"/>
+      <stop offset="1" stop-color="#7a5a24"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="110" cy="172" rx="88" ry="8" fill="#061517" opacity="0.28"/>
+  <path d="M38 135 L182 135 L182 78 L110 36 L38 78 Z" fill="url(#stilt-wall)" stroke="#3e2723" stroke-width="4"/>
+  <path d="M24 82 L110 25 L196 82 L183 95 L110 52 L37 95 Z" fill="url(#palm-thatch)" stroke="#4e342e" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M45 92 H175 M45 112 H175 M45 131 H175" stroke="#5d4037" stroke-width="1.2" opacity="0.45"/>
+  <rect x="91" y="94" width="38" height="42" rx="2" fill="#3e2723" stroke="#24140f" stroke-width="2"/>
+  <path d="M110 94 V136 M96 115 H124" stroke="#6d4c41" stroke-width="1.2"/>
+  <rect x="52" y="93" width="26" height="24" rx="2" fill="#9fd8dc" stroke="#5d4037" stroke-width="2"/>
+  <rect x="143" y="93" width="26" height="24" rx="2" fill="#9fd8dc" stroke="#5d4037" stroke-width="2"/>
+  <path d="M65 93 V117 M52 105 H78 M156 93 V117 M143 105 H169" stroke="#517d80" stroke-width="1"/>
+  <g stroke="#5d4037" stroke-width="5" stroke-linecap="round">
+    <line x1="52" y1="135" x2="43" y2="178"/>
+    <line x1="84" y1="135" x2="79" y2="178"/>
+    <line x1="136" y1="135" x2="141" y2="178"/>
+    <line x1="168" y1="135" x2="177" y2="178"/>
+  </g>
+  <path d="M58 151 H162 M49 165 H174" stroke="#8d6e63" stroke-width="2" opacity="0.7"/>
+  <path d="M47 78 C73 65 91 75 110 60 C130 74 151 64 174 79" fill="none" stroke="#f1d48a" stroke-width="1.7" opacity="0.5"/>
+</svg>

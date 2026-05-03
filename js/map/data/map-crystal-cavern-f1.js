@@ -22,6 +22,9 @@ MAP_DEFS.crystal_cavern_f1 = {
   weather: 'sparks',
   enemyLevelRange: [8, 12],
   jsonFile: 'js/map/data/map-crystal-cavern-f1.json',
+  
+  bgm: 'cavern_explore',
+  battleBgm: 'cavern_battle',
 
   mutationConfig: {
     corruptThreshold: 60,
@@ -52,7 +55,7 @@ MAP_DEFS.crystal_cavern_f1 = {
   ],
 
   npcs: [
-    { id: 'the_archivist', x: 12, y: 15, dialogueKey: 'crystal_cavern_f1' },
+    { id: 'the_archivist', x: 12, y: 15, dialogueKey: 'crystal_cavern_f1', giveQuest: 'bones_of_the_fallen' },
   ],
 
   triggers: [

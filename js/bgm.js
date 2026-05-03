@@ -63,23 +63,90 @@ const BGM = {
   },
 
   /**
-   * Play a theme based on current arc
-   * @param {string} category - 'battle' | 'explore'
+   * Crossfade from the current track to a new one
+   * @param {string} trackName - Name without path
+   * @param {number} duration - Fade duration in ms
    */
-  playArcTheme(category) {
-    if (typeof Story === 'undefined' || !Story.active) {
-      this.play(category === 'battle' ? 'battle' : 'exploration');
+  crossfade(trackName, duration = 800) {
+    if (!this._userInteracted) {
+      this._pendingTrack = trackName;
       return;
     }
-    const arc = Story.arcIdx % 8;
-    // Map existing generic tracks for now, can be expanded with arc-specific naming if files exist
-    const tracks = {
-      'battle': ['battle', 'battle_arc_1', 'battle_arc_2', 'battle_arc_3', 'battle_arc_4', 'battle_arc_5', 'battle_arc_6', 'battle_final'],
-      'explore': ['exploration', 'explore_arc_1', 'explore_arc_2', 'explore_arc_3', 'explore_arc_4', 'explore_arc_5', 'explore_arc_6', 'explore_final']
-    };
+
+    if (this._muted) {
+      this._pendingTrack = trackName;
+      return;
+    }
+
+    // If we're already playing this exact track, just ensure volume is up
+    if (this._current && this._current.src.includes(trackName + '.mp3')) {
+      this._current.volume = this._volume;
+      return;
+    }
+
+    if (!this._current) {
+      this.play(trackName);
+      return;
+    }
+
+    const oldTrack = this._current;
     
-    const track = tracks[category] ? (tracks[category][arc] || tracks[category][0]) : category;
-    this.play(track);
+    // Create new track
+    const newAudio = new Audio(`audio/bgm/${trackName}.mp3`);
+    newAudio.loop = true;
+    newAudio.volume = 0;
+    
+    const playPromise = newAudio.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(err => console.warn(`Could not play BGM: ${trackName}`, err));
+    }
+    
+    this._current = newAudio; // Swap immediately
+    
+    const steps = 20;
+    const stepTime = duration / steps;
+    const startVolOut = oldTrack.volume;
+    const stepVolOut = startVolOut / steps;
+    const stepVolIn = this._volume / steps;
+    let step = 0;
+    
+    const fade = setInterval(() => {
+      step++;
+      try {
+        oldTrack.volume = Math.max(0, startVolOut - (stepVolOut * step));
+        newAudio.volume = Math.min(this._volume, stepVolIn * step);
+      } catch(e) {}
+      
+      if (step >= steps) {
+        clearInterval(fade);
+        try {
+            oldTrack.pause();
+            oldTrack.currentTime = 0;
+            newAudio.volume = this._volume;
+        } catch(e) {}
+      }
+    }, stepTime);
+  },
+
+  /**
+   * Play the appropriate map exploration theme
+   */
+  playMap(mapData) {
+    const track = (mapData && mapData.bgm) ? mapData.bgm : 'exploration';
+    this.crossfade(track);
+  },
+
+  /**
+   * Play the appropriate battle theme
+   */
+  playBattle(mapData, isBoss) {
+    let track = 'battle';
+    if (isBoss) {
+      track = (mapData && mapData.bossBgm) ? mapData.bossBgm : 'battle'; // default to battle if no boss track
+    } else {
+      track = (mapData && mapData.battleBgm) ? mapData.battleBgm : 'battle';
+    }
+    this.crossfade(track);
   },
 
   /**

@@ -55,6 +55,7 @@ const Settings = {
   },
 
   open() {
+    if (typeof UI !== 'undefined') UI.hideAllOverlays();
     const overlay = document.getElementById('settings-overlay');
     if (!overlay) return;
     
@@ -70,6 +71,14 @@ const Settings = {
   close() {
     const overlay = document.getElementById('settings-overlay');
     if (overlay) overlay.style.display = 'none';
+
+    if (typeof MapEngine !== 'undefined' && !MapEngine.isRunning()) {
+      const pauseMenu = document.getElementById('map-pause-menu');
+      if (pauseMenu) pauseMenu.style.display = 'flex';
+      if (typeof Focus !== 'undefined') Focus.setContext('map-pause-menu');
+    } else {
+      if (typeof Focus !== 'undefined') Focus.setContext(null);
+    }
   }
 };
 

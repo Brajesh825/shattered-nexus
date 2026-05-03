@@ -6,11 +6,17 @@
       <stop offset="100%" style="stop-color:#546e7a;stop-opacity:1" />
     </linearGradient>
   </defs>
+  <ellipse cx="32" cy="58" rx="18" ry="4" fill="#0b1114" opacity="0.28"/>
   <!-- Pillar Body -->
-  <rect x="22" y="10" width="20" height="46" fill="url(#column-grad)"/>
+  <path d="M22 11 H42 L40 55 H24 Z" fill="url(#column-grad)" stroke="#37474f" stroke-width="0.8"/>
   <!-- Fluting -->
-  <path d="M26 10 L26 56 M32 10 L32 56 M38 10 L38 56" stroke="#37474f" stroke-width="0.5" opacity="0.2"/>
+  <path d="M26 12 L26 55 M32 11 L32 56 M38 12 L38 55" stroke="#37474f" stroke-width="0.6" opacity="0.28"/>
+  <path d="M28 18 L36 23 L28 28 M35 35 L30 39 L37 43" fill="none" stroke="#7c4dff" stroke-width="0.8" opacity="0.55"/>
+  <path d="M24 30 L30 28 M36 14 L41 17 M28 49 L34 46" stroke="#263238" stroke-width="1" opacity="0.55"/>
   <!-- Base and Capital -->
-  <rect x="18" y="52" width="28" height="6" fill="#37474f"/>
-  <rect x="18" y="6" width="28" height="6" fill="#90a4ae"/>
+  <rect x="17" y="52" width="30" height="7" rx="1" fill="#37474f"/>
+  <rect x="19" y="47" width="26" height="5" fill="#78909c"/>
+  <rect x="18" y="6" width="28" height="6" rx="1" fill="#90a4ae"/>
+  <rect x="20" y="2" width="24" height="5" rx="1" fill="#607d8b"/>
+  <circle cx="32" cy="23" r="1.2" fill="#b388ff" opacity="0.75"/>
 </svg>
