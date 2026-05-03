@@ -1111,6 +1111,7 @@ const Story = {
     this._showSection(null);
     this._closeRegionPanel();
     if (typeof MapTouch !== 'undefined') MapTouch.reset();
+    if (typeof Focus !== 'undefined') Focus.setContext('map-area');
 
     const arcs = this.data.arcs;
     const nextIdx = this.arcIdx + 1;
@@ -1307,6 +1308,7 @@ const Story = {
 
     panel.classList.add('open');
     if (typeof MapTouch !== 'undefined') MapTouch.initPanelSwipe(panel);
+    if (typeof Focus !== 'undefined') Focus.setContext('map-region-panel');
   },
 
   _openMapPlacePanel(placeIdx) {
@@ -1330,11 +1332,13 @@ const Story = {
 
     panel.classList.add('open');
     if (typeof MapTouch !== 'undefined') MapTouch.initPanelSwipe(panel);
+    if (typeof Focus !== 'undefined') Focus.setContext('map-region-panel');
   },
 
   _closeRegionPanel() {
     const panel = document.getElementById('map-region-panel');
     if (panel) panel.classList.remove('open');
+    if (typeof Focus !== 'undefined') Focus.setContext('map-area');
   },
 
   _exploreRegion(mapId) {

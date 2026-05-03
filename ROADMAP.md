@@ -9,8 +9,8 @@
 - [x] **Mobile Action Buttons**: `#btn-x` (✦ Interact) and `#btn-y` (☰ Menu) wired and labelled.
 - [x] **Input Settings Screen**: In-game overlay (`⌨ CONTROLS` in pause menu) shows all keyboard + gamepad bindings; click any row to remap; persists to `localStorage`.
 - [x] **Control Hints Bar**: Contextual hint bar slides up from bottom on keyboard/gamepad input, auto-hides on mouse/touch, updates context per screen.
-- [ ] **Battle Touch**: Tap-to-navigate battle command buttons via on-screen virtual buttons during combat.
-- [ ] **Gamepad on World Map**: Extend gamepad polling to drive cursor movement and node selection on the world map screen.
+- [x] **Battle Touch**: Tap-to-navigate battle command buttons via on-screen virtual buttons during combat.
+- [x] **Gamepad on World Map**: Extend gamepad polling to drive cursor movement and node selection on the world map screen.
 
 ### 🔷 Phase 3: Content & Balance
 - [x] **Boss Balancing**: Final tuning pass on Spectral Guardian, Sunken Leviathan, and River King.

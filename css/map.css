@@ -111,9 +111,14 @@
   transform: translate(-50%, -50%);
 }
 
-.map-node:hover {
+.map-node:hover, .map-node.kb-focus {
   transform: translate(-50%, -50%) scale(1.2);
   z-index: 10;
+}
+
+.map-node.kb-focus .mn-marker {
+  box-shadow: 0 0 20px #fff, 0 0 40px var(--gold);
+  border-color: #fff;
 }
 
 .mn-marker {
@@ -341,9 +346,14 @@
   text-align: center;
 }
 
-.mrp-btn:hover {
+.mrp-btn:hover, .mrp-btn.kb-focus {
   background: rgba(255,255,255,0.1);
   border-color: var(--ex-accent2);
+  outline: none;
+}
+
+.mrp-btn.kb-focus {
+  box-shadow: 0 0 10px var(--ex-accent2);
 }
 
 .mrp-btn.primary {

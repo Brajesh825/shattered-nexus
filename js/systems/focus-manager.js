@@ -177,7 +177,7 @@ const Focus = (() => {
 
     const root = _container || document.body;
     // Strictly exclude tabindex="-1" and :disabled to prevent focus leaks
-    const candidates = root.querySelectorAll('button:not([tabindex="-1"]):not(:disabled), .enemy, .pa-member, .pause-inv-slot, .itm-entry, .itm-target-card, .bestiary-row, .b-tab, .title-btn, .char-card, .class-card, .swap-card, .sc, .sc-action, .tutorial-close, .npc-dialogue-next');
+    const candidates = root.querySelectorAll('button:not([tabindex="-1"]):not(:disabled), .enemy, .pa-member, .pause-inv-slot, .itm-entry, .itm-target-card, .bestiary-row, .b-tab, .title-btn, .char-card, .class-card, .swap-card, .sc, .sc-action, .tutorial-close, .npc-dialogue-next, .map-node, .mrp-btn');
     return Array.from(candidates).filter(el => {
       const style = window.getComputedStyle(el);
       return style.display !== 'none' && style.visibility !== 'hidden' && el.offsetParent !== null;
