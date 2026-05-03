@@ -55,10 +55,14 @@ MAP_DEFS.riverlands_crossing = {
                 if (y >= 25 && y <= 29) {
                     const isGate = (x >= 30 && x <= 33) || (x >= 47 && x <= 50);
                     if (isGate) {
-                        if (y === 25 || y === 29) row[x] = 17; // Walls
-                        else row[x] = 2; // Floor
+                        if (y === 25 || y === 29) row[x] = 68; // Stone wall
+                        else row[x] = 73; // Stone floor
                     } else {
-                        row[x] = 4; // Bridge surface
+                        row[x] = 73; // Stone bridge surface
+                        // Add stone railings
+                        if (y === 25 || y === 29) {
+                            if (x % 2 === 0) row[x] = 68;
+                        }
                     }
                     continue;
                 }
@@ -66,7 +70,7 @@ MAP_DEFS.riverlands_crossing = {
                 // 4. THE GREAT CASCADE & RIVER
                 if (x >= 20 && x <= 60) {
                     if (y <= 3) {
-                        row[x] = 3; // Upper Reservoir (Deep Water - Impassable)
+                        row[x] = 3; // Upper Reservoir
                     } else if (y === 4) {
                         row[x] = 6; // THE PRECIPICE
                         if (x % 5 > 0) row[x] = 22; // Waterfall drop
@@ -74,13 +78,15 @@ MAP_DEFS.riverlands_crossing = {
                         // THE DROP
                         row[x] = (x % 5 > 0) ? 22 : 6; 
                     } else if (y >= 16 && y <= 20) {
-                        // THE BASIN
+                        // THE BASIN (Turbulent water + rocks)
                         row[x] = 22; 
-                        if (Math.random() < 0.15) row[x] = 6;
+                        if (Math.random() < 0.15) row[x] = 6; // rocks
                     } else if (x === 20 || x === 60) {
                         row[x] = 6; // Canyon rock banks
+                        if (Math.random() < 0.3) row[x] = 202; // Overgrown shrubs on banks
                     } else {
                         row[x] = 3; // Lower River
+                        if (x > 22 && x < 58 && Math.random() < 0.05) row[x] = 207; // Lilies
                     }
                     continue;
                 }
@@ -90,10 +96,11 @@ MAP_DEFS.riverlands_crossing = {
                     if (x === 19 || x === 61) row[x] = 2;
                 }
 
-                // 6. Scattered Rocks and Flowers (Southern half only)
+                // 6. Scattered Rocks and Overgrown Detail (Southern half)
                 if (row[x] === 1) {
-                   if (Math.random() < 0.05) row[x] = 11; // Flowers
-                   if (Math.random() < 0.02) row[x] = 6;  // Small boulders
+                   if (Math.random() < 0.08) row[x] = 205; // SVG Flower
+                   else if (Math.random() < 0.04) row[x] = 202; // SVG Shrub
+                   else if (Math.random() < 0.02) row[x] = 6;  // Small boulders
                 }
             }
             rows.push(row);
