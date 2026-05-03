@@ -234,15 +234,13 @@ const InventoryUI = (() => {
   let _category = 'consumable';
 
   function open() {
-    if (typeof MapUI !== 'undefined') {
-      const p = document.getElementById('map-pause-menu'); if (p) p.style.display = 'none';
-      const c = document.getElementById('camp-menu'); if (c) c.style.display = 'none';
-    }
+    if (typeof UI !== 'undefined') UI.hideAllOverlays();
     const el = document.getElementById('inventory-overlay');
     if (el) el.style.display = 'flex';
     
     _selectedItem = null;
     render();
+    if (typeof Focus !== 'undefined') Focus.setContext('inventory-overlay');
   }
 
   function close() {
@@ -250,8 +248,13 @@ const InventoryUI = (() => {
     if (el) el.style.display = 'none';
     if (typeof MapUI !== 'undefined' && typeof MapEngine !== 'undefined' && !MapEngine.isRunning()) {
       const isCamp = MapData.getTileAt(MapEngine.getMap(), MapPlayer.tx, MapPlayer.ty) === 74;
-      if (isCamp) document.getElementById('camp-menu').style.display = 'flex';
-      else document.getElementById('map-pause-menu').style.display = 'flex';
+      if (isCamp) {
+        document.getElementById('camp-menu').style.display = 'flex';
+        if (typeof Focus !== 'undefined') Focus.setContext('camp-menu');
+      } else {
+        document.getElementById('map-pause-menu').style.display = 'flex';
+        if (typeof Focus !== 'undefined') Focus.setContext('map-pause-menu');
+      }
     }
   }
 
@@ -339,6 +342,8 @@ const InventoryUI = (() => {
     const grid = document.getElementById('itm-target-grid');
     overlay.style.display = 'flex';
     grid.innerHTML = '';
+    
+    if (typeof Focus !== 'undefined') Focus.setContext('itm-target-picker');
 
     const isRevive = _selectedItem.subtype === 'revive';
 
@@ -362,6 +367,7 @@ const InventoryUI = (() => {
 
   function closeTargetPicker() {
     document.getElementById('itm-target-picker').style.display = 'none';
+    if (typeof Focus !== 'undefined') Focus.setContext('inventory-overlay');
   }
 
   function useItem(targetIdx) {

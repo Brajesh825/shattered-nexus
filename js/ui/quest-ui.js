@@ -7,8 +7,7 @@ const QuestUI = (() => {
     const el = document.getElementById('quest-overlay');
     if (!el) return;
 
-    const pauseMenu = document.getElementById('map-pause-menu');
-    if (pauseMenu) pauseMenu.style.display = 'none';
+    if (typeof UI !== 'undefined') UI.hideAllOverlays();
 
     _renderList();
     el.style.display = 'flex';
@@ -20,10 +19,14 @@ const QuestUI = (() => {
     const el = document.getElementById('quest-overlay');
     if (el) el.style.display = 'none';
 
-    const pauseMenu = document.getElementById('map-pause-menu');
-    if (pauseMenu) pauseMenu.style.display = 'flex';
-
-    if (typeof Focus !== 'undefined') Focus.setContext('map-pause-menu');
+    // Intelligent restore: only show pause menu if we are actually paused/in a menu context
+    if (typeof MapEngine !== 'undefined' && !MapEngine.isRunning()) {
+      const pauseMenu = document.getElementById('map-pause-menu');
+      if (pauseMenu) pauseMenu.style.display = 'flex';
+      if (typeof Focus !== 'undefined') Focus.setContext('map-pause-menu');
+    } else {
+      if (typeof Focus !== 'undefined') Focus.setContext(null);
+    }
   }
 
   function _rewardLabel(rewards) {
