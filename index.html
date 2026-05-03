@@ -555,11 +555,8 @@
           <div class="pause-panel">
             <div class="pause-title">⚔ PARTY STATUS</div>
             <div class="pause-party" id="pause-party-cards"></div>
-            <div class="pause-inventory" id="pause-inventory-section">
-              <div class="pause-section-label">INVENTORY</div>
-              <div class="pause-inv-grid" id="pause-inv-grid"></div>
-            </div>
             <div class="pause-actions">
+              <button class="pause-btn" onclick="InventoryUI.open()">🎒 ITEMS</button>
               <button class="pause-btn" onclick="ArchiveUI.open()">📖 BESTIARY</button>
               <button class="pause-btn save-btn" onclick="MapUI.pauseSave()">💾 SAVE</button>
               <button class="pause-btn" onclick="MapUI.closePauseMenu()">▶ RESUME</button>
@@ -588,6 +585,23 @@
           </div>
         </div>
 
+        <!-- Inventory Overlay -->
+        <div id="inventory-overlay" class="bestiary-overlay" style="display:none">
+          <div class="bestiary-bg" onclick="InventoryUI.close()"></div>
+          <div class="bestiary-panel">
+            <div class="bestiary-header">
+              <div class="bestiary-title">INVENTORY</div>
+              <button class="bestiary-close" onclick="InventoryUI.close()">✕</button>
+            </div>
+            <div class="bestiary-body">
+              <div class="bestiary-sidebar" id="inventory-list"></div>
+              <div class="bestiary-detail" id="inventory-detail">
+                <div class="bestiary-empty-hint">Select an item to view details</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- Camp menu overlay (triggered when player returns to start tile) -->
         <div id="camp-menu" style="display:none">
           <div class="camp-panel">
@@ -596,6 +610,7 @@
             <div class="camp-actions">
               <button class="camp-btn camp-btn-worldmap" onclick="MapUI.campWorldMap()"><span>🗺</span>WORLD MAP</button>
               <button class="camp-btn" onclick="MapUI.campChangeParty()"><span>👥</span>CHANGE PARTY</button>
+              <button class="camp-btn" onclick="InventoryUI.open()"><span>🎒</span>ITEMS</button>
               <button class="camp-btn" onclick="MapUI.campHeal()"><span>💊</span>HEAL PARTY</button>
               <button class="camp-btn" onclick="MapUI.campRelics()"><span>✦</span>RELICS</button>
               <button class="camp-btn camp-btn-minor" onclick="MapUI.closeCampMenu()">▶ CONTINUE</button>
