@@ -458,70 +458,159 @@ function showScreen(id) {
   }
 }
 
-function renderPartyMenu() {
-  const cards = document.getElementById('pm-cards');
-  if (!cards) return;
-  cards.innerHTML = '';
-  G.party.forEach((m, i) => {
+/* ============================================================
+   PARTY MENU — Paginated single-character viewer
+   ============================================================ */
+const PartyMenu = (() => {
+  let _idx = 0;
+  let _fromPause = false;
+
+  const CHAR_COLOR = {
+    aya:'#7dd3fc', tao:'#ef4444', lulu:'#2dd4bf', rei:'#4ade80',
+    rydia:'#a78bfa', lenneth:'#e879f9', kain:'#0ea5e9', leon:'#fbbf24',
+    drake:'#fb923c', rex:'#94a3b8'
+  };
+
+  function open() {
+    // Hide the system/pause menu behind us
+    const pauseEl = document.getElementById('map-pause-menu');
+    if (pauseEl) pauseEl.style.display = 'none';
+    // Also hide camp menu in case it was open
+    const campEl = document.getElementById('camp-menu');
+    if (campEl) campEl.style.display = 'none';
+    _fromPause = !!(pauseEl && pauseEl.style.display === 'none');
+
+    _idx = 0;
+    const overlay = document.getElementById('party-menu');
+    if (overlay) overlay.style.display = 'flex';
+    _renderCurrent();
+  }
+
+  function close() {
+    const overlay = document.getElementById('party-menu');
+    if (overlay) overlay.style.display = 'none';
+    // Resume map if running
+    if (typeof MapEngine !== 'undefined' && typeof MapUI !== 'undefined') {
+      if (!MapEngine.isRunning()) MapEngine.resume();
+      if (typeof MapUI._toggleDpad === 'function') MapUI._toggleDpad(true);
+    }
+  }
+
+  function back() {
+    const overlay = document.getElementById('party-menu');
+    if (overlay) overlay.style.display = 'none';
+    // Re-open the system menu
+    const pauseEl = document.getElementById('map-pause-menu');
+    if (pauseEl) pauseEl.style.display = 'flex';
+  }
+
+  function next() {
+    if (!G.party.length) return;
+    _idx = (_idx + 1) % G.party.length;
+    _renderCurrent();
+  }
+
+  function prev() {
+    if (!G.party.length) return;
+    _idx = (_idx - 1 + G.party.length) % G.party.length;
+    _renderCurrent();
+  }
+
+  function _renderCurrent() {
+    const viewer = document.getElementById('pm-viewer');
+    const navLabel = document.getElementById('pm-nav-label');
+    if (!viewer || !G.party.length) return;
+
+    const m = G.party[_idx];
+    if (!m) return;
+
     const col = CHAR_COLOR[m.charId] || '#c0b8e8';
     const hpPct = Math.max(0, m.hp / m.maxHp * 100);
     const mpPct = Math.max(0, m.mp / m.maxMp * 100);
-    const hpCol = hpPct > 50 ? 'var(--hp-hi)' : hpPct > 25 ? 'var(--hp-mid)' : 'var(--hp-lo)';
-    const card = document.createElement('div');
-    card.className = 'pm-card';
-    card.style.borderColor = col + '80';
+    const hpCol = hpPct > 50 ? '#4ade80' : hpPct > 25 ? '#eab308' : '#ef4444';
+    const expNext = typeof getExpThreshold === 'function' ? getExpThreshold(m.lv) : (5 * m.lv * m.lv + 25 * m.lv);
 
-    const img = document.createElement('div');
-    img.className = 'pm-portrait';
-    if (typeof SpriteRenderer !== 'undefined') SpriteRenderer.setFrame(img, m.charId, 'idle', 140);
+    // Nav label
+    if (navLabel) {
+      navLabel.textContent = `${m.displayName}  ·  ${_idx + 1} / ${G.party.length}`;
+    }
 
-    const abHtml = (m.abilities || []).map(a =>
-      `<div class="pm-ab" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'block' : 'none'" style="cursor: pointer;">
+    // Build ability rows
+    const abRows = (m.abilities || []).map(a => {
+      const aCol = col;
+      return `<div class="pm-ab" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
         <span class="pm-ab-icon">${a.icon || '⚡'}</span>
         <span class="pm-ab-name">${a.name}</span>
-        <span class="pm-ab-mp">${a.mp}MP</span>
+        <span class="pm-ab-cost">${a.type ? '<span class="pm-ab-type">' + a.type + '</span>' : ''} ${a.mp}MP</span>
+        <span class="pm-ab-toggle">▾</span>
       </div>
-      <div class="pm-ab-desc" style="display:none; padding: 8px 12px; font-size: 13px; color: var(--text-dim); background: rgba(0,0,0,0.2); border-left: 2px solid ${col}; margin-bottom: 6px; line-height: 1.4;">
+      <div class="pm-ab-desc" style="display:none; padding:8px 12px; font-size:13px; color:var(--text-dim); background:rgba(0,0,0,0.25); border-left:3px solid ${aCol}; margin-bottom:4px; line-height:1.5;">
         ${a.description || 'No description available.'}
-      </div>`
-    ).join('');
+      </div>`;
+    }).join('');
 
-    card.innerHTML = `
-      <div class="pm-card-top" style="border-bottom-color:${col}40">
-        <div class="pm-portrait-wrap"></div>
-        <div class="pm-card-head">
-          <div class="pm-card-name" style="color:${col}">${m.displayName}</div>
-          <div class="pm-card-class">${m.cls.name} ${m.isKO ? '<span class="pm-ko-badge">KO</span>' : ''}</div>
-          <div class="pm-card-lv">LEVEL <span style="color:${col}">${m.lv}</span>
-            · EXP <span style="color:var(--gold)">${m.exp}</span>/<span style="color:var(--text-dim)">${getExpThreshold(m.lv)}</span></div>
+    viewer.innerHTML = `
+      <div class="pm-viewer-inner">
+        <!-- Portrait -->
+        <div class="pm-portrait-section" style="border-color:${col}40">
+          <div class="pm-portrait" id="pm-portrait-el" style="height:160px;"></div>
+          <div class="pm-id-block">
+            <div class="pm-card-name" style="color:${col}">${m.displayName} ${m.isKO ? '<span class="pm-ko-badge">KO</span>' : ''}</div>
+            <div class="pm-card-class">${m.cls?.name || ''}</div>
+            <div class="pm-card-lv">LV <span style="color:${col}">${m.lv}</span> &middot; EXP <span style="color:var(--gold)">${m.exp}</span>/<span style="color:var(--text-dim)">${expNext}</span></div>
+          </div>
         </div>
-      </div>
-      <div class="pm-bars">
-        <div class="pm-bar-row">HP
-          <div class="pm-bar-bg"><div class="pm-bar-fill" style="width:${hpPct}%;background:${hpCol}"></div></div>
-          <span>${Math.max(0, m.hp)}/${m.maxHp}</span>
-        </div>
-        <div class="pm-bar-row">MP
-          <div class="pm-bar-bg"><div class="pm-bar-fill" style="width:${mpPct}%;background:#5060ff"></div></div>
-          <span>${m.mp}/${m.maxMp}</span>
-        </div>
-      </div>
-      <div class="pm-stats">
-        <div class="pm-stat"><span>ATK</span><span style="color:var(--gold)">${m.atk}</span></div>
-        <div class="pm-stat"><span>DEF</span><span style="color:var(--gold)">${m.def}</span></div>
-        <div class="pm-stat"><span>MAG</span><span style="color:var(--gold)">${m.mag}</span></div>
-        <div class="pm-stat"><span>SPD</span><span style="color:var(--gold)">${m.spd}</span></div>
-      </div>
-      <div class="pm-passive">
-        <span class="pm-passive-tag">★ ${m.passive?.name || 'Passive'}</span>
-        <span class="pm-passive-desc">${m.passive?.description || ''}</span>
-      </div>
-      <div class="pm-abilities">${abHtml}</div>`;
 
-    card.querySelector('.pm-portrait-wrap').appendChild(img);
-    cards.appendChild(card);
-  });
-}
+        <!-- HP/MP bars -->
+        <div class="pm-bars">
+          <div class="pm-bar-row">HP
+            <div class="pm-bar-bg"><div class="pm-bar-fill" style="width:${hpPct}%;background:${hpCol}"></div></div>
+            <span>${Math.max(0, m.hp)}/${m.maxHp}</span>
+          </div>
+          <div class="pm-bar-row">MP
+            <div class="pm-bar-bg"><div class="pm-bar-fill" style="width:${mpPct}%;background:#5060ff"></div></div>
+            <span>${m.mp}/${m.maxMp}</span>
+          </div>
+        </div>
+
+        <!-- Stat grid -->
+        <div class="pm-stats">
+          <div class="pm-stat"><span>ATK</span><span style="color:var(--gold)">${m.atk}</span></div>
+          <div class="pm-stat"><span>DEF</span><span style="color:var(--gold)">${m.def}</span></div>
+          <div class="pm-stat"><span>MAG</span><span style="color:var(--gold)">${m.mag}</span></div>
+          <div class="pm-stat"><span>SPD</span><span style="color:var(--gold)">${m.spd}</span></div>
+        </div>
+
+        <!-- Passive -->
+        <div class="pm-passive">
+          <span class="pm-passive-tag">★ ${m.passive?.name || 'Passive'}</span>
+          <span class="pm-passive-desc">${m.passive?.description || ''}</span>
+        </div>
+
+        <!-- Abilities -->
+        <div class="pm-section-label">ABILITIES</div>
+        <div class="pm-abilities">${abRows || '<div style="color:var(--text-dim);font-size:14px;">No abilities.</div>'}</div>
+      </div>
+    `;
+
+    // Render sprite into the portrait slot
+    const portraitEl = document.getElementById('pm-portrait-el');
+    if (portraitEl && typeof SpriteRenderer !== 'undefined') {
+      SpriteRenderer.setFrame(portraitEl, m.charId, 'idle', 160);
+    }
+  }
+
+  // Legacy shims
+  function renderCurrent() { _renderCurrent(); }
+
+  return { open, close, back, next, prev, renderCurrent };
+})();
+
+// Legacy shims for any code still calling the old functions
+function openPartyMenu() { PartyMenu.open(); }
+function closePartyMenu() { PartyMenu.close(); }
+function renderPartyMenu() { PartyMenu.renderCurrent(); }
+
 function buildEnemyGroup(defs, spawnLevel = 1, isBoss = false) {
   G.enemyGroup = defs.slice(0, 4).map(def => {
     const entry = EnemyScaling.buildEnemyEntry(def, spawnLevel, isBoss, defs.length, NexusScaling);

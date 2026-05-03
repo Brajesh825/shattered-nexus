@@ -473,10 +473,16 @@
        ═══════════════════════════════════════ -->
     <div id="party-menu" style="display:none">
       <div class="pm-header">
+        <button class="pm-arrow-btn" onclick="PartyMenu.back()">◄ BACK</button>
         <span class="pm-title">⚔ PARTY STATUS ⚔</span>
-        <button class="pm-close-btn" onclick="closePartyMenu()">✕ CLOSE</button>
+        <button class="pm-close-btn" onclick="PartyMenu.close()">✕</button>
       </div>
-      <div class="pm-cards" id="pm-cards"></div>
+      <div class="pm-nav-row">
+        <button class="pm-arrow-btn" id="pm-prev" onclick="PartyMenu.prev()">◄ PREV</button>
+        <span id="pm-nav-label"></span>
+        <button class="pm-arrow-btn" id="pm-next" onclick="PartyMenu.next()">NEXT ►</button>
+      </div>
+      <div id="pm-viewer" class="pm-viewer"></div>
     </div>
 
     <!-- ═══════════════════════════════════════
@@ -555,7 +561,7 @@
           <div class="pause-panel" style="max-width: 300px; padding: 24px; align-self: center;">
             <div class="pause-title" style="text-align: center; margin-bottom: 24px;">⛺ SYSTEM MENU</div>
             <div class="pause-actions" style="display: flex; flex-direction: column; gap: 12px; max-width: none; margin: 0;">
-              <button class="pause-btn" onclick="openPartyMenu()" style="width: 100%; justify-content: center;">👥 PARTY</button>
+              <button class="pause-btn" onclick="PartyMenu.open()" style="width: 100%; justify-content: center;">👥 PARTY</button>
               <button class="pause-btn" onclick="InventoryUI.open()" style="width: 100%; justify-content: center;">🎒 ITEMS</button>
               <button class="pause-btn" onclick="ArchiveUI.open()" style="width: 100%; justify-content: center;">📖 BESTIARY</button>
               <button class="pause-btn save-btn" onclick="MapUI.pauseSave()" style="width: 100%; justify-content: center;">💾 SAVE</button>
