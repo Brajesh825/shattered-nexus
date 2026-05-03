@@ -26,6 +26,7 @@
   <link rel="stylesheet" href="css/end-screens.css">
   <link rel="stylesheet" href="css/map.css">
   <link rel="stylesheet" href="css/combat.css">
+  <link rel="stylesheet" href="css/party-menu.css">
   <link rel="icon"
     href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚔️</text></svg>">
   <script>
@@ -472,17 +473,32 @@
        PARTY MENU OVERLAY
        ═══════════════════════════════════════ -->
     <div id="party-menu" style="display:none">
-      <div class="pm-header">
-        <span class="pm-title">⚔ PARTY STATUS ⚔</span>
-        <button class="pm-close-btn" onclick="PartyMenu.close()">✕</button>
+      <div class="pms-header">
+        <span class="pms-title">⚔ PARTY STATUS ⚔</span>
+        <button class="pms-close" onclick="PartyMenu.close()">✕</button>
       </div>
-      <div class="pm-nav-row">
-        <button class="pm-arrow-btn" id="pm-prev" onclick="PartyMenu.prev()">❮</button>
-        <span id="pm-nav-label"></span>
-        <button class="pm-arrow-btn" id="pm-next" onclick="PartyMenu.next()">❯</button>
+      <div class="pms-nav">
+        <button class="pms-arrow" id="pm-prev" onclick="PartyMenu.prev()">❮</button>
+        <span class="pms-nav-label" id="pm-nav-label"></span>
+        <button class="pms-arrow" id="pm-next" onclick="PartyMenu.next()">❯</button>
       </div>
-      <div id="pm-viewer" class="pm-viewer"></div>
+      <div class="pms-body">
+        <!-- Showcase: dedicated character stage with ethereal aura (supports future idle anim) -->
+        <div class="pms-showcase" id="pms-showcase">
+          <div class="pms-aura"></div>
+          <div class="pms-scanlines"></div>
+          <div class="pms-particles" id="pms-particles"></div>
+          <div class="pms-sprite-wrap">
+            <div id="pms-sprite"></div>
+          </div>
+          <div class="pms-floor"></div>
+          <div class="pms-char-badge" id="pms-char-badge"></div>
+        </div>
+        <!-- Info panel -->
+        <div class="pms-info" id="pms-info"></div>
+      </div>
     </div>
+
 
     <!-- ═══════════════════════════════════════
        GAME OVER SCREEN
