@@ -515,101 +515,121 @@ const PartyMenu = (() => {
   }
 
   function _renderCurrent() {
-    const viewer = document.getElementById('pm-viewer');
-    const navLabel = document.getElementById('pm-nav-label');
-    if (!viewer || !G.party.length) return;
+    const navLabel   = document.getElementById('pm-nav-label');
+    const showcase   = document.getElementById('pms-showcase');
+    const spriteEl   = document.getElementById('pms-sprite');
+    const badge      = document.getElementById('pms-char-badge');
+    const particles  = document.getElementById('pms-particles');
+    const infoPanel  = document.getElementById('pms-info');
+
+    if (!infoPanel || !G.party.length) return;
 
     const m = G.party[_idx];
     if (!m) return;
 
-    const col = CHAR_COLOR[m.charId] || '#c0b8e8';
-    const hpPct = Math.max(0, m.hp / m.maxHp * 100);
-    const mpPct = Math.max(0, m.mp / m.maxMp * 100);
-    const hpCol = hpPct > 50 ? '#4ade80' : hpPct > 25 ? '#eab308' : '#ef4444';
+    const col     = CHAR_COLOR[m.charId] || '#c0b8e8';
+    const hpPct   = Math.max(0, m.hp / m.maxHp * 100);
+    const mpPct   = Math.max(0, m.mp / m.maxMp * 100);
+    const hpCol   = hpPct > 50 ? '#4ade80' : hpPct > 25 ? '#eab308' : '#ef4444';
     const expNext = typeof getExpThreshold === 'function' ? getExpThreshold(m.lv) : (5 * m.lv * m.lv + 25 * m.lv);
+    const expPct  = Math.min(100, (m.exp / expNext) * 100);
 
-    // Nav label
-    if (navLabel) {
-      navLabel.textContent = `${m.displayName}  ·  ${_idx + 1} / ${G.party.length}`;
+    // ── Nav label ──────────────────────────────────────────
+    if (navLabel) navLabel.textContent = `${m.displayName}  ·  ${_idx + 1} / ${G.party.length}`;
+
+    // ── Showcase: character colour theming ─────────────────
+    if (showcase) {
+      showcase.style.setProperty('--char-col', col);
     }
 
-    // Ability rows — compact single-line; tap toggles description
+    // ── Badge ──────────────────────────────────────────────
+    if (badge) {
+      badge.textContent = m.displayName;
+      badge.style.color = col;
+    }
+
+    // ── Particles: respawn on character switch ─────────────
+    if (particles) {
+      particles.innerHTML = '';
+      [20, 35, 52, 68, 82].forEach((left, i) => {
+        const p = document.createElement('span');
+        p.className = 'pms-ptcl';
+        p.style.cssText = `left:${left}%;animation-delay:${i * 0.7}s;animation-duration:${2.5 + i * 0.4}s;background:${col};`;
+        particles.appendChild(p);
+      });
+    }
+
+    // ── Sprite ─────────────────────────────────────────────
+    if (spriteEl && typeof SpriteRenderer !== 'undefined') {
+      // Detect sprite height based on viewport
+      const isLandscapeSmall = window.innerHeight < 520 && window.innerWidth > window.innerHeight;
+      const isTablet = window.innerWidth >= 768;
+      const h = isLandscapeSmall ? 110 : isTablet ? 240 : 160;
+      SpriteRenderer.setFrame(spriteEl, m.charId, 'idle', h);
+    }
+
+    // ── Info panel ─────────────────────────────────────────
     const abRows = (m.abilities || []).map(a =>
-      `<div class="pm-ab" onclick="this.nextElementSibling.classList.toggle('pm-ab-open')">
-        <span class="pm-ab-icon">${a.icon || '⚡'}</span>
-        <span class="pm-ab-name">${a.name}</span>
-        <span class="pm-ab-mp">${a.mp}MP</span>
-        <span class="pm-ab-toggle">▾</span>
+      `<div class="pms-ability" onclick="this.classList.toggle('pms-ab-open');this.nextElementSibling.style.display=this.classList.contains('pms-ab-open')?'block':'none'">
+        <span class="pms-ab-icon">${a.icon || '⚡'}</span>
+        <span class="pms-ab-name">${a.name}</span>
+        <span class="pms-ab-mp">${a.mp}MP</span>
+        <span class="pms-ab-toggle">▾</span>
       </div>
-      <div class="pm-ab-drawer">
-        ${a.description || 'No description available.'}
-      </div>`
+      <div class="pms-ab-desc" style="display:none">${a.description || 'No description.'}</div>`
     ).join('');
 
-    // 2-col layout: portrait LEFT, everything else RIGHT — inline styles = cache-proof
-    viewer.style.cssText = 'display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden;';
-    viewer.innerHTML = `
-      <div style="display:flex;flex-direction:row;flex:1;min-height:0;overflow:hidden;height:100%;">
-
-        <!-- LEFT: Portrait column -->
-        <div style="width:130px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border-right:1px solid rgba(96,80,184,0.3);background:rgba(0,0,0,0.25);padding:6px 4px;">
-          <div class="pm-portrait" id="pm-portrait-el"></div>
-        </div>
-
-        <!-- RIGHT: All character info — scrollable only if truly needed -->
-        <div style="flex:1;display:flex;flex-direction:column;gap:5px;padding:10px 14px;overflow-y:auto;min-height:0;">
-
-          <!-- Name / class / level header -->
-          <div style="border-bottom:1px solid ${col}40;padding-bottom:8px;flex-shrink:0;">
-            <div class="pm-card-name" style="color:${col};font-size:1.1rem;">${m.displayName}${m.isKO ? ' <span class="pm-ko-badge">KO</span>' : ''}</div>
-            <div class="pm-card-class" style="font-size:0.85rem;">${m.cls?.name || ''} &middot; LV <span style="color:${col}">${m.lv}</span></div>
-            <div style="font-size:0.78rem;color:var(--text-dim);">EXP <span style="color:var(--gold)">${m.exp}</span>/<span>${expNext}</span></div>
-          </div>
-
-          <!-- HP / MP bars -->
-          <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0;">
-            <div class="pm-bar-row" style="font-size:0.82rem;">HP
-              <div class="pm-bar-bg"><div class="pm-bar-fill" style="width:${hpPct}%;background:${hpCol}"></div></div>
-              <span style="min-width:70px;text-align:right">${Math.max(0,m.hp)}/${m.maxHp}</span>
-            </div>
-            <div class="pm-bar-row" style="font-size:0.82rem;">MP
-              <div class="pm-bar-bg"><div class="pm-bar-fill" style="width:${mpPct}%;background:#5060ff"></div></div>
-              <span style="min-width:70px;text-align:right">${m.mp}/${m.maxMp}</span>
-            </div>
-          </div>
-
-          <!-- Stats grid -->
-          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;flex-shrink:0;">
-            <div class="pm-stat" style="font-size:0.8rem;padding:4px 2px;"><span>ATK</span><span style="color:var(--gold)">${m.atk}</span></div>
-            <div class="pm-stat" style="font-size:0.8rem;padding:4px 2px;"><span>DEF</span><span style="color:var(--gold)">${m.def}</span></div>
-            <div class="pm-stat" style="font-size:0.8rem;padding:4px 2px;"><span>MAG</span><span style="color:var(--gold)">${m.mag}</span></div>
-            <div class="pm-stat" style="font-size:0.8rem;padding:4px 2px;"><span>SPD</span><span style="color:var(--gold)">${m.spd}</span></div>
-          </div>
-
-          <!-- Passive (compact 1-liner) -->
-          ${m.passive ? `<div style="font-size:0.78rem;padding:4px 8px;background:rgba(0,0,0,0.22);border-left:2px solid ${col};border-radius:2px;line-height:1.3;flex-shrink:0;">
-            <span style="color:var(--gold)">★ ${m.passive.name}:</span>
-            <span style="color:var(--text-dim)">${m.passive.description}</span>
-          </div>` : ''}
-
-          <!-- Abilities -->
-          <div style="font-family:var(--px);font-size:0.62rem;color:var(--text-dim);letter-spacing:2px;padding-bottom:3px;border-bottom:1px solid rgba(96,80,184,0.25);flex-shrink:0;">ABILITIES</div>
-          <div style="display:flex;flex-direction:column;flex:1;overflow:hidden;">${abRows || '<div style="color:var(--text-dim);font-size:13px">No abilities.</div>'}</div>
-
-        </div>
+    infoPanel.innerHTML = `
+      <!-- Identity -->
+      <div class="pms-id">
+        <span class="pms-fullname" style="color:${col}">${m.displayName}${m.isKO ? ' <span class="pm-ko-badge">KO</span>' : ''}</span>
+        <span class="pms-lv-badge" style="border-color:${col}60">LV ${m.lv}</span>
       </div>
-    `;
+      <div class="pms-class">${m.cls?.name || ''}</div>
 
-    // Render the sprite — use available column height
-    const portraitEl = document.getElementById('pm-portrait-el');
-    if (portraitEl && typeof SpriteRenderer !== 'undefined') {
-      SpriteRenderer.setFrame(portraitEl, m.charId, 'idle', 130);
-    }
+      <!-- EXP bar -->
+      <div class="pms-exp-row">
+        <span class="pms-exp-label">EXP</span>
+        <div class="pms-exp-bg"><div class="pms-exp-fill" style="width:${expPct}%;background:${col}"></div></div>
+        <span class="pms-exp-val">${m.exp}/${expNext}</span>
+      </div>
+
+      <div class="pms-divider"></div>
+
+      <!-- HP / MP -->
+      <div class="pms-bar-row">
+        <span class="pms-bar-label">HP</span>
+        <div class="pms-bar-bg"><div class="pms-bar-fill" style="width:${hpPct}%;background:${hpCol}"></div></div>
+        <span class="pms-bar-val">${Math.max(0,m.hp)}/${m.maxHp}</span>
+      </div>
+      <div class="pms-bar-row">
+        <span class="pms-bar-label">MP</span>
+        <div class="pms-bar-bg"><div class="pms-bar-fill" style="width:${mpPct}%;background:#5060ff"></div></div>
+        <span class="pms-bar-val">${m.mp}/${m.maxMp}</span>
+      </div>
+
+      <div class="pms-divider"></div>
+
+      <!-- Stats -->
+      <div class="pms-stats">
+        <div class="pms-stat"><div class="pms-stat-label">ATK</div><div class="pms-stat-val">${m.atk}</div></div>
+        <div class="pms-stat"><div class="pms-stat-label">DEF</div><div class="pms-stat-val">${m.def}</div></div>
+        <div class="pms-stat"><div class="pms-stat-label">MAG</div><div class="pms-stat-val">${m.mag}</div></div>
+        <div class="pms-stat"><div class="pms-stat-label">SPD</div><div class="pms-stat-val">${m.spd}</div></div>
+      </div>
+
+      ${m.passive ? `
+      <div class="pms-passive" style="border-left-color:${col}80">
+        <span style="color:var(--gold)">★ ${m.passive.name}:</span>
+        <span style="color:var(--text-dim)"> ${m.passive.description}</span>
+      </div>` : ''}
+
+      <div class="pms-section-title">ABILITIES</div>
+      <div class="pms-abilities">${abRows || '<div style="color:var(--text-dim);font-size:0.82rem">No abilities.</div>'}</div>
+    `;
   }
 
-  // Legacy shims
   function renderCurrent() { _renderCurrent(); }
-
   return { open, close, back, next, prev, renderCurrent };
 })();
 
