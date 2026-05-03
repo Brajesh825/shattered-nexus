@@ -147,6 +147,10 @@ MapEngine.onEncounterStart = (enc, map) => {
     });
   }
 
+  if (typeof BGM !== 'undefined') {
+    BGM.playBattle(map, isBossEncounter);
+  }
+
   _initBattle();
 
   // ── Apply zone + mutation atmosphere to the battle scene ────
