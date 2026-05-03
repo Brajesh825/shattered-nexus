@@ -13,12 +13,16 @@
  *   data/move-animations.json — per-ability animation timing config
  */
 
-/** Required fields every enemy definition must have. */
-const ENEMY_REQUIRED_FIELDS = ['id', 'name', 'hp', 'atk', 'def'];
+/** Required top-level fields every enemy definition must have. */
+const ENEMY_REQUIRED_FIELDS = ['id', 'name'];
+
+/** Required fields inside each enemy's nested stats object. */
+const ENEMY_STATS_FIELDS = ['hp', 'atk', 'def'];
 
 /**
  * Validates a loaded enemy array and console.errors any entry missing required fields.
  * Runs at startup so JSON typos surface immediately, not mid-battle.
+ * Enemies use a nested stats object: { stats: { hp, atk, def, ... } }
  * @param {Array} enemies
  */
 function validateEnemy(enemies) {
@@ -27,9 +31,16 @@ function validateEnemy(enemies) {
     return;
   }
   enemies.forEach((e, i) => {
+    // Check top-level required fields
     ENEMY_REQUIRED_FIELDS.forEach(field => {
       if (e[field] == null) {
         console.error(`[data-loader] enemies[${i}] (id="${e.id || '?'}") is missing required field: "${field}"`);
+      }
+    });
+    // Check nested stats object
+    ENEMY_STATS_FIELDS.forEach(field => {
+      if (!e.stats || e.stats[field] == null) {
+        console.error(`[data-loader] enemies[${i}] (id="${e.id || '?'}") is missing stats.${field}`);
       }
     });
   });
