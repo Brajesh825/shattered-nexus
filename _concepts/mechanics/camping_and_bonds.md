@@ -1,19 +1,17 @@
-# Concept: Campfires & Character Bonds
+# Concept: Character Bonds
 
 ## Overview
-Currently, HP/MP restoration outside of battle relies on items or returning to a major city heal point. The **Campfire System** introduces an interactive rest mechanic on the world map, combined with a narrative **Bond System** to flesh out character relationships.
+The Camp UI, heal-at-camp, and camp-only saving are already implemented. This concept covers the remaining layer: **Bond Events** — short character dialogue scenes that fire when resting.
 
 ## How It Works
-Players can interact with `Bonfire` (Tile ID 377) or `Campfire` tiles scattered in safe zones across the world.
+Occasionally when the player opens the Camp menu, a speech bubble appears over two characters. Clicking it triggers a Bond Event — a short unique dialogue between that pair (e.g., Sera and Drake on battle tactics; Lulu and Aya on elemental spirits).
 
-1. **Resting**: Clicking the fire restores 100% HP and MP for the entire party, but respawns all defeated non-boss enemies in the current region (acting as an exploration reset).
-2. **The Camp UI**: Resting opens a cozy Campfire UI overlay showing the current 4 active party members sitting around a fire.
-3. **Bond Events**: Occasionally, a speech bubble will appear over two characters' heads. Clicking it triggers a **Bond Event** — a short, unique dialogue scene between those specific characters (e.g., Sera and Drake discussing battle tactics; Lulu and Aya talking about elemental spirits).
-4. **Restricted Saving (Survival Layer)**: In order to heighten the tension of dungeon exploration, the standard "Save" option is disabled in the wild. Players can only record their progress by resting at a Campfire (Tile 74). This makes finding the next safe zone a critical priority during exploration.
+### Mechanical Reward
+Completing a Bond Event grants a permanent minor stat boost via `PassiveSystem`:
+- Example: Completing Sera + Drake's 3-part bond arc gives both `+2% DAMAGE_REDUCTION`.
 
-### Mechanical Rewards
-Completing a Bond Event grants a permanent, minor stat boost to the involved characters through the `PassiveSystem`. 
-- Example: Completing Sera and Drake's 3-part bond arc permanently gives them both a +2% `DAMAGE_REDUCTION` passive trait.
-
-## Implementation Complexity: HIGH
-- **Why**: While the full-heal and enemy respawn logic is easy (`G.party.forEach(heal)`, `MapEngine.respawnEnemies()`), the Camp UI requires a dedicated HTML/CSS overlay and sprite positioning logic. The Bond Events require a new data structure (`data/bonds.json`) to track conversation progress between character pairs (`Sera_Drake_1`, `Sera_Drake_2`, etc.) and ensure they only trigger once.
+### Implementation Notes
+- Needs `data/bonds.json` tracking conversation progress per character pair (`sera_drake_1`, etc.)
+- Each bond entry fires once; progress persists via save state
+- UI: speech bubble overlay on the existing camp panel, triggers `_openGenericDialogue` with bond lines
+- Stat reward: `PassiveSystem` already supports flat `DAMAGE_REDUCTION` traits — just inject on completion
