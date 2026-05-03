@@ -4,15 +4,10 @@
 **Scope**: Full playable experience through Arcs 1 & 2, including the first two Expansion Regions.
 
 
-### 🔷 Phase 3: Content & Balance
-- [x] **Boss Balancing**: Final tuning pass on Spectral Guardian, Sunken Leviathan, and River King.
-- [ ] **Gold Balance**: Tune enemy gold drops to ensure shops feel meaningful.
-
 ### 🔷 Phase 5: Release Readiness
 - [ ] **Walkthrough Update**: Finalize the step-by-step guide for Arc 1 and Arc 2.
 - [ ] **Beta Lock**: Set `MAX_REACHABLE_ARC: 1` in `release-config.js` for the public itch.io push.
 - [ ] **Deployment Script**: Finalize a script to minify/obfuscate core logic for the production build.
-- [x] **PWA Cache Fix**: Removed missing `lulu_sheet_1` sprite entries from `sw.js`; cache bumped to v7.0.
 - [ ] **Production Debug Gate**: Route `LogDebug`, story diagnostics, and verbose console output through `ReleaseConfig.IS_DEV` / `?debug=true`.
 - [ ] **Dev-Only Save Sync**: Wrap the `127.0.0.1:3000/sync` save backup bridge behind a development flag so production saves stay local-only.
 
@@ -59,6 +54,8 @@
 - [x] **Multi-Floor Navigation**: Dynamic World Map entry; selectable destinations for multi-floor dungeons; fixed Crystal Cavern floor-skipping bug.
 - [x] **Expansion Regions**: Southern Isles and Riverlands Crossing lore and map implementations completed.
 - [x] **SVG Asset Standard**: All environmental assets converted and preloaded as high-fidelity SVGs.
+- [x] **Content Balance**: Final tuning pass for all Arc 1 & 2 bosses completed.
+- [x] **PWA Stability**: Fixed service worker cache manifest and bumped cache version to v7.0.
 
 ### ⚙️ Technical Foundations (April 2026)
 - [x] **Combat Engine Audit**: Fixed `getStat('reduction')` bug and stabilized damage multipliers.
