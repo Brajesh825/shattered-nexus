@@ -11,3 +11,7 @@ _concepts/**/chibi/
 # OS
 .DS_Store
 Thumbs.db
+
+# Build & Dependencies
+dist/
+node_modules/
