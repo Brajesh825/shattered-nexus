@@ -14,20 +14,25 @@ MAP_DEFS.riverlands_crossing = {
     enemyLevelRange: [10, 18],
     encounterTemplates: [
         { weight: 4, enemies: ['bandit', 'bandit'] },
+        { weight: 3, enemies: ['merman', 'merman'] },
         { weight: 3, enemies: ['wisp'] },
         { weight: 2, enemies: ['bandit', 'wisp'] },
+        { weight: 2, enemies: ['merman', 'wisp'] },
         { weight: 2, enemies: ['harpy'] },
         { weight: 1, enemies: ['bandit', 'bandit', 'bandit'] },
         { weight: 1, enemies: ['wisp', 'wisp'] },
-        { weight: 1, enemies: ['harpy', 'bandit'] }
+        { weight: 1, enemies: ['harpy', 'bandit'] },
+        { weight: 1, enemies: ['merman', 'harpy'] }
     ],
     enemies: [
         // --- BRIDGE SENTINELS ---
-        { id: 'bandit', x: 10, y: 25,  patrol: 'horizontal', range: 4,  speed: 1.0 },
+        { id: 'bandit', x: 11, y: 25,  patrol: 'horizontal', range: 4,  speed: 1.0 },
         { id: 'bandit', x: 70, y: 29,  patrol: 'random',     range: 3,  speed: 1.1 },
         // --- WATERFALL PATROL ---
-        { id: 'wisp',   x: 40, y: 15,  patrol: 'vertical',   range: 8,  speed: 1.5 },
-        { id: 'wisp',   x: 60, y: 32,  patrol: 'horizontal', range: 10, speed: 1.6 },
+        { id: 'wisp',   x: 24, y: 26,  patrol: 'vertical',   range: 8,  speed: 1.5 },
+        { id: 'merman', x: 27, y: 28,  patrol: 'horizontal', range: 6,  speed: 1.2 },
+        // --- CANYON CLIFFS ---
+        { id: 'harpy',  x: 60, y: 25,  patrol: 'random',     range: 5,  speed: 1.4 },
         // --- MAP BOSS ---
         { id: 'river_king', x: 40, y: 27, patrol: 'stationary', isBoss: true, label: 'River King' }
     ],
@@ -55,15 +60,6 @@ MAP_DEFS.riverlands_crossing = {
             lines: [
                 { speaker: 'narrator', text: 'The deafening roar of the Great Cascade vibrates through the very bridge beneath your feet.' },
                 { speaker: 'Lulu', text: 'It\'s beautiful... but one slip and we\'re history.' }
-            ]
-        },
-        {
-            id: 'secret_grotto',
-            x: 40, y: 2, w: 1, h: 2,
-            type: 'dialogue',
-            lines: [
-                { speaker: 'narrator', text: 'You notice a faint path behind the crashing water...' },
-                { speaker: 'Rei', text: 'A hidden grotto. Classic.' }
             ]
         },
         {
