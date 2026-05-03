@@ -2252,29 +2252,53 @@ body {
   filter: brightness(1.4);
 }
 
-/* Portrait + identity block side by side */
-.pm-portrait-section {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  padding-bottom: 14px;
-  border-bottom: 1px solid var(--border);
+/* Portrait section — merged with col, no longer needed separately */
+.pm-portrait-section { display: none; }
+.pm-id-block { display: none; }
+
+/* Make pm-card invisible inside viewer */
+.pm-viewer .pm-card { all: unset; display: contents; }
+
+/* Compact bars in info col */
+.pm-info-col .pm-bars {
+  gap: 4px;
+  flex-shrink: 0;
 }
 
-.pm-id-block {
+.pm-info-col .pm-bar-row {
+  font-size: 0.82rem;
+}
+
+/* Compact stats grid */
+.pm-info-col .pm-stats {
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.pm-info-col .pm-stat {
+  padding: 4px 3px;
+  font-size: 0.82rem;
+}
+
+/* Section label compact */
+.pm-info-col .pm-section-label {
+  padding-bottom: 3px;
+  flex-shrink: 0;
+}
+
+/* Abilities list in info col */
+.pm-info-col .pm-abilities {
   flex: 1;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 6px;
 }
 
-.pm-section-label {
-  font-family: var(--px);
-  font-size: 0.7rem;
-  color: var(--text-dim);
-  letter-spacing: 3px;
-  padding-bottom: 6px;
-  border-bottom: 1px solid var(--border);
+.pm-info-col .pm-ab {
+  padding: 3px 8px;
+  min-height: 26px;
+  font-size: 0.82rem;
+  flex-shrink: 0;
 }
 
 .pm-title {
@@ -2303,23 +2327,83 @@ body {
   box-shadow: 0 0 8px #c084fc40;
 }
 
+/* ── Two-column split: portrait LEFT, info RIGHT — always ── */
 .pm-viewer {
   display: flex;
   flex-direction: column;
   flex: 1;
-  overflow-y: auto;
   min-height: 0;
+  overflow: hidden;
 }
 
 .pm-viewer-inner {
   display: flex;
-  flex-direction: column;
-  gap: 14px;
-  padding: 16px;
-  width: 100%;
-  max-width: 540px;
-  margin: 0 auto;
+  flex-direction: row;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
 }
+
+/* Portrait column — fixed width, centers the sprite */
+.pm-portrait-col {
+  width: 130px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid var(--border);
+  background: rgba(0,0,0,0.18);
+  padding: 8px 4px;
+}
+
+/* Info column — all the text, fits without scroll */
+.pm-info-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 14px;
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* Character header block */
+.pm-char-header {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-bottom: 7px;
+  flex-shrink: 0;
+}
+
+.pm-card-exp {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
+
+/* Passive — compact 1-liner with colored left bar */
+.pm-passive-line {
+  font-size: 0.8rem;
+  line-height: 1.3;
+  padding: 5px 8px;
+  background: rgba(0,0,0,0.22);
+  border-left: 2px solid var(--gold-dim);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* Ability drawer (hidden by default, shown on tap) */
+.pm-ab-drawer {
+  display: none;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  padding: 4px 10px 6px;
+  line-height: 1.4;
+  background: rgba(0,0,0,0.2);
+  border-left: 2px solid var(--border-hi);
+}
+
+.pm-ab-drawer.pm-ab-open { display: block; }
 
 .pm-card {
   background: linear-gradient(180deg, #06051e, #04031a);
