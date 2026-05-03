@@ -31,6 +31,7 @@ MAP_DEFS.riverlands_crossing = {
         // --- MAP BOSS ---
         { id: 'river_king', x: 40, y: 27, patrol: 'stationary', isBoss: true, label: 'River King' }
     ],
+    jsonFile: 'js/map/data/map-riverlands-crossing.json',
     npcs: [
         { id: 'merchant', x: 15, y: 25, dialogueKey: 'riverlands_crossing', behavior: 'stationary' },
         { id: 'old_guard', x: 2, y: 26, dialogueKey: 'riverlands_crossing', behavior: 'stationary' },
