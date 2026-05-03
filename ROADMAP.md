@@ -54,7 +54,7 @@
 - [x] **Data Integrity Audit**: Full scan of all JSON assets; resolved ID conflicts and parsing errors.
 - [x] **Party Menu Overhaul**: Premium, paginated character showcase with ethereal effects and responsive split-views.
 - [x] **Global UX Polish**: Pixel-art cursor, custom scrollbars, and stabilized navigation flows.
-- [x] **Enemy Validation**: Centralized schema check for nested stats to prevent runtime crashes.
+- [x] **Sprite System Optimization**: Removed 700+ lines of legacy procedural code; standardized all fallbacks to 'aya' (hero) and 'slime' (enemy).
 - [x] **Audio System**: Full BGM support with crossfading and placeholder audit completed for all maps.
 - [x] **Camp-Only Saving**: Save removed from pause menu; `💾 SAVE PROGRESS` lives exclusively in the Camp menu.
 - [x] **Echo Quest System**: Data-driven hunt/gather quests from `data/quests.json`; NPC `giveQuest` field; arc auto-unlock via `onArcAdvance`. *(Concept: `world_quests_and_rumors.md`)*
@@ -64,14 +64,16 @@
 ### 🌍 World & Map Foundations (May 2026)
 - [x] **Arc 1 (Verdant Vale)**: Narrative, enemies, and Void Knight boss finalized.
 - [x] **Arc 2 (Crystal Cavern)**: Full 3-floor suite (F1-F3) with Spectral Guardian boss.
+- [x] **Multi-Floor Navigation**: Dynamic World Map entry; selectable destinations for multi-floor dungeons; fixed Crystal Cavern floor-skipping bug.
 - [x] **Expansion Regions**: Southern Isles and Riverlands Crossing lore and map implementations completed.
 - [x] **SVG Asset Standard**: All environmental assets converted and preloaded as high-fidelity SVGs.
 
 ### ⚙️ Technical Foundations (April 2026)
 - [x] **Combat Engine Audit**: Fixed `getStat('reduction')` bug and stabilized damage multipliers.
+- [x] **Sera/Lyra Registration**: Standardized sprite-sheet configuration for new heroes to fix 'whole-sheet' rendering bug.
 - [x] **Mobile Controls**: Virtual joystick and X/Y button implementation.
 - [x] **Architect Pro**: Browser-based tile editor for high-fidelity map creation.
 - [x] **Story Refactor**: Extracted cutscene logic into `js/cutscene.js`.
 
 ---
-*Last Audited: 2026-05-03. Priority: Technical Debt Resolution.*
+*Last Audited: 2026-05-03 23:00. Status: Stable. Priority: Resonance Weapons System.*
