@@ -48,6 +48,10 @@
 - [x] **Global UX Polish**: Pixel-art cursor, custom scrollbars, and stabilized navigation flows.
 - [x] **Enemy Validation**: Centralized schema check for nested stats to prevent runtime crashes.
 - [x] **Audio System**: Full BGM support with crossfading and placeholder audit completed for all maps.
+- [x] **Camp-Only Saving**: Save removed from pause menu; `💾 SAVE PROGRESS` lives exclusively in the Camp menu.
+- [x] **Echo Quest System**: Data-driven hunt/gather quests from `data/quests.json`; NPC `giveQuest` field; arc auto-unlock via `onArcAdvance`. *(Concept: `world_quests_and_rumors.md`)*
+- [x] **World Corruption & Fog**: Time-based corruption accumulation in wild zones, visual void-purple decay, mutant encounter scaling. *(Concept: `corruption_and_infection.md`)*
+- [x] **Character Recruitment Reorder**: Valka → Arc 4 (Sunken Temple), Rex → Arc 5 (Shadow Reach), Drake → Arc 3.
 
 ### 🌍 World & Map Foundations (May 2026)
 - [x] **Arc 1 (Verdant Vale)**: Narrative, enemies, and Void Knight boss finalized.
@@ -62,4 +66,4 @@
 - [x] **Story Refactor**: Extracted cutscene logic into `js/cutscene.js`.
 
 ---
-*Last Audited: 2026-05-02. Priority: Technical Debt Resolution.*
+*Last Audited: 2026-05-03. Priority: Technical Debt Resolution.*

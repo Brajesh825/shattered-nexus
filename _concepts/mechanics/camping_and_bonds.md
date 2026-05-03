@@ -9,6 +9,7 @@ Players can interact with `Bonfire` (Tile ID 377) or `Campfire` tiles scattered 
 1. **Resting**: Clicking the fire restores 100% HP and MP for the entire party, but respawns all defeated non-boss enemies in the current region (acting as an exploration reset).
 2. **The Camp UI**: Resting opens a cozy Campfire UI overlay showing the current 4 active party members sitting around a fire.
 3. **Bond Events**: Occasionally, a speech bubble will appear over two characters' heads. Clicking it triggers a **Bond Event** — a short, unique dialogue scene between those specific characters (e.g., Sera and Drake discussing battle tactics; Lulu and Aya talking about elemental spirits).
+4. **Restricted Saving (Survival Layer)**: In order to heighten the tension of dungeon exploration, the standard "Save" option is disabled in the wild. Players can only record their progress by resting at a Campfire (Tile 74). This makes finding the next safe zone a critical priority during exploration.
 
 ### Mechanical Rewards
 Completing a Bond Event grants a permanent, minor stat boost to the involved characters through the `PassiveSystem`. 

@@ -13,6 +13,12 @@ Each rumor has a vague description rather than a glowing map marker. Players mus
 3. **The Encounter**: Triggers an ambush by a hidden Elite enemy (e.g., a massive spectral crab).
 4. **The Resolution**: Returning to the notice board marks the rumor as "Resolved."
 
+### Echo Quests (Direct Objectives)
+While Rumors are narrative puzzles, **Echoes** are direct mechanical tasks assigned by NPCs:
+1. **Hunt Echoes**: Kill X number of a specific enemy type (e.g., "Mercy for the Fallen" - Kill 5 Zombie Soldiers).
+2. **Gather Echoes**: Collect X amount of a specific material (e.g., "Names of the Vale" - Collect 3 Dog-tags).
+3. **Exploration Echoes**: Reach a specific coordinate and return.
+
 ### Rewards
 Instead of just EXP and Gold, World Quests are the primary method for unlocking:
 - **Unique Relics**: Powerful accessories that aren't sold in shops.

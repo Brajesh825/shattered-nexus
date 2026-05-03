@@ -343,10 +343,6 @@
       {
         "type": "recruit",
         "charId": "ria"
-      },
-      {
-        "type": "recruit",
-        "charId": "valka"
       }
     ],
     "character_moment": {
@@ -387,27 +383,7 @@
         },
         {
           "speaker": null,
-          "text": "Gold and silver light tears through the vault ceiling \u2014 a winged warrior descends, armor cracked but unyielding, wings cutting ash aside as she lands with the weight of judgment made physical."
-        },
-        {
-          "speaker": "Valka",
-          "emotion": "controlled_fury",
-          "text": "He was not strong enough to break me. Only to hold me. There is a difference."
-        },
-        {
-          "speaker": "Rei",
-          "emotion": "respectful",
-          "text": "You held for months under a binding designed to break resonance. I have guarded my own world for two thousand years. I recognize endurance when I see it."
-        },
-        {
-          "speaker": "Valka",
-          "emotion": "resolute",
-          "text": "They called me Valka, where I come from. A judge of souls. I do not remember what I was before that \u2014 only what I must do now. Valdris will be judged. When the time comes."
-        },
-        {
-          "speaker": "Lulu",
-          "emotion": "hopeful",
-          "text": "Four became six. And they are not broken. They are furious. Something tells me that matters."
+          "text": "The dust settles over the undercroft. Five now, where four had been. The vault's silence feels different \u2014 less like an ending, more like something drawing breath before it continues."
         }
       ]
     }

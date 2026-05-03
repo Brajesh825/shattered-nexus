@@ -108,6 +108,12 @@ const ItemSystem = {
 function addToInventory(itemId, qty = 1) {
   const def = G.items.find(i => i.id === itemId);
   if (!def) return false;
+  
+  // --- QUEST SYSTEM INTEGRATION ---
+  if (typeof QuestSystem !== 'undefined') {
+    for (let i = 0; i < qty; i++) QuestSystem.onGather(itemId);
+  }
+
   const existing = G.inventory.find(s => s.itemId === itemId);
   if (existing) {
     existing.qty = Math.min(MAX_STACK_QTY, existing.qty + qty);
