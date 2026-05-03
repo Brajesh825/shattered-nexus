@@ -195,14 +195,23 @@
   100% { transform: translateY(-90px) scale(0.4); opacity: 0; }
 }
 
-/* Sprite wrapper — sprite sits here; future idle animations go inside */
+/* Sprite wrapper — fills showcase vertically */
 .pms-sprite-wrap {
   position: relative;
   z-index: 2;
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  padding-bottom: 8px;
+  flex: 1;
+  width: 100%;
+  padding-bottom: 30px;
+}
+
+#pms-sprite {
+  width: 45%;
+  height: 70%;
+  image-rendering: pixelated;
+  transition: transform 0.3s ease;
 }
 
 /* Name badge below sprite */
@@ -442,51 +451,62 @@
 
 .pms-ability.pms-ab-open + .pms-ab-desc { display: block; }
 
-/* ═══════════════════════════════════════════════════════════
-   RESPONSIVE LAYOUTS
-   ═══════════════════════════════════════════════════════════ */
-
 /* ── DEFAULT: Mobile Portrait (≤ 500px wide) ─────────────── */
-/* Showcase = top strip, info = bottom scrollable */
 .pms-body {
   flex-direction: column;
 }
 
 .pms-showcase {
   width: 100%;
-  height: 200px;
+  height: 220px;
 }
 
-/* ── Tablet Portrait / Wider Mobile (≥ 500px wide) ──────── */
+/* ── Wider Mobile / Small Landscape (≥ 500px wide) ──────── */
 @media (min-width: 500px) {
   .pms-body { flex-direction: row; }
-  .pms-showcase {
-    width: 200px;
-    height: auto;
-  }
+  .pms-showcase { width: 220px; height: auto; }
 }
 
 /* ── Landscape short screens (iPhone SE/XR landscape) ────── */
 @media (max-height: 520px) and (orientation: landscape) {
   .pms-header { padding: 7px 14px; }
-  .pms-nav { padding: 4px 10px; }
-  .pms-body { flex-direction: row; }
-  .pms-showcase {
-    width: 140px;
-    height: auto;
-  }
-  .pms-info { gap: 5px; padding: 10px 14px; }
-  .pms-passive { display: none; } /* hide passive on tiny landscape to save space */
+  .pms-nav    { padding: 4px 10px; }
+  .pms-body   { flex-direction: row; }
+  .pms-showcase { width: 160px; height: auto; }
+  .pms-info   { gap: 5px; padding: 8px 12px; }
+  .pms-passive { display: none; }
 }
 
 /* ── Tablet landscape / small desktop (≥ 768px wide) ──────── */
 @media (min-width: 768px) {
-  .pms-body { flex-direction: row; }
-  .pms-showcase { width: 260px; height: auto; }
-  .pms-info { padding: 18px 22px; gap: 10px; }
+  .pms-body      { flex-direction: row; }
+  .pms-showcase  { width: 300px; height: auto; }
+  .pms-info      { padding: 20px 24px; gap: 11px; }
+
+  /* +20% font sizes for all info text */
+  .pms-title         { font-size: 0.86rem; }
+  .pms-nav-label     { font-size: 0.82rem; }
+  .pms-fullname      { font-size: 1.2rem; }
+  .pms-lv-badge      { font-size: 0.72rem; }
+  .pms-class         { font-size: 1.02rem; }
+  .pms-exp-label     { font-size: 0.84rem; width: 30px; }
+  .pms-exp-val       { font-size: 0.82rem; }
+  .pms-bar-label     { font-size: 0.86rem; width: 26px; }
+  .pms-bar-bg        { height: 10px; }
+  .pms-bar-val       { font-size: 0.84rem; min-width: 78px; }
+  .pms-stat-label    { font-size: 0.75rem; }
+  .pms-stat-val      { font-size: 1.2rem; }
+  .pms-stat          { padding: 6px 4px; }
+  .pms-passive       { font-size: 0.92rem; line-height: 1.5; padding: 8px 12px; }
+  .pms-section-title { font-size: 0.7rem; }
+  .pms-ability       { font-size: 0.98rem; padding: 7px 12px; }
+  .pms-ab-icon       { font-size: 1.15rem; }
+  .pms-ab-mp         { font-size: 0.84rem; }
+  .pms-ab-desc       { font-size: 0.9rem; }
+  .pms-char-badge    { font-size: 0.78rem; }
 }
 
 /* ── Large desktop (≥ 1100px wide) ──────────────────────── */
 @media (min-width: 1100px) {
-  .pms-showcase { width: 320px; }
+  .pms-showcase { width: 380px; }
 }
