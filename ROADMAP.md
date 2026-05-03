@@ -76,4 +76,4 @@
 - [x] **Story Refactor**: Extracted cutscene logic into `js/cutscene.js`.
 
 ---
-*Last Audited: 2026-05-03 23:00. Status: Stable. Priority: Resonance Weapons System.*
+*Last Audited: 2026-05-03 23:15. Status: Stable. Priority: Technical Debt & Release Blockers.*
