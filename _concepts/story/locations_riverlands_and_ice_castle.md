@@ -1,10 +1,10 @@
 # Concept: New Locations (Riverlands & The Ice Castle)
 
 ## 1. The Riverlands Crossing
-**Placement in Story**: Arc 1 to Arc 2 Transition (Between Verdant Vale and Southern Isles).
+**Placement in Story**: A standalone location available to visit after completing the Verdant Vale.
 
 ### The Setting
-The Riverlands Crossing takes place at the **Great Cascade**, a massive, deafening waterfall. To cross the chasm into the Southern Isles, the party must traverse the **Great Bridge**, a massive stone structure suspended directly in front of the roaring waters. The misty ledges are dangerous, and hidden grottos exist behind the crashing water for those brave enough to explore.
+The Riverlands Crossing takes place at the **Great Cascade**, a massive, deafening waterfall. The party can traverse the **Great Bridge**, a massive stone structure suspended directly in front of the roaring waters. The misty ledges are dangerous, and hidden grottos exist behind the crashing water for those brave enough to explore.
 
 ### The Guardian: The River King
 The bridge is guarded by the **River King**, an ancient water spirit that rests upon the bridge's keystone. 
