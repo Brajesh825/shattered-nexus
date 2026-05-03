@@ -37,6 +37,11 @@ MAP_DEFS.southern_isles = {
         { id: 'sunken_leviathan', x: 60, y: 4,  patrol: 'stationary', isBoss: true, label: 'Sunken Leviathan' }
     ],
     jsonFile: 'js/map/data/map-southern-isles.json',
+    
+    bgm: 'isles_explore',
+    battleBgm: 'isles_battle',
+    bossBgm: 'leviathan_theme',
+    
     npcs: [
         // ── PRIMARY STORY CONTACT ─────────────────────────────────
         { id: 'survivor',     x: 65, y: 65, dialogueKey: 'southern_isles',         behavior: 'stationary', name: 'Survivor' },

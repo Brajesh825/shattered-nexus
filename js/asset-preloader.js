@@ -30,7 +30,9 @@ const AssetPreloader = (() => {
     bgm: [
       'title', 'story', 'exploration', 'battle',
       'riverlands_explore', 'riverlands_battle', 'river_king_theme',
-      'vale_explore', 'vale_battle', 'void_knight_theme'
+      'vale_explore', 'vale_battle', 'void_knight_theme',
+      'cavern_explore', 'cavern_battle', 'spectral_guardian_theme',
+      'isles_explore', 'isles_battle', 'leviathan_theme'
     ],
     ui: [
       'world_map_bg'
