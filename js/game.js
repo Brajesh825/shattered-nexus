@@ -489,11 +489,9 @@ const PartyMenu = (() => {
   function close() {
     const overlay = document.getElementById('party-menu');
     if (overlay) overlay.style.display = 'none';
-    // Resume map if running
-    if (typeof MapEngine !== 'undefined' && typeof MapUI !== 'undefined') {
-      if (!MapEngine.isRunning()) MapEngine.resume();
-      if (typeof MapUI._toggleDpad === 'function') MapUI._toggleDpad(true);
-    }
+    // Always return to the System Menu so the player isn't stranded
+    const pauseEl = document.getElementById('map-pause-menu');
+    if (pauseEl) pauseEl.style.display = 'flex';
   }
 
   function back() {
