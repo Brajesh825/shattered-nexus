@@ -546,54 +546,55 @@ const PartyMenu = (() => {
       </div>`
     ).join('');
 
-    // 2-col layout: portrait LEFT, everything else RIGHT — no scroll needed
+    // 2-col layout: portrait LEFT, everything else RIGHT — inline styles = cache-proof
+    viewer.style.cssText = 'display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden;';
     viewer.innerHTML = `
-      <div class="pm-viewer-inner">
+      <div style="display:flex;flex-direction:row;flex:1;min-height:0;overflow:hidden;height:100%;">
 
         <!-- LEFT: Portrait column -->
-        <div class="pm-portrait-col">
+        <div style="width:130px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border-right:1px solid rgba(96,80,184,0.3);background:rgba(0,0,0,0.25);padding:6px 4px;">
           <div class="pm-portrait" id="pm-portrait-el"></div>
         </div>
 
-        <!-- RIGHT: All character info -->
-        <div class="pm-info-col">
+        <!-- RIGHT: All character info — scrollable only if truly needed -->
+        <div style="flex:1;display:flex;flex-direction:column;gap:5px;padding:10px 14px;overflow-y:auto;min-height:0;">
 
-          <!-- Header: name / class / level -->
-          <div class="pm-char-header" style="border-bottom:1px solid ${col}40;">
-            <div class="pm-card-name" style="color:${col}">${m.displayName}${m.isKO ? ' <span class="pm-ko-badge">KO</span>' : ''}</div>
-            <div class="pm-card-class">${m.cls?.name || ''} &middot; LV <span style="color:${col}">${m.lv}</span></div>
-            <div class="pm-card-exp">EXP <span style="color:var(--gold)">${m.exp}</span>/<span style="color:var(--text-dim)">${expNext}</span></div>
+          <!-- Name / class / level header -->
+          <div style="border-bottom:1px solid ${col}40;padding-bottom:8px;flex-shrink:0;">
+            <div class="pm-card-name" style="color:${col};font-size:1.1rem;">${m.displayName}${m.isKO ? ' <span class="pm-ko-badge">KO</span>' : ''}</div>
+            <div class="pm-card-class" style="font-size:0.85rem;">${m.cls?.name || ''} &middot; LV <span style="color:${col}">${m.lv}</span></div>
+            <div style="font-size:0.78rem;color:var(--text-dim);">EXP <span style="color:var(--gold)">${m.exp}</span>/<span>${expNext}</span></div>
           </div>
 
           <!-- HP / MP bars -->
-          <div class="pm-bars">
-            <div class="pm-bar-row">HP
+          <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0;">
+            <div class="pm-bar-row" style="font-size:0.82rem;">HP
               <div class="pm-bar-bg"><div class="pm-bar-fill" style="width:${hpPct}%;background:${hpCol}"></div></div>
-              <span>${Math.max(0,m.hp)}/${m.maxHp}</span>
+              <span style="min-width:70px;text-align:right">${Math.max(0,m.hp)}/${m.maxHp}</span>
             </div>
-            <div class="pm-bar-row">MP
+            <div class="pm-bar-row" style="font-size:0.82rem;">MP
               <div class="pm-bar-bg"><div class="pm-bar-fill" style="width:${mpPct}%;background:#5060ff"></div></div>
-              <span>${m.mp}/${m.maxMp}</span>
+              <span style="min-width:70px;text-align:right">${m.mp}/${m.maxMp}</span>
             </div>
           </div>
 
           <!-- Stats grid -->
-          <div class="pm-stats">
-            <div class="pm-stat"><span>ATK</span><span style="color:var(--gold)">${m.atk}</span></div>
-            <div class="pm-stat"><span>DEF</span><span style="color:var(--gold)">${m.def}</span></div>
-            <div class="pm-stat"><span>MAG</span><span style="color:var(--gold)">${m.mag}</span></div>
-            <div class="pm-stat"><span>SPD</span><span style="color:var(--gold)">${m.spd}</span></div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;flex-shrink:0;">
+            <div class="pm-stat" style="font-size:0.8rem;padding:4px 2px;"><span>ATK</span><span style="color:var(--gold)">${m.atk}</span></div>
+            <div class="pm-stat" style="font-size:0.8rem;padding:4px 2px;"><span>DEF</span><span style="color:var(--gold)">${m.def}</span></div>
+            <div class="pm-stat" style="font-size:0.8rem;padding:4px 2px;"><span>MAG</span><span style="color:var(--gold)">${m.mag}</span></div>
+            <div class="pm-stat" style="font-size:0.8rem;padding:4px 2px;"><span>SPD</span><span style="color:var(--gold)">${m.spd}</span></div>
           </div>
 
-          <!-- Passive skill (compact 1-liner) -->
-          ${m.passive ? `<div class="pm-passive-line" style="border-left-color:${col}">
+          <!-- Passive (compact 1-liner) -->
+          ${m.passive ? `<div style="font-size:0.78rem;padding:4px 8px;background:rgba(0,0,0,0.22);border-left:2px solid ${col};border-radius:2px;line-height:1.3;flex-shrink:0;">
             <span style="color:var(--gold)">★ ${m.passive.name}:</span>
-            <span class="pm-passive-desc">${m.passive.description}</span>
+            <span style="color:var(--text-dim)">${m.passive.description}</span>
           </div>` : ''}
 
           <!-- Abilities -->
-          <div class="pm-section-label">ABILITIES</div>
-          <div class="pm-abilities">${abRows || '<div style="color:var(--text-dim);font-size:13px">No abilities.</div>'}</div>
+          <div style="font-family:var(--px);font-size:0.62rem;color:var(--text-dim);letter-spacing:2px;padding-bottom:3px;border-bottom:1px solid rgba(96,80,184,0.25);flex-shrink:0;">ABILITIES</div>
+          <div style="display:flex;flex-direction:column;flex:1;overflow:hidden;">${abRows || '<div style="color:var(--text-dim);font-size:13px">No abilities.</div>'}</div>
 
         </div>
       </div>
