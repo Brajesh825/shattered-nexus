@@ -1941,6 +1941,50 @@ const TILE_RENDERS = (() => {
     ctx.beginPath(); ctx.moveTo(sx+tw-14, sy+th/2-5); ctx.lineTo(sx+tw-8, sy+th/2); ctx.lineTo(sx+tw-14, sy+th/2+5); ctx.stroke();
   }
 
+  function blueLily(ctx, def, sx, sy, tw, th, t) {
+    ctx.fillStyle = def.shadow;
+    ctx.fillRect(sx, sy, tw, th);
+    
+    const gx = (sx/tw)|0, gy = (sy/tw)|0;
+    const sway = Math.sin(t * 1.5 + gx * 0.4) * 2;
+    const fx = sx + tw/2 + sway;
+    const fy = sy + th/2;
+    
+    // Lilypad
+    ctx.fillStyle = '#1e5028';
+    ctx.beginPath(); ctx.arc(fx, fy+2, 6, 0.5, Math.PI*2 - 0.5); ctx.fill();
+    
+    // Glowing Blue Petals
+    ctx.fillStyle = 'rgba(79, 195, 247, 0.8)';
+    for(let a=0; a<4; a++) {
+      ctx.beginPath();
+      ctx.arc(fx + Math.cos(a*Math.PI/2)*3, fy + Math.sin(a*Math.PI/2)*3, 2.5, 0, Math.PI*2);
+      ctx.fill();
+    }
+    // Center glow
+    ctx.fillStyle = '#b3e5fc';
+    ctx.beginPath(); ctx.arc(fx, fy, 1.5, 0, Math.PI*2); ctx.fill();
+  }
+
+  function waterSplash(ctx, def, sx, sy, tw, th, t) {
+    ctx.fillStyle = def.shadow;
+    ctx.fillRect(sx, sy, tw, th);
+    
+    // Base turbulent water
+    const wave = Math.sin(t * 3 + sx * 0.1);
+    ctx.fillStyle = `rgba(160, 200, 255, ${0.4 + wave * 0.2})`;
+    ctx.beginPath(); ctx.arc(sx + tw/2, sy + th/2, tw/2 - 2, 0, Math.PI*2); ctx.fill();
+    
+    // Splashing droplets
+    for(let i=0; i<6; i++) {
+        const offset = (t * 40 + i * 15) % 10;
+        const dx = sx + tw/2 + Math.cos(i * Math.PI/3) * (4 + offset);
+        const dy = sy + th/2 + Math.sin(i * Math.PI/3) * (4 + offset) - offset;
+        ctx.fillStyle = `rgba(255, 255, 255, ${1 - offset/10})`;
+        ctx.beginPath(); ctx.arc(dx, dy, 1 + (i%2), 0, Math.PI*2); ctx.fill();
+    }
+  }
+
   /* ── Export ──────────────────────────────────────────────────── */
   return {
     'void':           void_,
@@ -1966,6 +2010,8 @@ const TILE_RENDERS = (() => {
     'ice':            ice,
     'shore':          riverBank,
     'waterfall':      waterfall,
+    'blue-lily':      blueLily,
+    'water-splash':   waterSplash,
     'river-bank':     riverBank,
     'mud':            mud,
     'gravel':         gravel,

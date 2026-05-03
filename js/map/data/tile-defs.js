@@ -25,6 +25,9 @@ const TILE_DEFS = {
   18: { name: 'shallow-water', walkable: true, color: '#4e86b0', hi: '#6e96c0', shadow: '#2e5680', anim: true },
   19: { name: 'frozen-snow', walkable: true, color: '#e0f7fa', hi: '#ffffff', shadow: '#b2ebf2', detail: 'frost' },
   22: { name: 'rapids', walkable: false, color: '#a0c0ff', hi: '#ffffff', shadow: '#70a0ff', anim: true },
+  23: { name: 'waterfall', walkable: false, color: '#1a4580', hi: '#ffffff', shadow: '#0f2d50', detail: 'waterfall', anim: true },
+  24: { name: 'blue-lily', walkable: true, color: '#2d5a1e', hi: '#3d7028', shadow: '#1d4012', detail: 'blue-lily', anim: true, glows: '#4fc3f780' },
+  25: { name: 'water-splash', walkable: false, color: '#1a4580', hi: '#ffffff', shadow: '#0f2d50', detail: 'water-splash', anim: true },
 
   // ── VEGETATION ────────────────────────────────────────────────
   33: { name: 'ash-field', walkable: true, color: '#302820', hi: '#403828', shadow: '#1a1410' },
