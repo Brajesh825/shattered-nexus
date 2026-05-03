@@ -579,9 +579,23 @@
             <div class="pause-actions" style="display: flex; flex-direction: column; gap: 12px; max-width: none; margin: 0;">
               <button class="pause-btn" onclick="PartyMenu.open()" style="width: 100%; justify-content: center;">👥 PARTY</button>
               <button class="pause-btn" onclick="InventoryUI.open()" style="width: 100%; justify-content: center;">🎒 ITEMS</button>
+              <button class="pause-btn" onclick="QuestUI.open()" style="width: 100%; justify-content: center;">📜 QUESTS</button>
               <button class="pause-btn" onclick="ArchiveUI.open()" style="width: 100%; justify-content: center;">📖 BESTIARY</button>
-              <button class="pause-btn save-btn" onclick="MapUI.pauseSave()" style="width: 100%; justify-content: center;">💾 SAVE</button>
               <button class="pause-btn" onclick="MapUI.closePauseMenu()" style="width: 100%; justify-content: center; margin-top: 12px; border-color: var(--text-dim); color: var(--text-dim);">▶ RESUME</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quest Log Overlay -->
+        <div id="quest-overlay" class="bestiary-overlay" style="display:none">
+          <div class="bestiary-bg" onclick="QuestUI.close()"></div>
+          <div class="bestiary-panel">
+            <div class="bestiary-header">
+              <div class="bestiary-title">ECHO LOG</div>
+              <button class="bestiary-close" onclick="QuestUI.close()">✕</button>
+            </div>
+            <div id="quest-list" class="bestiary-content" style="padding: 16px;">
+              <!-- Quests injected here -->
             </div>
           </div>
         </div>
@@ -650,6 +664,7 @@
               <button class="camp-btn" onclick="MapUI.campChangeParty()"><span>👥</span>CHANGE PARTY</button>
               <button class="camp-btn" onclick="InventoryUI.open()"><span>🎒</span>ITEMS</button>
               <button class="camp-btn" onclick="MapUI.campHeal()"><span>💊</span>HEAL PARTY</button>
+              <button class="camp-btn" onclick="MapUI.campSave()"><span>💾</span>SAVE PROGRESS</button>
               <button class="camp-btn" onclick="MapUI.campRelics()"><span>✦</span>RELICS</button>
               <button class="camp-btn camp-btn-minor" onclick="MapUI.closeCampMenu()">▶ CONTINUE</button>
             </div>
@@ -764,12 +779,13 @@
   <script src="js/asset-preloader.js"></script>
   <script src="js/scaling-config.js"></script>
   <script src="js/systems/save-contract.js"></script>
+  <script src="js/systems/inventory.js"></script>
+  <script src="js/systems/quest-system.js"></script>
   <script src="js/battle/enemy-scaling.js"></script>
   <script src="js/battle/reaction-effects.js"></script>
   <script src="js/release-config.js"></script>
   <script src="js/ui/menu-manager.js"></script>
   <script src="js/systems/party.js"></script>
-  <script src="js/systems/inventory.js"></script>
   <script src="js/ui/battle-ui.js"></script>
   <script src="js/ui/result-ui.js"></script>
   <script src="js/battle/status-system.js"></script>
@@ -777,10 +793,10 @@
   <script src="js/battle/turn-manager.js"></script>
   <script src="js/battle/combat-engine.js"></script>
   <script src="js/battle/formation-rules.js"></script>
-
   <script src="js/battle/action-handler.js"></script>
   <script src="js/systems/archive.js"></script>
   <script src="js/ui/archive-ui.js"></script>
+  <script src="js/ui/quest-ui.js"></script>
   <script src="js/ui/boss-gauntlet.js"></script>
   <script src="js/ui/world-explorer.js"></script>
   <script src="js/ui/weather-engine.js"></script>

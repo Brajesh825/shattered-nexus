@@ -163,6 +163,7 @@ const Story = {
       this.chapIdx = -1;
       this.phase = null;
       G.mode = 'story';
+      if (typeof QuestSystem !== 'undefined') QuestSystem.init();
 
       // Load characters if not already loaded
       if (!G.chars || G.chars.length === 0) {
@@ -264,6 +265,7 @@ const Story = {
       if (s.ownedRelics) G.ownedRelics = s.ownedRelics;
       if (s.activeRelics) G.activeRelics = s.activeRelics;
       if (s.archive) { G.archive = s.archive; if (typeof Archive !== 'undefined') Archive.init(); }
+      if (typeof QuestSystem !== 'undefined') QuestSystem.init(s.questState || null);
 
       // If saved from explore map, restore directly to that map (no overlay/selection)
       if (s.mapId) {
@@ -960,6 +962,7 @@ const Story = {
     }
 
     this.arcIdx++;
+    if (typeof QuestSystem !== 'undefined') QuestSystem.onArcAdvance(this.arcIdx);
     G.enemies = this._allEnemies.slice();
     if (this.arcIdx >= this.data.arcs.length) { this._beginEpilogue(); return; }
 
@@ -1088,6 +1091,7 @@ const Story = {
       ownedRelics: G.ownedRelics || [],
       activeRelics: G.activeRelics || [],
       archive: G.archive || {},
+      questState: typeof QuestSystem !== 'undefined' ? QuestSystem.save() : null,
       mapId,
       mapX,
       mapY,

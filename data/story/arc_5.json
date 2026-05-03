@@ -286,6 +286,70 @@
         "emotion": "ominous",
         "text": "In the far dark, behind walls of obsidian that have stood for six centuries, the Living Core stirs \u2014 and for the first time since it consumed its first world, something in Valdris's architecture registers the faint signal it has not felt in an age. Danger."
       }
-    ]
+    ],
+    "onVictory": [
+      {
+        "type": "recruit",
+        "charId": "rex"
+      }
+    ],
+    "character_moment": {
+      "background": "emperor_sanctum",
+      "dialogue": [
+        {
+          "speaker": null,
+          "text": "As the darkness holding Veleth fractures, something else shifts \u2014 deep in the sanctum's northern wall, a sealed alcove cracks open, as though Valdris's hold over every prisoner ends with his champion."
+        },
+        {
+          "speaker": null,
+          "text": "A figure steps through the settling dust \u2014 draped in gold and ancient authority, armor marked with a crest that predates every kingdom any of them have heard of. The chains of shadow-iron at his wrists fall away like smoke."
+        },
+        {
+          "speaker": "Rex",
+          "emotion": "commanding",
+          "text": "I am Rex. I ruled a golden nation in another world. When Valdris pulled me through the rift, he placed me here \u2014 in the heart of his own sanctum. He believed that watching him consume world after world, powerless to intervene, would teach me that a king's will means nothing against true eternity."
+        },
+        {
+          "speaker": "Aya",
+          "emotion": "awed",
+          "text": "How long?"
+        },
+        {
+          "speaker": "Rex",
+          "emotion": "steady",
+          "text": "Long enough to watch empires end. Long enough to understand that the only thing that changes the weight of eternity is who chooses to stand in it."
+        },
+        {
+          "speaker": "Rei",
+          "emotion": "quiet",
+          "text": "He kept you to witness his victories. A punishment designed for someone who led people."
+        },
+        {
+          "speaker": "Rex",
+          "emotion": "resolute",
+          "text": "Yes. The burden of immortality is outliving everyone you lead. He thought compounding that endlessly would hollow me out. But you came here not to survive him \u2014 to end him. That is not something he accounted for."
+        },
+        {
+          "speaker": "Tao",
+          "emotion": "respectful",
+          "text": "You held while he tried to erase you. That matters."
+        },
+        {
+          "speaker": "Rex",
+          "emotion": "certain",
+          "text": "I held because I believed someone would come. I did not know it would be people who refused to become what this world tried to make them. But here you are."
+        },
+        {
+          "speaker": "Valka",
+          "emotion": "solemn",
+          "text": "Seven. The circle is complete."
+        },
+        {
+          "speaker": "Lulu",
+          "emotion": "bittersweet",
+          "text": "The Living Core is still ahead. But \u2014 yes. Together."
+        }
+      ]
+    }
   }
 }

@@ -89,7 +89,7 @@ MAP_DEFS.verdant_vale = {
             },
         },
         { id: 'essabella', x: 44, y: 22, dialogueKey: 'verdant_vale', behavior: 'wander', range: 3 },
-        { id: 'elder_maren', x: 6, y: 8, dialogueKey: 'elder_maren', behavior: 'stationary' },
+        { id: 'elder_maren', x: 6, y: 8, dialogueKey: 'elder_maren', behavior: 'stationary', giveQuest: 'goblin_menace' },
         { id: 'soldier_1', x: 23, y: 13, dialogueKey: 'soldier_chat', behavior: 'patrol', waypoints: [{ x: 23, y: 13 }, { x: 26, y: 13 }] },
         { id: 'soldier_2', x: 15, y: 6, dialogueKey: 'soldier_chat', behavior: 'stationary' },
         { id: 'soldier_3', x: 17, y: 15, dialogueKey: 'soldier_chat', behavior: 'patrol', waypoints: [{ x: 17, y: 15 }, { x: 17, y: 12 }] },

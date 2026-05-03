@@ -252,10 +252,7 @@ const MapUI = (() => {
     _toggleDpad(false);
     const el = document.getElementById('map-pause-menu');
     if (el) el.style.display = 'flex';
-    // Only show save button in story mode
-    const saveBtn = document.querySelector('#map-pause-menu .save-btn');
-    if (saveBtn) saveBtn.style.display = (typeof Story !== 'undefined' && Story.active) ? '' : 'none';
-
+    
     if (typeof Focus !== 'undefined') {
       Focus.setContext('map-pause-menu');
     }
@@ -364,6 +361,11 @@ const MapUI = (() => {
     _updatePartyHUD();
     MapEngine.resetFog(); // resting clears the darkness
     showMsg('💊 Party healed — darkness lifted!', 1800);
+    closeCampMenu();
+  }
+
+  function campSave() {
+    pauseSave();
     closeCampMenu();
   }
 
@@ -485,6 +487,7 @@ const MapUI = (() => {
     campWorldMap,
     campChangeParty,
     campHeal,
+    campSave,
     campRelics,
     closeRelics,
   };

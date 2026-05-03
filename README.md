@@ -45,7 +45,10 @@ RPG+ is a full-featured JRPG running entirely in the browser:
 - **Formation system** — Vanguard intercepts, Rearguard evades
 - **Relic system** — permanent stat bonuses unlocked by beating bosses
 - **Inventory** — 80+ items across 4 categories (consumables, valuables, key items, trophies), usable in and out of battle
+- **Echo Quests** — hunt/gather side-objectives from NPCs and arc auto-unlocks, tracked in the Echo Log
+- **World Corruption** — time-in-wild accumulates fog/corruption, tinting the screen and scaling enemy mutation chance
 - **Party screen** — live stat viewer, passive descriptions, relic slots
+- **Saving** — progress can only be saved from the Camp menu (`💾 SAVE PROGRESS`)
 
 ---
 
@@ -68,9 +71,9 @@ Eight characters join your party across the campaign. The first four are availab
 | Character | Class | Arc Joined | Role | Passive |
 |-----------|-------|-----------|------|---------|
 | **Ria** | Summoner | Arc 2 | AOE magic / healing | **Eidolon Bond** — Summons +20% stats; MP efficiency +15% |
-| **Valka** | Valkyrie | Arc 2 | Holy attacker / debuffer | **Divine Authority** — DEF +20%; reflects 10% of damage taken |
 | **Drake** | Divine Dragoon | Arc 3 | Speed striker / evader | **Dragon's Leap** — Every 3rd turn, bonus aerial strike; SPD +2 in aerial combat |
-| **Rex** | Grail Guardian | Arc 7 | Demi-god tank / healer | **Divine Blessing** — Grants allies +15% HP regen per turn; takes 12% reduced damage |
+| **Valka** | Valkyrie | Arc 4 | Holy attacker / debuffer | **Divine Authority** — DEF +20%; reflects 10% of damage taken |
+| **Rex** | Grail Guardian | Arc 5 | Demi-god tank / healer | **Divine Blessing** — Grants allies +15% HP regen per turn; takes 12% reduced damage |
 
 Full base stats and growth rates are in `data/characters.json`.
 
@@ -210,9 +213,10 @@ The world of Aethoria is in crisis. **Valdris**, the Shadow Emperor, has consume
 
 **Party growth through story:**
 - Arcs 1–2: Aya, Tao, Lulu, Rei (core four)
-- Arc 2: Ria and Valka rescued and recruited
+- Arc 2: Ria recruited
 - Arc 3: Drake joins
-- Arc 7: Rex joins (full party of 8)
+- Arc 4: Valka recruited (Sunken Temple)
+- Arc 5: Rex joins (Shadow Reach) — full party of 8
 
 ---
 

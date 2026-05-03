@@ -635,6 +635,10 @@
       {
         "item": "Potion",
         "chance": 0.2
+      },
+      {
+        "item": "silver_locket",
+        "chance": 0.08
       }
     ]
   },
@@ -3952,301 +3956,882 @@
       }
     ]
   },
-
   {
     "id": "forge_sentinel",
     "name": "Forge Sentinel",
     "subtitle": "The last automated guardian of the Forge Lords — still running, still protecting",
     "element": "earth",
-    "weakTo": ["fire", "water"],
-    "resistTo": ["earth", "physical"],
+    "weakTo": [
+      "fire",
+      "water"
+    ],
+    "resistTo": [
+      "earth",
+      "physical"
+    ],
     "tier": 3,
     "isBoss": true,
     "aiRole": "tank",
     "statPhases": [
-      { "hp": 0.5, "def": 1.5, "spd": 0.7 }
+      {
+        "hp": 0.5,
+        "def": 1.5,
+        "spd": 0.7
+      }
     ],
-    "stats": { "hp": 240, "atk": 28, "def": 45, "spd": 6, "mag": 8 },
-    "reward": { "exp": 85, "gold": 60 },
-    "palette": { "body": "#3a1a00", "dark": "#1a0a00", "armor": "#8b4513", "eye": "#ff6600", "shine": "#cc3300" },
+    "stats": {
+      "hp": 240,
+      "atk": 28,
+      "def": 45,
+      "spd": 6,
+      "mag": 8
+    },
+    "reward": {
+      "exp": 85,
+      "gold": 60
+    },
+    "palette": {
+      "body": "#3a1a00",
+      "dark": "#1a0a00",
+      "armor": "#8b4513",
+      "eye": "#ff6600",
+      "shine": "#cc3300"
+    },
     "abilities": [
-      { "id": "forge_slam", "name": "Forge Slam", "type": "physical", "weight": 45, "dmgMultiplier": 1.8 },
-      { "id": "tremor", "name": "Tremor", "type": "physical", "weight": 30, "dmgMultiplier": 1.3, "effect": { "aoe": true } },
-      { "id": "hardened_shell", "name": "Hardened Shell", "type": "buff_def", "weight": 25 }
+      {
+        "id": "forge_slam",
+        "name": "Forge Slam",
+        "type": "physical",
+        "weight": 45,
+        "dmgMultiplier": 1.8
+      },
+      {
+        "id": "tremor",
+        "name": "Tremor",
+        "type": "physical",
+        "weight": 30,
+        "dmgMultiplier": 1.3,
+        "effect": {
+          "aoe": true
+        }
+      },
+      {
+        "id": "hardened_shell",
+        "name": "Hardened Shell",
+        "type": "buff_def",
+        "weight": 25
+      }
     ],
     "lore": "Grand Forgemaster Dara built the Forge Sentinel to protect the outer perimeter of the Forge Lords' territory — a construct of basalt and elemental earth magic, animated by the same principles her civilization used to make weapons. When Dara herself completed the transformation into the Molten Golem, the Sentinel kept running its last instruction: protect the forge. It does not know its creator is gone. It does not know the forge it protects is ash. At 50% HP it triggers a hardening protocol Dara built in as a failsafe — def increases as damage accumulates, the construct becoming more itself as it is worn down.",
     "drops": [
-      { "item": "Forge Core", "chance": 0.8 },
-      { "item": "Earth Crystal", "chance": 0.4 }
+      {
+        "item": "Forge Core",
+        "chance": 0.8
+      },
+      {
+        "item": "Earth Crystal",
+        "chance": 0.4
+      }
     ]
   },
-
   {
     "id": "deep_archpriest",
     "name": "Deep Archpriest",
     "subtitle": "The first of Oremis's council to be touched — and the last to stop trying to heal",
     "element": "water",
-    "weakTo": ["lightning", "earth"],
-    "resistTo": ["water", "shadow"],
+    "weakTo": [
+      "lightning",
+      "earth"
+    ],
+    "resistTo": [
+      "water",
+      "shadow"
+    ],
     "tier": 3,
     "isBoss": true,
     "aiRole": "support",
-    "stats": { "hp": 220, "atk": 15, "def": 18, "spd": 12, "mag": 35 },
-    "reward": { "exp": 78, "gold": 55 },
-    "palette": { "body": "#001a33", "dark": "#000d1a", "robe": "#004466", "eye": "#00ccff", "shine": "#0088bb" },
+    "stats": {
+      "hp": 220,
+      "atk": 15,
+      "def": 18,
+      "spd": 12,
+      "mag": 35
+    },
+    "reward": {
+      "exp": 78,
+      "gold": 55
+    },
+    "palette": {
+      "body": "#001a33",
+      "dark": "#000d1a",
+      "robe": "#004466",
+      "eye": "#00ccff",
+      "shine": "#0088bb"
+    },
     "abilities": [
-      { "id": "corruption_wave", "name": "Corruption Wave", "type": "magic_damage", "weight": 35, "dmgMultiplier": 1.6 },
-      { "id": "tidal_heal", "name": "Tidal Heal", "type": "heal", "weight": 35, "effect": { "healPercent": 0.28, "aoe": true } },
-      { "id": "deep_bind", "name": "Deep Bind", "type": "debuff", "weight": 30, "effect": { "slow": true } }
+      {
+        "id": "corruption_wave",
+        "name": "Corruption Wave",
+        "type": "magic_damage",
+        "weight": 35,
+        "dmgMultiplier": 1.6
+      },
+      {
+        "id": "tidal_heal",
+        "name": "Tidal Heal",
+        "type": "heal",
+        "weight": 35,
+        "effect": {
+          "healPercent": 0.28,
+          "aoe": true
+        }
+      },
+      {
+        "id": "deep_bind",
+        "name": "Deep Bind",
+        "type": "debuff",
+        "weight": 30,
+        "effect": {
+          "slow": true
+        }
+      }
     ],
     "lore": "When Oremis returned from the deep, his inner council was the first to stand beside him. They were the closest. The first he touched in the healing ceremony that spread what he had become. The Deep Archpriest was his most trusted — fifty years of working beside Oremis, absorbing the same deep-water resonance through proximity before Oremis ever laid hands on anyone. She turned first. She still heals. She still performs the purification rites. The rites now spread what they were designed to remove. The abomination she has become — a massive, translucent predator with her own features warped into the bell — is the final testament to her devotion.",
     "drops": [
-      { "item": "Corrupted Pearl", "chance": 0.7 },
-      { "item": "Water Sigil", "chance": 0.35 }
+      {
+        "item": "Corrupted Pearl",
+        "chance": 0.7
+      },
+      {
+        "item": "Water Sigil",
+        "chance": 0.35
+      }
     ]
   },
-
   {
     "id": "void_stalker",
     "name": "Void Stalker",
     "subtitle": "The Rift's immune response — assembled from accumulated despair and given a permanent body",
     "element": "void",
-    "weakTo": ["light", "holy"],
-    "resistTo": ["void", "shadow", "physical"],
+    "weakTo": [
+      "light",
+      "holy"
+    ],
+    "resistTo": [
+      "void",
+      "shadow",
+      "physical"
+    ],
     "tier": 3,
     "isBoss": true,
     "aiRole": "predator",
-    "stats": { "hp": 260, "atk": 35, "def": 15, "spd": 22, "mag": 20 },
-    "reward": { "exp": 90, "gold": 65 },
-    "palette": { "body": "#0d0020", "dark": "#060010", "edge": "#4400aa", "eye": "#aa00ff", "shine": "#6600cc" },
+    "stats": {
+      "hp": 260,
+      "atk": 35,
+      "def": 15,
+      "spd": 22,
+      "mag": 20
+    },
+    "reward": {
+      "exp": 90,
+      "gold": 65
+    },
+    "palette": {
+      "body": "#0d0020",
+      "dark": "#060010",
+      "edge": "#4400aa",
+      "eye": "#aa00ff",
+      "shine": "#6600cc"
+    },
     "abilities": [
-      { "id": "void_slash", "name": "Void Slash", "type": "physical", "weight": 40, "dmgMultiplier": 1.9 },
-      { "id": "rift_pulse", "name": "Rift Pulse", "type": "magic_damage", "weight": 35, "dmgMultiplier": 1.4, "effect": { "aoe": true } },
-      { "id": "phase_shift", "name": "Phase Shift", "type": "buff", "weight": 25, "effect": { "spdBuff": 1.4, "duration": 2 } }
+      {
+        "id": "void_slash",
+        "name": "Void Slash",
+        "type": "physical",
+        "weight": 40,
+        "dmgMultiplier": 1.9
+      },
+      {
+        "id": "rift_pulse",
+        "name": "Rift Pulse",
+        "type": "magic_damage",
+        "weight": 35,
+        "dmgMultiplier": 1.4,
+        "effect": {
+          "aoe": true
+        }
+      },
+      {
+        "id": "phase_shift",
+        "name": "Phase Shift",
+        "type": "buff",
+        "weight": 25,
+        "effect": {
+          "spdBuff": 1.4,
+          "duration": 2
+        }
+      }
     ],
     "lore": "The Void Rift does not think. But it maintains. When too much living tissue enters the Rift's radius, it assembles a response from the ambient despair that coats every surface of Shadow Reach. The Void Stalker is what happens when that assembly has enough raw material to become stable — a form that persists, hunts, and does not dissolve when the immediate threat retreats. It has no origin. No former life. It is the Rift's body, assembled from the grief of everyone who has died near it for six centuries.",
     "drops": [
-      { "item": "Rift Shard", "chance": 0.75 },
-      { "item": "Void Essence", "chance": 0.3 }
+      {
+        "item": "Rift Shard",
+        "chance": 0.75
+      },
+      {
+        "item": "Void Essence",
+        "chance": 0.3
+      }
     ]
   },
-
   {
     "id": "consumed_angel",
     "name": "Consumed Angel",
     "subtitle": "One of Essabella's Fallen Angels — taken by Valdris and placed at the inner gate",
     "element": "shadow",
-    "weakTo": ["light", "holy"],
-    "resistTo": ["shadow", "physical"],
+    "weakTo": [
+      "light",
+      "holy"
+    ],
+    "resistTo": [
+      "shadow",
+      "physical"
+    ],
     "tier": 3,
     "isBoss": true,
     "aiRole": "predator",
-    "stats": { "hp": 300, "atk": 38, "def": 22, "spd": 20, "mag": 28 },
-    "reward": { "exp": 105, "gold": 75 },
-    "palette": { "body": "#1a0030", "dark": "#0d0018", "wing": "#330066", "eye": "#ff00aa", "shine": "#cc0077" },
+    "stats": {
+      "hp": 300,
+      "atk": 38,
+      "def": 22,
+      "spd": 20,
+      "mag": 28
+    },
+    "reward": {
+      "exp": 105,
+      "gold": 75
+    },
+    "palette": {
+      "body": "#1a0030",
+      "dark": "#0d0018",
+      "wing": "#330066",
+      "eye": "#ff00aa",
+      "shine": "#cc0077"
+    },
     "abilities": [
-      { "id": "dark_smite", "name": "Dark Smite", "type": "magic_damage", "weight": 40, "dmgMultiplier": 1.8 },
-      { "id": "fallen_grace", "name": "Fallen Grace", "type": "debuff", "weight": 30, "effect": { "defDebuff": 0.7, "aoe": true } },
-      { "id": "void_wings", "name": "Void Wings", "type": "magic_damage", "weight": 30, "dmgMultiplier": 1.5, "effect": { "aoe": true } }
+      {
+        "id": "dark_smite",
+        "name": "Dark Smite",
+        "type": "magic_damage",
+        "weight": 40,
+        "dmgMultiplier": 1.8
+      },
+      {
+        "id": "fallen_grace",
+        "name": "Fallen Grace",
+        "type": "debuff",
+        "weight": 30,
+        "effect": {
+          "defDebuff": 0.7,
+          "aoe": true
+        }
+      },
+      {
+        "id": "void_wings",
+        "name": "Void Wings",
+        "type": "magic_damage",
+        "weight": 30,
+        "dmgMultiplier": 1.5,
+        "effect": {
+          "aoe": true
+        }
+      }
     ],
     "lore": "Essabella placed the Consumed Angels in the Void Citadel's outer pools, not to guard Valdris, but as a warning to herself. These were her soldiers. She watched it happen from the outer walls. She could not get to them in time — or would not, because arriving in time would have meant exposing her position. When Rei names them after the battle, Essabella is quiet for a long time. She does not say whether she thinks they knew what was happening when it happened. She does not say whether she hopes they did not.",
     "drops": [
-      { "item": "Fallen Feather", "chance": 0.8 },
-      { "item": "Dark Prism", "chance": 0.3 }
+      {
+        "item": "Fallen Feather",
+        "chance": 0.8
+      },
+      {
+        "item": "Dark Prism",
+        "chance": 0.3
+      }
     ]
   },
-
   {
     "id": "void_colossus",
     "name": "Void Colossus",
     "subtitle": "Six centuries of absorbed data crystallised into weight — what Valdris has consumed, given form",
     "element": "void",
-    "weakTo": ["light", "fire"],
-    "resistTo": ["void", "shadow", "physical"],
+    "weakTo": [
+      "light",
+      "fire"
+    ],
+    "resistTo": [
+      "void",
+      "shadow",
+      "physical"
+    ],
     "tier": 3,
     "isBoss": true,
     "aiRole": "tank",
     "statPhases": [
-      { "hp": 0.25, "atk": 1.8, "spd": 1.4, "def": 0.6 }
+      {
+        "hp": 0.25,
+        "atk": 1.8,
+        "spd": 1.4,
+        "def": 0.6
+      }
     ],
-    "stats": { "hp": 400, "atk": 40, "def": 35, "spd": 8, "mag": 30 },
-    "reward": { "exp": 120, "gold": 90 },
-    "palette": { "body": "#0a0020", "dark": "#050010", "mass": "#2a0060", "eye": "#cc44ff", "shine": "#8800cc" },
+    "stats": {
+      "hp": 400,
+      "atk": 40,
+      "def": 35,
+      "spd": 8,
+      "mag": 30
+    },
+    "reward": {
+      "exp": 120,
+      "gold": 90
+    },
+    "palette": {
+      "body": "#0a0020",
+      "dark": "#050010",
+      "mass": "#2a0060",
+      "eye": "#cc44ff",
+      "shine": "#8800cc"
+    },
     "abilities": [
-      { "id": "void_crush", "name": "Void Crush", "type": "physical", "weight": 40, "dmgMultiplier": 2.0 },
-      { "id": "data_overload", "name": "Data Overload", "type": "magic_damage", "weight": 35, "dmgMultiplier": 1.7, "effect": { "aoe": true } },
-      { "id": "colossal_slam", "name": "Colossal Slam", "type": "physical", "weight": 25, "dmgMultiplier": 1.5, "effect": { "aoe": true } }
+      {
+        "id": "void_crush",
+        "name": "Void Crush",
+        "type": "physical",
+        "weight": 40,
+        "dmgMultiplier": 2.0
+      },
+      {
+        "id": "data_overload",
+        "name": "Data Overload",
+        "type": "magic_damage",
+        "weight": 35,
+        "dmgMultiplier": 1.7,
+        "effect": {
+          "aoe": true
+        }
+      },
+      {
+        "id": "colossal_slam",
+        "name": "Colossal Slam",
+        "type": "physical",
+        "weight": 25,
+        "dmgMultiplier": 1.5,
+        "effect": {
+          "aoe": true
+        }
+      }
     ],
     "lore": "Valdris has been absorbing world data for six centuries. Most of it becomes part of him. Some of it does not — residue that accumulates in the Fortress Ramparts, too heavy to integrate, too dense to dissolve. The Void Colossus is what that residue looks like when it achieves mass. It is not Valdris. It is not any person who was ever lost. It is the weight of six hundred years of consuming, given legs and pointed at whoever approaches. At 25% HP the accumulated mass breaks apart into a dense, fast core — a preview of what the final confrontation will feel like when all the weight is focused.",
     "drops": [
-      { "item": "Nexus Residue", "chance": 0.85 },
-      { "item": "Void Crystal", "chance": 0.4 }
+      {
+        "item": "Nexus Residue",
+        "chance": 0.85
+      },
+      {
+        "item": "Void Crystal",
+        "chance": 0.4
+      }
     ]
   },
-
   {
     "id": "the_unravelling",
     "name": "The Unravelling",
     "subtitle": "The Void resisting dissolution — not a creature, but a process that refuses to stop",
     "element": "void",
-    "weakTo": ["light"],
-    "resistTo": ["void", "shadow", "physical", "fire", "water"],
+    "weakTo": [
+      "light"
+    ],
+    "resistTo": [
+      "void",
+      "shadow",
+      "physical",
+      "fire",
+      "water"
+    ],
     "tier": 3,
     "isBoss": true,
     "aiRole": "mage",
     "statPhases": [
-      { "hp": 0.6, "mag": 1.5, "spd": 1.3 },
-      { "hp": 0.3, "mag": 2.0, "spd": 1.6, "def": 0.5 }
+      {
+        "hp": 0.6,
+        "mag": 1.5,
+        "spd": 1.3
+      },
+      {
+        "hp": 0.3,
+        "mag": 2.0,
+        "spd": 1.6,
+        "def": 0.5
+      }
     ],
-    "stats": { "hp": 450, "atk": 30, "def": 20, "spd": 15, "mag": 55 },
-    "reward": { "exp": 140, "gold": 110 },
-    "palette": { "body": "#050010", "dark": "#020008", "edge": "#330066", "eye": "#ffffff", "shine": "#9900ff" },
+    "stats": {
+      "hp": 450,
+      "atk": 30,
+      "def": 20,
+      "spd": 15,
+      "mag": 55
+    },
+    "reward": {
+      "exp": 140,
+      "gold": 110
+    },
+    "palette": {
+      "body": "#050010",
+      "dark": "#020008",
+      "edge": "#330066",
+      "eye": "#ffffff",
+      "shine": "#9900ff"
+    },
     "abilities": [
-      { "id": "unravel", "name": "Unravel", "type": "magic_damage", "weight": 40, "dmgMultiplier": 2.1 },
-      { "id": "void_consume", "name": "Void Consume", "type": "magic_damage", "weight": 30, "dmgMultiplier": 1.6, "effect": { "vampiric": 0.4 } },
-      { "id": "reality_crack", "name": "Reality Crack", "type": "magic_damage", "weight": 30, "dmgMultiplier": 1.8, "effect": { "aoe": true } }
+      {
+        "id": "unravel",
+        "name": "Unravel",
+        "type": "magic_damage",
+        "weight": 40,
+        "dmgMultiplier": 2.1
+      },
+      {
+        "id": "void_consume",
+        "name": "Void Consume",
+        "type": "magic_damage",
+        "weight": 30,
+        "dmgMultiplier": 1.6,
+        "effect": {
+          "vampiric": 0.4
+        }
+      },
+      {
+        "id": "reality_crack",
+        "name": "Reality Crack",
+        "type": "magic_damage",
+        "weight": 30,
+        "dmgMultiplier": 1.8,
+        "effect": {
+          "aoe": true
+        }
+      }
     ],
     "lore": "The Eternal Void has been maintained by Valdris's consumption for six centuries. When the party arrives to end it, the Void responds — not with intelligence, not with malice, but with the resistance of a process that has been running for six hundred years and does not know how to stop. The Unravelling is not an enemy. It is what dissolution looks like from the inside, fighting back. Two stat shifts as it accelerates: first it burns faster, then it strips its own mass to move faster still. Defeating it does not kill it. It completes it. The Eternal Void does not end. It finishes.",
     "drops": [
-      { "item": "Void Tear", "chance": 1.0 },
-      { "item": "Final Shard", "chance": 0.5 }
+      {
+        "item": "Void Tear",
+        "chance": 1.0
+      },
+      {
+        "item": "Final Shard",
+        "chance": 0.5
+      }
     ]
   },
-
   {
     "id": "sunken_leviathan",
     "name": "Sunken Leviathan",
     "subtitle": "An oceanic apex predator drawn to the resonance of drowned cities",
     "element": "water",
-    "weakTo": ["lightning", "earth"],
-    "resistTo": ["water", "physical"],
+    "weakTo": [
+      "lightning",
+      "earth"
+    ],
+    "resistTo": [
+      "water",
+      "physical"
+    ],
     "tier": 3,
     "isBoss": true,
     "aiRole": "tank",
     "statPhases": [
-      { "hp": 0.4, "atk": 1.6, "spd": 1.3, "def": 0.8 }
+      {
+        "hp": 0.4,
+        "atk": 1.6,
+        "spd": 1.3,
+        "def": 0.8
+      }
     ],
-    "stats": { "hp": 380, "atk": 35, "def": 28, "spd": 10, "mag": 25 },
-    "reward": { "exp": 95, "gold": 70 },
-    "palette": { "body": "#001833", "dark": "#000c1a", "scale": "#003355", "eye": "#00ffcc", "shine": "#00aaaa" },
+    "stats": {
+      "hp": 380,
+      "atk": 35,
+      "def": 28,
+      "spd": 10,
+      "mag": 25
+    },
+    "reward": {
+      "exp": 95,
+      "gold": 70
+    },
+    "palette": {
+      "body": "#001833",
+      "dark": "#000c1a",
+      "scale": "#003355",
+      "eye": "#00ffcc",
+      "shine": "#00aaaa"
+    },
     "abilities": [
-      { "id": "tidal_crush", "name": "Tidal Crush", "type": "physical", "weight": 40, "dmgMultiplier": 1.9, "effect": { "aoe": true } },
-      { "id": "deep_current", "name": "Deep Current", "type": "magic_damage", "weight": 35, "dmgMultiplier": 1.7 },
-      { "id": "leviathan_roar", "name": "Leviathan Roar", "type": "debuff", "weight": 25, "effect": { "defDebuff": 0.75, "aoe": true } }
+      {
+        "id": "tidal_crush",
+        "name": "Tidal Crush",
+        "type": "physical",
+        "weight": 40,
+        "dmgMultiplier": 1.9,
+        "effect": {
+          "aoe": true
+        }
+      },
+      {
+        "id": "deep_current",
+        "name": "Deep Current",
+        "type": "magic_damage",
+        "weight": 35,
+        "dmgMultiplier": 1.7
+      },
+      {
+        "id": "leviathan_roar",
+        "name": "Leviathan Roar",
+        "type": "debuff",
+        "weight": 25,
+        "effect": {
+          "defDebuff": 0.75,
+          "aoe": true
+        }
+      }
     ],
     "lore": "The Southern Isles were not always islands. When storm patterns shifted and the coastal cities drowned, the concentrated elemental resonance of thousands of submerged buildings attracted something from the deep that had never before had reason to surface. The Sunken Leviathan was already ancient when Valdris arrived. He did not corrupt it. He simply ensured the Abyssal Gate remained sealed, keeping the creature inside. It does not serve him. It is not corrupted. It is simply a very old apex predator that has been living in a very unusual reef for several centuries.",
     "drops": [
-      { "item": "Leviathan Scale", "chance": 0.7 },
-      { "item": "Deep Water Shard", "chance": 0.4 }
+      {
+        "item": "Leviathan Scale",
+        "chance": 0.7
+      },
+      {
+        "item": "Deep Water Shard",
+        "chance": 0.4
+      }
     ]
   },
-
   {
     "id": "river_king",
     "name": "River King",
     "subtitle": "A water spirit that tried to stay neutral — the corruption entered through the agreement itself",
     "element": "water",
-    "weakTo": ["lightning", "earth"],
-    "resistTo": ["water", "shadow"],
+    "weakTo": [
+      "lightning",
+      "earth"
+    ],
+    "resistTo": [
+      "water",
+      "shadow"
+    ],
     "tier": 3,
     "isBoss": true,
     "aiRole": "support",
     "statPhases": [
-      { "hp": 0.5, "atk": 1.6, "mag": 1.4, "spd": 1.2 }
+      {
+        "hp": 0.5,
+        "atk": 1.6,
+        "mag": 1.4,
+        "spd": 1.2
+      }
     ],
-    "stats": { "hp": 280, "atk": 22, "def": 20, "spd": 16, "mag": 40 },
-    "reward": { "exp": 88, "gold": 62 },
-    "palette": { "body": "#003344", "dark": "#001a22", "flow": "#005566", "eye": "#00ddff", "shine": "#0099bb" },
+    "stats": {
+      "hp": 280,
+      "atk": 22,
+      "def": 20,
+      "spd": 16,
+      "mag": 40
+    },
+    "reward": {
+      "exp": 88,
+      "gold": 62
+    },
+    "palette": {
+      "body": "#003344",
+      "dark": "#001a22",
+      "flow": "#005566",
+      "eye": "#00ddff",
+      "shine": "#0099bb"
+    },
     "abilities": [
-      { "id": "tidal_bind", "name": "Tidal Bind", "type": "debuff", "weight": 35, "effect": { "slow": true, "aoe": true } },
-      { "id": "river_surge", "name": "River Surge", "type": "magic_damage", "weight": 35, "dmgMultiplier": 1.8 },
-      { "id": "mirror_truth", "name": "Mirror Truth", "type": "buff", "weight": 30, "effect": { "reflect": true, "duration": 2 } }
+      {
+        "id": "tidal_bind",
+        "name": "Tidal Bind",
+        "type": "debuff",
+        "weight": 35,
+        "effect": {
+          "slow": true,
+          "aoe": true
+        }
+      },
+      {
+        "id": "river_surge",
+        "name": "River Surge",
+        "type": "magic_damage",
+        "weight": 35,
+        "dmgMultiplier": 1.8
+      },
+      {
+        "id": "mirror_truth",
+        "name": "Mirror Truth",
+        "type": "buff",
+        "weight": 30,
+        "effect": {
+          "reflect": true,
+          "duration": 2
+        }
+      }
     ],
     "lore": "The River King governed the Riverlands Crossing for centuries as a neutral party. You could not cross while lying. The river always knew. It collected truths as toll and let everyone pass — Forge Lord, Tide Priest, Vale farmer, Shadow Keeper. When Valdris's corruption reached the water table, the River King negotiated: safe passage through its territory in exchange for being left alone. Valdris agreed. The corruption entered through the agreement itself — neutrality became complicity, complicity became corruption. By the time the River King understood what it had become, it had forgotten what it had been for. At 50% HP the confusion burns off and what remains is something much more direct: a corrupted elemental that has stopped trying to maintain anything.",
     "drops": [
-      { "item": "River Stone", "chance": 0.75 },
-      { "item": "Current Crystal", "chance": 0.35 }
+      {
+        "item": "River Stone",
+        "chance": 0.75
+      },
+      {
+        "item": "Current Crystal",
+        "chance": 0.35
+      }
     ]
   },
-
   {
     "id": "molten_golem",
     "name": "Molten Golem",
     "subtitle": "Grand Forgemaster Dara — permanent at last, no longer a person who can feel it",
     "element": "earth",
-    "weakTo": ["water", "ice"],
-    "resistTo": ["earth", "fire", "physical"],
+    "weakTo": [
+      "water",
+      "ice"
+    ],
+    "resistTo": [
+      "earth",
+      "fire",
+      "physical"
+    ],
     "tier": 3,
     "isBoss": true,
     "aiRole": "tank",
     "statPhases": [
-      { "hp": 0.5, "def": 1.4, "atk": 1.2, "spd": 0.6 }
+      {
+        "hp": 0.5,
+        "def": 1.4,
+        "atk": 1.2,
+        "spd": 0.6
+      }
     ],
-    "stats": { "hp": 360, "atk": 38, "def": 55, "spd": 5, "mag": 15 },
-    "reward": { "exp": 110, "gold": 80 },
-    "palette": { "body": "#2a0800", "dark": "#150400", "lava": "#cc3300", "eye": "#ff6600", "shine": "#ff4400" },
+    "stats": {
+      "hp": 360,
+      "atk": 38,
+      "def": 55,
+      "spd": 5,
+      "mag": 15
+    },
+    "reward": {
+      "exp": 110,
+      "gold": 80
+    },
+    "palette": {
+      "body": "#2a0800",
+      "dark": "#150400",
+      "lava": "#cc3300",
+      "eye": "#ff6600",
+      "shine": "#ff4400"
+    },
     "abilities": [
-      { "id": "molten_press", "name": "Molten Press", "type": "physical", "weight": 40, "dmgMultiplier": 2.0, "effect": { "aoe": true } },
-      { "id": "forge_strike", "name": "Forge Strike", "type": "physical", "weight": 40, "dmgMultiplier": 2.2 },
-      { "id": "molten_shell", "name": "Molten Shell", "type": "buff_def", "weight": 20 }
+      {
+        "id": "molten_press",
+        "name": "Molten Press",
+        "type": "physical",
+        "weight": 40,
+        "dmgMultiplier": 2.0,
+        "effect": {
+          "aoe": true
+        }
+      },
+      {
+        "id": "forge_strike",
+        "name": "Forge Strike",
+        "type": "physical",
+        "weight": 40,
+        "dmgMultiplier": 2.2
+      },
+      {
+        "id": "molten_shell",
+        "name": "Molten Shell",
+        "type": "buff_def",
+        "weight": 20
+      }
     ],
     "lore": "Grand Forgemaster Dara devoted her life to making something that could not be destroyed. She succeeded. The Molten Golem still stands in the deepest mine shaft of the Ashen Foothills, still protecting the forge, still performing the last instruction her deteriorating consciousness could hold. She made the indestructible thing she always wanted. She simply is no longer a person who can appreciate it. At 50% HP the surviving core of her forge-knowledge triggers the hardening protocol she built into all her constructs — the same defense that made her civilization's weapons legendary. It activates because it was always there. Not because she chose it.",
     "drops": [
-      { "item": "Void-metal Fragment", "chance": 0.9 },
-      { "item": "Forge Lord Relic", "chance": 0.5 }
+      {
+        "item": "Void-metal Fragment",
+        "chance": 0.9
+      },
+      {
+        "item": "Forge Lord Relic",
+        "chance": 0.5
+      }
     ]
   },
-
   {
     "id": "abyssal_kraken",
     "name": "Abyssal Kraken",
     "subtitle": "A deep-sea predator drawn to the submerged lighthouse resonance — distinct from the Sunken Temple's Kraken",
     "element": "water",
-    "weakTo": ["lightning", "earth"],
-    "resistTo": ["water", "physical"],
+    "weakTo": [
+      "lightning",
+      "earth"
+    ],
+    "resistTo": [
+      "water",
+      "physical"
+    ],
     "tier": 3,
     "isBoss": true,
     "aiRole": "predator",
-    "stats": { "hp": 340, "atk": 32, "def": 25, "spd": 12, "mag": 22 },
-    "reward": { "exp": 100, "gold": 72 },
-    "palette": { "body": "#001122", "dark": "#000811", "tentacle": "#002244", "eye": "#ff3300", "shine": "#cc2200" },
+    "stats": {
+      "hp": 340,
+      "atk": 32,
+      "def": 25,
+      "spd": 12,
+      "mag": 22
+    },
+    "reward": {
+      "exp": 100,
+      "gold": 72
+    },
+    "palette": {
+      "body": "#001122",
+      "dark": "#000811",
+      "tentacle": "#002244",
+      "eye": "#ff3300",
+      "shine": "#cc2200"
+    },
     "abilities": [
-      { "id": "crushing_tentacles", "name": "Crushing Tentacles", "type": "physical", "weight": 40, "dmgMultiplier": 1.8, "effect": { "aoe": true } },
-      { "id": "ink_cloud", "name": "Ink Cloud", "type": "debuff", "weight": 30, "effect": { "defDebuff": 0.7, "aoe": true } },
-      { "id": "deep_pull", "name": "Deep Pull", "type": "physical", "weight": 30, "dmgMultiplier": 2.1 }
+      {
+        "id": "crushing_tentacles",
+        "name": "Crushing Tentacles",
+        "type": "physical",
+        "weight": 40,
+        "dmgMultiplier": 1.8,
+        "effect": {
+          "aoe": true
+        }
+      },
+      {
+        "id": "ink_cloud",
+        "name": "Ink Cloud",
+        "type": "debuff",
+        "weight": 30,
+        "effect": {
+          "defDebuff": 0.7,
+          "aoe": true
+        }
+      },
+      {
+        "id": "deep_pull",
+        "name": "Deep Pull",
+        "type": "physical",
+        "weight": 30,
+        "dmgMultiplier": 2.1
+      }
     ],
     "lore": "The Abyssal Kraken of the Lighthouse Isles is not Oremis. It is not a former person. It is a deep-sea predator that found the submerged resonance of the Lighthouse Isles' drowned settlement and made it a territory. The concentration of elemental water energy from the flooded buildings — the iron rings, the dock stones, the bell tower still ringing at high tide — drew it up from depths it would otherwise never leave. It is not corrupted by Valdris. It simply moved into a space that Valdris made available by ensuring no one was strong enough to drive it out.",
     "drops": [
-      { "item": "Kraken Ink", "chance": 0.7 },
-      { "item": "Abyssal Pearl", "chance": 0.4 }
+      {
+        "item": "Kraken Ink",
+        "chance": 0.7
+      },
+      {
+        "item": "Abyssal Pearl",
+        "chance": 0.4
+      }
     ]
   },
-
   {
     "id": "storm_sentinel",
     "name": "Storm Sentinel",
     "subtitle": "Pre-civilization archive guardian — protecting records no one alive remembers writing",
     "element": "void",
-    "weakTo": ["earth", "ice"],
-    "resistTo": ["void", "lightning", "physical"],
+    "weakTo": [
+      "earth",
+      "ice"
+    ],
+    "resistTo": [
+      "void",
+      "lightning",
+      "physical"
+    ],
     "tier": 3,
     "isBoss": true,
     "aiRole": "mage",
     "statPhases": [
-      { "hp": 0.4, "mag": 2.2, "spd": 2.0, "def": 0.25 }
+      {
+        "hp": 0.4,
+        "mag": 2.2,
+        "spd": 2.0,
+        "def": 0.25
+      }
     ],
-    "stats": { "hp": 520, "atk": 28, "def": 50, "spd": 10, "mag": 38 },
-    "reward": { "exp": 130, "gold": 100 },
-    "palette": { "body": "#101030", "dark": "#080818", "armor": "#303080", "eye": "#ffffff", "shine": "#aaaaff" },
+    "stats": {
+      "hp": 520,
+      "atk": 28,
+      "def": 50,
+      "spd": 10,
+      "mag": 38
+    },
+    "reward": {
+      "exp": 130,
+      "gold": 100
+    },
+    "palette": {
+      "body": "#101030",
+      "dark": "#080818",
+      "armor": "#303080",
+      "eye": "#ffffff",
+      "shine": "#aaaaff"
+    },
     "abilities": [
-      { "id": "void_pulse_s", "name": "Void Pulse", "type": "magic_damage", "weight": 35, "dmgMultiplier": 1.7, "effect": { "aoe": true } },
-      { "id": "lightning_archive", "name": "Lightning Archive", "type": "magic_damage", "weight": 35, "dmgMultiplier": 2.2 },
-      { "id": "starlit_ward", "name": "Starlit Ward", "type": "buff_def", "weight": 30 }
+      {
+        "id": "void_pulse_s",
+        "name": "Void Pulse",
+        "type": "magic_damage",
+        "weight": 35,
+        "dmgMultiplier": 1.7,
+        "effect": {
+          "aoe": true
+        }
+      },
+      {
+        "id": "lightning_archive",
+        "name": "Lightning Archive",
+        "type": "magic_damage",
+        "weight": 35,
+        "dmgMultiplier": 2.2
+      },
+      {
+        "id": "starlit_ward",
+        "name": "Starlit Ward",
+        "type": "buff_def",
+        "weight": 30
+      }
     ],
     "lore": "The nameless civilization that built the Sky Ruins understood something about altitude and memory that no civilization after them rediscovered — at sufficient height, elemental interference is minimal and records stay clean. The Storm Sentinel was their guardian, built to ensure nothing reached the high archive with intent to damage it. Valdris placed his Four Kings in the ruins without touching the Sentinel because he could not corrupt it: it has no self to find purchase in, no desire to exploit. It simply continues. At 40% HP it shatters the accumulated defensive mass it has been maintaining for centuries and focuses everything into a pure point — the archive's last line of defense.",
     "drops": [
-      { "item": "Archive Key", "chance": 0.85 },
-      { "item": "Storm Crystal", "chance": 0.45 }
+      {
+        "item": "Archive Key",
+        "chance": 0.85
+      },
+      {
+        "item": "Storm Crystal",
+        "chance": 0.45
+      }
     ]
   },
   {
@@ -4254,23 +4839,74 @@
     "name": "Shadow Emperor",
     "subtitle": "The fallen sovereign of a forgotten empire",
     "element": "shadow",
-    "weakTo": ["holy", "light"],
-    "resistTo": ["shadow", "physical"],
+    "weakTo": [
+      "holy",
+      "light"
+    ],
+    "resistTo": [
+      "shadow",
+      "physical"
+    ],
     "tier": 4,
     "isBoss": true,
     "aiRole": "mage",
-    "stats": { "hp": 1200, "atk": 45, "def": 40, "spd": 22, "mag": 65 },
-    "reward": { "exp": 2500, "gold": 500 },
-    "palette": { "body": "#2a1a40", "dark": "#100820", "cape": "#4b0082", "eye": "#ff00ff", "shine": "#9933ff" },
+    "stats": {
+      "hp": 1200,
+      "atk": 45,
+      "def": 40,
+      "spd": 22,
+      "mag": 65
+    },
+    "reward": {
+      "exp": 2500,
+      "gold": 500
+    },
+    "palette": {
+      "body": "#2a1a40",
+      "dark": "#100820",
+      "cape": "#4b0082",
+      "eye": "#ff00ff",
+      "shine": "#9933ff"
+    },
     "abilities": [
-      { "id": "shadow_flare", "name": "Shadow Flare", "type": "magic_damage", "weight": 40, "dmgMultiplier": 2.2, "effect": { "aoe": true } },
-      { "id": "eternal_darkness", "name": "Eternal Darkness", "type": "debuff", "weight": 30, "effect": { "blind": true, "aoe": true } },
-      { "id": "sovereigns_decree", "name": "Sovereign's Decree", "type": "magic_damage", "weight": 30, "dmgMultiplier": 2.5 }
+      {
+        "id": "shadow_flare",
+        "name": "Shadow Flare",
+        "type": "magic_damage",
+        "weight": 40,
+        "dmgMultiplier": 2.2,
+        "effect": {
+          "aoe": true
+        }
+      },
+      {
+        "id": "eternal_darkness",
+        "name": "Eternal Darkness",
+        "type": "debuff",
+        "weight": 30,
+        "effect": {
+          "blind": true,
+          "aoe": true
+        }
+      },
+      {
+        "id": "sovereigns_decree",
+        "name": "Sovereign's Decree",
+        "type": "magic_damage",
+        "weight": 30,
+        "dmgMultiplier": 2.5
+      }
     ],
     "lore": "The Shadow Emperor was once King Galdor the Kind, the ruler of the Verdant Vale before it was verdant. When the Void Knight first whispered to the kings of the world, Galdor was the first to listen—not out of greed, but out of a desperate desire to protect his people from a famine no one else saw coming. He offered his soul to buy his kingdom another year of rain. Valdris accepted. The rain came, but it was black. The empire fell in a single night. Now he sits on a shattered throne in a kingdom that no longer exists, still believing he is protecting his subjects by keeping them in the dark.",
     "drops": [
-      { "item": "Fallen Crown", "chance": 1.0 },
-      { "item": "Shadow Essence", "chance": 0.5 }
+      {
+        "item": "Fallen Crown",
+        "chance": 1.0
+      },
+      {
+        "item": "Shadow Essence",
+        "chance": 0.5
+      }
     ]
   }
-]
+]

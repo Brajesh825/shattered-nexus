@@ -982,6 +982,14 @@ function showResult(type) {
   _clearBattleAtmosphere();
   closePartyMenu();
   G.party.forEach(m => { m.statuses = []; });
+
+  // --- QUEST SYSTEM INTEGRATION ---
+  if (type === 'victory' && typeof QuestSystem !== 'undefined') {
+    (G.enemyGroup || []).forEach(en => {
+      QuestSystem.onKill(en.id, !!(en.mutantTraits && en.mutantTraits.length));
+    });
+  }
+
   ResultUI.show(type, G.party);
 }
 

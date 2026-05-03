@@ -616,6 +616,21 @@ const MapEngine = (() => {
     const px = MapPlayer.px - cam.x + TILE / 2;
     const py = MapPlayer.py - cam.y + TILE / 2;
 
+    // --- VOID CORRUPTION VISUALS ---
+    // Apply CSS filter to the canvas based on exploration time (Infection)
+    const wrap = _canvas.parentElement;
+    if (wrap) {
+      const fogT = _fogProgress(); // 0..1
+      if (fogT > 0.05) {
+        const hue = Math.round(fogT * 60); // subtle shift towards purple
+        const sepia = (fogT * 0.4).toFixed(2);
+        const bright = (1.0 - fogT * 0.15).toFixed(2);
+        wrap.style.filter = `hue-rotate(${hue}deg) sepia(${sepia}) brightness(${bright})`;
+      } else {
+        wrap.style.filter = '';
+      }
+    }
+
     const atmo = _getAtmosphereColor();
     _ctx.fillStyle = atmo.c;
     _ctx.fillRect(0, 0, cw, ch);
@@ -1675,14 +1690,16 @@ const MapEngine = (() => {
     if (layer) layer.innerHTML = '';
     if (typeof Cutscene !== 'undefined') Cutscene._skipTw();
     if (typeof Focus !== 'undefined') Focus.setContext(null);
-    // Only fire completeCb on the very first interaction — not on repeat visits
+    // Only fire completeCb / giveQuest on the very first interaction — not on repeat visits
     const firstTime  = _npcCurrent && !_npcCurrent.isTalked;
     const completeCb = firstTime && _npcCurrent.onDialogueComplete;
+    const giveQuest  = firstTime && _npcCurrent.giveQuest;
     if (_npcCurrent) {
       MapEntities.markNPCTalked(_npcCurrent.id);
       _npcCurrent._dialogueOpen = false;
       _npcCurrent = null;
     }
+    if (giveQuest && typeof QuestSystem !== 'undefined') QuestSystem.accept(giveQuest);
     if (completeCb) completeCb();
     else resume();
   }
@@ -1726,6 +1743,7 @@ const MapEngine = (() => {
     getMap, getCam, getTile, isRunning, resetFog, fogProgress, npcDialogueNext,
     interact,
     isBlocked: _isBlocked,
+    getFogTime: () => _fogTime,
     openDialogue: _openGenericDialogue,
     hasTriggerFired: id => _firedTriggers.has(id),
     triggerEncounter: enc => _triggerEncounter(enc),

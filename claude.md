@@ -144,6 +144,9 @@ Applied as **flat additions** after `computeStats()` and `applyRelicBonuses()` i
 ### Save / Load Contract
 Only `lv`, `exp`, `gold`, `hp`, `mp`, `isKO` are persisted. On load, all other stats are recomputed via `computeStats()` + `applyRelicBonuses()` + Archive mastery buffs. This prevents corrupted saves from permanently inflating stats.
 
+### Save Trigger Rule
+Saving is **camp-only**. The `💾 SAVE PROGRESS` button lives exclusively in the Camp menu (`MapUI.campSave()`). There is no save button in the pause menu. Do not re-add campfire tile checks or auto-save prompts — they were intentionally removed.
+
 ---
 
 ## 🔍 Debugging & Diagnostics

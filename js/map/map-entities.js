@@ -675,10 +675,30 @@ const MapEntities = (() => {
     if (MapPlayer.checkRandomEncounter()) {
       _encounteredIdx = -1;
       const ids = _buildEncounterGroup(null, map);
+      
+      // --- RANDOM ENCOUNTER MUTATION ---
+      // Roll for mutation based on map exploration time (from MapEngine)
+      let mutation = null;
+      let mutantTraits = null;
+      const mapTime = (typeof MapEngine !== 'undefined') ? MapEngine.getFogTime() : 0;
+      const mc = map.mutationConfig || MUTATION_DEFAULTS;
+      
+      if (mapTime >= (mc.corruptThreshold ?? MUTATION_DEFAULTS.corruptThreshold)) {
+        if (Math.random() < (mc.corruptChance ?? MUTATION_DEFAULTS.corruptChance)) {
+          mutation = 'corrupted';
+        }
+      }
+      if (mutation === 'corrupted' && mapTime >= (mc.mutantThreshold ?? MUTATION_DEFAULTS.mutantThreshold)) {
+        if (Math.random() < (mc.mutantChance ?? MUTATION_DEFAULTS.mutantChance)) {
+          mutation = 'mutant';
+          mutantTraits = _rollMutantTraits();
+        }
+      }
+
       return {
         enemies: ids,
-        mutation: null,
-        mutantTraits: null,
+        mutation,
+        mutantTraits,
         isBoss: false
       };
     }

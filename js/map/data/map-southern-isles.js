@@ -47,7 +47,7 @@ MAP_DEFS.southern_isles = {
         { id: 'survivor',     x: 65, y: 65, dialogueKey: 'southern_isles',         behavior: 'stationary', name: 'Survivor' },
 
         // ── SETTLEMENT NPCs ───────────────────────────────────────
-        { id: 'si_elder',     x: 55, y: 45, dialogueKey: 'southern_isles',         behavior: 'stationary' },
+        { id: 'si_elder',     x: 55, y: 45, dialogueKey: 'southern_isles',         behavior: 'stationary', giveQuest: 'naga_threat' },
         { id: 'si_healer',    x: 62, y: 46, dialogueKey: 'southern_isles',         behavior: 'stationary' },
         { id: 'si_builder',   x: 48, y: 50, dialogueKey: 'southern_isles',         behavior: 'stationary' },
         { id: 'market_ghost', x: 60, y: 52, dialogueKey: 'southern_isles',         behavior: 'stationary' },
