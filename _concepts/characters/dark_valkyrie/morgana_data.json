@@ -1,0 +1,66 @@
+{
+    "id": "morgana",
+    "name": "Morgana",
+    "alias": "Morgana",
+    "title": "The Dark Valkyrie",
+    "gender": "female",
+    "age": 22,
+    "origin": "Aethoria — The Shadow Reach (Citadel of Shadows)",
+    "description": "A cursed sentinel of the Ebon Line. She wields a blade of pure void that consumes its user as quickly as it consumes its enemies.",
+    "personality": "Haunted, fierce, self-sacrificing",
+    "icon": "🖤",
+    "portrait_color": "#111827",
+    "hair_color": "#fef08a",
+    "skin_color": "#f1f5f9",
+    "armor_color": "#1e1b4b",
+    "base_stats": {
+        "hp": 85,
+        "mp": 18,
+        "atk": 24,
+        "def": 10,
+        "spd": 16,
+        "mag": 8,
+        "lck": 10
+    },
+    "stat_bonuses": {
+        "atk": 6,
+        "hp": 4
+    },
+    "class_affinity": [
+        "dark_valkyrie",
+        "ebon_knight"
+    ],
+    "passive": {
+        "id": "obsidian_pulse",
+        "name": "Obsidian Pulse",
+        "description": "Every 3rd attack deals double damage but costs 5% of Max HP. Cursed strength comes at a price.",
+        "traits": [
+            {
+                "type": "LIFE_DRAIN_ON_ATTACK",
+                "value": 0.05,
+                "target": "self"
+            },
+            {
+                "type": "PROC_DAMAGE_BOOST",
+                "multiplier": 2.0,
+                "requirement": "THIRD_STRIKE"
+            }
+        ]
+    },
+    "skills": [
+        {
+            "id": "void_rend",
+            "name": "Void Rend",
+            "mp_cost": 12,
+            "description": "A heavy horizontal slash that leaves a shadow trail, dealing 1.5x ATK damage and applying Shadow Burn.",
+            "type": "PHYSICAL_VOID"
+        },
+        {
+            "id": "ebon_awakening",
+            "name": "Ebon Awakening",
+            "mp_cost": 25,
+            "description": "Fully embrace the curse. Grants invulnerability for 3 turns but drains 10% HP per turn.",
+            "type": "BUFF_CURSE"
+        }
+    ]
+}
