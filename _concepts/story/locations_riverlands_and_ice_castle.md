@@ -20,7 +20,9 @@ The bridge is guarded by the **River King**, an ancient water spirit that rests 
 Floor 3 is not just a deeper cave—it was once the main subterranean hub for the ancient **Ash Kingdom** (Aethelgard). Now, the entire area has been flash-frozen, creating a massive, icy cavern filled with dangerous underwater reservoirs. 
 
 The floor is divided into three distinct geographical zones:
-*   **The North (The Ice Castle)**: A massive, abandoned castle of ice looms in the north. The doors are currently sealed solid by magical frost, making it **impassable for now** (this will be an explorable expansion dungeon/map in the future).
+*   **The North (The Ice Castle)**: A massive, abandoned castle of ice looms in the north. The doors are currently sealed solid by magical frost.
+    *   **Recruitment — Selene**: Once the **Demon Lord** is defeated at the floor's core, the ambient temperature begins to rise, and the castle's gates melt. Inside the Royal Sanctum, **Selene** (the Last Heir of Aethelgard) awakens from cryostatis.
+    *   **The Challenge**: Believing the party to be more of Valdris's servants, she will challenge them to a mandatory duel. Upon defeat, she recognizes the Light resonance in the party and joins the cause to reclaim her kingdom.
 *   **The West (The Outpost)**: A small, desperate human settlement has managed to survive here near the thermal vents, providing a final safe zone and merchant area before the climax.
 *   **The South (The Submerged Ruins)**: A crumbling, frozen ruin that holds the kingdom's greatest treasure. 
 
