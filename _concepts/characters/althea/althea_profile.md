@@ -1,7 +1,7 @@
 # Character Concept: Althea — The Living Echo
 
 ![Althea](althea_artwork.png)
-
+![Althea Spritesheet](althea_spritesheet.png)
 ## 👤 Profile
 - **Full Name**: Althea (The Collective Soul of the Ebon Light)
 - **Title**: The Saint of What Could Have Been / The Luminous Echo

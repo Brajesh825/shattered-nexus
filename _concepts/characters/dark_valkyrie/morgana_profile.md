@@ -1,7 +1,7 @@
 # Character Concept: Morgana — The Dark Valkyrie
 
-![Morgana](dark_valkyrie_upscaled.png)
-
+![Morgana](dark_valkyrie_upgraded_v2.png)
+![Morgana Spritesheet](morgana_spritesheet_final.png)
 ## 👤 Profile
 - **Full Name**: Morgana of the Ebon Line
 - **Title**: The Dark Valkyrie / Heiress of the Cursed Steel
