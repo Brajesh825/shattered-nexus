@@ -16,10 +16,10 @@ MAP_DEFS.eastern_wetlands = {
         { weight: 4, enemies: ['mushroom', 'mushroom'] },
         { weight: 3, enemies: ['spider'] },
         { weight: 2, enemies: ['mushroom', 'spider'] },
-        { weight: 2, enemies: ['slug'] },
+        { weight: 2, enemies: ['slime'] },
         { weight: 1, enemies: ['spider', 'spider'] },
         { weight: 1, enemies: ['mushroom', 'mushroom', 'spider'] },
-        { weight: 1, enemies: ['slug', 'mushroom'] }
+        { weight: 1, enemies: ['slime', 'mushroom'] }
     ],
     enemies: [
         // --- MIRE SENTINELS ---

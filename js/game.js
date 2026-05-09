@@ -345,7 +345,7 @@ const G = {
   activePartyIdx: 0,
   settings: {
     /** @type {'auto'|'high'|'low'} */
-    graphicsQuality: localStorage.getItem('sn_graphics_quality') || 'auto'
+    graphicsQuality: typeof Settings !== 'undefined' ? Settings.getQuality() : 'auto'
   },
 
   /** The map-walking party member. Falls back through activePartyIdx → isPlayer → index 0. */
@@ -364,6 +364,18 @@ const G = {
 /* ============================================================
    UI HELPERS
    ============================================================ */
+function escapeHtml(value) {
+  return String(value ?? '').replace(/[&<>"']/g, ch => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  })[ch]);
+}
+
+window.escapeHtml = escapeHtml;
+
 const CHAR_COLOR = {
   aya: '#7dd3fc', tao: '#ef4444', lulu: '#2dd4bf', rei: '#4ade80',
   ria: '#a78bfa', valka: '#e879f9', drake: '#0ea5e9', rex: '#fbbf24'

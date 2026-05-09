@@ -6,6 +6,9 @@ require('./action-handler.test.js');
 require('./rules-contract.test.js');
 require('./high-level-scaling.test.js');
 require('./mitigation-defense.test.js');
+require('./sw-cache-contract.test.js');
+require('./data-contract.test.js');
+require('./settings-save-contract.test.js');
 
 const { run } = require('./test-harness.js');
 

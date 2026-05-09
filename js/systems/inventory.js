@@ -292,6 +292,7 @@ const InventoryUI = (() => {
       return;
     }
 
+    const esc = (typeof escapeHtml === 'function') ? escapeHtml : (v) => v;
     items.forEach(stack => {
       const def = G.items.find(i => i.id === stack.itemId);
       const active = _selectedItem && _selectedItem.id === def.id;
@@ -299,7 +300,7 @@ const InventoryUI = (() => {
       btn.className = `itm-entry ${active ? 'active' : ''}`;
       btn.innerHTML = `
         <span class="itm-entry-icon">${def.icon}</span>
-        <span class="itm-entry-name">${def.name}</span>
+        <span class="itm-entry-name">${esc(def.name)}</span>
         <span class="itm-entry-qty">×${stack.qty}</span>
       `;
       btn.onclick = () => { _selectedItem = def; render(); };
@@ -319,11 +320,12 @@ const InventoryUI = (() => {
     const isUsable = def.usable_in?.includes('map');
     const rarityClass = `rarity-${def.rarity || 'common'}`;
 
+    const esc = (typeof escapeHtml === 'function') ? escapeHtml : (v) => v;
     detEl.innerHTML = `
       <div class="itm-showcase-box ${rarityClass}">${def.icon}</div>
-      <div class="itm-detail-name">${def.name}</div>
-      <div class="itm-detail-meta">${def.rarity || 'Common'} · ${def.subtype?.replace('_',' ') || 'Item'}</div>
-      <div class="itm-detail-desc">${def.description}</div>
+      <div class="itm-detail-name">${esc(def.name)}</div>
+      <div class="itm-detail-meta">${esc(def.rarity || 'Common')} · ${esc(def.subtype?.replace('_',' ') || 'Item')}</div>
+      <div class="itm-detail-desc">${esc(def.description)}</div>
       <button class="itm-use-btn" ${!isUsable ? 'disabled' : ''} onclick="InventoryUI.onUseClick()">
         ${isUsable ? 'USE ITEM' : 'CANNOT USE ON MAP'}
       </button>
@@ -353,10 +355,11 @@ const InventoryUI = (() => {
       const mpPct = (m.mp / m.maxMp) * 100;
       const invalid = isRevive ? !m.isKO : m.isKO;
 
+      const esc = (typeof escapeHtml === 'function') ? escapeHtml : (v) => v;
       const card = document.createElement('div');
       card.className = `itm-target-card ${invalid ? 'disabled' : ''}`;
       card.innerHTML = `
-        <div class="itm-target-name" style="color:${col}">${m.displayName}</div>
+        <div class="itm-target-name" style="color:${col}">${esc(m.displayName)}</div>
         <div class="itm-target-bar-bg"><div class="itm-target-bar-fill" style="width:${hpPct}%; background:#4ade80"></div></div>
         <div class="itm-target-bar-bg"><div class="itm-target-bar-fill" style="width:${mpPct}%; background:#5060ff"></div></div>
       `;
