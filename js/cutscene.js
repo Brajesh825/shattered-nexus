@@ -283,9 +283,10 @@ const Cutscene = {
   },
 
   _spiritSrc(name) {
-    const q = localStorage.getItem('spriteQuality') || 'normal';
-    const suffix = q === 'low' ? '_sprite_low.webp' : '_sprite.png';
-    return `images/characters/spirits/${name.toLowerCase()}${suffix}`;
+    if (typeof SpriteRenderer !== 'undefined' && SpriteRenderer.getSpritePath) {
+      return SpriteRenderer.getSpritePath(name);
+    }
+    return `images/characters/spirits/${name.toLowerCase()}_sprite.png`;
   },
 
   el: id => document.getElementById(id),
