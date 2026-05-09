@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Aethelgard | Sprite Sheet Comparer</title>
+  <style>
+    :root {
+      --bg: #05040a;
+      --panel: #110f1f;
+      --border: #2a2845;
+      --text: #e0d8ff;
+      --gold: #d4af37;
+      --gold-glow: rgba(212, 175, 55, 0.3);
+      --accent: #6c5ce7;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+      margin: 0;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* --- Sidebar --- */
+    #sidebar {
+      width: 320px;
+      background: var(--panel);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      gap: 15px;
+    }
+
+    h1 {
+      font-size: 1.2rem;
+      color: var(--gold);
+      margin: 0 0 10px 0;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      border-bottom: 1px solid var(--gold);
+      padding-bottom: 10px;
+    }
+
+    #char-list {
+      flex-grow: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .char-item {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      padding: 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .char-item:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: var(--gold);
+    }
+
+    /* --- Stage Area --- */
+    #main-stage {
+      flex-grow: 1;
+      position: relative;
+      background: radial-gradient(circle at center, #1a1830 0%, #05040a 100%);
+      display: flex;
+      flex-direction: column;
+    }
+
+    #viewport {
+      flex-grow: 1;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 100px; /* Ground line padding */
+    }
+
+    /* Ground Line */
+    #ground {
+      position: absolute;
+      bottom: 100px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--gold);
+      box-shadow: 0 0 15px var(--gold-glow);
+      z-index: 5;
+    }
+
+    /* Height Reference Lines */
+    .guide-line {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: rgba(212, 175, 55, 0.1);
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      padding-left: 10px;
+      font-size: 10px;
+      color: var(--gold);
+      opacity: 0.5;
+    }
+
+    /* Lineup Container */
+    #lineup {
+      display: flex;
+      align-items: flex-end;
+      gap: 40px;
+      z-index: 10;
+      transition: gap 0.3s;
+    }
+
+    .actor {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: grab;
+    }
+
+    .actor:active { cursor: grabbing; }
+
+    .actor-sprite {
+      image-rendering: pixelated;
+      transition: transform 0.1s;
+    }
+
+    .actor-label {
+      position: absolute;
+      top: -30px;
+      background: var(--gold);
+      color: var(--bg);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 12px;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    /* --- Controls Overlay --- */
+    #actor-controls {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+      background: rgba(17, 15, 31, 0.9);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 15px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      backdrop-filter: blur(10px);
+      z-index: 100;
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      min-width: 150px;
+    }
+
+    label { font-size: 12px; color: var(--gold); text-transform: uppercase; }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--gold);
+    }
+
+    button.primary {
+      background: var(--gold);
+      color: var(--bg);
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button.danger {
+      background: #e74c3c;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 10px;
+      cursor: pointer;
+    }
+
+    .selected {
+      border-color: var(--gold) !important;
+      box-shadow: 0 0 10px var(--gold-glow);
+    }
+
+  </style>
+</head>
+<body>
+
+<div id="sidebar">
+  <h1>Character Roster</h1>
+  <div id="char-list">
+    <!-- Loaded from characters.json -->
+  </div>
+  <button class="primary" onclick="exportConfig()">📋 Copy Scale Config</button>
+</div>
+
+<div id="main-stage">
+  <div id="viewport">
+    <div id="ground"></div>
+    <div id="lineup"></div>
+    
+    <!-- Guidelines generated by JS -->
+  </div>
+
+  <div id="actor-controls" style="display: none;">
+    <div class="control-group">
+      <label>Selected: <span id="ctrl-name">-</span></label>
+      <button class="danger" onclick="removeSelected()">Remove Character</button>
+    </div>
+    <div class="control-group">
+      <label>Scale: <span id="ctrl-scale-val">1.0</span>x</label>
+      <input type="range" id="ctrl-scale" min="0.5" max="2.0" step="0.01" value="1.0" oninput="updateSelectedScale(this.value)">
+    </div>
+    <div class="control-group">
+      <label>Vertical Offset: <span id="ctrl-y-val">0</span>px</label>
+      <input type="range" id="ctrl-y" min="-50" max="50" step="1" value="0" oninput="updateSelectedY(this.value)">
+    </div>
+    <div class="control-group">
+      <label>Frame:</label>
+      <select id="ctrl-frame" onchange="updateSelectedFrame(this.value)">
+        <option value="idle">Idle</option>
+        <option value="prepare">Prepare</option>
+        <option value="attack">Attack</option>
+        <option value="magic">Magic</option>
+        <option value="hurt">Hurt</option>
+        <option value="fallen">Fallen</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<!-- Load Engine Scripts -->
+<script src="js/utils.js"></script>
+<script src="js/systems/settings-manager.js"></script>
+<script src="js/sprites.js"></script>
+
+<script>
+  let characters = [];
+  let activeActors = [];
+  let selectedActorId = null;
+
+  async function init() {
+    // 1. Create Guidelines
+    const viewport = document.getElementById('viewport');
+    for(let h=100; h<=600; h+=100) {
+      const line = document.createElement('div');
+      line.className = 'guide-line';
+      line.style.bottom = (100 + h) + 'px';
+      line.innerHTML = `H: ${h}px`;
+      viewport.appendChild(line);
+    }
+
+    // 2. Load Characters
+    try {
+      const resp = await fetch('data/characters.json');
+      characters = await resp.json();
+      renderSidebar();
+    } catch (e) {
+      console.error("Failed to load characters", e);
+    }
+  }
+
+  function renderSidebar() {
+    const list = document.getElementById('char-list');
+    list.innerHTML = '';
+    characters.forEach(c => {
+      const item = document.createElement('div');
+      item.className = 'char-item';
+      item.innerHTML = `
+        <span>${c.name}</span>
+        <span style="font-size: 10px; opacity: 0.5;">#${c.id}</span>
+      `;
+      item.onclick = () => addActor(c);
+      list.appendChild(item);
+    });
+  }
+
+  function addActor(char) {
+    const actorId = 'actor-' + Date.now();
+    const actor = {
+      id: actorId,
+      charId: char.id,
+      name: char.name,
+      scale: 1.0,
+      yOffset: 0,
+      frame: 'idle'
+    };
+    activeActors.push(actor);
+    
+    const el = document.createElement('div');
+    el.className = 'actor';
+    el.id = actorId;
+    el.onclick = (e) => { e.stopPropagation(); selectActor(actorId); };
+    
+    el.innerHTML = `
+      <div class="actor-label">${char.name}</div>
+      <div class="actor-sprite"></div>
+    `;
+    
+    document.getElementById('lineup').appendChild(el);
+    refreshActorSprite(actor);
+    selectActor(actorId);
+  }
+
+  function selectActor(id) {
+    selectedActorId = id;
+    document.querySelectorAll('.actor').forEach(a => a.classList.toggle('selected', a.id === id));
+    
+    const actor = activeActors.find(a => a.id === id);
+    if (actor) {
+      document.getElementById('actor-controls').style.display = 'flex';
+      document.getElementById('ctrl-name').innerText = actor.name;
+      document.getElementById('ctrl-scale').value = actor.scale;
+      document.getElementById('ctrl-scale-val').innerText = actor.scale;
+      document.getElementById('ctrl-y').value = actor.yOffset;
+      document.getElementById('ctrl-y-val').innerText = actor.yOffset;
+      document.getElementById('ctrl-frame').value = actor.frame;
+    }
+  }
+
+  function updateSelectedScale(val) {
+    const actor = activeActors.find(a => a.id === selectedActorId);
+    if (actor) {
+      actor.scale = parseFloat(val);
+      document.getElementById('ctrl-scale-val').innerText = val;
+      refreshActorSprite(actor);
+    }
+  }
+
+  function updateSelectedY(val) {
+    const actor = activeActors.find(a => a.id === selectedActorId);
+    if (actor) {
+      actor.yOffset = parseInt(val);
+      document.getElementById('ctrl-y-val').innerText = val;
+      refreshActorSprite(actor);
+    }
+  }
+
+  function updateSelectedFrame(val) {
+    const actor = activeActors.find(a => a.id === selectedActorId);
+    if (actor) {
+      actor.frame = val;
+      refreshActorSprite(actor);
+    }
+  }
+
+  function removeSelected() {
+    if (!selectedActorId) return;
+    const el = document.getElementById(selectedActorId);
+    if (el) el.remove();
+    activeActors = activeActors.filter(a => a.id !== selectedActorId);
+    selectedActorId = null;
+    document.getElementById('actor-controls').style.display = 'none';
+  }
+
+  function refreshActorSprite(actor) {
+    const el = document.getElementById(actor.id);
+    if (!el) return;
+    const spriteContainer = el.querySelector('.actor-sprite');
+    
+    // We use the SpriteRenderer to set the background
+    // But we manually override scale and height for the comparison
+    const baseH = 256; // High res base for comparison
+    SpriteRenderer.setFrame(spriteContainer, actor.charId, actor.frame, baseH);
+    
+    spriteContainer.style.transform = `scale(${actor.scale}) translateY(${-actor.yOffset}px)`;
+    spriteContainer.style.transformOrigin = 'bottom center';
+  }
+
+  function exportConfig() {
+    const config = {};
+    activeActors.forEach(a => {
+      config[a.charId] = { scale: a.scale, yOffset: a.yOffset };
+    });
+    const str = JSON.stringify(config, null, 2);
+    console.log("Scale Config:", str);
+    navigator.clipboard.writeText(str);
+    alert("Configuration copied to clipboard! Share it with Antigravity to apply to the engine.");
+  }
+
+  window.onload = init;
+  document.getElementById('main-stage').onclick = () => {
+    selectedActorId = null;
+    document.querySelectorAll('.actor').forEach(a => a.classList.remove('selected'));
+    document.getElementById('actor-controls').style.display = 'none';
+  };
+</script>
+
+</body>
+</html>
