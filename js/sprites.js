@@ -266,7 +266,12 @@ const SpriteRenderer = (() => {
   }
 
   function getSuffix() {
-    return '_sprite.png';
+    // Check both legacy G.settings and new G.graphics
+    const qual = typeof Settings !== 'undefined'
+      ? Settings.getQuality()
+      : (G.settings?.graphicsQuality || G.graphics || 'auto');
+    const isLow = qual === 'low' || (qual === 'auto' && window.innerWidth < 800);
+    return isLow ? '_sprite_low.webp' : '_sprite.png';
   }
 
   function getSpritePath(charId) {
@@ -281,4 +286,5 @@ const SpriteRenderer = (() => {
 
   return { drawHero, drawEnemy, registerHero, registerEnemy, drawHeroToCanvas, drawEnemyToCanvas, SPRITE_MANIFEST, setFrame, getSuffix, getSpritePath, FRAME_MAP };
 })();
+window.SpriteRenderer = SpriteRenderer;
 

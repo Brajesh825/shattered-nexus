@@ -310,12 +310,10 @@ const BattleUI = {
         setTimeout(() => { drain.style.width = pct + '%'; }, 300);
       }
 
-      let traitHtml = '';
-      if (e.mutantTraits?.length) {
-        traitHtml = `<div class="enemy-traits">${e.mutantTraits.map(t => `<span class="trait-pill">${t.label}</span>`).join('')}</div>`;
-      }
       const hpTxt = alive ? `<div class="enemy-hp-txt">${Math.max(0, e.hp)}/${e.maxHp}</div>` : '';
-      const newInfo = `<div class="enemy-name">${e.name}</div><div class="enemy-level">Lv ${e.level}</div>${hpTxt}${traitHtml}`;
+      const esc = (typeof escapeHtml === 'function') ? escapeHtml : (v) => v;
+      const traitHtml = (e.mutantTraits || []).map(t => `<span class="trait-pill">${esc(t.label)}</span>`).join('');
+      const newInfo = `<div class="enemy-name">${esc(e.name)}</div><div class="enemy-level">Lv ${e.level}</div>${hpTxt}<div class="enemy-traits">${traitHtml}</div>`;
       if (info.innerHTML !== newInfo) info.innerHTML = newInfo;
 
       // Indicator
@@ -393,8 +391,9 @@ const BattleUI = {
       if (member.parentElement !== container) container.appendChild(member);
 
       // Update Info only if content changed
+      const esc = (typeof escapeHtml === 'function') ? escapeHtml : (v) => v;
       const traitHtml = ''; // Reserved for future party traits
-      const newInfo = `<div class="party-name">${m.displayName}</div><div class="party-level">Lv ${m.lv}</div>${traitHtml}`;
+      const newInfo = `<div class="party-name">${esc(m.displayName)}</div><div class="party-level">Lv ${m.lv}</div>${traitHtml}`;
       if (info.innerHTML !== newInfo) {
         info.innerHTML = newInfo;
         info.style.color = col;
@@ -502,10 +501,11 @@ const BattleUI = {
       card.style.borderColor = isActive ? col : col + '50';
 
       const statusHtml = this._renderPSCStatuses(m);
+      const esc = (typeof escapeHtml === 'function') ? escapeHtml : (v) => v;
 
       card.innerHTML = `
         <div class="psc-header">
-          <div class="psc-name" style="color:${col}">${m.displayName} <span class="psc-lv">L${m.lv}</span></div>
+          <div class="psc-name" style="color:${col}">${esc(m.displayName)} <span class="psc-lv">L${m.lv}</span></div>
           <div class="psc-statuses">${statusHtml}</div>
         </div>
         <div class="psc-hp-bg">
@@ -529,9 +529,10 @@ const BattleUI = {
 
   _renderPSCStatuses(m) {
     const tokens = [];
+    const esc = (typeof escapeHtml === 'function') ? escapeHtml : (v) => v;
     const push = (icon, turns, cl = '') => {
       if (turns === undefined || turns === null || turns === '-') tokens.push(`<div class="psct ${cl}">${icon}</div>`);
-      else tokens.push(`<div class="psct ${cl}">${icon}<span class="psct-cnt">${turns}</span></div>`);
+      else tokens.push(`<div class="psct ${cl}">${icon}<span class="psct-cnt">${esc(String(turns))}</span></div>`);
     };
 
     if (m.statuses) {
@@ -561,12 +562,13 @@ const BattleUI = {
     const classInfo = isSmall ? `LV ${m.lv}` : `${m.cls.name} · LV ${m.lv}`;
     const mpInfo = isSmall ? `MP ${m.mp}` : `MP ${m.mp}/${m.maxMp}`;
     
+    const esc = (typeof escapeHtml === 'function') ? escapeHtml : (v) => v;
     bar.innerHTML =
-      `<div class="amb-portrait" style="color:${col};border-color:${col}">${(m.displayName||m.charId||'?')[0].toUpperCase()}</div>` +
+      `<div class="amb-portrait" style="color:${col};border-color:${col}">${esc((m.displayName||m.charId||'?')[0].toUpperCase())}</div>` +
       `<span class="amb-arrow" style="color:${col}">▶</span>` +
-      `<span class="amb-name" style="color:${col}">${m.displayName}</span>` +
-      `<span class="amb-class">${classInfo}</span>` +
-      `<span class="amb-mp" style="color:#6080ff">${mpInfo}</span>`;
+      `<span class="amb-name" style="color:${col}">${esc(m.displayName)}</span>` +
+      `<span class="amb-class">${esc(classInfo)}</span>` +
+      `<span class="amb-mp" style="color:#6080ff">${esc(mpInfo)}</span>`;
     
     // Auto-focus the action menu for keyboard/controller
     if (typeof Focus !== 'undefined') {
@@ -926,3 +928,4 @@ const BattleUI = {
     setTimeout(() => overlay.remove(), duration);
   }
 };
+window.BattleUI = BattleUI;

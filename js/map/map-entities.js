@@ -258,7 +258,8 @@ const MapPlayer = (() => {
     _heroImgCache[charId] = entry;
 
     const suffix  = _variantMap[charId] || '';
-    const isLow   = G.settings.graphicsQuality === 'low' || (G.settings.graphicsQuality === 'auto' && window.innerWidth < 800);
+    const qual    = typeof Settings !== 'undefined' ? Settings.getQuality() : (G.settings?.graphicsQuality || 'auto');
+    const isLow   = qual === 'low' || (qual === 'auto' && window.innerWidth < 800);
     const resExt  = isLow ? '_low.webp' : '.png';
     const variant = _variantMap[charId] || '';
     const base    = `images/characters/map/sheets/${charId}_sheet`;
@@ -900,7 +901,7 @@ const MapEntities = (() => {
     const NPC_FRAME_CNT  = 3;
 
     function _loadImg(src) {
-      const qual = G.settings?.graphicsQuality || G.graphics || 'auto';
+      const qual = typeof Settings !== 'undefined' ? Settings.getQuality() : (G.settings?.graphicsQuality || G.graphics || 'auto');
       const isLow = qual === 'low' || (qual === 'auto' && window.innerWidth < 800);
       let resSrc = src;
       if (isLow && src.endsWith('.png')) {

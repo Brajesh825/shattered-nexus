@@ -4,6 +4,9 @@
  */
 const Settings = {
   _KEY: 'cc_settings_v1',
+  _LEGACY_GRAPHICS_KEY: 'sn_graphics_quality',
+  _LEGACY_SPRITE_KEY: 'spriteQuality',
+  _hasQualityPreference: false,
   data: {
     bgm: 50,
     sfx: 50,
@@ -13,15 +16,28 @@ const Settings = {
 
   init() {
     const saved = localStorage.getItem(this._KEY);
+    let savedQuality = null;
+
     if (saved) {
       try {
-        this.data = { ...this.data, ...JSON.parse(saved) };
+        const parsed = JSON.parse(saved);
+        this.data = { ...this.data, ...parsed };
+        savedQuality = parsed.quality;
       } catch(e) { console.warn('Settings load failed:', e); }
     }
+
+    const migratedQuality = this._readStoredQuality(savedQuality);
+    if (migratedQuality) {
+      this.data.quality = migratedQuality;
+      this._hasQualityPreference = true;
+    }
+
     this.apply();
   },
 
   apply() {
+    this.data.quality = this.normalizeQuality(this.data.quality);
+
     // Volume
     if (window.BGM) BGM.setVolume(this.data.bgm / 100);
     if (window.SFX) SFX.setVolume(this.data.sfx / 100);
@@ -35,6 +51,13 @@ const Settings = {
       
       const qBtn = document.getElementById('quality-btn');
       if (qBtn) qBtn.textContent = `Quality: ${this.data.quality.toUpperCase()}`;
+
+      if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+        navigator.serviceWorker.controller.postMessage({
+          type: 'SET_QUALITY',
+          quality: this.data.quality
+        });
+      }
     }
 
     // Text Speed (Inverts the value for interval timing)
@@ -50,8 +73,33 @@ const Settings = {
   },
 
   update(key, val) {
-    this.data[key] = val;
+    this.data[key] = key === 'quality' ? this.normalizeQuality(val) : val;
+    if (key === 'quality') this._hasQualityPreference = true;
     this.apply();
+  },
+
+  normalizeQuality(value) {
+    if (value === 'normal' || value === 'high') return 'high';
+    if (value === 'low') return 'low';
+    return 'auto';
+  },
+
+  getQuality() {
+    return this.normalizeQuality(this.data.quality);
+  },
+
+  hasQualityPreference() {
+    return this._hasQualityPreference;
+  },
+
+  _readStoredQuality(savedQuality) {
+    const candidates = [
+      savedQuality,
+      localStorage.getItem(this._LEGACY_GRAPHICS_KEY),
+      localStorage.getItem(this._LEGACY_SPRITE_KEY)
+    ];
+    const found = candidates.find(q => q === 'auto' || q === 'high' || q === 'normal' || q === 'low');
+    return found ? this.normalizeQuality(found) : null;
   },
 
   open() {

@@ -54,6 +54,7 @@ const QuestUI = (() => {
       return;
     }
 
+    const esc = (typeof escapeHtml === 'function') ? escapeHtml : (v) => v;
     const activeCards = active.map(q => {
       const progress = Math.min(100, (q.current / q.count) * 100);
       return `
@@ -61,14 +62,14 @@ const QuestUI = (() => {
           background: rgba(10, 8, 25, 0.7);
           border: 1px solid rgba(200, 164, 90, 0.3);
           padding: 12px; margin-bottom: 12px; border-radius: 4px;">
-          <div style="color:var(--gold); font-weight:bold; margin-bottom:4px;">${q.label}</div>
-          <div style="font-size:11px; color:rgba(255,255,255,0.6); margin-bottom:8px;">${q.desc}</div>
+          <div style="color:var(--gold); font-weight:bold; margin-bottom:4px;">${esc(q.label)}</div>
+          <div style="font-size:11px; color:rgba(255,255,255,0.6); margin-bottom:8px;">${esc(q.desc)}</div>
           <div style="height:6px; background:rgba(0,0,0,0.4); border-radius:3px; overflow:hidden; margin-bottom:8px;">
             <div style="width:${progress}%; height:100%; background:var(--gold); transition:width 0.3s ease;"></div>
           </div>
           <div style="display:flex; justify-content:space-between; align-items:center;">
             <div style="font-size:10px; color:rgba(255,255,255,0.4);">Progress: ${q.current} / ${q.count}</div>
-            <div style="font-size:10px; color:var(--cyan);">Reward: ${_rewardLabel(q.rewards)}</div>
+            <div style="font-size:10px; color:var(--cyan);">Reward: ${esc(_rewardLabel(q.rewards))}</div>
           </div>
         </div>`;
     }).join('');
