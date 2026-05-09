@@ -17,7 +17,7 @@ const AssetPreloader = (() => {
     // Character spirit portraits
     spirits: [
       'aya', 'tao', 'lulu', 'rei',
-      'ria', 'valka', 'drake', 'rex'
+      'ria', 'valka', 'drake', 'rex', 'sera'
     ],
     // Enemies (prioritize common/boss enemies)
     enemies: [
@@ -125,14 +125,11 @@ const AssetPreloader = (() => {
     };
 
     // Run all batches simultaneously
-    const isLowQuality = (localStorage.getItem('spriteQuality') || 'normal') === 'low';
-    
     await Promise.all([
       // 1. Spirits
       loadBatch(ASSETS.spirits, loadImage, 'spirit_', (id) => {
         const charId = id.toLowerCase();
-        const fileName = isLowQuality ? `${charId}_sprite_low.webp` : `${charId}_sprite.png`;
-        return `images/characters/spirits/${fileName}`;
+        return `images/characters/spirits/${charId}_sprite.png`;
       }),
       // 2. Enemies
       loadBatch(ASSETS.enemies, loadImage, 'enemy_', (id) => `images/enemies/${id}.png`),
