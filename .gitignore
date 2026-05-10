@@ -17,4 +17,4 @@ dist/
 node_modules/
 
 # Generation Guides
-**/_prompts.txt
+**/_prompt*
