@@ -94,7 +94,7 @@ const BattleUI = {
 
     // 1. Check if this is an Arc Boss fight
     if (typeof Story !== 'undefined' && Story.active && Story.currentChap === Story.arc?.boss_chapter && Story.currentChap?.background) {
-      scene.style.backgroundImage = `url('images/backgrounds/${Story.currentChap.background}.png')`;
+      scene.style.backgroundImage = `url('images/backgrounds/${Story.currentChap.background}.webp')`;
       scene.style.backgroundSize = 'cover';
       scene.style.backgroundPosition = 'center bottom';
       scene.className = 'scene'; // Clear any gradient classes
@@ -103,7 +103,7 @@ const BattleUI = {
 
     // 2. Check if a specific encounter background was passed from the map data (e.g. Map Bosses)
     if (typeof G !== 'undefined' && G.encounterBg) {
-      scene.style.backgroundImage = `url('images/backgrounds/${G.encounterBg}.png')`;
+      scene.style.backgroundImage = `url('images/backgrounds/${G.encounterBg}.webp')`;
       scene.style.backgroundSize = 'cover';
       scene.style.backgroundPosition = 'center bottom';
       scene.className = 'scene';
@@ -113,7 +113,7 @@ const BattleUI = {
     // 3. Check if we are in a map encounter
     const curMap = (typeof MapEngine !== 'undefined') ? MapEngine.getMap() : null;
     if (curMap && curMap.battleBg) {
-      scene.style.backgroundImage = `url('images/backgrounds/${curMap.battleBg}.png')`;
+      scene.style.backgroundImage = `url('images/backgrounds/${curMap.battleBg}.webp')`;
       scene.style.backgroundSize = 'cover';
       scene.style.backgroundPosition = 'center bottom';
       scene.className = 'scene'; // Clear any gradient classes
