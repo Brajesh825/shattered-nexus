@@ -1,3 +1,5 @@
+require('./input-manager.test.js');
+require('./focus-manager.test.js');
 require('./party.test.js');
 require('./passive-combat.test.js');
 require('./status-system.test.js');
