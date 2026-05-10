@@ -91,7 +91,18 @@ const BattleUI = {
   _applyArcAtmosphere() {
     const scene = this.el('battle-scene');
     if (!scene) return;
-    // Sync parallax layers to current Arc if available
+
+    // Check if we are in a map encounter — use the map's defined battle background
+    const curMap = (typeof MapEngine !== 'undefined') ? MapEngine.getMap() : null;
+    if (curMap && curMap.battleBg) {
+      scene.style.backgroundImage = `url('images/backgrounds/${curMap.battleBg}.png')`;
+      scene.style.backgroundSize = 'cover';
+      scene.style.backgroundPosition = 'center bottom';
+      return;
+    }
+
+    // Fallback: story arc gradient class
+    scene.style.backgroundImage = '';
     if (typeof Story !== 'undefined' && Story.active) {
       scene.classList.add(`arc-bg-${Story.arcIdx % 8}`);
     }

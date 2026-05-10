@@ -18,6 +18,7 @@ MAP_DEFS.verdant_vale = {
     bgm: 'vale_explore',
     battleBgm: 'vale_battle',
     bossBgm: 'void_knight_theme',
+    battleBg: 'verdant_vale',
     ambientLight: 'rgba(60,180,60,0.04)',
     weather: 'leaves',
     enemyLevelRange: [1, 8],
