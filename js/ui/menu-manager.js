@@ -51,11 +51,11 @@ window.addEventListener('DOMContentLoaded', async () => {
   initStars();
   scaleGame();
 
-  const hasQualityPreference = typeof Settings !== 'undefined'
-    ? Settings.hasQualityPreference()
-    : !!localStorage.getItem('spriteQuality');
+  const hasArtPreference = typeof Settings !== 'undefined'
+    ? Settings.hasStylePreference()
+    : !!localStorage.getItem('spriteStyle');
 
-  if (!hasQualityPreference) {
+  if (!hasArtPreference) {
     // First visit — show quality picker before preloader
     const picker = document.getElementById('quality-picker');
     if (picker) { picker.style.display = 'flex'; return; }
@@ -64,10 +64,19 @@ window.addEventListener('DOMContentLoaded', async () => {
   _startGame();
 });
 
-function setQuality(q) {
-  const quality = q === 'normal' ? 'high' : q;
-  if (typeof Settings !== 'undefined') Settings.update('quality', quality);
-  else if (typeof G !== 'undefined' && G.settings) G.settings.graphicsQuality = quality;
+function setArtPreference(style, quality) {
+  if (typeof Settings !== 'undefined') {
+    Settings.update('style', style);
+    Settings.update('quality', quality);
+  } else {
+    // Fallback if settings manager is missing
+    localStorage.setItem('spriteStyle', style);
+    localStorage.setItem('spriteQuality', quality);
+    if (typeof G !== 'undefined' && G.settings) {
+      G.settings.style = style;
+      G.settings.graphicsQuality = quality;
+    }
+  }
   const picker = document.getElementById('quality-picker');
   if (picker) picker.style.display = 'none';
   _startGame();

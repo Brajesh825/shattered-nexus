@@ -176,10 +176,24 @@ test('environment tile svg assets and character sprites exist', () => {
   ];
 
   spriteRequiredIds.forEach(id => {
+    // Check Baseline
     [`images/characters/spirits/${id}_sprite.png`, `images/characters/spirits/${id}_sprite_low.webp`]
       .forEach(spritePath => {
         if (!fileExists(spritePath)) missing.push(spritePath);
       });
+    
+    // Check Illustrious (Optional, only if the character is a primary spirit)
+    // Primary spirits are those in unlocked_by_default or recruitable
+    // We expect them to have _1 versions eventually, but for now we only check if they exist
+    // Actually, the plan says to check for them. Let's make it mandatory for a subset or just check if the file exists when expected.
+    // For now, let's just check the ones we KNOW should have it (Aya, Lulu, Rei, Tao, Valka, Drake, Rex)
+    const primarySpirits = ['aya', 'lulu', 'rei', 'tao', 'valka', 'drake', 'rex', 'sera', 'ria'];
+    if (primarySpirits.includes(id)) {
+      [`images/characters/spirits/${id}_sprite_1.png`, `images/characters/spirits/${id}_sprite_1_low.webp`]
+        .forEach(spritePath => {
+          if (!fileExists(spritePath)) missing.push(`Missing Illustrious: ${spritePath}`);
+        });
+    }
   });
 
   assert.deepStrictEqual(missing, []);
@@ -278,6 +292,37 @@ test('map jsonFile content is valid and references existing enemies', () => {
         missing.push(`${mapId}: jsonFile ${map.jsonFile} failed to parse`);
       }
     }
+  });
+
+  assert.deepStrictEqual(missing, []);
+});
+test('enemy and npc sprites exist', () => {
+  const enemies = readJson('data/enemies.json');
+  const storyIndex = readJson('data/story/index.json');
+  const missing = [];
+
+  // Check Enemy Sprites
+  enemies.forEach(enemy => {
+    const spritePath = `images/enemies/${enemy.id}.png`;
+    if (!fileExists(spritePath)) missing.push(`Enemy Sprite: ${spritePath}`);
+  });
+
+  // Check NPC Map Sheets referenced in story
+  storyIndex.arcs.forEach(arcRef => {
+    if (!fileExists(arcRef.file)) return;
+    const arc = readJson(arcRef.file);
+
+    function checkNPC(node) {
+      if (!node || typeof node !== 'object') return;
+      if (node.type === 'npc' && node.sheet) {
+        const sheetPath = `images/characters/map/sheets/npc/${node.sheet}_sheet.png`;
+        if (!fileExists(sheetPath)) missing.push(`NPC Sheet: ${sheetPath} (arc: ${arcRef.id})`);
+      }
+      Object.values(node).forEach(val => {
+        if (typeof val === 'object') checkNPC(val);
+      });
+    }
+    checkNPC(arc);
   });
 
   assert.deepStrictEqual(missing, []);

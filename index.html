@@ -91,18 +91,18 @@
      ═══════════════════════════════════════ -->
   <div id="quality-picker" style="display:none">
     <div class="qp-box">
-      <div class="qp-title">SPRITE QUALITY</div>
-      <div class="qp-sub">Choose how characters look in battle.<br>You can change this in Settings later.</div>
+      <div class="qp-title">CHOOSE ART STYLE</div>
+      <div class="qp-sub">Select the visual aesthetic for your characters.<br>You can toggle this in Settings at any time.</div>
       <div class="qp-options">
-        <button class="qp-btn" onclick="setQuality('normal')">
-          <span class="qp-icon">✨</span>
-          <span class="qp-label">Normal</span>
-          <span class="qp-desc">Full detail PNG sprites</span>
+        <button class="qp-btn qp-btn-premium" onclick="setArtPreference('illustrious', 'auto')">
+          <span class="qp-icon">💎</span>
+          <span class="qp-label">Vivid Art</span>
+          <span class="qp-desc">Premium shading and<br>dynamic lighting</span>
         </button>
-        <button class="qp-btn" onclick="setQuality('low')">
-          <span class="qp-icon">⚡</span>
-          <span class="qp-label">Low</span>
-          <span class="qp-desc">Lighter WebP sprites<br>faster loads on mobile</span>
+        <button class="qp-btn" onclick="setArtPreference('flat', 'auto')">
+          <span class="qp-icon">✨</span>
+          <span class="qp-label">Classic Art</span>
+          <span class="qp-desc">Clean, cel-shaded<br>classic anime style</span>
         </button>
       </div>
     </div>
@@ -258,13 +258,24 @@
         </div>
 
         <div class="setting-row">
-          <label class="setting-label">GRAPHICS</label>
+          <label class="setting-label">ART STYLE</label>
+          <div class="setting-control">
+            <select id="settings-style" onchange="Settings.update('style', this.value)"
+              style="background:var(--bg-mid); color:var(--cyan); border:1px solid var(--border); padding:4px 8px; border-radius:4px; font-family:var(--vt);">
+              <option value="illustrious">Illustrious (Vivid)</option>
+              <option value="flat">Flat (Classic)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <label class="setting-label">FORMAT</label>
           <div class="setting-control">
             <select id="settings-quality" onchange="Settings.update('quality', this.value)"
               style="background:var(--bg-mid); color:var(--cyan); border:1px solid var(--border); padding:4px 8px; border-radius:4px; font-family:var(--vt);">
               <option value="auto">Auto (Balanced)</option>
-              <option value="high">High (2K/4K)</option>
-              <option value="low">Mobile (Optimized)</option>
+              <option value="high">PNG (High Fidelity)</option>
+              <option value="low">WebP (Optimized)</option>
             </select>
           </div>
         </div>
@@ -489,6 +500,7 @@
     <div id="party-menu" style="display:none">
       <div class="pms-header">
         <span class="pms-title">⚔ PARTY STATUS ⚔</span>
+        <button class="pms-close" onclick="Settings.open()" style="right: 50px; font-size: 14px;">⚙</button>
         <button class="pms-close" onclick="PartyMenu.close()">✕</button>
       </div>
       <div class="pms-nav">
@@ -594,6 +606,7 @@
               <button class="pause-btn" onclick="InventoryUI.open()" style="width: 100%; justify-content: center;">🎒 ITEMS</button>
               <button class="pause-btn" onclick="QuestUI.open()" style="width: 100%; justify-content: center;">📜 QUESTS</button>
               <button class="pause-btn" onclick="ArchiveUI.open()" style="width: 100%; justify-content: center;">📖 BESTIARY</button>
+              <button class="pause-btn" onclick="Settings.open()" style="width: 100%; justify-content: center;">⚙ SETTINGS</button>
               <button class="pause-btn" onclick="InputSettings.open()" style="width: 100%; justify-content: center;">⌨ CONTROLS</button>
               <button class="pause-btn" onclick="MapUI.closePauseMenu()" style="width: 100%; justify-content: center; margin-top: 12px; border-color: var(--text-dim); color: var(--text-dim);">▶ RESUME</button>
             </div>
@@ -1068,7 +1081,7 @@
     function _initQualityBtn() {
       const q = typeof Settings !== 'undefined' ? Settings.getQuality() : (G.settings.graphicsQuality || 'auto');
       const btn = document.getElementById('quality-btn');
-      const labelMap = { 'auto': 'Auto', 'high': 'Normal', 'low': 'Low' };
+      const labelMap = { 'auto': 'Auto', 'high': 'Normal', 'low': 'Low', 'illustrious': 'Vivid' };
       if (btn) btn.innerText = `Quality: ${labelMap[q] || q}`;
     }
   </script>
@@ -1189,6 +1202,11 @@
             localStorage.removeItem(key);
           }
         });
+        
+        // Ensure settings are fully purged so picker reappears
+        localStorage.removeItem('cc_settings_v1');
+        localStorage.removeItem('sn_graphics_quality');
+        localStorage.removeItem('spriteQuality');
 
         // 4. Final Reload
         console.log("🔄 Reinstall complete. Reloading...");

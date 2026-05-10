@@ -197,7 +197,7 @@ const CombatEngine = (() => {
     rollCrit
   };
 })();
-window.CombatEngine = CombatEngine;
+if (typeof window !== 'undefined') window.CombatEngine = CombatEngine;
 
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = CombatEngine;

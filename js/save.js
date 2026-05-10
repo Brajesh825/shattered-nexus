@@ -179,4 +179,4 @@ const Save = {
     this._toastTimer = setTimeout(() => toast.classList.remove('show'), 2200);
   },
 };
-window.Save = Save;
+if (typeof window !== 'undefined') window.Save = Save;

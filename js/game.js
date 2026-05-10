@@ -364,15 +364,7 @@ const G = {
 /* ============================================================
    UI HELPERS
    ============================================================ */
-function escapeHtml(value) {
-  return String(value ?? '').replace(/[&<>"']/g, ch => ({
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#39;'
-  })[ch]);
-}
+// --- Standard escapeHtml now provided by utils.js ---
 
 window.escapeHtml = escapeHtml;
 
