@@ -139,56 +139,6 @@
         "lore": "She used to worry that her dancing was not grand enough for the gods. The moment she stepped through the rift, sword in hand, she stopped worrying about that."
     },
     {
-        "id": "flammy",
-        "name": "Flammy",
-        "alias": "Flammy",
-        "title": "Spirit of Flame",
-        "gender": "female",
-        "age": 18,
-        "origin": "Born from the heart of the Ashen Foothills",
-        "description": "A vibrant spirit whose very presence radiates heat. She was born from a dying ember of the Fire Fragment, inheriting its fierce beauty and untamed power.",
-        "personality": "Energetic, passionate, volatile",
-        "icon": "🔥",
-        "portrait_color": "#f97316",
-        "hair_color": "#f87171",
-        "skin_color": "#fee2e2",
-        "armor_color": "#991b1b",
-        "base_stats": {
-            "hp": 60,
-            "mp": 35,
-            "atk": 22,
-            "def": 10,
-            "spd": 20,
-            "mag": 18,
-            "lck": 12
-        },
-        "stat_bonuses": {
-            "atk": 4,
-            "spd": 4
-        },
-        "class_affinity": [
-            "spirit_incinerator"
-        ],
-        "passive": {
-            "id": "inner_blaze",
-            "name": "Inner Blaze",
-            "description": "Increases fire damage by 25%. Attacks have a 20% chance to inflict Burn.",
-            "traits": [
-                {
-                    "type": "ELEMENT_BOOST",
-                    "element": "fire",
-                    "value": 1.25
-                },
-                {
-                    "type": "PROC_STATUS",
-                    "status": "burn",
-                    "value": 0.2
-                }
-            ]
-        },
-        "lore": "When the Fire Fragment shattered, most of its power was lost to the void. But one small spark found a home in the soul of a dancer. Flammy is that spark made flesh."
-    },
-    {
         "id": "rei",
         "name": "Rei",
         "alias": "Rei",

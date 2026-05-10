@@ -49,6 +49,7 @@ const SHELL_ASSETS = [
   './js/battle/passive-system.js',
   './js/battle/reaction-effects.js',
   './js/battle/status-system.js',
+  './js/battle/turn-state.js',
   './js/battle/turn-manager.js',
   // UI
   './js/ui/archive-ui.js',

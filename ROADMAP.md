@@ -17,7 +17,7 @@
 *(All P0 blockers cleared for Beta 1.0)*
 
 ### P1 - Stability & Maintainability
-- [ ] **Encapsulate Turn State**: Replace loose `G.turnIdx`, `G.turnQueue`, and battle locks with a centralized `G.turn` object.
+- [x] **Encapsulate Turn State**: Replace loose `G.turnIdx`, `G.turnQueue`, and battle locks with a centralized `G.turn` object.
 - [ ] **Named Damage Modifiers**: Refactor the combat damage chain so STAB, affinity, reactions, mitigation, crits, passives, and relics are named steps.
 - [x] **HTML Injection Guardrails**: Implemented safe `escapeHtml` and verified Battle Log / UI security.
 - [ ] **JSON Loading Standard**: Move all data loading onto a unified `DataLoader` service.

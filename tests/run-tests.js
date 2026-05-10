@@ -5,6 +5,7 @@ require('./passive-combat.test.js');
 require('./status-system.test.js');
 require('./reaction-effects.test.js');
 require('./action-handler.test.js');
+require('./turn-state.test.js');
 require('./rules-contract.test.js');
 require('./high-level-scaling.test.js');
 require('./mitigation-defense.test.js');

@@ -127,7 +127,8 @@ const BattleUI = {
   },
 
   updateStats() {
-    const h = G.party[G.activeMemberIdx] || G.hero;
+    const activeIdx = typeof TurnState !== 'undefined' ? TurnState.getActivePartyIdx() : G.activeMemberIdx;
+    const h = G.party[activeIdx] || G.hero;
     if (!h) return;
     const lv = this.el('stat-lv');
     const atk = this.el('stat-atk');
@@ -171,7 +172,9 @@ const BattleUI = {
     const bar = this.el('turn-bar');
     if (!bar) return;
     bar.innerHTML = '';
-    G.turnQueue.forEach((t, i) => {
+    const queue = typeof TurnState !== 'undefined' ? TurnState.getQueue() : G.turnQueue;
+    const turnIdx = typeof TurnState !== 'undefined' ? TurnState.getIndex() : G.turnIdx;
+    queue.forEach((t, i) => {
       const unit = t.type === 'party' ? G.party[t.idx] : G.enemyGroup[t.idx];
       if (!unit) return;
       const isEnemy = t.type === 'enemy';
@@ -179,7 +182,7 @@ const BattleUI = {
       
       const tok = document.createElement('div');
       tok.className = 'tb-tok' +
-        (i === G.turnIdx ? ' active-tok' : '') +
+        (i === turnIdx ? ' active-tok' : '') +
         (isEnemy ? ' enemy-tok' : '') +
         (!Battle.alive(unit) ? ' dead-tok' : '');
       
@@ -200,8 +203,8 @@ const BattleUI = {
       const hpRatio = unit.maxHp > 0 ? unit.hp / unit.maxHp : 1;
       const lowHp = Battle.alive(unit) && hpRatio <= 0.25;
       const defaultBorder = lowHp ? '#ff4444' : (Battle.alive(unit) ? color : '#333');
-      tok.style.borderColor = (i === G.turnIdx) ? 'var(--gold)' : defaultBorder;
-      if (lowHp && i !== G.turnIdx) tok.style.animation = 'cdPulse 1s ease-in-out infinite';
+      tok.style.borderColor = (i === turnIdx) ? 'var(--gold)' : defaultBorder;
+      if (lowHp && i !== turnIdx) tok.style.animation = 'cdPulse 1s ease-in-out infinite';
       tok.title = (unit.displayName || unit.name || '') + (Battle.alive(unit) ? ` (HP ${unit.hp}/${unit.maxHp})` : ' [KO]');
       bar.appendChild(tok);
     });
@@ -271,7 +274,8 @@ const BattleUI = {
 
       // Update State
       enemy.className = 'enemy' + (!alive ? ' ko-enemy' : '');
-      enemy.dataset.target = i === G.targetEnemyIdx ? 'true' : 'false';
+      const targetEnemyIdx = typeof TurnState !== 'undefined' ? TurnState.getTargetEnemyIdx() : G.targetEnemyIdx;
+      enemy.dataset.target = i === targetEnemyIdx ? 'true' : 'false';
       enemy.onclick     = () => typeof selectTarget  === 'function' ? selectTarget(i)  : null;
       enemy.onmouseenter = () => typeof hoverTarget   === 'function' ? hoverTarget(i)   : null;
       
@@ -318,7 +322,7 @@ const BattleUI = {
       if (info.innerHTML !== newInfo) info.innerHTML = newInfo;
 
       // Indicator
-      if (i === G.targetEnemyIdx && alive) {
+      if (i === targetEnemyIdx && alive) {
         if (!indicator) {
           indicator = document.createElement('div');
           indicator.className = 'target-indicator';
@@ -464,7 +468,9 @@ const BattleUI = {
     // Final pass: Initialize high-res frames
     G.party.forEach((m, i) => {
       // Frame Sticky: Only auto-set idle if not currently acting or busy
-      const isActing = G.busy && G.activeMemberIdx === i;
+      const isBusy = typeof TurnState !== 'undefined' ? TurnState.isBusy() : G.busy;
+      const activeIdx = typeof TurnState !== 'undefined' ? TurnState.getActivePartyIdx() : G.activeMemberIdx;
+      const isActing = isBusy && activeIdx === i;
       if (!isActing) {
         this.setSpriteFrame(i, Battle.alive(m) ? 'idle' : 'fallen');
       }
@@ -474,7 +480,9 @@ const BattleUI = {
   },
 
   highlightActiveMember() {
-    const t = G.turnQueue[G.turnIdx];
+    const queue = typeof TurnState !== 'undefined' ? TurnState.getQueue() : G.turnQueue;
+    const turnIdx = typeof TurnState !== 'undefined' ? TurnState.getIndex() : G.turnIdx;
+    const t = queue[turnIdx];
     document.querySelectorAll('.party-member').forEach((w, i) => {
       const isActive = t && t.type === 'party' && t.idx === i;
       w.classList.toggle('active-member', isActive);
@@ -498,7 +506,9 @@ const BattleUI = {
       const hpPct = Math.max(0, m.hp / m.maxHp * 100);
       const mpPct = Math.max(0, m.mp / m.maxMp * 100);
       const hpCol = hpPct > 50 ? 'var(--hp-hi)' : hpPct > 25 ? 'var(--hp-mid)' : 'var(--hp-lo)';
-      const isActive = G.turnQueue[G.turnIdx]?.type === 'party' && G.turnQueue[G.turnIdx]?.idx === i;
+      const queue = typeof TurnState !== 'undefined' ? TurnState.getQueue() : G.turnQueue;
+      const turnIdx = typeof TurnState !== 'undefined' ? TurnState.getIndex() : G.turnIdx;
+      const isActive = queue[turnIdx]?.type === 'party' && queue[turnIdx]?.idx === i;
 
       // Ghost drain: start drain at previous HP, bar at current HP
       const prevHpPct = this._pscPrevHp[i] ?? hpPct;
@@ -560,7 +570,9 @@ const BattleUI = {
   renderActiveMemberBar() {
     const bar = this.el('active-member-bar');
     if (!bar) return;
-    const t = G.turnQueue[G.turnIdx];
+    const queue = typeof TurnState !== 'undefined' ? TurnState.getQueue() : G.turnQueue;
+    const turnIdx = typeof TurnState !== 'undefined' ? TurnState.getIndex() : G.turnIdx;
+    const t = queue[turnIdx];
     if (!t || t.type !== 'party') {
       bar.innerHTML = '<span style="color:#5a527a">Enemy acting…</span>';
       return;

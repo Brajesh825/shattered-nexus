@@ -327,7 +327,8 @@ const BossGauntlet = {
         const playerLv = (G.party && G.party[0]) ? G.party[0].lv : 1;
         buildEnemyGroup([bossDef], playerLv, true);
         G.enemies = G.enemyGroup;
-        G.targetEnemyIdx = 0;
+        if (typeof TurnState !== 'undefined') TurnState.setTargetEnemyIdx(0);
+        else G.targetEnemyIdx = 0;
 
         if (typeof _initBattle === 'function') _initBattle();
         if (typeof processCurrentTurn === 'function') processCurrentTurn();
