@@ -1,0 +1,71 @@
+# Shattered Nexus — Enemy Generation Prompt Guide (Illustrious XL)
+# All prompts follow the High-Fidelity Cel-Shaded Anime Standard.
+# Settings: Sampler: Euler a, CFG: 5.0, Steps: 28, Res: 1024x1024
+
+[COMMON POSITIVE]
+masterpiece, best quality, amazing quality, very aesthetic, absurdres, character, solo, white background, simple background, (full body:1.4), (standing:1.2), front view, facing viewer, (flat colors:1.3), (clean lineart:1.2), (bold outlines:1.2), studio quality anime, sharp focus, clean lines
+
+[COMMON NEGATIVE]
+lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry, artist name, realistic, 3d, gradient shading, soft shading
+
+---
+
+[VOID KNIGHT]
+masterpiece, best quality, purple runes, (void knight:1.2), ornate obsidian armor, glowing purple runes, ethereal purple flames emitting from helmet, massive void broadsword, purple energy effects, full body, majestic pose, cel shaded, flat color, thin outlines, high contrast, vibrant color palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[SHADOW EMPEROR]
+masterpiece, best quality, golden filigree, (shadow emperor:1.2), regal obsidian robes, ornate crown of shadows, glowing violet eyes, physical dark metal armor plates on chest, holding a grand scepter of void energy, majestic pose, cel shaded, flat color, thin outlines, high contrast, vibrant purple and gold palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background
+
+[BONE DRAGON] [1386786347]
+masterpiece, best quality, necrotic energy, (bone dragon:1.3), massive skeletal dragon frame, bleached white bone textures, glowing green flames in ribcage and eye sockets, massive tattered wings, majestic flying pose, cel shaded, flat color, thin outlines, high contrast, vibrant green energy, 2D anime style, studio quality anime, sharp focus, clean lines, white background
+
+[CRYSTAL GOLEM] [766297240]
+masterpiece, best quality, prismatic light, (crystal golem:1.2), body made of sharp blue crystalline shards, translucent crystal textures, heavy stone-like build, majestic pose, cel shaded, flat color, thin outlines, high contrast, vibrant blue and white palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background
+
+[DARK MOTHER] [748097745]
+masterpiece, best quality,1female,(dark mother), divine but terrifying goddess, multiple glowing eyes on flowing black robes, ornate void jewelry, long flowing dark hair, ethereal purple aura, cel shaded, flat color, thin outlines, high contrast, vibrant purple and red palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background
+
+[FORGE SENTINEL] [1714417248]
+masterpiece, best quality,full body, (forge sentinel:1.2), massive living furnace armor, heavy heated iron plates, glowing orange lava leaking from armor gaps, massive steam-powered hammer, majestic pose, cel shaded, flat color, thin outlines, high contrast, vibrant orange and charcoal palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background
+
+[LICH] [1714417248]
+masterpiece, best quality,fullbody,male floating ritual candles, (lich:1.2), ancient undead sorcerer, tattered burial silk robes, ornate bone jewelry, skeletal hands holding a floating soul-lantern, glowing blue eyes, ethereal frost aura, majestic pose, cel shaded, flat color, thin outlines, high contrast, vibrant blue and bone white, 2D anime style, studio quality anime, sharp focus, clean lines, white background
+
+[GOBLIN]
+masterpiece, best quality, green skin, (goblin:1.2), jagged rusted armor, carrying a small jagged blade, fierce expression, full body, majestic pose, cel shaded, flat color, thin outlines, high contrast, vibrant green and brown palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[WOLF]
+masterpiece, best quality, grey fur, (wolf:1.2), wild fur textures, glowing yellow eyes, predatory pose, sharp teeth, full body, majestic pose, cel shaded, flat color, thin outlines, high contrast, vibrant grey and yellow palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[ZOMBIE SOLDIER]
+masterpiece, best quality, silver armor, (zombie soldier:1.2), decayed knight armor, glowing blue void energy in eyes and armor cracks, holding a rusted sword, full body, majestic but tragic pose, cel shaded, flat color, thin outlines, high contrast, vibrant blue and silver palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[BAT]
+masterpiece, best quality, leathery wings, (giant bat:1.2), large leathery wings, glowing red eyes, sharp fangs, flying pose, full body, majestic pose, cel shaded, flat color, thin outlines, high contrast, vibrant dark purple and red palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[SPIDER]
+masterpiece, best quality, glowing eyes, (giant spider:1.2), multiple glowing eyes, fuzzy black legs, venomous fangs, aggressive pose, full body, majestic pose, cel shaded, flat color, thin outlines, high contrast, vibrant black and neon green palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[GALDOR KING] [TBD]
+masterpiece, best quality, golden armor, (galdor king:1.2), regal armored goblin king, golden ornate armor with floral engravings, massive vine-wrapped mace, full body, majestic royal pose, cel shaded, flat color, thin outlines, high contrast, vibrant gold and green palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[CRYSTAL SHARD]
+masterpiece, best quality, prismatic light, (crystal shard creature:1.2), floating jagged blue crystals, glowing core, prismatic light effects, full body, majestic pose, cel shaded, flat color, thin outlines, high contrast, vibrant blue and white palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[SKELETON]
+masterpiece, best quality, bone textures, (skeleton warrior:1.2), bleached white bones, rusted iron helmet and shield, holding a bone-sword, full body, majestic pose, cel shaded, flat color, thin outlines, high contrast, vibrant bone white and rusted brown palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[GEM MIMIC]
+masterpiece, best quality, gold and wood, (gem mimic:1.3), treasure chest with sharp teeth and long tongue, body made of wood and gold, glowing red eyes, full body, majestic but monstrous pose, cel shaded, flat color, thin outlines, high contrast, vibrant gold and red palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[GHOST]
+masterpiece, best quality, spectral blue, (ghostly scholar:1.2), translucent blue spirit, tattered academic robes, glowing hollow eyes, holding a spectral book, full body, majestic pose, cel shaded, flat color, thin outlines, high contrast, vibrant ethereal blue palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[CYCLOPS]
+masterpiece, best quality, stone skin, (cyclops:1.2), massive one-eyed giant, rough stone-like skin, wearing simple leather wraps, carrying a massive stone club, full body, majestic but fierce pose, cel shaded, flat color, thin outlines, high contrast, vibrant tan and stone grey palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[SPECTRAL GUARDIAN]
+masterpiece, best quality, violet armor, (spectral guardian:1.3), massive armored spirit, glowing translucent violet plate armor, ethereal wings made of light, holding a twin-headed spear, full body, majestic guardian pose, cel shaded, flat color, thin outlines, high contrast, vibrant violet and silver palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[DEMON LORD]
+masterpiece, best quality, obsidian armor, (demon lord:1.3), massive red-skinned demon, ornate black obsidian armor, large curved horns, glowing fire energy from chest, wielding a massive flaming sword, full body, majestic and terrifying pose, cel shaded, flat color, thin outlines, high contrast, vibrant red and black palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
