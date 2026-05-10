@@ -69,3 +69,72 @@ masterpiece, best quality, violet armor, (spectral guardian:1.3), massive armore
 
 [DEMON LORD]
 masterpiece, best quality, obsidian armor, (demon lord:1.3), massive red-skinned demon, ornate black obsidian armor, large curved horns, glowing fire energy from chest, wielding a massive flaming sword, full body, majestic and terrifying pose, cel shaded, flat color, thin outlines, high contrast, vibrant red and black palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[RAT]
+masterpiece, best quality, brown fur, (rat:1.2), scruffy brown fur, glowing red eyes, sharp whiskers, small claws, full body, majestic pose, cel shaded, flat color, thin outlines, high contrast, vibrant brown and red palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[GIANT RAT]
+masterpiece, best quality, mangy fur, (giant rat:1.3), massive oversized rat, scarred mangy fur, glowing sickly yellow eyes, large yellowed fangs, aggressive pose, full body, majestic pose, cel shaded, flat color, thin outlines, high contrast, vibrant brown and yellow palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[WEREWOLF]
+masterpiece, best quality, dark fur, (werewolf:1.3), bipedal half-man half-wolf creature, massive muscular build, wild dark fur, glowing red eyes, razor-sharp claws, howling pose, full body, majestic and terrifying pose, cel shaded, flat color, thin outlines, high contrast, vibrant dark grey and red palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[RED DRAGON]
+masterpiece, best quality, fire scales, (red dragon:1.3), massive fire-breathing dragon, glowing red scales, large bat-like wings, long spiked tail, majestic flying pose, cel shaded, flat color, thin outlines, high contrast, vibrant red and orange palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[BLUE DRAGON]
+masterpiece, best quality, storm scales, (blue dragon:1.3), massive lightning dragon, sapphire blue scales, glowing blue eyes, jagged wings, majestic soaring pose, cel shaded, flat color, thin outlines, high contrast, vibrant blue and white palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[GREEN DRAGON]
+masterpiece, best quality, forest scales, (green dragon:1.3), massive forest dragon, emerald green scales, vine-like textures on wings, glowing yellow eyes, majestic pose, cel shaded, flat color, thin outlines, high contrast, vibrant green and yellow palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[BLACK DRAGON]
+masterpiece, best quality, obsidian scales, (black dragon:1.3), massive shadow dragon, obsidian black scales, glowing purple eyes, ethereal void energy around wings, majestic pose, cel shaded, flat color, thin outlines, high contrast, vibrant black and purple palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[FROST DRAGON]
+masterpiece, best quality, ice scales, (frost dragon:1.3), massive ice dragon, pale white and light blue scales, icy spikes along spine, glowing cyan eyes, majestic pose, cel shaded, flat color, thin outlines, high contrast, vibrant white and cyan palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[WYVERN]
+masterpiece, best quality, leathery scales, (wyvern:1.3), massive two-legged dragon creature, leathery wings with claws, long barbed tail, predatory flying pose, full body, majestic pose, cel shaded, flat color, thin outlines, high contrast, vibrant brown and tan palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[DIVINE DRAGON]
+masterpiece, best quality, celestial scales, (divine dragon:1.4), massive celestial dragon, white and gold iridescent scales, glowing golden eyes, six massive feathered wings, ethereal light aura, full body, majestic god-like pose, cel shaded, flat color, thin outlines, high contrast, vibrant gold and white palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[SLIME]
+masterpiece, best quality, translucent body, (void-touched slime:1.3), large translucent purple gelatinous creature, glowing core, bubbles inside body, simple round shape, full body, majestic pose, cel shaded, flat color, thin outlines, high contrast, vibrant purple and pink palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[MUSHROOM]
+masterpiece, best quality, fungal spores, (spore mushroom creature:1.2), walking mushroom with stubby legs, glowing spots on cap, releasing small spore clouds, full body, majestic pose, cel shaded, flat color, thin outlines, high contrast, vibrant red and white palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[ZOMBIE]
+masterpiece, best quality, decayed flesh, (rotting zombie:1.2), shambling undead in tattered commoner clothes, decayed greenish skin, glowing yellow eyes, reaching forward, full body, majestic but tragic pose, cel shaded, flat color, thin outlines, high contrast, vibrant green and brown palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[WISP]
+masterpiece, best quality, spectral light, (lost wisp:1.3), floating orb of spectral energy, trailing light trails, glowing core, ethereal mist around it, full body, majestic pose, cel shaded, flat color, thin outlines, high contrast, vibrant blue and white palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[BANDIT]
+masterpiece, best quality, rugged clothes, (road bandit:1.2), human rogue in leather armor, hooded cloak, carrying two daggers, confident smirk, full body, majestic rogue pose, cel shaded, flat color, thin outlines, high contrast, vibrant brown and teal palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[IMP]
+masterpiece, best quality, bat wings, (fire imp:1.2), small red demon creature, curved horns, bat-like wings, glowing orange eyes, carrying a small flaming pitchfork, full body, majestic but chaotic pose, cel shaded, flat color, thin outlines, high contrast, vibrant red and orange palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[GARGOYLE]
+masterpiece, best quality, stone wings, (gargoyle:1.2), living stone statue, demonic features, massive stone wings, perching on a stone pedestal, full body, majestic guardian pose, cel shaded, flat color, thin outlines, high contrast, vibrant stone grey palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[MINOTAUR]
+masterpiece, best quality, bull horns, (minotaur:1.3), massive half-man half-bull giant, heavy iron armor, massive double-headed axe, furious expression, full body, majestic and powerful pose, cel shaded, flat color, thin outlines, high contrast, vibrant brown and iron palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[ORC]
+masterpiece, best quality, green skin, (orc warrior:1.2), muscular green-skinned warrior, rough fur armor, carrying a massive jagged mace, battle-scarred skin, full body, majestic warrior pose, cel shaded, flat color, thin outlines, high contrast, vibrant green and grey palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[LIZARDMAN]
+masterpiece, best quality, green scales, (lizardman scout:1.2), bipedal reptilian warrior, emerald green scales, wearing simple reed armor, carrying a stone spear, full body, majestic pose, cel shaded, flat color, thin outlines, high contrast, vibrant green and yellow palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[CRAB]
+masterpiece, best quality, heavy shell, (armored crab:1.2), massive oversized crab, thick orange shell with spikes, glowing blue eyes, large powerful claws, full body, majestic pose, cel shaded, flat color, thin outlines, high contrast, vibrant orange and blue palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[NAGA]
+masterpiece, best quality, serpentine body, (naga warrior:1.3), half-human half-snake warrior, iridescent blue scales, wielding a golden trident, ornate jewelry, full body, majestic and regal pose, cel shaded, flat color, thin outlines, high contrast, vibrant blue and gold palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[MEDUSA]
+masterpiece, best quality, snake hair, (medusa:1.4), terrifying serpentine woman, writhing snake hair, glowing green eyes, holding a stone bow, elegant but monstrous pose, full body, majestic and terrifying pose, cel shaded, flat color, thin outlines, high contrast, vibrant green and bronze palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
