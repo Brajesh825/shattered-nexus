@@ -82,6 +82,7 @@ MAP_DEFS.verdant_vale = {
                                 { speaker: 'Azure Commander', text: 'That was not the worst they can send.' },
                                 { speaker: 'Aya', text: 'No. But it is the worst they sent tonight.' },
                                 { speaker: 'Azure Commander', text: 'You fight well for people who do not know the Vale. I owe you the rest of what I know about the eastern road.' },
+                                { speaker: 'Azure Commander', text: 'The ruins lie ahead, but do not look to the southern groves. King Galdor has fallen to the Void-Gild. The south is lost to his greed.' },
                                 { speaker: 'Azure Commander', text: 'When you are ready for the ruins — I will be here.' },
                             ], () => MapEngine.resume());
                         },
@@ -100,7 +101,7 @@ MAP_DEFS.verdant_vale = {
     triggers: [
         {
             id: 'azure_commander_first_sight',
-            x: 22, y: 10, w: 4, h: 5,
+            x: 24, y: 12, w: 4, h: 5,
             type: 'dialogue',
             lines: [
                 { speaker: 'Azure Commander', text: 'Hold.' },
@@ -108,18 +109,6 @@ MAP_DEFS.verdant_vale = {
                 { speaker: 'Azure Commander', text: 'You carry no banner. That means you are either very brave or very lost.' },
                 { speaker: 'Tao', text: 'We are looking for the ruins. To the east.' },
                 { speaker: 'Azure Commander', text: 'I know. I have been watching you since you crossed the river bend. The eastern road is not safe — come to me before you go further.' },
-            ]
-        },
-        {
-            id: 'bridge_realization',
-            x: 29, y: 13, w: 3, h: 3,
-            type: 'dialogue',
-            lines: [
-                { speaker: 'Rei', text: 'Wait... do you feel that?' },
-                { speaker: 'Tao', text: 'The air... it\'s heavy. And look at the stone. It\'s scorched.' },
-                { speaker: 'Aya', text: 'Scorched by void, not fire. These aren\'t just ruins... everyone is already dead in here.' },
-                { speaker: 'Lulu', text: 'Davan was right. The Void Knight didn\'t just pass through. He turned this place into a tomb.' },
-                { speaker: 'Rei', text: 'Keep your guard up. Whatever did this is still around, and it\'s hungry.' },
             ]
         },
         {
@@ -137,7 +126,7 @@ MAP_DEFS.verdant_vale = {
         },
         {
             id: 'aethelgard_mystery',
-            x: 40, y: 34, w: 5, h: 2,
+            x: 36, y: 34, w: 4, h: 2,
             type: 'dialogue',
             lines: [
                 { speaker: 'narrator', text: 'The grass gives way to jagged stone—not natural formations, but the bones of a city swallowed by the earth.' },
