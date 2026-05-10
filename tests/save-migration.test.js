@@ -47,6 +47,8 @@ function createSandbox() {
   vm.runInContext(fs.readFileSync(path.join(ROOT, 'js', 'utils.js'), 'utf8'), sandbox);
   // Load Game for migrateCharId
   vm.runInContext(fs.readFileSync(path.join(ROOT, 'js', 'game.js'), 'utf8'), sandbox);
+  // Load SaveContract dependency
+  vm.runInContext(fs.readFileSync(path.join(ROOT, 'js', 'systems', 'save-contract.js'), 'utf8'), sandbox);
   // Load Save System
   vm.runInContext(fs.readFileSync(path.join(ROOT, 'js', 'save.js'), 'utf8'), sandbox);
 

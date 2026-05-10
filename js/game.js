@@ -1163,17 +1163,26 @@ function startExplore(skipAutoStart = false) {
   canvas.width = wrap.clientWidth || 360;
   canvas.height = wrap.clientHeight || 480;
 
-  MapEngine.init(canvas);
-  if (typeof MapTouch !== 'undefined') MapTouch.init();
+  if (!canvas._mapInited) {
+    canvas._mapInited = true;
+    MapEngine.init(canvas);
+  }
+  if (typeof MapTouch !== 'undefined' && !canvas._mapTouchInited) {
+    canvas._mapTouchInited = true;
+    MapTouch.init();
+  }
 
   // D-pad touch support
-  canvas.addEventListener('touchstart', e => {
-    e.preventDefault();
-    Array.from(e.changedTouches).forEach(t => MapUI.handleTouch(t.clientX, t.clientY, canvas));
-  }, { passive: false });
-  canvas.addEventListener('mousedown', e => {
-    MapUI.handleTouch(e.clientX, e.clientY, canvas);
-  });
+  if (!canvas._exploreInputBound) {
+    canvas._exploreInputBound = true;
+    canvas.addEventListener('touchstart', e => {
+      e.preventDefault();
+      Array.from(e.changedTouches).forEach(t => MapUI.handleTouch(t.clientX, t.clientY, canvas));
+    }, { passive: false });
+    canvas.addEventListener('mousedown', e => {
+      MapUI.handleTouch(e.clientX, e.clientY, canvas);
+    });
+  }
 
   // Launch the engine
   if (!MapEngine.getMap() && !skipAutoStart) {
