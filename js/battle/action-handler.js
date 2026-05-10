@@ -707,13 +707,19 @@ function heroAttack() {
   const aliveEnemies = G.enemyGroup.filter(e => Battle.alive(e));
   if (!actor || !aliveEnemies.length) return;
 
-  // Targeting Phase (Keyboard/Controller support)
-  if (aliveEnemies.length > 1 && !G.pendingAction && !G._executingPending) {
+  // Single enemy: auto-select and skip Phase 3 entirely (classic FF rule)
+  if (aliveEnemies.length === 1 && !G.pendingAction && !G._executingPending) {
+    G.targetEnemyIdx = G.enemyGroup.indexOf(aliveEnemies[0]);
+    G.enemy = aliveEnemies[0];
+    // fall through to execute
+  }
+  // Multiple enemies: enter Phase 3 targeting
+  else if (aliveEnemies.length > 1 && !G.pendingAction && !G._executingPending) {
     G.pendingAction = { type: 'attack' };
     BattleUI.openSub(null);
     if (typeof Focus !== 'undefined') {
-      Focus.setTargeting(true, 'enemy');
-      BattleUI.addLog(`Choose a target for ${actor.displayName}...`, 'hi');
+      Focus.setTargeting(true, 'enemy', null); // null = BACK returns to Phase 1
+      BattleUI.addLog(`Select a target →`, 'hi');
     }
     return;
   }
@@ -723,7 +729,7 @@ function heroAttack() {
 
   try {
     const actor = G.party[G.activeMemberIdx];
-    const enemy = G.enemy;
+    const enemy = G.enemy; // Set by selectTarget/Focus confirmation
     if (!actor || !enemy) { G.busy = false; BattleUI.btns(true); return; }
 
     const _atkElem = actor.cls?.element || 'physical';
@@ -768,8 +774,17 @@ function heroAbility(ab) {
   const aoe = e.aoe || ab.isUltimate;
   const aliveEnemies = G.enemyGroup.filter(en => Battle.alive(en));
 
-  // Targeting Phase (Keyboard/Controller support)
-  if (offensive && !aoe && aliveEnemies.length > 1 && !G.pendingAction && !G._executingPending) {
+  // Single enemy: auto-select and skip Phase 3
+  if (offensive && !aoe && aliveEnemies.length === 1 && !G.pendingAction && !G._executingPending) {
+    // MP check first
+    const _mpCostCheck = Math.ceil(ab.mp * PassiveSystem.val(actor, 'MP_COST_MULT', 1.0));
+    if (actor.mp < _mpCostCheck) { BattleUI.setLog(['Not enough MP!'], ['dmg']); BattleUI.openSub(null); return; }
+    G.targetEnemyIdx = G.enemyGroup.indexOf(aliveEnemies[0]);
+    G.enemy = aliveEnemies[0];
+    // fall through to execute
+  }
+  // Multiple enemies: enter Phase 3 targeting (BACK returns to ability-sub)
+  else if (offensive && !aoe && aliveEnemies.length > 1 && !G.pendingAction && !G._executingPending) {
     // MP check first
     const _mpCost = Math.ceil(ab.mp * PassiveSystem.val(actor, 'MP_COST_MULT', 1.0));
     if (actor.mp < _mpCost) { BattleUI.setLog(['Not enough MP!'], ['dmg']); BattleUI.openSub(null); return; }
@@ -777,10 +792,21 @@ function heroAbility(ab) {
     G.pendingAction = { type: 'ability', ab: ab };
     BattleUI.openSub(null);
     if (typeof Focus !== 'undefined') {
-      Focus.setTargeting(true, 'enemy');
-      BattleUI.addLog(`Choose a target for ${ab.name}...`, 'hi');
+      Focus.setTargeting(true, 'enemy', 'ability-sub'); // BACK returns to Phase 2
+      BattleUI.addLog(`Select a target →`, 'hi');
     }
     return;
+  }
+
+  // Sync G.enemy from selection
+  if (offensive && !aoe) {
+    if (!G.enemy) {
+      const firstAlive = G.enemyGroup.findIndex(e => Battle.alive(e));
+      if (firstAlive !== -1) {
+        G.targetEnemyIdx = firstAlive;
+        G.enemy = G.enemyGroup[firstAlive];
+      }
+    }
   }
 
   // Cooldown check

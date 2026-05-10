@@ -153,6 +153,12 @@ const TurnManager = {
     BattleUI.renderEnemyRow();
     BattleUI.renderActiveMemberBar();
     BattleUI.btns(true);
+
+    // Force focus reset to Action Menu (Attack button)
+    if (typeof Focus !== 'undefined') {
+      G.enemy = null; // Clear active enemy so Targeting Phase is required
+      Focus.setContext('cmd-grid-main');
+    }
     
     // Start-of-Turn maintenance
     StatusSystem.tick(actor); 
