@@ -43,6 +43,10 @@
   background-image: url('../images/backgrounds/sacred_ruins_boss.png');
 }
 
+.bg--verdant_vale {
+  background-image: url('../images/backgrounds/verdant_vale.png');
+}
+
 /* Background themes - Fallback gradients */
 .bg--default {
   background: radial-gradient(ellipse 60% 50% at 50% 30%, #0d0830 0%, #03020c 100%);
