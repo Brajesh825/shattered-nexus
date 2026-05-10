@@ -328,6 +328,8 @@ const G = {
   party: [],
   /** @type {EnemyUnit[]} Current enemy encounter — 1–3 enemies */
   enemyGroup: [],
+  /** Centralized battle turn/session state. Mirrored to legacy fields during migration. */
+  turn: null,
   /** @type {TurnEntry[]} Sorted turn queue for the current battle round */
   turnQueue: [],
   /** Current index into turnQueue — advances each time a unit acts. @type {number} */
@@ -656,7 +658,8 @@ function buildEnemyGroup(defs, spawnLevel = 1, isBoss = false) {
     if (typeof Archive !== 'undefined') Archive.recordSeen(def.id);
     return entry;
   });
-  G.targetEnemyIdx = 0;
+  if (typeof TurnState !== 'undefined') TurnState.setTargetEnemyIdx(0);
+  else G.targetEnemyIdx = 0;
 }
 
 
@@ -685,7 +688,8 @@ function hoverTarget(enemyIdx) {
   if (!scene?.classList.contains('targeting-active')) return;
   if (!Battle.alive(G.enemyGroup[enemyIdx])) return;
 
-  G.targetEnemyIdx = enemyIdx;
+  if (typeof TurnState !== 'undefined') TurnState.setTargetEnemyIdx(enemyIdx);
+  else G.targetEnemyIdx = enemyIdx;
   document.querySelectorAll('.enemy').forEach((e, i) => {
     e.dataset.target = (i === enemyIdx) ? 'true' : 'false';
   });
@@ -702,8 +706,13 @@ function hoverTarget(enemyIdx) {
 function selectTarget(enemyIdx) {
   if (!Battle.alive(G.enemyGroup[enemyIdx])) return;
 
-  G.targetEnemyIdx = enemyIdx;
-  G.enemy = G.enemyGroup[enemyIdx];
+  if (typeof TurnState !== 'undefined') {
+    TurnState.setTargetEnemyIdx(enemyIdx);
+    TurnState.setTargetEnemy(G.enemyGroup[enemyIdx]);
+  } else {
+    G.targetEnemyIdx = enemyIdx;
+    G.enemy = G.enemyGroup[enemyIdx];
+  }
 
   document.querySelectorAll('.enemy').forEach((e, i) => {
     e.dataset.target = (i === enemyIdx) ? 'true' : 'false';
@@ -712,15 +721,19 @@ function selectTarget(enemyIdx) {
   if (typeof SFX !== 'undefined') SFX.click();
 
   // Execute the pending action that entered Phase 3
-  if (G.pendingAction) {
-    const action = G.pendingAction;
-    G.pendingAction = null;
+  const pendingAction = typeof TurnState !== 'undefined' ? TurnState.getPendingAction() : G.pendingAction;
+  if (pendingAction) {
+    const action = pendingAction;
+    if (typeof TurnState !== 'undefined') TurnState.clearPendingAction();
+    else G.pendingAction = null;
     if (typeof Focus !== 'undefined') Focus.setTargeting(false);
 
-    G._executingPending = true;
+    if (typeof TurnState !== 'undefined') TurnState.beginPendingExecution();
+    else G._executingPending = true;
     if (action.type === 'attack')  heroAttack();
     else if (action.type === 'ability') heroAbility(action.ab);
-    G._executingPending = false;
+    if (typeof TurnState !== 'undefined') TurnState.endPendingExecution();
+    else G._executingPending = false;
   }
 }
 
@@ -801,10 +814,14 @@ function _applyVampiric(enemy, dmg, enemyIdx) {
 }
 
 function _initBattle() {
-  G.turnQueue = TurnManager.buildQueue();
-  G.turnIdx = 0;
-  G.activeMemberIdx = 0;
-  G.busy = false;
+  const queue = TurnManager.buildQueue();
+  if (typeof TurnState !== 'undefined') TurnState.resetBattle(queue);
+  else {
+    G.turnQueue = queue;
+    G.turnIdx = 0;
+    G.activeMemberIdx = 0;
+    G.busy = false;
+  }
   buildAbilityMenu();
   showScreen('battle-screen');
   BattleUI.render();
@@ -821,7 +838,8 @@ function _initBattle() {
 }
 
 function buildAbilityMenu() {
-  const actor = G.party[G.activeMemberIdx] || G.hero;
+  const activeIdx = typeof TurnState !== 'undefined' ? TurnState.getActivePartyIdx() : G.activeMemberIdx;
+  const actor = G.party[activeIdx] || G.hero;
   if (!actor) return;
   const menu = document.getElementById('ability-sub');
   if (!menu) return;
@@ -895,7 +913,8 @@ function heroTurn() { TurnManager.beginHeroTurn(); }
    VISUAL EFFECTS
    ============================================================ */
 function heroRun() {
-  if (G.busy) return;
+  const isBusy = typeof TurnState !== 'undefined' ? TurnState.isBusy() : G.busy;
+  if (isBusy) return;
 
   // ── BLOCK FLEE FOR BOSSES & STORY CHAPTERS ─────────────────
   const isBoss = G.enemyGroup.some(e => e.isBoss);
@@ -907,7 +926,9 @@ function heroRun() {
     return;
   }
 
-  G.busy = true; BattleUI.btns(false);
+  if (typeof TurnState !== 'undefined') TurnState.setBusy(true);
+  else G.busy = true;
+  BattleUI.btns(false);
   BattleUI.openSub(null);
   if (Math.random() < 0.6) {
     BattleUI.setLog(['The party escapes!'], ['hi']);
@@ -1063,9 +1084,13 @@ function retryBattle() {
   const level = G.enemyGroup[0]?.level || 1;
   const defs = G.enemyGroup.map(e => G.enemies.find(r => r.id === e.id)).filter(Boolean);
   buildEnemyGroup(defs, level);
-  G.turnQueue = buildTurnQueue();
-  G.turnIdx = 0;
-  G.busy = false;
+  const queue = buildTurnQueue();
+  if (typeof TurnState !== 'undefined') TurnState.resetBattle(queue);
+  else {
+    G.turnQueue = queue;
+    G.turnIdx = 0;
+    G.busy = false;
+  }
   showScreen('battle-screen');
   BattleUI.render();
   processCurrentTurn();

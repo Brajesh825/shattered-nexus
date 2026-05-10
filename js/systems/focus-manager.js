@@ -170,7 +170,8 @@ const Focus = (() => {
   function cancelTargeting() {
     if (!_targeting) return;
     setTargeting(false);
-    if (typeof G !== 'undefined') G.pendingAction = null;
+    if (typeof TurnState !== 'undefined') TurnState.clearPendingAction();
+    else if (typeof G !== 'undefined') G.pendingAction = null;
     if (typeof BattleUI !== 'undefined') {
       BattleUI.openSub(_prevSubId || null);
       BattleUI.addLog('Choose an action.', 'hi');
@@ -203,7 +204,9 @@ const Focus = (() => {
       _active = true;
       const focusables = _getFocusables();
       // Prefer last-targeted enemy, otherwise fall to first alive
-      const hint = (type === 'enemy' && typeof G !== 'undefined') ? G.targetEnemyIdx : -1;
+      const hint = (type === 'enemy' && typeof G !== 'undefined')
+        ? (typeof TurnState !== 'undefined' ? TurnState.getTargetEnemyIdx() : G.targetEnemyIdx)
+        : -1;
       const target = (hint >= 0 && hint < focusables.length) ? focusables[hint] : focusables[0];
       if (target) _focus(target);
     } else {
@@ -300,7 +303,8 @@ const Focus = (() => {
       const allEnemyEls = Array.from(document.querySelectorAll('.enemy'));
       const idx = allEnemyEls.indexOf(_current);
       if (idx >= 0 && typeof G !== 'undefined' && G.enemyGroup[idx]) {
-        G.targetEnemyIdx = idx;
+        if (typeof TurnState !== 'undefined') TurnState.setTargetEnemyIdx(idx);
+        else G.targetEnemyIdx = idx;
         allEnemyEls.forEach((e, i) => { e.dataset.target = (i === idx) ? 'true' : 'false'; });
         if (typeof BattleUI !== 'undefined') {
           BattleUI.addLog(`Target → ${G.enemyGroup[idx].name}`, 'hi');

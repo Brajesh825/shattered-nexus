@@ -491,7 +491,8 @@ const ActionEngine = {
     regen(actor, targets, ab, element, moveConfig, isEnemyAction) {
       const e = ab.effect || {};
       targets.forEach(m => Battle.addStatus(m, { ...StatusSystem.DEFS.regen, turns: e.duration || 3 }));
-      BattleUI.createEffectOverlay(G.activeMemberIdx, element, isEnemyAction ? 'enemy' : 'party', ab.id);
+      const activeIdx = typeof TurnState !== 'undefined' ? TurnState.getActivePartyIdx() : G.activeMemberIdx;
+      BattleUI.createEffectOverlay(activeIdx, element, isEnemyAction ? 'enemy' : 'party', ab.id);
       BattleUI.addLog(`${actor.name || actor.displayName}: Regen activated!`, 'regen');
       BattleUI.renderPartyStatus();
       BattleUI.renderPartyRow(); // Sync update
@@ -701,21 +702,34 @@ const ActionEngine = {
    HERO / PARTY ACTIONS  (actor = current party member)
    ============================================================ */
 function heroAttack() {
-  if (G.busy) return;
+  const isBusy = typeof TurnState !== 'undefined' ? TurnState.isBusy() : G.busy;
+  if (isBusy) return;
 
-  const actor = G.party[G.activeMemberIdx];
+  const activeIdx = typeof TurnState !== 'undefined' ? TurnState.getActivePartyIdx() : G.activeMemberIdx;
+  const actor = G.party[activeIdx];
   const aliveEnemies = G.enemyGroup.filter(e => Battle.alive(e));
   if (!actor || !aliveEnemies.length) return;
 
+  const pendingAction = typeof TurnState !== 'undefined' ? TurnState.getPendingAction() : G.pendingAction;
+  const executingPending = typeof TurnState !== 'undefined' ? TurnState.isExecutingPending() : G._executingPending;
+
   // Single enemy: auto-select and skip Phase 3 entirely (classic FF rule)
-  if (aliveEnemies.length === 1 && !G.pendingAction && !G._executingPending) {
-    G.targetEnemyIdx = G.enemyGroup.indexOf(aliveEnemies[0]);
-    G.enemy = aliveEnemies[0];
+  if (aliveEnemies.length === 1 && !pendingAction && !executingPending) {
+    if (typeof TurnState !== 'undefined') TurnState.setTargetEnemy(aliveEnemies[0]);
+    else {
+      G.targetEnemyIdx = G.enemyGroup.indexOf(aliveEnemies[0]);
+      G.enemy = aliveEnemies[0];
+    }
     // fall through to execute
   }
   // Multiple enemies: enter Phase 3 targeting
-  else if (aliveEnemies.length > 1 && !G.pendingAction && !G._executingPending) {
-    G.pendingAction = { type: 'attack' };
+  else if (aliveEnemies.length > 1 && !pendingAction && !executingPending) {
+    if (typeof TurnState !== 'undefined') {
+      TurnState.setPendingAction({ type: 'attack' });
+      TurnState.setPhase('targeting');
+    } else {
+      G.pendingAction = { type: 'attack' };
+    }
     BattleUI.openSub(null);
     if (typeof Focus !== 'undefined') {
       Focus.setTargeting(true, 'enemy', null); // null = BACK returns to Phase 1
@@ -725,32 +739,48 @@ function heroAttack() {
   }
 
   BattleUI.openSub(null);
-  G.busy = true; BattleUI.btns(false);
+  if (typeof TurnState !== 'undefined') {
+    TurnState.setBusy(true);
+    TurnState.setPhase('resolving');
+  } else {
+    G.busy = true;
+  }
+  BattleUI.btns(false);
 
   try {
-    const actor = G.party[G.activeMemberIdx];
+    const activeIdx = typeof TurnState !== 'undefined' ? TurnState.getActivePartyIdx() : G.activeMemberIdx;
+    const targetIdx = typeof TurnState !== 'undefined' ? TurnState.getTargetEnemyIdx() : G.targetEnemyIdx;
+    const actor = G.party[activeIdx];
     const enemy = G.enemy; // Set by selectTarget/Focus confirmation
-    if (!actor || !enemy) { G.busy = false; BattleUI.btns(true); return; }
+    if (!actor || !enemy) {
+      if (typeof TurnState !== 'undefined') TurnState.setBusy(false);
+      else G.busy = false;
+      BattleUI.btns(true);
+      return;
+    }
 
     const _atkElem = actor.cls?.element || 'physical';
 
     BattleUI.setLog([`${actor.displayName} attacks ${enemy.name}!`], ['hi']);
-    BattleUI.setSpriteFrame(G.activeMemberIdx, 'prepare');
+    BattleUI.setSpriteFrame(activeIdx, 'prepare');
 
     BattleUI.lunge(
-      G.activeMemberIdx,
-      G.targetEnemyIdx,
+      activeIdx,
+      targetIdx,
       // onHit — fires at the peak of the lunge (t≈350ms)
       () => {
         try {
           if (typeof SFX !== 'undefined') { SFX.attack(); setTimeout(() => SFX.enemyHit(), 80); }
-          const dmg = resolveOffensiveAction(actor, enemy, G.targetEnemyIdx, { name: 'attack', type: 'physical' }, _atkElem);
-          _applyVampiric(enemy, dmg, G.targetEnemyIdx);
+          const currentTargetIdx = typeof TurnState !== 'undefined' ? TurnState.getTargetEnemyIdx() : G.targetEnemyIdx;
+          const dmg = resolveOffensiveAction(actor, enemy, currentTargetIdx, { name: 'attack', type: 'physical' }, _atkElem);
+          _applyVampiric(enemy, dmg, currentTargetIdx);
           _checkDragonLeap(actor);
           BattleUI.renderEnemyRow();
         } catch (err) {
           console.error('[heroAttack onHit] Error:', err);
-          G.busy = false; BattleUI.btns(true);
+          if (typeof TurnState !== 'undefined') TurnState.setBusy(false);
+          else G.busy = false;
+          BattleUI.btns(true);
         }
       },
       // onComplete — fires when fully back at idle (t≈980ms)
@@ -760,36 +790,50 @@ function heroAttack() {
     );
   } catch (err) {
     console.error('[heroAttack] Error:', err);
-    G.busy = false; BattleUI.btns(true);
+    if (typeof TurnState !== 'undefined') TurnState.setBusy(false);
+    else G.busy = false;
+    BattleUI.btns(true);
   }
 }
 
 function heroAbility(ab) {
-  if (G.busy) return;
-  const actor = G.party[G.activeMemberIdx];
+  const isBusy = typeof TurnState !== 'undefined' ? TurnState.isBusy() : G.busy;
+  if (isBusy) return;
+  const activeIdx = typeof TurnState !== 'undefined' ? TurnState.getActivePartyIdx() : G.activeMemberIdx;
+  const actor = G.party[activeIdx];
   if (!actor) return;
 
   const e = ab.effect || {};
   const offensive = ab.type === 'physical' || ab.type === 'magic_damage' || ab.type === 'debuff' || ab.type === 'stun';
   const aoe = e.aoe || ab.isUltimate;
   const aliveEnemies = G.enemyGroup.filter(en => Battle.alive(en));
+  const pendingAction = typeof TurnState !== 'undefined' ? TurnState.getPendingAction() : G.pendingAction;
+  const executingPending = typeof TurnState !== 'undefined' ? TurnState.isExecutingPending() : G._executingPending;
 
   // Single enemy: auto-select and skip Phase 3
-  if (offensive && !aoe && aliveEnemies.length === 1 && !G.pendingAction && !G._executingPending) {
+  if (offensive && !aoe && aliveEnemies.length === 1 && !pendingAction && !executingPending) {
     // MP check first
     const _mpCostCheck = Math.ceil(ab.mp * PassiveSystem.val(actor, 'MP_COST_MULT', 1.0));
     if (actor.mp < _mpCostCheck) { BattleUI.setLog(['Not enough MP!'], ['dmg']); BattleUI.openSub(null); return; }
-    G.targetEnemyIdx = G.enemyGroup.indexOf(aliveEnemies[0]);
-    G.enemy = aliveEnemies[0];
+    if (typeof TurnState !== 'undefined') TurnState.setTargetEnemy(aliveEnemies[0]);
+    else {
+      G.targetEnemyIdx = G.enemyGroup.indexOf(aliveEnemies[0]);
+      G.enemy = aliveEnemies[0];
+    }
     // fall through to execute
   }
   // Multiple enemies: enter Phase 3 targeting (BACK returns to ability-sub)
-  else if (offensive && !aoe && aliveEnemies.length > 1 && !G.pendingAction && !G._executingPending) {
+  else if (offensive && !aoe && aliveEnemies.length > 1 && !pendingAction && !executingPending) {
     // MP check first
     const _mpCost = Math.ceil(ab.mp * PassiveSystem.val(actor, 'MP_COST_MULT', 1.0));
     if (actor.mp < _mpCost) { BattleUI.setLog(['Not enough MP!'], ['dmg']); BattleUI.openSub(null); return; }
 
-    G.pendingAction = { type: 'ability', ab: ab };
+    if (typeof TurnState !== 'undefined') {
+      TurnState.setPendingAction({ type: 'ability', ab: ab });
+      TurnState.setPhase('targeting');
+    } else {
+      G.pendingAction = { type: 'ability', ab: ab };
+    }
     BattleUI.openSub(null);
     if (typeof Focus !== 'undefined') {
       Focus.setTargeting(true, 'enemy', 'ability-sub'); // BACK returns to Phase 2
@@ -805,6 +849,7 @@ function heroAbility(ab) {
       if (firstAlive !== -1) {
         G.targetEnemyIdx = firstAlive;
         G.enemy = G.enemyGroup[firstAlive];
+        if (typeof TurnState !== 'undefined') TurnState.setTargetEnemyIdx(firstAlive);
       }
     }
   }
@@ -821,7 +866,13 @@ function heroAbility(ab) {
   if (actor.mp < _mpCost) { BattleUI.setLog(['Not enough MP!'], ['dmg']); BattleUI.openSub(null); return; }
 
   BattleUI.openSub(null);
-  G.busy = true; BattleUI.btns(false);
+  if (typeof TurnState !== 'undefined') {
+    TurnState.setBusy(true);
+    TurnState.setPhase('resolving');
+  } else {
+    G.busy = true;
+  }
+  BattleUI.btns(false);
 
   try {
     actor.mp = Math.max(0, actor.mp - _mpCost);
@@ -841,15 +892,15 @@ function heroAbility(ab) {
     if (e.hpCostPercent) {
       const cost = Math.floor(actor.hp * e.hpCostPercent);
       actor.hp = Math.max(1, actor.hp - cost);
-      BattleUI.popParty(G.activeMemberIdx, cost, 'dmg', 'dark');
+      BattleUI.popParty(activeIdx, cost, 'dmg', 'dark');
       BattleUI.addLog(`${actor.displayName} sacrifices vitality for power!`, 'dmg');
     }
 
     // Sprite Animation
-    const spr = BattleUI.getSprite(G.activeMemberIdx, 'party');
+    const spr = BattleUI.getSprite(activeIdx, 'party');
     if (spr) {
       spr.classList.add(`anim-${ab.id}`, `element-${element}`);
-      BattleUI.setSpriteFrame(G.activeMemberIdx, 'magic');
+      BattleUI.setSpriteFrame(activeIdx, 'magic');
       setTimeout(() => {
         spr.classList.remove(`anim-${ab.id}`, `element-${element}`);
         // Frame will be reset to idle inside ActionEngine.execute callback or here if not offensive
@@ -898,7 +949,9 @@ function heroAbility(ab) {
     }, moveConfig.actorDuration);
   } catch (err) {
     console.error('[heroAbility] Error:', err);
-    G.busy = false; BattleUI.btns(true);
+    if (typeof TurnState !== 'undefined') TurnState.setBusy(false);
+    else G.busy = false;
+    BattleUI.btns(true);
   }
 }
 
@@ -922,7 +975,8 @@ function _checkDragonLeap(actor) {
   if (target.hp <= 0) {
     Battle.setKO(target, false);
   }
-  BattleUI.popEnemy(G.targetEnemyIdx, dmg, 'dmg', 'wind');
+  const targetIdx = typeof TurnState !== 'undefined' ? TurnState.getTargetEnemyIdx() : G.targetEnemyIdx;
+  BattleUI.popEnemy(targetIdx, dmg, 'dmg', 'wind');
   BattleUI.addLog(`🐉 Dragon's Leap! Bonus aerial strike for ${dmg}!`, 'magic');
   BattleUI.renderEnemyRow();
 }
@@ -1074,14 +1128,22 @@ if (typeof module !== 'undefined' && module.exports) {
 
 
 function heroDefend() {
-  if (G.busy) return;
-  const actor = G.party[G.activeMemberIdx];
+  const isBusy = typeof TurnState !== 'undefined' ? TurnState.isBusy() : G.busy;
+  if (isBusy) return;
+  const activeIdx = typeof TurnState !== 'undefined' ? TurnState.getActivePartyIdx() : G.activeMemberIdx;
+  const actor = G.party[activeIdx];
   if (!actor) return;
 
   BattleUI.openSub(null);
-  G.busy = true; BattleUI.btns(false);
+  if (typeof TurnState !== 'undefined') {
+    TurnState.setBusy(true);
+    TurnState.setPhase('resolving');
+  } else {
+    G.busy = true;
+  }
+  BattleUI.btns(false);
 
-  BattleUI.setSpriteFrame(G.activeMemberIdx, 'prepare');
+  BattleUI.setSpriteFrame(activeIdx, 'prepare');
   ActionEngine.execute(actor, [actor], { id: 'defend', name: 'Defend', type: 'defend' }, 'physical', { actorDuration: 200 }, false);
 }
 

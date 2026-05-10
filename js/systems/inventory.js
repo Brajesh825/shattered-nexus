@@ -134,7 +134,8 @@ function removeFromInventory(itemId, qty = 1) {
 
 /* ── BATTLE ITEM UI ─────────────────────────────────────── */
 function heroItem() {
-  if (G.busy) return;
+  const isBusy = typeof TurnState !== 'undefined' ? TurnState.isBusy() : G.busy;
+  if (isBusy) return;
   BattleUI.openSub(null);
   _buildItemMenu();
 }
@@ -206,8 +207,15 @@ function _buildItemTargetMenu(def) {
 }
 
 function _useItemInBattle(def, targetIdx) {
-  if (G.busy) return;
-  G.busy = true; BattleUI.btns(false); BattleUI.openSub(null);
+  const isBusy = typeof TurnState !== 'undefined' ? TurnState.isBusy() : G.busy;
+  if (isBusy) return;
+  if (typeof TurnState !== 'undefined') {
+    TurnState.setBusy(true);
+    TurnState.setPhase('resolving');
+  } else {
+    G.busy = true;
+  }
+  BattleUI.btns(false); BattleUI.openSub(null);
 
   if (def.subtype === 'escape') {
     removeFromInventory(def.id);
