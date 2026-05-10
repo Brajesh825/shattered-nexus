@@ -531,13 +531,14 @@ const MapEngine = (() => {
   // Render objective HUD strip at bottom of canvas
   function _renderObjectiveHUD() {
     if (!_map || !_map.objective) return;
-    const obj = _map.objective;
-    const w = _canvas.width;
-    const bh = 22, by = _canvas.height - bh - 4, bx = 8;
-    const bw = Math.min(360, w - 16);
+    const el = document.getElementById('explore-loc');
+    if (!el) return;
 
+    const obj = _map.objective;
+    const isDone = _objState.done || _objAlreadyCleared();
+    
     let statusText = '';
-    if (_objState.done || _objAlreadyCleared()) {
+    if (isDone) {
       statusText = '✔ ' + (obj.label || 'Objective complete');
     } else if (obj.type === 'kill_all') {
       const remaining = (typeof MapEntities !== 'undefined') ? MapEntities.remaining() : 0;
@@ -551,20 +552,10 @@ const MapEngine = (() => {
       statusText = `⏱ ${obj.label || 'Survive'} — ${left}s remaining`;
     }
 
-    _ctx.save();
-    _ctx.globalAlpha = 0.82;
-    _ctx.fillStyle = '#06030f';
-    _ctx.beginPath();
-    if (_ctx.roundRect) _ctx.roundRect(bx, by, bw, bh, 4);
-    else _ctx.rect(bx, by, bw, bh);
-    _ctx.fill();
-    _ctx.globalAlpha = 1;
-    _ctx.font = '10px monospace';
-    _ctx.fillStyle = (_objState.done || _objAlreadyCleared()) ? '#4ade80' : '#d8c860';
-    _ctx.textAlign = 'left';
-    _ctx.textBaseline = 'middle';
-    _ctx.fillText(statusText, bx + 8, by + bh / 2);
-    _ctx.restore();
+    if (el.textContent !== statusText) {
+      el.textContent = statusText;
+      el.classList.toggle('complete', isDone);
+    }
   }
 
   /* ── Camp marker ────────────────────────────────────── */
