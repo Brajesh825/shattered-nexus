@@ -272,7 +272,8 @@ const BattleUI = {
       // Update State
       enemy.className = 'enemy' + (!alive ? ' ko-enemy' : '');
       enemy.dataset.target = i === G.targetEnemyIdx ? 'true' : 'false';
-      enemy.onclick = () => typeof selectTarget === 'function' ? selectTarget(i) : null;
+      enemy.onclick     = () => typeof selectTarget  === 'function' ? selectTarget(i)  : null;
+      enemy.onmouseenter = () => typeof hoverTarget   === 'function' ? hoverTarget(i)   : null;
       
       // Ensure unit is anchored to DOM (Fix for disappearing units)
       if (enemy.parentElement !== container) container.appendChild(enemy);

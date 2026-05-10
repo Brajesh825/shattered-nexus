@@ -675,28 +675,50 @@ function unlockCharacter(charId) {
 
 function buildTurnQueue() { return TurnManager.buildQueue(); }
 
+/**
+ * hoverTarget — Phase 3 mouse hover. Updates target indicator + keyboard cursor sync.
+ * No-op outside targeting mode (pointer-events CSS already blocks the call,
+ * but this guard is the JS safety net).
+ */
+function hoverTarget(enemyIdx) {
+  const scene = document.getElementById('battle-scene');
+  if (!scene?.classList.contains('targeting-active')) return;
+  if (!Battle.alive(G.enemyGroup[enemyIdx])) return;
+
+  G.targetEnemyIdx = enemyIdx;
+  document.querySelectorAll('.enemy').forEach((e, i) => {
+    e.dataset.target = (i === enemyIdx) ? 'true' : 'false';
+  });
+  BattleUI.addLog(`Target → ${G.enemyGroup[enemyIdx].name}`, 'hi');
+
+  // Keep keyboard cursor in sync so CONFIRM always targets what the mouse previewed
+  const enemyEl = document.querySelectorAll('.enemy')[enemyIdx];
+  if (typeof Focus !== 'undefined' && enemyEl) Focus.syncHover(enemyEl);
+}
+
+/**
+ * selectTarget — Phase 3 confirm. Executes the pending action against the chosen enemy.
+ */
 function selectTarget(enemyIdx) {
   if (!Battle.alive(G.enemyGroup[enemyIdx])) return;
-  G.targetEnemyIdx = enemyIdx;
-  G.enemy = G.enemyGroup[enemyIdx]; // Sync global enemy reference
 
-  // Update target indicator on enemies
+  G.targetEnemyIdx = enemyIdx;
+  G.enemy = G.enemyGroup[enemyIdx];
+
   document.querySelectorAll('.enemy').forEach((e, i) => {
-    e.dataset.target = i === enemyIdx ? 'true' : 'false';
+    e.dataset.target = (i === enemyIdx) ? 'true' : 'false';
   });
   BattleUI.renderEnemyRow();
   if (typeof SFX !== 'undefined') SFX.click();
 
-  // If we were in a targeting phase (keyboard/controller), execute the pending action
+  // Execute the pending action that entered Phase 3
   if (G.pendingAction) {
     const action = G.pendingAction;
     G.pendingAction = null;
-
     if (typeof Focus !== 'undefined') Focus.setTargeting(false);
 
-    // Set a flag so the action handler knows we are executing AFTER targeting
     G._executingPending = true;
-    if (action.type === 'attack') heroAttack();
+    if (action.type === 'attack')  heroAttack();
     else if (action.type === 'ability') heroAbility(action.ab);
     G._executingPending = false;
   }
@@ -786,6 +808,16 @@ function _initBattle() {
   buildAbilityMenu();
   showScreen('battle-screen');
   BattleUI.render();
+
+  // Right-click anywhere on the battle scene = BACK (cancel targeting / close sub-menu)
+  const scene = document.getElementById('battle-scene');
+  if (scene && !scene._ctxBound) {
+    scene._ctxBound = true;
+    scene.addEventListener('contextmenu', e => {
+      e.preventDefault();
+      if (typeof Focus !== 'undefined') Focus.cancelTargeting();
+    });
+  }
 }
 
 function buildAbilityMenu() {

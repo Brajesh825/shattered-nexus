@@ -135,14 +135,100 @@
   }
 }
 
+/* ── Phase-based pointer-events ─────────────────────────────
+   Enemies and allies are NOT clickable outside Phase 3.
+   .targeting-active  → enemy targeting mode
+   .targeting-active-ally → ally targeting mode
+   ─────────────────────────────────────────────────────────── */
+.enemy {
+  pointer-events: none;
+}
+.targeting-active .enemy {
+  pointer-events: auto;
+  cursor: crosshair;
+}
+.targeting-active .enemy.ko-enemy {
+  pointer-events: none;
+  cursor: default;
+}
+.targeting-active-ally .pa-member {
+  pointer-events: auto;
+  cursor: crosshair;
+}
+
+/* Enemy hover during Phase 3 — same ring as kb-focus */
+.targeting-active .enemy:hover .enemy-sprite,
+.targeting-active .enemy:hover:not(.ko-enemy) .enemy-sprite {
+  filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.8)) !important;
+  transform: scale(1.05);
+}
+.targeting-active .enemy:hover::after {
+  content: '🎯';
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 20px;
+  animation: bounce 1s infinite;
+}
+
+/* ── Focus ring (keyboard/controller cursor) ─────────────── */
+/* Base kb-focus — visible gold ring for any focusable element */
 .kb-focus {
-  outline: none !important;
-  border-color: #c0a0ff !important;
-  box-shadow: 0 0 15px #c0a0ff !important;
-  animation: focusPulse 1s infinite ease-in-out;
-  transform: scale(1.03);
-  z-index: 9999;
+  outline: 2px solid rgba(255, 215, 0, 0.85) !important;
+  outline-offset: 2px;
+  z-index: 999 !important;
   position: relative;
+}
+
+/* Title screen buttons */
+.title-btn.kb-focus {
+  outline: none !important;
+  border-color: #ffd700 !important;
+  box-shadow:
+    0 0 0 2px rgba(255, 215, 0, 0.9),
+    0 0 18px rgba(255, 215, 0, 0.45) !important;
+  transform: scale(1.04);
+}
+
+/* Map pause-menu & camp buttons */
+.pause-btn.kb-focus,
+.camp-btn.kb-focus {
+  outline: none !important;
+  border-color: #ffd700 !important;
+  background: rgba(255, 215, 0, 0.08) !important;
+  box-shadow: 0 0 14px rgba(255, 215, 0, 0.4) !important;
+}
+
+.enemy.kb-focus .enemy-sprite {
+  filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.8)) !important;
+  transform: scale(1.05);
+}
+
+.enemy.kb-focus::after {
+  content: '🎯';
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 20px;
+  animation: bounce 1s infinite;
+}
+
+.cmd-btn.kb-focus {
+  border-color: #fff !important;
+  background: rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 
+    0 0 20px rgba(192, 160, 255, 0.4),
+    inset 0 0 10px rgba(255, 255, 255, 0.2) !important;
+  transform: translateY(-4px) scale(1.02);
+  z-index: 100;
+}
+
+/* Special styling for focused Attack button */
+.cmd-btn.kb-focus[onclick*="heroAttack"] {
+  border-color: #ffd700 !important;
+  box-shadow: 0 0 25px rgba(255, 215, 0, 0.4) !important;
 }
 
 .party-sprite {
