@@ -48,7 +48,7 @@ const BGM = {
     }
 
     // Create new audio element
-    const audio = new Audio(`audio/bgm/${trackName}.mp3`);
+    const audio = new Audio(`audio/bgm/${trackName}.webm`);
     audio.loop = true;
     audio.volume = this._volume;
 
@@ -79,7 +79,7 @@ const BGM = {
     }
 
     // If we're already playing this exact track, just ensure volume is up
-    if (this._current && this._current.src.includes(trackName + '.mp3')) {
+    if (this._current && this._current.src.includes(trackName + '.webm')) {
       this._current.volume = this._volume;
       return;
     }
@@ -92,7 +92,7 @@ const BGM = {
     const oldTrack = this._current;
     
     // Create new track
-    const newAudio = new Audio(`audio/bgm/${trackName}.mp3`);
+    const newAudio = new Audio(`audio/bgm/${trackName}.webm`);
     newAudio.loop = true;
     newAudio.volume = 0;
     
