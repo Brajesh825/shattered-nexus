@@ -165,7 +165,7 @@ const TurnManager = {
 
     // Force focus reset to Action Menu (Attack button)
     if (typeof Focus !== 'undefined') {
-      TurnState.clearTargetEnemy(); // Clear active enemy so Targeting Phase is required
+      // TurnState.clearTargetEnemy(); // STICKY TARGETING: Removed forced clear
       Focus.setContext('cmd-grid-main');
     }
     

@@ -52,6 +52,10 @@ const AssetPreloader = (() => {
       'cascade_rocks', 'mist_vent', 'river_marker', 'waterlogged_cart', 'grotto_entrance', 'keystone_obelisk',
       'coral_formation', 'shipwreck', 'ancient_column',
       ...MILITARY_ASSETS, ...CIVILIAN_ASSETS, ...NOBLE_ASSETS
+    ],
+    backgrounds: [
+      'verdant_vale', 'forest_path', 'galdor_garden', 'oracle_chamber', 
+      'sacred_ruins_boss', 'summoning_ruins', 'aethalguard_ruins'
     ]
   };
 
@@ -131,7 +135,9 @@ const AssetPreloader = (() => {
       loadBatch(ASSETS.ui, loadImage, 'ui_', (id) => `images/ui/${id}.png`),
       // 5. Environment (CORE + EXTENDED)
       loadBatch(ASSETS.environmentCore, loadImage, 'env_', (id) => `images/environment/svg/${id}.svg`),
-      loadBatch(ASSETS.environmentExtended, loadImage, 'env_', (id) => `images/environment/svg/${id}.svg`)
+      loadBatch(ASSETS.environmentExtended, loadImage, 'env_', (id) => `images/environment/svg/${id}.svg`),
+      // 6. Backgrounds
+      loadBatch(ASSETS.backgrounds, loadImage, 'bg_', (id) => `images/backgrounds/${id}.webp`)
     ]);
 
     return cache;

@@ -24,10 +24,10 @@
   width: 140px;
   height: 160px;
   background: transparent;
-  border: 1px solid transparent;
+  border: none; /* Strip card border */
   border-radius: 16px;
   transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-  overflow: visible; /* Allow aura to bleed out */
+  overflow: visible;
   cursor: default;
 }
 
@@ -90,11 +90,31 @@
 .party-member.active-member {
   transform: translate3d(0, -12px, 0);
   background: transparent;
-  border: 1px solid rgba(255, 215, 0, 0.6);
-  box-shadow: 
-    0 0 20px rgba(255, 215, 0, 0.2),
-    inset 0 0 10px rgba(255, 215, 0, 0.1);
+  border: none;
+  box-shadow: none;
   z-index: 100 !important;
+}
+
+/* Ethereal Ground Ring for Active Member */
+.party-member.active-member::after {
+  content: '';
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 30px;
+  background: radial-gradient(ellipse at center, rgba(255, 215, 0, 0.4) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: ringPulse 2s infinite ease-in-out;
+  z-index: -1;
+  pointer-events: none;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+}
+
+@keyframes ringPulse {
+  0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.4; }
+  50% { transform: translateX(-50%) scale(1.2); opacity: 0.8; }
 }
 
 .party-member.active-member .party-visual-anchor::after {
@@ -384,7 +404,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  border: 1px solid transparent;
+  border: none; /* Strip card border */
   border-radius: 4px;
   padding: 6px;
   background: transparent;
@@ -410,13 +430,30 @@
   /* Target indicator will add the border via JS */
 }
 
-/* Show border only on targeted enemy */
-.enemy-container .enemy {
-  border-color: transparent;
+/* Ethereal Ground Ring for Targeted Enemy */
+.enemy[data-target="true"]::after {
+  content: '';
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 140px;
+  height: 40px;
+  background: radial-gradient(ellipse at center, rgba(255, 60, 96, 0.4) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: enemyRingPulse 1.5s infinite ease-in-out;
+  z-index: -1;
+  pointer-events: none;
+  box-shadow: 0 0 20px rgba(255, 60, 96, 0.2);
+}
+
+@keyframes enemyRingPulse {
+  0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.3; }
+  50% { transform: translateX(-50%) scale(1.15); opacity: 0.7; }
 }
 
 .enemy-container .enemy[data-target="true"] {
-  border-color: #ff6060;
+  border-color: transparent;
 }
 
 /* ═══════════════════════════════════════════════════════════════════

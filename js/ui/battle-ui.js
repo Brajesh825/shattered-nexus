@@ -92,37 +92,41 @@ const BattleUI = {
     const scene = this.el('battle-scene');
     if (!scene) return;
 
-    // 1. Check if this is an Arc Boss fight
-    if (typeof Story !== 'undefined' && Story.active && Story.currentChap === Story.arc?.boss_chapter && Story.currentChap?.background) {
-      scene.style.backgroundImage = `url('images/backgrounds/${Story.currentChap.background}.webp')`;
+    // Helper to apply WebP background
+    const setHFBg = (bgName) => {
+      if (!bgName) return false;
+      const cleanName = bgName.replace(/\.(png|jpg|webp|jpeg)$/i, '');
+      scene.style.backgroundImage = `url('images/backgrounds/${cleanName}.webp')`;
       scene.style.backgroundSize = 'cover';
       scene.style.backgroundPosition = 'center bottom';
-      scene.className = 'scene'; // Clear any gradient classes
-      return;
+      scene.classList.add('hf-bg-active');
+      return true;
+    };
+
+    // Reset state
+    scene.classList.remove('hf-bg-active');
+    scene.style.backgroundImage = '';
+
+    // 1. Check if this is an Arc Boss fight
+    if (typeof Story !== 'undefined' && Story.active && Story.currentChap === Story.arc?.boss_chapter) {
+      if (setHFBg(Story.currentChap.background)) return;
     }
 
-    // 2. Check if a specific encounter background was passed from the map data (e.g. Map Bosses)
+    // 2. Check if a specific encounter background was passed
     if (typeof G !== 'undefined' && G.encounterBg) {
-      scene.style.backgroundImage = `url('images/backgrounds/${G.encounterBg}.webp')`;
-      scene.style.backgroundSize = 'cover';
-      scene.style.backgroundPosition = 'center bottom';
-      scene.className = 'scene';
-      return;
+      if (setHFBg(G.encounterBg)) return;
     }
 
     // 3. Check if we are in a map encounter
     const curMap = (typeof MapEngine !== 'undefined') ? MapEngine.getMap() : null;
     if (curMap && curMap.battleBg) {
-      scene.style.backgroundImage = `url('images/backgrounds/${curMap.battleBg}.webp')`;
-      scene.style.backgroundSize = 'cover';
-      scene.style.backgroundPosition = 'center bottom';
-      scene.className = 'scene'; // Clear any gradient classes
-      return;
+      if (setHFBg(curMap.battleBg)) return;
     }
 
-    // 4. Fallback: story arc gradient class
-    scene.style.backgroundImage = '';
+    // 4. Fallback: Story arc gradient classes (Don't clear entire className)
     if (typeof Story !== 'undefined' && Story.active) {
+      // Remove any existing arc-bg classes
+      scene.className = scene.className.split(' ').filter(c => !c.startsWith('arc-bg-')).join(' ');
       scene.classList.add(`arc-bg-${Story.arcIdx % 8}`);
     }
   },
@@ -299,7 +303,6 @@ const BattleUI = {
         spr = enemy.querySelector('.enemy-sprite');
         hpBar = enemy.querySelector('.enemy-hp-bar-fill');
         info = enemy.querySelector('.enemy-info');
-        indicator = enemy.querySelector('.target-indicator');
       }
 
       // Update State
@@ -351,17 +354,7 @@ const BattleUI = {
       const newInfo = `<div class="enemy-name">${esc(e.name)}</div><div class="enemy-level">Lv ${e.level}</div>${hpTxt}<div class="enemy-traits">${traitHtml}</div>`;
       if (info.innerHTML !== newInfo) info.innerHTML = newInfo;
 
-      // Indicator
-      if (i === targetEnemyIdx && alive) {
-        if (!indicator) {
-          indicator = document.createElement('div');
-          indicator.className = 'target-indicator';
-          indicator.textContent = '◀';
-          enemy.appendChild(indicator);
-        }
-      } else if (indicator) {
-        indicator.remove();
-      }
+      // Indicator logic removed - handled by CSS ground rings
     });
   },
 
