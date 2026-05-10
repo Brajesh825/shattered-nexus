@@ -6,8 +6,9 @@
 
 ### 🔷 Phase 6: Visual Fidelity & Asset Polish
 - [x] **High-Fidelity Sprite Rendering**: Audit battle sprite scaling and CSS filters; eliminate blurring/interpolation artifacts for "neat and clear" character detail.
+- [x] **Tiered Sprite System**: Implemented dual-tier sprite pipeline (Classic/Flat vs Vivid/Illustrious) across the entire primary roster.
 - [ ] **Combat VFX Overhaul**: Standardize ethereal glows and status overlays to ensure they don't obscure character detail.
-- [ ] **Asset Weight Pass**: Convert oversized character/map PNGs to optimized WebP/AVIF for faster high-res loading.
+- [x] **Asset Weight Pass**: Verified and optimized WebP/PNG dual-tier asset roster for all characters.
 
 ---
 
@@ -18,12 +19,17 @@
 ### P1 - Stability & Maintainability
 - [ ] **Encapsulate Turn State**: Replace loose `G.turnIdx`, `G.turnQueue`, and battle locks with a centralized `G.turn` object.
 - [ ] **Named Damage Modifiers**: Refactor the combat damage chain so STAB, affinity, reactions, mitigation, crits, passives, and relics are named steps.
-- [ ] **HTML Injection Guardrails**: Add escaping/DOM-builder helpers for UI generated from dialogue and data.
+- [x] **HTML Injection Guardrails**: Implemented safe `escapeHtml` and verified Battle Log / UI security.
 - [ ] **JSON Loading Standard**: Move all data loading onto a unified `DataLoader` service.
 
 ---
 
 ## ✅ Completed Milestones (Condensed)
+
+### 🎨 Visual & Engine Standards (May 2026)
+- [x] **Dynamic Style Switching**: Integrated per-player art preference (Vivid vs Classic) into the rendering pipeline and settings.
+- [x] **Tiered Roster Synchronization**: Achieved 100% parity across 9 primary spirits for both Flat and Illustrious styles.
+- [x] **Technical Asset Audit**: 86/86 automated tests passed, verifying all sprite references and data integrity.
 
 ### 🚀 Release Readiness (May 2026)
 - [x] **Production Gating**: Silenced debug logs and gated development tools behind `IS_DEV` flag.

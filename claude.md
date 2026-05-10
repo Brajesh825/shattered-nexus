@@ -12,6 +12,15 @@ The 4-slot diamond arrangement is the foundation of targeting logic.
 
 ---
 
+## 🎭 Tiered Sprite System & Visual Aesthetic
+The game supports two distinct visual tiers for all primary spirit characters.
+- **Baseline (`_sprite.png`)**: The **"Classic"** style. MUST be "Flat & Clean" (cel-shaded, no hair gradients, razor-thin lineart). This is the mandatory baseline for the engine's 100% functional state.
+- **Premium (`_sprite_1.png`)**: The **"Vivid"** style. High-fidelity "Illustrious" upgrade with cinematic lighting, detailed gradients, and rich shading.
+- **Dynamic Switching**: Managed via `SpriteRenderer.getSuffix()`. The engine automatically toggles based on the player's `Settings.style` preference.
+- **Data Contract**: Every primary character MUST have both versions plus their optimized `.webp` counterparts to pass the technical audit.
+
+---
+
 ## 🧬 Data-Driven Passive Trait System
 Managed via **[PassiveSystem](file:///c:/Users/ASUS/VVI/rpg+/js/battle/passive-system.js)**. 
 - **Querying**: Use `PassiveSystem.hasTrait(unit, 'TYPE')` or `PassiveSystem.val(unit, 'TYPE', fallback)`.
