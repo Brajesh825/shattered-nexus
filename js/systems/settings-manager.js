@@ -4,24 +4,50 @@
  */
 const Settings = {
   _KEY: 'cc_settings_v1',
+  _LEGACY_GRAPHICS_KEY: 'sn_graphics_quality',
+  _LEGACY_SPRITE_KEY: 'spriteQuality',
+  _hasQualityPreference: false,
+  _hasStylePreference: false,
   data: {
     bgm: 50,
     sfx: 50,
     textSpeed: 3, // 1=Slow, 3=Normal, 5=Fast
     quality: 'auto',
+    style: 'illustrious', // Default is now Illustrious
   },
 
   init() {
     const saved = localStorage.getItem(this._KEY);
+    let savedQuality = null;
+    let savedStyle = null;
+
     if (saved) {
       try {
-        this.data = { ...this.data, ...JSON.parse(saved) };
+        const parsed = JSON.parse(saved);
+        this.data = { ...this.data, ...parsed };
+        savedQuality = parsed.quality;
+        savedStyle = parsed.style;
       } catch(e) { console.warn('Settings load failed:', e); }
     }
+
+    const migratedQuality = this._readStoredQuality(savedQuality);
+    if (migratedQuality) {
+      this.data.quality = migratedQuality;
+      this._hasQualityPreference = true;
+    }
+    
+    if (savedStyle) {
+      this.data.style = savedStyle;
+      this._hasStylePreference = true;
+    }
+
     this.apply();
   },
 
   apply() {
+    this.data.quality = this.normalizeQuality(this.data.quality);
+    this.data.style = (this.data.style === 'flat') ? 'flat' : 'illustrious';
+
     // Volume
     if (window.BGM) BGM.setVolume(this.data.bgm / 100);
     if (window.SFX) SFX.setVolume(this.data.sfx / 100);
@@ -29,12 +55,26 @@ const Settings = {
     // Graphics Quality
     if (window.G) {
       G.graphics = this.data.quality;
+      G.style = this.data.style;
       // Sync legacy setting path for sprites.js
       if (!G.settings) G.settings = {};
       G.settings.graphicsQuality = this.data.quality;
+      G.settings.style = this.data.style;
       
       const qBtn = document.getElementById('quality-btn');
-      if (qBtn) qBtn.textContent = `Quality: ${this.data.quality.toUpperCase()}`;
+      if (qBtn) {
+        const styleLabel = G.style === 'illustrious' ? 'Vivid' : 'Flat';
+        const qualLabel = G.graphics === 'low' ? 'WebP' : 'PNG';
+        qBtn.textContent = `Art: ${styleLabel} (${qualLabel})`;
+      }
+
+      if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+        navigator.serviceWorker.controller.postMessage({
+          type: 'SET_QUALITY',
+          quality: this.data.quality,
+          style: this.data.style
+        });
+      }
     }
 
     // Text Speed (Inverts the value for interval timing)
@@ -43,6 +83,11 @@ const Settings = {
     if (window.Story) Story._twDelay = delayMap[this.data.textSpeed] || 30;
 
     this.save();
+    
+    // Force refresh of all active sprites on map/battle
+    if (window.SpriteRenderer && SpriteRenderer.refreshGlobalSprites) {
+      SpriteRenderer.refreshGlobalSprites();
+    }
   },
 
   save() {
@@ -50,8 +95,50 @@ const Settings = {
   },
 
   update(key, val) {
-    this.data[key] = val;
+    if (key === 'quality') {
+      this.data.quality = this.normalizeQuality(val);
+      this._hasQualityPreference = true;
+    } else if (key === 'style') {
+      this.data.style = (val === 'flat') ? 'flat' : 'illustrious';
+      this._hasStylePreference = true;
+    } else {
+      this.data[key] = val;
+    }
     this.apply();
+  },
+
+  normalizeQuality(value) {
+    if (value === 'normal' || value === 'high') return 'high';
+    if (value === 'low') return 'low';
+    return 'auto';
+  },
+
+  getQuality() {
+    return this.normalizeQuality(this.data.quality);
+  },
+
+  getStyle() {
+    return this.data.style || 'illustrious';
+  },
+
+  hasQualityPreference() {
+    return this._hasQualityPreference;
+  },
+
+  hasStylePreference() {
+    return this._hasStylePreference;
+  },
+
+  _readStoredQuality(savedQuality) {
+    const candidates = [
+      savedQuality,
+      localStorage.getItem(this._LEGACY_GRAPHICS_KEY),
+      localStorage.getItem(this._LEGACY_SPRITE_KEY)
+    ];
+    const found = candidates.find(q => q === 'auto' || q === 'high' || q === 'normal' || q === 'low' || q === 'illustrious');
+    if (!found) return null;
+    if (found === 'illustrious') return 'high'; // Illustrious becomes 'high' quality, but 'style' is separate now
+    return this.normalizeQuality(found);
   },
 
   open() {

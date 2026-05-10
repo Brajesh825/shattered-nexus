@@ -730,9 +730,13 @@ const Story = {
     G.party.forEach(m => { m.regenTurns = 0; m.stunned = false; });
 
     buildAbilityMenu();
-    G.turnQueue = buildTurnQueue();
-    G.turnIdx = 0;
-    G.busy = false;
+    const queue = buildTurnQueue();
+    if (typeof TurnState !== 'undefined') TurnState.resetBattle(queue);
+    else {
+      G.turnQueue = queue;
+      G.turnIdx = 0;
+      G.busy = false;
+    }
 
     showScreen('battle-screen');
     BattleUI.render();

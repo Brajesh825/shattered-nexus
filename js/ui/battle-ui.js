@@ -91,8 +91,42 @@ const BattleUI = {
   _applyArcAtmosphere() {
     const scene = this.el('battle-scene');
     if (!scene) return;
-    // Sync parallax layers to current Arc if available
+
+    // Helper to apply WebP background
+    const setHFBg = (bgName) => {
+      if (!bgName) return false;
+      const cleanName = bgName.replace(/\.(png|jpg|webp|jpeg)$/i, '');
+      scene.style.backgroundImage = `url('images/backgrounds/${cleanName}.webp')`;
+      scene.style.backgroundSize = 'cover';
+      scene.style.backgroundPosition = 'center bottom';
+      scene.classList.add('hf-bg-active');
+      return true;
+    };
+
+    // Reset state
+    scene.classList.remove('hf-bg-active');
+    scene.style.backgroundImage = '';
+
+    // 1. Check if this is an Arc Boss fight
+    if (typeof Story !== 'undefined' && Story.active && Story.currentChap === Story.arc?.boss_chapter) {
+      if (setHFBg(Story.currentChap.background)) return;
+    }
+
+    // 2. Check if a specific encounter background was passed
+    if (typeof G !== 'undefined' && G.encounterBg) {
+      if (setHFBg(G.encounterBg)) return;
+    }
+
+    // 3. Check if we are in a map encounter
+    const curMap = (typeof MapEngine !== 'undefined') ? MapEngine.getMap() : null;
+    if (curMap && curMap.battleBg) {
+      if (setHFBg(curMap.battleBg)) return;
+    }
+
+    // 4. Fallback: Story arc gradient classes (Don't clear entire className)
     if (typeof Story !== 'undefined' && Story.active) {
+      // Remove any existing arc-bg classes
+      scene.className = scene.className.split(' ').filter(c => !c.startsWith('arc-bg-')).join(' ');
       scene.classList.add(`arc-bg-${Story.arcIdx % 8}`);
     }
   },
@@ -127,7 +161,8 @@ const BattleUI = {
   },
 
   updateStats() {
-    const h = G.party[G.activeMemberIdx] || G.hero;
+    const activeIdx = typeof TurnState !== 'undefined' ? TurnState.getActivePartyIdx() : G.activeMemberIdx;
+    const h = G.party[activeIdx] || G.hero;
     if (!h) return;
     const lv = this.el('stat-lv');
     const atk = this.el('stat-atk');
@@ -171,7 +206,9 @@ const BattleUI = {
     const bar = this.el('turn-bar');
     if (!bar) return;
     bar.innerHTML = '';
-    G.turnQueue.forEach((t, i) => {
+    const queue = typeof TurnState !== 'undefined' ? TurnState.getQueue() : G.turnQueue;
+    const turnIdx = typeof TurnState !== 'undefined' ? TurnState.getIndex() : G.turnIdx;
+    queue.forEach((t, i) => {
       const unit = t.type === 'party' ? G.party[t.idx] : G.enemyGroup[t.idx];
       if (!unit) return;
       const isEnemy = t.type === 'enemy';
@@ -179,14 +216,14 @@ const BattleUI = {
       
       const tok = document.createElement('div');
       tok.className = 'tb-tok' +
-        (i === G.turnIdx ? ' active-tok' : '') +
+        (i === turnIdx ? ' active-tok' : '') +
         (isEnemy ? ' enemy-tok' : '') +
         (!Battle.alive(unit) ? ' dead-tok' : '');
       
       // Enemy: sprite image. Party: colored initial badge.
       if (isEnemy) {
         const img = document.createElement('img');
-        img.src = `images/enemies/${unit.id}.png`;
+        img.src = `images/enemies/${unit.id}.webp`;
         img.onerror = () => { img.style.opacity = '0.4'; };
         tok.appendChild(img);
       } else {
@@ -200,8 +237,8 @@ const BattleUI = {
       const hpRatio = unit.maxHp > 0 ? unit.hp / unit.maxHp : 1;
       const lowHp = Battle.alive(unit) && hpRatio <= 0.25;
       const defaultBorder = lowHp ? '#ff4444' : (Battle.alive(unit) ? color : '#333');
-      tok.style.borderColor = (i === G.turnIdx) ? 'var(--gold)' : defaultBorder;
-      if (lowHp && i !== G.turnIdx) tok.style.animation = 'cdPulse 1s ease-in-out infinite';
+      tok.style.borderColor = (i === turnIdx) ? 'var(--gold)' : defaultBorder;
+      if (lowHp && i !== turnIdx) tok.style.animation = 'cdPulse 1s ease-in-out infinite';
       tok.title = (unit.displayName || unit.name || '') + (Battle.alive(unit) ? ` (HP ${unit.hp}/${unit.maxHp})` : ' [KO]');
       bar.appendChild(tok);
     });
@@ -266,13 +303,14 @@ const BattleUI = {
         spr = enemy.querySelector('.enemy-sprite');
         hpBar = enemy.querySelector('.enemy-hp-bar-fill');
         info = enemy.querySelector('.enemy-info');
-        indicator = enemy.querySelector('.target-indicator');
       }
 
       // Update State
       enemy.className = 'enemy' + (!alive ? ' ko-enemy' : '');
-      enemy.dataset.target = i === G.targetEnemyIdx ? 'true' : 'false';
-      enemy.onclick = () => typeof selectTarget === 'function' ? selectTarget(i) : null;
+      const targetEnemyIdx = typeof TurnState !== 'undefined' ? TurnState.getTargetEnemyIdx() : G.targetEnemyIdx;
+      enemy.dataset.target = i === targetEnemyIdx ? 'true' : 'false';
+      enemy.onclick     = () => typeof selectTarget  === 'function' ? selectTarget(i)  : null;
+      enemy.onmouseenter = () => typeof hoverTarget   === 'function' ? hoverTarget(i)   : null;
       
       // Ensure unit is anchored to DOM (Fix for disappearing units)
       if (enemy.parentElement !== container) container.appendChild(enemy);
@@ -310,25 +348,13 @@ const BattleUI = {
         setTimeout(() => { drain.style.width = pct + '%'; }, 300);
       }
 
-      let traitHtml = '';
-      if (e.mutantTraits?.length) {
-        traitHtml = `<div class="enemy-traits">${e.mutantTraits.map(t => `<span class="trait-pill">${t.label}</span>`).join('')}</div>`;
-      }
       const hpTxt = alive ? `<div class="enemy-hp-txt">${Math.max(0, e.hp)}/${e.maxHp}</div>` : '';
-      const newInfo = `<div class="enemy-name">${e.name}</div><div class="enemy-level">Lv ${e.level}</div>${hpTxt}${traitHtml}`;
+      const esc = (typeof escapeHtml === 'function') ? escapeHtml : (v) => v;
+      const traitHtml = (e.mutantTraits || []).map(t => `<span class="trait-pill">${esc(t.label)}</span>`).join('');
+      const newInfo = `<div class="enemy-name">${esc(e.name)}</div><div class="enemy-level">Lv ${e.level}</div>${hpTxt}<div class="enemy-traits">${traitHtml}</div>`;
       if (info.innerHTML !== newInfo) info.innerHTML = newInfo;
 
-      // Indicator
-      if (i === G.targetEnemyIdx && alive) {
-        if (!indicator) {
-          indicator = document.createElement('div');
-          indicator.className = 'target-indicator';
-          indicator.textContent = '◀';
-          enemy.appendChild(indicator);
-        }
-      } else if (indicator) {
-        indicator.remove();
-      }
+      // Indicator logic removed - handled by CSS ground rings
     });
   },
 
@@ -356,10 +382,18 @@ const BattleUI = {
         member.dataset.idx = i;
         container.appendChild(member);
 
+        const anchor = document.createElement('div');
+        anchor.className = 'party-visual-anchor';
+        member.appendChild(anchor);
+
+        const shadow = document.createElement('div');
+        shadow.className = 'party-shadow';
+        anchor.appendChild(shadow);
+
         spr = document.createElement('div');
         spr.id = 'pspr-' + i;
         spr.className = 'party-sprite';
-        member.appendChild(spr);
+        anchor.appendChild(spr);
 
         const hpBg = document.createElement('div');
         hpBg.className = 'party-hp-bar-bg';
@@ -393,8 +427,9 @@ const BattleUI = {
       if (member.parentElement !== container) container.appendChild(member);
 
       // Update Info only if content changed
+      const esc = (typeof escapeHtml === 'function') ? escapeHtml : (v) => v;
       const traitHtml = ''; // Reserved for future party traits
-      const newInfo = `<div class="party-name">${m.displayName}</div><div class="party-level">Lv ${m.lv}</div>${traitHtml}`;
+      const newInfo = `<div class="party-name">${esc(m.displayName)}</div><div class="party-level">Lv ${m.lv}</div>${traitHtml}`;
       if (info.innerHTML !== newInfo) {
         info.innerHTML = newInfo;
         info.style.color = col;
@@ -456,7 +491,9 @@ const BattleUI = {
     // Final pass: Initialize high-res frames
     G.party.forEach((m, i) => {
       // Frame Sticky: Only auto-set idle if not currently acting or busy
-      const isActing = G.busy && G.activeMemberIdx === i;
+      const isBusy = typeof TurnState !== 'undefined' ? TurnState.isBusy() : G.busy;
+      const activeIdx = typeof TurnState !== 'undefined' ? TurnState.getActivePartyIdx() : G.activeMemberIdx;
+      const isActing = isBusy && activeIdx === i;
       if (!isActing) {
         this.setSpriteFrame(i, Battle.alive(m) ? 'idle' : 'fallen');
       }
@@ -466,14 +503,16 @@ const BattleUI = {
   },
 
   highlightActiveMember() {
-    const t = G.turnQueue[G.turnIdx];
+    const queue = typeof TurnState !== 'undefined' ? TurnState.getQueue() : G.turnQueue;
+    const turnIdx = typeof TurnState !== 'undefined' ? TurnState.getIndex() : G.turnIdx;
+    const t = queue[turnIdx];
     document.querySelectorAll('.party-member').forEach((w, i) => {
       const isActive = t && t.type === 'party' && t.idx === i;
       w.classList.toggle('active-member', isActive);
-      const col = CHAR_COLOR[G.party[i]?.charId] || '#c0b8e8';
-      w.style.borderColor = isActive ? col + '50' : 'transparent';
+
+
       // Use box-shadow via CSS class instead of dynamic filter to prevent blurring
-      w.style.boxShadow = isActive ? `0 4px 15px rgba(0,0,0,0.5), 0 0 12px ${col}80` : 'none';
+
     });
   },
 
@@ -490,7 +529,9 @@ const BattleUI = {
       const hpPct = Math.max(0, m.hp / m.maxHp * 100);
       const mpPct = Math.max(0, m.mp / m.maxMp * 100);
       const hpCol = hpPct > 50 ? 'var(--hp-hi)' : hpPct > 25 ? 'var(--hp-mid)' : 'var(--hp-lo)';
-      const isActive = G.turnQueue[G.turnIdx]?.type === 'party' && G.turnQueue[G.turnIdx]?.idx === i;
+      const queue = typeof TurnState !== 'undefined' ? TurnState.getQueue() : G.turnQueue;
+      const turnIdx = typeof TurnState !== 'undefined' ? TurnState.getIndex() : G.turnIdx;
+      const isActive = queue[turnIdx]?.type === 'party' && queue[turnIdx]?.idx === i;
 
       // Ghost drain: start drain at previous HP, bar at current HP
       const prevHpPct = this._pscPrevHp[i] ?? hpPct;
@@ -502,10 +543,11 @@ const BattleUI = {
       card.style.borderColor = isActive ? col : col + '50';
 
       const statusHtml = this._renderPSCStatuses(m);
+      const esc = (typeof escapeHtml === 'function') ? escapeHtml : (v) => v;
 
       card.innerHTML = `
         <div class="psc-header">
-          <div class="psc-name" style="color:${col}">${m.displayName} <span class="psc-lv">L${m.lv}</span></div>
+          <div class="psc-name" style="color:${col}">${esc(m.displayName)} <span class="psc-lv">L${m.lv}</span></div>
           <div class="psc-statuses">${statusHtml}</div>
         </div>
         <div class="psc-hp-bg">
@@ -529,9 +571,10 @@ const BattleUI = {
 
   _renderPSCStatuses(m) {
     const tokens = [];
+    const esc = (typeof escapeHtml === 'function') ? escapeHtml : (v) => v;
     const push = (icon, turns, cl = '') => {
       if (turns === undefined || turns === null || turns === '-') tokens.push(`<div class="psct ${cl}">${icon}</div>`);
-      else tokens.push(`<div class="psct ${cl}">${icon}<span class="psct-cnt">${turns}</span></div>`);
+      else tokens.push(`<div class="psct ${cl}">${icon}<span class="psct-cnt">${esc(String(turns))}</span></div>`);
     };
 
     if (m.statuses) {
@@ -550,7 +593,9 @@ const BattleUI = {
   renderActiveMemberBar() {
     const bar = this.el('active-member-bar');
     if (!bar) return;
-    const t = G.turnQueue[G.turnIdx];
+    const queue = typeof TurnState !== 'undefined' ? TurnState.getQueue() : G.turnQueue;
+    const turnIdx = typeof TurnState !== 'undefined' ? TurnState.getIndex() : G.turnIdx;
+    const t = queue[turnIdx];
     if (!t || t.type !== 'party') {
       bar.innerHTML = '<span style="color:#5a527a">Enemy acting…</span>';
       return;
@@ -561,12 +606,13 @@ const BattleUI = {
     const classInfo = isSmall ? `LV ${m.lv}` : `${m.cls.name} · LV ${m.lv}`;
     const mpInfo = isSmall ? `MP ${m.mp}` : `MP ${m.mp}/${m.maxMp}`;
     
+    const esc = (typeof escapeHtml === 'function') ? escapeHtml : (v) => v;
     bar.innerHTML =
-      `<div class="amb-portrait" style="color:${col};border-color:${col}">${(m.displayName||m.charId||'?')[0].toUpperCase()}</div>` +
+      `<div class="amb-portrait" style="color:${col};border-color:${col}">${esc((m.displayName||m.charId||'?')[0].toUpperCase())}</div>` +
       `<span class="amb-arrow" style="color:${col}">▶</span>` +
-      `<span class="amb-name" style="color:${col}">${m.displayName}</span>` +
-      `<span class="amb-class">${classInfo}</span>` +
-      `<span class="amb-mp" style="color:#6080ff">${mpInfo}</span>`;
+      `<span class="amb-name" style="color:${col}">${esc(m.displayName)}</span>` +
+      `<span class="amb-class">${esc(classInfo)}</span>` +
+      `<span class="amb-mp" style="color:#6080ff">${esc(mpInfo)}</span>`;
     
     // Auto-focus the action menu for keyboard/controller
     if (typeof Focus !== 'undefined') {
@@ -702,8 +748,8 @@ const BattleUI = {
   showAbilityDesc(ab) {
     const log = document.querySelector('.battle-log');
     if (!log || !ab) return;
-    log.innerHTML = `<p class="log-line" style="color:var(--gold);font-weight:bold">${ab.name}</p>` +
-                    `<p class="log-line" style="font-size:12px;color:#fff">${ab.description}</p>`;
+    log.innerHTML = `<p class="log-line" style="color:var(--gold);font-weight:bold">${escapeHtml(ab.name)}</p>` +
+                    `<p class="log-line" style="font-size:12px;color:#fff">${escapeHtml(ab.description)}</p>`;
   },
 
   clearAbilityDesc() {
@@ -926,3 +972,4 @@ const BattleUI = {
     setTimeout(() => overlay.remove(), duration);
   }
 };
+window.BattleUI = BattleUI;

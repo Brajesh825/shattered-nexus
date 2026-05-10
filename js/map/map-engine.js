@@ -1753,3 +1753,4 @@ const MapEngine = (() => {
     onEncounterStart: null,
   };
 })();
+window.MapEngine = MapEngine;

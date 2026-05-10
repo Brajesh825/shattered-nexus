@@ -1,0 +1,36 @@
+ILLUSTROUS : WAI-ILLUSTROUS
+
+Galdor Garden
+Pos: masterpiece, best quality, scenery, no humans, strict horizontal composition, strict side view, horizontal split exactly in the middle of the frame, upper background features twin ornate stone fountains in midground, symmetrical royal garden layout, dense forest and towering trees in distant background, sunlight beams, manicured hedges, lower foreground features perfectly flat massive clear grey paving stones ground plane stretching across the entire width and taking up the bottom 50 percent of the image, empty stage floor, unobstructed foreground, vibrant greens and grey stone, cinematic lighting, studio quality anime style.
+Neg: 1girl, solo, human, deep path, one point perspective, narrow road, character, face, body, trees in foreground, blurry, lowres, text, watermark.
+
+Aethalguard Ruins
+Pos: masterpiece, best quality, scenery, no humans, strict horizontal composition, side view, upper background features ruined stone buildings, shattered windows and crumbling towers, broken marble statues, scattered debris and masonry, overgrown with forest moss and vines, sunlight beams through ruined roofs, lower foreground features perfectly flat clear horizontal stone street with cracked pavement ground plane stretching across the entire width, empty stage floor, unobstructed foreground, vibrant grey stone and deep forest greens, cinematic lighting, studio quality anime style.
+Neg: 1girl, solo, human, deep path, one point perspective, narrow road, character, face, body, trees in foreground, blurry, lowres, text, watermark.
+
+Forest path
+Pos: masterpiece, best quality, scenery, no humans, strict horizontal composition, side view, upper background features deep forest path disappearing into distance, tree at the end of the road, towering ancient trees, dappled sunlight, misty atmosphere, lower foreground features perfectly flat clear soft grass ground plane stretching across the entire width, empty stage floor, unobstructed foreground, studio quality anime style.
+Neg: 1girl, solo, human, deep path, one point perspective, narrow road, character, face, body, trees in foreground, blurry, lowres, text, watermark.
+
+Oracle Chamber
+Pos: masterpiece, best quality, scenery, no humans, strict horizontal composition, side view, upper background features interior of a sacred sanctuary, glowing pool of water in center, floating candles, translucent curtains, white and gold pillars, soft sunlight through stained glass, lower foreground features perfectly flat clear sanctuary floor ground plane stretching across the entire width, empty stage floor, unobstructed foreground, serenity, soft bokeh, studio quality anime style.
+Neg: 1girl, solo, human, deep path, one point perspective, narrow road, character, face, body, trees in foreground, blurry, lowres, text, watermark.
+
+Summoning Ground
+Pos: masterpiece, best quality, scenery, no humans, strict horizontal composition, side view, upper background features glowing blue energy, dimensional fracture, stars and nebula in background, epic scale, lower foreground features perfectly flat clear ritual stone floor with level summoning circle ground plane stretching across the entire width, empty stage floor, unobstructed foreground, ethereal lighting, studio quality anime style.
+Neg: 1girl, solo, human, deep path, one point perspective, narrow road, character, face, body, trees in foreground, blurry, lowres, text, watermark.
+
+Sacred Ruins Boss
+Pos: masterpiece, best quality, scenery, no humans, strict horizontal composition, side view, upper background features ancient shinto ruins, mossy stone pillars, broken archways, overgrown vines, ethereal floating petals, ruins of a sanctuary, lower foreground features perfectly flat clear weathered stone slabs ground plane stretching across the entire width, empty stage floor, unobstructed foreground, cinematic lighting, dramatic shadows, studio quality anime style.
+Neg: 1girl, solo, human, deep path, one point perspective, narrow road, character, face, body, trees in foreground, blurry, lowres, text, watermark.
+
+Verdant Vale
+Pos: masterpiece, best quality, scenery, no humans, strict horizontal composition, side view, upper background features dense ancient forest, sunlight beams, towering trees, lower foreground features perfectly flat clear dirt and moss ground plane stretching across the entire width, empty stage floor, no roots, no rocks, unobstructed foreground, vibrant greens, studio quality anime style.
+Neg: 1girl, solo, human, deep path, one point perspective, narrow road, character, face, body, trees in foreground, blurry, lowres, text, watermark. 
+
+=========================================
+=== SHATTERED NEXUS STAGE STANDARD ======
+=========================================
+When generating any future battle backgrounds, always use this base structure in your prompt to ensure the sprites have a clear floor to stand on:
+
+Pos: masterpiece, best quality, scenery, no humans, strict horizontal composition, side view, upper background features [describe the scenery/sky/trees/ruins here], lower foreground features perfectly flat clear [dirt/stone/grass] ground plane stretching across the entire width, empty stage floor, unobstructed foreground, [Color/lighting tags], studio quality anime style.

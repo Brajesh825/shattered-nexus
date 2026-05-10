@@ -15,3 +15,6 @@ Thumbs.db
 # Build & Dependencies
 dist/
 node_modules/
+
+# Generation Guides
+**/_prompt*

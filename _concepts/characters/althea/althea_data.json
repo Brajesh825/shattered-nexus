@@ -1,0 +1,68 @@
+{
+    "id": "althea",
+    "name": "Althea",
+    "alias": "Althea",
+    "title": "The Saint of What Could Have Been",
+    "gender": "female",
+    "age": "600 (Spirit)",
+    "origin": "The Eternal Void (Ebon Lineage)",
+    "description": "A manifestation of 600 years of displaced hope. She does not fight with steel, but with the radiant memory of the warriors her family was meant to be.",
+    "personality": "Serene, sorrowful, encouraging",
+    "icon": "✨",
+    "portrait_color": "#f8fafc",
+    "hair_color": "#f9a8d4",
+    "skin_color": "#ffffff",
+    "armor_color": "#cbd5e1",
+    "base_stats": {
+        "hp": 45,
+        "mp": 40,
+        "atk": 5,
+        "def": 8,
+        "spd": 22,
+        "mag": 24,
+        "lck": 20
+    },
+    "stat_bonuses": {
+        "mag": 6,
+        "spd": 4
+    },
+    "class_affinity": [
+        "saint_of_echo",
+        "luminous_seraph"
+    ],
+    "passive": {
+        "id": "divine_resonance",
+        "name": "Divine Resonance",
+        "description": "Every time Althea uses a skill, she restores HP to the lowest-health ally equal to 50% of her MAG stat.",
+        "traits": [
+            {
+                "type": "HEAL_ON_SKILL_USE",
+                "value": 0.5,
+                "stat": "mag"
+            }
+        ]
+    },
+    "skills": [
+        {
+            "id": "starlight_shield",
+            "name": "Starlight Shield",
+            "mp_cost": 15,
+            "description": "Wraps an ally in a crystalline barrier that absorbs damage equal to 2x Althea's MAG.",
+            "type": "MAGIC_DEFENSE"
+        },
+        {
+            "id": "aether_prayer",
+            "name": "Aether Prayer",
+            "mp_cost": 20,
+            "description": "Purifies all debuffs from the party and restores 10 MP to all allies except Althea.",
+            "type": "HOLY_SUPPORT"
+        },
+        {
+            "id": "echo_fusion",
+            "name": "Echo Fusion",
+            "mp_cost": 0,
+            "description": "Special: Can only be used in Arc 8. Althea merges with Morgana to unlock her True Form.",
+            "type": "TRANSFORMATION"
+        }
+    ]
+}

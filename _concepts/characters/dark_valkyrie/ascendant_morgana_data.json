@@ -1,0 +1,66 @@
+{
+    "id": "morgana_ascendant",
+    "name": "Morgana Ascendant",
+    "alias": "Morgana",
+    "title": "The Unified Valkyrie",
+    "gender": "female",
+    "origin": "The Eternal Void (Rebirth of the Ebon Line)",
+    "description": "The perfect union of Cursed Flesh and Luminous Spirit. She no longer fears the darkness; she commands it. A god-tier combatant capable of shifting between total destruction and absolute protection.",
+    "personality": "Balanced, transcendent, calm",
+    "icon": "⚖️",
+    "portrait_color": "#f8fafc",
+    "hair_color": "#fef08a",
+    "skin_color": "#ffffff",
+    "armor_color": "#f8fafc",
+    "base_stats": {
+        "hp": 120,
+        "mp": 60,
+        "atk": 30,
+        "def": 25,
+        "spd": 25,
+        "mag": 28,
+        "lck": 25
+    },
+    "class_affinity": [
+        "true_valkyrie",
+        "eclipse_sovereign"
+    ],
+    "passive": {
+        "id": "harmonic_singularity",
+        "name": "Harmonic Singularity",
+        "description": "Attacks in Eclipse mode apply Shadow Burn. Attacks in Solstice mode heal the party. Swapping modes grants 'Resonance' which doubles the effect of the next skill.",
+        "traits": [
+            {
+                "type": "STANCE_BASED_ATTACK",
+                "modes": ["eclipse", "solstice"]
+            },
+            {
+                "type": "RESONANCE_BUFF",
+                "trigger": "STANCE_SHIFT"
+            }
+        ]
+    },
+    "skills": [
+        {
+            "id": "valkyrie_shift",
+            "name": "Valkyrie Shift",
+            "mp_cost": 0,
+            "description": "Swap between Eclipse and Solstice stances. Does not consume an action once per turn.",
+            "type": "STANCE_SHIFT"
+        },
+        {
+            "id": "void_calamity",
+            "name": "Void Calamity",
+            "mp_cost": 30,
+            "description": "[Eclipse] Deals 3.0x damage to all enemies. [Solstice] Grants the party 'Void Shield' (Absorbs 50% damage for 2 turns).",
+            "type": "DYNAMIC_POWER"
+        },
+        {
+            "id": "final_resonance",
+            "name": "Final Resonance",
+            "mp_cost": 50,
+            "description": "The Ultimate move. Summons all 12 feathers. Deals True Damage and fully restores the party's HP/MP. Ends the current stance and returns to Neutral.",
+            "type": "ULTIMATE"
+        }
+    ]
+}

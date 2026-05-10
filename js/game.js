@@ -328,6 +328,8 @@ const G = {
   party: [],
   /** @type {EnemyUnit[]} Current enemy encounter — 1–3 enemies */
   enemyGroup: [],
+  /** Centralized battle turn/session state. Mirrored to legacy fields during migration. */
+  turn: null,
   /** @type {TurnEntry[]} Sorted turn queue for the current battle round */
   turnQueue: [],
   /** Current index into turnQueue — advances each time a unit acts. @type {number} */
@@ -345,7 +347,7 @@ const G = {
   activePartyIdx: 0,
   settings: {
     /** @type {'auto'|'high'|'low'} */
-    graphicsQuality: localStorage.getItem('sn_graphics_quality') || 'auto'
+    graphicsQuality: typeof Settings !== 'undefined' ? Settings.getQuality() : 'auto'
   },
 
   /** The map-walking party member. Falls back through activePartyIdx → isPlayer → index 0. */
@@ -364,6 +366,10 @@ const G = {
 /* ============================================================
    UI HELPERS
    ============================================================ */
+// --- Standard escapeHtml now provided by utils.js ---
+
+window.escapeHtml = escapeHtml;
+
 const CHAR_COLOR = {
   aya: '#7dd3fc', tao: '#ef4444', lulu: '#2dd4bf', rei: '#4ade80',
   ria: '#a78bfa', valka: '#e879f9', drake: '#0ea5e9', rex: '#fbbf24'
@@ -652,7 +658,8 @@ function buildEnemyGroup(defs, spawnLevel = 1, isBoss = false) {
     if (typeof Archive !== 'undefined') Archive.recordSeen(def.id);
     return entry;
   });
-  G.targetEnemyIdx = 0;
+  if (typeof TurnState !== 'undefined') TurnState.setTargetEnemyIdx(0);
+  else G.targetEnemyIdx = 0;
 }
 
 
@@ -671,30 +678,62 @@ function unlockCharacter(charId) {
 
 function buildTurnQueue() { return TurnManager.buildQueue(); }
 
+/**
+ * hoverTarget — Phase 3 mouse hover. Updates target indicator + keyboard cursor sync.
+ * No-op outside targeting mode (pointer-events CSS already blocks the call,
+ * but this guard is the JS safety net).
+ */
+function hoverTarget(enemyIdx) {
+  const scene = document.getElementById('battle-scene');
+  if (!scene?.classList.contains('targeting-active')) return;
+  if (!Battle.alive(G.enemyGroup[enemyIdx])) return;
+
+  if (typeof TurnState !== 'undefined') TurnState.setTargetEnemyIdx(enemyIdx);
+  else G.targetEnemyIdx = enemyIdx;
+  document.querySelectorAll('.enemy').forEach((e, i) => {
+    e.dataset.target = (i === enemyIdx) ? 'true' : 'false';
+  });
+  BattleUI.addLog(`Target → ${G.enemyGroup[enemyIdx].name}`, 'hi');
+
+  // Keep keyboard cursor in sync so CONFIRM always targets what the mouse previewed
+  const enemyEl = document.querySelectorAll('.enemy')[enemyIdx];
+  if (typeof Focus !== 'undefined' && enemyEl) Focus.syncHover(enemyEl);
+}
+
+/**
+ * selectTarget — Phase 3 confirm. Executes the pending action against the chosen enemy.
+ */
 function selectTarget(enemyIdx) {
   if (!Battle.alive(G.enemyGroup[enemyIdx])) return;
-  G.targetEnemyIdx = enemyIdx;
-  G.enemy = G.enemyGroup[enemyIdx]; // Sync global enemy reference
 
-  // Update target indicator on enemies
+  if (typeof TurnState !== 'undefined') {
+    TurnState.setTargetEnemyIdx(enemyIdx);
+    TurnState.setTargetEnemy(G.enemyGroup[enemyIdx]);
+  } else {
+    G.targetEnemyIdx = enemyIdx;
+    G.enemy = G.enemyGroup[enemyIdx];
+  }
+
   document.querySelectorAll('.enemy').forEach((e, i) => {
-    e.dataset.target = i === enemyIdx ? 'true' : 'false';
+    e.dataset.target = (i === enemyIdx) ? 'true' : 'false';
   });
   BattleUI.renderEnemyRow();
   if (typeof SFX !== 'undefined') SFX.click();
 
-  // If we were in a targeting phase (keyboard/controller), execute the pending action
-  if (G.pendingAction) {
-    const action = G.pendingAction;
-    G.pendingAction = null;
-
+  // Execute the pending action that entered Phase 3
+  const pendingAction = typeof TurnState !== 'undefined' ? TurnState.getPendingAction() : G.pendingAction;
+  if (pendingAction) {
+    const action = pendingAction;
+    if (typeof TurnState !== 'undefined') TurnState.clearPendingAction();
+    else G.pendingAction = null;
     if (typeof Focus !== 'undefined') Focus.setTargeting(false);
 
-    // Set a flag so the action handler knows we are executing AFTER targeting
-    G._executingPending = true;
-    if (action.type === 'attack') heroAttack();
+    if (typeof TurnState !== 'undefined') TurnState.beginPendingExecution();
+    else G._executingPending = true;
+    if (action.type === 'attack')  heroAttack();
     else if (action.type === 'ability') heroAbility(action.ab);
-    G._executingPending = false;
+    if (typeof TurnState !== 'undefined') TurnState.endPendingExecution();
+    else G._executingPending = false;
   }
 }
 
@@ -775,17 +814,32 @@ function _applyVampiric(enemy, dmg, enemyIdx) {
 }
 
 function _initBattle() {
-  G.turnQueue = TurnManager.buildQueue();
-  G.turnIdx = 0;
-  G.activeMemberIdx = 0;
-  G.busy = false;
+  const queue = TurnManager.buildQueue();
+  if (typeof TurnState !== 'undefined') TurnState.resetBattle(queue);
+  else {
+    G.turnQueue = queue;
+    G.turnIdx = 0;
+    G.activeMemberIdx = 0;
+    G.busy = false;
+  }
   buildAbilityMenu();
   showScreen('battle-screen');
   BattleUI.render();
+
+  // Right-click anywhere on the battle scene = BACK (cancel targeting / close sub-menu)
+  const scene = document.getElementById('battle-scene');
+  if (scene && !scene._ctxBound) {
+    scene._ctxBound = true;
+    scene.addEventListener('contextmenu', e => {
+      e.preventDefault();
+      if (typeof Focus !== 'undefined') Focus.cancelTargeting();
+    });
+  }
 }
 
 function buildAbilityMenu() {
-  const actor = G.party[G.activeMemberIdx] || G.hero;
+  const activeIdx = typeof TurnState !== 'undefined' ? TurnState.getActivePartyIdx() : G.activeMemberIdx;
+  const actor = G.party[activeIdx] || G.hero;
   if (!actor) return;
   const menu = document.getElementById('ability-sub');
   if (!menu) return;
@@ -859,7 +913,8 @@ function heroTurn() { TurnManager.beginHeroTurn(); }
    VISUAL EFFECTS
    ============================================================ */
 function heroRun() {
-  if (G.busy) return;
+  const isBusy = typeof TurnState !== 'undefined' ? TurnState.isBusy() : G.busy;
+  if (isBusy) return;
 
   // ── BLOCK FLEE FOR BOSSES & STORY CHAPTERS ─────────────────
   const isBoss = G.enemyGroup.some(e => e.isBoss);
@@ -871,7 +926,9 @@ function heroRun() {
     return;
   }
 
-  G.busy = true; BattleUI.btns(false);
+  if (typeof TurnState !== 'undefined') TurnState.setBusy(true);
+  else G.busy = true;
+  BattleUI.btns(false);
   BattleUI.openSub(null);
   if (Math.random() < 0.6) {
     BattleUI.setLog(['The party escapes!'], ['hi']);
@@ -1027,9 +1084,13 @@ function retryBattle() {
   const level = G.enemyGroup[0]?.level || 1;
   const defs = G.enemyGroup.map(e => G.enemies.find(r => r.id === e.id)).filter(Boolean);
   buildEnemyGroup(defs, level);
-  G.turnQueue = buildTurnQueue();
-  G.turnIdx = 0;
-  G.busy = false;
+  const queue = buildTurnQueue();
+  if (typeof TurnState !== 'undefined') TurnState.resetBattle(queue);
+  else {
+    G.turnQueue = queue;
+    G.turnIdx = 0;
+    G.busy = false;
+  }
   showScreen('battle-screen');
   BattleUI.render();
   processCurrentTurn();
@@ -1127,17 +1188,26 @@ function startExplore(skipAutoStart = false) {
   canvas.width = wrap.clientWidth || 360;
   canvas.height = wrap.clientHeight || 480;
 
-  MapEngine.init(canvas);
-  if (typeof MapTouch !== 'undefined') MapTouch.init();
+  if (!canvas._mapInited) {
+    canvas._mapInited = true;
+    MapEngine.init(canvas);
+  }
+  if (typeof MapTouch !== 'undefined' && !canvas._mapTouchInited) {
+    canvas._mapTouchInited = true;
+    MapTouch.init();
+  }
 
   // D-pad touch support
-  canvas.addEventListener('touchstart', e => {
-    e.preventDefault();
-    Array.from(e.changedTouches).forEach(t => MapUI.handleTouch(t.clientX, t.clientY, canvas));
-  }, { passive: false });
-  canvas.addEventListener('mousedown', e => {
-    MapUI.handleTouch(e.clientX, e.clientY, canvas);
-  });
+  if (!canvas._exploreInputBound) {
+    canvas._exploreInputBound = true;
+    canvas.addEventListener('touchstart', e => {
+      e.preventDefault();
+      Array.from(e.changedTouches).forEach(t => MapUI.handleTouch(t.clientX, t.clientY, canvas));
+    }, { passive: false });
+    canvas.addEventListener('mousedown', e => {
+      MapUI.handleTouch(e.clientX, e.clientY, canvas);
+    });
+  }
 
   // Launch the engine
   if (!MapEngine.getMap() && !skipAutoStart) {

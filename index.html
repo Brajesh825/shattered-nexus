@@ -51,10 +51,23 @@
       });
     })();
   </script>
+  <script src="js/utils.js"></script>
+  <script src="js/scaling-config.js"></script>
   <script src="js/systems/settings-manager.js"></script>
 </head>
 
 <body>
+  <script>
+    // Script Load Tracker
+    (function() {
+      window._loadedScripts = [];
+      window.addEventListener('error', function(e) {
+        if (e.target.tagName === 'SCRIPT') {
+          console.error('❌ Script Load Error:', e.target.src);
+        }
+      }, true);
+    })();
+  </script>
 
   <!-- ═══════════════════════════════════════
      LOADING SCREEN
@@ -78,18 +91,18 @@
      ═══════════════════════════════════════ -->
   <div id="quality-picker" style="display:none">
     <div class="qp-box">
-      <div class="qp-title">SPRITE QUALITY</div>
-      <div class="qp-sub">Choose how characters look in battle.<br>You can change this in Settings later.</div>
+      <div class="qp-title">CHOOSE ART STYLE</div>
+      <div class="qp-sub">Select the visual aesthetic for your characters.<br>You can toggle this in Settings at any time.</div>
       <div class="qp-options">
-        <button class="qp-btn" onclick="setQuality('normal')">
-          <span class="qp-icon">✨</span>
-          <span class="qp-label">Normal</span>
-          <span class="qp-desc">Full detail PNG sprites</span>
+        <button class="qp-btn qp-btn-premium" onclick="setArtPreference('illustrious', 'auto')">
+          <span class="qp-icon">💎</span>
+          <span class="qp-label">Vivid Art</span>
+          <span class="qp-desc">Premium shading and<br>dynamic lighting</span>
         </button>
-        <button class="qp-btn" onclick="setQuality('low')">
-          <span class="qp-icon">⚡</span>
-          <span class="qp-label">Low</span>
-          <span class="qp-desc">Lighter WebP sprites<br>faster loads on mobile</span>
+        <button class="qp-btn" onclick="setArtPreference('flat', 'auto')">
+          <span class="qp-icon">✨</span>
+          <span class="qp-label">Classic Art</span>
+          <span class="qp-desc">Clean, cel-shaded<br>classic anime style</span>
         </button>
       </div>
     </div>
@@ -245,13 +258,24 @@
         </div>
 
         <div class="setting-row">
-          <label class="setting-label">GRAPHICS</label>
+          <label class="setting-label">ART STYLE</label>
+          <div class="setting-control">
+            <select id="settings-style" onchange="Settings.update('style', this.value)"
+              style="background:var(--bg-mid); color:var(--cyan); border:1px solid var(--border); padding:4px 8px; border-radius:4px; font-family:var(--vt);">
+              <option value="illustrious">Illustrious (Vivid)</option>
+              <option value="flat">Flat (Classic)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <label class="setting-label">FORMAT</label>
           <div class="setting-control">
             <select id="settings-quality" onchange="Settings.update('quality', this.value)"
               style="background:var(--bg-mid); color:var(--cyan); border:1px solid var(--border); padding:4px 8px; border-radius:4px; font-family:var(--vt);">
               <option value="auto">Auto (Balanced)</option>
-              <option value="high">High (2K/4K)</option>
-              <option value="low">Mobile (Optimized)</option>
+              <option value="high">PNG (High Fidelity)</option>
+              <option value="low">WebP (Optimized)</option>
             </select>
           </div>
         </div>
@@ -476,6 +500,7 @@
     <div id="party-menu" style="display:none">
       <div class="pms-header">
         <span class="pms-title">⚔ PARTY STATUS ⚔</span>
+        <button class="pms-close" onclick="Settings.open()" style="right: 50px; font-size: 14px;">⚙</button>
         <button class="pms-close" onclick="PartyMenu.close()">✕</button>
       </div>
       <div class="pms-nav">
@@ -581,6 +606,7 @@
               <button class="pause-btn" onclick="InventoryUI.open()" style="width: 100%; justify-content: center;">🎒 ITEMS</button>
               <button class="pause-btn" onclick="QuestUI.open()" style="width: 100%; justify-content: center;">📜 QUESTS</button>
               <button class="pause-btn" onclick="ArchiveUI.open()" style="width: 100%; justify-content: center;">📖 BESTIARY</button>
+              <button class="pause-btn" onclick="Settings.open()" style="width: 100%; justify-content: center;">⚙ SETTINGS</button>
               <button class="pause-btn" onclick="InputSettings.open()" style="width: 100%; justify-content: center;">⌨ CONTROLS</button>
               <button class="pause-btn" onclick="MapUI.closePauseMenu()" style="width: 100%; justify-content: center; margin-top: 12px; border-color: var(--text-dim); color: var(--text-dim);">▶ RESUME</button>
             </div>
@@ -752,10 +778,12 @@
 
   </div><!-- /#game -->
 
+  <!-- 1. Core Config & Utility -->
+  <script src="js/release-config.js"></script>
   <script src="js/game.js"></script>
+
+  <!-- 2. Data Definitions -->
   <script src="data/npcs.js"></script>
-  <script src="js/systems/input-manager.js"></script>
-  <script src="js/systems/focus-manager.js"></script>
   <script src="js/map/data/tile-defs.js"></script>
   <script src="js/map/data/tile-renders.js"></script>
   <script src="js/map/map-data.js"></script>
@@ -769,7 +797,6 @@
   <script src="js/map/data/map-void-citadel.js"></script>
   <script src="js/map/data/map-fortress-ramparts.js"></script>
   <script src="js/map/data/map-eternal-void.js"></script>
-  <!-- Side Maps -->
   <script src="js/map/data/map-riverlands-crossing.js"></script>
   <script src="js/map/data/map-ashen-foothills.js"></script>
   <script src="js/map/data/map-northern-highlands.js"></script>
@@ -778,37 +805,45 @@
   <script src="js/map/data/map-eastern-wetlands.js"></script>
   <script src="js/map/data/map-sky-ruins.js"></script>
 
-  <script src="js/map/map-entities.js"></script>
-  <script src="js/map/map-ui.js"></script>
-  <script src="js/map/map-engine.js"></script>
-  <script src="js/map/map-touch.js"></script>
+  <!-- 3. Global Systems & Logic Managers -->
+  <script src="js/systems/input-manager.js"></script>
+  <script src="js/systems/focus-manager.js"></script>
+  <script src="js/systems/save-contract.js"></script>
+  <script src="js/systems/inventory.js"></script>
+  <script src="js/systems/quest-system.js"></script>
+  <script src="js/systems/party.js"></script>
+  <script src="js/systems/archive.js"></script>
+  <script src="js/save.js"></script>
+  <script src="js/data-loader.js"></script>
+  <script src="js/asset-preloader.js"></script>
   <script src="js/bgm.js"></script>
   <script src="js/sfx.js"></script>
   <script src="js/ambient.js"></script>
   <script src="js/tts.js"></script>
-  <script src="js/save.js"></script>
   <script src="js/sprites.js"></script>
-  <script src="js/data-loader.js"></script>
   <script src="js/svg-animations.js"></script>
-  <script src="js/asset-preloader.js"></script>
-  <script src="js/scaling-config.js"></script>
-  <script src="js/systems/save-contract.js"></script>
-  <script src="js/systems/inventory.js"></script>
-  <script src="js/systems/quest-system.js"></script>
+
+  <!-- 4. Map Engine & Exploration Logic -->
+  <script src="js/map/map-entities.js"></script>
+  <script src="js/map/map-ui.js"></script>
+  <script src="js/map/map-engine.js"></script>
+  <script src="js/map/map-touch.js"></script>
+
+  <!-- 5. Combat Engine & Battle Mechanics -->
   <script src="js/battle/enemy-scaling.js"></script>
   <script src="js/battle/reaction-effects.js"></script>
-  <script src="js/release-config.js"></script>
-  <script src="js/ui/menu-manager.js"></script>
-  <script src="js/systems/party.js"></script>
-  <script src="js/ui/battle-ui.js"></script>
-  <script src="js/ui/result-ui.js"></script>
   <script src="js/battle/status-system.js"></script>
   <script src="js/battle/passive-system.js"></script>
+  <script src="js/battle/turn-state.js"></script>
   <script src="js/battle/turn-manager.js"></script>
   <script src="js/battle/combat-engine.js"></script>
   <script src="js/battle/formation-rules.js"></script>
   <script src="js/battle/action-handler.js"></script>
-  <script src="js/systems/archive.js"></script>
+
+  <!-- 6. UI Rendering & Screen Controllers -->
+  <script src="js/ui/menu-manager.js"></script>
+  <script src="js/ui/battle-ui.js"></script>
+  <script src="js/ui/result-ui.js"></script>
   <script src="js/ui/archive-ui.js"></script>
   <script src="js/ui/quest-ui.js"></script>
   <script src="js/ui/input-settings.js"></script>
@@ -817,9 +852,12 @@
   <script src="js/ui/world-explorer.js"></script>
   <script src="js/ui/weather-engine.js"></script>
   <script src="js/ui/credits-screen.js"></script>
+  <script src="js/ui/home-engine.js"></script>
+
+  <!-- 7. Story & Startup Bootstrap -->
   <script src="js/cutscene.js"></script>
   <script src="js/story.js"></script>
-  <script src="js/ui/home-engine.js"></script>
+  <script src="js/startup-check.js"></script>
   <script>
     TTS.init();
     if (typeof ControlHints !== 'undefined') ControlHints.init();
@@ -866,14 +904,8 @@
       if (b) b.style.display = 'none';
     }
 
-    // Initialize asset preloader and BGM on page load
-    window.addEventListener('DOMContentLoaded', async () => {
-      // Preload assets (shows loading screen)
-      await AssetPreloader.init();
-
-      // Play title screen BGM
-      BGM.play('title');
-    });
+    // Play title screen BGM
+    BGM.play('title');
 
     /* ── Save Slot Overlay ───────────────────────────────────────── */
 
@@ -931,14 +963,15 @@
           </div>`;
         }
 
-        const arcName = s.arcName || `Arc ${(s.arcIdx || 0) + 1}`;
+        const esc = (typeof escapeHtml === 'function') ? escapeHtml : (v) => String(v ?? '');
+        const arcName = esc(s.arcName || `Arc ${(s.arcIdx || 0) + 1}`);
         const lv = (s.partyStats && s.partyStats.length)
-          ? `LV ${Math.max(...s.partyStats.map(p => p.lv || 1))}`
-          : `LV ${s.hero?.lv || 1}`;
-        const date = Save.dateStr(s.timestamp);
+          ? `LV ${Math.max(...s.partyStats.map(p => Number(p.lv) || 1))}`
+          : `LV ${Number(s.hero?.lv) || 1}`;
+        const date = esc(Save.dateStr(s.timestamp));
 
         // Prepare party member canvases
-        const partyIds = (s.selectedChars || [s.selectedChar]).filter(Boolean).slice(0, 4);
+        const partyIds = (s.selectedChars || [s.selectedChar]).filter(Boolean).slice(0, 4).map(id => String(id).replace(/[^a-z0-9_-]/gi, ''));
         const partyHtml = partyIds.map((id, i) =>
           `<div class="sc-hero-wrap">
             <canvas class="sc-hero-canvas" data-char-id="${id}" data-slot="${s.slot}" data-idx="${i}" width="48" height="57"></canvas>
@@ -1030,27 +1063,27 @@
 
     function toggleQuality() {
       const modes = ['auto', 'high', 'low'];
-      let idx = modes.indexOf(G.settings.graphicsQuality);
-      G.settings.graphicsQuality = modes[(idx + 1) % modes.length];
+      const current = typeof Settings !== 'undefined' ? Settings.data.quality : (G.settings.graphicsQuality || 'auto');
+      let idx = modes.indexOf(current);
+      const next = modes[(idx + 1) % modes.length];
 
-      // Save to localStorage
-      localStorage.setItem('sn_graphics_quality', G.settings.graphicsQuality);
+      if (typeof Settings !== 'undefined') Settings.update('quality', next);
+      else G.settings.graphicsQuality = next;
 
       // Update button text
-      const btn = document.getElementById('quality-btn');
-      if (btn) btn.innerText = `Quality: ${G.settings.graphicsQuality.charAt(0).toUpperCase() + G.settings.graphicsQuality.slice(1)}`;
+      _initQualityBtn();
 
       // Re-render map if active
-      if (MapEngine && MapEngine.rescale) { MapEngine.rescale(); }
+      if (window.MapEngine && MapEngine.rescale) { MapEngine.rescale(); }
 
-      // Log for user
-      console.log(`[Graphics] Switched to ${G.settings.graphicsQuality}`);
+      console.log(`[Graphics] Switched to ${next}`);
     }
 
     function _initQualityBtn() {
-      const q = G.settings.graphicsQuality || 'auto';
+      const q = typeof Settings !== 'undefined' ? Settings.getQuality() : (G.settings.graphicsQuality || 'auto');
       const btn = document.getElementById('quality-btn');
-      if (btn) btn.innerText = `Quality: ${q.charAt(0).toUpperCase() + q.slice(1)}`;
+      const labelMap = { 'auto': 'Auto', 'high': 'Normal', 'low': 'Low', 'illustrious': 'Vivid' };
+      if (btn) btn.innerText = `Quality: ${labelMap[q] || q}`;
     }
   </script>
 
@@ -1170,6 +1203,11 @@
             localStorage.removeItem(key);
           }
         });
+        
+        // Ensure settings are fully purged so picker reappears
+        localStorage.removeItem('cc_settings_v1');
+        localStorage.removeItem('sn_graphics_quality');
+        localStorage.removeItem('spriteQuality');
 
         // 4. Final Reload
         console.log("🔄 Reinstall complete. Reloading...");

@@ -22,20 +22,64 @@
 .party-member {
   position: absolute;
   width: 140px;
-  height: 185px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  border: 1px solid transparent;
-  border-radius: 4px;
-  padding: 4px;
-  background: rgba(0, 0, 20, 0.3);
-  transition: transform 0.2s ease, filter 0.2s ease, border-color 0.2s ease;
+  height: 160px;
+  background: transparent;
+  border: none; /* Strip card border */
+  border-radius: 16px;
+  transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  overflow: visible;
   cursor: default;
-  will-change: transform, filter;
-  backface-visibility: hidden;
-  transform: translate3d(0,0,0);
-  -webkit-font-smoothing: antialiased;
+}
+
+/* Subtle ground aura for all members to give presence */
+.party-member::before {
+  content: '';
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 40px;
+  background: radial-gradient(ellipse at center, rgba(120, 80, 255, 0.15) 0%, transparent 70%);
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.party-visual-anchor {
+  position: absolute;
+  bottom: 45px; /* Fixed distance from card bottom */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 110px;
+  height: 110px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 2;
+}
+
+.party-shadow {
+  position: absolute;
+  bottom: -2px; /* Slight offset to look natural */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70px;
+  height: 10px;
+  background: radial-gradient(ellipse at center, rgba(0,0,0,0.7) 0%, transparent 80%);
+  border-radius: 50%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.party-sprite {
+  position: relative;
+  width: 110px;
+  height: 110px;
+  z-index: 3;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 0 8px rgba(120, 80, 255, 0.4));
+  transition: filter 0.3s ease;
 }
 
 .party-member.ko-member {
@@ -44,9 +88,54 @@
 }
 
 .party-member.active-member {
-  transform: translate3d(0, -4px, 0); /* Lift instead of scale to keep pixels sharp */
-  border-color: currentColor;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4), 0 0 10px currentColor;
+  transform: translate3d(0, -12px, 0);
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  z-index: 100 !important;
+}
+
+/* Ethereal Ground Ring for Active Member */
+.party-member.active-member::after {
+  content: '';
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 30px;
+  background: radial-gradient(ellipse at center, rgba(255, 215, 0, 0.4) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: ringPulse 2s infinite ease-in-out;
+  z-index: -1;
+  pointer-events: none;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+}
+
+@keyframes ringPulse {
+  0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.4; }
+  50% { transform: translateX(-50%) scale(1.2); opacity: 0.8; }
+}
+
+.party-member.active-member .party-visual-anchor::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  width: 140%;
+  height: 140%;
+  background: radial-gradient(circle at center, rgba(255, 215, 0, 0.25) 0%, transparent 70%);
+  animation: auraPulse 2s infinite ease-in-out;
+  z-index: 0;
+  pointer-events: none;
+}
+
+@keyframes auraPulse {
+  0%, 100% { opacity: 0.4; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+
+.party-member.active-member .party-sprite {
+  filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.4)) brightness(1.15);
 }
 
 @keyframes focusPulse {
@@ -66,65 +155,169 @@
   }
 }
 
+/* ── Phase-based pointer-events ─────────────────────────────
+   Enemies and allies are NOT clickable outside Phase 3.
+   .targeting-active  → enemy targeting mode
+   .targeting-active-ally → ally targeting mode
+   ─────────────────────────────────────────────────────────── */
+.enemy {
+  pointer-events: none;
+}
+.targeting-active .enemy {
+  pointer-events: auto;
+  cursor: crosshair;
+}
+.targeting-active .enemy.ko-enemy {
+  pointer-events: none;
+  cursor: default;
+}
+.targeting-active-ally .pa-member {
+  pointer-events: auto;
+  cursor: crosshair;
+}
+
+/* Enemy hover during Phase 3 — same ring as kb-focus */
+.targeting-active .enemy:hover .enemy-sprite,
+.targeting-active .enemy:hover:not(.ko-enemy) .enemy-sprite {
+  filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.8)) !important;
+  transform: scale(1.05);
+}
+.targeting-active .enemy:hover::after {
+  content: '🎯';
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 20px;
+  animation: bounce 1s infinite;
+}
+
+/* ── Focus ring (keyboard/controller cursor) ─────────────── */
+/* Base kb-focus — visible gold ring for any focusable element */
 .kb-focus {
-  outline: none !important;
-  border-color: #c0a0ff !important;
-  box-shadow: 0 0 15px #c0a0ff !important;
-  animation: focusPulse 1s infinite ease-in-out;
-  transform: scale(1.03);
-  z-index: 9999;
+  outline: 2px solid rgba(255, 215, 0, 0.85) !important;
+  outline-offset: 2px;
+  z-index: 999 !important;
   position: relative;
 }
 
+/* Title screen buttons */
+.title-btn.kb-focus {
+  outline: none !important;
+  border-color: #ffd700 !important;
+  box-shadow:
+    0 0 0 2px rgba(255, 215, 0, 0.9),
+    0 0 18px rgba(255, 215, 0, 0.45) !important;
+  transform: scale(1.04);
+}
+
+/* Map pause-menu & camp buttons */
+.pause-btn.kb-focus,
+.camp-btn.kb-focus {
+  outline: none !important;
+  border-color: #ffd700 !important;
+  background: rgba(255, 215, 0, 0.08) !important;
+  box-shadow: 0 0 14px rgba(255, 215, 0, 0.4) !important;
+}
+
+.enemy.kb-focus .enemy-sprite {
+  filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.8)) !important;
+  transform: scale(1.05);
+}
+
+.enemy.kb-focus::after {
+  content: '🎯';
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 20px;
+  animation: bounce 1s infinite;
+}
+
+.cmd-btn.kb-focus {
+  border-color: #fff !important;
+  background: rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 
+    0 0 20px rgba(192, 160, 255, 0.4),
+    inset 0 0 10px rgba(255, 255, 255, 0.2) !important;
+  transform: translateY(-4px) scale(1.02);
+  z-index: 100;
+}
+
+/* Special styling for focused Attack button */
+.cmd-btn.kb-focus[onclick*="heroAttack"] {
+  border-color: #ffd700 !important;
+  box-shadow: 0 0 25px rgba(255, 215, 0, 0.4) !important;
+}
+
 .party-sprite {
-  width: 96px;
-  height: 96px;
+  width: 110px;
+  height: 110px;
   object-fit: contain;
   image-rendering: -webkit-optimize-contrast;
   image-rendering: crisp-edges;
   transform: translate3d(0,0,0);
-  filter: drop-shadow(0 0 6px rgba(120, 80, 255, 0.8));
-  backface-visibility: hidden;
+  filter: drop-shadow(0 0 8px rgba(120, 80, 255, 0.6));
+  z-index: 2;
+  transition: filter 0.3s ease;
+}
+
+.party-hp-bar-bg {
+  position: absolute;
+  bottom: 35px;
+  left: 15px;
+  right: 15px;
+  height: 6px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: inset 0 0 4px rgba(0,0,0,0.5);
 }
 
 .party-info {
-  width: 100%;
+  position: absolute;
+  bottom: 6px;
+  left: 0;
+  right: 0;
   text-align: center;
-  margin-top: 2px;
-  font-size: 9px;
+  padding: 0 10px;
 }
 
 .party-name {
-  color: inherit;
-  font-size: 10px;
-  font-weight: bold;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.8);
 }
 
 .party-level {
   font-size: 9px;
-  color: #8080c0;
-  font-weight: bold;
-}
-
-.party-hp-bar-bg {
-  width: 140px;
-  height: 6px;
-  background: #1a0010;
-  border: 1px solid #400030;
-  border-radius: 2px;
-  overflow: hidden;
-  margin-top: 3px;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.8);
 }
 
 .party-hp-bar-fill {
   height: 100%;
   width: 0%;
-  transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.3) inset;
-  border-radius: 1px;
+  transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 0 10px rgba(0, 255, 100, 0.4);
+  border-radius: 10px;
+  position: relative;
+}
+
+.party-hp-bar-fill::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.3) 0%, transparent 50%, rgba(0,0,0,0.1) 100%);
+  border-radius: inherit;
 }
 
 .portrait-status-strip {
@@ -163,28 +356,28 @@
 
 /* Pyramid layout with aggressive overlap (160×160 sprites) */
 /* Party pyramid — 140×185px cards, 380px formation, 420px container wide */
+/* Party pyramid — clean spacing, centered center-row */
 .party-member:nth-child(1) {
-  left: 142px;
-  /* center: (420-140)/2 */
+  left: 140px;
   top: 0px;
   z-index: 14;
 }
 
 .party-member:nth-child(2) {
-  left: 30px;
-  top: 98px;
+  left: 15px;
+  top: 80px;
   z-index: 16;
 }
 
 .party-member:nth-child(3) {
-  left: 252px;
-  top: 98px;
+  left: 265px;
+  top: 80px;
   z-index: 16;
 }
 
 .party-member:nth-child(4) {
-  left: 142px;
-  top: 193px;
+  left: 140px;
+  top: 160px;
   z-index: 18;
 }
 
@@ -211,7 +404,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  border: 1px solid transparent;
+  border: none; /* Strip card border */
   border-radius: 4px;
   padding: 6px;
   background: transparent;
@@ -237,13 +430,30 @@
   /* Target indicator will add the border via JS */
 }
 
-/* Show border only on targeted enemy */
-.enemy-container .enemy {
-  border-color: transparent;
+/* Ethereal Ground Ring for Targeted Enemy */
+.enemy[data-target="true"]::after {
+  content: '';
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 140px;
+  height: 40px;
+  background: radial-gradient(ellipse at center, rgba(255, 60, 96, 0.4) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: enemyRingPulse 1.5s infinite ease-in-out;
+  z-index: -1;
+  pointer-events: none;
+  box-shadow: 0 0 20px rgba(255, 60, 96, 0.2);
+}
+
+@keyframes enemyRingPulse {
+  0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.3; }
+  50% { transform: translateX(-50%) scale(1.15); opacity: 0.7; }
 }
 
 .enemy-container .enemy[data-target="true"] {
-  border-color: #ff6060;
+  border-color: transparent;
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -956,6 +1166,10 @@
   }
 
   /* Column placements */
+  .active-member-bar {
+    display: none;
+  }
+
   #battle-screen .turn-bar {
     grid-column: 2;
     grid-row: 1;
@@ -974,12 +1188,7 @@
   }
 
   #battle-screen .active-member-bar {
-    grid-column: 2;
-    grid-row: 2;
-    min-height: 0;
-    height: auto;
-    padding: 10px 14px;
-    border-bottom: 1px solid #1a1448;
+    display: none;
   }
 
   #battle-screen #menu-area {
@@ -1196,7 +1405,7 @@
   }
 
   #battle-screen .active-member-bar {
-    padding: 12px 16px;
+    display: none;
   }
 
   #battle-screen #menu-area {
@@ -1389,7 +1598,7 @@
   }
 
   #battle-screen .active-member-bar {
-    padding: 14px 18px;
+    display: none;
   }
 
   #battle-screen #menu-area {
@@ -1854,10 +2063,7 @@
 
   /* Active member bar */
   .active-member-bar {
-    min-height: 0;
-    height: 32px;
-    padding: 4px 10px;
-    font-size: 11px;
+    display: none;
   }
 
   /* Battle log */

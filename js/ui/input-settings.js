@@ -8,24 +8,26 @@ const InputSettings = (() => {
   const STORAGE_KEY = 'rpg_key_bindings';
 
   const DEFAULT_BINDINGS = {
-    UP:           { keys: ['ArrowUp', 'w'],       label: 'Move Up' },
-    DOWN:         { keys: ['ArrowDown', 's'],      label: 'Move Down' },
-    LEFT:         { keys: ['ArrowLeft', 'a'],      label: 'Move Left' },
-    RIGHT:        { keys: ['ArrowRight', 'd'],     label: 'Move Right' },
-    CONFIRM:      { keys: ['Enter', ' '],          label: 'Confirm / Interact' },
-    BACK:         { keys: ['Escape', 'Backspace'], label: 'Back / Cancel' },
-    MENU:         { keys: ['m'],                   label: 'Open Menu' },
-    TAB:          { keys: ['Tab'],                 label: 'Cycle Character' },
-    TOGGLE_FOCUS: { keys: ['`'],                   label: 'Toggle UI Focus' },
+    UP:             { keys: ['ArrowUp', 'w'],       label: 'Move Up' },
+    DOWN:           { keys: ['ArrowDown', 's'],      label: 'Move Down' },
+    LEFT:           { keys: ['ArrowLeft', 'a'],      label: 'Move Left' },
+    RIGHT:          { keys: ['ArrowRight', 'd'],     label: 'Move Right' },
+    CONFIRM:        { keys: ['Enter', ' '],          label: 'Confirm / Interact' },
+    BACK:           { keys: ['Escape', 'Backspace'], label: 'Back / Cancel' },
+    MENU:           { keys: ['m'],                   label: 'Open Menu' },
+    TAB:            { keys: ['Tab'],                 label: 'Cycle Character' },
+    TOGGLE_FOCUS:   { keys: ['`'],                   label: 'Toggle UI Focus' },
+    SKIP_CUTSCENE:  { keys: ['q', 'Q'],              label: 'Skip Cutscene' },
   };
 
   const GAMEPAD_BINDINGS = [
-    { button: 'Left Stick',  intent: 'Move',    label: 'Move' },
-    { button: 'A / Cross',   intent: 'CONFIRM', label: 'Confirm / Interact' },
-    { button: 'B / Circle',  intent: 'BACK',    label: 'Back / Cancel' },
-    { button: 'Start',       intent: 'MENU',    label: 'Open Menu' },
-    { button: 'R1 / RB',     intent: 'TAB',     label: 'Cycle Character' },
-    { button: '` / Select',  intent: 'TOGGLE',  label: 'Toggle UI Focus' },
+    { button: 'Left Stick / D-Pad', intent: 'Move',           label: 'Move / Navigate' },
+    { button: 'A / Cross',          intent: 'CONFIRM',         label: 'Confirm / Interact' },
+    { button: 'B / Circle',         intent: 'BACK',            label: 'Back / Cancel' },
+    { button: 'Y / Triangle',       intent: 'SKIP_CUTSCENE',   label: 'Skip Cutscene' },
+    { button: 'Start',              intent: 'MENU',            label: 'Open Menu' },
+    { button: 'R1 / RB',            intent: 'TAB',             label: 'Cycle Character' },
+    { button: '` / Select',         intent: 'TOGGLE',          label: 'Toggle UI Focus' },
   ];
 
   let _remapping = null; // { intent } while listening for a key
