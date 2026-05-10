@@ -143,7 +143,7 @@ const BossGauntlet = {
                     <div class="gc-header"><span class="gc-tier">LV ${lv}</span></div>
                     <div class="gc-body">
                         <div class="gc-name">SLOT ${s.slot + 1}</div>
-                        <div class="gc-subtitle">${s.arcName || 'Story Progress'}</div>
+                        <div class="gc-subtitle">${escapeHtml(s.arcName || 'Story Progress')}</div>
                         <div class="gc-stat" style="margin-top:10px">${date}</div>
                     </div>
                     <div class="gc-footer"><button class="gc-fight-btn">LOAD SAVE</button></div>

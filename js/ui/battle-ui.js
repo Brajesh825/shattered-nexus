@@ -704,8 +704,8 @@ const BattleUI = {
   showAbilityDesc(ab) {
     const log = document.querySelector('.battle-log');
     if (!log || !ab) return;
-    log.innerHTML = `<p class="log-line" style="color:var(--gold);font-weight:bold">${ab.name}</p>` +
-                    `<p class="log-line" style="font-size:12px;color:#fff">${ab.description}</p>`;
+    log.innerHTML = `<p class="log-line" style="color:var(--gold);font-weight:bold">${escapeHtml(ab.name)}</p>` +
+                    `<p class="log-line" style="font-size:12px;color:#fff">${escapeHtml(ab.description)}</p>`;
   },
 
   clearAbilityDesc() {

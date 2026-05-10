@@ -266,11 +266,13 @@ const SpriteRenderer = (() => {
   }
 
   function getSuffix() {
-    // Check both legacy G.settings and new G.graphics
-    const qual = typeof Settings !== 'undefined'
-      ? Settings.getQuality()
-      : (G.settings?.graphicsQuality || G.graphics || 'auto');
+    const qual  = (typeof Settings !== 'undefined' ? Settings.getQuality() : (G.settings?.graphicsQuality || 'high'));
+    const style = (typeof Settings !== 'undefined' ? Settings.getStyle()   : (G.settings?.style || 'illustrious'));
+    
+    const isIllustrious = style === 'illustrious';
     const isLow = qual === 'low' || (qual === 'auto' && window.innerWidth < 800);
+    
+    if (isIllustrious) return isLow ? '_sprite_1_low.webp' : '_sprite_1.png';
     return isLow ? '_sprite_low.webp' : '_sprite.png';
   }
 
@@ -284,7 +286,42 @@ const SpriteRenderer = (() => {
   function registerHero(id, fn) { HEROES[id] = fn; }
   function registerEnemy(id, fn) { ENEMIES[id] = fn; }
 
-  return { drawHero, drawEnemy, registerHero, registerEnemy, drawHeroToCanvas, drawEnemyToCanvas, SPRITE_MANIFEST, setFrame, getSuffix, getSpritePath, FRAME_MAP };
+  function refreshGlobalSprites() {
+    console.log('[SpriteRenderer] Global refresh triggered.');
+
+    // 1. Battle UI: Clear lastId cache to force SpriteRenderer.drawHero calls
+    document.querySelectorAll('.party-sprite').forEach(el => {
+      el.dataset.lastId = ''; 
+      el.dataset.lastClass = '';
+    });
+    if (window.BattleUI && BattleUI.render) BattleUI.render();
+
+    // 2. Map Entities: Force reload of sprite sheets
+    if (window.MapEntities && MapEntities.refresh) {
+      MapEntities.refresh();
+    }
+    if (window.MapPlayer && MapPlayer.refresh) {
+      MapPlayer.refresh();
+    }
+    
+    // 3. UI Menus: Re-render if open
+    const charScreen = document.getElementById('char-screen');
+    if (charScreen && charScreen.style.display !== 'none') {
+      if (window._renderCharGrid) _renderCharGrid();
+    }
+    
+    const partyMenu = document.getElementById('party-menu');
+    if (partyMenu && partyMenu.style.display !== 'none') {
+      if (window.renderPartyMenu) renderPartyMenu();
+    }
+    
+    const swapMenu = document.getElementById('party-swap-overlay');
+    if (swapMenu && swapMenu.classList.contains('open')) {
+      if (window._renderPartySwapGrid) _renderPartySwapGrid();
+    }
+  }
+
+  return { drawHero, drawEnemy, registerHero, registerEnemy, drawHeroToCanvas, drawEnemyToCanvas, SPRITE_MANIFEST, setFrame, getSuffix, getSpritePath, FRAME_MAP, refreshGlobalSprites };
 })();
 window.SpriteRenderer = SpriteRenderer;
 

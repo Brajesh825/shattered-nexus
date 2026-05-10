@@ -408,6 +408,7 @@ const MapPlayer = (() => {
        return ret; 
     },
     reset, update, render, dpad, pickVariants, rescale,
+    refresh: () => { Object.keys(_heroImgCache).forEach(k => delete _heroImgCache[k]); }
   };
 })();
 
@@ -1159,6 +1160,7 @@ const MapEntities = (() => {
     init, clear, updateEnemies, renderEnemies, renderEnemiesForRow, checkEncounter, removeEncountered, 
     allCleared, bossCleared, remaining, hasEnemyAt, prepareBuckets,
     initNPCs, renderNPCs, renderNPCsForRow, checkNPCAt, getNPCDialogue, markNPCTalked,
-    getNPCs: () => MapNPCs.getNPCs()
+    getNPCs: () => MapNPCs.getNPCs(),
+    refresh: () => { Object.keys(_spriteCache).forEach(k => delete _spriteCache[k]); _spriteLoading.clear(); }
   };
 })();
