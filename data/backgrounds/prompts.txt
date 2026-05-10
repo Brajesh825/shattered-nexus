@@ -1,0 +1,29 @@
+ILLUSTROUS : WAI-ILLUSTROUS
+
+Galdor Garden
+Pos:best quality, scenery, no humans, wide horizontal, flat grey paving stones, even terrain, side view, twin ornate stone fountains in midground, symmetrical royal garden layout, dense forest and towering trees in distant background, sunlight beams, manicured hedges, clear space for characters, vibrant greens and grey stone, highres, cinematic lighting, studio quality anime.
+Neg:1girl, solo, human, deep path, one point perspective, narrow road, character, face, body, trees in foreground, blurry, lowres, text, watermark.
+
+Aethalguard Ruins
+Pos:best quality, scenery, no humans, wide horizontal stone street, flat rubble and cracked pavement in foreground, even terrain, side view, ruined stone buildings in background, shattered windows and crumbling towers, broken marble statues, scattered debris and masonry, overgrown with forest moss and vines, sunlight beams through ruined roofs, clear space for characters, vibrant grey stone and deep forest greens, highres, cinematic lighting, studio quality anime.
+Neg:1girl, solo, human, deep path, one point perspective, narrow road, character, face, body, trees in foreground, blurry, lowres, text, watermark.
+
+Forest path
+Pos:masterpiece, best quality, scenery, no humans, deep forest path disappearing into distance, tree at the end of the road, towering ancient trees, dappled sunlight, soft grass, misty atmosphere, (one point perspective:1.2), highres, studio quality anime.
+Neg:1girl, solo, human, deep path, one point perspective, narrow road, character, face, body, trees in foreground, blurry, lowres, text, watermark.
+
+Oracle Chamber
+Pos:masterpiece, best quality, scenery, no humans, deep perspective view, interior of a sacred sanctuary, glowing pool of water in center, floating candles, translucent curtains, white and gold pillars, soft sunlight through stained glass, serenity, highres, soft bokeh, studio quality anime.
+Neg:1girl, solo, human, deep path, one point perspective, narrow road, character, face, body, trees in foreground, blurry, lowres, text, watermark.
+
+Summoning Ground
+Pos: masterpiece, best quality, scenery, no humans, wide flat ritual stone floor in foreground, level summoning circle, side view,  glowing blue energy, dimensional fracture, stars and nebula in background, epic scale, highres, ethereal lighting, studio quality anime.
+Neg:1girl, solo, human, deep path, one point perspective, narrow road, character, face, body, trees in foreground, blurry, lowres, text, watermark.
+
+Sacred Ruins
+Pos:masterpiece, best quality, scenery, no humans, wide horizontal stone platform in foreground, flat weathered stone slabs, level terrain, side view, ancient shinto ruins in background, mossy stone pillars, broken archways, overgrown vines, ethereal floating petals, ruins of a sanctuary, highres, cinematic lighting, dramatic shadows, studio quality anime.
+Neg:1girl, solo, human, deep path, one point perspective, narrow road, character, face, body, trees in foreground, blurry, lowres, text, watermark.
+
+Verdant Vale
+Pos: best quality, scenery, no humans, wide horizontal clearing, flat mossy ground in foreground, even terrain, side view, forest in background, sunlight beams, soft grass, clear space for characters, verdant vale, vibrant greens, highres, cinematic lighting, studio quality anime.
+Neg: 1girl, solo, human, deep path, one point perspective, narrow road, character, face, body, trees in foreground, blurry, lowres, text, watermark. 

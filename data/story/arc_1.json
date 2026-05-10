@@ -586,51 +586,54 @@
     {
       "id": "arc1_ch2",
       "title": "The Oracle Call",
-      "type": "battle",
-      "background": "shattered_ruins",
+      "type": "cutscene",
+      "background": "oracle_chamber",
       "cast": [
         "Aya",
         "Tao",
         "Lulu",
         "Rei"
       ],
-      "pre_dialogue": [
+      "scenes": [
         {
-          "speaker": "narrator",
-          "emotion": "tense",
-          "text": "The ruins are not empty. Shadow creatures lurk among the broken columns, drawn to the light of the summoning."
+          "narration": "The ruins are not empty. Shadow creatures lurk among the broken columns, drawn to the light of the summoning.",
+          "dialogue": [
+            {
+              "speaker": "Rei",
+              "emotion": "alert",
+              "text": "Shadow-touched. They serve the Emperor. End them."
+            },
+            {
+              "speaker": "Tao",
+              "emotion": "eager",
+              "text": "I was just starting to feel restless! Let us go!"
+            }
+          ]
         },
         {
-          "speaker": "Rei",
-          "emotion": "alert",
-          "text": "Shadow-touched. They serve the Emperor. End them."
-        },
-        {
-          "speaker": "Tao",
-          "emotion": "eager",
-          "text": "I was just starting to feel restless! Let us go!"
-        }
-      ],
-      "post_dialogue": [
-        {
-          "speaker": "Lulu",
-          "emotion": "relieved",
-          "text": "We work well together. Considering we just met."
-        },
-        {
-          "speaker": "Aya",
-          "emotion": "composed",
-          "text": "I am called Aya. I am glad to have met warriors of your caliber."
-        },
-        {
-          "speaker": "Tao",
-          "emotion": "cheerful",
-          "text": "Tao! Amateur poet, professional optimist about death. Very pleased!"
-        },
-        {
-          "speaker": "Rei",
-          "emotion": "quiet",
-          "text": "Rei. We can trade names later. We are being watched."
+          "narration": "The shadow creatures scatter. The four strangers stand together for the first time — breathless, alive, and in the same world.",
+          "dialogue": [
+            {
+              "speaker": "Lulu",
+              "emotion": "relieved",
+              "text": "We work well together. Considering we just met."
+            },
+            {
+              "speaker": "Aya",
+              "emotion": "composed",
+              "text": "I am called Aya. I am glad to have met warriors of your caliber."
+            },
+            {
+              "speaker": "Tao",
+              "emotion": "cheerful",
+              "text": "Tao! Amateur poet, professional optimist about death. Very pleased!"
+            },
+            {
+              "speaker": "Rei",
+              "emotion": "quiet",
+              "text": "Rei. We can trade names later. We are being watched."
+            }
+          ]
         }
       ]
     },
