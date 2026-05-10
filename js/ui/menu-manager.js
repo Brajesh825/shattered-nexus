@@ -116,7 +116,8 @@ MapEngine.onEncounterStart = (enc, map) => {
   const enemyIds   = enc.enemies      || [];
   const mutation   = enc.mutation     || null; // null | 'corrupted' | 'mutant'
   const mutantTraits = enc.mutantTraits || null; // array of trait objects, mutant only
-  G.battleZone = map?.id || null; // store zone for battle background
+  G.battleZone = map?.id || null;
+  G.encounterBg = enc.bg || null; // store zone for battle background
 
   const enemyDefs = enemyIds
     .map(id => G.enemies.find(e => e.id === id))

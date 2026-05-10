@@ -3842,6 +3842,7 @@
     ],
     "tier": 2,
     "isBoss": true,
+    "background": "galdor_garden",
     "statPhases": [
       {
         "hp": 0.75,

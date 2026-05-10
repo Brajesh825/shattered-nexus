@@ -477,6 +477,7 @@ const MapEntities = (() => {
       mutation:       null,        // null | 'corrupted' | 'mutant'
       mutationPhase:  0,           // animation phase for glow pulse
       isBoss:         e.isBoss || e.boss || false, // Capture map-specific boss flag
+      bg:             e.bg || e.background || null,
     }));
     _encounteredIdx = -1;
 
@@ -668,7 +669,8 @@ const MapEntities = (() => {
           enemies: ids, 
           mutation: en.mutation || null, 
           mutantTraits: en.mutantTraits || null,
-          isBoss: en.isBoss || false
+          isBoss: en.isBoss || false,
+          bg: en.bg || null
         };
       }
     }
