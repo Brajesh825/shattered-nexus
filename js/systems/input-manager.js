@@ -7,7 +7,7 @@ const Input = (() => {
   const _intents = {
     UP: false, DOWN: false, LEFT: false, RIGHT: false,
     CONFIRM: false, BACK: false, MENU: false, TAB: false,
-    TOGGLE_FOCUS: false,
+    TOGGLE_FOCUS: false, SKIP_CUTSCENE: false,
     X: 0, Y: 0
   };
 
@@ -33,8 +33,11 @@ const Input = (() => {
     return b[intent].keys.some(k => _keys[k]);
   }
 
+  let _lastType = 'mouse';
+
   function init() {
     window.addEventListener('keydown', e => {
+      _lastType = 'keyboard';
       _keys[e.key] = true;
       // Global prevention for arrow keys/tab to avoid scrolling/browser defaults
       if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Tab'].includes(e.key)) {
@@ -43,6 +46,9 @@ const Input = (() => {
     });
     window.addEventListener('keyup', e => { _keys[e.key] = false; });
     
+    window.addEventListener('mousemove', () => { _lastType = 'mouse'; }, { passive: true });
+    window.addEventListener('mousedown', () => { _lastType = 'mouse'; }, { passive: true });
+
     // Start polling loop
     _poll();
   }
@@ -72,16 +78,18 @@ const Input = (() => {
     _intents.X = stickX || (kbRight ? 1 : (kbLeft ? -1 : 0));
     _intents.Y = stickY || (kbDown  ? 1 : (kbUp   ? -1 : 0));
 
-    _intents.UP    = _intents.Y < -0.5;
-    _intents.DOWN  = _intents.Y > 0.5;
-    _intents.LEFT  = _intents.X < -0.5;
-    _intents.RIGHT = _intents.X > 0.5;
+    // Merge analog stick + D-pad (buttons 12=Up 13=Down 14=Left 15=Right)
+    _intents.UP    = _intents.Y < -0.5 || !!(gp?.buttons[12]?.pressed);
+    _intents.DOWN  = _intents.Y > 0.5  || !!(gp?.buttons[13]?.pressed);
+    _intents.LEFT  = _intents.X < -0.5 || !!(gp?.buttons[14]?.pressed);
+    _intents.RIGHT = _intents.X > 0.5  || !!(gp?.buttons[15]?.pressed);
 
-    _intents.CONFIRM      = _hasKey('CONFIRM')      || !!(gp?.buttons[0]?.pressed);
-    _intents.BACK         = _hasKey('BACK')         || !!(gp?.buttons[1]?.pressed);
-    _intents.MENU         = _hasKey('MENU')         || !!(gp?.buttons[9]?.pressed);
-    _intents.TAB          = _hasKey('TAB')          || !!(gp?.buttons[5]?.pressed);
-    _intents.TOGGLE_FOCUS = _hasKey('TOGGLE_FOCUS') || !!(gp?.buttons[8]?.pressed);
+    _intents.CONFIRM        = _hasKey('CONFIRM')        || !!(gp?.buttons[0]?.pressed);
+    _intents.BACK           = _hasKey('BACK')           || !!(gp?.buttons[1]?.pressed);
+    _intents.MENU           = _hasKey('MENU')           || !!(gp?.buttons[9]?.pressed);
+    _intents.TAB            = _hasKey('TAB')            || !!(gp?.buttons[5]?.pressed);
+    _intents.TOGGLE_FOCUS   = _hasKey('TOGGLE_FOCUS')   || !!(gp?.buttons[8]?.pressed);
+    _intents.SKIP_CUTSCENE  = _hasKey('SKIP_CUTSCENE')  || !!(gp?.buttons[3]?.pressed); // Y / Triangle
 
     // Detect "Just Pressed" (rising edge)
     for (const key in _intents) {
@@ -98,7 +106,8 @@ const Input = (() => {
     reloadBindings,
     isDown: (intent) => _intents[intent],
     justPressed: (intent) => _justPressed[intent],
-    getAxis: () => ({ x: _intents.X, y: _intents.Y })
+    getAxis: () => ({ x: _intents.X, y: _intents.Y }),
+    lastType: () => _lastType
   };
 })();
 

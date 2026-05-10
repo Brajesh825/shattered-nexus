@@ -28,19 +28,35 @@
 
 /* Background themes - Images (primary) */
 .bg--summoning_ruins {
-  background-image: url('../images/backgrounds/summoning_ruins.png');
+  background-image: url('../images/backgrounds/summoning_ruins.webp');
 }
 
 .bg--shattered_ruins {
-  background-image: url('../images/backgrounds/shattered_ruins.png');
+  background-image: url('../images/backgrounds/aethalguard_ruins.webp');
 }
 
 .bg--oracle_chamber {
-  background-image: url('../images/backgrounds/oracle_chamber.png');
+  background-image: url('../images/backgrounds/oracle_chamber.webp');
 }
 
 .bg--sacred_ruins_boss {
-  background-image: url('../images/backgrounds/sacred_ruins_boss.png');
+  background-image: url('../images/backgrounds/sacred_ruins_boss.webp');
+}
+
+.bg--verdant_vale {
+  background-image: url('../images/backgrounds/verdant_vale.webp');
+}
+
+.bg--aethalguard_ruins {
+  background-image: url('../images/backgrounds/aethalguard_ruins.webp');
+}
+
+.bg--forest_path {
+  background-image: url('../images/backgrounds/forest_path.webp');
+}
+
+.bg--galdor_garden {
+  background-image: url('../images/backgrounds/galdor_garden.webp');
 }
 
 /* Background themes - Fallback gradients */

@@ -7,6 +7,7 @@ const AssetPreloader = (() => {
     images: {},
     audio: {}
   };
+  const _loading = new Set();
 
   // ── [EXPANSION PACKS] ──────────────────────────
   const MILITARY_ASSETS = ['military_tent', 'training_ring', 'supply_crate', 'watchtower', 'barracks'];
@@ -17,89 +18,79 @@ const AssetPreloader = (() => {
     // Character spirit portraits
     spirits: [
       'aya', 'tao', 'lulu', 'rei',
-      'ria', 'valka', 'drake', 'rex'
+      'ria', 'valka', 'drake', 'rex', 'sera'
     ],
     // Enemies (prioritize common/boss enemies)
     enemies: [
       'goblin', 'bat', 'rat', 'slime',
       'orc', 'skeleton', 'bandit', 'wolf',
       'golem', 'dragon', 'lich', 'demon_lord',
-      'basilisk', 'dark_knight', 'bone_dragon', 'shadow_emperor'
+      'basilisk'
     ],
-    // BGM tracks (all of them)
-    bgm: [
-      'title', 'story', 'exploration', 'battle',
-      'riverlands_explore', 'riverlands_battle', 'river_king_theme',
-      'vale_explore', 'vale_battle', 'void_knight_theme',
-      'cavern_explore', 'cavern_battle', 'spectral_guardian_theme',
-      'isles_explore', 'isles_battle', 'leviathan_theme'
+    // BGM tracks: Only preload title; others load on demand
+    bgm: ['title'],
+    ui: ['world_map_bg'],
+    // Environment: Only preload CORE assets needed for the first area
+    environmentCore: [
+      'oak', 'pine', 'shrub', 'boulder', 'mushroom', 'flower', 'crystal', 'lily', 'dead_tree', 'well', 'market', 'chest', 'statue', 'hole', 'staircase'
     ],
-    ui: [
-      'world_map_bg'
-    ],
-    environment: [
-      // Core (IDs 200–212)
-      'oak', 'pine', 'shrub', 'boulder', 'mushroom', 'flower', 'crystal', 'lily', 'dead_tree', 'well', 'market', 'chest', 'statue', 'hole', 'staircase',
-      // Expanded props (IDs 220–229)
+    // Extended assets are loaded on-demand by the engines
+    environmentExtended: [
       'fountain', 'obelisk', 'tombstone', 'pillar_broken', 'wagon', 'tent', 'campfire', 'signpost', 'street_lamp', 'archway',
-      // Dark fantasy POI (IDs 230–248)
       'void_rift', 'cursed_idol', 'skeleton', 'floating_crystal', 'ancient_pillar', 'withered_vine', 'sacrificial_altar', 'void_spires', 'iron_maiden', 'magic_circle', 'tower', 'castle', 'noble_house', 'ruined_tower', 'ruined_castle', 'shattered_throne', 'broken_knight', 'cursed_well', 'withered_tree',
-      // Furniture / interior (IDs 300–309)
       'royal_table', 'wooden_chair', 'stone_bench', 'throne_gold', 'alchemy_table', 'bookshelf', 'fireplace', 'armor_stand', 'weapon_rack', 'bed_fancy',
-      // Castle outdoors (IDs 310–321)
       'knight_statue', 'iron_gate', 'training_dummy', 'catapult', 'hanging_cage', 'royal_banner', 'castle_wall', 'drawbridge', 'gallows', 'archery_target',
       'archery_range', 'stable', 'tavern', 'chapel', 'wall_section', 'healer_hut', 'farmhouse', 'library',
-      // Nature (IDs 350–356)
       'apple_tree', 'palm_tree', 'cherry_blossom', 'giant_mushroom', 'cactus', 'bamboo', 'vine_cluster',
-      // Dark fantasy extras (IDs 357–363)
       'rune_stone', 'bone_pile', 'dark_altar', 'cursed_tree', 'spectral_flame', 'soul_lantern', 'eldritch_eye',
-      // Town props (IDs 364–370)
       'barrel', 'hay_bale', 'water_trough', 'fence_section', 'notice_board', 'flower_pot', 'market_cart',
-      // Dungeon props (IDs 371–375)
       'stalactite', 'dungeon_door', 'cell_bars', 'spike_trap', 'poison_mushroom',
-      // Combat & siege (IDs 376–377)
-      'cannon', 'bonfire',
-      // Coastal (IDs 378–381)
-      'dock_post', 'rowboat', 'lighthouse', 'fishing_net',
-      // Arcane (IDs 382–384)
+      'cannon', 'bonfire', 'dock_post', 'rowboat', 'lighthouse', 'fishing_net',
       'arcane_pedestal', 'crystal_orb', 'spell_rune',
       'large_castle', 'large_fishman_hut', 'large_noble_villa', 'large_military_tent',
       'frozen_house', 'ice_castle', 'labyrinth_gate', 'market_cart_frozen', 'pine_frozen', 'notice_board_frozen', 'well_frozen',
       'stilt_house', 'mangrove_root', 'tide_bell', 'rope_bridge', 'broken_bridge', 'waterfall_shrine',
       'cascade_rocks', 'mist_vent', 'river_marker', 'waterlogged_cart', 'grotto_entrance', 'keystone_obelisk',
-      // Southern Isles custom assets
       'coral_formation', 'shipwreck', 'ancient_column',
-      ...MILITARY_ASSETS,
-      ...CIVILIAN_ASSETS,
-      ...NOBLE_ASSETS
+      ...MILITARY_ASSETS, ...CIVILIAN_ASSETS, ...NOBLE_ASSETS
+    ],
+    backgrounds: [
+      'verdant_vale', 'forest_path', 'galdor_garden', 'oracle_chamber', 
+      'sacred_ruins_boss', 'summoning_ruins', 'aethalguard_ruins'
     ]
   };
 
   function loadImage(src) {
+    if (cache.images[src]) return Promise.resolve(cache.images[src]);
     return new Promise((resolve, reject) => {
       const img = new Image();
       img.onload = () => resolve(img);
       img.onerror = () => reject(new Error(`Failed to load: ${src}`));
       img.src = src;
+      cache.images[src] = img; // basic internal cache
     });
   }
 
   function loadAudio(src) {
+    if (cache.audio[src]) return Promise.resolve(cache.audio[src]);
     return new Promise((resolve, reject) => {
       const audio = new Audio();
       audio.oncanplaythrough = () => resolve(audio);
       audio.onerror = () => reject(new Error(`Failed to load: ${src}`));
       audio.src = src;
+      cache.audio[src] = audio;
     });
   }
 
   async function preloadAssets(onProgress) {
+    // Robustly calculate total with fallbacks to avoid TypeErrors
     const total =
-      ASSETS.spirits.length +
-      ASSETS.enemies.length +
-      ASSETS.bgm.length +
-      ASSETS.ui.length +
-      ASSETS.environment.length;
+      (ASSETS.spirits?.length || 0) +
+      (ASSETS.enemies?.length || 0) +
+      (ASSETS.bgm?.length || 0) +
+      (ASSETS.ui?.length || 0) +
+      (ASSETS.environmentCore?.length || 0) +
+      (ASSETS.environmentExtended?.length || 0);
 
     let loaded = 0;
     const update = () => {
@@ -125,8 +116,11 @@ const AssetPreloader = (() => {
     };
 
     // Run all batches simultaneously
-    const isLowQuality = (localStorage.getItem('spriteQuality') || 'normal') === 'low';
-    
+    const quality = typeof Settings !== 'undefined'
+      ? Settings.getQuality()
+      : (G.settings?.graphicsQuality || G.graphics || 'auto');
+    const isLowQuality = quality === 'low' || (quality === 'auto' && window.innerWidth < 800);
+
     await Promise.all([
       // 1. Spirits
       loadBatch(ASSETS.spirits, loadImage, 'spirit_', (id) => {
@@ -134,15 +128,20 @@ const AssetPreloader = (() => {
         const fileName = isLowQuality ? `${charId}_sprite_low.webp` : `${charId}_sprite.png`;
         return `images/characters/spirits/${fileName}`;
       }),
-      // 2. Enemies
-      loadBatch(ASSETS.enemies, loadImage, 'enemy_', (id) => `images/enemies/${id}.png`),
-      // 3. BGM
-      loadBatch(ASSETS.bgm, loadAudio, '', (id) => `audio/bgm/${id}.mp3`, true),
+      // 2. Enemies (Core Arc 1 only)
+      loadBatch(ASSETS.enemies, loadImage, 'enemy_', (id) => `images/enemies/${id}.webp`),
+      // 3. BGM (Title only)
+      loadBatch(ASSETS.bgm, loadAudio, '', (id) => `audio/bgm/${id}.webm`, true),
       // 4. UI
       loadBatch(ASSETS.ui, loadImage, 'ui_', (id) => `images/ui/${id}.png`),
-      // 5. Environment — all assets are SVGs in images/environment/svg/
-      loadBatch(ASSETS.environment, loadImage, 'env_', (id) => `images/environment/svg/${id}.svg`)
+      // 5. Environment (CORE ONLY)
+      loadBatch(ASSETS.environmentCore, loadImage, 'env_', (id) => `images/environment/svg/${id}.svg`),
+      // 6. Backgrounds (Starting area only)
+      loadBatch(ASSETS.backgrounds, loadImage, 'bg_', (id) => `images/backgrounds/${id}.webp`)
     ]);
+
+    // Note: environmentExtended and secondary enemies will load on-demand
+    // when the MapEngine or BattleUI requests them via browser fetch.
 
     return cache;
   }
@@ -182,20 +181,45 @@ const AssetPreloader = (() => {
     },
 
     getImage(key) {
-      return cache.images[key] || null;
+      const img = cache.images[key];
+      if (img) return img;
+
+      // Smart On-Demand Loader: If asset is missing, fetch it in background
+      if (_loading.has(key)) return null;
+
+      let path = null;
+      if (key.startsWith('env_')) {
+        path = `images/environment/svg/${key.replace('env_', '')}.svg`;
+      } else if (key.startsWith('enemy_')) {
+        path = `images/enemies/${key.replace('enemy_', '')}.webp`;
+      } else if (key.startsWith('bg_')) {
+        path = `images/backgrounds/${key.replace('bg_', '')}.webp`;
+      }
+
+      if (path) {
+        _loading.add(key);
+        const tempImg = new Image();
+        tempImg.onload = () => {
+          cache.images[key] = tempImg;
+          _loading.delete(key);
+          // Request a re-render if we're in the MapEngine
+          if (typeof MapEngine !== 'undefined' && MapEngine.isRunning && MapEngine.isRunning()) {
+            // The next RAF will pick up the new image
+          }
+        };
+        tempImg.onerror = () => {
+          _loading.delete(key);
+          console.warn(`⚠️ Failed to lazy-load asset: ${path}`);
+        };
+        tempImg.src = path;
+      }
+
+      return null;
     },
 
     getAudio(key) {
       return cache.audio[key] || null;
-    },
-    async loadManifest() {
-      try {
-        const resp = await fetch('../images/environment/sprites.json');
-        return await resp.json();
-      } catch (e) {
-        console.warn("Failed to load environment manifest", e);
-        return null;
-      }
     }
   };
 })();
+window.AssetPreloader = AssetPreloader;

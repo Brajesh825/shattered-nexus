@@ -108,9 +108,21 @@ const SpriteRenderer = (() => {
 
   // ─── PUBLIC API ────────────────────────────────────────────────
 
+  const SHEET_COLS = 3;
+  const SHEET_ROWS = 2;
+
+  const FRAME_MAP = {
+    idle: [0, 0],
+    prepare: [1, 0],
+    attack: [2, 0],
+    magic: [0, 1],
+    hurt: [1, 1],
+    fallen: [2, 1]
+  };
+
   const ROSTER_CONFIG = {
-    aya: { forms: ['aya'], cols: [0.28, 0.32, 0.40] },
-    tao: { forms: ['tao'], cols: [[0.28, 0.32, 0.40], [0.34, 0.26, 0.40]] },
+    aya: ['aya'],
+    tao: ['tao'],
     lulu: ['lulu'],
     rei: ['rei'],
     ria: ['ria'],
@@ -125,17 +137,13 @@ const SpriteRenderer = (() => {
   const ANIMATED_SEARCH_INDEX = [];
 
   Object.entries(ROSTER_CONFIG).forEach(([baseId, data]) => {
-    // Standardize data format
-    const forms = Array.isArray(data) ? data : data.forms;
-    const cols = data.cols || [0.28, 0.32, 0.40];
-    const rows = data.rows || [0.5, 0.5];
-
     const config = {
       baseId: baseId,
-      cols: cols,
-      rows: rows
+      cols: SHEET_COLS,
+      rows: SHEET_ROWS
     };
 
+    const forms = Array.isArray(data) ? data : data.forms;
     forms.forEach(f => {
       SPRITE_MANIFEST[f] = config;
       ANIMATED_SEARCH_INDEX.push(f);
@@ -147,7 +155,7 @@ const SpriteRenderer = (() => {
     const config = SPRITE_MANIFEST[id];
     const isAnimated = !!config;
 
-    // Always use the baseId for the filename (e.g., 'ayaka_sprite.png')
+    // Always use the baseId for the filename
     const fileBase = isAnimated ? config.baseId : id;
     const fileName = isAnimated ? `${fileBase}_sprite.png` : `${fileBase}_spirit.png`;
     const pngPath = `images/characters/spirits/${fileName}`;
@@ -164,11 +172,8 @@ const SpriteRenderer = (() => {
       if (!isAnimated) {
         imgEl.style.backgroundImage = `url(${pngPath})`;
         imgEl.style.backgroundSize = 'contain';
-        imgEl.style.backgroundPosition = 'center';
+        imgEl.style.backgroundPosition = 'bottom center';
         imgEl.style.backgroundRepeat = 'no-repeat';
-        const h = imgEl.offsetHeight > 0 ? imgEl.offsetHeight : 128;
-        imgEl.style.width = h + 'px';
-        imgEl.style.height = h + 'px';
       }
     };
     test.onerror = () => {
@@ -180,19 +185,17 @@ const SpriteRenderer = (() => {
         HEROES['aya'](ctx, charData, classData);
         imgEl.style.backgroundImage = `url(${canvas.toDataURL()})`;
         imgEl.style.backgroundSize = 'contain';
-        imgEl.style.backgroundPosition = 'center';
+        imgEl.style.backgroundPosition = 'bottom center';
         imgEl.style.backgroundRepeat = 'no-repeat';
-        imgEl.style.width = '128px';
-        imgEl.style.height = '128px';
       }
     };
     test.src = pngPath;
   }
 
   function drawEnemy(imgEl, enemyId, palette) {
-    const pngPath = `images/enemies/${enemyId}.png`;
+    const webpPath = `images/enemies/${enemyId}.webp`;
     const test = new Image();
-    test.onload = () => { imgEl.src = pngPath; };
+    test.onload = () => { imgEl.src = webpPath; };
     test.onerror = () => {
       const canvas = document.createElement('canvas');
       canvas.width = 72; canvas.height = 84;
@@ -200,7 +203,7 @@ const SpriteRenderer = (() => {
       ENEMIES['slime'](ctx, palette);
       imgEl.src = canvas.toDataURL();
     };
-    test.src = pngPath;
+    test.src = webpPath;
   }
 
   function drawHeroToCanvas(charId, charData, classData) {
@@ -225,48 +228,24 @@ const SpriteRenderer = (() => {
     const manifest = SPRITE_MANIFEST[id];
     
     if (!manifest) {
-      // Fallback for non-animated or unknown sprites (use spirit portrait if face removed)
       el.style.backgroundImage = `url(images/characters/spirits/${id}_sprite.png)`;
       el.style.backgroundSize = 'contain';
-      el.style.backgroundPosition = 'center';
+      el.style.backgroundPosition = 'bottom center';
       el.style.backgroundRepeat = 'no-repeat';
-      const h = customHeight || (el.offsetHeight > 0 ? el.offsetHeight : 80);
-      el.style.width = `${h}px`;
-      el.style.height = `${h}px`;
       return;
     }
 
-    const frameMap = {
-      'idle': [0, 0], 'prepare': [1, 0], 'attack': [2, 0],
-      'magic': [0, 1], 'hurt': [1, 1], 'fallen': [2, 1]
-    };
-
-    const coords = Array.isArray(frameNameOrCoords) ? frameNameOrCoords : (frameMap[frameNameOrCoords] || [0, 0]);
-    const [col, row] = coords;
-
-    const cwRaw = manifest.cols; 
-    const rh = manifest.rows;
-    const cw = Array.isArray(cwRaw[0]) ? cwRaw[row] : cwRaw;
-    
-    const frameWidthPct = cw[col];
-    const frameHeightPct = rh[row];
-    const leftEdge = cw.slice(0, col).reduce((a, b) => a + b, 0);
-    const topEdge = rh.slice(0, row).reduce((a, b) => a + b, 0);
-    
+    const coords = Array.isArray(frameNameOrCoords) ? frameNameOrCoords : (FRAME_MAP[frameNameOrCoords] || FRAME_MAP.idle);
+    const col = Math.max(0, Math.min(manifest.cols - 1, coords[0] || 0));
+    const row = Math.max(0, Math.min(manifest.rows - 1, coords[1] || 0));
     const baseHeight = customHeight || (el.offsetHeight > 0 ? el.offsetHeight : 128);
-    const elWidth = (baseHeight / frameHeightPct) * frameWidthPct;
-    
-    const sizeX = (1 / frameWidthPct) * 100;
-    const sizeY = (1 / frameHeightPct) * 100;
-    const posX = frameWidthPct === 1 ? 0 : (leftEdge / (1 - frameWidthPct)) * 100;
-    const posY = frameHeightPct === 1 ? 0 : (topEdge / (1 - frameHeightPct)) * 100;
-    
-    // Resolution-aware loading
-    const suffix = getSuffix();
-    el.style.backgroundImage = `url(images/characters/spirits/${manifest.baseId}${suffix})`;
-    el.style.width = `${elWidth}px`;
+    const posX = manifest.cols === 1 ? 0 : (col / (manifest.cols - 1)) * 100;
+    const posY = manifest.rows === 1 ? 0 : (row / (manifest.rows - 1)) * 100;
+
+    el.style.backgroundImage = `url(${getSpritePath(manifest.baseId)})`;
+    el.style.width = `${baseHeight}px`;
     el.style.height = `${baseHeight}px`;
-    el.style.backgroundSize = `${sizeX}% ${sizeY}%`;
+    el.style.backgroundSize = `${manifest.cols * 100}% ${manifest.rows * 100}%`;
     el.style.backgroundPosition = `${posX}% ${posY}%`;
     el.style.backgroundRepeat = 'no-repeat';
     
@@ -278,15 +257,37 @@ const SpriteRenderer = (() => {
   }
 
   function getSuffix() {
-    // Check both legacy G.settings and new G.graphics
-    const qual = G.settings?.graphicsQuality || G.graphics || 'auto';
+    const qual  = (typeof Settings !== 'undefined' ? Settings.getQuality() : (G.settings?.graphicsQuality || 'high'));
+    const style = (typeof Settings !== 'undefined' ? Settings.getStyle()   : (G.settings?.style || 'illustrious'));
+    
+    const isIllustrious = style === 'illustrious';
     const isLow = qual === 'low' || (qual === 'auto' && window.innerWidth < 800);
+    
+    if (isIllustrious) return isLow ? '_sprite_1_low.webp' : '_sprite_1.png';
     return isLow ? '_sprite_low.webp' : '_sprite.png';
+  }
+
+  function getSpritePath(charId) {
+    const id = charId.toLowerCase();
+    const manifest = SPRITE_MANIFEST[id];
+    const baseId = manifest ? manifest.baseId : id;
+    return `images/characters/spirits/${baseId}${getSuffix()}`;
   }
 
   function registerHero(id, fn) { HEROES[id] = fn; }
   function registerEnemy(id, fn) { ENEMIES[id] = fn; }
 
-  return { drawHero, drawEnemy, registerHero, registerEnemy, drawHeroToCanvas, drawEnemyToCanvas, SPRITE_MANIFEST, setFrame, getSuffix };
-})();
+  function refreshGlobalSprites() {
+    console.log('[SpriteRenderer] Global refresh triggered.');
+    document.querySelectorAll('.party-sprite').forEach(el => {
+      el.dataset.lastId = ''; 
+      el.dataset.lastClass = '';
+    });
+    if (window.BattleUI && BattleUI.render) BattleUI.render();
+    if (window.MapEntities && MapEntities.refresh) MapEntities.refresh();
+    if (window.MapPlayer && MapPlayer.refresh) MapPlayer.refresh();
+  }
 
+  return { drawHero, drawEnemy, registerHero, registerEnemy, drawHeroToCanvas, drawEnemyToCanvas, SPRITE_MANIFEST, setFrame, getSuffix, getSpritePath, FRAME_MAP, refreshGlobalSprites };
+})();
+window.SpriteRenderer = SpriteRenderer;

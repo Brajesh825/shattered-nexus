@@ -5,6 +5,7 @@
   "main": "index.html",
   "scripts": {
     "dev": "npx browser-sync start --server --files '*.html, css/*.css, js/*.js, data/*.json'",
+    "audit:assets": "node tools/asset-audit.js",
     "test": "node -e \"require('./tests/run-tests.js')\""
   },
   "keywords": [

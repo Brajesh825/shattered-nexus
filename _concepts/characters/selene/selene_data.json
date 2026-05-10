@@ -1,0 +1,48 @@
+{
+    "id": "selene",
+    "name": "Selene",
+    "alias": "Selene",
+    "title": "The Obsidian Heir",
+    "gender": "female",
+    "age": 19,
+    "origin": "Aethoria — Aethelgard (The Ice Castle)",
+    "description": "The last direct descendant of the Ash Kingdom's royalty. She carries the weight of a fallen crown and a silver estoc sharp enough to pierce the void.",
+    "personality": "Stoic, disciplined, fiercely royal",
+    "icon": "🖤",
+    "portrait_color": "#1f2937",
+    "hair_color": "#e2e8f0",
+    "skin_color": "#f8fafc",
+    "armor_color": "#0f172a",
+    "base_stats": {
+        "hp": 78,
+        "mp": 24,
+        "atk": 21,
+        "def": 15,
+        "spd": 19,
+        "mag": 10,
+        "lck": 12
+    },
+    "stat_bonuses": {
+        "atk": 4,
+        "spd": 4
+    },
+    "class_affinity": [
+        "obsidian_fencer"
+    ],
+    "passive": {
+        "id": "crystalline_precision",
+        "name": "Crystalline Precision",
+        "description": "Attacks apply Frost Marks. At 3 stacks, the target's armor shatters, increasing physical damage taken by 15%.",
+        "traits": [
+            {
+                "type": "STACKING_DEBUFF",
+                "id": "frost_mark",
+                "max_stacks": 3,
+                "effect": {
+                    "type": "DEF_REDUCTION",
+                    "value": 0.15
+                }
+            }
+        ]
+    }
+}

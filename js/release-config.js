@@ -26,7 +26,7 @@ const ReleaseConfig = {
   // UI Strings for the "End of Version" screen
   BETA_END_TITLE: "ARC 2 COMPLETE",
   BETA_END_SUBTITLE: "THE VOID IS RECOLLECTING...",
-  BETA_END_TEXT: "The Spectral Guardian has fallen, and the Resonance of the Crystal Caverns is restored. But the Demon Lord's influence spreads to the Ember Wastes.\n\nThank you for playing the Shattered Nexus Beta! Arc 3 development is underway.",
+  BETA_END_TEXT: "The Demon Lord has been defeated, and the Resonance of the Crystal Caverns is restored. But the Dark Phoenix stirs restlessly in the Ember Wastes.\n\nThank you for playing the Shattered Nexus Beta! Arc 3 development is underway.",
 
   // External link for the "Under Development" screen
   ITCH_URL: "https://brajesh825.itch.io/shattered-nexus"

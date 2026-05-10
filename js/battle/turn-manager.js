@@ -63,22 +63,29 @@ const TurnManager = {
    * Main entry point for resolving the current turn in the queue.
    */
   process() {
+    TurnState.syncFromLegacy();
+    let queue = TurnState.getQueue();
+    let idx = TurnState.getIndex();
+
     // 1. Skip units that were KO'd before their turn
-    while (G.turnIdx < G.turnQueue.length) {
-      const t = G.turnQueue[G.turnIdx];
+    while (idx < queue.length) {
+      const t = queue[idx];
       const unit = t.type === 'party' ? G.party[t.idx] : G.enemyGroup[t.idx];
       if (Battle.alive(unit)) break;
-      G.turnIdx++;
+      idx++;
+      TurnState.setIndex(idx);
     }
 
     // 2. New round if current queue is exhausted
-    if (G.turnIdx >= G.turnQueue.length) {
-      G.turnQueue = this.buildQueue();
-      G.turnIdx = 0;
-      if (!G.turnQueue.length) return; // Critical state: no one alive
+    if (idx >= queue.length) {
+      queue = this.buildQueue();
+      TurnState.setQueue(queue);
+      TurnState.setIndex(0);
+      idx = 0;
+      if (!queue.length) return; // Critical state: no one alive
     }
 
-    const t = G.turnQueue[G.turnIdx];
+    const t = queue[idx];
     const unit = t.type === 'party' ? G.party[t.idx] : G.enemyGroup[t.idx];
 
     // 3. Status/Control Check (Stun/Frozen)
@@ -105,10 +112,11 @@ const TurnManager = {
 
     // 5. Delegate Action
     if (t.type === 'party') {
-      G.activeMemberIdx = t.idx;
+      TurnState.setActivePartyIdx(t.idx);
       this.beginHeroTurn();
     } else {
-      G.busy = true;
+      TurnState.setBusy(true);
+      TurnState.setPhase('enemy');
       BattleUI.btns(false);
       // enemyAct is defined in action-handler.js
       setTimeout(() => {
@@ -126,7 +134,7 @@ const TurnManager = {
    * Increments the turn index and triggers the next turn resolution.
    */
   advance() {
-    G.turnIdx++;
+    TurnState.advanceIndex();
     // checkBattleEnd is defined in game.js
     if (typeof checkBattleEnd === 'function' && !checkBattleEnd()) {
       this.process();
@@ -137,14 +145,15 @@ const TurnManager = {
    * Prepares the interface for a player character's turn.
    */
   beginHeroTurn() {
-    G.busy = false;
-    const actor = G.party[G.activeMemberIdx];
+    TurnState.setBusy(false);
+    TurnState.setPhase('hero');
+    const actor = G.party[TurnState.getActivePartyIdx()];
     if (!actor) { this.advance(); return; }
 
     // Target Selection Maintenance
-    if (!Battle.alive(G.enemyGroup[G.targetEnemyIdx])) {
+    if (!Battle.alive(G.enemyGroup[TurnState.getTargetEnemyIdx()])) {
       const aliveIdx = G.enemyGroup.findIndex(e => Battle.alive(e));
-      if (aliveIdx >= 0) G.targetEnemyIdx = aliveIdx;
+      if (aliveIdx >= 0) TurnState.setTargetEnemyIdx(aliveIdx);
     }
     
     // UI Refresh (buildAbilityMenu is in game.js)
@@ -153,6 +162,12 @@ const TurnManager = {
     BattleUI.renderEnemyRow();
     BattleUI.renderActiveMemberBar();
     BattleUI.btns(true);
+
+    // Force focus reset to Action Menu (Attack button)
+    if (typeof Focus !== 'undefined') {
+      // TurnState.clearTargetEnemy(); // STICKY TARGETING: Removed forced clear
+      Focus.setContext('cmd-grid-main');
+    }
     
     // Start-of-Turn maintenance
     StatusSystem.tick(actor); 

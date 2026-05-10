@@ -6040,6 +6040,7 @@ body {
   /* width/height set per data-count below — card scales with group size */
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
   align-items: center;
   border: 1px solid transparent;
   border-radius: 4px;

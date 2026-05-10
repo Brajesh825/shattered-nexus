@@ -126,17 +126,38 @@ const Save = {
   importSlot(file, slot = 0, onDone) {
     const reader = new FileReader();
     reader.onload = (e) => {
-      try {
-        const data = JSON.parse(e.target.result);
-        if (typeof data.arcIdx === 'undefined' && !data.corrupt) throw new Error('Not a valid Shattered Nexus save.');
-        data.slot = slot;
-        data.timestamp = data.timestamp || Date.now();
-        localStorage.setItem(this._key(slot), JSON.stringify(data));
-        this._showToast(`Slot ${slot + 1} imported`);
+      if (this.validateAndImport(e.target.result, slot)) {
         if (onDone) onDone();
-      } catch(err) { alert('Import failed: ' + err.message); }
+      }
     };
     reader.readAsText(file);
+  },
+
+  /** 
+   * Validates a JSON string and writes it to a slot.
+   * Returns true on success, false on failure (shows alert).
+   */
+  validateAndImport(jsonString, slot = 0) {
+    try {
+      const data = JSON.parse(jsonString);
+      
+      // Use SaveContract if available, otherwise fallback to basic check
+      const isValid = (typeof SaveContract !== 'undefined') 
+        ? SaveContract.validateSaveStructure(data)
+        : (typeof data.arcIdx !== 'undefined' || data.corrupt);
+
+      if (!isValid) throw new Error('Not a valid Shattered Nexus save.');
+
+      data.slot = slot;
+      data.timestamp = data.timestamp || Date.now();
+      localStorage.setItem(this._key(slot), JSON.stringify(data));
+      this._showToast(`Slot ${slot + 1} imported`);
+      return true;
+    } catch(err) {
+      if (typeof alert === 'function') alert('Import failed: ' + err.message);
+      else console.error('Import failed:', err.message);
+      return false;
+    }
   },
 
   /* ─── Helpers ───────────────────────────────────────────────── */
@@ -158,3 +179,4 @@ const Save = {
     this._toastTimer = setTimeout(() => toast.classList.remove('show'), 2200);
   },
 };
+if (typeof window !== 'undefined') window.Save = Save;

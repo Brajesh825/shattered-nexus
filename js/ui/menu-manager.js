@@ -51,7 +51,11 @@ window.addEventListener('DOMContentLoaded', async () => {
   initStars();
   scaleGame();
 
-  if (!localStorage.getItem('spriteQuality')) {
+  const hasArtPreference = typeof Settings !== 'undefined'
+    ? Settings.hasStylePreference()
+    : !!localStorage.getItem('spriteStyle');
+
+  if (!hasArtPreference) {
     // First visit — show quality picker before preloader
     const picker = document.getElementById('quality-picker');
     if (picker) { picker.style.display = 'flex'; return; }
@@ -60,9 +64,19 @@ window.addEventListener('DOMContentLoaded', async () => {
   _startGame();
 });
 
-function setQuality(q) {
-  localStorage.setItem('spriteQuality', q);
-  if (typeof G !== 'undefined' && G.settings) G.settings.graphicsQuality = q;
+function setArtPreference(style, quality) {
+  if (typeof Settings !== 'undefined') {
+    Settings.update('style', style);
+    Settings.update('quality', quality);
+  } else {
+    // Fallback if settings manager is missing
+    localStorage.setItem('spriteStyle', style);
+    localStorage.setItem('spriteQuality', quality);
+    if (typeof G !== 'undefined' && G.settings) {
+      G.settings.style = style;
+      G.settings.graphicsQuality = quality;
+    }
+  }
   const picker = document.getElementById('quality-picker');
   if (picker) picker.style.display = 'none';
   _startGame();
@@ -73,7 +87,7 @@ async function _startGame() {
   if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
     navigator.serviceWorker.controller.postMessage({
       type: 'SET_QUALITY',
-      quality: localStorage.getItem('spriteQuality') || 'normal'
+      quality: typeof Settings !== 'undefined' ? Settings.getQuality() : 'auto'
     });
   }
   if (typeof AssetPreloader !== 'undefined') await AssetPreloader.init();
@@ -102,7 +116,8 @@ MapEngine.onEncounterStart = (enc, map) => {
   const enemyIds   = enc.enemies      || [];
   const mutation   = enc.mutation     || null; // null | 'corrupted' | 'mutant'
   const mutantTraits = enc.mutantTraits || null; // array of trait objects, mutant only
-  G.battleZone = map?.id || null; // store zone for battle background
+  G.battleZone = map?.id || null;
+  G.encounterBg = enc.bg || null; // store zone for battle background
 
   const enemyDefs = enemyIds
     .map(id => G.enemies.find(e => e.id === id))
@@ -320,14 +335,15 @@ function _renderPartySwapGrid() {
     card.dataset.charid = ch.id;
 
     const spriteId = `swap-sprite-${ch.id}`;
+    const esc = (typeof escapeHtml === 'function') ? escapeHtml : (v) => v;
     card.innerHTML =
       (isActive ? `<div class="swap-card-badge">${slotIdx + 1}</div>` : '') +
       `<div class="swap-icon" style="background:${ch.portrait_color}20;border-color:${ch.portrait_color}50">
         <div id="${spriteId}" class="ui-sprite-swap"></div>
       </div>` +
       `<div class="swap-info">` +
-        `<div class="swap-name">${ch.alias || ch.name}</div>` +
-        `<div class="swap-title">${ch.title}</div>` +
+        `<div class="swap-name">${esc(ch.alias || ch.name)}</div>` +
+        `<div class="swap-title">${esc(ch.title)}</div>` +
         `<div class="swap-stats">ATK ${ch.base_stats.atk + (ch.stat_bonuses.atk||0)} · SPD ${ch.base_stats.spd + (ch.stat_bonuses.spd||0)}</div>` +
       `</div>`;
 
@@ -368,15 +384,16 @@ function _renderCharGrid() {
     d.className = 'char-card' + (isSelected ? ' selected' : '');
     d.dataset.char = ch.id;
     const spriteId = `char-grid-sprite-${ch.id}`;
+    const esc = (typeof escapeHtml === 'function') ? escapeHtml : (v) => v;
     d.innerHTML = `
       ${isSelected ? `<div class="char-sel-badge">${selIdx + 1}</div>` : ''}
       <div class="char-portrait" style="background:${ch.portrait_color}20;border-color:${ch.portrait_color}50">
         <div id="${spriteId}" class="ui-sprite-char-grid"></div>
       </div>
       <div class="char-info">
-        <div class="char-name">${ch.alias || ch.name}</div>
-        <div class="char-title">${ch.title}</div>
-        <div class="char-aff">Affinity: ${ch.class_affinity.join(', ')}</div>
+        <div class="char-name">${esc(ch.alias || ch.name)}</div>
+        <div class="char-title">${esc(ch.title)}</div>
+        <div class="char-aff">Affinity: ${esc(ch.class_affinity.join(', '))}</div>
       </div>`;
     d.onclick = () => selectChar(ch.id);
     grid.appendChild(d);
@@ -420,14 +437,15 @@ function selectChar(id) {
 
   const detailEl = document.getElementById('char-detail');
   const spriteId = `char-detail-sprite-${id}`;
+  const esc = (typeof escapeHtml === 'function') ? escapeHtml : (v) => v;
   detailEl.innerHTML = `
     <div class="char-detail-layout">
       <div class="char-detail-visual">
          <div id="${spriteId}" class="ui-sprite-char-detail"></div>
       </div>
       <div class="char-detail-text">
-        <strong style="color:${ch.portrait_color}">${ch.icon} ${ch.alias || ch.name}</strong> — <em style="color:var(--text-dim)">${ch.personality}</em><br>
-        ${ch.description}<br>
+        <strong style="color:${ch.portrait_color}">${ch.icon} ${esc(ch.alias || ch.name)}</strong> — <em style="color:var(--text-dim)">${esc(ch.personality)}</em><br>
+        ${esc(ch.description)}<br>
         <div class="stat-row">
           <span class="stat-chip">HP <span>${s.hp}</span></span>
           <span class="stat-chip">MP <span>${s.mp}</span></span>
@@ -436,7 +454,7 @@ function selectChar(id) {
           <span class="stat-chip">SPD <span>${s.spd}</span></span>
           <span class="stat-chip">MAG <span>${s.mag}</span></span>
         </div>
-        <span class="passive-tag">★ ${ch.passive.name}: ${ch.passive.description}</span>
+        <span class="passive-tag">★ ${esc(ch.passive.name)}: ${esc(ch.passive.description)}</span>
       </div>
     </div>`;
 

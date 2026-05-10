@@ -258,7 +258,8 @@ const MapPlayer = (() => {
     _heroImgCache[charId] = entry;
 
     const suffix  = _variantMap[charId] || '';
-    const isLow   = G.settings.graphicsQuality === 'low' || (G.settings.graphicsQuality === 'auto' && window.innerWidth < 800);
+    const qual    = typeof Settings !== 'undefined' ? Settings.getQuality() : (G.settings?.graphicsQuality || 'auto');
+    const isLow   = qual === 'low' || (qual === 'auto' && window.innerWidth < 800);
     const resExt  = isLow ? '_low.webp' : '.png';
     const variant = _variantMap[charId] || '';
     const base    = `images/characters/map/sheets/${charId}_sheet`;
@@ -407,6 +408,7 @@ const MapPlayer = (() => {
        return ret; 
     },
     reset, update, render, dpad, pickVariants, rescale,
+    refresh: () => { Object.keys(_heroImgCache).forEach(k => delete _heroImgCache[k]); }
   };
 })();
 
@@ -475,6 +477,7 @@ const MapEntities = (() => {
       mutation:       null,        // null | 'corrupted' | 'mutant'
       mutationPhase:  0,           // animation phase for glow pulse
       isBoss:         e.isBoss || e.boss || false, // Capture map-specific boss flag
+      bg:             e.bg || e.background || null,
     }));
     _encounteredIdx = -1;
 
@@ -666,7 +669,8 @@ const MapEntities = (() => {
           enemies: ids, 
           mutation: en.mutation || null, 
           mutantTraits: en.mutantTraits || null,
-          isBoss: en.isBoss || false
+          isBoss: en.isBoss || false,
+          bg: en.bg || null
         };
       }
     }
@@ -770,7 +774,7 @@ const MapEntities = (() => {
       _spriteCache[id] = SpriteRenderer.drawEnemyToCanvas(id, palette);
       _spriteLoading.delete(id);
     };
-    img.src = `images/enemies/${id}.png`;
+    img.src = `images/enemies/${id}.webp`;
     return null; // not ready yet — renders nothing this frame, appears next frame
   }
 
@@ -900,7 +904,7 @@ const MapEntities = (() => {
     const NPC_FRAME_CNT  = 3;
 
     function _loadImg(src) {
-      const qual = G.settings?.graphicsQuality || G.graphics || 'auto';
+      const qual = typeof Settings !== 'undefined' ? Settings.getQuality() : (G.settings?.graphicsQuality || G.graphics || 'auto');
       const isLow = qual === 'low' || (qual === 'auto' && window.innerWidth < 800);
       let resSrc = src;
       if (isLow && src.endsWith('.png')) {
@@ -1158,6 +1162,7 @@ const MapEntities = (() => {
     init, clear, updateEnemies, renderEnemies, renderEnemiesForRow, checkEncounter, removeEncountered, 
     allCleared, bossCleared, remaining, hasEnemyAt, prepareBuckets,
     initNPCs, renderNPCs, renderNPCsForRow, checkNPCAt, getNPCDialogue, markNPCTalked,
-    getNPCs: () => MapNPCs.getNPCs()
+    getNPCs: () => MapNPCs.getNPCs(),
+    refresh: () => { Object.keys(_spriteCache).forEach(k => delete _spriteCache[k]); _spriteLoading.clear(); }
   };
 })();

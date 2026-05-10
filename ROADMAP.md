@@ -4,26 +4,35 @@
 **Scope**: Full playable experience through Arcs 1 & 2, including the first two Expansion Regions.
 
 
-### 🔷 Phase 6: Visual Fidelity & Asset Polish
-- [x] **High-Fidelity Sprite Rendering**: Audit battle sprite scaling and CSS filters; eliminate blurring/interpolation artifacts for "neat and clear" character detail.
-- [ ] **Combat VFX Overhaul**: Standardize ethereal glows and status overlays to ensure they don't obscure character detail.
-- [ ] **Asset Weight Pass**: Convert oversized character/map PNGs to optimized WebP/AVIF for faster high-res loading.
-
 ---
 
 ## 🛠️ Technical Debt & Engineering (Prioritized)
 ### P0 - Release Blockers
 *(All P0 blockers cleared for Beta 1.0)*
 
-### P1 - Stability & Maintainability
-- [ ] **Encapsulate Turn State**: Replace loose `G.turnIdx`, `G.turnQueue`, and battle locks with a centralized `G.turn` object.
+### 1. Stability & Maintainability
 - [ ] **Named Damage Modifiers**: Refactor the combat damage chain so STAB, affinity, reactions, mitigation, crits, passives, and relics are named steps.
-- [ ] **HTML Injection Guardrails**: Add escaping/DOM-builder helpers for UI generated from dialogue and data.
 - [ ] **JSON Loading Standard**: Move all data loading onto a unified `DataLoader` service.
 
 ---
 
 ## ✅ Completed Milestones (Condensed)
+
+### 🛡️ Core Stability & Security (May 2026)
+- [x] **Turn State Encapsulation**: Centralized turn logic into `G.turn` object for battle lock stability.
+- [x] **Security Guardrails**: Implemented global `escapeHtml` and sanitized Battle Log outputs.
+
+### ⚔️ High-Fidelity Pipeline & Bestiary (May 2026)
+- [x] **Visual Polish**: Standardized 79 enemies to the "Void Knight" aesthetic; resolved morphology drift.
+- [x] **Tiered Rendering**: Deployed dual-tier (Flat/Illustrious) sprite pipeline across the roster.
+- [x] **VFX Standardization**: Universal ethereal glows for Void-tier entities (Titan, Warden).
+- [x] **Asset Migration**: Converted all legacy PNGs to WebP; reduced PWA shell to ~5.5MB.
+- [x] **Smart On-Demand Loading**: Implemented background-fetch architecture in `AssetPreloader.js`.
+
+### 🎨 Visual & Engine Standards (May 2026)
+- [x] **Dynamic Style Switching**: Integrated per-player art preference (Vivid vs Classic) into the rendering pipeline and settings.
+- [x] **Tiered Roster Synchronization**: Achieved 100% parity across 9 primary spirits for both Flat and Illustrious styles.
+- [x] **Technical Asset Audit**: 86/86 automated tests passed, verifying all sprite references and data integrity.
 
 ### 🚀 Release Readiness (May 2026)
 - [x] **Production Gating**: Silenced debug logs and gated development tools behind `IS_DEV` flag.
@@ -62,4 +71,4 @@
 - [x] **Story Refactor**: Extracted cutscene logic into `js/cutscene.js`.
 
 ---
-*Last Audited: 2026-05-03 23:15. Status: Stable. Priority: Technical Debt & Release Blockers.*
++*Last Audited: 2026-05-11 04:10. Status: Stable. Priority: Technical Debt & Release Blockers.*

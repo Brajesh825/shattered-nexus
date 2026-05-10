@@ -320,6 +320,7 @@ const StatusSystem = {
     return reaction;
   }
 };
+window.StatusSystem = StatusSystem;
 
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = StatusSystem;
