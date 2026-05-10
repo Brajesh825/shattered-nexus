@@ -303,7 +303,7 @@ test('enemy and npc sprites exist', () => {
 
   // Check Enemy Sprites
   enemies.forEach(enemy => {
-    const spritePath = `images/enemies/${enemy.id}.png`;
+    const spritePath = `images/enemies/${enemy.id}.webp`;
     if (!fileExists(spritePath)) missing.push(`Enemy Sprite: ${spritePath}`);
   });
 
