@@ -48,6 +48,8 @@ function loadSave(initialStorage) {
     console,
     localStorage,
     ReleaseConfig: { SAVE_VERSION: 'test', IS_DEV: false },
+    CHARACTERS_DATA: [{ id: 'aya' }, { id: 'lulu' }],
+    MAP_DEFS: { verdant_vale: { width: 20, height: 20 } },
     document: {
       getElementById() { return null; },
       createElement() { return { className: '', textContent: '', classList: { add() {}, remove() {} } }; },
@@ -126,6 +128,26 @@ test('Save.validateAndImport rejects invalid or malicious JSON', () => {
   const res3 = Save.validateAndImport('{"arcIdx": 5, "selectedChars": ["aya"]}', 0);
   assert.strictEqual(res3, true);
   assert.notStrictEqual(localStorage.getItem('cc_save_v2_s0'), 'original');
+});
+
+test('Save.validateAndImport rejects impossible progression and map references', () => {
+  const { Save, localStorage } = loadSave({ cc_save_v2_s0: 'original' });
+
+  const invalidArc = Save.validateAndImport(JSON.stringify({ arcIdx: 99, selectedChars: ['aya'] }), 0);
+  assert.strictEqual(invalidArc, false);
+  assert.strictEqual(localStorage.getItem('cc_save_v2_s0'), 'original');
+
+  const invalidChar = Save.validateAndImport(JSON.stringify({ arcIdx: 1, selectedChars: ['missing'] }), 0);
+  assert.strictEqual(invalidChar, false);
+  assert.strictEqual(localStorage.getItem('cc_save_v2_s0'), 'original');
+
+  const invalidMap = Save.validateAndImport(JSON.stringify({ arcIdx: 1, selectedChars: ['aya'], mapId: 'missing_map' }), 0);
+  assert.strictEqual(invalidMap, false);
+  assert.strictEqual(localStorage.getItem('cc_save_v2_s0'), 'original');
+
+  const invalidCoords = Save.validateAndImport(JSON.stringify({ arcIdx: 1, selectedChars: ['aya'], mapId: 'verdant_vale', mapX: 99, mapY: 0 }), 0);
+  assert.strictEqual(invalidCoords, false);
+  assert.strictEqual(localStorage.getItem('cc_save_v2_s0'), 'original');
 });
 
 test('Save preserves party HP/MP and KO state', () => {
