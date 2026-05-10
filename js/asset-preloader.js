@@ -124,7 +124,7 @@ const AssetPreloader = (() => {
         return `images/characters/spirits/${fileName}`;
       }),
       // 2. Enemies
-      loadBatch(ASSETS.enemies, loadImage, 'enemy_', (id) => `images/enemies/${id}.png`),
+      loadBatch(ASSETS.enemies, loadImage, 'enemy_', (id) => `images/enemies/${id}.webp`),
       // 3. BGM
       loadBatch(ASSETS.bgm, loadAudio, '', (id) => `audio/bgm/${id}.mp3`, true),
       // 4. UI

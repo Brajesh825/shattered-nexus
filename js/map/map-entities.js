@@ -774,7 +774,7 @@ const MapEntities = (() => {
       _spriteCache[id] = SpriteRenderer.drawEnemyToCanvas(id, palette);
       _spriteLoading.delete(id);
     };
-    img.src = `images/enemies/${id}.png`;
+    img.src = `images/enemies/${id}.webp`;
     return null; // not ready yet — renders nothing this frame, appears next frame
   }
 

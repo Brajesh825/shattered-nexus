@@ -193,9 +193,9 @@ const SpriteRenderer = (() => {
   }
 
   function drawEnemy(imgEl, enemyId, palette) {
-    const pngPath = `images/enemies/${enemyId}.png`;
+    const webpPath = `images/enemies/${enemyId}.webp`;
     const test = new Image();
-    test.onload = () => { imgEl.src = pngPath; };
+    test.onload = () => { imgEl.src = webpPath; };
     test.onerror = () => {
       const canvas = document.createElement('canvas');
       canvas.width = 72; canvas.height = 84;
@@ -203,7 +203,7 @@ const SpriteRenderer = (() => {
       ENEMIES['slime'](ctx, palette);
       imgEl.src = canvas.toDataURL();
     };
-    test.src = pngPath;
+    test.src = webpPath;
   }
 
   function drawHeroToCanvas(charId, charData, classData) {

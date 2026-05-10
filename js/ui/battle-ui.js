@@ -219,7 +219,7 @@ const BattleUI = {
       // Enemy: sprite image. Party: colored initial badge.
       if (isEnemy) {
         const img = document.createElement('img');
-        img.src = `images/enemies/${unit.id}.png`;
+        img.src = `images/enemies/${unit.id}.webp`;
         img.onerror = () => { img.style.opacity = '0.4'; };
         tok.appendChild(img);
       } else {
