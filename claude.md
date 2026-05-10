@@ -21,6 +21,28 @@ The game supports two distinct visual tiers for all primary spirit characters.
 
 ---
 
+## 🖼️ High-Fidelity Asset & Loading Standards
+To maintain the "Premium/Vivid" aesthetic while ensuring 5-star web performance, follow these production rules:
+
+### 🎨 Visual Blueprint (The Void Knight Standard)
+All combat sprites (Enemies/Heroes) must adhere to the "Void Knight" stylistic template:
+- **Style**: Cel-shaded, flat colors, no airbrushed gradients.
+- **Outlines**: Razor-thin, clean, dark outlines (High Contrast).
+- **Presentation**: Full body, white background (for auto-transparency), sharp focus.
+- **Parity**: All enemies MUST have a bracketed generation seed `[...]` in `_prompts.txt` for technical synchronization.
+
+### 📦 Optimized Asset Formats
+- **Combat & Environment**: Use **WebP** as the primary format. It provides a 70-90% size reduction over PNG with zero visual loss in our cel-shaded style.
+- **UI & Premium Spirits**: Use **PNG** only for mandatory UI elements and the optional high-resolution spirit portraits used on desktop.
+- **Environmental Assets**: Use **SVG** for all static world objects (trees, ruins, pillars) to ensure infinite scaling and sub-1KB file sizes.
+
+### 🚀 Smart Loading Architecture (`AssetPreloader.js`)
+- **Initial Shell**: Pre-load only the essentials (Low-res spirits, Arc 1 enemies, Title music, UI). Target boot payload: **< 6MB**.
+- **Background Fetching**: Use the "Smart Fetcher" for non-core assets. If the engine requests a missing asset (e.g., a late-game boss or rare SVG), the preloader must fetch and cache it dynamically without stalling the main loop.
+- **Cache-on-Demand**: The Service Worker (`sw.js v8.6+`) should NOT pre-cache the entire asset library. It installs the "Shell" and then caches everything else "on-encounter" to prevent storage crashes on mobile devices.
+
+---
+
 ## 🧬 Data-Driven Passive Trait System
 Managed via **[PassiveSystem](file:///c:/Users/ASUS/VVI/rpg+/js/battle/passive-system.js)**. 
 - **Querying**: Use `PassiveSystem.hasTrait(unit, 'TYPE')` or `PassiveSystem.val(unit, 'TYPE', fallback)`.
@@ -185,7 +207,7 @@ The **BGM** module (`js/bgm.js`) handles all background music with crossfading s
 The game is installable as a PWA. The Service Worker in `sw.js` caches all assets for offline play.
 
 > [!CAUTION]
-> **ALWAYS bump `CACHE_NAME`** in `sw.js` when pushing any significant update (new assets, JS changes, CSS changes). The version string (e.g. `nexus-cache-v4.0`) is the sole mechanism that triggers cache invalidation on installed PWAs. Forgetting to bump it means users continue serving stale images and audio from the old cache indefinitely.
+> **ALWAYS bump `CACHE_NAME`** in `sw.js` when pushing any significant update. The current standard is **v8.6+**, which supports the "Cache-on-Demand" architecture. Forgetting to bump it means users continue serving stale assets.
 
 ### Update Flow (automatic — no user action needed)
 1. Browser re-fetches `sw.js` on every app open and does a byte-diff
