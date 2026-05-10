@@ -22,20 +22,64 @@
 .party-member {
   position: absolute;
   width: 140px;
-  height: 185px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  height: 160px;
+  background: transparent;
   border: 1px solid transparent;
-  border-radius: 4px;
-  padding: 4px;
-  background: rgba(0, 0, 20, 0.3);
-  transition: transform 0.2s ease, filter 0.2s ease, border-color 0.2s ease;
+  border-radius: 16px;
+  transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  overflow: visible; /* Allow aura to bleed out */
   cursor: default;
-  will-change: transform, filter;
-  backface-visibility: hidden;
-  transform: translate3d(0,0,0);
-  -webkit-font-smoothing: antialiased;
+}
+
+/* Subtle ground aura for all members to give presence */
+.party-member::before {
+  content: '';
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 40px;
+  background: radial-gradient(ellipse at center, rgba(120, 80, 255, 0.15) 0%, transparent 70%);
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.party-visual-anchor {
+  position: absolute;
+  bottom: 45px; /* Fixed distance from card bottom */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 110px;
+  height: 110px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 2;
+}
+
+.party-shadow {
+  position: absolute;
+  bottom: -2px; /* Slight offset to look natural */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70px;
+  height: 10px;
+  background: radial-gradient(ellipse at center, rgba(0,0,0,0.7) 0%, transparent 80%);
+  border-radius: 50%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.party-sprite {
+  position: relative;
+  width: 110px;
+  height: 110px;
+  z-index: 3;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 0 8px rgba(120, 80, 255, 0.4));
+  transition: filter 0.3s ease;
 }
 
 .party-member.ko-member {
@@ -44,9 +88,34 @@
 }
 
 .party-member.active-member {
-  transform: translate3d(0, -4px, 0); /* Lift instead of scale to keep pixels sharp */
-  border-color: currentColor;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4), 0 0 10px currentColor;
+  transform: translate3d(0, -12px, 0);
+  background: transparent;
+  border: 1px solid rgba(255, 215, 0, 0.6);
+  box-shadow: 
+    0 0 20px rgba(255, 215, 0, 0.2),
+    inset 0 0 10px rgba(255, 215, 0, 0.1);
+  z-index: 100 !important;
+}
+
+.party-member.active-member .party-visual-anchor::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  width: 140%;
+  height: 140%;
+  background: radial-gradient(circle at center, rgba(255, 215, 0, 0.25) 0%, transparent 70%);
+  animation: auraPulse 2s infinite ease-in-out;
+  z-index: 0;
+  pointer-events: none;
+}
+
+@keyframes auraPulse {
+  0%, 100% { opacity: 0.4; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+
+.party-member.active-member .party-sprite {
+  filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.4)) brightness(1.15);
 }
 
 @keyframes focusPulse {
@@ -77,54 +146,72 @@
 }
 
 .party-sprite {
-  width: 96px;
-  height: 96px;
+  width: 110px;
+  height: 110px;
   object-fit: contain;
   image-rendering: -webkit-optimize-contrast;
   image-rendering: crisp-edges;
   transform: translate3d(0,0,0);
-  filter: drop-shadow(0 0 6px rgba(120, 80, 255, 0.8));
-  backface-visibility: hidden;
+  filter: drop-shadow(0 0 8px rgba(120, 80, 255, 0.6));
+  z-index: 2;
+  transition: filter 0.3s ease;
+}
+
+.party-hp-bar-bg {
+  position: absolute;
+  bottom: 35px;
+  left: 15px;
+  right: 15px;
+  height: 6px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: inset 0 0 4px rgba(0,0,0,0.5);
 }
 
 .party-info {
-  width: 100%;
+  position: absolute;
+  bottom: 6px;
+  left: 0;
+  right: 0;
   text-align: center;
-  margin-top: 2px;
-  font-size: 9px;
+  padding: 0 10px;
 }
 
 .party-name {
-  color: inherit;
-  font-size: 10px;
-  font-weight: bold;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.8);
 }
 
 .party-level {
   font-size: 9px;
-  color: #8080c0;
-  font-weight: bold;
-}
-
-.party-hp-bar-bg {
-  width: 140px;
-  height: 6px;
-  background: #1a0010;
-  border: 1px solid #400030;
-  border-radius: 2px;
-  overflow: hidden;
-  margin-top: 3px;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.8);
 }
 
 .party-hp-bar-fill {
   height: 100%;
   width: 0%;
-  transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.3) inset;
-  border-radius: 1px;
+  transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 0 10px rgba(0, 255, 100, 0.4);
+  border-radius: 10px;
+  position: relative;
+}
+
+.party-hp-bar-fill::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.3) 0%, transparent 50%, rgba(0,0,0,0.1) 100%);
+  border-radius: inherit;
 }
 
 .portrait-status-strip {
@@ -163,28 +250,28 @@
 
 /* Pyramid layout with aggressive overlap (160×160 sprites) */
 /* Party pyramid — 140×185px cards, 380px formation, 420px container wide */
+/* Party pyramid — clean spacing, centered center-row */
 .party-member:nth-child(1) {
-  left: 142px;
-  /* center: (420-140)/2 */
+  left: 140px;
   top: 0px;
   z-index: 14;
 }
 
 .party-member:nth-child(2) {
-  left: 30px;
-  top: 98px;
+  left: 15px;
+  top: 80px;
   z-index: 16;
 }
 
 .party-member:nth-child(3) {
-  left: 252px;
-  top: 98px;
+  left: 265px;
+  top: 80px;
   z-index: 16;
 }
 
 .party-member:nth-child(4) {
-  left: 142px;
-  top: 193px;
+  left: 140px;
+  top: 160px;
   z-index: 18;
 }
 
@@ -956,6 +1043,10 @@
   }
 
   /* Column placements */
+  .active-member-bar {
+    display: none;
+  }
+
   #battle-screen .turn-bar {
     grid-column: 2;
     grid-row: 1;
@@ -974,12 +1065,7 @@
   }
 
   #battle-screen .active-member-bar {
-    grid-column: 2;
-    grid-row: 2;
-    min-height: 0;
-    height: auto;
-    padding: 10px 14px;
-    border-bottom: 1px solid #1a1448;
+    display: none;
   }
 
   #battle-screen #menu-area {
@@ -1196,7 +1282,7 @@
   }
 
   #battle-screen .active-member-bar {
-    padding: 12px 16px;
+    display: none;
   }
 
   #battle-screen #menu-area {
@@ -1389,7 +1475,7 @@
   }
 
   #battle-screen .active-member-bar {
-    padding: 14px 18px;
+    display: none;
   }
 
   #battle-screen #menu-area {
@@ -1854,10 +1940,7 @@
 
   /* Active member bar */
   .active-member-bar {
-    min-height: 0;
-    height: 32px;
-    padding: 4px 10px;
-    font-size: 11px;
+    display: none;
   }
 
   /* Battle log */

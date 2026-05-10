@@ -155,7 +155,7 @@ const SpriteRenderer = (() => {
     const config = SPRITE_MANIFEST[id];
     const isAnimated = !!config;
 
-    // Always use the baseId for the filename (e.g., 'ayaka_sprite.png')
+    // Always use the baseId for the filename
     const fileBase = isAnimated ? config.baseId : id;
     const fileName = isAnimated ? `${fileBase}_sprite.png` : `${fileBase}_spirit.png`;
     const pngPath = `images/characters/spirits/${fileName}`;
@@ -172,11 +172,8 @@ const SpriteRenderer = (() => {
       if (!isAnimated) {
         imgEl.style.backgroundImage = `url(${pngPath})`;
         imgEl.style.backgroundSize = 'contain';
-        imgEl.style.backgroundPosition = 'center';
+        imgEl.style.backgroundPosition = 'bottom center';
         imgEl.style.backgroundRepeat = 'no-repeat';
-        const h = imgEl.offsetHeight > 0 ? imgEl.offsetHeight : 128;
-        imgEl.style.width = h + 'px';
-        imgEl.style.height = h + 'px';
       }
     };
     test.onerror = () => {
@@ -188,10 +185,8 @@ const SpriteRenderer = (() => {
         HEROES['aya'](ctx, charData, classData);
         imgEl.style.backgroundImage = `url(${canvas.toDataURL()})`;
         imgEl.style.backgroundSize = 'contain';
-        imgEl.style.backgroundPosition = 'center';
+        imgEl.style.backgroundPosition = 'bottom center';
         imgEl.style.backgroundRepeat = 'no-repeat';
-        imgEl.style.width = '128px';
-        imgEl.style.height = '128px';
       }
     };
     test.src = pngPath;
@@ -233,14 +228,10 @@ const SpriteRenderer = (() => {
     const manifest = SPRITE_MANIFEST[id];
     
     if (!manifest) {
-      // Fallback for non-animated or unknown sprites (use spirit portrait if face removed)
       el.style.backgroundImage = `url(images/characters/spirits/${id}_sprite.png)`;
       el.style.backgroundSize = 'contain';
-      el.style.backgroundPosition = 'center';
+      el.style.backgroundPosition = 'bottom center';
       el.style.backgroundRepeat = 'no-repeat';
-      const h = customHeight || (el.offsetHeight > 0 ? el.offsetHeight : 80);
-      el.style.width = `${h}px`;
-      el.style.height = `${h}px`;
       return;
     }
 
@@ -288,40 +279,15 @@ const SpriteRenderer = (() => {
 
   function refreshGlobalSprites() {
     console.log('[SpriteRenderer] Global refresh triggered.');
-
-    // 1. Battle UI: Clear lastId cache to force SpriteRenderer.drawHero calls
     document.querySelectorAll('.party-sprite').forEach(el => {
       el.dataset.lastId = ''; 
       el.dataset.lastClass = '';
     });
     if (window.BattleUI && BattleUI.render) BattleUI.render();
-
-    // 2. Map Entities: Force reload of sprite sheets
-    if (window.MapEntities && MapEntities.refresh) {
-      MapEntities.refresh();
-    }
-    if (window.MapPlayer && MapPlayer.refresh) {
-      MapPlayer.refresh();
-    }
-    
-    // 3. UI Menus: Re-render if open
-    const charScreen = document.getElementById('char-screen');
-    if (charScreen && charScreen.style.display !== 'none') {
-      if (window._renderCharGrid) _renderCharGrid();
-    }
-    
-    const partyMenu = document.getElementById('party-menu');
-    if (partyMenu && partyMenu.style.display !== 'none') {
-      if (window.renderPartyMenu) renderPartyMenu();
-    }
-    
-    const swapMenu = document.getElementById('party-swap-overlay');
-    if (swapMenu && swapMenu.classList.contains('open')) {
-      if (window._renderPartySwapGrid) _renderPartySwapGrid();
-    }
+    if (window.MapEntities && MapEntities.refresh) MapEntities.refresh();
+    if (window.MapPlayer && MapPlayer.refresh) MapPlayer.refresh();
   }
 
   return { drawHero, drawEnemy, registerHero, registerEnemy, drawHeroToCanvas, drawEnemyToCanvas, SPRITE_MANIFEST, setFrame, getSuffix, getSpritePath, FRAME_MAP, refreshGlobalSprites };
 })();
 window.SpriteRenderer = SpriteRenderer;
-

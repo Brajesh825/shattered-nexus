@@ -354,10 +354,18 @@ const BattleUI = {
         member.dataset.idx = i;
         container.appendChild(member);
 
+        const anchor = document.createElement('div');
+        anchor.className = 'party-visual-anchor';
+        member.appendChild(anchor);
+
+        const shadow = document.createElement('div');
+        shadow.className = 'party-shadow';
+        anchor.appendChild(shadow);
+
         spr = document.createElement('div');
         spr.id = 'pspr-' + i;
         spr.className = 'party-sprite';
-        member.appendChild(spr);
+        anchor.appendChild(spr);
 
         const hpBg = document.createElement('div');
         hpBg.className = 'party-hp-bar-bg';
@@ -469,10 +477,10 @@ const BattleUI = {
     document.querySelectorAll('.party-member').forEach((w, i) => {
       const isActive = t && t.type === 'party' && t.idx === i;
       w.classList.toggle('active-member', isActive);
-      const col = CHAR_COLOR[G.party[i]?.charId] || '#c0b8e8';
-      w.style.borderColor = isActive ? col + '50' : 'transparent';
+
+
       // Use box-shadow via CSS class instead of dynamic filter to prevent blurring
-      w.style.boxShadow = isActive ? `0 4px 15px rgba(0,0,0,0.5), 0 0 12px ${col}80` : 'none';
+
     });
   },
 
