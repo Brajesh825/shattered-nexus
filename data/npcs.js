@@ -308,6 +308,7 @@ const NPC_DEFS = {
     name: 'Lira',
     color: '#4ade80',
     sprite: 'images/characters/map/sheets/npc/lira_sheet.png',
+    quests: ['locket_lost'],
     dialogues: {
       verdant_vale: [
         { speaker: 'Lira', text: 'Oh! You look like you can actually handle yourselves in a fight.' },

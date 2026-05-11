@@ -1779,6 +1779,9 @@ const MapEngine = (() => {
 
   function _closeNPCDialogue() {
     _hideQuestChoices();
+    // Capture before reset — used below to suppress legacy giveQuest when the new
+    // choice system already handled (or deliberately dismissed) a quest interaction.
+    const wasQuestFlow = _npcQuestFlow;
     _npcQuestFlow = false;
 
     const el = document.getElementById('npc-dialogue');
@@ -1788,10 +1791,12 @@ const MapEngine = (() => {
     if (typeof Cutscene !== 'undefined') Cutscene._skipTw();
     if (typeof Focus !== 'undefined') Focus.setContext(null);
 
-    // Only fire legacy completeCb / giveQuest on the very first interaction
+    // Only fire legacy completeCb / giveQuest on the very first interaction.
+    // Skip giveQuest entirely when the new choice system handled this session —
+    // accept/dismiss was already processed by _handleQuestChoice.
     const firstTime  = _npcCurrent && !_npcCurrent.isTalked;
     const completeCb = firstTime && _npcCurrent.onDialogueComplete;
-    const giveQuest  = firstTime && _npcCurrent.giveQuest;
+    const giveQuest  = firstTime && !wasQuestFlow && _npcCurrent.giveQuest;
     if (_npcCurrent) {
       MapEntities.markNPCTalked(_npcCurrent.id);
       _npcCurrent._dialogueOpen = false;
