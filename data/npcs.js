@@ -876,7 +876,7 @@ const NPC_DEFS = {
   ruin_closure: {
     name: 'Offering Point',
     color: '#ffffff',
-    sprite: 'images/characters/map/sheets/npc/offering_point.png',
+    sprite: 'images/environment/png/offering_point.png',
     dialogues: {
       verdant_vale: [
         { speaker: 'narrator', text: 'The air here is clear of shadow. You place Lira\'s locket among the stone fragments of the eastern bridge.' },
