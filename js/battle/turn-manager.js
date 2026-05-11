@@ -128,7 +128,7 @@ const TurnManager = {
             G.enemyGroup.forEach(e => {
               if (Battle.alive(e) && e._lastFiredEvent === pendingEvent.id) {
                 if (typeof StatusSystem !== 'undefined') {
-                  StatusSystem.apply(e, effect.addStatus);
+                  StatusSystem.add(e, effect.addStatus);
                 }
                 delete e._lastFiredEvent;
               }
