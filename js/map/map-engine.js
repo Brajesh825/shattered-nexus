@@ -1948,7 +1948,22 @@ const MapEngine = (() => {
     }
 
     // ── Fallback: normal / repeat dialogue ───────────────────────────
-    const key = npc.isTalked ? (npc.dialogueKey + '_return') : npc.dialogueKey;
+    // Three-tier key resolution:
+    //   1. <dialogueKey>_post_arc — shown after the arc tied to this map is cleared
+    //   2. <dialogueKey>_return   — shown on all repeat visits during the arc
+    //   3. <dialogueKey>          — first visit
+    const curMap = MapEngine.getMap();
+    const mapArcId = curMap ? (curMap.arcId || 0) : 0;
+    const storyArcIdx = (typeof Story !== 'undefined' && Story.arcIdx != null) ? Story.arcIdx : 0;
+    const arcCleared = storyArcIdx > (mapArcId - 1); // arcIdx is 0-based, arcId is 1-based
+    let key;
+    if (arcCleared && def && def.dialogues && def.dialogues[npc.dialogueKey + '_post_arc']) {
+      key = npc.dialogueKey + '_post_arc';
+    } else if (npc.isTalked) {
+      key = npc.dialogueKey + '_return';
+    } else {
+      key = npc.dialogueKey;
+    }
     _npcLines = (def && def.dialogues && (def.dialogues[key] || def.dialogues[npc.dialogueKey]))
       || [{ speaker: npc.name || npc.id, text: '...' }];
     _npcLineIdx = 0;
