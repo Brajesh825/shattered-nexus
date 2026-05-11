@@ -28,6 +28,46 @@ Verdant Vale
 Pos: masterpiece, best quality, scenery, no humans, strict horizontal composition, side view, upper background features dense ancient forest, sunlight beams, towering trees, lower foreground features perfectly flat clear dirt and moss ground plane stretching across the entire width, empty stage floor, no roots, no rocks, unobstructed foreground, vibrant greens, studio quality anime style.
 Neg: 1girl, solo, human, deep path, one point perspective, narrow road, character, face, body, trees in foreground, blurry, lowres, text, watermark. 
 
+Crystal Cavern F1: Azure Entrance
+Pos: masterpiece, best quality, scenery, no humans, strict horizontal composition, strict side view, horizontal split exactly in the middle of the frame, upper background features grand stone arches of an underground kingdom, massive glowing blue quartz clusters embedded in cavern walls, ethereal blue light, distant stone hallways, lower foreground features perfectly flat polished marble ground plane stretching across the entire width and taking up the bottom 50 percent of the image, empty stage floor, unobstructed foreground, cold azure tones, cinematic lighting, studio quality anime style.
+Neg: 1girl, solo, human, deep path, one point perspective, narrow road, character, face, body, trees in foreground, blurry, lowres, text, watermark.
+
+Crystal Cavern F2: Echoing Archives
+Pos: masterpiece, best quality, scenery, no humans, strict horizontal composition, strict side view, horizontal split exactly in the middle of the frame, upper background features massive stone bookshelves carved into cavern walls, glowing crystalline books, floating violet memory embers, ancient scholarly statues, resonant violet light, lower foreground features perfectly flat smooth stone ground plane stretching across the entire width and taking up the bottom 50 percent of the image, empty stage floor, unobstructed foreground, deep violet and stone grey, cinematic lighting, studio quality anime style.
+Neg: 1girl, solo, human, deep path, one point perspective, narrow road, character, face, body, trees in foreground, blurry, lowres, text, watermark.
+
+Crystal Cavern F3: Frozen Core
+Pos: masterpiece, best quality, scenery, no humans, strict horizontal composition, strict side view, horizontal split exactly in the middle of the frame, upper background features jagged sub-zero ice spires, a shattered crystalline throne in the far distance, heavy arctic frost-fog, glowing frozen resonance crystals, lower foreground features perfectly flat solid translucent ice ground plane stretching across the entire width and taking up the bottom 50 percent of the image, empty stage floor, unobstructed foreground, arctic blue and white, cinematic lighting, studio quality anime style.
+Neg: 1girl, solo, human, deep path, one point perspective, narrow road, character, face, body, trees in foreground, blurry, lowres, text, watermark.
+
+Ember Wastes: The Burning Forge
+Pos: masterpiece, best quality, scenery, no humans, strict horizontal composition, strict side view, horizontal split exactly in the middle of the frame, upper background features massive molten lava falls, heavy iron chains, glowing orange forge furnaces, thick charcoal smoke and ash in the air, volcanic rock structures, lower foreground features perfectly flat black scorched iron plate ground plane stretching across the entire width and taking up the bottom 50 percent of the image, empty stage floor, unobstructed foreground, vibrant orange and charcoal black, cinematic lighting, studio quality anime style.
+Neg: 1girl, solo, human, deep path, one point perspective, narrow road, character, face, body, trees in foreground, blurry, lowres, text, watermark.
+
+Sunken Temple: The Archpriest's Sanctuary
+Pos: masterpiece, best quality, scenery, no humans, strict horizontal composition, strict side view, horizontal split exactly in the middle of the frame, upper background features underwater ruins with giant glowing jellyfish-like spirits, bioluminescent coral, floating stone bubbles, tattered ceremonial banners drifting in water, deep blue and cyan lighting, lower foreground features perfectly flat white sand and smooth stone ground plane stretching across the entire width and taking up the bottom 50 percent of the image, empty stage floor, unobstructed foreground, aquatic serenity, cinematic lighting, studio quality anime style.
+Neg: 1girl, solo, human, deep path, one point perspective, narrow road, character, face, body, trees in foreground, blurry, lowres, text, watermark.
+
+Shadow Reach: The Edge of the Rift
+Pos: masterpiece, best quality, scenery, no humans, strict horizontal composition, strict side view, horizontal split exactly in the middle of the frame, upper background features a massive violet void rift tearing the sky, swirling dark purple energy, floating debris, jagged obsidian mountains, starlight nebula, lower foreground features perfectly flat dark purple crystalline rock ground plane stretching across the entire width and taking up the bottom 50 percent of the image, empty stage floor, unobstructed foreground, deep purple and starlight, cinematic lighting, studio quality anime style.
+Neg: 1girl, solo, human, deep path, one point perspective, narrow road, character, face, body, trees in foreground, blurry, lowres, text, watermark.
+
+Void Citadel: The Obsidian Gate
+Pos: masterpiece, best quality, scenery, no humans, strict horizontal composition, strict side view, horizontal split exactly in the middle of the frame, upper background features massive obsidian walls, glowing purple runes, towering gothic spires, banners of the Shadow Emperor, ethereal purple mist, lower foreground features perfectly flat polished black stone tiles ground plane stretching across the entire width and taking up the bottom 50 percent of the image, empty stage floor, unobstructed foreground, regal and intimidating, cinematic lighting, studio quality anime style.
+Neg: 1girl, solo, human, deep path, one point perspective, narrow road, character, face, body, trees in foreground, blurry, lowres, text, watermark.
+
+Eternal Void: The Heart of Truth
+Pos: masterpiece, best quality, scenery, no humans, strict horizontal composition, strict side view, horizontal split exactly in the middle of the frame, upper background features a infinite expanse of white and purple starlight, floating shards of memory, the Core of Aethoria glowing in the distance, abstract geometry, ethereal light trails, lower foreground features perfectly flat translucent glass-like ground plane reflecting the nebula above stretching across the entire width and taking up the bottom 50 percent of the image, empty stage floor, unobstructed foreground, cosmic and ethereal, cinematic lighting, studio quality anime style.
+Neg: 1girl, solo, human, deep path, one point perspective, narrow road, character, face, body, trees in foreground, blurry, lowres, text, watermark.
+
+Sky Ruins: The Storm Sanctuary
+Pos: masterpiece, best quality, scenery, no humans, strict horizontal composition, strict side view, horizontal split exactly in the middle of the frame, upper background features floating stone islands in a raging thunderstorm, blue lightning arcs, dark storm clouds, ancient shinto-style archways, wind-blown debris, lower foreground features perfectly flat weathered stone sanctuary floor ground plane stretching across the entire width and taking up the bottom 50 percent of the image, empty stage floor, unobstructed foreground, chaotic and powerful, cinematic lighting, studio quality anime style.
+Neg: 1girl, solo, human, deep path, one point perspective, narrow road, character, face, body, trees in foreground, blurry, lowres, text, watermark.
+
+Riverlands Crossing: The Ancient Bridge
+Pos: masterpiece, best quality, scenery, no humans, strict horizontal composition, strict side view, horizontal split exactly in the middle of the frame, upper background features a wide rushing river, ruins of a massive ancient stone bridge, lush willow trees and riverside reeds, distant mist-covered peaks, soft daylight, lower foreground features perfectly flat smooth river-stone ground plane stretching across the entire width and taking up the bottom 50 percent of the image, empty stage floor, unobstructed foreground, vibrant blues and riverside greens, cinematic lighting, studio quality anime style.
+Neg: 1girl, solo, human, deep path, one point perspective, narrow road, character, face, body, trees in foreground, blurry, lowres, text, watermark.
+
 =========================================
 === SHATTERED NEXUS STAGE STANDARD ======
 =========================================

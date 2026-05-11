@@ -63,13 +63,16 @@ MAP_DEFS.ember_wastes = (function() {
 
     return {
         id: 'ember_wastes',
-        name: 'The Scorched Spiral',
-        arcId: 3,
-        width: width,
-        height: height,
+        name: 'Ember Wastes',
+        arcId: 2,
+        width: 100,
+        height: 80,
         playerStart: { x: 5, y: 40 },
-        bgColor: '#150500',
-        ambientLight: 'rgba(255,80,0,0.12)',
+        bgColor: '#1a0808',
+        bgm: 'ember_wastes_explore',
+        battleBgm: 'ember_wastes_battle',
+        battleBg: 'ember_wastes.webp',
+        ambientLight: 'rgba(255,100,50,0.12)',
         weather: 'embers',
         enemyLevelRange: [12, 20],
         // Arc 3 — volcanic heat warps creatures faster. Noticeable mutation pressure.

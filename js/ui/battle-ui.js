@@ -92,11 +92,13 @@ const BattleUI = {
     const scene = this.el('battle-scene');
     if (!scene) return;
 
-    // Helper to apply WebP background
+    // Helper to apply High-Fidelity background
     const setHFBg = (bgName) => {
       if (!bgName) return false;
+      const extMatch = bgName.match(/\.(png|jpg|webp|jpeg)$/i);
+      const ext = extMatch ? extMatch[0] : '.webp';
       const cleanName = bgName.replace(/\.(png|jpg|webp|jpeg)$/i, '');
-      scene.style.backgroundImage = `url('images/backgrounds/${cleanName}.webp')`;
+      scene.style.backgroundImage = `url('images/backgrounds/${cleanName}${ext}')`;
       scene.style.backgroundSize = 'cover';
       scene.style.backgroundPosition = 'center bottom';
       scene.classList.add('hf-bg-active');

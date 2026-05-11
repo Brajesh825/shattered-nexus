@@ -25,6 +25,7 @@ MAP_DEFS.crystal_cavern_f1 = {
   
   bgm: 'cavern_explore',
   battleBgm: 'cavern_battle',
+  battleBg: 'cavern_f1.webp',
 
   mutationConfig: {
     corruptThreshold: 60,
