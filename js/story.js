@@ -718,10 +718,9 @@ const Story = {
     const isBoss = (this.phase === 'boss_in');
 
     // Calculate spawn level based on arc and whether this is a boss fight
-    // Regular: Arc 1→1, 2→3, 3→6, 4→10, 5→14, 6→18, 7→22, 8→26
-    // Boss: significantly higher — bosses should feel like a clear step up
-    const arcProgression = [1, 3, 6, 10, 14, 18, 22, 26];
-    const bossProgression = [6, 12, 18, 24, 30, 36, 42, 50];
+    // Calculated to match the map ranges and boss finale peaks
+    const arcProgression = [3, 13, 23, 30, 38, 46, 54, 62];
+    const bossProgression = [8, 21, 35, 45, 55, 65, 75, 99];
     const spawnLevel = isBoss
       ? (bossProgression[this.arcIdx] || arcProgression[this.arcIdx] || 1)
       : (arcProgression[this.arcIdx] || 1);

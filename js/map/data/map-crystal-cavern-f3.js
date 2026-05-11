@@ -24,7 +24,7 @@ MAP_DEFS.crystal_cavern_f3 = {
   bgColor: '#010002',
   ambientLight: 'rgba(200, 150, 255, 0.1)', // Cold, imperial violet
   weather: 'fog',
-  enemyLevelRange: [16, 20],
+  enemyLevelRange: [15, 18],
   jsonFile: 'js/map/data/map-crystal-cavern-f3.json',
   
   bgm: 'cavern_explore',
@@ -56,7 +56,7 @@ MAP_DEFS.crystal_cavern_f3 = {
   },
 
   enemies: [
-    { id: 'spectral_guardian', x: 30,  y: 30, isBoss: true, patrol: 'random', range: 2, speed: 0.9 },
+    { id: 'spectral_guardian', x: 30,  y: 30, isBoss: true, level: 20, patrol: 'random', range: 2, speed: 0.9 },
     { id: 'ghost',             x: 20,  y: 20, patrol: 'random', range: 5, speed: 2.5 },
     { id: 'skeleton',          x: 20,  y: 40, patrol: 'random', range: 5, speed: 2.5 },
   ],

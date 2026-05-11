@@ -21,7 +21,7 @@ MAP_DEFS.verdant_vale = {
     battleBg: 'verdant_vale',
     ambientLight: 'rgba(60,180,60,0.04)',
     weather: 'leaves',
-    enemyLevelRange: [1, 8],
+    enemyLevelRange: [3, 8],
     mutationConfig: {
         corruptThreshold: 90,
         mutantThreshold: 180,
@@ -46,7 +46,7 @@ MAP_DEFS.verdant_vale = {
         { id: 'wolf', x: 42, y: 22, patrol: 'random', range: 4, speed: 1.4 },
         { id: 'zombie_soldier', x: 40, y: 18, patrol: 'horizontal', range: 3, speed: 0.8 },
         { id: 'goblin', x: 48, y: 6, patrol: 'random', range: 2, speed: 1.1 },
-        { id: 'galdor_king', x: 52, y: 54, patrol: 'horizontal', range: 2, speed: 0.9, isBoss: true, bg: 'galdor_garden' }
+        { id: 'galdor_king', x: 52, y: 54, patrol: 'horizontal', range: 2, speed: 0.9, isBoss: true, level: 6, bg: 'galdor_garden' }
     ],
 
     jsonFile: 'js/map/data/map-verdant-vale.json',

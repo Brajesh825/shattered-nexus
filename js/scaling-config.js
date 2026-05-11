@@ -113,7 +113,8 @@ const NexusScaling = {
     critRate: 0.85,      // Max 85% crit rate
     mitigation: 0.8,     // Max 80% final damage reduction
     maxHp: 9999,         // UI comfort cap
-    maxStat: 999         // UI comfort cap
+    maxStat: 999,        // UI comfort cap
+    maxLevel: 25         // Version 1.0 Level Cap
   }
 };
 
