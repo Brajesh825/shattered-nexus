@@ -3130,10 +3130,43 @@
     "aiType": "sequenced",
     "statPhases": [
       {
-        "hp": 0.3,
-        "atk": 1.4,
-        "spd": 1.2,
-        "def": 0.8
+        "hp": 0.75,
+        "atk": 1.05,
+        "def": 1.1,
+        "spd": 1.05
+      },
+      {
+        "hp": 0.5,
+        "atk": 1.2,
+        "def": 1.2,
+        "spd": 1.2
+      },
+      {
+        "hp": 0.25,
+        "atk": 1.5,
+        "def": 0.6,
+        "spd": 1.5
+      }
+    ],
+    "battleEvents": [
+      {
+        "id": "void_knight_awakening",
+        "fired": false,
+        "trigger": { "type": "hp", "threshold": 0.5 },
+        "lines": [
+          { "speaker": "Void Knight", "text": "The... weight... it is lifting..." },
+          { "speaker": "Aya", "text": "Look at his shadow! It's cracking. Tao, the light is getting through!" },
+          { "speaker": "Tao", "text": "The man beneath. He is fighting his own blade for every inch of ground." },
+          { "speaker": "Void Knight", "text": "REI... YOU SHOULD HAVE... STAYED IN THE WEST..." },
+          { "speaker": "Rei", "text": "Arren! We aren't leaving you to the shadow again!" },
+          { "speaker": "Void Knight", "text": "THEN WITNESS... THE END OF THE AZURE REMNANT!" }
+        ],
+        "onComplete": {
+          "logMsg": "★ Void Knight enters Abyssal Flare!",
+          "flash": "rgba(120, 0, 255, 0.4)",
+          "addStatus": { "id": "status_atk_boost", "icon": "💠", "label": "Abyssal Flare", "stat": "atk", "value": 1.4, "turns": 99, "color": "#7800ff" },
+          "screenShake": true
+        }
       }
     ],
     "stats": {
