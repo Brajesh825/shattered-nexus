@@ -14,7 +14,7 @@ MAP_DEFS.southern_isles = {
     safeZones: [
         { xMin: 21, xMax: 103, yMin: 36, yMax: 56, name: 'Survivor Settlement' }
     ],
-    enemyLevelRange: [10, 18],
+    enemyLevelRange: [10, 20],
     encounterTemplates: [
         { weight: 4, enemies: ['naga', 'naga'] },
         { weight: 3, enemies: ['crab'] },
@@ -34,7 +34,7 @@ MAP_DEFS.southern_isles = {
         { id: 'naga',   x: 18, y: 20, patrol: 'vertical',   range: 10, speed: 1.3 },
         { id: 'naga',   x: 102, y: 20, patrol: 'vertical',  range: 10, speed: 1.3 },
         // --- MAP BOSS ---
-        { id: 'sunken_leviathan', x: 60, y: 4,  patrol: 'stationary', isBoss: true, label: 'Sunken Leviathan' }
+        { id: 'sunken_leviathan', x: 60, y: 4,  patrol: 'stationary', isBoss: true, level: 20, label: 'Sunken Leviathan' }
     ],
     jsonFile: 'js/map/data/map-southern-isles.json',
     
@@ -100,6 +100,7 @@ MAP_DEFS.southern_isles = {
             type: 'encounter',
             isBoss: true,
             enemies: ['sunken_leviathan'],
+            level: 20,
             preMsg: '⚠ The Abyssal Gate trembles. Something vast stirs below…'
         }
     ],
