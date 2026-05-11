@@ -85,10 +85,11 @@ const QuestSystem = (() => {
       if (progress && q.current >= q.count) {
         q.complete = true;
         toComplete.push(q);
-        if (typeof MapUI !== 'undefined') MapUI.showMsg(`✔ ECHO COMPLETE: ${q.label}`, 2500);
+        if (typeof MapUI !== 'undefined') MapUI.showMsg(`✔ ECHO COMPLETE: ${q.label} — Return to ${q.giver ? 'the quest giver' : 'collect your reward'}!`, 2500);
       }
     });
-    toComplete.forEach(_grantRewards);
+    // Giver quests wait for NPC submission; no-giver quests auto-grant
+    toComplete.filter(q => !q.giver).forEach(_grantRewards);
   }
 
   function onGather(itemId) {
@@ -100,11 +101,11 @@ const QuestSystem = (() => {
         if (q.current >= q.count) {
           q.complete = true;
           toComplete.push(q);
-          if (typeof MapUI !== 'undefined') MapUI.showMsg(`✔ ECHO COMPLETE: ${q.label}`, 2500);
+          if (typeof MapUI !== 'undefined') MapUI.showMsg(`✔ ECHO COMPLETE: ${q.label} — Return to ${q.giver ? 'the quest giver' : 'collect your reward'}!`, 2500);
         }
       }
     });
-    toComplete.forEach(_grantRewards);
+    toComplete.filter(q => !q.giver).forEach(_grantRewards);
   }
 
   function getActive()    { return [..._active]; }
