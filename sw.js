@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nexus-cache-v8.6';
+const CACHE_NAME = 'nexus-cache-v8.18';
 
 // Core shell — always pre-cached regardless of quality setting
 const SHELL_ASSETS = [
@@ -136,6 +136,7 @@ const SHELL_ASSETS = [
   // Backgrounds (Arc 1)
   './images/backgrounds/verdant_vale.webp',
   './images/backgrounds/forest_path.webp',
+  './images/environment/png/offering_point.png',
 ];
 
 // Normal quality character sprites (~37 MB total)

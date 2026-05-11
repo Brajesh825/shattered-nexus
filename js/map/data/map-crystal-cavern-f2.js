@@ -20,7 +20,7 @@ MAP_DEFS.crystal_cavern_f2 = {
   bgColor: '#020005',
   ambientLight: 'rgba(100, 150, 255, 0.15)', // Cooler, scholarly blue
   weather: 'fog',
-  enemyLevelRange: [14, 18],
+  enemyLevelRange: [12, 15],
   jsonFile: 'js/map/data/map-crystal-cavern-f2.json',
   
   bgm: 'cavern_explore',
@@ -53,7 +53,8 @@ MAP_DEFS.crystal_cavern_f2 = {
   ],
 
   npcs: [
-    { id: 'ghost_knight', x: 34, y: 32, dialogueKey: 'crystal_cavern_f2_knight' },
+    { id: 'ghost_knight', x: 34, y: 32, dialogueKey: 'crystal_cavern_f2' },
+    { id: 'scholar_vane', x: 8, y: 30, dialogueKey: 'crystal_cavern_f2' },
   ],
 
   triggers: [

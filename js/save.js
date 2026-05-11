@@ -49,6 +49,18 @@ const Save = {
     }
   },
 
+  /** Merge partial fields into an existing slot without overwriting the rest */
+  patch(partial, slot = 0) {
+    try {
+      const raw = localStorage.getItem(this._key(slot));
+      const existing = raw ? JSON.parse(raw) : {};
+      const merged = { ...existing, ...partial, timestamp: Date.now() };
+      localStorage.setItem(this._key(slot), JSON.stringify(merged));
+    } catch (e) {
+      console.error('Save.patch failed:', e);
+    }
+  },
+
   /** Read a slot — migrates legacy save on first access of slot 0 */
   read(slot = 0) {
     try {

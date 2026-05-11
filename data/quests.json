@@ -16,8 +16,21 @@
     "type": "gather",
     "target": "silver_locket",
     "count": 1,
-    "arc": 0,
-    "rewards": { "exp": 200, "item": "hi_potion" }
+    "giver": "lira",
+    "rewards": { "exp": 200, "item": "hi_potion" },
+    "acceptDialogue": [
+      { "speaker": "Lira", "text": "Oh — you're actually stopping. Most people just walk past." },
+      { "speaker": "Lira", "text": "I lost my locket out in the eastern ruins. Silver, with a little blue gem. My grandmother gave it to me before everything fell apart." },
+      { "speaker": "Lira", "text": "I know it's dangerous out there. But if you happen to pass through... would you keep an eye out for it?" }
+    ],
+    "activeDialogue": [
+      { "speaker": "Lira", "text": "The locket... it's silver, blue gem. Somewhere in the eastern ruins, I think. You'll know it when you see it." }
+    ],
+    "submitDialogue": [
+      { "speaker": "Lira", "text": "You found it. You actually found it." },
+      { "speaker": "Lira", "text": "I didn't dare hope. After everything that's happened, hoping feels dangerous." },
+      { "speaker": "Lira", "text": "Take these — I had them set aside for a reason. I just didn't know who the reason was yet." }
+    ]
   },
   {
     "id": "void_sentinel",
@@ -37,7 +50,19 @@
     "target": "goblin",
     "count": 4,
     "giver": "elder_maren",
-    "rewards": { "exp": 200, "gold": 150 }
+    "rewards": { "exp": 200, "gold": 150 },
+    "acceptDialogue": [
+      { "speaker": "Elder Maren", "text": "You are strong enough. I can see it. The camp has been hit three nights running — goblins, a small warband from the eastern ridgeline." },
+      { "speaker": "Elder Maren", "text": "I cannot ask the refugees to fight. Half of them are children. But if you could drive the raiders back — four, maybe five of them — we could breathe again. Will you help us?" }
+    ],
+    "activeDialogue": [
+      { "speaker": "Elder Maren", "text": "The goblins are still out there. I can hear them at the treeline after dark. Please — we cannot take another night of this." }
+    ],
+    "submitDialogue": [
+      { "speaker": "Elder Maren", "text": "You... you really did it." },
+      { "speaker": "Elder Maren", "text": "I stood at the gate last night and listened. Nothing. Not one sound from the ridge. The children slept through till morning for the first time in weeks." },
+      { "speaker": "Elder Maren", "text": "This is everything I have left to give. It is not much, but it is given freely." }
+    ]
   },
   {
     "id": "bones_of_the_fallen",
@@ -47,7 +72,20 @@
     "target": "bone_shard",
     "count": 3,
     "giver": "the_archivist",
-    "rewards": { "exp": 300, "item": "ether" }
+    "rewards": { "exp": 300, "item": "ether" },
+    "acceptDialogue": [
+      { "speaker": "The Archivist", "text": "There are soldiers down here who have no record. No name, no unit, no date. They died in the dark and nobody wrote it down." },
+      { "speaker": "The Archivist", "text": "Bone shards carry resonance. Three fragments — enough to reconstruct the elemental signature of the conflict. I can at least record that something happened here, and approximately when." },
+      { "speaker": "The Archivist", "text": "History does not need to be perfect. It only needs to exist. Will you help me make sure this one does?" }
+    ],
+    "activeDialogue": [
+      { "speaker": "The Archivist", "text": "Still cataloguing. The resonance patterns here are... layered. Come back when you have the fragments." }
+    ],
+    "submitDialogue": [
+      { "speaker": "The Archivist", "text": "Three. Yes. This is sufficient." },
+      { "speaker": "The Archivist", "text": "I will be able to date the engagement within a season. Name the elements involved. Confirm it was soldiers and not something else entirely." },
+      { "speaker": "The Archivist", "text": "You understand what you have done? Somewhere, eventually, someone will read an archive and know that people fought here and that it mattered. That is not nothing. Take this." }
+    ]
   },
   {
     "id": "naga_threat",
@@ -57,6 +95,110 @@
     "target": "naga",
     "count": 4,
     "giver": "si_elder",
-    "rewards": { "exp": 400, "gold": 200 }
+    "rewards": { "exp": 400, "gold": 200 },
+    "acceptDialogue": [
+      { "speaker": "Elder", "text": "The naga come at low tide. Always low tide — they know when the shallows open up. Four of them, sometimes five, and they take whatever they can carry." },
+      { "speaker": "Elder", "text": "We have been patient. Aethon patience — the kind you develop when the sea takes something from you every year and you stay anyway. But there are limits." },
+      { "speaker": "Elder", "text": "Drive them back. Not destroy — we do not ask for that. Just make it cost enough that they look elsewhere. Can you do that?" }
+    ],
+    "activeDialogue": [
+      { "speaker": "Elder", "text": "The naga are still circling at low tide. The settlement cannot rest. Please, when you can." }
+    ],
+    "submitDialogue": [
+      { "speaker": "Elder", "text": "We watched from the ridge. You moved like the current — no wasted motion." },
+      { "speaker": "Elder", "text": "They will not come back soon. They are cautious creatures, despite everything. They learn." },
+      { "speaker": "Elder", "text": "The settlement breathes easier today. Here — we set this aside for whoever helped us. We just did not know who that would be yet." }
+    ]
+  },
+  {
+    "id": "forge_relics",
+    "label": "Forge Relics",
+    "desc": "Collect 4 Forge Cores from the corrupted machines to help Kaelen repair his crawler.",
+    "type": "gather",
+    "target": "forge_core",
+    "count": 4,
+    "giver": "kaelen",
+    "arc": 2,
+    "rewards": { "exp": 450, "item": "elixir" },
+    "acceptDialogue": [
+      { "speaker": "Kaelen", "text": "You look sturdy. I got pinned here by the Sentinels." },
+      { "speaker": "Kaelen", "text": "If you can rip 4 cores out of those walking furnaces, I can fix my rig and get out of this ash-pit." }
+    ],
+    "activeDialogue": [
+      { "speaker": "Kaelen", "text": "Don't touch the perimeter... they're still active..." }
+    ],
+    "submitDialogue": [
+      { "speaker": "Kaelen", "text": "You actually got them. These cores are still burning hot... incredible." },
+      { "speaker": "Kaelen", "text": "Here, take this. I won't need it if my rig runs." }
+    ]
+  },
+  {
+    "id": "resonance_cull",
+    "label": "Resonance Cull",
+    "desc": "Clear out the resonant shards disrupting the scholar's instruments.",
+    "type": "hunt",
+    "target": "crystal_shard",
+    "count": 5,
+    "giver": "scholar_vane",
+    "arc": 1,
+    "rewards": { "exp": 350, "gold": 200 },
+    "acceptDialogue": [
+      { "speaker": "Scholar Vane", "text": "The frequency in this cavern is extraordinary, but those jagged shards are throwing off my readings!" },
+      { "speaker": "Scholar Vane", "text": "Clear them out so I can calibrate the dial." }
+    ],
+    "activeDialogue": [
+      { "speaker": "Scholar Vane", "text": "I can't hear the baseline over that awful ringing..." }
+    ],
+    "submitDialogue": [
+      { "speaker": "Scholar Vane", "text": "Perfect! The baseline is stabilizing." },
+      { "speaker": "Scholar Vane", "text": "The resonance... it's singing now. Take this for your trouble." }
+    ]
+  },
+  {
+    "id": "tide_clearance",
+    "label": "Tide Clearance",
+    "desc": "Defeat 3 Naga blocking the trade routes on the Southern Isles.",
+    "type": "hunt",
+    "target": "naga",
+    "count": 3,
+    "giver": "isle_merchant",
+    "arc": 0,
+    "rewards": { "exp": 500, "gold": 400 },
+    "acceptDialogue": [
+      { "speaker": "Isle Merchant", "text": "The trade routes are blocked. These Naga are tearing apart any ship that gets close." },
+      { "speaker": "Isle Merchant", "text": "If you can clear out a few of them, I can finally move these goods." }
+    ],
+    "activeDialogue": [
+      { "speaker": "Isle Merchant", "text": "The tides are dangerous... be careful out there." }
+    ],
+    "submitDialogue": [
+      { "speaker": "Isle Merchant", "text": "Trade is finally flowing again. The tides are kind." },
+      { "speaker": "Isle Merchant", "text": "Here is your cut. You earned it." }
+    ]
+  },
+  {
+    "id": "lira_second_chance",
+    "label": "A Second Chance",
+    "desc": "Deliver your grandmother's locket to the Sacred Ruins where the Void Knight fell. Give Arren the peace he earned.",
+    "type": "gather",
+    "target": "ruin_closure",
+    "count": 1,
+    "giver": "lira",
+    "rewards": { "exp": 400, "gold": 250 },
+    "acceptDialogue": [
+      { "speaker": "Lira", "text": "Arren... his name was Arren." },
+      { "speaker": "Lira", "text": "The Commander told me. He was the one who held the road until the end. He wasn't a monster. He was a hero who got lost in the dark." },
+      { "speaker": "Lira", "text": "I want to give him something back. My locket... the one you found. It was meant for a protector. I want you to take it to the ruins. Place it where he fell." },
+      { "speaker": "Lira", "text": "Tell him... tell him the road is safe now. He can stop watching." }
+    ],
+    "activeDialogue": [
+      { "speaker": "Lira", "text": "The locket. Take it to the Sacred Ruins, to the center of the bridge where the shadow finally lifted." }
+    ],
+    "submitDialogue": [
+      { "speaker": "Lira", "text": "You're back. Did you... did you tell him?" },
+      { "speaker": "Aya", "text": "The ruins are quiet now, Lira. The weight is gone." },
+      { "speaker": "Lira", "text": "Thank you. I think... I think I can finally start looking forward now, instead of just looking back." },
+      { "speaker": "Lira", "text": "I'm going to help the Azure Commanders rebuild. It's what he would have wanted." }
+    ]
   }
 ]

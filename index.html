@@ -621,7 +621,7 @@
               <div class="bestiary-title">ECHO LOG</div>
               <button class="bestiary-close" onclick="QuestUI.close()">✕</button>
             </div>
-            <div id="quest-list" class="bestiary-content" style="padding: 16px;">
+            <div id="quest-list" class="bestiary-content">
               <!-- Quests injected here -->
             </div>
           </div>
@@ -635,7 +635,7 @@
               <div class="bestiary-title">⌨ CONTROLS</div>
               <button class="bestiary-close" onclick="InputSettings.close()">✕</button>
             </div>
-            <div id="controls-list" class="bestiary-content" style="padding:16px;">
+            <div id="controls-list" class="bestiary-content">
             </div>
           </div>
         </div>
@@ -733,6 +733,7 @@
             </div>
             <div class="npc-dialogue-text" id="npc-dialogue-text"></div>
             <div class="npc-dialogue-footer">
+              <div id="npc-dialogue-choices" class="npc-dialogue-choices" style="display:none"></div>
               <button class="npc-dialogue-next" id="npc-dialogue-next" onclick="MapEngine.npcDialogueNext()">▶ CONTINUE</button>
             </div>
           </div>

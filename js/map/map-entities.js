@@ -898,10 +898,11 @@ const MapEntities = (() => {
       PATROL:     'patrol'
     };
 
-    const NPC_MOVE_DUR   = 0.35; 
-    const NPC_IDLE_WAIT  = 1.5; 
-    const NPC_FRAME_DUR  = 0.14;
-    const NPC_FRAME_CNT  = 3;
+    const NPC_MOVE_DUR    = 0.35;  // normal wander/patrol speed
+    const NPC_SCENE_DUR   = 0.16;  // scene walk speed — matches player feel
+    const NPC_IDLE_WAIT   = 1.5;
+    const NPC_FRAME_DUR   = 0.12;  // match player FRAME_DUR
+    const NPC_FRAME_CNT   = 3;
 
     function _loadImg(src) {
       const qual = typeof Settings !== 'undefined' ? Settings.getQuality() : (G.settings?.graphicsQuality || G.graphics || 'auto');
@@ -918,10 +919,22 @@ const MapEntities = (() => {
       return img;
     }
 
+    function _npcDirVec(dir) {
+      if (dir && typeof dir === 'object') return dir; // accept {dx,dy} directly
+      if (dir === 'right') return { dx: 1,  dy: 0  };
+      if (dir === 'left')  return { dx: -1, dy: 0  };
+      if (dir === 'up')    return { dx: 0,  dy: -1 };
+      return { dx: 0, dy: 1 };
+    }
+
     function init(map) {
+      const fired = G.firedScenes || new Set();
       _npcs = (map.npcs || []).filter(n => {
-        if (!n.hideIfUnlocked) return true;
-        return !(G.unlockedChars || []).includes(n.hideIfUnlocked);
+        if (n.hideIfUnlocked && (G.unlockedChars || []).includes(n.hideIfUnlocked)) return false;
+        if (n.hideAfterScene  && fired.has(n.hideAfterScene)) return false;
+        if (n.showAfterScene  && !fired.has(n.showAfterScene)) return false;
+        if (n.showIfMapCleared && (!G.clearedMaps || !G.clearedMaps.includes(n.showIfMapCleared))) return false;
+        return true;
       }).map(n => {
         const def = (typeof NPC_DEFS !== 'undefined') ? NPC_DEFS[n.id] : null;
         const spritePath = def ? def.sprite : `images/characters/map/sheets/npc/${n.id}_sheet.png`;
@@ -947,15 +960,104 @@ const MapEntities = (() => {
           waypoints: n.waypoints || [],
           waypointIdx: 0,
           isTalking: false,
-          isTalked: false
+          isTalked: false,
+          _sceneWalkTarget: null,
+          _sceneExitTarget: null,
+          facingOverride: null,
         };
       });
+    }
+
+    function _npcStepToward(n, tx, ty, map) {
+      if (n.moving) return;
+      n.idleTimer += 9999; // force immediate move attempt via normal path
+      const ddx = Math.sign(tx - n.tx);
+      const ddy = Math.sign(ty - n.ty);
+      if (ddx !== 0 && _canNPCMove(n.tx + ddx, n.ty, map)) {
+        n.prevTx = n.tx; n.prevTy = n.ty;
+        n.tx += ddx; n.facing = { dx: ddx, dy: 0 };
+        n.moving = true; n.moveTimer = 0;
+      } else if (ddy !== 0 && _canNPCMove(n.tx, n.ty + ddy, map)) {
+        n.prevTx = n.tx; n.prevTy = n.ty;
+        n.ty += ddy; n.facing = { dx: 0, dy: ddy };
+        n.moving = true; n.moveTimer = 0;
+      }
     }
 
     function update(dt, map) {
       const TILE = MapEngine.getTile();
       _npcs.forEach(n => {
         if (n.isTalking) return;
+
+        // ── Scene walk-to-player ─────────────────────────
+        if (n._sceneWalkTarget) {
+          const ptx = (typeof MapPlayer !== 'undefined') ? MapPlayer.tx : n.tx;
+          const pty = (typeof MapPlayer !== 'undefined') ? MapPlayer.ty : n.ty;
+          const chebyshev = Math.max(Math.abs(ptx - n.tx), Math.abs(pty - n.ty));
+          if (chebyshev <= 1) {
+            // Arrived face-to-face (1 tile away) — face the player and resolve
+            n.moving = false;
+            n.facing = {
+              dx: Math.sign(ptx - n.tx) || 0,
+              dy: Math.sign(pty - n.ty) || 1,
+            };
+            n.frame = 0;
+            const cb = n._sceneWalkTarget.onArrival;
+            n._sceneWalkTarget = null;
+            if (cb) cb();
+          } else if (n.moving) {
+            // Interpolate at scene speed
+            n.moveTimer += dt;
+            const t = Math.min(n.moveTimer / NPC_SCENE_DUR, 1);
+            n.px = n.prevTx * TILE + (n.tx * TILE - n.prevTx * TILE) * t;
+            n.py = n.prevTy * TILE + (n.ty * TILE - n.prevTy * TILE) * t;
+            n.frameTimer += dt;
+            if (n.frameTimer >= NPC_FRAME_DUR) { n.frameTimer = 0; n.frame = (n.frame + 1) % NPC_FRAME_CNT; }
+            if (t >= 1) {
+              n.px = n.tx * TILE; n.py = n.ty * TILE;
+              n.moving = false; n.moveTimer = 0;
+              // Immediately queue the next step — no idle gap
+              _npcStepToward(n, ptx, pty, map);
+            }
+          } else {
+            // Start first step immediately
+            _npcStepToward(n, ptx, pty, map);
+          }
+          return;
+        }
+
+        // ── Scene exit walk ──────────────────────────────
+        if (n._sceneExitTarget) {
+          const { target, onArrival } = n._sceneExitTarget;
+          if (n.tx === target.x && n.ty === target.y) {
+            // Snap pixels exactly to tile so there's zero drift after arrival
+            n.px = target.x * TILE; n.py = target.y * TILE;
+            n.prevTx = n.tx; n.prevTy = n.ty;
+            n._sceneExitTarget = null;
+            n.moving = false;
+            n.frame = 0;
+            n.facingOverride = null;
+            n.idleTimer = 0;
+            if (onArrival) onArrival();
+            return;
+          }
+          if (n.moving) {
+            n.moveTimer += dt;
+            const t = Math.min(n.moveTimer / NPC_SCENE_DUR, 1);
+            n.px = n.prevTx * TILE + (n.tx * TILE - n.prevTx * TILE) * t;
+            n.py = n.prevTy * TILE + (n.ty * TILE - n.prevTy * TILE) * t;
+            n.frameTimer += dt;
+            if (n.frameTimer >= NPC_FRAME_DUR) { n.frameTimer = 0; n.frame = (n.frame + 1) % NPC_FRAME_CNT; }
+            if (t >= 1) {
+              n.px = n.tx * TILE; n.py = n.ty * TILE;
+              n.moving = false; n.moveTimer = 0;
+              _npcStepToward(n, target.x, target.y, map);
+            }
+          } else {
+            _npcStepToward(n, target.x, target.y, map);
+          }
+          return;
+        }
 
         if (n.moving) {
           n.moveTimer += dt;
@@ -973,7 +1075,7 @@ const MapEntities = (() => {
             n.px = n.tx * TILE; n.py = n.ty * TILE;
             n.moving = false;
             n.idleTimer = 0;
-            n.frame = 0;
+            // Don't reset frame — let the walk cycle finish naturally, matching player behaviour
           }
         } else if (n.behavior !== BEHAVIORS.STATIONARY) {
           n.idleTimer += dt;
@@ -1036,20 +1138,74 @@ const MapEntities = (() => {
 
     function _getNPCDir(n, img) {
       const w = img.naturalWidth, h = img.naturalHeight;
-      const dx = n.facing.dx, dy = n.facing.dy;
+      // facingOverride lets the scene runner force a direction for cinematic effect
+      const face = n.facingOverride || n.facing;
+      const dx = face.dx, dy = face.dy;
       if      (dy > 0)  return { cx: 0,      cy: 0,      rev: false }; // front
       else if (dy < 0)  return { cx: w / 2,  cy: h / 2,  rev: false }; // back
       else if (dx < 0)  return { cx: w / 2,  cy: 0,      rev: true  }; // left
       else              return { cx: 0,       cy: h / 2,  rev: false }; // right
     }
 
+    function _getNPCQuestState(npc) {
+      if (typeof QuestSystem === 'undefined') return null;
+      const def = (typeof NPC_DEFS !== 'undefined') ? NPC_DEFS[npc.id] : null;
+      if (!def || !def.quests || !def.quests.length) return null;
+      const ids = def.quests;
+      if (ids.some(id => QuestSystem.isReadyToSubmit(id))) return 'ready';
+      if (ids.some(id => QuestSystem.isActive(id)))         return 'available_active';
+      if (ids.some(id => QuestSystem.canAccept(id)))        return 'available';
+      return null;
+    }
+
+    function _renderNPCIndicator(ctx, n, sx, sy, oy, bounce, TILE) {
+      const t   = performance.now();
+      const cx  = sx + TILE / 2;
+      // Push icon higher above the sprite top so it's always clear of the head
+      const iy  = sy + oy + bounce - 14;
+      const qs  = _getNPCQuestState(n);
+
+      ctx.save();
+      ctx.textAlign = 'center';
+
+      if (qs === 'ready') {
+        // ❕ — quest ready to submit, fully visible with subtle scale bounce
+        const scale = 1 + 0.12 * Math.sin(t / 180);
+        ctx.globalAlpha = 1.0;
+        ctx.font = `bold ${Math.round(22 * scale)}px serif`;
+        ctx.fillText('❕', cx, iy);
+      } else if (qs === 'available') {
+        // ❗ — quest available, always fully visible
+        const scale = 1 + 0.08 * Math.sin(t / 320);
+        ctx.globalAlpha = 1.0;
+        ctx.font = `bold ${Math.round(22 * scale)}px serif`;
+        ctx.fillText('❗', cx, iy);
+      } else if (qs === 'available_active') {
+        // ❓ — quest in progress, always fully visible
+        ctx.globalAlpha = 1.0;
+        ctx.font = 'bold 20px serif';
+        ctx.fillText('❓', cx, iy);
+      } else if (!n.isTalked) {
+        // 💬 — untalked NPC, slightly dimmed
+        ctx.globalAlpha = 0.9;
+        ctx.font = 'bold 18px serif';
+        ctx.fillText('💬', cx, iy);
+      }
+
+      ctx.textAlign = 'left';
+      ctx.restore();
+    }
+
     function _renderNPC(ctx, cam, TILE, n, inVision) {
-        if (typeof inVision === 'function' && !inVision(n.tx, n.ty)) return;
+        // NPCs in a scene walk are always rendered — don't let fog cull them mid-exit.
+        // Non-scene NPCs use pixel position (not snapped tile) for a smooth fade.
+        const inScene = n._sceneWalkTarget || n._sceneExitTarget;
+        if (!inScene && typeof inVision === 'function' && !inVision(n.px / TILE, n.py / TILE)) return;
         const sx = n.px - cam.x, sy = n.py - cam.y;
         if (sx < -TILE || sy < -TILE || sx > ctx.canvas.width + TILE || sy > ctx.canvas.height + TILE) return;
 
-        const dw = Math.round(TILE * 1.1), dh = Math.round(TILE * 1.8);
-        const ox = (TILE - dw) / 2, oy = TILE - dh;
+        const dw = Math.round(TILE * 1.2), dh = Math.round(TILE * 2.0);
+        const ox = Math.round((TILE - dw) / 2), oy = Math.round(TILE - dh);
 
         // Shadow
         ctx.fillStyle = 'rgba(0,0,0,0.25)';
@@ -1057,9 +1213,10 @@ const MapEntities = (() => {
         ctx.ellipse(sx + TILE / 2, sy + TILE - 3, TILE * 0.35, 6, 0, 0, Math.PI * 2);
         ctx.fill();
 
+        // Match player: walk bob when moving, flat when idle
         const bounce = n.moving
           ? Math.sin(n.frame / NPC_FRAME_CNT * Math.PI * 2) * 2
-          : Math.sin(performance.now() / 900) * 1.5;
+          : 0;
         
         const img = _loadImg(n.sprite);
         if (img.complete && img.naturalWidth) {
@@ -1080,16 +1237,8 @@ const MapEntities = (() => {
           ctx.fillRect(sx + 8, sy + 8 + bounce, TILE - 16, TILE - 16);
         }
 
-        // Interaction prompt
-        if (!n.isTalked) {
-          const pulse = 0.7 + 0.3 * Math.sin(performance.now() / 300);
-          ctx.save();
-          ctx.globalAlpha = pulse;
-          ctx.font = 'bold 12px serif';
-          ctx.textAlign = 'center';
-          ctx.fillText('💬', sx + TILE / 2, sy + oy + bounce - 4);
-          ctx.restore();
-        }
+        // Interaction prompt — quest-state-aware
+        _renderNPCIndicator(ctx, n, sx, sy, oy, bounce, TILE);
 
         // Name Tag
         ctx.fillStyle = 'rgba(0,0,0,0.55)';
@@ -1130,8 +1279,31 @@ const MapEntities = (() => {
 
     return {
       init, update, render, renderForRow, getDialogue, markTalked, prepareBuckets,
-      checkNPCAt: (x,y) => _npcs.find(n => n.tx === x && n.ty === y),
-      getNPCs: () => _npcs
+      // Block both destination AND previous tile while mid-step so player can't
+      // walk through an NPC during the interpolation window
+      checkNPCAt: (x,y) => _npcs.find(n =>
+        (n.tx === x && n.ty === y) ||
+        (n.moving && n.prevTx === x && n.prevTy === y)
+      ),
+      getNPCs: () => _npcs,
+      setNPCSceneWalk: (npcId, onArrival) => {
+        const n = _npcs.find(n => n.id === npcId);
+        if (n) n._sceneWalkTarget = { onArrival };
+        else if (onArrival) onArrival();
+      },
+      setNPCExitWalk: (npcId, target, onArrival) => {
+        const n = _npcs.find(n => n.id === npcId);
+        if (n) n._sceneExitTarget = { target, onArrival };
+        else if (onArrival) onArrival();
+      },
+      setNPCFacing: (npcId, dir) => {
+        const n = _npcs.find(n => n.id === npcId);
+        if (n) n.facingOverride = _npcDirVec(dir);
+      },
+      despawnNPC: (npcId) => {
+        const idx = _npcs.findIndex(n => n.id === npcId);
+        if (idx !== -1) _npcs.splice(idx, 1);
+      },
     };
   })();
 
@@ -1158,11 +1330,15 @@ const MapEntities = (() => {
   function getNPCDialogue(id) { return MapNPCs.getDialogue(id); }
   function markNPCTalked(id) { MapNPCs.markTalked(id); }
 
-  return { 
-    init, clear, updateEnemies, renderEnemies, renderEnemiesForRow, checkEncounter, removeEncountered, 
+  return {
+    init, clear, updateEnemies, renderEnemies, renderEnemiesForRow, checkEncounter, removeEncountered,
     allCleared, bossCleared, remaining, hasEnemyAt, prepareBuckets,
     initNPCs, renderNPCs, renderNPCsForRow, checkNPCAt, getNPCDialogue, markNPCTalked,
     getNPCs: () => MapNPCs.getNPCs(),
+    setNPCSceneWalk: (id, cb)        => MapNPCs.setNPCSceneWalk(id, cb),
+    setNPCExitWalk:  (id, tgt, cb)   => MapNPCs.setNPCExitWalk(id, tgt, cb),
+    setNPCFacing:    (id, dir)       => MapNPCs.setNPCFacing(id, dir),
+    despawnNPC:      (id)            => MapNPCs.despawnNPC(id),
     refresh: () => { Object.keys(_spriteCache).forEach(k => delete _spriteCache[k]); _spriteLoading.clear(); }
   };
 })();

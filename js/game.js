@@ -1019,6 +1019,13 @@ function checkBattleEnd() {
     BattleUI.renderPartyStatus();
     BattleUI.updateStats();
 
+    // Quest kill tracking — must run here so all game modes (explore, story, direct) are covered
+    if (!G.isGauntletMode && typeof QuestSystem !== 'undefined') {
+      G.enemyGroup.forEach(en => {
+        QuestSystem.onKill(en.id, !!(en.mutantTraits && en.mutantTraits.length));
+      });
+    }
+
     setTimeout(() => {
       if (leveledNames.length) {
         BattleUI.addLog(`★ LEVEL UP: ${leveledNames.join(', ')}!`, 'hi');
@@ -1058,13 +1065,6 @@ function showResult(type) {
   _clearBattleAtmosphere();
   closePartyMenu();
   G.party.forEach(m => { m.statuses = []; });
-
-  // --- QUEST SYSTEM INTEGRATION ---
-  if (type === 'victory' && typeof QuestSystem !== 'undefined') {
-    (G.enemyGroup || []).forEach(en => {
-      QuestSystem.onKill(en.id, !!(en.mutantTraits && en.mutantTraits.length));
-    });
-  }
 
   ResultUI.show(type, G.party);
 }

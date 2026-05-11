@@ -85,10 +85,11 @@ const QuestSystem = (() => {
       if (progress && q.current >= q.count) {
         q.complete = true;
         toComplete.push(q);
-        if (typeof MapUI !== 'undefined') MapUI.showMsg(`✔ ECHO COMPLETE: ${q.label}`, 2500);
+        if (typeof MapUI !== 'undefined') MapUI.showMsg(`✔ ECHO COMPLETE: ${q.label} — Return to ${q.giver ? 'the quest giver' : 'collect your reward'}!`, 2500);
       }
     });
-    toComplete.forEach(_grantRewards);
+    // Giver quests wait for NPC submission; no-giver quests auto-grant
+    toComplete.filter(q => !q.giver).forEach(_grantRewards);
   }
 
   function onGather(itemId) {
@@ -100,19 +101,43 @@ const QuestSystem = (() => {
         if (q.current >= q.count) {
           q.complete = true;
           toComplete.push(q);
-          if (typeof MapUI !== 'undefined') MapUI.showMsg(`✔ ECHO COMPLETE: ${q.label}`, 2500);
+          if (typeof MapUI !== 'undefined') MapUI.showMsg(`✔ ECHO COMPLETE: ${q.label} — Return to ${q.giver ? 'the quest giver' : 'collect your reward'}!`, 2500);
         }
       }
     });
-    toComplete.forEach(_grantRewards);
+    toComplete.filter(q => !q.giver).forEach(_grantRewards);
   }
 
-  function getActive() { return _active; }
+  function getActive()    { return [..._active]; }
   function getCompleted() { return _completed; }
+
+  /* ── Query helpers used by NPC indicator and dialogue system ── */
+
+  // True if quest is accepted and not yet complete
+  function isActive(id) {
+    return !!_active.find(q => q.id === id && !q.complete);
+  }
+
+  // True if quest progress is done but rewards not yet claimed
+  function isReadyToSubmit(id) {
+    return !!_active.find(q => q.id === id && q.complete);
+  }
+
+  // True if the player can pick this quest up right now
+  function canAccept(id) {
+    return !_completed.includes(id) && !_active.find(q => q.id === id);
+  }
+
+  // Called by the dialogue choice handler after the player clicks "Collect Reward"
+  function submit(id) {
+    const q = _active.find(q => q.id === id && q.complete);
+    if (q) _grantRewards(q);
+  }
 
   function save() {
     return { active: _active, completed: _completed };
   }
 
-  return { init, accept, onArcAdvance, onKill, onGather, getActive, getCompleted, save };
+  return { init, accept, onArcAdvance, onKill, onGather,
+           getActive, getCompleted, isActive, isReadyToSubmit, canAccept, submit, save };
 })();

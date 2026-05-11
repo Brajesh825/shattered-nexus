@@ -2911,20 +2911,45 @@
     "tier": 3,
     "isBoss": true,
     "stats": {
-      "hp": 185,
-      "atk": 25,
-      "def": 15,
-      "spd": 12,
-      "mag": 30
+      "hp": 340,
+      "atk": 38,
+      "def": 18,
+      "spd": 14,
+      "mag": 45
     },
-    "aiRole": "predator",
-    "mutantTraits": [
+    "statPhases": [
       {
-        "id": "enraged",
-        "label": "🔥 Enraged",
-        "type": "special"
+        "hp": 0.6,
+        "atk": 1.35,
+        "def": 1.1,
+        "spd": 1.15
+      },
+      {
+        "hp": 0.3,
+        "atk": 1.85,
+        "def": 0.7,
+        "spd": 1.45
       }
     ],
+    "battleEvents": [
+      {
+        "id": "demon_lord_transformation",
+        "fired": false,
+        "trigger": { "type": "hp", "threshold": 0.5 },
+        "lines": [
+          { "speaker": "Demon Lord", "text": "The archives... they are burning. My memory... it turns to ash." },
+          { "speaker": "Lulu", "text": "He's losing himself! The fire isn't just coming from him—it's consuming him!" },
+          { "speaker": "Demon Lord", "text": "I WILL NOT... BE FORGOTTEN... IN THE DARK!" }
+        ],
+        "onComplete": {
+          "logMsg": "★ Demon Lord enters Prince of Cinders!",
+          "flash": "rgba(255, 60, 0, 0.4)",
+          "addStatus": { "id": "status_atk_boost", "icon": "🔥", "label": "Prince of Cinders", "stat": "atk", "value": 1.5, "turns": 99, "color": "#ff3c00" },
+          "screenShake": true
+        }
+      }
+    ],
+    "aiRole": "predator",
     "reward": {
       "exp": 67,
       "gold": 49
@@ -3130,10 +3155,43 @@
     "aiType": "sequenced",
     "statPhases": [
       {
-        "hp": 0.3,
-        "atk": 1.4,
-        "spd": 1.2,
-        "def": 0.8
+        "hp": 0.75,
+        "atk": 1.05,
+        "def": 1.1,
+        "spd": 1.05
+      },
+      {
+        "hp": 0.5,
+        "atk": 1.2,
+        "def": 1.2,
+        "spd": 1.2
+      },
+      {
+        "hp": 0.25,
+        "atk": 1.5,
+        "def": 0.6,
+        "spd": 1.5
+      }
+    ],
+    "battleEvents": [
+      {
+        "id": "void_knight_awakening",
+        "fired": false,
+        "trigger": { "type": "hp", "threshold": 0.5 },
+        "lines": [
+          { "speaker": "Void Knight", "text": "The... weight... it is lifting..." },
+          { "speaker": "Aya", "text": "Look at his shadow! It's cracking. Tao, the light is getting through!" },
+          { "speaker": "Tao", "text": "The man beneath. He is fighting his own blade for every inch of ground." },
+          { "speaker": "Void Knight", "text": "REI... YOU SHOULD HAVE... STAYED IN THE WEST..." },
+          { "speaker": "Rei", "text": "Arren! We aren't leaving you to the shadow again!" },
+          { "speaker": "Void Knight", "text": "THEN WITNESS... THE END OF THE AZURE REMNANT!" }
+        ],
+        "onComplete": {
+          "logMsg": "★ Void Knight enters Abyssal Flare!",
+          "flash": "rgba(120, 0, 255, 0.4)",
+          "addStatus": { "id": "status_atk_boost", "icon": "💠", "label": "Abyssal Flare", "stat": "atk", "value": 1.4, "turns": 99, "color": "#7800ff" },
+          "screenShake": true
+        }
       }
     ],
     "stats": {
@@ -3863,6 +3921,33 @@
         "spd": 0.75
       }
     ],
+    "battleEvents": [
+      {
+        "id": "galdor_rage",
+        "fired": false,
+        "trigger": { "type": "hp", "threshold": 0.5 },
+        "lines": [
+          { "speaker": "King Galdor", "text": "...this was not in the terms of our arrangement." },
+          { "speaker": "King Galdor", "text": "The gold was given. I held my end. This kingdom held its end." },
+          { "speaker": "Aya", "text": "He... doesn't know. He has no idea what happened to his people." },
+          { "speaker": "King Galdor", "text": "VALDRIS PROMISED PEACE! AND I — I WILL HOLD THIS THRONE UNTIL HE HONOURS IT!" }
+        ],
+        "onComplete": {
+          "addStatus": {
+            "id": "status_atk_boost",
+            "icon": "👑",
+            "label": "Royal Wrath",
+            "stat": "atk",
+            "type": "mult",
+            "value": 1.5,
+            "turns": 99
+          },
+          "logMsg": "👑 King Galdor enters Royal Wrath! His ATK surges!",
+          "screenShake": true,
+          "flash": "#ffd70044"
+        }
+      }
+    ],
     "stats": {
       "hp": 250,
       "atk": 36,
@@ -4047,6 +4132,7 @@
     "drops": [
       {
         "item": "Forge Core",
+        "itemId": "forge_core",
         "chance": 0.8
       },
       {

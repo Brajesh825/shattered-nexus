@@ -110,6 +110,38 @@ const TurnManager = {
     BattleUI.highlightActiveMember();
     BattleUI.renderActiveMemberBar();
 
+    // 4b. Mid-Battle Event Check — intercept before delegation
+    const pendingEvent = this._checkBattleEvents();
+    if (pendingEvent) {
+      // Pause the queue and hand off to the cinematic system
+      TurnState.setBusy(true);
+      BattleUI.btns(false);
+      BattleUI.showBattleEvent(pendingEvent, () => {
+        // onComplete: apply effects and resume
+        const effect = pendingEvent.onComplete;
+        if (effect) {
+          if (effect.screenShake) BattleUI.triggerScreenShake(500);
+          if (effect.flash) BattleUI.flash(effect.flash, 500);
+          if (effect.logMsg) BattleUI.addLog(effect.logMsg, 'hi');
+          if (effect.addStatus) {
+            // Apply the status to all enemies that fired this event
+            G.enemyGroup.forEach(e => {
+              if (Battle.alive(e) && e._lastFiredEvent === pendingEvent.id) {
+                if (typeof StatusSystem !== 'undefined') {
+                  StatusSystem.add(e, effect.addStatus);
+                }
+                delete e._lastFiredEvent;
+              }
+            });
+          }
+        }
+        TurnState.setBusy(false);
+        // Re-enter process() to delegate the actual turn
+        setTimeout(() => this.process(), 200);
+      });
+      return;
+    }
+
     // 5. Delegate Action
     if (t.type === 'party') {
       TurnState.setActivePartyIdx(t.idx);
@@ -128,6 +160,28 @@ const TurnManager = {
         }
       }, 700);
     }
+  },
+
+  /**
+   * Scans all living enemies for unfired battleEvents whose trigger conditions are met.
+   * Marks the event as fired and tags the source enemy. Returns the first pending event found.
+   */
+  _checkBattleEvents() {
+    for (const enemy of G.enemyGroup) {
+      if (!Battle.alive(enemy) || !enemy.battleEvents) continue;
+      for (const ev of enemy.battleEvents) {
+        if (ev.fired) continue;
+        if (ev.trigger.type === 'hp') {
+          const hpRatio = enemy.hp / enemy.maxHp;
+          if (hpRatio <= ev.trigger.threshold) {
+            ev.fired = true;
+            enemy._lastFiredEvent = ev.id;
+            return ev;
+          }
+        }
+      }
+    }
+    return null;
   },
 
   /**

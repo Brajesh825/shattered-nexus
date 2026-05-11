@@ -127,7 +127,7 @@ MapEngine.onEncounterStart = (enc, map) => {
 
   // Get enemy level range from map; mutated enemies spawn at higher end
   const [minLevel, maxLevel] = map?.enemyLevelRange || [1, 1];
-  const baseLevel  = minLevel + Math.floor(Math.random() * (maxLevel - minLevel + 1));
+  const baseLevel  = enc.level || (minLevel + Math.floor(Math.random() * (maxLevel - minLevel + 1)));
   const spawnLevel = mutation === 'mutant'    ? maxLevel + 3
                    : mutation === 'corrupted' ? maxLevel + 1
                    : baseLevel;

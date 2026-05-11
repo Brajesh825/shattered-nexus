@@ -163,6 +163,7 @@ const Story = {
       this.chapIdx = -1;
       this.phase = null;
       G.mode = 'story';
+      G.firedScenes = new Set();
       if (typeof QuestSystem !== 'undefined') QuestSystem.init();
 
       // Load characters if not already loaded
@@ -266,6 +267,7 @@ const Story = {
       if (s.activeRelics) G.activeRelics = s.activeRelics;
       if (s.archive) { G.archive = s.archive; if (typeof Archive !== 'undefined') Archive.init(); }
       if (typeof QuestSystem !== 'undefined') QuestSystem.init(s.questState || null);
+      G.firedScenes = new Set(s.firedScenes || []);
 
       // If saved from explore map, restore directly to that map (no overlay/selection)
       if (s.mapId) {
@@ -716,10 +718,9 @@ const Story = {
     const isBoss = (this.phase === 'boss_in');
 
     // Calculate spawn level based on arc and whether this is a boss fight
-    // Regular: Arc 1→1, 2→3, 3→6, 4→10, 5→14, 6→18, 7→22, 8→26
-    // Boss: significantly higher — bosses should feel like a clear step up
-    const arcProgression = [1, 3, 6, 10, 14, 18, 22, 26];
-    const bossProgression = [6, 12, 18, 24, 30, 36, 42, 50];
+    // Calculated to match the map ranges and boss finale peaks
+    const arcProgression = [3, 13, 23, 30, 38, 46, 54, 62];
+    const bossProgression = [8, 21, 35, 45, 55, 65, 75, 99];
     const spawnLevel = isBoss
       ? (bossProgression[this.arcIdx] || arcProgression[this.arcIdx] || 1)
       : (arcProgression[this.arcIdx] || 1);
@@ -1102,6 +1103,7 @@ const Story = {
       activeRelics: G.activeRelics || [],
       archive: G.archive || {},
       questState: typeof QuestSystem !== 'undefined' ? QuestSystem.save() : null,
+      firedScenes: Array.from(G.firedScenes || []),
       mapId,
       mapX,
       mapY,
