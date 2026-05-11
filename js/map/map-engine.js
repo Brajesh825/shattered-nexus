@@ -1167,6 +1167,22 @@ const MapEngine = (() => {
     _playerFacingOverride = null;
     _marchEnemies = [];
 
+    // Clean up any lingering scene state on the NPC so it resumes normal behaviour
+    if (scene.npcId && typeof MapEntities !== 'undefined') {
+      const npcs = MapEntities.getNPCs();
+      const n = npcs && npcs.find(x => x.id === scene.npcId);
+      if (n) {
+        n._sceneWalkTarget  = null;
+        n._sceneExitTarget  = null;
+        n.facingOverride    = null;
+        n.moving            = false;
+        // Snap pixel position to tile so there's no drift
+        n.px = n.tx * TILE;
+        n.py = n.ty * TILE;
+        n.prevTx = n.tx; n.prevTy = n.ty;
+      }
+    }
+
     // Persist the "seen" flag immediately so it survives before next camp save
     if (!G.firedScenes) G.firedScenes = new Set();
     G.firedScenes.add(scene.id);
@@ -1299,24 +1315,37 @@ const MapEngine = (() => {
   // Build visual march-in entities (silhouettes that slide in from off-screen)
   function _buildMarchEntities(enemyIds, dir) {
     if (!_map) return [];
-    const py = MapPlayer.ty;
+    const cam = _cam;
+    const canvas = _canvas;
+    const viewTilesX = Math.ceil(canvas.width / TILE);
+    const viewTilesY = Math.ceil(canvas.height / TILE);
+    
+    const startX = Math.floor(cam.x / TILE);
+    const startY = Math.floor(cam.y / TILE);
+
     const entries = [];
     enemyIds.forEach((id, i) => {
       const raw = G && G.enemies && G.enemies.find(e => e.id === id);
       const sprite = raw ? (raw.sprite || `images/enemies/${id}.webp`) : `images/enemies/${id}.webp`;
-      const startTx = dir === 'left'  ? -2 - i
-                    : dir === 'right' ? _map.width + 2 + i
-                    : MapPlayer.tx + i - 1;
-      const startTy = dir === 'up'    ? -2 - i
-                    : dir === 'down'  ? _map.height + 2 + i
-                    : py + (i % 2 === 0 ? 0 : 1);
-      // Targets are anchored to player position so silhouettes march into the visible screen
-      const targetTx = dir === 'left'  ? MapPlayer.tx - 10 - i
-                     : dir === 'right' ? MapPlayer.tx + 10 + i
+      
+      // Spawn just outside the current screen view
+      const startTx = dir === 'left'  ? startX + viewTilesX + 2 + i
+                    : dir === 'right' ? startX - 2 - i
+                    : startX + Math.floor(viewTilesX / 2);
+      
+      const startTy = (dir === 'up' || dir === 'down') 
+                    ? (dir === 'up' ? startY + viewTilesY + 2 + i : startY - 2 - i)
+                    : startY + Math.floor(viewTilesY / 2) + (i - enemyIds.length/2);
+
+      // Target: move into the screen toward the player
+      const targetTx = dir === 'left'  ? MapPlayer.tx + 4 + i
+                     : dir === 'right' ? MapPlayer.tx - 4 - i
                      : startTx;
-      const targetTy = dir === 'up'    ? MapPlayer.ty - 10 - i
-                     : dir === 'down'  ? MapPlayer.ty + 10 + i
+      
+      const targetTy = dir === 'up'    ? MapPlayer.ty + 4 + i
+                     : dir === 'down'  ? MapPlayer.ty - 4 - i
                      : startTy;
+
       const img = new Image(); img.src = sprite;
       entries.push({ id, tx: startTx, ty: startTy, px: startTx * TILE, py: startTy * TILE, targetTx, targetTy, img, alpha: 0.7 });
     });
@@ -1449,6 +1478,9 @@ const MapEngine = (() => {
 
     if (!victory) {
       _waveState = null; // abort any active wave sequence on defeat
+      _sceneRunning = false;
+      _playerLocked = false;
+      _playerFacingOverride = null;
       // Respawn at map start — restore party to half HP, clear statuses, reset position
       if (_map && _map.playerStart) {
         G.party.forEach(m => {
@@ -1960,7 +1992,7 @@ const MapEngine = (() => {
       QuestSystem.accept(opt.questId);
     } else if (opt.action === 'submit' && opt.questId && typeof QuestSystem !== 'undefined') {
       QuestSystem.submit(opt.questId);
-      if (typeof SFX !== 'undefined') SFX.buff();
+      if (typeof SFX !== 'undefined' && SFX.buff) SFX.buff();
     }
     // dismiss — just close
     _closeNPCDialogue();
