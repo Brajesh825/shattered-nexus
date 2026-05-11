@@ -1065,25 +1065,25 @@ const MapEntities = (() => {
       ctx.textAlign = 'center';
 
       if (qs === 'ready') {
-        // ❕ green — fast urgent pulse, large
-        const pulse = 0.75 + 0.25 * Math.sin(t / 180);
-        ctx.globalAlpha = pulse;
-        ctx.font = 'bold 22px serif';
+        // ❕ — quest ready to submit, fully visible with subtle scale bounce
+        const scale = 1 + 0.12 * Math.sin(t / 180);
+        ctx.globalAlpha = 1.0;
+        ctx.font = `bold ${Math.round(22 * scale)}px serif`;
         ctx.fillText('❕', cx, iy);
       } else if (qs === 'available') {
-        // ❗ gold — normal pulse, large
-        const pulse = 0.7 + 0.3 * Math.sin(t / 320);
-        ctx.globalAlpha = pulse;
-        ctx.font = 'bold 22px serif';
+        // ❗ — quest available, always fully visible
+        const scale = 1 + 0.08 * Math.sin(t / 320);
+        ctx.globalAlpha = 1.0;
+        ctx.font = `bold ${Math.round(22 * scale)}px serif`;
         ctx.fillText('❗', cx, iy);
       } else if (qs === 'available_active') {
-        // ❓ calm breathing — quest in progress
-        ctx.globalAlpha = 0.65 + 0.2 * Math.sin(t / 600);
+        // ❓ — quest in progress, always fully visible
+        ctx.globalAlpha = 1.0;
         ctx.font = 'bold 20px serif';
         ctx.fillText('❓', cx, iy);
       } else if (!n.isTalked) {
-        // 💬 existing behaviour for non-quest NPCs
-        ctx.globalAlpha = 0.7 + 0.3 * Math.sin(t / 300);
+        // 💬 — untalked NPC, slightly dimmed
+        ctx.globalAlpha = 0.9;
         ctx.font = 'bold 18px serif';
         ctx.fillText('💬', cx, iy);
       }
