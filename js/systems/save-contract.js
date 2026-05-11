@@ -22,7 +22,8 @@ const SaveContract = (() => {
       hero: { lv: G.hero?.lv || 1, exp: G.hero?.exp || 0, gold: G.hero?.gold || 0 },
       unlockedChars: G.unlockedChars || [],
       inventory: G.inventory || [],
-      questState: typeof QuestSystem !== 'undefined' ? QuestSystem.save() : null
+      questState: typeof QuestSystem !== 'undefined' ? QuestSystem.save() : null,
+      firedScenes: Array.from(G.firedScenes || [])
     };
   }
 

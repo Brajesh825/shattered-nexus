@@ -266,6 +266,7 @@ const Story = {
       if (s.activeRelics) G.activeRelics = s.activeRelics;
       if (s.archive) { G.archive = s.archive; if (typeof Archive !== 'undefined') Archive.init(); }
       if (typeof QuestSystem !== 'undefined') QuestSystem.init(s.questState || null);
+      G.firedScenes = new Set(s.firedScenes || []);
 
       // If saved from explore map, restore directly to that map (no overlay/selection)
       if (s.mapId) {
@@ -1102,6 +1103,7 @@ const Story = {
       activeRelics: G.activeRelics || [],
       archive: G.archive || {},
       questState: typeof QuestSystem !== 'undefined' ? QuestSystem.save() : null,
+      firedScenes: Array.from(G.firedScenes || []),
       mapId,
       mapX,
       mapY,

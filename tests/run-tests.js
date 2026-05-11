@@ -13,6 +13,7 @@ require('./sw-cache-contract.test.js');
 require('./data-contract.test.js');
 require('./settings-save-contract.test.js');
 require('./save-migration.test.js');
+require('./scene-system.test.js');
 
 const { run } = require('./test-harness.js');
 
