@@ -16,8 +16,21 @@
     "type": "gather",
     "target": "silver_locket",
     "count": 1,
-    "arc": 0,
-    "rewards": { "exp": 200, "item": "hi_potion" }
+    "giver": "lira",
+    "rewards": { "exp": 200, "item": "hi_potion" },
+    "acceptDialogue": [
+      { "speaker": "Lira", "text": "Oh — you're actually stopping. Most people just walk past." },
+      { "speaker": "Lira", "text": "I lost my locket out in the eastern ruins. Silver, with a little blue gem. My grandmother gave it to me before everything fell apart." },
+      { "speaker": "Lira", "text": "I know it's dangerous out there. But if you happen to pass through... would you keep an eye out for it?" }
+    ],
+    "activeDialogue": [
+      { "speaker": "Lira", "text": "The locket... it's silver, blue gem. Somewhere in the eastern ruins, I think. You'll know it when you see it." }
+    ],
+    "submitDialogue": [
+      { "speaker": "Lira", "text": "You found it. You actually found it." },
+      { "speaker": "Lira", "text": "I didn't dare hope. After everything that's happened, hoping feels dangerous." },
+      { "speaker": "Lira", "text": "Take these — I had them set aside for a reason. I just didn't know who the reason was yet." }
+    ]
   },
   {
     "id": "void_sentinel",

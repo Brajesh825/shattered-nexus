@@ -1074,9 +1074,9 @@ const MapEntities = (() => {
         ctx.font = 'bold 14px serif';
         ctx.fillText('❗', cx, iy);
       } else if (qs === 'available_active') {
-        // ❓ dim — slow breathe, quest in progress
-        ctx.globalAlpha = 0.4 + 0.2 * Math.sin(t / 800);
-        ctx.font = '12px serif';
+        // ❓ visible but calm — quest in progress, not urgent
+        ctx.globalAlpha = 0.65 + 0.2 * Math.sin(t / 600);
+        ctx.font = 'bold 13px serif';
         ctx.fillText('❓', cx, iy);
       } else if (!n.isTalked) {
         // 💬 existing behaviour for non-quest NPCs
