@@ -410,6 +410,23 @@
     "rarity": "rare"
   },
   {
+    "id": "forge_core",
+    "name": "Forge Core",
+    "icon": "⚙️",
+    "type": "trophy",
+    "subtype": "story",
+    "value": 150,
+    "effect": {
+      "target": "none",
+      "stat": "none",
+      "amount": 0,
+      "percent": false
+    },
+    "usable_in": [],
+    "description": "A burning mechanical core from a Forge Sentinel.",
+    "rarity": "rare"
+  },
+  {
     "id": "abomination_core",
     "name": "Abomination Core",
     "icon": "💀",

@@ -217,6 +217,13 @@ const NPC_DEFS = {
         { speaker: 'Azure Commander', text: 'The bridge is still standing. That is more than I expected.' },
         { speaker: 'Azure Commander', text: 'Go when you are ready. The ruins will not wait forever — and neither will what is inside them.' },
       ],
+      verdant_vale_post_arc: [
+        { speaker: 'Azure Commander', text: 'I walked to the ruins after you left. Stood where he fell.' },
+        { speaker: 'Azure Commander', text: 'Six hundred years of Azure commanders have carried his name. Arren. The one who held the road.' },
+        { speaker: 'Tao', text: 'Did it feel different, knowing it was over?' },
+        { speaker: 'Azure Commander', text: 'Yes. It felt like a door closing. The good kind — the kind you close because the house is safe again, not because you are locking something out.' },
+        { speaker: 'Azure Commander', text: 'The Remnant marches east tomorrow. With Sera leading. The vigil ends. The work begins.' },
+      ],
     },
   },
 
@@ -224,6 +231,7 @@ const NPC_DEFS = {
     name: 'Elder Maren',
     color: '#fbbf24',
     sprite: 'images/characters/map/sheets/npc/elder_maren_sheet.png',
+    quests: ['goblin_menace'],
     dialogues: {
       verdant_vale: [
         { speaker: 'Elder Maren', text: 'Travelers! Praise the stars, I thought we were the last ones left.' },
@@ -238,6 +246,13 @@ const NPC_DEFS = {
         { speaker: 'Aya', text: 'We will retrieve it.' },
         { speaker: 'Elder Maren', text: 'Then go with every caution you have. The east is no longer the home I remember. But it is still worth remembering.' },
         { speaker: 'Elder Maren', text: 'If you find anything out there — a name, a record, something that tells you who someone was before — bring it back. Not to me. Just... carry it. Someone should.' },
+      ],
+      verdant_vale_post_arc: [
+        { speaker: 'Elder Maren', text: 'They said his name was Arren.' },
+        { speaker: 'Elder Maren', text: 'Six centuries I have kept these records, and his name was never in any of them. Not once. And now I know it.' },
+        { speaker: 'Lulu', text: 'Does it help?' },
+        { speaker: 'Elder Maren', text: 'More than I expected. I thought the hole was too old to hurt. But hearing his name felt like a lock clicking open in the dark.' },
+        { speaker: 'Elder Maren', text: 'Go safely. And if you ever need the Vale to remember something — or someone — you bring it back here. I will write it down.' },
       ],
     },
   },
@@ -260,6 +275,14 @@ const NPC_DEFS = {
         { speaker: 'Rei', text: 'We will stop him. You have my word.' },
         { speaker: 'Soldier Davan', text: '…Good. That\'s good. I\'ll hold the road here. In case my brother wakes up.' },
       ],
+      verdant_vale_post_arc: [
+        { speaker: 'Soldier Davan', text: 'He said my name this morning.' },
+        { speaker: 'Soldier Davan', text: 'My brother. He looked up from his cot and he said my name. He didn\'t know where he was. He didn\'t know what year it was. But he said my name.' },
+        { speaker: 'Tao', text: 'That is how it starts. The soul finding its way back.' },
+        { speaker: 'Soldier Davan', text: 'I\'ve been standing at this road for two weeks waiting for exactly that. I am not sure what I do now.' },
+        { speaker: 'Rei', text: 'Sit down. That is usually the next thing.' },
+        { speaker: 'Soldier Davan', text: '...Yeah. Yeah, that makes sense.' },
+      ],
     },
   },
 
@@ -279,6 +302,13 @@ const NPC_DEFS = {
         { speaker: 'Soldier Kael', text: 'It\'s just a gate. The gate doesn\'t know I\'m alone. The refugees coming through don\'t know either. I keep the post because if I leave it, there\'s nothing between the settlement and whatever comes next.' },
         { speaker: 'Lulu', text: 'That is very brave.' },
         { speaker: 'Soldier Kael', text: 'It\'s a job. Enter quickly. And if you reach the eastern bridge — be ready for the fact that what the Void Knight left behind doesn\'t look like an enemy until it\'s too late.' },
+      ],
+      verdant_vale_post_arc: [
+        { speaker: 'Soldier Kael', text: 'East gate is open.' },
+        { speaker: 'Soldier Kael', text: 'First time in two weeks. I opened it this morning and just... stood there for a moment. Watching the road go east with nothing on it.' },
+        { speaker: 'Aya', text: 'How does it feel?' },
+        { speaker: 'Soldier Kael', text: 'Quiet. Proper quiet, not the kind that means something is about to happen.' },
+        { speaker: 'Soldier Kael', text: 'The others who went south — two of them came back this afternoon. Thought they might never. I\'m going to stop assuming the worst. Starting now.' },
       ],
     },
   },
@@ -300,6 +330,14 @@ const NPC_DEFS = {
         { speaker: 'Lulu', text: 'The way you hold yourself. This is not the post you expected to end up at.' },
         { speaker: 'Soldier Jace', text: 'No. But it\'s the post that needs holding. Go on through. And come back, if you can. These people need to hear that someone made it to the east and came back.' },
       ],
+      verdant_vale_post_arc: [
+        { speaker: 'Soldier Jace', text: 'You came back.' },
+        { speaker: 'Aya', text: 'We said we would.' },
+        { speaker: 'Soldier Jace', text: 'Yes. You did. I\'ve been a soldier long enough to stop expecting people to keep that.' },
+        { speaker: 'Soldier Jace', text: '...I was afraid, you know. The whole time. Standing at this gate trying to look like I wasn\'t.' },
+        { speaker: 'Lulu', text: 'That is what courage is. Not the absence of fear.' },
+        { speaker: 'Soldier Jace', text: 'I know. I just needed someone else to say it.' },
+      ],
     },
   },
 
@@ -307,6 +345,7 @@ const NPC_DEFS = {
     name: 'Lira',
     color: '#4ade80',
     sprite: 'images/characters/map/sheets/npc/lira_sheet.png',
+    quests: ['locket_lost', 'lira_second_chance'],
     dialogues: {
       verdant_vale: [
         { speaker: 'Lira', text: 'Oh! You look like you can actually handle yourselves in a fight.' },
@@ -314,6 +353,13 @@ const NPC_DEFS = {
         { speaker: 'Lira', text: 'I lost my favorite locket in the tall grass east of the river. I\'d go get it, but there are things crawling around over there that don\'t like visitors.' },
         { speaker: 'Rei', text: 'We are headed that way for the Fragment. We will keep an eye out.' },
         { speaker: 'Lira', text: 'You would? Oh, thank you! It\'s silver, with a little blue gem. If you find it, I have some spare supplies I can give you!' },
+      ],
+      verdant_vale_post_arc: [
+        { speaker: 'Lira', text: 'It\'s quieter in the east now. I walked to the edge of the wood this morning and just listened.' },
+        { speaker: 'Tao', text: 'That takes courage after what you\'ve been through.' },
+        { speaker: 'Lira', text: 'I\'ve been thinking about the locket you found for me. And about the knight — Arren. He didn\'t get to take anything with him.' },
+        { speaker: 'Lira', text: 'I want to leave something at the ruins. Something small. An offering, I suppose. My grandmother would have understood.' },
+        { speaker: 'Lira', text: 'When you are next heading east... would you carry it there for me? I\'m not ready to go myself yet. But something should mark that someone remembers.' },
       ],
     },
   },
@@ -326,6 +372,7 @@ const NPC_DEFS = {
     name: 'The Archivist',
     color: '#a5b4fc',
     sprite: 'images/characters/map/sheets/npc/archivist_sheet.png',
+    quests: ['bones_of_the_fallen'],
     dialogues: {
       crystal_cavern: [
         { speaker: 'The Archivist', text: 'Still here. Still here. I have been cataloguing the resonance patterns for… how long has it been.' },
@@ -350,6 +397,11 @@ const NPC_DEFS = {
         { speaker: 'The Archivist', text: 'One of many. But here, the gravity itself has forgotten its purpose. To move forward, you must align the Aerolith Crystals.' },
         { speaker: 'Tao', text: 'You followed us all the way up here?' },
         { speaker: 'The Archivist', text: 'An unfinished record goes where the data is. There is still so much left to document.' },
+      ],
+      crystal_cavern_f1_post_arc: [
+        { speaker: 'The Archivist', text: 'The heat has broken. I can feel the ice coming back to the walls. The Demon Lord... he is no longer part of the resonance.' },
+        { speaker: 'The Archivist', text: 'Solvan. That was his name. He was the head of this archive once. He wanted to preserve everything. In the end, he preserved nothing but his own fire.' },
+        { speaker: 'The Archivist', text: 'I will stay. There is a new entry to write. A victory. It has been a long time since I had one of those to record.' },
       ],
     },
   },
@@ -377,6 +429,11 @@ const NPC_DEFS = {
         { speaker: 'Ghost Knight', text: '...You are warm. I remember warm.' },
         { speaker: 'Ghost Knight', text: 'I was holding the passage to the core. But the shadows... they are thicker now.' },
         { speaker: 'Ghost Knight', text: 'Go. The Frozen Core is just beyond the next descent. The guardian waits for those who carry life.' },
+      ],
+      crystal_cavern_f2_post_arc: [
+        { speaker: 'Ghost Knight', text: 'The screaming... it stopped. The fire is gone.' },
+        { speaker: 'Ghost Knight', text: 'I remember Solvan. He was... a good man, before the Fragment. He spent forty years in the dark just to make sure we weren\'t forgotten.' },
+        { speaker: 'Ghost Knight', text: 'The Cavern is quiet. For the first time in a century, it is just a cave again. Thank you.' },
       ],
     },
   },
@@ -708,6 +765,7 @@ const NPC_DEFS = {
     name: 'Elder',
     color: '#fcd34d',
     sprite: 'images/characters/map/sheets/npc/soldier_sheet.png',
+    quests: ['naga_threat'],
     dialogues: {
       southern_isles: [
         { speaker: 'Elder', text: 'I was seven when the first market closed. Not because there were no buyers — because the docks were six feet underwater and you needed a skiff to reach the stalls.' },
@@ -779,4 +837,52 @@ const NPC_DEFS = {
     },
   },
 
+  kaelen: {
+    name: 'Kaelen',
+    color: '#f59e0b',
+    sprite: 'images/characters/map/sheets/npc/kaelen_sheet.png',
+    dialogues: {
+      ember_wastes: [
+        { speaker: 'Kaelen', text: 'My crawler is running smoothly now. Thanks again.' }
+      ]
+    }
+  },
+
+  scholar_vane: {
+    name: 'Scholar Vane',
+    color: '#60a5fa',
+    sprite: 'images/characters/map/sheets/npc/vane_sheet.png',
+    dialogues: {
+      crystal_cavern_f2: [
+        { speaker: 'Scholar Vane', text: 'The resonance is stable. The Archive is communicating.' }
+      ],
+      crystal_cavern_f2_post_arc: [
+        { speaker: 'Scholar Vane', text: 'The signal! It\'s clear! The Fire Seal\'s interference has vanished.' },
+        { speaker: 'Scholar Vane', text: 'I can finally hear the baseline of the world again. We have a lot of work to do. Ashveil is finally reachable!' },
+      ]
+    }
+  },
+
+  isle_merchant: {
+    name: 'Isle Merchant',
+    color: '#10b981',
+    sprite: 'images/characters/map/sheets/npc/merchant_sheet.png',
+    dialogues: {
+      southern_isles: [
+        { speaker: 'Isle Merchant', text: 'Trade is finally flowing again. The tides are kind.' }
+      ]
+    }
+  },
+  ruin_closure: {
+    name: 'Offering Point',
+    color: '#ffffff',
+    sprite: 'images/environment/png/offering_point.png',
+    dialogues: {
+      verdant_vale: [
+        { speaker: 'narrator', text: 'The air here is clear of shadow. You place Lira\'s locket among the stone fragments of the eastern bridge.' },
+        { speaker: 'narrator', text: 'For a second, the blue gem pulses with a soft, warm light \u2014 the light of a home that was never forgotten.' },
+        { speaker: 'narrator', text: 'Rest well, Arren. The road is yours no longer.' }
+      ]
+    }
+  }
 };

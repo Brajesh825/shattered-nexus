@@ -108,6 +108,7 @@ MAP_DEFS.ember_wastes = (function() {
 
         npcs: [
           { id: 'essabella', x: 80, y: 40, dialogueKey: 'ember_wastes' },
+          { id: 'kaelen', x: 10, y: 40, dialogueKey: 'ember_wastes' },
         ],
 
         objective: {

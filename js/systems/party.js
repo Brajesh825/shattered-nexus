@@ -223,6 +223,10 @@ function checkMemberLevel(m) {
   const threshold = getExpThreshold(m.lv);
   if (!m || m.exp < threshold) return false;
 
+  // Enforce Version Level Cap
+  const maxLevel = (typeof NexusScaling !== 'undefined') ? NexusScaling.caps.maxLevel : 99;
+  if (m.lv >= maxLevel) return false;
+
   // Subtract the 'spent' experience points
   m.exp -= threshold;
 

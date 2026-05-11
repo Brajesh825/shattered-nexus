@@ -41,6 +41,18 @@ const SFX = {
     });
   },
 
+  /* ── Error / Denied (Buzzer) ─────────────────────────────────────────── */
+  error() {
+    this._run(ctx => {
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.type = 'sawtooth'; o.frequency.value = 110;
+      g.gain.setValueAtTime(0.08, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+      o.start(); o.stop(ctx.currentTime + 0.15);
+    });
+  },
+
   /* ── Dialogue tick (one per line, not per char) ──────────────────────── */
   dialogue() {
     this._run(ctx => {
@@ -119,6 +131,25 @@ const SFX = {
         g.gain.linearRampToValueAtTime(0.14, t + 0.04);
         g.gain.exponentialRampToValueAtTime(0.001, t + 0.34);
         o.start(t); o.stop(t + 0.34);
+      });
+    });
+  },
+
+  /* ── Buff / Power Up (Rising shimmer) ────────────────────────────────── */
+  buff() {
+    this._run(ctx => {
+      const now = ctx.currentTime;
+      [1, 1.2, 1.5].forEach((ratio, i) => {
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.connect(g); g.connect(ctx.destination);
+        o.type = 'sine';
+        const t = now + i * 0.06;
+        o.frequency.setValueAtTime(330 * ratio, t);
+        o.frequency.exponentialRampToValueAtTime(660 * ratio, t + 0.4);
+        g.gain.setValueAtTime(0, t);
+        g.gain.linearRampToValueAtTime(0.12, t + 0.05);
+        g.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+        o.start(t); o.stop(t + 0.4);
       });
     });
   },

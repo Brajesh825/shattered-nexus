@@ -116,6 +116,14 @@ const MapEngine = (() => {
   // Region triggers already fired this session
   const _firedTriggers = new Set();
 
+  // ── Cinematic Scene State ──────────────────────────────
+  let _sceneRunning      = false; // blocks encounters, triggers, and player movement
+  let _playerLocked      = false; // skips MapPlayer.update() during scene walk/dialogue
+  let _playerFacingOverride = null; // {dx,dy} or null
+  let _marchEnemies      = [];    // [{id,tx,ty,px,py,targetTx,targetTy,img,alpha}] marching in
+  let _sceneAmbushActive = false;
+  let _sceneAmbushCallback = null;
+
   /* ── Camera ─────────────────────────────────────────── */
   const cam = { x: 0, y: 0 };
   let _stepBobTime = 0;   // seconds remaining for step-landing bob
@@ -531,13 +539,14 @@ const MapEngine = (() => {
   // Render objective HUD strip at bottom of canvas
   function _renderObjectiveHUD() {
     if (!_map || !_map.objective) return;
-    const obj = _map.objective;
-    const w = _canvas.width;
-    const bh = 22, by = _canvas.height - bh - 4, bx = 8;
-    const bw = Math.min(360, w - 16);
+    const el = document.getElementById('explore-loc');
+    if (!el) return;
 
+    const obj = _map.objective;
+    const isDone = _objState.done || _objAlreadyCleared();
+    
     let statusText = '';
-    if (_objState.done || _objAlreadyCleared()) {
+    if (isDone) {
       statusText = '✔ ' + (obj.label || 'Objective complete');
     } else if (obj.type === 'kill_all') {
       const remaining = (typeof MapEntities !== 'undefined') ? MapEntities.remaining() : 0;
@@ -551,20 +560,10 @@ const MapEngine = (() => {
       statusText = `⏱ ${obj.label || 'Survive'} — ${left}s remaining`;
     }
 
-    _ctx.save();
-    _ctx.globalAlpha = 0.82;
-    _ctx.fillStyle = '#06030f';
-    _ctx.beginPath();
-    if (_ctx.roundRect) _ctx.roundRect(bx, by, bw, bh, 4);
-    else _ctx.rect(bx, by, bw, bh);
-    _ctx.fill();
-    _ctx.globalAlpha = 1;
-    _ctx.font = '10px monospace';
-    _ctx.fillStyle = (_objState.done || _objAlreadyCleared()) ? '#4ade80' : '#d8c860';
-    _ctx.textAlign = 'left';
-    _ctx.textBaseline = 'middle';
-    _ctx.fillText(statusText, bx + 8, by + bh / 2);
-    _ctx.restore();
+    if (el.textContent !== statusText) {
+      el.textContent = statusText;
+      el.classList.toggle('complete', isDone);
+    }
   }
 
   /* ── Camp marker ────────────────────────────────────── */
@@ -964,7 +963,8 @@ const MapEngine = (() => {
     
     _renderObjectiveMarkers();
     _renderCampMarker();
-    
+    _renderMarchEnemies(_ctx);
+
     _renderAtmosphere();
     _renderFog();
     _renderObjectiveHUD();
@@ -998,8 +998,9 @@ const MapEngine = (() => {
     _time += dt;
     _fogTime += dt;
     MapInput.poll();
-    MapPlayer.update(dt, _map);
+    if (!_playerLocked) MapPlayer.update(dt, _map);
     MapEntities.updateEnemies(dt, _map);
+    if (_marchEnemies.length) _updateMarchEnemies(dt);
 
     // Detect step landing → footstep SFX
     if (_prevMoving && !MapPlayer.moving) {
@@ -1015,10 +1016,10 @@ const MapEngine = (() => {
     _updateCamera(dt);
 
 
-    // Encounter check
-    const enc = MapEntities.checkEncounter(_map);
-    if (enc) {
-      _triggerEncounter(enc);
+    // Encounter check — blocked while a scene is running
+    if (!_sceneRunning) {
+      const enc = MapEntities.checkEncounter(_map);
+      if (enc) _triggerEncounter(enc);
     }
 
     // Camp node check — player returns to playerStart tile
@@ -1040,8 +1041,9 @@ const MapEngine = (() => {
     // Objective check each frame
     _checkObjective();
 
-    // Region triggers check
-    _checkRegionTriggers();
+    // Region triggers and scene triggers
+    if (!_sceneRunning) _checkRegionTriggers();
+    _checkScenes();
 
     // Fog dialogue + ambient voice lines
     _updateFogDialogue(dt);
@@ -1114,6 +1116,269 @@ const MapEngine = (() => {
           }
         }
       }
+    });
+  }
+
+  /* ── Cinematic Scene Runner ─────────────────────────────── */
+
+  // Scenes fired this session (also persisted in G.firedScenes across sessions)
+  const _firedScenes = new Set();
+
+  function _checkScenes() {
+    if (_sceneRunning || !_map || !_map.scenes || MapPlayer.moving) return;
+    const tx = MapPlayer.tx, ty = MapPlayer.ty;
+
+    for (const scene of _map.scenes) {
+      if (!scene.once || _firedScenes.has(scene.id)) continue;
+      const g = G.firedScenes;
+      if (g && g.has && g.has(scene.id)) { _firedScenes.add(scene.id); continue; }
+
+      const r = scene.trigger;
+      if (!r) continue;
+      const inside = tx >= r.x && tx < r.x + (r.w || 1) &&
+                     ty >= r.y && ty < r.y + (r.h || 1);
+      if (inside) {
+        _firedScenes.add(scene.id);
+        _runScene(scene);
+        break; // only one scene per tick
+      }
+    }
+  }
+
+  function _runScene(scene) {
+    _sceneRunning = true;
+    _playerLocked = true;
+
+    const acts = scene.acts || [];
+    let i = 0;
+
+    function next() {
+      if (i >= acts.length) { _endScene(scene); return; }
+      const act = acts[i++];
+      _execAct(act, scene.npcId, next);
+    }
+
+    next();
+  }
+
+  function _endScene(scene) {
+    _sceneRunning = false;
+    _playerLocked = false;
+    _playerFacingOverride = null;
+    _marchEnemies = [];
+
+    // Clean up any lingering scene state on the NPC so it resumes normal behaviour
+    if (scene.npcId && typeof MapEntities !== 'undefined') {
+      const npcs = MapEntities.getNPCs();
+      const n = npcs && npcs.find(x => x.id === scene.npcId);
+      if (n) {
+        n._sceneWalkTarget  = null;
+        n._sceneExitTarget  = null;
+        n.facingOverride    = null;
+        n.moving            = false;
+        // Snap pixel position to tile so there's no drift
+        n.px = n.tx * TILE;
+        n.py = n.ty * TILE;
+        n.prevTx = n.tx; n.prevTy = n.ty;
+      }
+    }
+
+    // Persist the "seen" flag immediately so it survives before next camp save
+    if (!G.firedScenes) G.firedScenes = new Set();
+    G.firedScenes.add(scene.id);
+    const slot = (G.currentSaveSlot !== undefined) ? G.currentSaveSlot : 0;
+    if (typeof Save !== 'undefined') {
+      Save.patch({ firedScenes: Array.from(G.firedScenes) }, slot);
+    }
+
+    resume();
+  }
+
+  function _execAct(act, defaultNpcId, done) {
+    const npcId = act.npcId || defaultNpcId;
+    switch (act.type) {
+      case 'npc_walk':   return _actNpcWalk(npcId, act, done);
+      case 'dialogue':   return _actDialogue(act.lines, done);
+      case 'ambush':     return _actAmbush(act, done);
+      case 'npc_exit':   return _actNpcExit(npcId, act, done);
+      case 'face':       return _actFace(npcId, act, done);
+      case 'wait':       return _actWait(act.ms || 600, done);
+      case 'msg':
+        if (typeof MapUI !== 'undefined') MapUI.showMsg(act.text, act.ms || 1800);
+        setTimeout(done, act.ms || 1800);
+        return;
+      default: done();
+    }
+  }
+
+  function _actNpcWalk(npcId, act, done) {
+    // Walk NPC to 1 tile away from the player (face-to-face).
+    // The arrival block in map-entities.js already sets n.facing toward the player.
+    if (typeof MapEntities !== 'undefined') {
+      MapEntities.setNPCSceneWalk(npcId, () => {
+        // Face the player toward the NPC so they look at each other
+        const npcs = MapEntities.getNPCs();
+        const n = npcs && npcs.find(x => x.id === npcId);
+        if (n) {
+          _playerFacingOverride = { dx: Math.sign(n.tx - MapPlayer.tx), dy: Math.sign(n.ty - MapPlayer.ty) };
+        }
+        done();
+      });
+    } else {
+      done();
+    }
+  }
+
+  function _actDialogue(lines, done) {
+    _openGenericDialogue(lines, () => {
+      _playerFacingOverride = null;
+      done();
+    });
+  }
+
+  function _actAmbush(act, done) {
+    const marchMs = act.marchMs || 1200;
+    const dir = act.dir || 'right';
+
+    // Face both player and NPC toward the threat
+    _playerFacingOverride = _dirVec(dir);
+    if (act.npcId && typeof MapEntities !== 'undefined') {
+      MapEntities.setNPCFacing(act.npcId, _dirVec(dir));
+    }
+
+    if (typeof MapUI !== 'undefined') MapUI.showMsg(act.preMsg || '⚔ Incoming!', 1800);
+
+    // Restart the loop so march silhouettes animate (dialogue act stops it)
+    resume();
+
+    const previewIds = act.waves
+      ? act.waves.reduce((a, w) => a.concat(w.enemies || []), []).slice(0, 4)
+      : (act.enemies || []).slice(0, 4);
+    _marchEnemies = _buildMarchEntities(previewIds, dir);
+
+    setTimeout(() => {
+      _marchEnemies = [];
+      if (act.waves) {
+        // Multi-wave: hand off to startWaves; done() fires via onAllClear
+        startWaves({
+          waves: act.waves,
+          allClearMsg: act.allClearMsg || '✦ All waves cleared!',
+          onAllClear: () => done(),
+        });
+      } else {
+        // Single encounter: intercept onBattleComplete
+        _sceneAmbushActive = true;
+        _sceneAmbushCallback = (victory) => {
+          _sceneRunning = true;
+          _playerLocked = true;
+          done(victory);
+        };
+        _triggerEncounter({ enemies: act.enemies || [], isBoss: act.isBoss || false, mutation: act.mutation || null });
+      }
+    }, marchMs);
+  }
+
+  function _actNpcExit(npcId, act, done) {
+    if (typeof MapEntities === 'undefined') { done(); return; }
+    const target = act.target;
+    if (!target) { done(); return; }
+    // Ensure loop is running so the NPC can animate out
+    if (!_running) resume();
+    MapEntities.setNPCExitWalk(npcId, target, () => {
+      if (act.despawn) MapEntities.despawnNPC(npcId);
+      done();
+    });
+  }
+
+  function _actFace(npcId, act, done) {
+    if (npcId && typeof MapEntities !== 'undefined') {
+      MapEntities.setNPCFacing(npcId, _dirVec(act.dir));
+    }
+    if (act.playerDir) _playerFacingOverride = _dirVec(act.playerDir);
+    done();
+  }
+
+  function _actWait(ms, done) {
+    setTimeout(done, ms);
+  }
+
+  function _dirVec(dir) {
+    if (dir && typeof dir === 'object') return dir; // already {dx,dy}
+    switch (dir) {
+      case 'up':    return {dx:  0, dy: -1};
+      case 'down':  return {dx:  0, dy:  1};
+      case 'left':  return {dx: -1, dy:  0};
+      default:      return {dx:  1, dy:  0}; // 'right'
+    }
+  }
+
+  // Build visual march-in entities (silhouettes that slide in from off-screen)
+  function _buildMarchEntities(enemyIds, dir) {
+    if (!_map) return [];
+    const canvas = _canvas;
+    const viewTilesX = Math.ceil(canvas.width / TILE);
+    const viewTilesY = Math.ceil(canvas.height / TILE);
+    
+    const startX = Math.floor(cam.x / TILE);
+    const startY = Math.floor(cam.y / TILE);
+
+    const entries = [];
+    enemyIds.forEach((id, i) => {
+      const raw = G && G.enemies && G.enemies.find(e => e.id === id);
+      const sprite = raw ? (raw.sprite || `images/enemies/${id}.webp`) : `images/enemies/${id}.webp`;
+      
+      // Spawn just outside the current screen view
+      const startTx = dir === 'right' ? startX + viewTilesX + 2 + i
+                    : dir === 'left'  ? startX - 2 - i
+                    : startX + Math.floor(viewTilesX / 2);
+      
+      const startTy = (dir === 'up' || dir === 'down') 
+                    ? (dir === 'up' ? startY + viewTilesY + 2 + i : startY - 2 - i)
+                    : startY + Math.floor(viewTilesY / 2) + (i - enemyIds.length/2);
+
+      // Target: move into the screen toward the player
+      const targetTx = dir === 'left'  ? MapPlayer.tx + 4 + i
+                     : dir === 'right' ? MapPlayer.tx - 4 - i
+                     : startTx;
+      
+      const targetTy = dir === 'up'    ? MapPlayer.ty + 4 + i
+                     : dir === 'down'  ? MapPlayer.ty - 4 - i
+                     : startTy;
+
+      const img = new Image(); img.src = sprite;
+      entries.push({ id, tx: startTx, ty: startTy, px: startTx * TILE, py: startTy * TILE, targetTx, targetTy, img, alpha: 0.7 });
+    });
+    return entries;
+  }
+
+  function _updateMarchEnemies(dt) {
+    const SPEED = 4; // tiles per second
+    _marchEnemies.forEach(m => {
+      const dx = Math.sign(m.targetTx - m.tx);
+      const dy = Math.sign(m.targetTy - m.ty);
+      m.px += dx * SPEED * TILE * dt;
+      m.py += dy * SPEED * TILE * dt;
+      m.tx = m.px / TILE;
+      m.ty = m.py / TILE;
+    });
+  }
+
+  function _renderMarchEnemies(ctx) {
+    if (!_marchEnemies.length) return;
+    _marchEnemies.forEach(m => {
+      const sx = Math.round(m.px - cam.x);
+      const sy = Math.round(m.py - cam.y);
+      ctx.save();
+      ctx.globalAlpha = m.alpha;
+      // Silhouette filter
+      ctx.filter = 'brightness(0) invert(0)';
+      if (m.img.complete && m.img.naturalWidth) {
+        ctx.drawImage(m.img, sx, sy, TILE, Math.round(TILE * 1.6));
+      } else {
+        ctx.fillStyle = '#ff4444';
+        ctx.fillRect(sx + 8, sy + 8, TILE - 16, TILE - 16);
+      }
+      ctx.restore();
     });
   }
 
@@ -1198,8 +1463,23 @@ const MapEngine = (() => {
   function onBattleComplete(victory) {
     if (typeof BGM !== 'undefined') BGM.playMap(_map);
 
+    // Scene ambush intercept — hand control back to the scene runner
+    if (_sceneAmbushActive) {
+      _sceneAmbushActive = false;
+      showScreen('explore-screen');
+      MapPlayer.setCooldown(4);
+      resume();
+      const cb = _sceneAmbushCallback;
+      _sceneAmbushCallback = null;
+      if (cb) cb(victory);
+      return;
+    }
+
     if (!victory) {
       _waveState = null; // abort any active wave sequence on defeat
+      _sceneRunning = false;
+      _playerLocked = false;
+      _playerFacingOverride = null;
       // Respawn at map start — restore party to half HP, clear statuses, reset position
       if (_map && _map.playerStart) {
         G.party.forEach(m => {
@@ -1527,6 +1807,7 @@ const MapEngine = (() => {
 
   /* ── NPC dialogue ────────────────────────────────────── */
   let _npcLines = [], _npcLineIdx = 0, _npcCurrent = null;
+  let _npcQuestFlow = false; // true when dialogue came from quest priority path
 
   const _NPC_PARTY_IDS = ['aya', 'tao', 'lulu', 'rei', 'ria', 'rydia', 'lenneth', 'kain', 'leon', 'sera'];
 
@@ -1575,7 +1856,9 @@ const MapEngine = (() => {
   // Scan all lines and build the speaker→sprite map.
   // Skips build entirely if this NPC has already been talked to (one-time scene).
   function _buildNPCSceneLayer() {
-    if (_npcCurrent && _npcCurrent.isTalked) return; // repeat interaction → plain panel only
+    // Quest-flow dialogues always render scene sprites regardless of isTalked.
+    // Plain repeat visits (non-quest) keep the compact panel-only look.
+    if (_npcCurrent && _npcCurrent.isTalked && !_npcQuestFlow) return;
     _npcSceneSpeakerMap = {};
     _npcLines.forEach(l => {
       if (!l.speaker) return;
@@ -1609,18 +1892,129 @@ const MapEngine = (() => {
     layer.appendChild(charEl);
   }
 
+  function _getQuestDef(id) {
+    return (typeof window !== 'undefined' && window.QUESTS_DATA)
+      ? (window.QUESTS_DATA.find(q => q.id === id) || null)
+      : null;
+  }
+
   function _openNPCDialogue(npc) {
     _npcCurrent = npc;
-    _npcNextLast = 0; // reset debounce so first click of new session is never blocked
-    const def = (typeof NPC_DEFS !== 'undefined') ? NPC_DEFS[npc.id] : null;
-    // On repeat visits use a _return dialogue key if defined, else fall back to original
-    const key = npc.isTalked
-      ? (npc.dialogueKey + '_return')
-      : npc.dialogueKey;
+    _npcNextLast = 0;
+    _npcQuestFlow = false;
+    _hideQuestChoices();
+
+    // Trigger quest 'gather' progress if this NPC is a target (delivery style)
+    if (typeof QuestSystem !== 'undefined' && npc.id) {
+      QuestSystem.onGather(npc.id);
+    }
+
+    const def      = (typeof NPC_DEFS !== 'undefined') ? NPC_DEFS[npc.id] : null;
+    const questIds = (def && def.quests) || [];
+
+    // ── Quest priority flow ──────────────────────────────────────────
+    if (questIds.length && typeof QuestSystem !== 'undefined') {
+
+      // 1. Ready to submit — highest priority
+      const readyId = questIds.find(id => QuestSystem.isReadyToSubmit(id));
+      if (readyId) {
+        const qd = _getQuestDef(readyId);
+        const lines = (qd && qd.submitDialogue) || [{ speaker: npc.name || npc.id, text: 'Thank you for your help.' }];
+        _npcLines = [...lines, { _type: 'submit', _questId: readyId }];
+        _npcQuestFlow = true;
+        _npcLineIdx = 0;
+        _showNPCLine();
+        return;
+      }
+
+      // 2. Quest in progress — brief check-in
+      const activeId = questIds.find(id => QuestSystem.isActive(id));
+      if (activeId) {
+        const qd = _getQuestDef(activeId);
+        const lines = (qd && qd.activeDialogue) || [{ speaker: npc.name || npc.id, text: '...' }];
+        _npcLines = lines;
+        _npcQuestFlow = true;
+        _npcLineIdx = 0;
+        _showNPCLine();
+        return;
+      }
+
+      // 3. Quest available to accept
+      const availableId = questIds.find(id => QuestSystem.canAccept(id));
+      if (availableId) {
+        const qd = _getQuestDef(availableId);
+        const lines = (qd && qd.acceptDialogue) || [{ speaker: npc.name || npc.id, text: 'I could use your help...' }];
+        _npcLines = [...lines, { _type: 'choice', _questId: availableId }];
+        _npcQuestFlow = true;
+        _npcLineIdx = 0;
+        _showNPCLine();
+        return;
+      }
+    }
+
+    // ── Fallback: normal / repeat dialogue ───────────────────────────
+    // Three-tier key resolution:
+    //   1. <dialogueKey>_post_arc — shown after the arc tied to this map is cleared
+    //   2. <dialogueKey>_return   — shown on all repeat visits during the arc
+    //   3. <dialogueKey>          — first visit
+    const curMap = MapEngine.getMap();
+    const mapArcId = curMap ? (curMap.arcId || 0) : 0;
+    const storyArcIdx = (typeof Story !== 'undefined' && Story.arcIdx != null) ? Story.arcIdx : 0;
+    const arcCleared = storyArcIdx > (mapArcId - 1); // arcIdx is 0-based, arcId is 1-based
+    let key;
+    if (arcCleared && def && def.dialogues && def.dialogues[npc.dialogueKey + '_post_arc']) {
+      key = npc.dialogueKey + '_post_arc';
+    } else if (npc.isTalked) {
+      key = npc.dialogueKey + '_return';
+    } else {
+      key = npc.dialogueKey;
+    }
     _npcLines = (def && def.dialogues && (def.dialogues[key] || def.dialogues[npc.dialogueKey]))
       || [{ speaker: npc.name || npc.id, text: '...' }];
     _npcLineIdx = 0;
     _showNPCLine();
+  }
+
+  function _hideQuestChoices() {
+    const choicesEl = document.getElementById('npc-dialogue-choices');
+    const nextBtn   = document.getElementById('npc-dialogue-next');
+    if (choicesEl) { choicesEl.style.display = 'none'; choicesEl.innerHTML = ''; }
+    if (nextBtn)   nextBtn.style.display = '';
+  }
+
+  function _showQuestChoices(line) {
+    const choicesEl = document.getElementById('npc-dialogue-choices');
+    const nextBtn   = document.getElementById('npc-dialogue-next');
+    if (!choicesEl) return;
+    if (nextBtn) nextBtn.style.display = 'none';
+
+    const opts = line._type === 'submit'
+      ? [{ label: '✔ Collect Reward', action: 'submit',  questId: line._questId, primary: true },
+         { label: '✗ Not yet',        action: 'dismiss' }]
+      : [{ label: '✔ Accept',         action: 'accept',  questId: line._questId, primary: true },
+         { label: '✗ Maybe later',    action: 'dismiss' }];
+
+    choicesEl.innerHTML = '';
+    opts.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'npc-choice-btn' + (opt.primary ? ' primary' : '');
+      btn.textContent = opt.label;
+      btn.onclick = () => _handleQuestChoice(opt);
+      choicesEl.appendChild(btn);
+    });
+    choicesEl.style.display = 'flex';
+  }
+
+  function _handleQuestChoice(opt) {
+    _hideQuestChoices();
+    if (opt.action === 'accept' && opt.questId && typeof QuestSystem !== 'undefined') {
+      QuestSystem.accept(opt.questId);
+    } else if (opt.action === 'submit' && opt.questId && typeof QuestSystem !== 'undefined') {
+      QuestSystem.submit(opt.questId);
+      if (typeof SFX !== 'undefined' && SFX.buff) SFX.buff();
+    }
+    // dismiss — just close
+    _closeNPCDialogue();
   }
 
   function _showNPCLine() {
@@ -1628,10 +2022,19 @@ const MapEngine = (() => {
     if (!el) return;
     if (_npcLineIdx >= _npcLines.length) { _closeNPCDialogue(); return; }
 
-    // Build scene layer once on first line
+    // Build scene layer once on first line.
+    // Quest-flow dialogues always get scene sprites, even on repeat visits.
     if (_npcLineIdx === 0) _buildNPCSceneLayer();
 
-    const line    = _npcLines[_npcLineIdx];
+    const line = _npcLines[_npcLineIdx];
+
+    // Synthetic entries — render choice UI instead of advancing text
+    if (line._type === 'choice' || line._type === 'submit') {
+      _showQuestChoices(line);
+      el.style.display = 'flex';
+      return;
+    }
+
     const speaker = line.speaker || null;
     const isNarrator = !speaker;
 
@@ -1684,21 +2087,31 @@ const MapEngine = (() => {
   }
 
   function _closeNPCDialogue() {
+    _hideQuestChoices();
+    // Capture before reset — used below to suppress legacy giveQuest when the new
+    // choice system already handled (or deliberately dismissed) a quest interaction.
+    const wasQuestFlow = _npcQuestFlow;
+    _npcQuestFlow = false;
+
     const el = document.getElementById('npc-dialogue');
     if (el) el.style.display = 'none';
     const layer = document.getElementById('npc-scene-layer');
     if (layer) layer.innerHTML = '';
     if (typeof Cutscene !== 'undefined') Cutscene._skipTw();
     if (typeof Focus !== 'undefined') Focus.setContext(null);
-    // Only fire completeCb / giveQuest on the very first interaction — not on repeat visits
+
+    // Only fire legacy completeCb / giveQuest on the very first interaction.
+    // Skip giveQuest entirely when the new choice system handled this session —
+    // accept/dismiss was already processed by _handleQuestChoice.
     const firstTime  = _npcCurrent && !_npcCurrent.isTalked;
     const completeCb = firstTime && _npcCurrent.onDialogueComplete;
-    const giveQuest  = firstTime && _npcCurrent.giveQuest;
+    const giveQuest  = firstTime && !wasQuestFlow && _npcCurrent.giveQuest;
     if (_npcCurrent) {
       MapEntities.markNPCTalked(_npcCurrent.id);
       _npcCurrent._dialogueOpen = false;
       _npcCurrent = null;
     }
+    // Legacy map-file giveQuest (still works for NPCs that predate the new system)
     if (giveQuest && typeof QuestSystem !== 'undefined') QuestSystem.accept(giveQuest);
     if (completeCb) completeCb();
     else resume();
@@ -1748,6 +2161,10 @@ const MapEngine = (() => {
     hasTriggerFired: id => _firedTriggers.has(id),
     triggerEncounter: enc => _triggerEncounter(enc),
     startWaves,
+    // Scene runner API
+    runScene: (scene) => _runScene(scene),
+    isSceneRunning: () => _sceneRunning,
+    hasFiredScene: (id) => _firedScenes.has(id) || !!(G.firedScenes && G.firedScenes.has && G.firedScenes.has(id)),
     // Optional callback — wire this up after init to handle encounter transitions:
     // MapEngine.onEncounterStart = function(enc) { ... }
     onEncounterStart: null,

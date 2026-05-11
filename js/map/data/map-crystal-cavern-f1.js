@@ -20,7 +20,7 @@ MAP_DEFS.crystal_cavern_f1 = {
   bgColor: '#04010a',
   ambientLight: 'rgba(140,80,255,0.08)',
   weather: 'sparks',
-  enemyLevelRange: [8, 12],
+  enemyLevelRange: [10, 13],
   jsonFile: 'js/map/data/map-crystal-cavern-f1.json',
   
   bgm: 'cavern_explore',

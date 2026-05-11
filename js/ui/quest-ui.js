@@ -29,6 +29,16 @@ const QuestUI = (() => {
     }
   }
 
+  function _questLabel(id) {
+    if (typeof window !== 'undefined' && window.QUESTS_DATA) {
+      const def = window.QUESTS_DATA.find(q => q.id === id);
+      if (def) return def.label;
+    }
+    return id.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+  }
+
+  const TYPE_BADGE = { hunt: '⚔ HUNT', gather: '◈ GATHER', mutant_kill: '☠ MUTANT' };
+
   function _rewardLabel(rewards) {
     const parts = [];
     if (rewards.exp)  parts.push(`${rewards.exp} XP`);
@@ -57,33 +67,30 @@ const QuestUI = (() => {
     const esc = (typeof escapeHtml === 'function') ? escapeHtml : (v) => v;
     const activeCards = active.map(q => {
       const progress = Math.min(100, (q.current / q.count) * 100);
+      const badge = TYPE_BADGE[q.type] || '';
       return `
-        <div class="quest-card" style="
-          background: rgba(10, 8, 25, 0.7);
-          border: 1px solid rgba(200, 164, 90, 0.3);
-          padding: 12px; margin-bottom: 12px; border-radius: 4px;">
-          <div style="color:var(--gold); font-weight:bold; margin-bottom:4px;">${esc(q.label)}</div>
-          <div style="font-size:11px; color:rgba(255,255,255,0.6); margin-bottom:8px;">${esc(q.desc)}</div>
-          <div style="height:6px; background:rgba(0,0,0,0.4); border-radius:3px; overflow:hidden; margin-bottom:8px;">
-            <div style="width:${progress}%; height:100%; background:var(--gold); transition:width 0.3s ease;"></div>
+        <div class="quest-card">
+          <div class="quest-title">
+            ${badge ? `<span class="quest-type-badge">${badge}</span>` : ''}
+            ${esc(q.label)}
           </div>
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <div style="font-size:10px; color:rgba(255,255,255,0.4);">Progress: ${q.current} / ${q.count}</div>
-            <div style="font-size:10px; color:var(--cyan);">Reward: ${esc(_rewardLabel(q.rewards))}</div>
+          <div class="quest-desc">${esc(q.desc)}</div>
+          <div class="quest-progress-wrap">
+            <div class="quest-progress-fill" style="width:${progress}%"></div>
+          </div>
+          <div class="quest-footer">
+            <div class="quest-meta">Progress: ${q.current} / ${q.count}</div>
+            <div class="quest-reward">Reward: ${esc(_rewardLabel(q.rewards))}</div>
           </div>
         </div>`;
     }).join('');
 
     const completedCards = completed.length ? `
-      <div style="font-size:11px; color:rgba(255,255,255,0.3); margin:16px 0 8px; letter-spacing:0.05em;">CLAIMED</div>
+      <div class="quest-claimed-header">CLAIMED</div>
       ${completed.map(id => `
-        <div style="
-          background: rgba(10, 8, 25, 0.4);
-          border: 1px solid rgba(74, 222, 128, 0.2);
-          padding: 10px 12px; margin-bottom: 8px; border-radius: 4px;
-          display:flex; justify-content:space-between; align-items:center;">
-          <div style="font-size:11px; color:rgba(74,222,128,0.7);">✔ ${id.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase())}</div>
-          <div style="font-size:10px; color:rgba(255,255,255,0.25);">Complete</div>
+        <div class="quest-card completed">
+          <div class="quest-status-done">✔ ${esc(_questLabel(id))}</div>
+          <div class="quest-meta">Complete</div>
         </div>`).join('')}` : '';
 
     list.innerHTML = activeCards + completedCards;

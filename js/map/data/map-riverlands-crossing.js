@@ -14,7 +14,7 @@ MAP_DEFS.riverlands_crossing = {
     bossBgm: 'river_king_theme',
     ambientLight: 'rgba(50,150,180,0.1)',
     weather: 'rain',
-    enemyLevelRange: [10, 18],
+    enemyLevelRange: [10, 20],
     encounterTemplates: [
         // Groups of 4 (Rare/Hard Encounters)
         { weight: 1, enemies: ['bandit', 'bandit', 'bandit', 'bandit'] },
@@ -49,7 +49,7 @@ MAP_DEFS.riverlands_crossing = {
         // --- CANYON CLIFFS ---
         { id: 'harpy',  x: 60, y: 25,  patrol: 'random',     range: 5,  speed: 1.4 },
         // --- MAP BOSS ---
-        { id: 'river_king', x: 40, y: 27, patrol: 'stationary', isBoss: true, label: 'River King' }
+        { id: 'river_king', x: 40, y: 27, patrol: 'stationary', isBoss: true, level: 20, label: 'River King' }
     ],
     jsonFile: 'js/map/data/map-riverlands-crossing.json',
     npcs: [
