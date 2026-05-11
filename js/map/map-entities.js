@@ -933,6 +933,7 @@ const MapEntities = (() => {
         if (n.hideIfUnlocked && (G.unlockedChars || []).includes(n.hideIfUnlocked)) return false;
         if (n.hideAfterScene  && fired.has(n.hideAfterScene)) return false;
         if (n.showAfterScene  && !fired.has(n.showAfterScene)) return false;
+        if (n.showIfMapCleared && (!G.clearedMaps || !G.clearedMaps.includes(n.showIfMapCleared))) return false;
         return true;
       }).map(n => {
         const def = (typeof NPC_DEFS !== 'undefined') ? NPC_DEFS[n.id] : null;

@@ -2911,20 +2911,45 @@
     "tier": 3,
     "isBoss": true,
     "stats": {
-      "hp": 185,
-      "atk": 25,
-      "def": 15,
-      "spd": 12,
-      "mag": 30
+      "hp": 340,
+      "atk": 38,
+      "def": 18,
+      "spd": 14,
+      "mag": 45
     },
-    "aiRole": "predator",
-    "mutantTraits": [
+    "statPhases": [
       {
-        "id": "enraged",
-        "label": "🔥 Enraged",
-        "type": "special"
+        "hp": 0.6,
+        "atk": 1.35,
+        "def": 1.1,
+        "spd": 1.15
+      },
+      {
+        "hp": 0.3,
+        "atk": 1.85,
+        "def": 0.7,
+        "spd": 1.45
       }
     ],
+    "battleEvents": [
+      {
+        "id": "demon_lord_transformation",
+        "fired": false,
+        "trigger": { "type": "hp", "threshold": 0.5 },
+        "lines": [
+          { "speaker": "Demon Lord", "text": "The archives... they are burning. My memory... it turns to ash." },
+          { "speaker": "Lulu", "text": "He's losing himself! The fire isn't just coming from him—it's consuming him!" },
+          { "speaker": "Demon Lord", "text": "I WILL NOT... BE FORGOTTEN... IN THE DARK!" }
+        ],
+        "onComplete": {
+          "logMsg": "★ Demon Lord enters Prince of Cinders!",
+          "flash": "rgba(255, 60, 0, 0.4)",
+          "addStatus": { "id": "status_atk_boost", "icon": "🔥", "label": "Prince of Cinders", "stat": "atk", "value": 1.5, "turns": 99, "color": "#ff3c00" },
+          "screenShake": true
+        }
+      }
+    ],
+    "aiRole": "predator",
     "reward": {
       "exp": 67,
       "gold": 49
