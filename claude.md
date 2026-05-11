@@ -374,5 +374,53 @@ The **Architect Pro** editor (`tools/tile-editor.html`) is the primary source fo
 
 ---
 
+## ⚔️ NPC Quest System
+Implemented across `js/systems/quest-system.js`, `data/quests.json`, `data/npcs.js`, `js/map/map-entities.js`, and `js/map/map-engine.js`.
+
+### State Machine
+Every NPC with a `quests: []` list shows one of four indicators above their head, evaluated fresh every render tick:
+
+| State | Icon | Condition |
+|---|---|---|
+| Ready to submit | ❕ (full opacity, scale bounce) | Player has a `complete: true` quest for this NPC |
+| Quest available | ❗ (full opacity, scale bounce) | NPC has an unaccepted quest |
+| Quest in progress | ❓ (full opacity) | Player has an active quest from this NPC |
+| Normal / untalked | 💬 | No quests or all done |
+
+### Dialogue Priority (in `_openNPCDialogue`)
+`submit → active → accept → normal`. The highest-priority state drives the dialogue. Synthetic `{ _type: 'choice'|'submit', _questId }` entries at the end of the line array render the choice button row instead of the normal CONTINUE button.
+
+### Key Rules
+- **Giver quests** (`giver` field set): rewards are **NOT auto-granted** on kill/gather completion. The quest stays in `_active` with `complete: true` until the player returns to the NPC and clicks "Collect Reward". The ❕ indicator then shows.
+- **No-giver arc quests** (`arc: N`, no `giver`): auto-accepted via `QuestSystem.onArcAdvance(n)` and auto-grant rewards on kill/gather.
+- **Save/load**: `questState: QuestSystem.save()` is included in both `Story._doSave()` and `SaveContract.buildFreeExploreSaveState()`. Restored via `QuestSystem.init(s.questState || null)` in `Story.onHeroReady()`.
+- **Kill tracking**: `QuestSystem.onKill` is called in `checkBattleEnd()` (not `showResult()`), so explore-mode battles count correctly.
+- **`canAccept(id)`**: returns true only if neither `_active` nor `_completed` contains the quest id.
+
+---
+
+## 🎬 Cinematic NPC Encounter System
+> **Status**: Design spec — not yet implemented. See `_concepts/mechanics/cinematic_npc_encounters.md` for the full spec.
+
+A three-act scene runner that replaces static region triggers for story-critical NPC encounters.
+
+### Acts
+1. **`npc_walk_to_player`** — NPC pathfinds toward the player; resolves when within 2 tiles.
+2. **`dialogue`** — Input locks, dialogue panel plays lines, resolves on final advance.
+3. **`ambush`** (optional) — Enemy sprites spawn at a map edge and march in over 1–2 seconds. Player and NPC face the enemy direction. A `braceDialogue` HUD line fires (no panel). Battle starts normally; `postBattleAct` continues after.
+
+Additional acts: `wait`, `lock_player`, `npc_exit`, `npc_face`, `player_face`, `show_msg`, `flag`.
+
+### Persistence — `G.firedScenes`
+A `Set<string>` of scene IDs the player has completed. Saved as `firedScenes: Array.from(G.firedScenes)` in both save paths, restored to `new Set(s.firedScenes || [])` on load. Scenes flagged `once: true` never re-fire. A `Save.patch(partial, slot)` method auto-saves this field immediately on scene completion without a full camp save.
+
+### NPC Lifecycle
+Map NPC entries support `hideAfterScene: 'sceneId'` — filtered out by `MapEntities.init()` once the scene is in `G.firedScenes`. Allows Azure Commander to vanish after her intro and be replaced by a post-arc variant post-recruitment.
+
+### Implementation Files (when built)
+`js/save.js` (patch method) → `js/systems/save-contract.js` → `js/story.js` → `js/map/map-engine.js` (`_runScene`, `_execAct`, `_checkScenes`) → `js/map/map-entities.js` (`_sceneTarget` walk, `facingOverride`, `hideAfterScene`) → `js/map/data/map-verdant-vale.js` (azure_intro scene).
+
+---
+
 ## 🎨 Idea & Asset Staging (`_concepts/`)
 - **`_concepts/`**: This directory serves as a staging ground for **anything** under consideration for future integration. This includes raw generated artwork, draft story documents, lore expansions, and experimental game mechanics. Once finalized, content should be moved to its permanent location in the codebase (e.g., `images/`, `data/`, `js/`), and the raw concepts can be safely removed.
