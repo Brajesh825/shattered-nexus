@@ -112,7 +112,7 @@ function initStars() {
 /* ============================================================
    MAP ENCOUNTER HANDLER (global setup)
    ============================================================ */
-MapEngine.onEncounterStart = (enc, map) => {
+MapEngine.onEncounterStart = async (enc, map) => {
   const enemyIds   = enc.enemies      || [];
   const mutation   = enc.mutation     || null; // null | 'corrupted' | 'mutant'
   const mutantTraits = enc.mutantTraits || null; // array of trait objects, mutant only
@@ -190,9 +190,8 @@ MapEngine.onEncounterStart = (enc, map) => {
     BGM.playBattle(map, isBossEncounter);
   }
 
-  _initBattle();
+  await _initBattle();
 
-  // ── Apply zone + mutation atmosphere to the battle scene ────
   const scene = document.getElementById('battle-scene');
   if (scene) {
     // Remove all zone and mutation classes first

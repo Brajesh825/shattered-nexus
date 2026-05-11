@@ -68,6 +68,14 @@ Riverlands Crossing: The Ancient Bridge
 Pos: masterpiece, best quality, scenery, no humans, strict horizontal composition, strict side view, horizontal split exactly in the middle of the frame, upper background features a wide rushing river, ruins of a massive ancient stone bridge, lush willow trees and riverside reeds, distant mist-covered peaks, soft daylight, lower foreground features perfectly flat smooth river-stone ground plane stretching across the entire width and taking up the bottom 50 percent of the image, empty stage floor, unobstructed foreground, vibrant blues and riverside greens, cinematic lighting, studio quality anime style.
 Neg: 1girl, solo, human, deep path, one point perspective, narrow road, character, face, body, trees in foreground, blurry, lowres, text, watermark.
 
+Spectral Guardian: The Frost-Veined Undercroft
+Pos: masterpiece, best quality, scenery, no humans, strict horizontal composition, strict side view, horizontal split exactly in the middle of the frame, upper background features massive frozen pillars, a large suspended glowing blue resonance heart in the center, heavy frost-fog, ancient statues of knights in alcoves, ethereal blue light, lower foreground features perfectly flat frosted marble ground plane stretching across the entire width and taking up the bottom 50 percent of the image, empty stage floor, unobstructed foreground, cold arctic tones, cinematic lighting, studio quality anime style.
+Neg: 1girl, solo, human, deep path, one point perspective, narrow road, character, face, body, trees in foreground, blurry, lowres, text, watermark.
+
+Demon Lord: The Ashveil Throne Room
+Pos: masterpiece, best quality, scenery, no humans, strict horizontal composition, strict side view, horizontal split exactly in the middle of the frame, upper background features a massive obsidian throne, molten lava falls in the distance, tattered burning red banners, a cracked ceiling showing a violet void rift sky, glowing orange forge furnaces, lower foreground features perfectly flat polished black stone tiles with glowing orange ember cracks stretching across the entire width and taking up the bottom 50 percent of the image, empty stage floor, unobstructed foreground, regal and intimidating, vibrant orange and charcoal black, cinematic lighting, studio quality anime style.
+Neg: 1girl, solo, human, deep path, one point perspective, narrow road, character, face, body, trees in foreground, blurry, lowres, text, watermark.
+
 =========================================
 === SHATTERED NEXUS STAGE STANDARD ======
 =========================================

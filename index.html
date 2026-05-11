@@ -23,6 +23,7 @@
   <link rel="stylesheet" href="css/sprite-battle-ui.css">
   <link rel="stylesheet" href="css/story-ui.css">
   <link rel="stylesheet" href="css/ui-overlays.css">
+  <link rel="stylesheet" href="css/fx.css">
   <link rel="stylesheet" href="css/end-screens.css">
   <link rel="stylesheet" href="css/map.css">
   <link rel="stylesheet" href="css/combat.css">
@@ -1240,6 +1241,16 @@
       <div class="credits-thanks">THANK YOU FOR PLAYING</div>
     </div>
     <button id="credits-close-btn" style="display:none" onclick="Credits.close()">RETURN TO TITLE</button>
+  </div>
+
+  <!-- Cinematic Battle Intro Layer -->
+  <div id="battle-intro-layer" style="display:none">
+    <canvas id="intro-canvas"></canvas>
+    <div id="intro-title-card">
+      <div class="intro-title-prefix">✦ ENCOUNTER ✦</div>
+      <div id="intro-boss-name">BOSS NAME</div>
+      <div class="intro-title-line"></div>
+    </div>
   </div>
 
   <!-- Control Hints Bar -->

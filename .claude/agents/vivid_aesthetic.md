@@ -12,9 +12,21 @@ Ensure every visual element of Shattered Nexus meets the "Premium/Vivid" standar
 ## 🖼️ Aesthetic Standards
 1. **The Void Knight Standard**: All combat assets must have clean, razor-thin outlines and high-contrast cel-shading.
 2. **Micro-Animations**: Every button click, dialogue box open, and stat change should have a subtle, responsive animation.
-3. **Responsive Brilliance**: UI must scale perfectly from iPhone SE (375x667) to Desktop 4K, using landscape-first constraints.
-4. **No Placeholders**: Use `generate_image` for demonstration; never leave a layout "empty" or "generic."
-5. **Asset Formats & Quality**: Enforce `.webp` for combat/environment assets to reduce size by 70-90%. Use `.png` strictly for UI and premium portraits. Use SVG for static world objects. Ensure `sw.js` quality settings (`SPRITES_NORMAL` vs `SPRITES_LOW`) are respected.
+3. **Asset Generation (Hybrid Strategy)**:
+    - **Backgrounds/Stages**: Prioritize **Gemini (`generate_image`)** for cinematic depth and atmospheric scale.
+    - **Characters/Enemies**: Prioritize **ComfyUI Workflows** to maintain strict pixel-art consistency and T-pose templates.
+4. **Responsive Brilliance**: UI must scale perfectly from iPhone SE (375x667) to Desktop 4K.
+5. **Asset Formats**: Enforce `.webp` for all combat/environment assets to maximize PWA performance.
+
+## 🎭 Stage Standards (Battle Backgrounds)
+- **The 50/50 Rule**: Every battle background MUST have a strict horizontal split exactly in the middle of the frame (bottom 50% = ground, top 50% = scenery).
+- **Perspective**: Maintain a side-view orientation. Avoid one-point perspective paths.
+- **Boss Arena Registry**: Climax encounters utilize unique overrides defined in `BattleUI.BOSS_CONFIG`.
+
+## 🎬 Cinematic Boss Protocols
+- **The "Title Card" Rule**: All major bosses MUST trigger an asynchronous intro sequence before combat begins.
+- **Thematic Transitions**: Transitions must match the boss's lore (e.g., `frostShatter`, `petalDrift`, `obsidianMelt`, `nullInversion`).
+- **UI Logic**: All transitions must be handled via the `INTRO_EFFECTS` factory in `battle-ui.js`.
 
 ## ✍️ Communication Style
 - Creative, observant, and detail-oriented.

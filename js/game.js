@@ -761,7 +761,7 @@ function showPreBattle() {
   });
 }
 
-function startBattle() {
+async function startBattle() {
   if (G.selectedChars.length < 4) return;
 
   buildParty();
@@ -782,7 +782,7 @@ function startBattle() {
   // Scale to hero level (minimum 1)
   const spawnLevel = Math.max(1, G.hero?.lv || 1);
   buildEnemyGroup(picks, spawnLevel);
-  _initBattle();
+  await _initBattle();
   const names = G.enemyGroup.map(e => e.name).join(' & ');
   BattleUI.setLog([`${names} appear!`, `Party to battle stations!`], ['hi', '']);
   processCurrentTurn();
@@ -813,7 +813,7 @@ function _applyVampiric(enemy, dmg, enemyIdx) {
   BattleUI.popEnemy(enemyIdx, heal, 'regen');
 }
 
-function _initBattle() {
+async function _initBattle() {
   const queue = TurnManager.buildQueue();
   if (typeof TurnState !== 'undefined') TurnState.resetBattle(queue);
   else {
@@ -825,6 +825,14 @@ function _initBattle() {
   buildAbilityMenu();
   showScreen('battle-screen');
   BattleUI.render();
+
+  // Trigger cinematic intro for boss encounters
+  const boss = G.enemyGroup.find(e => e.isBoss);
+  if (boss) {
+    G.busy = true;
+    await BattleUI.showBossIntro(boss.id, boss.name);
+    G.busy = false;
+  }
 
   // Right-click anywhere on the battle scene = BACK (cancel targeting / close sub-menu)
   const scene = document.getElementById('battle-scene');

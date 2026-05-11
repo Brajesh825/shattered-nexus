@@ -238,27 +238,27 @@ masterpiece, best quality, pure void energy, (void colossus:1.6), colossal being
 [THE UNRAVELLING][1500508310]
 masterpiece, best quality, process of dissolution, (the unravelling:1.6), abstract entity of shifting void geometry and glowing white light, long trailing threads of energy, multiple glowing eyes, ethereal and shifting form, full body, majestic and abstract pose, cel shaded, flat color, thin outlines, high contrast, vibrant white and purple palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
 
-[MOLTEN GOLEM][1500508310]
+[DONE][MOLTEN GOLEM][1500508310]
 masterpiece, best quality, hardened lava, (molten golem:1.5), colossal construct made of cooling black basalt and glowing red lava, smoke emitting from body, massive heavy arms, full body, majestic guardian pose, cel shaded, flat color, thin outlines, high contrast, vibrant red and basalt palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
 
-[ABYSSAL KRAKEN] [1500508310]
+[DONE][ABYSSAL KRAKEN] [1500508310]
 masterpiece, best quality, (kraken:1.4), massive aquatic monster with dark tentacles, glowing red eyes, jagged beak, surrounded by dark ink clouds, full body, majestic but terrifying pose, cel shaded, flat color, thin outlines, high contrast, vibrant dark blue and red palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
 
-[STORM SENTINEL][1500508310]
+[DONE][STORM SENTINEL][1500508310]
 masterpiece, best quality, (storm sentinel:1.4), colossal knight made of dark ancient stone and glowing blue lightning, heavy iron chains wrapped around arms and torso, ornate crown-like stone helmet with a single glowing blue visor, holding a massive stone scepter crackling with electricity, floating stone pillars and ruins hovering around, full body, majestic and intimidating pose, cel shaded, flat color, thin outlines, high contrast, vibrant blue and charcoal stone palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
 
 ---
 
-[SHADOW EMPEROR (TRUE FORM)]
+[DONE][SHADOW EMPEROR (TRUE FORM)]
 masterpiece, best quality, (shadow emperor:1.4), glowing starlight body, fracturing into shards of light and void, revealing a human scholar beneath, tattered obsidian robes, flowing silver hair, desperate but calm expression, ethereal purple energy leaks, full body, majestic but tragic pose, cel shaded, flat color, thin outlines, high contrast, vibrant purple and white palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
 
-[THE PALE KING]
+[DONE][THE PALE KING]
 masterpiece, best quality, (the pale king:1.4), ancient lich king, skeletal face with glowing blue eyes, ornate silver tiara, tattered silk robes of a high magister, floating scrolls of shadow, staff of cold logic, frost aura, full body, majestic and calculating pose, cel shaded, flat color, thin outlines, high contrast, vibrant silver and blue palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
 
-[THE EBON CHAMPION]
+[DONE][THE EBON CHAMPION]
 masterpiece, best quality, (the ebon champion:1.4), massive black knight, ornate ebon plate armor, flowing tattered crimson cape, glowing red visor, wielding a dark crimson-glowing spear, trail of shadow mist, full body, majestic and honorable pose, cel shaded, flat color, thin outlines, high contrast, vibrant black and crimson palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
 
-[THE SKELETAL MAW]
+[DONE][THE SKELETAL MAW]
 masterpiece, best quality, (the skeletal maw:1.5), colossal bone dragon, fragments of purple crystalline armor fused to ribs, glowing violet void energy in eye sockets and chest, massive tattered wings, feral and pained expression, full body, majestic but monstrous pose, cel shaded, flat color, thin outlines, high contrast, vibrant purple and bone white palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
 
 [VOID-TOUCHED VALKYRIE]

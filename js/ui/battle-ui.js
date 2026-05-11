@@ -28,11 +28,227 @@ const BattleUI = {
     setTimeout(() => overlay.remove(), duration);
   },
 
-  /**
-   * Central helper to retrieve unit sprites by index and type.
-   */
   getSprite(idx, type = 'enemy') {
     return this.el((type === 'enemy' ? 'espr-' : 'pspr-') + idx);
+  },
+
+  /**
+   * Data-driven registry for boss-specific aesthetics and transitions.
+   * Add new bosses here to avoid if/else logic bloat.
+   */
+  BOSS_CONFIG: {
+    'king_galdor': {
+      theme: 'king-galdor',
+      flash: '#4ade80',
+      fx: 'petalDrift',
+      bg: 'galdor_garden.webp'
+    },
+    'spectral_guardian': {
+      theme: 'guardian',
+      flash: '#a5f3fc',
+      fx: 'frostShatter',
+      bg: 'guardian_arena.webp'
+    },
+    'demon_lord': {
+      theme: 'demon-lord',
+      flash: '#f97316',
+      fx: 'obsidianMelt',
+      bg: 'demon_lord_arena.webp'
+    },
+    'void_knight': {
+      theme: 'void-knight',
+      flash: '#c084fc',
+      fx: 'nullInversion',
+      bg: 'eternal_void.webp'
+    },
+    'river_king': {
+      bg: 'riverlands.webp'
+    },
+    'sunken_leviathan': {
+      bg: 'sunken_temple.webp'
+    }
+  },
+
+  /**
+   * Modular Intro Effects Factory
+   */
+  INTRO_EFFECTS: {
+    async frostShatter(ctx, canvas) {
+      const shards = [];
+      const rows = 4, cols = 6;
+      const w = canvas.width / cols;
+      const h = canvas.height / rows;
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          shards.push({
+            x: c * w, y: r * h,
+            vx: (Math.random() - 0.5) * 15,
+            vy: (Math.random() - 1.0) * 10,
+            angle: 0, vAngle: (Math.random() - 0.5) * 0.2,
+            opacity: 1
+          });
+        }
+      }
+      return new Promise(resolve => {
+        const animate = () => {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          let alive = false;
+          shards.forEach(s => {
+            s.x += s.vx; s.y += s.vy; s.vy += 0.4;
+            s.angle += s.vAngle; s.opacity -= 0.015;
+            if (s.opacity > 0) {
+              alive = true;
+              ctx.save();
+              ctx.translate(s.x + w/2, s.y + h/2);
+              ctx.rotate(s.angle);
+              ctx.fillStyle = `rgba(165, 243, 252, ${s.opacity * 0.4})`;
+              ctx.strokeStyle = `rgba(255, 255, 255, ${s.opacity * 0.8})`;
+              ctx.lineWidth = 2;
+              ctx.beginPath();
+              ctx.moveTo(-w/2, -h/2); ctx.lineTo(w/2, -h/3); ctx.lineTo(w/2, h/2); ctx.lineTo(-w/3, h/2);
+              ctx.closePath(); ctx.fill(); ctx.stroke(); ctx.restore();
+            }
+          });
+          if (alive) requestAnimationFrame(animate); else resolve();
+        };
+        animate();
+      });
+    },
+
+    async petalDrift(ctx, canvas) {
+      const petals = [];
+      for (let i = 0; i < 40; i++) {
+        petals.push({
+          x: Math.random() * canvas.width, y: -20,
+          vx: (Math.random() - 0.5) * 4, vy: 2 + Math.random() * 3,
+          angle: Math.random() * Math.PI, vAngle: (Math.random() - 0.5) * 0.1,
+          opacity: 1
+        });
+      }
+      return new Promise(resolve => {
+        const animate = () => {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          let alive = false;
+          petals.forEach(p => {
+            p.x += p.vx + Math.sin(p.y * 0.01) * 2;
+            p.y += p.vy; p.angle += p.vAngle;
+            if (p.y > canvas.height) p.opacity -= 0.05;
+            if (p.opacity > 0) {
+              alive = true;
+              ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.angle);
+              ctx.fillStyle = `rgba(74, 222, 128, ${p.opacity})`;
+              ctx.beginPath(); ctx.ellipse(0, 0, 8, 4, 0, 0, Math.PI * 2);
+              ctx.fill(); ctx.restore();
+            }
+          });
+          if (alive) requestAnimationFrame(animate); else resolve();
+        };
+        animate();
+      });
+    },
+
+    async obsidianMelt(ctx, canvas) {
+      const drips = [];
+      const dripCount = 25;
+      for (let i = 0; i < dripCount; i++) {
+        drips.push({
+          x: (i / dripCount) * canvas.width, y: 0,
+          w: (canvas.width / dripCount) + 2, h: 0,
+          vh: 8 + Math.random() * 15, opacity: 1
+        });
+      }
+      return new Promise(resolve => {
+        const animate = () => {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          let alive = false;
+          drips.forEach(d => {
+            d.h += d.vh;
+            if (d.h > canvas.height) d.opacity -= 0.08;
+            if (d.opacity > 0) {
+              alive = true;
+              ctx.fillStyle = `rgba(40, 20, 10, ${d.opacity})`;
+              ctx.fillRect(d.x, 0, d.w, d.h);
+              ctx.fillStyle = `rgba(249, 115, 22, ${d.opacity})`;
+              ctx.fillRect(d.x, d.h - 5, d.w, 10);
+            }
+          });
+          if (alive) requestAnimationFrame(animate); else resolve();
+        };
+        animate();
+      });
+    },
+
+    async nullInversion(ctx, canvas) {
+      return new Promise(resolve => {
+        let radius = 0;
+        const maxRadius = Math.max(canvas.width, canvas.height);
+        const animate = () => {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          radius += 40;
+          ctx.fillStyle = '#000';
+          ctx.beginPath(); ctx.arc(canvas.width/2, canvas.height/2, radius, 0, Math.PI * 2); ctx.fill();
+          if (radius < maxRadius) requestAnimationFrame(animate); else resolve();
+        };
+        animate();
+      });
+    }
+  },
+
+  /**
+   * Switches the sprite frame for an animated unit.
+   */
+  async showBossIntro(bossId, bossName, onComplete) {
+    const layer = this.el('battle-intro-layer');
+    const canvas = this.el('intro-canvas');
+    const titleCard = this.el('intro-title-card');
+    const nameEl = this.el('intro-boss-name');
+    
+    if (!layer || !canvas || !titleCard) {
+      if (onComplete) onComplete();
+      return;
+    }
+
+    const config = this.BOSS_CONFIG[bossId] || {};
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // Reset and Setup
+    nameEl.textContent = bossName;
+    titleCard.className = ''; 
+    layer.style.display = 'flex';
+    layer.style.opacity = '1';
+    layer.className = config.theme ? `theme--${config.theme}` : '';
+
+    // Specialized Logic for Void Knight Inversion
+    if (bossId === 'void_knight') {
+      document.body.classList.add('theme--void-knight-active');
+      setTimeout(() => document.body.classList.remove('theme--void-knight-active'), 2500);
+    }
+
+    // 1. Play Thematic FX from Registry
+    if (config.flash) this.flash(config.flash, 600);
+    
+    const fxHandler = this.INTRO_EFFECTS[config.fx];
+    if (fxHandler) {
+      await fxHandler(ctx, canvas);
+    } else {
+      await new Promise(r => setTimeout(r, 800)); // Default pause
+    }
+
+    // 2. Show Title Card
+    titleCard.classList.add('visible');
+    await new Promise(r => setTimeout(r, 2200));
+    
+    // 3. Cleanup
+    layer.style.transition = 'opacity 1s ease-out';
+    layer.style.opacity = '0';
+    setTimeout(() => {
+      layer.style.display = 'none';
+      layer.style.opacity = '1';
+      layer.className = '';
+      if (onComplete) onComplete();
+    }, 1000);
   },
 
   /**
@@ -109,7 +325,18 @@ const BattleUI = {
     scene.classList.remove('hf-bg-active');
     scene.style.backgroundImage = '';
 
-    // 1. Check if this is an Arc Boss fight
+    // 1. Check for Boss Background Override
+    if (typeof G !== 'undefined' && G.enemyGroup) {
+      const boss = G.enemyGroup.find(e => e.isBoss);
+      if (boss) {
+        const config = this.BOSS_CONFIG[boss.id];
+        if (config && config.bg) {
+          if (setHFBg(config.bg)) return;
+        }
+      }
+    }
+
+    // 2. Check if this is an Arc Boss fight (Story Mode)
     if (typeof Story !== 'undefined' && Story.active && Story.currentChap === Story.arc?.boss_chapter) {
       if (setHFBg(Story.currentChap.background)) return;
     }
