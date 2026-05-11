@@ -67,7 +67,11 @@ const EnemyScaling = (() => {
       aiType: def.aiType || 'random',
       aiStep: 0,
       isKO: false,
-      statuses: []
+      statuses: [],
+      mutantTraits: def.mutantTraits ? JSON.parse(JSON.stringify(def.mutantTraits)) : undefined,
+      mutation: def.mutation || 'normal',
+      isCorrupted: !!def.isCorrupted,
+      battleEvents: def.battleEvents ? JSON.parse(JSON.stringify(def.battleEvents)) : undefined,
     };
   }
 
