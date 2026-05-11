@@ -1170,9 +1170,9 @@ function _checkStatPhases(unit) {
       if (typeof SFX !== 'undefined') SFX.shatter();
     } else if (unit.id === 'void_knight') {
       BattleUI.addLog(`💀 HIS GRIEF CONSUMES HIM! The Void Knight abandons all defense!`, 'dmg');
-      if (typeof SFX !== 'undefined') SFX.buff();
+      if (typeof SFX !== 'undefined' && SFX.buff) SFX.buff();
     } else {
-      if (typeof SFX !== 'undefined') SFX.buff();
+      if (typeof SFX !== 'undefined' && SFX.buff) SFX.buff();
     }
   }
 }

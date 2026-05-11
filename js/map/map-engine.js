@@ -1328,8 +1328,8 @@ const MapEngine = (() => {
       const sprite = raw ? (raw.sprite || `images/enemies/${id}.webp`) : `images/enemies/${id}.webp`;
       
       // Spawn just outside the current screen view
-      const startTx = dir === 'left'  ? startX + viewTilesX + 2 + i
-                    : dir === 'right' ? startX - 2 - i
+      const startTx = dir === 'right' ? startX + viewTilesX + 2 + i
+                    : dir === 'left'  ? startX - 2 - i
                     : startX + Math.floor(viewTilesX / 2);
       
       const startTy = (dir === 'up' || dir === 'down') 
