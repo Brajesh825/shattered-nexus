@@ -4047,6 +4047,7 @@
     "drops": [
       {
         "item": "Forge Core",
+        "itemId": "forge_core",
         "chance": 0.8
       },
       {

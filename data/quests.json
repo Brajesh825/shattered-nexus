@@ -109,5 +109,71 @@
       { "speaker": "Elder", "text": "They will not come back soon. They are cautious creatures, despite everything. They learn." },
       { "speaker": "Elder", "text": "The settlement breathes easier today. Here — we set this aside for whoever helped us. We just did not know who that would be yet." }
     ]
+  },
+  {
+    "id": "forge_relics",
+    "label": "Forge Relics",
+    "desc": "Collect 4 Forge Cores from the corrupted machines to help Kaelen repair his crawler.",
+    "type": "gather",
+    "target": "forge_core",
+    "count": 4,
+    "giver": "kaelen",
+    "arc": 2,
+    "rewards": { "exp": 450, "item": "elixir" },
+    "acceptDialogue": [
+      { "speaker": "Kaelen", "text": "You look sturdy. I got pinned here by the Sentinels." },
+      { "speaker": "Kaelen", "text": "If you can rip 4 cores out of those walking furnaces, I can fix my rig and get out of this ash-pit." }
+    ],
+    "activeDialogue": [
+      { "speaker": "Kaelen", "text": "Don't touch the perimeter... they're still active..." }
+    ],
+    "submitDialogue": [
+      { "speaker": "Kaelen", "text": "You actually got them. These cores are still burning hot... incredible." },
+      { "speaker": "Kaelen", "text": "Here, take this. I won't need it if my rig runs." }
+    ]
+  },
+  {
+    "id": "resonance_cull",
+    "label": "Resonance Cull",
+    "desc": "Clear out the resonant shards disrupting the scholar's instruments.",
+    "type": "hunt",
+    "target": "crystal_shard",
+    "count": 5,
+    "giver": "scholar_vane",
+    "arc": 1,
+    "rewards": { "exp": 350, "gold": 200 },
+    "acceptDialogue": [
+      { "speaker": "Scholar Vane", "text": "The frequency in this cavern is extraordinary, but those jagged shards are throwing off my readings!" },
+      { "speaker": "Scholar Vane", "text": "Clear them out so I can calibrate the dial." }
+    ],
+    "activeDialogue": [
+      { "speaker": "Scholar Vane", "text": "I can't hear the baseline over that awful ringing..." }
+    ],
+    "submitDialogue": [
+      { "speaker": "Scholar Vane", "text": "Perfect! The baseline is stabilizing." },
+      { "speaker": "Scholar Vane", "text": "The resonance... it's singing now. Take this for your trouble." }
+    ]
+  },
+  {
+    "id": "tide_clearance",
+    "label": "Tide Clearance",
+    "desc": "Defeat 3 Naga blocking the trade routes on the Southern Isles.",
+    "type": "hunt",
+    "target": "naga",
+    "count": 3,
+    "giver": "isle_merchant",
+    "arc": 0,
+    "rewards": { "exp": 500, "gold": 400 },
+    "acceptDialogue": [
+      { "speaker": "Isle Merchant", "text": "The trade routes are blocked. These Naga are tearing apart any ship that gets close." },
+      { "speaker": "Isle Merchant", "text": "If you can clear out a few of them, I can finally move these goods." }
+    ],
+    "activeDialogue": [
+      { "speaker": "Isle Merchant", "text": "The tides are dangerous... be careful out there." }
+    ],
+    "submitDialogue": [
+      { "speaker": "Isle Merchant", "text": "Trade is finally flowing again. The tides are kind." },
+      { "speaker": "Isle Merchant", "text": "Here is your cut. You earned it." }
+    ]
   }
 ]
