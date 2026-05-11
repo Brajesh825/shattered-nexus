@@ -175,5 +175,30 @@
       { "speaker": "Isle Merchant", "text": "Trade is finally flowing again. The tides are kind." },
       { "speaker": "Isle Merchant", "text": "Here is your cut. You earned it." }
     ]
+  },
+  {
+    "id": "lira_second_chance",
+    "label": "A Second Chance",
+    "desc": "Deliver your grandmother's locket to the Sacred Ruins where the Void Knight fell. Give Arren the peace he earned.",
+    "type": "gather",
+    "target": "ruin_closure",
+    "count": 1,
+    "giver": "lira",
+    "rewards": { "exp": 400, "gold": 250 },
+    "acceptDialogue": [
+      { "speaker": "Lira", "text": "Arren... his name was Arren." },
+      { "speaker": "Lira", "text": "The Commander told me. He was the one who held the road until the end. He wasn't a monster. He was a hero who got lost in the dark." },
+      { "speaker": "Lira", "text": "I want to give him something back. My locket... the one you found. It was meant for a protector. I want you to take it to the ruins. Place it where he fell." },
+      { "speaker": "Lira", "text": "Tell him... tell him the road is safe now. He can stop watching." }
+    ],
+    "activeDialogue": [
+      { "speaker": "Lira", "text": "The locket. Take it to the Sacred Ruins, to the center of the bridge where the shadow finally lifted." }
+    ],
+    "submitDialogue": [
+      { "speaker": "Lira", "text": "You're back. Did you... did you tell him?" },
+      { "speaker": "Aya", "text": "The ruins are quiet now, Lira. The weight is gone." },
+      { "speaker": "Lira", "text": "Thank you. I think... I think I can finally start looking forward now, instead of just looking back." },
+      { "speaker": "Lira", "text": "I'm going to help the Azure Commanders rebuild. It's what he would have wanted." }
+    ]
   }
 ]

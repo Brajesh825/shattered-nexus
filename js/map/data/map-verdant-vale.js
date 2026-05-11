@@ -68,6 +68,7 @@ MAP_DEFS.verdant_vale = {
         { id: 'soldier_2', x: 15, y: 6, dialogueKey: 'verdant_vale', behavior: 'stationary' },
         { id: 'soldier_3', x: 17, y: 15, dialogueKey: 'verdant_vale', behavior: 'patrol', waypoints: [{ x: 17, y: 15 }, { x: 17, y: 12 }] },
         { id: 'lira', x: 8, y: 7, dialogueKey: 'verdant_vale', behavior: 'wander', range: 2 },
+        { id: 'ruin_closure', x: 53, y: 29, dialogueKey: 'verdant_vale', showIfMapCleared: 'verdant_vale', behavior: 'stationary' },
     ],
 
     scenes: [

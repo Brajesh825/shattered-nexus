@@ -345,7 +345,7 @@ const NPC_DEFS = {
     name: 'Lira',
     color: '#4ade80',
     sprite: 'images/characters/map/sheets/npc/lira_sheet.png',
-    quests: ['locket_lost'],
+    quests: ['locket_lost', 'lira_second_chance'],
     dialogues: {
       verdant_vale: [
         { speaker: 'Lira', text: 'Oh! You look like you can actually handle yourselves in a fight.' },
@@ -398,6 +398,11 @@ const NPC_DEFS = {
         { speaker: 'Tao', text: 'You followed us all the way up here?' },
         { speaker: 'The Archivist', text: 'An unfinished record goes where the data is. There is still so much left to document.' },
       ],
+      crystal_cavern_f1_post_arc: [
+        { speaker: 'The Archivist', text: 'The heat has broken. I can feel the ice coming back to the walls. The Demon Lord... he is no longer part of the resonance.' },
+        { speaker: 'The Archivist', text: 'Solvan. That was his name. He was the head of this archive once. He wanted to preserve everything. In the end, he preserved nothing but his own fire.' },
+        { speaker: 'The Archivist', text: 'I will stay. There is a new entry to write. A victory. It has been a long time since I had one of those to record.' },
+      ],
     },
   },
 
@@ -424,6 +429,11 @@ const NPC_DEFS = {
         { speaker: 'Ghost Knight', text: '...You are warm. I remember warm.' },
         { speaker: 'Ghost Knight', text: 'I was holding the passage to the core. But the shadows... they are thicker now.' },
         { speaker: 'Ghost Knight', text: 'Go. The Frozen Core is just beyond the next descent. The guardian waits for those who carry life.' },
+      ],
+      crystal_cavern_f2_post_arc: [
+        { speaker: 'Ghost Knight', text: 'The screaming... it stopped. The fire is gone.' },
+        { speaker: 'Ghost Knight', text: 'I remember Solvan. He was... a good man, before the Fragment. He spent forty years in the dark just to make sure we weren\'t forgotten.' },
+        { speaker: 'Ghost Knight', text: 'The Cavern is quiet. For the first time in a century, it is just a cave again. Thank you.' },
       ],
     },
   },
@@ -845,6 +855,10 @@ const NPC_DEFS = {
     dialogues: {
       crystal_cavern_f2: [
         { speaker: 'Scholar Vane', text: 'The resonance is stable. The Archive is communicating.' }
+      ],
+      crystal_cavern_f2_post_arc: [
+        { speaker: 'Scholar Vane', text: 'The signal! It\'s clear! The Fire Seal\'s interference has vanished.' },
+        { speaker: 'Scholar Vane', text: 'I can finally hear the baseline of the world again. We have a lot of work to do. Ashveil is finally reachable!' },
       ]
     }
   },
@@ -856,6 +870,18 @@ const NPC_DEFS = {
     dialogues: {
       southern_isles: [
         { speaker: 'Isle Merchant', text: 'Trade is finally flowing again. The tides are kind.' }
+      ]
+    }
+  },
+  ruin_closure: {
+    name: 'Offering Point',
+    color: '#ffffff',
+    sprite: 'images/characters/map/sheets/npc/offering_point.png',
+    dialogues: {
+      verdant_vale: [
+        { speaker: 'narrator', text: 'The air here is clear of shadow. You place Lira\'s locket among the stone fragments of the eastern bridge.' },
+        { speaker: 'narrator', text: 'For a second, the blue gem pulses with a soft, warm light \u2014 the light of a home that was never forgotten.' },
+        { speaker: 'narrator', text: 'Rest well, Arren. The road is yours no longer.' }
       ]
     }
   }

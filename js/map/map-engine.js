@@ -1904,6 +1904,11 @@ const MapEngine = (() => {
     _npcQuestFlow = false;
     _hideQuestChoices();
 
+    // Trigger quest 'gather' progress if this NPC is a target (delivery style)
+    if (typeof QuestSystem !== 'undefined' && npc.id) {
+      QuestSystem.onGather(npc.id);
+    }
+
     const def      = (typeof NPC_DEFS !== 'undefined') ? NPC_DEFS[npc.id] : null;
     const questIds = (def && def.quests) || [];
 
