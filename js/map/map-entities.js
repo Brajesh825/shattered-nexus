@@ -1057,31 +1057,34 @@ const MapEntities = (() => {
     function _renderNPCIndicator(ctx, n, sx, sy, oy, bounce, TILE) {
       const t   = performance.now();
       const cx  = sx + TILE / 2;
-      const iy  = sy + oy + bounce - 6;
+      // Push icon higher above the sprite top so it's always clear of the head
+      const iy  = sy + oy + bounce - 14;
       const qs  = _getNPCQuestState(n);
 
       ctx.save();
       ctx.textAlign = 'center';
 
       if (qs === 'ready') {
-        // ❕ green — fast urgent pulse
-        ctx.globalAlpha = 0.75 + 0.25 * Math.sin(t / 180);
-        ctx.font = 'bold 14px serif';
+        // ❕ green — fast urgent pulse, large
+        const pulse = 0.75 + 0.25 * Math.sin(t / 180);
+        ctx.globalAlpha = pulse;
+        ctx.font = 'bold 22px serif';
         ctx.fillText('❕', cx, iy);
       } else if (qs === 'available') {
-        // ❗ gold — normal pulse
-        ctx.globalAlpha = 0.7 + 0.3 * Math.sin(t / 320);
-        ctx.font = 'bold 14px serif';
+        // ❗ gold — normal pulse, large
+        const pulse = 0.7 + 0.3 * Math.sin(t / 320);
+        ctx.globalAlpha = pulse;
+        ctx.font = 'bold 22px serif';
         ctx.fillText('❗', cx, iy);
       } else if (qs === 'available_active') {
-        // ❓ visible but calm — quest in progress, not urgent
+        // ❓ calm breathing — quest in progress
         ctx.globalAlpha = 0.65 + 0.2 * Math.sin(t / 600);
-        ctx.font = 'bold 13px serif';
+        ctx.font = 'bold 20px serif';
         ctx.fillText('❓', cx, iy);
       } else if (!n.isTalked) {
         // 💬 existing behaviour for non-quest NPCs
         ctx.globalAlpha = 0.7 + 0.3 * Math.sin(t / 300);
-        ctx.font = 'bold 12px serif';
+        ctx.font = 'bold 18px serif';
         ctx.fillText('💬', cx, iy);
       }
 
