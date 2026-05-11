@@ -246,3 +246,38 @@ masterpiece, best quality, (kraken:1.4), massive aquatic monster with dark tenta
 
 [STORM SENTINEL][1500508310]
 masterpiece, best quality, (storm sentinel:1.4), colossal knight made of dark ancient stone and glowing blue lightning, heavy iron chains wrapped around arms and torso, ornate crown-like stone helmet with a single glowing blue visor, holding a massive stone scepter crackling with electricity, floating stone pillars and ruins hovering around, full body, majestic and intimidating pose, cel shaded, flat color, thin outlines, high contrast, vibrant blue and charcoal stone palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+---
+
+[SHADOW EMPEROR (TRUE FORM)]
+masterpiece, best quality, (shadow emperor:1.4), glowing starlight body, fracturing into shards of light and void, revealing a human scholar beneath, tattered obsidian robes, flowing silver hair, desperate but calm expression, ethereal purple energy leaks, full body, majestic but tragic pose, cel shaded, flat color, thin outlines, high contrast, vibrant purple and white palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[THE PALE KING]
+masterpiece, best quality, (the pale king:1.4), ancient lich king, skeletal face with glowing blue eyes, ornate silver tiara, tattered silk robes of a high magister, floating scrolls of shadow, staff of cold logic, frost aura, full body, majestic and calculating pose, cel shaded, flat color, thin outlines, high contrast, vibrant silver and blue palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[THE EBON CHAMPION]
+masterpiece, best quality, (the ebon champion:1.4), massive black knight, ornate ebon plate armor, flowing tattered crimson cape, glowing red visor, wielding a dark crimson-glowing spear, trail of shadow mist, full body, majestic and honorable pose, cel shaded, flat color, thin outlines, high contrast, vibrant black and crimson palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[THE SKELETAL MAW]
+masterpiece, best quality, (the skeletal maw:1.5), colossal bone dragon, fragments of purple crystalline armor fused to ribs, glowing violet void energy in eye sockets and chest, massive tattered wings, feral and pained expression, full body, majestic but monstrous pose, cel shaded, flat color, thin outlines, high contrast, vibrant purple and bone white palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[VOID-TOUCHED VALKYRIE]
+masterpiece, best quality, (void-touched valkyrie:1.4), female warrior, two large tattered black feathered wings, ornate purple and silver armor, glowing purple eyes, wielding a cracked holy sword infused with void energy, full body, majestic but tragic pose, cel shaded, flat color, thin outlines, high contrast, vibrant purple and silver palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[MIRE HORROR]
+masterpiece, best quality, (mire horror:1.4), mass of rotting vegetation and toxic sludge, multiple glowing green eyes, long spindly limbs made of vines, dripping green acidic ooze, full body, majestic but horrific pose, cel shaded, flat color, thin outlines, high contrast, vibrant green and dark brown palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[SKY REAVER]
+masterpiece, best quality, (sky reaver:1.4), massive avian creature with metallic scales, sharp beak, glowing blue eyes, lightning sparks around wings, predatory flying pose, full body, majestic pose, cel shaded, flat color, thin outlines, high contrast, vibrant blue and silver palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[STARKNIGHT SENTINEL]
+masterpiece, best quality, (starknight sentinel:1.4), armored guardian made of polished white marble and starlight energy, glowing blue visor, wielding a shield of pure light and a starlight mace, full body, majestic guardian pose, cel shaded, flat color, thin outlines, high contrast, vibrant white and blue palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[VOID REAVER]
+masterpiece, best quality, (void reaver:1.4), sleek humanoid assassin made of shadow, multiple long sharp blades for arms, glowing purple eyes, trailing void mist, dynamic combat pose, full body, majestic and lethal pose, cel shaded, flat color, thin outlines, high contrast, vibrant purple and black palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[REALITY FRACTURE]
+masterpiece, best quality, (reality fracture:1.6), abstract entity of cracked glass and void energy, reflecting different worlds in shards, glowing white core, shifting geometry, full body, majestic and abstract pose, cel shaded, flat color, thin outlines, high contrast, vibrant white and purple palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[ABYSSAL EYE]
+masterpiece, best quality, (abyssal eye:1.4), massive floating eyeball surrounded by dark tentacles and void energy, glowing red pupil, multiple smaller eyes on tentacles, staring at the viewer, full body, majestic but terrifying pose, cel shaded, flat color, thin outlines, high contrast, vibrant red and black palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background

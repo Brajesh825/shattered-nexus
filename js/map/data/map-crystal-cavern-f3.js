@@ -29,6 +29,7 @@ MAP_DEFS.crystal_cavern_f3 = {
   
   bgm: 'cavern_explore',
   battleBgm: 'cavern_battle',
+  battleBg: 'cavern_f3.webp',
   bossBgm: 'spectral_guardian_theme',
 
   mutationConfig: {

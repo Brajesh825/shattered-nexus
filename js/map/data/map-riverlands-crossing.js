@@ -11,6 +11,7 @@ MAP_DEFS.riverlands_crossing = {
     bgColor: '#020f12',
     bgm: 'riverlands_explore',
     battleBgm: 'riverlands_battle',
+    battleBg: 'riverlands.webp',
     bossBgm: 'river_king_theme',
     ambientLight: 'rgba(50,150,180,0.1)',
     weather: 'rain',
