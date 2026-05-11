@@ -1518,6 +1518,7 @@ const MapEngine = (() => {
 
   /* ── NPC dialogue ────────────────────────────────────── */
   let _npcLines = [], _npcLineIdx = 0, _npcCurrent = null;
+  let _npcQuestFlow = false; // true when dialogue came from quest priority path
 
   const _NPC_PARTY_IDS = ['aya', 'tao', 'lulu', 'rei', 'ria', 'rydia', 'lenneth', 'kain', 'leon', 'sera'];
 
@@ -1566,7 +1567,9 @@ const MapEngine = (() => {
   // Scan all lines and build the speaker→sprite map.
   // Skips build entirely if this NPC has already been talked to (one-time scene).
   function _buildNPCSceneLayer() {
-    if (_npcCurrent && _npcCurrent.isTalked) return; // repeat interaction → plain panel only
+    // Quest-flow dialogues always render scene sprites regardless of isTalked.
+    // Plain repeat visits (non-quest) keep the compact panel-only look.
+    if (_npcCurrent && _npcCurrent.isTalked && !_npcQuestFlow) return;
     _npcSceneSpeakerMap = {};
     _npcLines.forEach(l => {
       if (!l.speaker) return;
@@ -1600,18 +1603,109 @@ const MapEngine = (() => {
     layer.appendChild(charEl);
   }
 
+  function _getQuestDef(id) {
+    return (typeof window !== 'undefined' && window.QUESTS_DATA)
+      ? (window.QUESTS_DATA.find(q => q.id === id) || null)
+      : null;
+  }
+
   function _openNPCDialogue(npc) {
     _npcCurrent = npc;
-    _npcNextLast = 0; // reset debounce so first click of new session is never blocked
-    const def = (typeof NPC_DEFS !== 'undefined') ? NPC_DEFS[npc.id] : null;
-    // On repeat visits use a _return dialogue key if defined, else fall back to original
-    const key = npc.isTalked
-      ? (npc.dialogueKey + '_return')
-      : npc.dialogueKey;
+    _npcNextLast = 0;
+    _npcQuestFlow = false;
+    _hideQuestChoices();
+
+    const def      = (typeof NPC_DEFS !== 'undefined') ? NPC_DEFS[npc.id] : null;
+    const questIds = (def && def.quests) || [];
+
+    // ── Quest priority flow ──────────────────────────────────────────
+    if (questIds.length && typeof QuestSystem !== 'undefined') {
+
+      // 1. Ready to submit — highest priority
+      const readyId = questIds.find(id => QuestSystem.isReadyToSubmit(id));
+      if (readyId) {
+        const qd = _getQuestDef(readyId);
+        const lines = (qd && qd.submitDialogue) || [{ speaker: npc.name || npc.id, text: 'Thank you for your help.' }];
+        _npcLines = [...lines, { _type: 'submit', _questId: readyId }];
+        _npcQuestFlow = true;
+        _npcLineIdx = 0;
+        _showNPCLine();
+        return;
+      }
+
+      // 2. Quest in progress — brief check-in
+      const activeId = questIds.find(id => QuestSystem.isActive(id));
+      if (activeId) {
+        const qd = _getQuestDef(activeId);
+        const lines = (qd && qd.activeDialogue) || [{ speaker: npc.name || npc.id, text: '...' }];
+        _npcLines = lines;
+        _npcQuestFlow = true;
+        _npcLineIdx = 0;
+        _showNPCLine();
+        return;
+      }
+
+      // 3. Quest available to accept
+      const availableId = questIds.find(id => QuestSystem.canAccept(id));
+      if (availableId) {
+        const qd = _getQuestDef(availableId);
+        const lines = (qd && qd.acceptDialogue) || [{ speaker: npc.name || npc.id, text: 'I could use your help...' }];
+        _npcLines = [...lines, { _type: 'choice', _questId: availableId }];
+        _npcQuestFlow = true;
+        _npcLineIdx = 0;
+        _showNPCLine();
+        return;
+      }
+    }
+
+    // ── Fallback: normal / repeat dialogue ───────────────────────────
+    const key = npc.isTalked ? (npc.dialogueKey + '_return') : npc.dialogueKey;
     _npcLines = (def && def.dialogues && (def.dialogues[key] || def.dialogues[npc.dialogueKey]))
       || [{ speaker: npc.name || npc.id, text: '...' }];
     _npcLineIdx = 0;
     _showNPCLine();
+  }
+
+  function _hideQuestChoices() {
+    const choicesEl = document.getElementById('npc-dialogue-choices');
+    const nextBtn   = document.getElementById('npc-dialogue-next');
+    if (choicesEl) { choicesEl.style.display = 'none'; choicesEl.innerHTML = ''; }
+    if (nextBtn)   nextBtn.style.display = '';
+  }
+
+  function _showQuestChoices(line) {
+    const choicesEl = document.getElementById('npc-dialogue-choices');
+    const nextBtn   = document.getElementById('npc-dialogue-next');
+    if (!choicesEl) return;
+    if (nextBtn) nextBtn.style.display = 'none';
+
+    const opts = line._type === 'submit'
+      ? [{ label: '✔ Collect Reward', action: 'submit',  questId: line._questId, primary: true },
+         { label: '✗ Not yet',        action: 'dismiss' }]
+      : [{ label: '✔ Accept',         action: 'accept',  questId: line._questId, primary: true },
+         { label: '✗ Maybe later',    action: 'dismiss' }];
+
+    choicesEl.innerHTML = '';
+    opts.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'npc-choice-btn' + (opt.primary ? ' primary' : '');
+      btn.textContent = opt.label;
+      btn.onclick = () => _handleQuestChoice(opt);
+      choicesEl.appendChild(btn);
+    });
+    choicesEl.style.display = 'flex';
+  }
+
+  function _handleQuestChoice(opt) {
+    _hideQuestChoices();
+    if (opt.action === 'accept' && opt.questId && typeof QuestSystem !== 'undefined') {
+      QuestSystem.accept(opt.questId);
+    } else if (opt.action === 'submit' && opt.questId && typeof QuestSystem !== 'undefined') {
+      QuestSystem.submit(opt.questId);
+      if (typeof SFX !== 'undefined') SFX.buff();
+    }
+    // dismiss — just close
+    _closeNPCDialogue();
   }
 
   function _showNPCLine() {
@@ -1619,10 +1713,19 @@ const MapEngine = (() => {
     if (!el) return;
     if (_npcLineIdx >= _npcLines.length) { _closeNPCDialogue(); return; }
 
-    // Build scene layer once on first line
+    // Build scene layer once on first line.
+    // Quest-flow dialogues always get scene sprites, even on repeat visits.
     if (_npcLineIdx === 0) _buildNPCSceneLayer();
 
-    const line    = _npcLines[_npcLineIdx];
+    const line = _npcLines[_npcLineIdx];
+
+    // Synthetic entries — render choice UI instead of advancing text
+    if (line._type === 'choice' || line._type === 'submit') {
+      _showQuestChoices(line);
+      el.style.display = 'flex';
+      return;
+    }
+
     const speaker = line.speaker || null;
     const isNarrator = !speaker;
 
@@ -1675,13 +1778,17 @@ const MapEngine = (() => {
   }
 
   function _closeNPCDialogue() {
+    _hideQuestChoices();
+    _npcQuestFlow = false;
+
     const el = document.getElementById('npc-dialogue');
     if (el) el.style.display = 'none';
     const layer = document.getElementById('npc-scene-layer');
     if (layer) layer.innerHTML = '';
     if (typeof Cutscene !== 'undefined') Cutscene._skipTw();
     if (typeof Focus !== 'undefined') Focus.setContext(null);
-    // Only fire completeCb / giveQuest on the very first interaction — not on repeat visits
+
+    // Only fire legacy completeCb / giveQuest on the very first interaction
     const firstTime  = _npcCurrent && !_npcCurrent.isTalked;
     const completeCb = firstTime && _npcCurrent.onDialogueComplete;
     const giveQuest  = firstTime && _npcCurrent.giveQuest;
@@ -1690,6 +1797,7 @@ const MapEngine = (() => {
       _npcCurrent._dialogueOpen = false;
       _npcCurrent = null;
     }
+    // Legacy map-file giveQuest (still works for NPCs that predate the new system)
     if (giveQuest && typeof QuestSystem !== 'undefined') QuestSystem.accept(giveQuest);
     if (completeCb) completeCb();
     else resume();

@@ -224,6 +224,7 @@ const NPC_DEFS = {
     name: 'Elder Maren',
     color: '#fbbf24',
     sprite: 'images/characters/map/sheets/npc/elder_maren_sheet.png',
+    quests: ['goblin_menace'],
     dialogues: {
       verdant_vale: [
         { speaker: 'Elder Maren', text: 'Travelers! Praise the stars, I thought we were the last ones left.' },
@@ -326,6 +327,7 @@ const NPC_DEFS = {
     name: 'The Archivist',
     color: '#a5b4fc',
     sprite: 'images/characters/map/sheets/npc/archivist_sheet.png',
+    quests: ['bones_of_the_fallen'],
     dialogues: {
       crystal_cavern: [
         { speaker: 'The Archivist', text: 'Still here. Still here. I have been cataloguing the resonance patterns for… how long has it been.' },
@@ -708,6 +710,7 @@ const NPC_DEFS = {
     name: 'Elder',
     color: '#fcd34d',
     sprite: 'images/characters/map/sheets/npc/soldier_sheet.png',
+    quests: ['naga_threat'],
     dialogues: {
       southern_isles: [
         { speaker: 'Elder', text: 'I was seven when the first market closed. Not because there were no buyers — because the docks were six feet underwater and you needed a skiff to reach the stalls.' },

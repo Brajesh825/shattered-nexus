@@ -1043,6 +1043,52 @@ const MapEntities = (() => {
       else              return { cx: 0,       cy: h / 2,  rev: false }; // right
     }
 
+    function _getNPCQuestState(npc) {
+      if (typeof QuestSystem === 'undefined') return null;
+      const def = (typeof NPC_DEFS !== 'undefined') ? NPC_DEFS[npc.id] : null;
+      if (!def || !def.quests || !def.quests.length) return null;
+      const ids = def.quests;
+      if (ids.some(id => QuestSystem.isReadyToSubmit(id))) return 'ready';
+      if (ids.some(id => QuestSystem.isActive(id)))         return 'available_active';
+      if (ids.some(id => QuestSystem.canAccept(id)))        return 'available';
+      return null;
+    }
+
+    function _renderNPCIndicator(ctx, n, sx, sy, oy, bounce, TILE) {
+      const t   = performance.now();
+      const cx  = sx + TILE / 2;
+      const iy  = sy + oy + bounce - 6;
+      const qs  = _getNPCQuestState(n);
+
+      ctx.save();
+      ctx.textAlign = 'center';
+
+      if (qs === 'ready') {
+        // ❕ green — fast urgent pulse
+        ctx.globalAlpha = 0.75 + 0.25 * Math.sin(t / 180);
+        ctx.font = 'bold 14px serif';
+        ctx.fillText('❕', cx, iy);
+      } else if (qs === 'available') {
+        // ❗ gold — normal pulse
+        ctx.globalAlpha = 0.7 + 0.3 * Math.sin(t / 320);
+        ctx.font = 'bold 14px serif';
+        ctx.fillText('❗', cx, iy);
+      } else if (qs === 'available_active') {
+        // ❓ dim — slow breathe, quest in progress
+        ctx.globalAlpha = 0.4 + 0.2 * Math.sin(t / 800);
+        ctx.font = '12px serif';
+        ctx.fillText('❓', cx, iy);
+      } else if (!n.isTalked) {
+        // 💬 existing behaviour for non-quest NPCs
+        ctx.globalAlpha = 0.7 + 0.3 * Math.sin(t / 300);
+        ctx.font = 'bold 12px serif';
+        ctx.fillText('💬', cx, iy);
+      }
+
+      ctx.textAlign = 'left';
+      ctx.restore();
+    }
+
     function _renderNPC(ctx, cam, TILE, n, inVision) {
         if (typeof inVision === 'function' && !inVision(n.tx, n.ty)) return;
         const sx = n.px - cam.x, sy = n.py - cam.y;
@@ -1080,16 +1126,8 @@ const MapEntities = (() => {
           ctx.fillRect(sx + 8, sy + 8 + bounce, TILE - 16, TILE - 16);
         }
 
-        // Interaction prompt
-        if (!n.isTalked) {
-          const pulse = 0.7 + 0.3 * Math.sin(performance.now() / 300);
-          ctx.save();
-          ctx.globalAlpha = pulse;
-          ctx.font = 'bold 12px serif';
-          ctx.textAlign = 'center';
-          ctx.fillText('💬', sx + TILE / 2, sy + oy + bounce - 4);
-          ctx.restore();
-        }
+        // Interaction prompt — quest-state-aware
+        _renderNPCIndicator(ctx, n, sx, sy, oy, bounce, TILE);
 
         // Name Tag
         ctx.fillStyle = 'rgba(0,0,0,0.55)';

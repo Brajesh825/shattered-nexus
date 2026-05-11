@@ -790,6 +790,54 @@
 }
 .npc-dialogue-next:hover { background: rgba(100,60,200,0.4); border-color: #7c3aed; color: #fff; }
 
+/* ── Quest choice buttons (accept / dismiss / collect reward) ── */
+.npc-dialogue-choices {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  width: 100%;
+  margin-bottom: 6px;
+}
+
+.npc-choice-btn {
+  font-family: var(--px);
+  font-size: var(--fs-sm);
+  letter-spacing: 1.5px;
+  padding: 9px 20px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.npc-choice-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.4);
+  color: #fff;
+}
+
+.npc-choice-btn.primary {
+  background: rgba(200, 164, 90, 0.12);
+  border-color: rgba(200, 164, 90, 0.45);
+  color: var(--gold);
+}
+.npc-choice-btn.primary:hover {
+  background: rgba(200, 164, 90, 0.22);
+  border-color: var(--gold);
+  color: #fff5cc;
+}
+
+/* Compact for small phones */
+@media (max-width: 480px) {
+  .npc-choice-btn { font-size: 9px; padding: 7px 14px; letter-spacing: 1px; }
+}
+/* Compact for landscape phones */
+@media (orientation: landscape) and (max-height: 500px) {
+  .npc-choice-btn { font-size: 8px; padding: 6px 12px; }
+}
+
 /* ── PC / large-screen dialogue scaling ─────────────── */
 @media (min-width: 1024px) {
   .npc-dialogue-panel {
