@@ -761,6 +761,115 @@ const BattleUI = {
   },
 
   /**
+   * Renders a cinematic dialogue overlay mid-battle.
+   * Freezes the action UI and renders lines one-by-one.
+   * Calls onComplete() when all lines have been advanced through.
+   * @param {object} event - The battleEvent object from enemies.json
+   * @param {function} onComplete - Callback to resume the turn queue
+   */
+  showBattleEvent(event, onComplete) {
+    // Remove any existing overlay first
+    this.closeBattleEvent();
+
+    const scene = this.el('battle-scene');
+    if (!scene) { onComplete?.(); return; }
+
+    const lines = event.lines || [];
+    let lineIdx = 0;
+
+    const overlay = document.createElement('div');
+    overlay.id = 'battle-event-overlay';
+    overlay.style.cssText = `
+      position: absolute; inset: 0; z-index: 800;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 55%);
+      padding: 0 0 12px 0;
+      animation: fadeIn 0.35s ease-out;
+    `;
+
+    const box = document.createElement('div');
+    box.id = 'battle-event-box';
+    box.style.cssText = `
+      margin: 0 16px;
+      background: rgba(5,2,18,0.92);
+      border: 1px solid rgba(255,215,0,0.35);
+      border-radius: 10px;
+      padding: 14px 18px 12px;
+      box-shadow: 0 0 24px rgba(255,215,0,0.12), inset 0 0 20px rgba(0,0,0,0.5);
+      cursor: pointer;
+      user-select: none;
+    `;
+
+    const speakerEl = document.createElement('div');
+    speakerEl.style.cssText = `
+      font-size: 13px; font-weight: 700; letter-spacing: 0.08em;
+      color: #ffd700; margin-bottom: 6px; text-transform: uppercase;
+    `;
+
+    const textEl = document.createElement('div');
+    textEl.style.cssText = `
+      font-size: 14px; line-height: 1.55; color: #e8e0ff;
+    `;
+
+    const hint = document.createElement('div');
+    hint.style.cssText = `
+      text-align: right; font-size: 10px; color: rgba(255,215,0,0.45);
+      margin-top: 8px; letter-spacing: 0.05em;
+    `;
+    hint.textContent = '▶ TAP TO CONTINUE';
+
+    box.appendChild(speakerEl);
+    box.appendChild(textEl);
+    box.appendChild(hint);
+    overlay.appendChild(box);
+    scene.appendChild(overlay);
+
+    const showLine = () => {
+      if (lineIdx >= lines.length) {
+        this.closeBattleEvent();
+        onComplete?.();
+        return;
+      }
+      const line = lines[lineIdx++];
+      // Color-code known speakers
+      const SPEAKER_COLORS = {
+        'Aya': '#7dd3fc', 'Tao': '#ef4444', 'Rei': '#4ade80',
+        'Lulu': '#2dd4bf', 'Rex': '#fcd34d', 'Ria': '#a78bfa',
+        'narrator': '#a0a0c0'
+      };
+      speakerEl.textContent = line.speaker || '';
+      speakerEl.style.color = SPEAKER_COLORS[line.speaker] || '#ffd700';
+      textEl.textContent = line.text || '';
+      hint.textContent = lineIdx >= lines.length ? '▶ CLOSE' : '▶ TAP TO CONTINUE';
+    };
+
+    // Advance on click
+    box.addEventListener('click', showLine);
+
+    // Also advance on Space/Enter for keyboard players
+    const keyHandler = (e) => {
+      if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        showLine();
+      }
+    };
+    document.addEventListener('keydown', keyHandler);
+    overlay._keyHandler = keyHandler; // Store for cleanup
+
+    showLine(); // Render first line immediately
+  },
+
+  /**
+   * Removes the mid-battle event overlay from the scene.
+   */
+  closeBattleEvent() {
+    const ov = this.el('battle-event-overlay');
+    if (!ov) return;
+    if (ov._keyHandler) document.removeEventListener('keydown', ov._keyHandler);
+    ov.remove();
+  },
+
+  /**
    * Full lunge sequence: idle → prepare → jump → attack (hit) → hold → return → idle.
    * onHit fires at the attack peak. onComplete fires when fully back at idle.
    * Falls back gracefully if the DOM element is missing.

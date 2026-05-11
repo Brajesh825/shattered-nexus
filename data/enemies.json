@@ -3863,6 +3863,33 @@
         "spd": 0.75
       }
     ],
+    "battleEvents": [
+      {
+        "id": "galdor_rage",
+        "fired": false,
+        "trigger": { "type": "hp", "threshold": 0.5 },
+        "lines": [
+          { "speaker": "King Galdor", "text": "...this was not in the terms of our arrangement." },
+          { "speaker": "King Galdor", "text": "The gold was given. I held my end. This kingdom held its end." },
+          { "speaker": "Aya", "text": "He... doesn't know. He has no idea what happened to his people." },
+          { "speaker": "King Galdor", "text": "VALDRIS PROMISED PEACE! AND I — I WILL HOLD THIS THRONE UNTIL HE HONOURS IT!" }
+        ],
+        "onComplete": {
+          "addStatus": {
+            "id": "status_atk_boost",
+            "icon": "👑",
+            "label": "Royal Wrath",
+            "stat": "atk",
+            "type": "mult",
+            "value": 1.5,
+            "turns": 99
+          },
+          "logMsg": "👑 King Galdor enters Royal Wrath! His ATK surges!",
+          "screenShake": true,
+          "flash": "#ffd70044"
+        }
+      }
+    ],
     "stats": {
       "hp": 250,
       "atk": 36,
