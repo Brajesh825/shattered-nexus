@@ -116,6 +116,14 @@ const MapEngine = (() => {
   // Region triggers already fired this session
   const _firedTriggers = new Set();
 
+  // ── Cinematic Scene State ──────────────────────────────
+  let _sceneRunning      = false; // blocks encounters, triggers, and player movement
+  let _playerLocked      = false; // skips MapPlayer.update() during scene walk/dialogue
+  let _playerFacingOverride = null; // {dx,dy} or null
+  let _marchEnemies      = [];    // [{id,tx,ty,px,py,targetTx,targetTy,img,alpha}] marching in
+  let _sceneAmbushActive = false;
+  let _sceneAmbushCallback = null;
+
   /* ── Camera ─────────────────────────────────────────── */
   const cam = { x: 0, y: 0 };
   let _stepBobTime = 0;   // seconds remaining for step-landing bob
@@ -955,7 +963,8 @@ const MapEngine = (() => {
     
     _renderObjectiveMarkers();
     _renderCampMarker();
-    
+    _renderMarchEnemies(_ctx);
+
     _renderAtmosphere();
     _renderFog();
     _renderObjectiveHUD();
@@ -989,8 +998,9 @@ const MapEngine = (() => {
     _time += dt;
     _fogTime += dt;
     MapInput.poll();
-    MapPlayer.update(dt, _map);
+    if (!_playerLocked) MapPlayer.update(dt, _map);
     MapEntities.updateEnemies(dt, _map);
+    if (_marchEnemies.length) _updateMarchEnemies(dt);
 
     // Detect step landing → footstep SFX
     if (_prevMoving && !MapPlayer.moving) {
@@ -1006,10 +1016,10 @@ const MapEngine = (() => {
     _updateCamera(dt);
 
 
-    // Encounter check
-    const enc = MapEntities.checkEncounter(_map);
-    if (enc) {
-      _triggerEncounter(enc);
+    // Encounter check — blocked while a scene is running
+    if (!_sceneRunning) {
+      const enc = MapEntities.checkEncounter(_map);
+      if (enc) _triggerEncounter(enc);
     }
 
     // Camp node check — player returns to playerStart tile
@@ -1031,8 +1041,9 @@ const MapEngine = (() => {
     // Objective check each frame
     _checkObjective();
 
-    // Region triggers check
-    _checkRegionTriggers();
+    // Region triggers and scene triggers
+    if (!_sceneRunning) _checkRegionTriggers();
+    _checkScenes();
 
     // Fog dialogue + ambient voice lines
     _updateFogDialogue(dt);
@@ -1105,6 +1116,240 @@ const MapEngine = (() => {
           }
         }
       }
+    });
+  }
+
+  /* ── Cinematic Scene Runner ─────────────────────────────── */
+
+  // Scenes fired this session (also persisted in G.firedScenes across sessions)
+  const _firedScenes = new Set();
+
+  function _checkScenes() {
+    if (_sceneRunning || !_map || !_map.scenes || MapPlayer.moving) return;
+    const tx = MapPlayer.tx, ty = MapPlayer.ty;
+
+    for (const scene of _map.scenes) {
+      if (!scene.once || _firedScenes.has(scene.id)) continue;
+      const g = G.firedScenes;
+      if (g && g.has && g.has(scene.id)) { _firedScenes.add(scene.id); continue; }
+
+      const r = scene.trigger;
+      if (!r) continue;
+      const inside = tx >= r.x && tx < r.x + (r.w || 1) &&
+                     ty >= r.y && ty < r.y + (r.h || 1);
+      if (inside) {
+        _firedScenes.add(scene.id);
+        _runScene(scene);
+        break; // only one scene per tick
+      }
+    }
+  }
+
+  function _runScene(scene) {
+    _sceneRunning = true;
+    _playerLocked = true;
+
+    const acts = scene.acts || [];
+    let i = 0;
+
+    function next() {
+      if (i >= acts.length) { _endScene(scene); return; }
+      const act = acts[i++];
+      _execAct(act, scene.npcId, next);
+    }
+
+    next();
+  }
+
+  function _endScene(scene) {
+    _sceneRunning = false;
+    _playerLocked = false;
+    _playerFacingOverride = null;
+    _marchEnemies = [];
+
+    // Persist the "seen" flag immediately so it survives before next camp save
+    if (!G.firedScenes) G.firedScenes = new Set();
+    G.firedScenes.add(scene.id);
+    const slot = (G.currentSaveSlot !== undefined) ? G.currentSaveSlot : 0;
+    if (typeof Save !== 'undefined') {
+      Save.patch({ firedScenes: Array.from(G.firedScenes) }, slot);
+    }
+
+    resume();
+  }
+
+  function _execAct(act, defaultNpcId, done) {
+    const npcId = act.npcId || defaultNpcId;
+    switch (act.type) {
+      case 'npc_walk':   return _actNpcWalk(npcId, act, done);
+      case 'dialogue':   return _actDialogue(act.lines, done);
+      case 'ambush':     return _actAmbush(act, done);
+      case 'npc_exit':   return _actNpcExit(npcId, act, done);
+      case 'face':       return _actFace(npcId, act, done);
+      case 'wait':       return _actWait(act.ms || 600, done);
+      case 'msg':
+        if (typeof MapUI !== 'undefined') MapUI.showMsg(act.text, act.ms || 1800);
+        setTimeout(done, act.ms || 1800);
+        return;
+      default: done();
+    }
+  }
+
+  function _actNpcWalk(npcId, act, done) {
+    // Walk NPC to 1 tile away from the player (face-to-face).
+    // The arrival block in map-entities.js already sets n.facing toward the player.
+    if (typeof MapEntities !== 'undefined') {
+      MapEntities.setNPCSceneWalk(npcId, () => {
+        // Face the player toward the NPC so they look at each other
+        const npcs = MapEntities.getNPCs();
+        const n = npcs && npcs.find(x => x.id === npcId);
+        if (n) {
+          _playerFacingOverride = { dx: Math.sign(n.tx - MapPlayer.tx), dy: Math.sign(n.ty - MapPlayer.ty) };
+        }
+        done();
+      });
+    } else {
+      done();
+    }
+  }
+
+  function _actDialogue(lines, done) {
+    _openGenericDialogue(lines, () => {
+      _playerFacingOverride = null;
+      done();
+    });
+  }
+
+  function _actAmbush(act, done) {
+    const marchMs = act.marchMs || 1200;
+    const dir = act.dir || 'right';
+
+    // Face both player and NPC toward the threat
+    _playerFacingOverride = _dirVec(dir);
+    if (act.npcId && typeof MapEntities !== 'undefined') {
+      MapEntities.setNPCFacing(act.npcId, _dirVec(dir));
+    }
+
+    if (typeof MapUI !== 'undefined') MapUI.showMsg(act.preMsg || '⚔ Incoming!', 1800);
+
+    // Restart the loop so march silhouettes animate (dialogue act stops it)
+    resume();
+
+    const previewIds = act.waves
+      ? act.waves.reduce((a, w) => a.concat(w.enemies || []), []).slice(0, 4)
+      : (act.enemies || []).slice(0, 4);
+    _marchEnemies = _buildMarchEntities(previewIds, dir);
+
+    setTimeout(() => {
+      _marchEnemies = [];
+      if (act.waves) {
+        // Multi-wave: hand off to startWaves; done() fires via onAllClear
+        startWaves({
+          waves: act.waves,
+          allClearMsg: act.allClearMsg || '✦ All waves cleared!',
+          onAllClear: () => done(),
+        });
+      } else {
+        // Single encounter: intercept onBattleComplete
+        _sceneAmbushActive = true;
+        _sceneAmbushCallback = (victory) => {
+          _sceneRunning = true;
+          _playerLocked = true;
+          done(victory);
+        };
+        _triggerEncounter({ enemies: act.enemies || [], isBoss: act.isBoss || false, mutation: act.mutation || null });
+      }
+    }, marchMs);
+  }
+
+  function _actNpcExit(npcId, act, done) {
+    if (typeof MapEntities === 'undefined') { done(); return; }
+    const target = act.target;
+    if (!target) { done(); return; }
+    // Ensure loop is running so the NPC can animate out
+    if (!_running) resume();
+    MapEntities.setNPCExitWalk(npcId, target, () => {
+      if (act.despawn) MapEntities.despawnNPC(npcId);
+      done();
+    });
+  }
+
+  function _actFace(npcId, act, done) {
+    if (npcId && typeof MapEntities !== 'undefined') {
+      MapEntities.setNPCFacing(npcId, _dirVec(act.dir));
+    }
+    if (act.playerDir) _playerFacingOverride = _dirVec(act.playerDir);
+    done();
+  }
+
+  function _actWait(ms, done) {
+    setTimeout(done, ms);
+  }
+
+  function _dirVec(dir) {
+    if (dir && typeof dir === 'object') return dir; // already {dx,dy}
+    switch (dir) {
+      case 'up':    return {dx:  0, dy: -1};
+      case 'down':  return {dx:  0, dy:  1};
+      case 'left':  return {dx: -1, dy:  0};
+      default:      return {dx:  1, dy:  0}; // 'right'
+    }
+  }
+
+  // Build visual march-in entities (silhouettes that slide in from off-screen)
+  function _buildMarchEntities(enemyIds, dir) {
+    if (!_map) return [];
+    const py = MapPlayer.ty;
+    const entries = [];
+    enemyIds.forEach((id, i) => {
+      const raw = G && G.enemies && G.enemies.find(e => e.id === id);
+      const sprite = raw ? (raw.sprite || `images/enemies/${id}.webp`) : `images/enemies/${id}.webp`;
+      const startTx = dir === 'left'  ? -2 - i
+                    : dir === 'right' ? _map.width + 2 + i
+                    : MapPlayer.tx + i - 1;
+      const startTy = dir === 'up'    ? -2 - i
+                    : dir === 'down'  ? _map.height + 2 + i
+                    : py + (i % 2 === 0 ? 0 : 1);
+      const targetTx = dir === 'left'  ? 4 + i
+                     : dir === 'right' ? _map.width - 5 - i
+                     : startTx;
+      const targetTy = dir === 'up'    ? 4 + i
+                     : dir === 'down'  ? _map.height - 5 - i
+                     : startTy;
+      const img = new Image(); img.src = sprite;
+      entries.push({ id, tx: startTx, ty: startTy, px: startTx * TILE, py: startTy * TILE, targetTx, targetTy, img, alpha: 0.7 });
+    });
+    return entries;
+  }
+
+  function _updateMarchEnemies(dt) {
+    const SPEED = 4; // tiles per second
+    _marchEnemies.forEach(m => {
+      const dx = Math.sign(m.targetTx - m.tx);
+      const dy = Math.sign(m.targetTy - m.ty);
+      m.px += dx * SPEED * TILE * dt;
+      m.py += dy * SPEED * TILE * dt;
+      m.tx = m.px / TILE;
+      m.ty = m.py / TILE;
+    });
+  }
+
+  function _renderMarchEnemies(ctx) {
+    if (!_marchEnemies.length) return;
+    _marchEnemies.forEach(m => {
+      const sx = Math.round(m.px - cam.x);
+      const sy = Math.round(m.py - cam.y);
+      ctx.save();
+      ctx.globalAlpha = m.alpha;
+      // Silhouette filter
+      ctx.filter = 'brightness(0) invert(0)';
+      if (m.img.complete && m.img.naturalWidth) {
+        ctx.drawImage(m.img, sx, sy, TILE, Math.round(TILE * 1.6));
+      } else {
+        ctx.fillStyle = '#ff4444';
+        ctx.fillRect(sx + 8, sy + 8, TILE - 16, TILE - 16);
+      }
+      ctx.restore();
     });
   }
 
@@ -1188,6 +1433,18 @@ const MapEngine = (() => {
 
   function onBattleComplete(victory) {
     if (typeof BGM !== 'undefined') BGM.playMap(_map);
+
+    // Scene ambush intercept — hand control back to the scene runner
+    if (_sceneAmbushActive) {
+      _sceneAmbushActive = false;
+      showScreen('explore-screen');
+      MapPlayer.setCooldown(4);
+      resume();
+      const cb = _sceneAmbushCallback;
+      _sceneAmbushCallback = null;
+      if (cb) cb(victory);
+      return;
+    }
 
     if (!victory) {
       _waveState = null; // abort any active wave sequence on defeat
@@ -1852,6 +2109,10 @@ const MapEngine = (() => {
     hasTriggerFired: id => _firedTriggers.has(id),
     triggerEncounter: enc => _triggerEncounter(enc),
     startWaves,
+    // Scene runner API
+    runScene: (scene) => _runScene(scene),
+    isSceneRunning: () => _sceneRunning,
+    hasFiredScene: (id) => _firedScenes.has(id) || !!(G.firedScenes && G.firedScenes.has && G.firedScenes.has(id)),
     // Optional callback — wire this up after init to handle encounter transitions:
     // MapEngine.onEncounterStart = function(enc) { ... }
     onEncounterStart: null,
