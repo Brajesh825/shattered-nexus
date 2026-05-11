@@ -783,4 +783,36 @@ const NPC_DEFS = {
     },
   },
 
+  kaelen: {
+    name: 'Kaelen',
+    color: '#f59e0b',
+    sprite: 'images/characters/map/sheets/npc/kaelen_sheet.png',
+    dialogues: {
+      ember_wastes: [
+        { speaker: 'Kaelen', text: 'My crawler is running smoothly now. Thanks again.' }
+      ]
+    }
+  },
+
+  scholar_vane: {
+    name: 'Scholar Vane',
+    color: '#60a5fa',
+    sprite: 'images/characters/map/sheets/npc/vane_sheet.png',
+    dialogues: {
+      crystal_cavern_f2: [
+        { speaker: 'Scholar Vane', text: 'The resonance is stable. The Archive is communicating.' }
+      ]
+    }
+  },
+
+  isle_merchant: {
+    name: 'Isle Merchant',
+    color: '#10b981',
+    sprite: 'images/characters/map/sheets/npc/merchant_sheet.png',
+    dialogues: {
+      southern_isles: [
+        { speaker: 'Isle Merchant', text: 'Trade is finally flowing again. The tides are kind.' }
+      ]
+    }
+  }
 };
