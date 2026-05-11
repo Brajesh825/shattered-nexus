@@ -89,7 +89,8 @@
       "Bash(awk 'NR>=3540 && NR<=3560' C:/Users/ASUS/VVI/rpg+/data/enemies.json)",
       "Bash(awk 'NR>=3790 && NR<=3810' C:/Users/ASUS/VVI/rpg+/data/enemies.json)",
       "Bash(git checkout *)",
-      "Bash(grep -E \"\\\\.\\(md|json|js\\)$\")"
+      "Bash(grep -E \"\\\\.\\(md|json|js\\)$\")",
+      "Bash(node tests/run-tests.js)"
     ]
   }
 }
