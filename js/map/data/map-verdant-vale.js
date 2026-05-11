@@ -57,6 +57,11 @@ MAP_DEFS.verdant_vale = {
             behavior: 'stationary', hideIfUnlocked: 'sera',
             hideAfterScene: 'azure_intro',
         },
+        {
+            id: 'azure_commander', x: 29, y: 13, dialogueKey: 'verdant_vale_return',
+            behavior: 'stationary', hideIfUnlocked: 'sera',
+            showAfterScene: 'azure_intro',
+        },
         { id: 'essabella', x: 44, y: 22, dialogueKey: 'verdant_vale', behavior: 'wander', range: 3 },
         { id: 'elder_maren', x: 6, y: 8, dialogueKey: 'elder_maren', behavior: 'stationary', giveQuest: 'goblin_menace' },
         { id: 'soldier_1', x: 23, y: 8, dialogueKey: 'soldier_chat', behavior: 'patrol', waypoints: [{ x: 23, y: 8 }, { x: 26, y: 10 }] },

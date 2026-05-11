@@ -163,6 +163,7 @@ const Story = {
       this.chapIdx = -1;
       this.phase = null;
       G.mode = 'story';
+      G.firedScenes = new Set();
       if (typeof QuestSystem !== 'undefined') QuestSystem.init();
 
       // Load characters if not already loaded
