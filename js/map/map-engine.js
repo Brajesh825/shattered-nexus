@@ -1315,7 +1315,6 @@ const MapEngine = (() => {
   // Build visual march-in entities (silhouettes that slide in from off-screen)
   function _buildMarchEntities(enemyIds, dir) {
     if (!_map) return [];
-    const cam = _cam;
     const canvas = _canvas;
     const viewTilesX = Math.ceil(canvas.width / TILE);
     const viewTilesY = Math.ceil(canvas.height / TILE);
