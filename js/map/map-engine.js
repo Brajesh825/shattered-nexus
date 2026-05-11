@@ -1310,11 +1310,12 @@ const MapEngine = (() => {
       const startTy = dir === 'up'    ? -2 - i
                     : dir === 'down'  ? _map.height + 2 + i
                     : py + (i % 2 === 0 ? 0 : 1);
-      const targetTx = dir === 'left'  ? 4 + i
-                     : dir === 'right' ? _map.width - 5 - i
+      // Targets are anchored to player position so silhouettes march into the visible screen
+      const targetTx = dir === 'left'  ? MapPlayer.tx - 10 - i
+                     : dir === 'right' ? MapPlayer.tx + 10 + i
                      : startTx;
-      const targetTy = dir === 'up'    ? 4 + i
-                     : dir === 'down'  ? _map.height - 5 - i
+      const targetTy = dir === 'up'    ? MapPlayer.ty - 10 - i
+                     : dir === 'down'  ? MapPlayer.ty + 10 + i
                      : startTy;
       const img = new Image(); img.src = sprite;
       entries.push({ id, tx: startTx, ty: startTy, px: startTx * TILE, py: startTy * TILE, targetTx, targetTy, img, alpha: 0.7 });

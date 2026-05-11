@@ -1190,7 +1190,10 @@ const MapEntities = (() => {
     }
 
     function _renderNPC(ctx, cam, TILE, n, inVision) {
-        if (typeof inVision === 'function' && !inVision(n.tx, n.ty)) return;
+        // NPCs in a scene walk are always rendered — don't let fog cull them mid-exit.
+        // Non-scene NPCs use pixel position (not snapped tile) for a smooth fade.
+        const inScene = n._sceneWalkTarget || n._sceneExitTarget;
+        if (!inScene && typeof inVision === 'function' && !inVision(n.px / TILE, n.py / TILE)) return;
         const sx = n.px - cam.x, sy = n.py - cam.y;
         if (sx < -TILE || sy < -TILE || sx > ctx.canvas.width + TILE || sy > ctx.canvas.height + TILE) return;
 
