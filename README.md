@@ -242,6 +242,35 @@ Characters are rendered as **animated spritesheet sprites** on the map — 4 dir
 
 ---
 
+## 📋 Echo Quest System
+
+NPCs can offer side-objectives tracked in the **Echo Log** (accessible from the pause menu).
+
+### How Quests Work
+- Talk to an NPC showing **❗** above their head to accept a quest.
+- **❓** means the quest is in progress — come back when done.
+- **❕** means the quest is complete — return to the NPC to collect your reward.
+
+Quest types: `hunt` (kill N enemies), `gather` (collect an item), `mutant_kill` (kill a mutant). Progress persists across save/load. Rewards (EXP, gold, items) are only granted when you return and submit — not auto-collected mid-field.
+
+Arc-progression quests with no NPC giver (e.g. *Mercy for the Fallen*, *Void Sentinel*) unlock automatically and grant rewards on completion.
+
+Full quest definitions in `data/quests.json` · NPC associations in `data/npcs.js` · System in `js/systems/quest-system.js`.
+
+---
+
+## 🎬 Cinematic NPC Encounters *(planned)*
+
+A three-act scene system for story-critical NPC moments:
+
+1. **Crossing** — NPC notices the player and walks toward them on the map.
+2. **Conversation** — Both stop; dialogue panel plays.
+3. **Ambush** *(optional)* — Enemy sprites march in from the map edge mid-conversation. Player and NPC rotate to face them. A tense brace line fires before the battle begins.
+
+Each scene is flagged by a unique ID in `G.firedScenes` (persisted in the save file) so it never replays after the first viewing. Full design spec in `_concepts/mechanics/cinematic_npc_encounters.md`.
+
+---
+
 ## 🎒 Items
 
 Items are usable from the inventory screen or in battle (select "Item" on your turn). Full item catalog is in `data/items.json`.
