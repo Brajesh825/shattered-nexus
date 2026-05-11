@@ -14,7 +14,11 @@ Ensure every visual element of Shattered Nexus meets the "Premium/Vivid" standar
 2. **Micro-Animations**: Every button click, dialogue box open, and stat change should have a subtle, responsive animation.
 3. **Asset Generation (Hybrid Strategy)**:
     - **Backgrounds/Stages**: Prioritize **Gemini (`generate_image`)** for cinematic depth and atmospheric scale.
-    - **Characters/Enemies**: Prioritize **ComfyUI Workflows** to maintain strict pixel-art consistency and T-pose templates.
+    - **Characters/Enemies**: Use the **ComfyUI Local Pipeline** (Illustrious XL). 
+        - **Standard**: 1024x1024 resolution, No Downscaling.
+        - **Output**: Use Node 21 (`02_NOBG`) for transparent, background-removed assets.
+        - **Source of Truth**: All prompts must originate from `images/enemies/_prompts.txt`.
+    - **Official Tooling**: Use `tools/gen_enemies_batch.py` to orchestrate batch generation via ComfyUI. This tool handles prompt extraction, non-blocking queueing, and 1024x1024 WebP optimization.
 4. **Responsive Brilliance**: UI must scale perfectly from iPhone SE (375x667) to Desktop 4K.
 5. **Asset Formats**: Enforce `.webp` for all combat/environment assets to maximize PWA performance.
 
