@@ -932,6 +932,7 @@ const MapEntities = (() => {
       _npcs = (map.npcs || []).filter(n => {
         if (n.hideIfUnlocked && (G.unlockedChars || []).includes(n.hideIfUnlocked)) return false;
         if (n.hideAfterScene  && fired.has(n.hideAfterScene)) return false;
+        if (n.showAfterScene  && !fired.has(n.showAfterScene)) return false;
         return true;
       }).map(n => {
         const def = (typeof NPC_DEFS !== 'undefined') ? NPC_DEFS[n.id] : null;
@@ -1028,9 +1029,14 @@ const MapEntities = (() => {
         if (n._sceneExitTarget) {
           const { target, onArrival } = n._sceneExitTarget;
           if (n.tx === target.x && n.ty === target.y) {
+            // Snap pixels exactly to tile so there's zero drift after arrival
+            n.px = target.x * TILE; n.py = target.y * TILE;
+            n.prevTx = n.tx; n.prevTy = n.ty;
             n._sceneExitTarget = null;
             n.moving = false;
             n.frame = 0;
+            n.facingOverride = null;
+            n.idleTimer = 0;
             if (onArrival) onArrival();
             return;
           }
@@ -1272,7 +1278,12 @@ const MapEntities = (() => {
 
     return {
       init, update, render, renderForRow, getDialogue, markTalked, prepareBuckets,
-      checkNPCAt: (x,y) => _npcs.find(n => n.tx === x && n.ty === y),
+      // Block both destination AND previous tile while mid-step so player can't
+      // walk through an NPC during the interpolation window
+      checkNPCAt: (x,y) => _npcs.find(n =>
+        (n.tx === x && n.ty === y) ||
+        (n.moving && n.prevTx === x && n.prevTy === y)
+      ),
       getNPCs: () => _npcs,
       setNPCSceneWalk: (npcId, onArrival) => {
         const n = _npcs.find(n => n.id === npcId);
