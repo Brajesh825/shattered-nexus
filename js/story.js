@@ -697,7 +697,7 @@ const Story = {
     return def;
   },
 
-  _launchStoryBattle(enemyId) {
+  async _launchStoryBattle(enemyId) {
     if (typeof BGM !== 'undefined') {
       const chap = this.currentChap || {};
       const isBoss = (this.phase === 'boss_in');
@@ -730,17 +730,9 @@ const Story = {
     // Reset per-battle state on party members (keep HP/MP/levels from prior battles)
     G.party.forEach(m => { m.regenTurns = 0; m.stunned = false; });
 
-    buildAbilityMenu();
-    const queue = buildTurnQueue();
-    if (typeof TurnState !== 'undefined') TurnState.resetBattle(queue);
-    else {
-      G.turnQueue = queue;
-      G.turnIdx = 0;
-      G.busy = false;
-    }
-
-    showScreen('battle-screen');
-    BattleUI.render();
+    await _initBattle();
+    document.getElementById('cmd-grid-main').style.display = 'grid';
+    BattleUI.openSub('');
     document.getElementById('cmd-grid-main').style.display = 'grid';
     BattleUI.openSub('');
     const names = defs.map(d => d.name).join(' & ');
@@ -1358,7 +1350,7 @@ const Story = {
   },
 
   /* ── Skirmish: battle using the map's encounter templates at current party LV ─── */
-  startRegionSkirmish(arcIdx) {
+  async startRegionSkirmish(arcIdx) {
     if (!G.party.length) return;
 
     // Find the map that belongs to this arc (arcId is 1-indexed, arcIdx is 0-indexed)
@@ -1391,7 +1383,7 @@ const Story = {
     this._closeRegionPanel();
 
     /* _initBattle() is a global in game.js — wires up turn queue, menu, screen */
-    _initBattle();
+    await _initBattle();
     const names = G.enemyGroup.map(e => e.name).join(' & ');
     BattleUI.setLog([`${names} appear!`, `Skirmish — no retreat!`], ['hi', '']);
     processCurrentTurn();
