@@ -23,11 +23,15 @@
 - [x] **Security Guardrails**: Implemented global `escapeHtml` and sanitized Battle Log outputs.
 
 ### ⚔️ High-Fidelity Pipeline & Bestiary (May 2026)
+- [x] **Headless MCP Orchestration**: Automated local ComfyUI generation queues and WebP aspect-ratio auditing.
 - [x] **Visual Polish**: Standardized 79 enemies to the "Void Knight" aesthetic; resolved morphology drift.
 - [x] **Tiered Rendering**: Deployed dual-tier (Flat/Illustrious) sprite pipeline across the roster.
 - [x] **VFX Standardization**: Universal ethereal glows for Void-tier entities (Titan, Warden).
 - [x] **Asset Migration**: Converted all legacy PNGs to WebP; reduced PWA shell to ~5.5MB.
 - [x] **Smart On-Demand Loading**: Implemented background-fetch architecture in `AssetPreloader.js`.
+- [x] **Automated Registry Sync**: Resolved prompt regex line-ending bugs and automated completion tagging.
+- [x] **Council Awakening & Walkable Ground Baseline**: Enshrined strict widescreen bottom 50% walkable stone platform staging rules referencing `@riverlands.webp`, and mapped dynamic living archetypes across all six agentic profiles.
+
 
 ### 🎨 Visual & Engine Standards (May 2026)
 - [x] **Dynamic Style Switching**: Integrated per-player art preference (Vivid vs Classic) into the rendering pipeline and settings.
