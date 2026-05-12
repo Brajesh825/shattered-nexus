@@ -36,17 +36,15 @@
 ### 🎨 Visual & Engine Standards (May 2026)
 - [x] **Dynamic Style Switching**: Integrated per-player art preference (Vivid vs Classic) into the rendering pipeline and settings.
 - [x] **Tiered Roster Synchronization**: Achieved 100% parity across 9 primary spirits for both Flat and Illustrious styles.
-- [x] **Technical Asset Audit**: 86/86 automated tests passed, verifying all sprite references and data integrity.
 
 ### 🚀 Release Readiness (May 2026)
 - [x] **Production Gating**: Silenced debug logs and gated development tools behind `IS_DEV` flag.
 - [x] **CI/CD Pipeline**: Automated production builds via GitHub Actions with isolated `dist/` deployment.
-- [x] **Data Integrity**: Verified all 172 assets, character references, and story links (passed audit).
+- [x] **Global Asset & Data Integrity**: Verified all 172 assets, character references, JSON table syntax, and story links natively (passed automated suite).
 - [x] **Story Guide**: Finalized comprehensive mechanics and narrative walkthrough for Arcs 1 & 2.
 
 ### 🎨 UX & Systems (May 2026)
 - [x] **Item Vault Overhaul**: Premium, tabbed inventory with visual targeting and unified effect engine.
-- [x] **Data Integrity Audit**: Full scan of all JSON assets; resolved ID conflicts and parsing errors.
 - [x] **Party Menu Overhaul**: Premium, paginated character showcase with ethereal effects and responsive split-views.
 - [x] **Global UX Polish**: Pixel-art cursor, custom scrollbars, and stabilized navigation flows.
 - [x] **Sprite System Optimization**: Removed 700+ lines of legacy procedural code; standardized all fallbacks to 'aya' (hero) and 'slime' (enemy).
@@ -69,8 +67,7 @@
 ### ⚙️ Technical Foundations (April 2026)
 - [x] **Combat Engine Audit**: Fixed `getStat('reduction')` bug and stabilized damage multipliers.
 - [x] **Sera/Lyra Registration**: Standardized sprite-sheet configuration for new heroes to fix 'whole-sheet' rendering bug.
-- [x] **Input & Accessibility**: Virtual joystick, mobile action buttons, contextual hint bar, and full gamepad support for World Map navigation.
-- [x] **Mobile Controls**: Virtual joystick and X/Y button implementation.
+- [x] **Input & Mobile Accessibility**: Virtual joystick, context hint bars, native X/Y virtual buttons, and gamepad hooks mapped across all exploration layers.
 - [x] **Architect Pro**: Browser-based tile editor for high-fidelity map creation.
 - [x] **Story Refactor**: Extracted cutscene logic into `js/cutscene.js`.
 
