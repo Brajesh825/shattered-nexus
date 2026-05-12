@@ -22,7 +22,7 @@ When Valdris claimed the core sanctums following the Shattering of the Nexus, he
 
 > [!NOTE]
 > **The Logic of Suffocation**  
-> In the Shadow Reach, ambient air density behaves like localized space-time static. Even shadows cast secondary shadows. Mortals entering the perimeter do not die of simple physical trauma; their internal processing speed drops to zero as their minds are forced to compute the accumulated despair of seventeen unmade worlds simultaneously.
+> In the Shadow Reach, ambient air density behaves like localized space-time static. Even shadows cast secondary shadows. Mortals entering the perimeter do not die of simple physical trauma; their internal processing speed drops to zero as their minds are forced to compute the accumulated despair of countless unmade worlds simultaneously.
 
 ### The Inverted Vanguard: Lore of the Fallen Angel (Veleth)
 **Commander Veleth** (`fallen_angel`) was originally the foremost vanguard general of the heavenly realms, directly commissioned by **Lady Essabella** to breach the early rift boundaries. Essabella sent Veleth forward knowing precisely what the dark would do to him, counting on his legendary endurance to hold the line.
