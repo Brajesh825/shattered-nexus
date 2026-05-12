@@ -94,7 +94,8 @@
       "Bash(node tools/nexus-mcp/index.js)",
       "mcp__nexus-engine-mcp__nexus_audit_map",
       "mcp__nexus-engine-mcp__nexus_stage_concept",
-      "mcp__nexus-engine-mcp__nexus_bump_cache"
+      "mcp__nexus-engine-mcp__nexus_bump_cache",
+      "mcp__nexus-engine-mcp__nexus_simulate_combat"
     ]
   }
 }
