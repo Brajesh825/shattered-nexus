@@ -64,6 +64,13 @@ MAP_DEFS.southern_isles = {
     ],
     triggers: [
         {
+            id: 'exit_southern_isles',
+            x: 58, y: 72, w: 5, h: 2,
+            type: 'teleport',
+            targetMap: 'verdant_vale',
+            targetX: 30, targetY: 55
+        },
+        {
             id: 'trench_dialogue',
             x: 10, y: 28, w: 100, h: 4,
             type: 'dialogue',

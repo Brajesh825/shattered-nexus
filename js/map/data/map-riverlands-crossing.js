@@ -7,7 +7,7 @@ MAP_DEFS.riverlands_crossing = {
     name: 'Riverlands Crossing',
     width: 80,
     height: 40,
-    playerStart: { x: 2, y: 27 },
+    playerStart: { x: 6, y: 27 },
     bgColor: '#020f12',
     bgm: 'riverlands_explore',
     battleBgm: 'riverlands_battle',
@@ -15,6 +15,9 @@ MAP_DEFS.riverlands_crossing = {
     bossBgm: 'river_king_theme',
     ambientLight: 'rgba(50,150,180,0.1)',
     weather: 'rain',
+    safeZones: [
+        { xMin: 0, xMax: 10, yMin: 20, yMax: 35, name: 'Western Ledge Camp' }
+    ],
     enemyLevelRange: [10, 20],
     encounterTemplates: [
         // Groups of 4 (Rare/Hard Encounters)
@@ -54,11 +57,18 @@ MAP_DEFS.riverlands_crossing = {
     ],
     jsonFile: 'js/map/data/map-riverlands-crossing.json',
     npcs: [
-        { id: 'merchant', x: 15, y: 25, dialogueKey: 'riverlands_crossing', behavior: 'stationary' },
-        { id: 'old_guard', x: 2, y: 26, dialogueKey: 'riverlands_crossing', behavior: 'stationary' },
+        { id: 'isle_merchant', x: 15, y: 25, dialogueKey: 'riverlands_crossing', behavior: 'stationary' },
+        { id: 'old_guard', x: 9, y: 25, dialogueKey: 'riverlands_crossing', behavior: 'stationary' },
         { id: 'ghost_soldier', x: 75, y: 27, dialogueKey: 'riverlands_crossing', behavior: 'wander', range: 2 }
     ],
     triggers: [
+        {
+            id: 'exit_riverlands',
+            x: 0, y: 26, w: 1, h: 4,
+            type: 'teleport',
+            targetMap: 'verdant_vale',
+            targetX: 30, targetY: 50
+        },
         {
             id: 'bridge_inspect',
             x: 35, y: 26, w: 10, h: 3,

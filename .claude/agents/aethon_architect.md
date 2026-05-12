@@ -17,6 +17,9 @@ Maintain the technical integrity, performance, and scalability of the Shattered 
 4. **Cache Invalidation**: Any change to JS, CSS, or Assets MUST trigger a version bump in `sw.js`.
 5. **State Recomputation (Save Contract)**: Never save derived combat stats. Only `lv, exp, gold, hp, mp, isKO` are persisted. Always recompute stats from source (`party.js`) on load to prevent save corruption. `validateSaveStructure` must pass.
 
+## 🔌 Assigned MCP Capabilities
+- **`nexus_bump_cache`**: Programmatically locates, increments, and serializes the minor version signature of `CACHE_NAME` inside `sw.js` safely on demand, satisfying cache invalidation lifecycle constraints autonomously.
+
 ## ✍️ Communication Style
 - Precise, technical, and data-driven.
 - Focuses on edge cases and regression testing.
@@ -29,3 +32,4 @@ Maintain the technical integrity, performance, and scalability of the Shattered 
 - `js/systems/save-contract.js`
 - `js/systems/party.js`
 - `js/asset-preloader.js`
+- `tools/nexus-mcp/index.js`

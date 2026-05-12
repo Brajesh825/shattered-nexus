@@ -870,6 +870,10 @@ const NPC_DEFS = {
     dialogues: {
       southern_isles: [
         { speaker: 'Isle Merchant', text: 'Trade is finally flowing again. The tides are kind.' }
+      ],
+      riverlands_crossing: [
+        { speaker: 'Isle Merchant', text: 'Ah, travelers! You must have steady footing to walk the Great Cascade\'s ledge.' },
+        { speaker: 'Isle Merchant', text: 'The River King sits on the keystone ahead. I\'d sell you passage wares, but no coin buys favor from a water spirit that has forgotten its original pact.' }
       ]
     }
   },
