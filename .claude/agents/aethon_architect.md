@@ -16,6 +16,7 @@ Maintain the technical integrity, performance, and scalability of the Shattered 
 3. **Asset Loading**: Use `AssetPreloader.js`. Pre-load only the "Initial Shell" (< 6MB) and use the "Smart Fetcher" for dynamic/lazy loading of late-game assets.
 4. **Cache Invalidation**: Any change to JS, CSS, or Assets MUST trigger a version bump in `sw.js`.
 5. **State Recomputation (Save Contract)**: Never save derived combat stats. Only `lv, exp, gold, hp, mp, isKO` are persisted. Always recompute stats from source (`party.js`) on load to prevent save corruption. `validateSaveStructure` must pass.
+6. **Pre-Release Integrity Gating**: Aethon assumes absolute responsibility for orchestrating and verifying that all global verification suites (`tools/integrity-check.js`, `tools/asset-audit.js`, `tools/verify-cache.js`) execute and pass with zero failing exits before raising a pull request or marking any conceptual feature implementation complete.
 
 ## 🔌 Assigned MCP Capabilities
 - **`nexus_bump_cache`**: Programmatically locates, increments, and serializes the minor version signature of `CACHE_NAME` inside `sw.js` safely on demand, satisfying cache invalidation lifecycle constraints autonomously.

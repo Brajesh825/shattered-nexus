@@ -30,10 +30,19 @@ const charsPath = path.join(DATA_DIR, 'characters.json');
 if (fs.existsSync(charsPath)) {
   const chars = JSON.parse(fs.readFileSync(charsPath, 'utf8'));
   chars.forEach(c => {
-    // Check icons/portraits if they are paths (usually they are strings like emoji or hex)
-    // But let's assume we check specific image paths if added
+    // Validate Tiered Sprite Assets (Spirit Combat PNGs and Exploration Map Sheets)
+    const spiritPath = path.join(IMAGES_DIR, 'characters', 'spirits', `${c.id}_sprite.png`);
+    const sheetPath = path.join(IMAGES_DIR, 'characters', 'map', 'sheets', `${c.id}_sheet.png`);
+    if (!fs.existsSync(spiritPath)) {
+      log(`Character [${c.id}] missing primary combat spirit asset: ${spiritPath}`, 'error');
+      errors++;
+    }
+    if (!fs.existsSync(sheetPath)) {
+      log(`Character [${c.id}] missing exploration map sheet asset: ${sheetPath}`, 'error');
+      errors++;
+    }
   });
-  log(`Validated ${chars.length} characters.`, 'success');
+  log(`Validated ${chars.length} characters and their companion Tiered sprite packages.`, 'success');
 }
 
 // 2. Audit Enemies
@@ -42,16 +51,21 @@ const enemiesPath = path.join(DATA_DIR, 'enemies.json');
 if (fs.existsSync(enemiesPath)) {
   const enemies = JSON.parse(fs.readFileSync(enemiesPath, 'utf8'));
   enemies.forEach(e => {
+    // Validate custom PWA WebP target format guarantee natively inside images/enemies/
+    const webpSprite = path.join(IMAGES_DIR, 'enemies', `${e.id}.webp`);
+    if (!fs.existsSync(webpSprite)) {
+      log(`Enemy [${e.id}] missing standard lossy/lossless WebP rendering delivery asset: ${webpSprite}`, 'error');
+      errors++;
+    }
     if (e.portrait) {
-      // Handle potential different paths (e.g. if it's just a filename)
       const p = path.join(IMAGES_DIR, e.portrait);
       if (!fs.existsSync(p)) {
-        log(`Enemy [${e.id}] missing portrait: ${e.portrait}`, 'error');
+        log(`Enemy [${e.id}] missing legacy metadata portrait: ${e.portrait}`, 'error');
         errors++;
       }
     }
   });
-  log(`Validated ${enemies.length} enemies.`, 'success');
+  log(`Validated ${enemies.length} enemies against core Void Knight Standard WebP delivery packages.`, 'success');
 }
 
 // 3. Audit Items
