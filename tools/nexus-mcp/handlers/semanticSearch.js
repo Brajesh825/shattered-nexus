@@ -78,11 +78,31 @@ export async function handleSemanticSearch(args, rootDir) {
       else if (collection === "classes") fileName = "classes.json";
       else if (collection === "characters") fileName = "characters.json";
       else if (collection === "quests") fileName = "quests.json";
+      else if (collection === "npcs") fileName = "npcs.js";
       else throw new Error(`Unknown semantic collection namespace requested: ${collection}`);
 
       const targetPath = path.join(rootDir, `data/${fileName}`);
       const fileContent = await fs.readFile(targetPath, "utf-8");
-      const items = JSON.parse(fileContent);
+      
+      let items = [];
+      if (collection === "npcs") {
+        const blockParts = fileContent.split(/\n  ([a-z0-9_]+):\s*\{/);
+        for (let i = 1; i < blockParts.length; i += 2) {
+          const id = blockParts[i];
+          const content = blockParts[i + 1] || "";
+          const nameMatch = /name:\s*['"]([^'"]+)['"]/.exec(content);
+          const name = nameMatch ? nameMatch[1] : id;
+          const textMatches = content.match(/text:\s*['"]([^'"]+)['"]/g) || [];
+          const textContent = textMatches.map(t => t.replace(/text:\s*['"]|['"]$/g, "")).join(" ");
+          items.push({
+            id,
+            name,
+            description: textContent
+          });
+        }
+      } else {
+        items = JSON.parse(fileContent);
+      }
       collectionLength = items.length;
 
       for (const item of items) {
@@ -95,6 +115,8 @@ export async function handleSemanticSearch(args, rootDir) {
           searchableText = `${item.id || ""} ${item.name || ""} ${item.title || ""} ${JSON.stringify(item.class_affinity || [])} ${JSON.stringify(item.stat_bonuses || {})}`;
         } else if (collection === "quests") {
           searchableText = `${item.id || ""} ${item.title || ""} ${item.description || ""} ${item.giver || ""} ${item.map || ""} ${JSON.stringify(item.objectives || [])}`;
+        } else if (collection === "npcs") {
+          searchableText = `${item.id || ""} ${item.name || ""} ${item.description || ""}`;
         }
 
         const docObj = getTokensAsObject(searchableText);
@@ -129,6 +151,9 @@ export async function handleSemanticSearch(args, rootDir) {
         projection.giver = item.giver || "None";
         projection.map = item.map || "Global";
         projection.objectives = item.objectives || [];
+      } else if (collection === "npcs") {
+        projection.name = item.name;
+        projection.dialogueSnippet = item.description ? `${item.description.substring(0, 280)}...` : "";
       }
       return projection;
     });

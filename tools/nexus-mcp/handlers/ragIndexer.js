@@ -30,7 +30,7 @@ function getTokensAsObject(text) {
 
 export async function handleSyncRag(args, rootDir) {
   try {
-    const collections = ["lore", "classes", "characters", "quests"];
+    const collections = ["lore", "classes", "characters", "quests", "npcs"];
     const vectorIndex = {};
 
     for (const collection of collections) {
@@ -39,10 +39,30 @@ export async function handleSyncRag(args, rootDir) {
       else if (collection === "classes") fileName = "classes.json";
       else if (collection === "characters") fileName = "characters.json";
       else if (collection === "quests") fileName = "quests.json";
+      else if (collection === "npcs") fileName = "npcs.js";
 
       const targetPath = path.join(rootDir, `data/${fileName}`);
       const fileContent = await fs.readFile(targetPath, "utf-8");
-      const items = JSON.parse(fileContent);
+      
+      let items = [];
+      if (collection === "npcs") {
+        const blockParts = fileContent.split(/\n  ([a-z0-9_]+):\s*\{/);
+        for (let i = 1; i < blockParts.length; i += 2) {
+          const id = blockParts[i];
+          const content = blockParts[i + 1] || "";
+          const nameMatch = /name:\s*['"]([^'"]+)['"]/.exec(content);
+          const name = nameMatch ? nameMatch[1] : id;
+          const textMatches = content.match(/text:\s*['"]([^'"]+)['"]/g) || [];
+          const textContent = textMatches.map(t => t.replace(/text:\s*['"]|['"]$/g, "")).join(" ");
+          items.push({
+            id,
+            name,
+            description: textContent
+          });
+        }
+      } else {
+        items = JSON.parse(fileContent);
+      }
 
       const indexedItems = [];
       for (const item of items) {
@@ -55,6 +75,8 @@ export async function handleSyncRag(args, rootDir) {
           searchableText = `${item.id || ""} ${item.name || ""} ${item.title || ""} ${JSON.stringify(item.class_affinity || [])} ${JSON.stringify(item.stat_bonuses || {})}`;
         } else if (collection === "quests") {
           searchableText = `${item.id || ""} ${item.title || ""} ${item.description || ""} ${item.giver || ""} ${item.map || ""} ${JSON.stringify(item.objectives || [])}`;
+        } else if (collection === "npcs") {
+          searchableText = `${item.id || ""} ${item.name || ""} ${item.description || ""}`;
         }
 
         const vectorData = getTokensAsObject(searchableText);
