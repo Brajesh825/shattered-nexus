@@ -107,6 +107,7 @@ export async function handleValidateThreatCurve(args, rootDir) {
 
     const phaseAuditLog = [];
     const statPhases = Array.isArray(bossDef.statPhases) ? bossDef.statPhases : [];
+    const battleEvents = Array.isArray(bossDef.battleEvents) ? JSON.parse(JSON.stringify(bossDef.battleEvents)) : [];
 
     // Log base phase mapping
     phaseAuditLog.push({
@@ -145,6 +146,31 @@ export async function handleValidateThreatCurve(args, rootDir) {
           status: simulatedMult > 8.0 ? "CLAMPED_AT_CEILING" : "STABLE",
           mitigationShift: `+${Math.round((simulatedMult - 1) * 100)}%`
         });
+      }
+
+      // ─── Battle Events Trigger Check ───
+      for (const evt of battleEvents) {
+        if (evt.fired) continue;
+        const trig = evt.trigger;
+        if (trig && trig.type === "hp" && hpPct <= (trig.threshold || 0.5)) {
+          evt.fired = true;
+          const statusBuff = evt.onComplete?.addStatus;
+          if (statusBuff && statusBuff.value) {
+            const eventMult = statusBuff.value;
+            if (eventMult > maxMultiplierObserved) {
+              maxMultiplierObserved = eventMult;
+            }
+            if (eventMult > 8.0) {
+              maxCapViolations++;
+            }
+            phaseAuditLog.push({
+              phaseIndex: `Event_${evt.id}`,
+              triggerThreshold: `${Math.round((trig.threshold || 0.5) * 100)}%`,
+              status: eventMult > 8.0 ? "CLAMPED_AT_CEILING" : "EVENT_BUFF_STABLE",
+              mitigationShift: `+${Math.round((eventMult - 1) * 100)}% (${statusBuff.label || 'Buff'})`
+            });
+          }
+        }
       }
 
       // ─── Party Rotation Phase ───
