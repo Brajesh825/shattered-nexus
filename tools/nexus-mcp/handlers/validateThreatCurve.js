@@ -13,6 +13,7 @@ export async function handleValidateThreatCurve(args, rootDir) {
     const partyPath = path.join(rootDir, "js/systems/party.js");
     const classesJsonPath = path.join(rootDir, "data/classes.json");
     const enemiesJsonPath = path.join(rootDir, "data/enemies.json");
+    const charactersJsonPath = path.join(rootDir, "data/characters.json");
 
     const scalingSrc = await fs.readFile(scalingPath, "utf-8");
     const enemyScalingSrc = await fs.readFile(enemyScalingPath, "utf-8");
@@ -20,6 +21,7 @@ export async function handleValidateThreatCurve(args, rootDir) {
     const partySrc = await fs.readFile(partyPath, "utf-8");
     const classesData = JSON.parse(await fs.readFile(classesJsonPath, "utf-8"));
     const enemiesData = JSON.parse(await fs.readFile(enemiesJsonPath, "utf-8"));
+    const charactersData = JSON.parse(await fs.readFile(charactersJsonPath, "utf-8"));
 
     // Prepare robust VM context environment
     const sandbox = {
@@ -66,24 +68,31 @@ export async function handleValidateThreatCurve(args, rootDir) {
       sandbox.NexusScaling
     );
 
-    // Prepare dummy asymmetric 4-member striking party
-    const dummyRoles = ["vanguard", "spellblade", "cleric", "ranger"];
-    const partyMembers = dummyRoles.map((roleId, idx) => {
-      const clsProfile = classesData.find((c) => c.id === roleId) || classesData[idx % classesData.length];
-      const dummyChar = {
-        base_stats: { hp: 120, mp: 60, atk: 18, def: 12, spd: 12, mag: 12, lck: 10 },
+    // Prepare canonical asymmetric 4-member striking party (Aya, Tao, Lulu, Rei)
+    const canonicalTeamIds = ["aya", "tao", "lulu", "rei"];
+    const partyMembers = canonicalTeamIds.map((charId) => {
+      const charProfile = charactersData.find((c) => c.id === charId) || {
+        name: charId.toUpperCase(),
+        base_stats: { hp: 70, mp: 30, atk: 18, def: 12, spd: 14, mag: 12, lck: 10 },
         stat_bonuses: {},
+        class_affinity: ["vanguard"]
+      };
+      const resolvedClassId = charProfile.class_affinity?.[0] || "vanguard";
+      const clsProfile = classesData.find((c) => c.id === resolvedClassId) || classesData[0];
+      
+      const targetCharStub = {
+        ...charProfile,
         lv: partyAverageLevel
       };
-      const stats = sandbox.computeStats(dummyChar, clsProfile);
+      const stats = sandbox.computeStats(targetCharStub, clsProfile);
       return {
-        name: `Party_${clsProfile.name || roleId}`,
+        name: charProfile.name || charId,
         level: partyAverageLevel,
         hp: stats.hp,
         maxHp: stats.hp,
         atk: stats.atk,
         def: stats.def,
-        mag: stats.mag || 10,
+        mag: stats.mag || 12,
         cls: clsProfile,
         isAlive: true,
       };
@@ -184,6 +193,7 @@ export async function handleValidateThreatCurve(args, rootDir) {
     const reportOutput = {
       encounterAnalyzed: targetBossId,
       simulationMetrics: {
+        simulatedCast: partyMembers.map(m => `${m.name} (Lv.${m.level})`),
         totalRoundsSimulated: round - 1,
         partySurvivalRate: `${finalSurvivalPct.toFixed(1)}%`,
         effectiveBossTTKSeconds: parseFloat(((round - 1) * 6.0).toFixed(1)), // 6 seconds per asymmetric rotation round
