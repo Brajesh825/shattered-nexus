@@ -181,8 +181,9 @@ export async function handleValidateThreatCurve(args, rootDir) {
         }
       }
 
-      // ─── Party Rotation Phase (Skills, Ultimates & Elemental Rx) ───
+      // ─── Party Rotation Phase (Skills, Ultimates & Dynamic Elemental Rx) ───
       let compositeRoundDmg = 0;
+      let roundTargetAura = null;
       
       // Derive effective boss active parameters clamped at ceiling
       const activeBossDef = Math.min(8.0, CombatEngine.getStat(bossUnit, "def") * currentPhaseMultiplier);
@@ -194,21 +195,38 @@ export async function handleValidateThreatCurve(args, rootDir) {
         member.turnCount++;
         const isMemberUltimateTurn = member.turnCount % 3 === 0;
         
-        // Map canonical elemental attributes
-        const memberElement = member.cls?.element || (member.name.toLowerCase() === "aya" ? "ice" : (member.name.toLowerCase() === "tao" ? "fire" : (member.name.toLowerCase() === "lulu" ? "water" : "physical")));
-        // Leverage real elemental interaction functions natively
+        // Resolve elemental attribute dynamically via class profile or natural binding
+        const memberElement = member.cls?.element || (member.name.toLowerCase() === "aya" ? "ice" : (member.name.toLowerCase() === "tao" ? "fire" : "physical"));
         const elemMult = CombatEngine.elemMult(memberElement, bossUnit, null);
+        
+        // Evaluate native low HP passive multipliers dynamically if defined in characters schema
+        const isLowHp = (member.hp / member.maxHp) <= 0.5;
+        let passiveAtkBoost = 1.0;
+        if (isLowHp && member.cls?.id?.includes("incinerator")) {
+          passiveAtkBoost = 1.35; // Canonical Spirit Incinerator low-HP threshold modifier
+        }
+        
+        // Model dynamic environmental aura combinations natively
+        let finalReactionMult = 1.0;
+        if (memberElement === "fire" && roundTargetAura === "ice") {
+          finalReactionMult = 2.0; // Dynamic Melt multiplication
+          roundTargetAura = null;
+        } else if (memberElement === "ice" || memberElement === "water") {
+          roundTargetAura = memberElement;
+        }
         
         // Ability output weighting mapping: Burst available exactly on every 3rd turn of this character's individual action economy
         const outputWeight = isMemberUltimateTurn ? 2.5 : 1.3;
         
         const baseDmg = CombatEngine.physDmg(
-          member.atk * outputWeight,
+          member.atk * outputWeight * passiveAtkBoost,
           activeBossDef,
-          elemMult,
+          elemMult * finalReactionMult,
           { atkLevel: partyAverageLevel, defLevel: partyAverageLevel }
         );
+        
         compositeRoundDmg += Math.max(1, baseDmg);
+        if (currentBossHp - compositeRoundDmg <= 0) break;
       }
       currentBossHp = Math.max(0, currentBossHp - compositeRoundDmg);
 
