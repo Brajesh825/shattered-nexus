@@ -33,3 +33,4 @@ Perfect the mathematical heartbeat of Shattered Nexus combat. You ensure that ev
 - `js/battle/combat-engine.js`
 - `data/enemies.js`
 - `data/classes.json`
+- `_concepts/mechanics/threat_curve_validator.md` (Staged Blueprint)

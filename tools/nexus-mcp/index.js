@@ -20,6 +20,7 @@ import { handleGenerateSprites } from "./handlers/generateSprites.js";
 import { handleAuditAssets } from "./handlers/auditAssets.js";
 import { handleSemanticSearch } from "./handlers/semanticSearch.js";
 import { handleSyncRag } from "./handlers/ragIndexer.js";
+import { handleValidateThreatCurve } from "./handlers/validateThreatCurve.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -238,6 +239,33 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           type: "object",
           properties: {}
         }
+      },
+      {
+        name: "nexus_validate_threat_curve",
+        description: "Simulates round-by-round asymmetric 4v1 combat scenarios against target boss entities inside sandboxed VM contexts to validate Time-to-Kill (TTK) statistics, verify phase transformations, and enforce absolute mitigation clamps.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            targetBossId: {
+              type: "string",
+              description: "Unique identifier key of the canonical boss entity inside enemies.json (e.g., 'sunken_leviathan')."
+            },
+            partyAverageLevel: {
+              type: "integer",
+              description: "Simulated base level configuration for the 4-member striking party."
+            },
+            simulatedRounds: {
+              type: "integer",
+              description: "Maximum round boundary limit for the automated sweep. Defaults to 20 rounds."
+            },
+            partySustainProfile: {
+              type: "string",
+              enum: ["aggressive", "balanced", "defensive"],
+              description: "Virtual operational strategy governing party resource allocation and healing loop sensitivity."
+            }
+          },
+          required: ["targetBossId", "partyAverageLevel"]
+        }
       }
     ],
   };
@@ -280,6 +308,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
   if (name === "nexus_sync_rag") {
     return await handleSyncRag(args, ROOT_DIR);
+  }
+
+  if (name === "nexus_validate_threat_curve") {
+    return await handleValidateThreatCurve(args, ROOT_DIR);
   }
 
   throw new Error(`Unknown tool requested: ${name}`);
