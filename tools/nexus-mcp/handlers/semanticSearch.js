@@ -74,14 +74,15 @@ export async function handleSemanticSearch(args, rootDir) {
     // 2. Dynamic Fallback generation if offline index cache is unavailable
     let fileName = "";
     if (!usedCache) {
-      if (collection === "lore") fileName = "lore_fragments.json";
-      else if (collection === "classes") fileName = "classes.json";
-      else if (collection === "characters") fileName = "characters.json";
-      else if (collection === "quests") fileName = "quests.json";
-      else if (collection === "npcs") fileName = "npcs.js";
+      if (collection === "lore") fileName = "data/lore_fragments.json";
+      else if (collection === "classes") fileName = "data/classes.json";
+      else if (collection === "characters") fileName = "data/characters.json";
+      else if (collection === "quests") fileName = "data/quests.json";
+      else if (collection === "npcs") fileName = "data/npcs.js";
+      else if (collection === "tiles") fileName = "js/map/data/tile-defs.js";
       else throw new Error(`Unknown semantic collection namespace requested: ${collection}`);
 
-      const targetPath = path.join(rootDir, `data/${fileName}`);
+      const targetPath = path.join(rootDir, fileName);
       const fileContent = await fs.readFile(targetPath, "utf-8");
       
       let items = [];
@@ -100,6 +101,28 @@ export async function handleSemanticSearch(args, rootDir) {
             description: textContent
           });
         }
+      } else if (collection === "tiles") {
+        const tileMatches = fileContent.matchAll(/(?:^\s*|TILE_DEFS\[)(\d+)(?:\]\s*=\s*|:\s*)\{([^}]+)\}/gm);
+        for (const tm of tileMatches) {
+          const id = tm[1];
+          const inner = tm[2];
+          const nameMatch = /name:\s*['"]([^'"]+)['"]/.exec(inner);
+          const name = nameMatch ? nameMatch[1] : `Tile ${id}`;
+          const walkMatch = /walkable:\s*(true|false)/.exec(inner);
+          const walkable = walkMatch ? walkMatch[1] === "true" : true;
+          const colorMatch = /color:\s*['"]([^'"]+)['"]/.exec(inner);
+          const color = colorMatch ? colorMatch[1] : "";
+          const svgMatch = /svgAsset:\s*['"]([^'"]+)['"]/.exec(inner);
+          const svgAsset = svgMatch ? svgMatch[1] : "";
+          items.push({
+            id,
+            name,
+            walkable,
+            color,
+            svgAsset,
+            description: `Terrain feature ${name}. Walkable: ${walkable}. Visual tokens: color ${color}, SVG Asset ${svgAsset || "none"}.`
+          });
+        }
       } else {
         items = JSON.parse(fileContent);
       }
@@ -116,6 +139,8 @@ export async function handleSemanticSearch(args, rootDir) {
         } else if (collection === "quests") {
           searchableText = `${item.id || ""} ${item.title || ""} ${item.description || ""} ${item.giver || ""} ${item.map || ""} ${JSON.stringify(item.objectives || [])}`;
         } else if (collection === "npcs") {
+          searchableText = `${item.id || ""} ${item.name || ""} ${item.description || ""}`;
+        } else if (collection === "tiles") {
           searchableText = `${item.id || ""} ${item.name || ""} ${item.description || ""}`;
         }
 
@@ -154,6 +179,11 @@ export async function handleSemanticSearch(args, rootDir) {
       } else if (collection === "npcs") {
         projection.name = item.name;
         projection.dialogueSnippet = item.description ? `${item.description.substring(0, 280)}...` : "";
+      } else if (collection === "tiles") {
+        projection.name = item.name;
+        projection.walkable = item.walkable;
+        projection.color = item.color;
+        projection.svgAsset = item.svgAsset;
       }
       return projection;
     });
