@@ -214,13 +214,13 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       },
       {
         name: "nexus_semantic_search",
-        description: "Performs fast semantic vector retrieval across verified canonical lore matrices, party configurations, active quest logs, and NPC databases.",
+        description: "Performs fast semantic vector retrieval across verified canonical lore matrices, party configurations, active quest logs, NPC databases, and environmental tile registries.",
         inputSchema: {
           type: "object",
           properties: {
             collection: {
               type: "string",
-              enum: ["lore", "classes", "characters", "quests", "npcs"],
+              enum: ["lore", "classes", "characters", "quests", "npcs", "tiles"],
               description: "Target verified production collection namespace to query."
             },
             query: {
