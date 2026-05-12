@@ -21,15 +21,25 @@ export async function handleAuditMap(args, rootDir) {
     }
     const playerStart = { x: parseInt(startMatch[1], 10), y: parseInt(startMatch[2], 10) };
 
-    // Parse Teleport Triggers safely
+    // Parse Teleport Triggers safely inside the triggers array
     const teleports = [];
-    const triggerMatches = fileContent.matchAll(/id:\s*['"]([^'"]+)['"][\s\S]*?x:\s*(\d+)[\s\S]*?y:\s*(\d+)[\s\S]*?type:\s*['"]teleport['"]/g);
-    for (const tm of triggerMatches) {
-      teleports.push({
-        id: tm[1],
-        x: parseInt(tm[2], 10),
-        y: parseInt(tm[3], 10),
-      });
+    const triggersBlockMatch = fileContent.match(/triggers:\s*\[([\s\S]*?)\]/);
+    if (triggersBlockMatch) {
+      const triggerObjects = triggersBlockMatch[1].split(/\}\s*,\s*\{/);
+      for (const to of triggerObjects) {
+        if (/type:\s*['"]teleport['"]/.test(to)) {
+          const idMatch = /id:\s*['"]([^'"]+)['"]/.exec(to);
+          const xMatch = /x:\s*(\d+)/.exec(to);
+          const yMatch = /y:\s*(\d+)/.exec(to);
+          if (idMatch && xMatch && yMatch) {
+            teleports.push({
+              id: idMatch[1],
+              x: parseInt(xMatch[1], 10),
+              y: parseInt(yMatch[1], 10)
+            });
+          }
+        }
+      }
     }
 
     // Parse NPCs safely
