@@ -15,6 +15,9 @@ import { handleAuditMap } from "./handlers/auditMap.js";
 import { handleStageConcept } from "./handlers/stageConcept.js";
 import { handleBumpCache } from "./handlers/bumpCache.js";
 import { handleSimulateCombat } from "./handlers/simulateCombat.js";
+import { handleSearchEntities } from "./handlers/searchEntities.js";
+import { handleGenerateSprites } from "./handlers/generateSprites.js";
+import { handleAuditAssets } from "./handlers/auditAssets.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -152,6 +155,60 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           },
           required: ["heroLevel", "enemyId", "formationSlot"]
         }
+      },
+      {
+        name: "nexus_search_entities",
+        description: "Scans core game databases (enemies.json, characters.json, classes.json) to locate entity schemas matching partial ID strings or display names.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            database: {
+              type: "string",
+              enum: ["enemies", "characters", "classes"],
+              description: "Target JSON database file to scan."
+            },
+            query: {
+              type: "string",
+              description: "Substring search query to locate matching entries by 'id' or 'name' fields."
+            }
+          },
+          required: ["database", "query"]
+        }
+      },
+      {
+        name: "nexus_generate_enemy_sprites",
+        description: "Programmatically triggers, polls, and optimizes ComfyUI cel-shaded enemy sprite generation pipelines adhering strictly to the Void Knight Standard.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            targetEnemyIds: {
+              type: "array",
+              items: { type: "string" },
+              description: "Optional array of specific enemy ID strings to generate. If omitted, scans images/enemies/_prompts.txt for ungenerated items lacking a leading [DONE] tag."
+            },
+            cfgScale: {
+              type: "number",
+              description: "Optional CFG guidance scale. Defaults to 5.0."
+            }
+          }
+        }
+      },
+      {
+        name: "nexus_audit_enemy_assets",
+        description: "Scans images/enemies/ binary layer outputs natively to isolate non-square resolutions, extremely light file sizes, legacy PNG formats, and orphaned registries violating Vivid's quality directives.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            autoFix: {
+              type: "boolean",
+              description: "If true, cleans up redundant unoptimized intermediate PNG files."
+            },
+            minSizeBytes: {
+              type: "integer",
+              description: "Custom minimum byte weight threshold. Defaults to 50000 bytes (50KB)."
+            }
+          }
+        }
       }
     ],
   };
@@ -174,6 +231,18 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
   if (name === "nexus_simulate_combat") {
     return await handleSimulateCombat(args, ROOT_DIR);
+  }
+
+  if (name === "nexus_search_entities") {
+    return await handleSearchEntities(args, ROOT_DIR);
+  }
+
+  if (name === "nexus_generate_enemy_sprites") {
+    return await handleGenerateSprites(args, ROOT_DIR);
+  }
+
+  if (name === "nexus_audit_enemy_assets") {
+    return await handleAuditAssets(args, ROOT_DIR);
   }
 
   throw new Error(`Unknown tool requested: ${name}`);
