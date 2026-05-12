@@ -62,9 +62,15 @@ const BattleUI = {
       bg: 'eternal_void.webp'
     },
     'river_king': {
+      theme: 'river-king',
+      flash: '#38bdf8',
+      fx: 'tidalSurge',
       bg: 'riverlands.webp'
     },
     'sunken_leviathan': {
+      theme: 'sunken-leviathan',
+      flash: '#818cf8',
+      fx: 'abyssalCurrent',
       bg: 'stage_submerged_market.webp'
     }
   },
@@ -188,6 +194,108 @@ const BattleUI = {
           ctx.fillStyle = '#000';
           ctx.beginPath(); ctx.arc(canvas.width/2, canvas.height/2, radius, 0, Math.PI * 2); ctx.fill();
           if (radius < maxRadius) requestAnimationFrame(animate); else resolve();
+        };
+        animate();
+      });
+    },
+
+    async tidalSurge(ctx, canvas) {
+      const ripples = [];
+      for (let i = 0; i < 5; i++) {
+        ripples.push({
+          radius: i * 40,
+          speed: 12 + i * 2,
+          alpha: 1.0 - (i * 0.15)
+        });
+      }
+      return new Promise(resolve => {
+        const animate = () => {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          let alive = false;
+          const cx = canvas.width / 2;
+          const cy = canvas.height / 2;
+          
+          ctx.save();
+          ripples.forEach(r => {
+            r.radius += r.speed;
+            r.alpha -= 0.018;
+            if (r.alpha > 0) {
+              alive = true;
+              ctx.strokeStyle = `rgba(56, 189, 248, ${r.alpha})`;
+              ctx.lineWidth = 12;
+              ctx.beginPath();
+              ctx.arc(cx, cy, r.radius, 0, Math.PI * 2);
+              ctx.stroke();
+              
+              // Internal subtle fill
+              ctx.fillStyle = `rgba(14, 165, 233, ${r.alpha * 0.15})`;
+              ctx.fill();
+            }
+          });
+          ctx.restore();
+          if (alive) requestAnimationFrame(animate); else resolve();
+        };
+        animate();
+      });
+    },
+
+    async abyssalCurrent(ctx, canvas) {
+      const bubbles = [];
+      for (let i = 0; i < 60; i++) {
+        bubbles.push({
+          x: Math.random() * canvas.width,
+          y: canvas.height + Math.random() * 200,
+          radius: 4 + Math.random() * 16,
+          speed: 4 + Math.random() * 8,
+          wobble: Math.random() * Math.PI * 2,
+          wobbleSpeed: 0.05 + Math.random() * 0.05,
+          alpha: 0.8 + Math.random() * 0.2
+        });
+      }
+      let wipeProgress = 0;
+      return new Promise(resolve => {
+        const animate = () => {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          let alive = false;
+          
+          // Render deep sea ambient gradient pressure overlay
+          wipeProgress = Math.min(1.0, wipeProgress + 0.02);
+          ctx.save();
+          const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+          grad.addColorStop(0, `rgba(15, 23, 42, ${wipeProgress * 0.7})`);
+          grad.addColorStop(1, `rgba(49, 46, 129, ${wipeProgress * 0.95})`);
+          ctx.fillStyle = grad;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.restore();
+
+          // Render ascending dynamic pressure bubbles
+          ctx.save();
+          bubbles.forEach(b => {
+            b.y -= b.speed;
+            b.wobble += b.wobbleSpeed;
+            const actualX = b.x + Math.sin(b.wobble) * 15;
+            b.alpha -= 0.012;
+            
+            if (b.alpha > 0) {
+              alive = true;
+              ctx.fillStyle = `rgba(129, 140, 248, ${b.alpha * 0.4})`;
+              ctx.strokeStyle = `rgba(199, 210, 254, ${b.alpha * 0.9})`;
+              ctx.lineWidth = 2;
+              ctx.beginPath();
+              ctx.arc(actualX, b.y, b.radius, 0, Math.PI * 2);
+              ctx.fill();
+              ctx.stroke();
+              
+              // Bubble highlight
+              ctx.fillStyle = `rgba(255, 255, 255, ${b.alpha * 0.8})`;
+              ctx.beginPath();
+              ctx.arc(actualX - b.radius * 0.3, b.y - b.radius * 0.3, b.radius * 0.2, 0, Math.PI * 2);
+              ctx.fill();
+            }
+          });
+          ctx.restore();
+
+          if (alive) requestAnimationFrame(animate); else resolve();
         };
         animate();
       });
