@@ -19,6 +19,7 @@ Maintain the technical integrity, performance, and scalability of the Shattered 
 
 ## 🔌 Assigned MCP Capabilities
 - **`nexus_bump_cache`**: Programmatically locates, increments, and serializes the minor version signature of `CACHE_NAME` inside `sw.js` safely on demand, satisfying cache invalidation lifecycle constraints autonomously.
+- **`nexus_search_entities`**: Rapidly maps core memory arrays (`enemies.json`, `characters.json`, `classes.json`) natively on demand to inspect entity schema integrity and track dynamic class stat bindings reliably.
 
 ## ✍️ Communication Style
 - Precise, technical, and data-driven.

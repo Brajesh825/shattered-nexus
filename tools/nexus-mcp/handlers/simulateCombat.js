@@ -10,6 +10,7 @@ export async function handleSimulateCombat(args, rootDir) {
     const scalingPath = path.join(rootDir, "js/scaling-config.js");
     const enemyScalingPath = path.join(rootDir, "js/battle/enemy-scaling.js");
     const combatEnginePath = path.join(rootDir, "js/battle/combat-engine.js");
+    const partyPath = path.join(rootDir, "js/systems/party.js");
     const classesJsonPath = path.join(rootDir, "data/classes.json");
     const enemiesJsonPath = path.join(rootDir, "data/enemies.json");
     const charactersJsonPath = path.join(rootDir, "data/characters.json");
@@ -17,6 +18,7 @@ export async function handleSimulateCombat(args, rootDir) {
     const scalingSrc = await fs.readFile(scalingPath, "utf-8");
     const enemyScalingSrc = await fs.readFile(enemyScalingPath, "utf-8");
     const combatEngineSrc = await fs.readFile(combatEnginePath, "utf-8");
+    const partySrc = await fs.readFile(partyPath, "utf-8");
     const classesData = JSON.parse(await fs.readFile(classesJsonPath, "utf-8"));
     const enemiesData = JSON.parse(await fs.readFile(enemiesJsonPath, "utf-8"));
     const charactersData = JSON.parse(await fs.readFile(charactersJsonPath, "utf-8"));
@@ -25,10 +27,13 @@ export async function handleSimulateCombat(args, rootDir) {
     const sandbox = {
       console,
       setTimeout,
-      Math,
+      Math: Object.create(Math, {
+        random: { value: () => 0.5 }
+      }),
       module: { exports: {} },
       window: {},
       globalThis: {},
+      G: {}, // Provide empty Global namespace for robust module encapsulation
       PassiveSystem: {
         getStatMultiplier: () => 1.0,
         getStatBonus: () => 0,
@@ -49,31 +54,37 @@ export async function handleSimulateCombat(args, rootDir) {
     vm.runInContext(combatEngineSrc, sandbox, { filename: "combat-engine.js" });
     const CombatEngine = sandbox.module.exports || sandbox.CombatEngine;
 
+    vm.runInContext(partySrc, sandbox, { filename: "party.js" });
+    sandbox.computeStats = sandbox.module.exports.computeStats || sandbox.computeStats;
+
     // Retrieve character and hero class definitions safely
     const charProfile = characterId ? charactersData.find((c) => c.id === characterId) : null;
     const resolvedClassId = heroClassId || (charProfile?.class_affinity?.[0]) || "vanguard";
     const heroCls = classesData.find((c) => c.id === resolvedClassId) || classesData[0];
 
-    // Compute customized character or generic class baselines
-    let baseAtk = charProfile?.base_stats?.atk ?? heroCls?.stats?.atk ?? 15;
-    let baseDef = charProfile?.base_stats?.def ?? heroCls?.stats?.def ?? 10;
-    let baseHp = charProfile?.base_stats?.hp ?? heroCls?.stats?.hp ?? 100;
+    // Leverage true production computeStats function to derive unified unit states natively
+    const mockChar = charProfile ? {
+      ...charProfile,
+      lv: heroLevel
+    } : {
+      base_stats: { hp: 100, mp: 50, atk: 15, def: 10, spd: 10, mag: 10, lck: 10 },
+      stat_bonuses: {},
+      lv: heroLevel
+    };
 
-    // Apply level growths and inherent stat bonuses
-    const growthAtk = (heroCls?.growthPerLevel?.atk ?? 2) + (charProfile?.stat_bonuses?.atk ?? 0);
-    const growthDef = (heroCls?.growthPerLevel?.def ?? 1) + (charProfile?.stat_bonuses?.def ?? 0);
-    const growthHp = (heroCls?.growthPerLevel?.hp ?? 10) + (charProfile?.stat_bonuses?.hp ?? 0);
+    const computedHeroStats = sandbox.computeStats(mockChar, heroCls);
 
-    // Construct mock unit states
+    // Construct unified player unit states aligned with live party structures
     const heroUnit = {
       name: charProfile?.name || heroCls?.name || "Hero",
       level: heroLevel,
-      hp: baseHp + heroLevel * growthHp,
-      maxHp: baseHp + heroLevel * growthHp,
-      atk: baseAtk + heroLevel * growthAtk,
-      def: baseDef + heroLevel * growthDef,
+      hp: computedHeroStats.hp,
+      maxHp: computedHeroStats.hp,
+      atk: computedHeroStats.atk,
+      def: computedHeroStats.def,
       cls: heroCls,
       statuses: [],
+      statPhases: [],
     };
 
     // Locate enemy definition and instantiate scaled entry using real scaling logic
@@ -86,8 +97,14 @@ export async function handleSimulateCombat(args, rootDir) {
       sandbox.NexusScaling
     );
 
+    // Retrieve final production stat evaluations natively
+    const heroFinalAtk = CombatEngine.getStat(heroUnit, "atk");
+    const heroFinalDef = CombatEngine.getStat(heroUnit, "def");
+    const enemyFinalAtk = CombatEngine.getStat(enemyUnit, "atk");
+    const enemyFinalDef = CombatEngine.getStat(enemyUnit, "def");
+
     // Evaluate physical interception rules based on slot setup
-    let finalAtkToUse = enemyUnit.atk;
+    let finalAtkToUse = enemyFinalAtk;
     let interceptionTriggered = false;
     if (formationSlot === 2) {
       // Vanguard interception slot mitigates direct inbound kinetic physical strikes
@@ -95,9 +112,13 @@ export async function handleSimulateCombat(args, rootDir) {
       interceptionTriggered = true;
     }
 
+    // Capture true production elemental reaction factors natively
+    const heroElemMult = CombatEngine.elemMult(heroCls?.element || "physical", enemyUnit, null);
+    const enemyElemMult = CombatEngine.elemMult(enemyUnit.element || "physical", heroUnit, null);
+
     // Run core engine math functions directly
-    const sampleHeroDmg = CombatEngine.physDmg(heroUnit.atk, enemyUnit.def, 1.0, { atkLevel: heroLevel, defLevel: heroLevel });
-    const sampleEnemyDmg = CombatEngine.physDmg(finalAtkToUse, heroUnit.def, 1.0, { atkLevel: heroLevel, defLevel: heroLevel });
+    const sampleHeroDmg = CombatEngine.physDmg(heroFinalAtk, enemyFinalDef, heroElemMult, { atkLevel: heroLevel, defLevel: heroLevel });
+    const sampleEnemyDmg = CombatEngine.physDmg(finalAtkToUse, heroFinalDef, enemyElemMult, { atkLevel: heroLevel, defLevel: heroLevel });
 
     const expectedHeroTTK = Math.ceil(enemyUnit.hp / sampleHeroDmg);
     const expectedEnemyTTK = Math.ceil(heroUnit.hp / sampleEnemyDmg);
@@ -110,11 +131,11 @@ export async function handleSimulateCombat(args, rootDir) {
         interceptionActive: interceptionTriggered,
       },
       computedStats: {
-        heroEffectiveAtk: heroUnit.atk,
-        heroEffectiveDef: heroUnit.def,
+        heroEffectiveAtk: heroFinalAtk,
+        heroEffectiveDef: heroFinalDef,
         enemyScaledHp: enemyUnit.hp,
-        enemyScaledAtk: enemyUnit.atk,
-        enemyScaledDef: enemyUnit.def,
+        enemyScaledAtk: enemyFinalAtk,
+        enemyScaledDef: enemyFinalDef,
       },
       combatMathOutcomes: {
         heroDamagePerStrike: sampleHeroDmg,
