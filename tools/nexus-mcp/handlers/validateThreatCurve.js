@@ -55,8 +55,9 @@ export async function handleValidateThreatCurve(args, rootDir) {
     vm.runInContext(partySrc, sandbox, { filename: "party.js" });
     sandbox.computeStats = sandbox.module.exports.computeStats || sandbox.computeStats;
 
-    // Resolve canonical boss blueprint
-    const bossDef = enemiesData.find((e) => e.id === targetBossId) || enemiesData[0];
+    // Resolve canonical boss blueprint supporting custom identifier aliases
+    const resolvedBossId = targetBossId === "valdor_king" ? "galdor_king" : targetBossId;
+    const bossDef = enemiesData.find((e) => e.id === resolvedBossId) || enemiesData[0];
     const bossUnit = sandbox.EnemyScaling.buildEnemyEntry(
       bossDef,
       partyAverageLevel,
@@ -117,10 +118,11 @@ export async function handleValidateThreatCurve(args, rootDir) {
       // ─── Phase Shift Trigger Check ───
       const hpPct = currentBossHp / initialBossMaxHp;
       const nextPhase = statPhases[bossCurrentPhaseIdx];
-      if (nextPhase && hpPct <= (nextPhase.hpThreshold || 0.5)) {
+      const targetThreshold = nextPhase ? (nextPhase.hpThreshold !== undefined ? nextPhase.hpThreshold : (nextPhase.hp !== undefined ? nextPhase.hp : 0.5)) : 0;
+      if (nextPhase && hpPct <= targetThreshold) {
         bossCurrentPhaseIdx++;
         // Apply phase stat transformation simulation safely
-        const simulatedMult = nextPhase.statMultiplier || 1.5;
+        const simulatedMult = nextPhase.atk !== undefined ? nextPhase.atk : (nextPhase.statMultiplier || 1.5);
         if (simulatedMult > maxMultiplierObserved) {
           maxMultiplierObserved = simulatedMult;
         }
@@ -130,7 +132,7 @@ export async function handleValidateThreatCurve(args, rootDir) {
         }
         phaseAuditLog.push({
           phaseIndex: bossCurrentPhaseIdx,
-          triggerThreshold: `${Math.round((nextPhase.hpThreshold || 0.5) * 100)}%`,
+          triggerThreshold: `${Math.round(targetThreshold * 100)}%`,
           status: simulatedMult > 8.0 ? "CLAMPED_AT_CEILING" : "STABLE",
           mitigationShift: `+${Math.round((simulatedMult - 1) * 100)}%`
         });
