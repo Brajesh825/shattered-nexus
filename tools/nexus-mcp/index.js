@@ -14,6 +14,7 @@ import { fileURLToPath } from "url";
 import { handleAuditMap } from "./handlers/auditMap.js";
 import { handleStageConcept } from "./handlers/stageConcept.js";
 import { handleBumpCache } from "./handlers/bumpCache.js";
+import { handleSimulateCombat } from "./handlers/simulateCombat.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -137,6 +138,21 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           properties: {},
         },
       },
+      {
+        name: "nexus_simulate_combat",
+        description: "Sandboxes live game engine logic buffers dynamically to simulate zero-drift Time-to-Kill (TTK) metrics and kinetic physical interception formulas.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            characterId: { type: "string", description: "Optional Character ID from data/characters.json (e.g. 'tao' or 'aya')." },
+            heroClassId: { type: "string", description: "Optional Class ID from data/classes.json. Defaults to character's primary affinity if omitted." },
+            heroLevel: { type: "integer", description: "Target testing level." },
+            enemyId: { type: "string", description: "Target Enemy ID from data/enemies.json." },
+            formationSlot: { type: "integer", description: "Slot position index inside the Diamond Formation (e.g. 2 for Vanguard)." }
+          },
+          required: ["heroLevel", "enemyId", "formationSlot"]
+        }
+      }
     ],
   };
 });
@@ -154,6 +170,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
   if (name === "nexus_bump_cache") {
     return await handleBumpCache(ROOT_DIR);
+  }
+
+  if (name === "nexus_simulate_combat") {
+    return await handleSimulateCombat(args, ROOT_DIR);
   }
 
   throw new Error(`Unknown tool requested: ${name}`);
