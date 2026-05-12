@@ -195,6 +195,25 @@ export async function handleValidateThreatCurve(args, rootDir) {
         member.turnCount++;
         const isMemberUltimateTurn = member.turnCount % 3 === 0;
         
+        // Evaluate native class ultimate profiles dynamically via class definition arrays
+        const ultimateAbility = member.cls?.abilities?.find(a => a.isUltimate);
+        if (isMemberUltimateTurn && ultimateAbility && ultimateAbility.type === "heal") {
+          // Resolve passive healing amplification dynamically if defined in class or passive schemas
+          const healAmp = member.cls?.stat_multipliers?.hp > 1.1 ? 1.3 : 1.0;
+          const baseHealFraction = ultimateAbility.effect?.healPercent || 0.5;
+          
+          for (const ally of partyMembers) {
+            const restoredAmt = Math.floor(ally.maxHp * baseHealFraction * healAmp);
+            if (!ally.isAlive) {
+              ally.isAlive = true; // Ultimate AoE Heal revival baseline support
+              ally.hp = restoredAmt;
+            } else {
+              ally.hp = Math.min(ally.maxHp, ally.hp + restoredAmt);
+            }
+          }
+          continue;
+        }
+        
         // Resolve elemental attribute dynamically via class profile or natural binding
         const memberElement = member.cls?.element || (member.name.toLowerCase() === "aya" ? "ice" : (member.name.toLowerCase() === "tao" ? "fire" : "physical"));
         const elemMult = CombatEngine.elemMult(memberElement, bossUnit, null);
