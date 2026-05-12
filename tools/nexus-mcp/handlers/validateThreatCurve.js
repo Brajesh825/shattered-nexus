@@ -230,29 +230,52 @@ export async function handleValidateThreatCurve(args, rootDir) {
       }
       currentBossHp = Math.max(0, currentBossHp - compositeRoundDmg);
 
-      // ─── Boss Asymmetric Sweeper Output Phase ───
+      // ─── Boss Asymmetric Sweeper Output Phase (Diamond Formation Integration) ───
       if (currentBossHp > 0) {
         // Calculate true combined asymmetric force output
         const activeBossAtk = Math.min(8.0 * CombatEngine.getStat(bossUnit, "atk"), CombatEngine.getStat(bossUnit, "atk") * currentPhaseMultiplier * currentEventMultiplier);
         
-        // Frontline absorption calculation
-        const targetMember = partyMembers.find(m => m.isAlive) || partyMembers[0];
-        const bossDmgSweep = CombatEngine.physDmg(
-          activeBossAtk,
-          targetMember.def,
-          1.0,
-          { atkLevel: partyAverageLevel, defLevel: partyAverageLevel }
-        );
-
-        // Apply sustain logic mitigation
+        // Evaluate Diamond Formation targeting logic: Slot 2 (index 1, typically Rei/Vanguard) triggers absolute Vanguard Interception for standalone physical strikes
+        const dedicatedVanguard = partyMembers.find(m => m.cls?.role?.toLowerCase() === "knight" || m.name.toLowerCase() === "rei") || partyMembers[1] || partyMembers[0];
+        const primaryTarget = dedicatedVanguard.isAlive ? dedicatedVanguard : (partyMembers.find(m => m.isAlive) || partyMembers[0]);
+        
+        // Model unguided Boss attack distribution: Bosses blend standalone single-target interception strikes with periodic sweeping Area-of-Effect (AoE) force cascades
+        const isAoeSweep = round % 2 === 0;
         const sustainRecoveryFactor = partySustainProfile === "defensive" ? 0.6 : (partySustainProfile === "aggressive" ? 0.2 : 0.4);
-        const netDamageTaken = Math.max(5, Math.floor(bossDmgSweep * (1 - sustainRecoveryFactor)));
-
-        targetMember.hp -= netDamageTaken;
-        if (targetMember.hp <= 0) {
-          targetMember.hp = 0;
-          targetMember.isAlive = false;
+        
+        if (isAoeSweep) {
+          // Area sweep strikes hit the entire roster simultaneously, allowing fragile backline units to suffer unmitigated baseline wear organically
+          for (const target of partyMembers) {
+            if (!target.isAlive) continue;
+            const aoeDmgSweep = CombatEngine.physDmg(
+              activeBossAtk * 0.7, // AoE scalar distribution mapping
+              target.def,
+              1.0,
+              { atkLevel: partyAverageLevel, defLevel: partyAverageLevel }
+            );
+            const netTaken = Math.max(5, Math.floor(aoeDmgSweep * (1 - sustainRecoveryFactor)));
+            target.hp -= netTaken;
+            if (target.hp <= 0) {
+              target.hp = 0;
+              target.isAlive = false;
+            }
+          }
+        } else {
+          // Single-target physical actions are reliably redirected to the active Diamond Vanguard Interceptor
+          const bossDmgSweep = CombatEngine.physDmg(
+            activeBossAtk,
+            primaryTarget.def,
+            1.0,
+            { atkLevel: partyAverageLevel, defLevel: partyAverageLevel }
+          );
+          const netTaken = Math.max(5, Math.floor(bossDmgSweep * (1 - sustainRecoveryFactor)));
+          primaryTarget.hp -= netTaken;
+          if (primaryTarget.hp <= 0) {
+            primaryTarget.hp = 0;
+            primaryTarget.isAlive = false;
+          }
         }
+        
         partyTotalHpPool = partyMembers.reduce((sum, m) => sum + m.hp, 0);
       }
     }
