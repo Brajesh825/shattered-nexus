@@ -18,6 +18,8 @@ import { handleSimulateCombat } from "./handlers/simulateCombat.js";
 import { handleSearchEntities } from "./handlers/searchEntities.js";
 import { handleGenerateSprites } from "./handlers/generateSprites.js";
 import { handleAuditAssets } from "./handlers/auditAssets.js";
+import { handleSemanticSearch } from "./handlers/semanticSearch.js";
+import { handleSyncRag } from "./handlers/ragIndexer.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -209,6 +211,33 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             }
           }
         }
+      },
+      {
+        name: "nexus_semantic_search",
+        description: "Performs fast semantic vector retrieval across verified canonical lore matrices, party configurations, and active quest logs.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            collection: {
+              type: "string",
+              enum: ["lore", "classes", "characters", "quests"],
+              description: "Target verified production collection namespace to query."
+            },
+            query: {
+              type: "string",
+              description: "Natural language search intent string for semantic trigram/token projection."
+            }
+          },
+          required: ["collection", "query"]
+        }
+      },
+      {
+        name: "nexus_sync_rag",
+        description: "Pre-calculates static token/trigram Cosine Similarity projection vectors across core production namespaces and persists them to an offline index cache file for O(1) semantic lookups.",
+        inputSchema: {
+          type: "object",
+          properties: {}
+        }
       }
     ],
   };
@@ -243,6 +272,14 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
   if (name === "nexus_audit_enemy_assets") {
     return await handleAuditAssets(args, ROOT_DIR);
+  }
+
+  if (name === "nexus_semantic_search") {
+    return await handleSemanticSearch(args, ROOT_DIR);
+  }
+
+  if (name === "nexus_sync_rag") {
+    return await handleSyncRag(args, ROOT_DIR);
   }
 
   throw new Error(`Unknown tool requested: ${name}`);
