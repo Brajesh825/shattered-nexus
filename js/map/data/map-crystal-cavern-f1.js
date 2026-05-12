@@ -62,7 +62,7 @@ MAP_DEFS.crystal_cavern_f1 = {
   triggers: [
     // --- RETURN TO SURFACE ---
     {
-      x: 6, y: 10, w: 1, h: 1,
+      x: 1, y: 10, w: 1, h: 1,
       type: 'teleport',
       targetMapId: 'verdant_vale',
       targetX: 52, targetY: 29,

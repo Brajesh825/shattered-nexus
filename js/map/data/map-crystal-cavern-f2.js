@@ -55,7 +55,7 @@ MAP_DEFS.crystal_cavern_f2 = {
 
   npcs: [
     { id: 'ghost_knight', x: 34, y: 32, dialogueKey: 'crystal_cavern_f2' },
-    { id: 'scholar_vane', x: 8, y: 30, dialogueKey: 'crystal_cavern_f2' },
+    { id: 'scholar_vane', x: 10, y: 28, dialogueKey: 'crystal_cavern_f2' },
   ],
 
   triggers: [
