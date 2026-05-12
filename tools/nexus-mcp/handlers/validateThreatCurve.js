@@ -95,6 +95,7 @@ export async function handleValidateThreatCurve(args, rootDir) {
         mag: stats.mag || 12,
         cls: clsProfile,
         isAlive: true,
+        turnCount: 0
       };
     });
 
@@ -181,8 +182,6 @@ export async function handleValidateThreatCurve(args, rootDir) {
       }
 
       // ─── Party Rotation Phase (Skills, Ultimates & Elemental Rx) ───
-      // Simulating round-based resource rotations: Every 4th round unleashes a full Ultimate Burst Volley triggering elemental Rx scalars
-      const isUltimateRound = round % 4 === 0;
       let compositeRoundDmg = 0;
       
       // Derive effective boss active parameters clamped at ceiling
@@ -191,13 +190,17 @@ export async function handleValidateThreatCurve(args, rootDir) {
       for (const member of partyMembers) {
         if (!member.isAlive) continue;
         
+        // Track unique individual action turn economy count per party member
+        member.turnCount++;
+        const isMemberUltimateTurn = member.turnCount % 3 === 0;
+        
         // Map canonical elemental attributes
         const memberElement = member.cls?.element || (member.name.toLowerCase() === "aya" ? "ice" : (member.name.toLowerCase() === "tao" ? "fire" : (member.name.toLowerCase() === "lulu" ? "water" : "physical")));
         // Leverage real elemental interaction functions natively
         const elemMult = CombatEngine.elemMult(memberElement, bossUnit, null);
         
-        // Ability output weighting mapping (Ultimate vs Standard skill cycles)
-        const outputWeight = isUltimateRound ? 2.5 : 1.3;
+        // Ability output weighting mapping: Burst available exactly on every 3rd turn of this character's individual action economy
+        const outputWeight = isMemberUltimateTurn ? 2.5 : 1.3;
         
         const baseDmg = CombatEngine.physDmg(
           member.atk * outputWeight,
