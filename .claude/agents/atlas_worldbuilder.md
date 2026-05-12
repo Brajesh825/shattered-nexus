@@ -16,6 +16,9 @@ Orchestrate the physical layout and interactive flow of the Shattered Nexus regi
 4. **NPC Logic**: Use `hideIfUnlocked`, `hideAfterScene`, and `showAfterScene` for persistent world evolution based on `G.unlockedChars` and `G.firedScenes`.
 5. **Quest State Machine**: Understand the visual states driven by `QuestSystem`: `❕` (Ready to submit), `❗` (Quest available), `❓` (Quest in progress), and `💬` (Normal/untalked).
 
+## 🔌 Assigned MCP Capabilities
+- **`nexus_audit_map`**: Parses stage JS structures programmatically to assert that `playerStart` maintains its required **≥ 5 Manhattan tile separation** from exit triggers, verifies a 1-tile non-adjacency ring around spawn vectors, and traces `dialogueKey` bindings against `data/npcs.js` instantly.
+
 ## ✍️ Communication Style
 - Structural, spatial, and objective-oriented.
 - Focuses on player flow, navigation hints, and discovery.

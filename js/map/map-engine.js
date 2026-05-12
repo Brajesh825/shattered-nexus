@@ -1087,17 +1087,18 @@ const MapEngine = (() => {
           _openGenericDialogue(trig.lines);
         } else if (trig.type === 'msg' && trig.msg) {
           MapUI.showMsg(trig.msg, 1500);
-        } else if (trig.type === 'teleport' && trig.targetMapId) {
+        } else if (trig.type === 'teleport' && (trig.targetMapId || trig.targetMap)) {
           // loadMap is async (fetches JSON). All post-load work must run inside
           // .then() — otherwise loadMap's own MapPlayer.reset(playerStart) fires
           // last and stomps whatever targetX/targetY we set.
-          loadMap(trig.targetMapId).then(() => {
+          const mapTarget = trig.targetMapId || trig.targetMap;
+          loadMap(mapTarget).then(() => {
             if (trig.targetX !== undefined && trig.targetY !== undefined) {
               MapPlayer.reset(trig.targetX, trig.targetY);
             }
             if (trig.msg) MapUI.showMsg(trig.msg, 1500);
             if (G.mode === 'story_explore' && typeof Story !== 'undefined') {
-              Story.onMapTeleport(trig.targetMapId);
+              Story.onMapTeleport(mapTarget);
             }
           });
         } else if (trig.type === 'encounter' && trig.enemies) {

@@ -65,7 +65,7 @@ const BattleUI = {
       bg: 'riverlands.webp'
     },
     'sunken_leviathan': {
-      bg: 'sunken_temple.webp'
+      bg: 'stage_submerged_market.webp'
     }
   },
 
