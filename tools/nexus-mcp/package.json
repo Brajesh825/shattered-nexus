@@ -1,0 +1,15 @@
+{
+  "name": "nexus-mcp-server",
+  "version": "1.0.0",
+  "description": "Dedicated Model Context Protocol (MCP) server for Shattered Nexus game engine auditing and pipeline enforcement.",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.1"
+  },
+  "author": "Aethon (System Architect)",
+  "license": "MIT"
+}
