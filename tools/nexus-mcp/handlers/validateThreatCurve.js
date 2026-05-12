@@ -193,10 +193,10 @@ export async function handleValidateThreatCurve(args, rootDir) {
         
         // Track unique individual action turn economy count per party member
         member.turnCount++;
-        const isMemberUltimateTurn = member.turnCount % 3 === 0;
-        
         // Evaluate native class ultimate profiles dynamically via class definition arrays
         const ultimateAbility = member.cls?.abilities?.find(a => a.isUltimate);
+        const abilityCd = ultimateAbility?.effect?.cooldown !== undefined ? ultimateAbility.effect.cooldown : 2;
+        const isMemberUltimateTurn = member.turnCount % (abilityCd + 1) === 0;
         if (isMemberUltimateTurn && ultimateAbility && ultimateAbility.type === "heal") {
           // Resolve passive healing amplification dynamically if defined in class or passive schemas
           const healAmp = member.cls?.stat_multipliers?.hp > 1.1 ? 1.3 : 1.0;
