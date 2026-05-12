@@ -104,6 +104,8 @@ export async function handleValidateThreatCurve(args, rootDir) {
     let bossCurrentPhaseIdx = 0;
     let maxMultiplierObserved = 1.0;
     let maxCapViolations = 0;
+    let currentPhaseMultiplier = 1.0;
+    let currentEventMultiplier = 1.0;
 
     const phaseAuditLog = [];
     const statPhases = Array.isArray(bossDef.statPhases) ? bossDef.statPhases : [];
@@ -133,18 +135,21 @@ export async function handleValidateThreatCurve(args, rootDir) {
         bossCurrentPhaseIdx++;
         // Apply phase stat transformation simulation safely
         const simulatedMult = nextPhase.atk !== undefined ? nextPhase.atk : (nextPhase.statMultiplier || 1.5);
-        if (simulatedMult > maxMultiplierObserved) {
-          maxMultiplierObserved = simulatedMult;
+        currentPhaseMultiplier = simulatedMult;
+        
+        const cumulativeScalar = currentPhaseMultiplier * currentEventMultiplier;
+        if (cumulativeScalar > maxMultiplierObserved) {
+          maxMultiplierObserved = cumulativeScalar;
         }
         // Enforce absolute 8.0x mitigation ceiling cap
-        if (simulatedMult > 8.0) {
+        if (cumulativeScalar > 8.0) {
           maxCapViolations++;
         }
         phaseAuditLog.push({
           phaseIndex: bossCurrentPhaseIdx,
           triggerThreshold: `${Math.round(targetThreshold * 100)}%`,
-          status: simulatedMult > 8.0 ? "CLAMPED_AT_CEILING" : "STABLE",
-          mitigationShift: `+${Math.round((simulatedMult - 1) * 100)}%`
+          status: cumulativeScalar > 8.0 ? "CLAMPED_AT_CEILING" : "STABLE",
+          mitigationShift: `+${Math.round((cumulativeScalar - 1) * 100)}% (Cumulative ATK: ${cumulativeScalar.toFixed(2)}x)`
         });
       }
 
@@ -156,32 +161,48 @@ export async function handleValidateThreatCurve(args, rootDir) {
           evt.fired = true;
           const statusBuff = evt.onComplete?.addStatus;
           if (statusBuff && statusBuff.value) {
-            const eventMult = statusBuff.value;
-            if (eventMult > maxMultiplierObserved) {
-              maxMultiplierObserved = eventMult;
+            currentEventMultiplier = statusBuff.value;
+            
+            const cumulativeScalar = currentPhaseMultiplier * currentEventMultiplier;
+            if (cumulativeScalar > maxMultiplierObserved) {
+              maxMultiplierObserved = cumulativeScalar;
             }
-            if (eventMult > 8.0) {
+            if (cumulativeScalar > 8.0) {
               maxCapViolations++;
             }
             phaseAuditLog.push({
               phaseIndex: `Event_${evt.id}`,
               triggerThreshold: `${Math.round((trig.threshold || 0.5) * 100)}%`,
-              status: eventMult > 8.0 ? "CLAMPED_AT_CEILING" : "EVENT_BUFF_STABLE",
-              mitigationShift: `+${Math.round((eventMult - 1) * 100)}% (${statusBuff.label || 'Buff'})`
+              status: cumulativeScalar > 8.0 ? "CLAMPED_AT_CEILING" : "EVENT_BUFF_STABLE",
+              mitigationShift: `+${Math.round((cumulativeScalar - 1) * 100)}% (${statusBuff.label || 'Buff'}, Effective ATK: ${cumulativeScalar.toFixed(2)}x)`
             });
           }
         }
       }
 
-      // ─── Party Rotation Phase ───
-      // Composite DPS projection across 4 distinct striking actors
+      // ─── Party Rotation Phase (Skills, Ultimates & Elemental Rx) ───
+      // Simulating round-based resource rotations: Every 4th round unleashes a full Ultimate Burst Volley triggering elemental Rx scalars
+      const isUltimateRound = round % 4 === 0;
       let compositeRoundDmg = 0;
+      
+      // Derive effective boss active parameters clamped at ceiling
+      const activeBossDef = Math.min(8.0, CombatEngine.getStat(bossUnit, "def") * currentPhaseMultiplier);
+      
       for (const member of partyMembers) {
         if (!member.isAlive) continue;
+        
+        // Map canonical elemental attributes
+        const memberElement = member.cls?.element || (member.name.toLowerCase() === "aya" ? "ice" : (member.name.toLowerCase() === "tao" ? "fire" : (member.name.toLowerCase() === "lulu" ? "water" : "physical")));
+        // Leverage real elemental interaction functions natively
+        const elemMult = CombatEngine.elemMult(memberElement, bossUnit, null);
+        
+        // Ability output weighting mapping (Ultimate vs Standard skill cycles)
+        const outputWeight = isUltimateRound ? 2.5 : 1.3;
+        
         const baseDmg = CombatEngine.physDmg(
-          member.atk * (member.cls?.id === "spellblade" ? 1.5 : 1.2), // Burst modifier mapping
-          CombatEngine.getStat(bossUnit, "def") * maxMultiplierObserved,
-          1.0,
+          member.atk * outputWeight,
+          activeBossDef,
+          elemMult,
           { atkLevel: partyAverageLevel, defLevel: partyAverageLevel }
         );
         compositeRoundDmg += Math.max(1, baseDmg);
@@ -190,12 +211,13 @@ export async function handleValidateThreatCurve(args, rootDir) {
 
       // ─── Boss Asymmetric Sweeper Output Phase ───
       if (currentBossHp > 0) {
-        // Compute base action strike against party resource buffers
-        const bossEffectiveAtk = CombatEngine.getStat(bossUnit, "atk") * maxMultiplierObserved;
+        // Calculate true combined asymmetric force output
+        const activeBossAtk = Math.min(8.0 * CombatEngine.getStat(bossUnit, "atk"), CombatEngine.getStat(bossUnit, "atk") * currentPhaseMultiplier * currentEventMultiplier);
+        
         // Frontline absorption calculation
         const targetMember = partyMembers.find(m => m.isAlive) || partyMembers[0];
         const bossDmgSweep = CombatEngine.physDmg(
-          bossEffectiveAtk,
+          activeBossAtk,
           targetMember.def,
           1.0,
           { atkLevel: partyAverageLevel, defLevel: partyAverageLevel }
