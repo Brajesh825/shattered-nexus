@@ -86,6 +86,7 @@ MAP_DEFS.crystal_cavern_f3 = {
     },
     // --- TELEPORT ---
     {
+      id: 'exit_f3',
       x: 2, y: 30, w: 1, h: 1,
       type: 'teleport',
       targetMapId: 'crystal_cavern_f2',
