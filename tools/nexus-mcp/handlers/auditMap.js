@@ -31,9 +31,9 @@ export async function handleAuditMap(args, rootDir) {
           const idMatch = /id:\s*['"]([^'"]+)['"]/.exec(to);
           const xMatch = /x:\s*(\d+)/.exec(to);
           const yMatch = /y:\s*(\d+)/.exec(to);
-          if (idMatch && xMatch && yMatch) {
+          if (xMatch && yMatch) {
             teleports.push({
-              id: idMatch[1],
+              id: idMatch ? idMatch[1] : "unnamed_teleport",
               x: parseInt(xMatch[1], 10),
               y: parseInt(yMatch[1], 10)
             });
