@@ -31,3 +31,4 @@ Orchestrate the physical layout and interactive flow of the Shattered Nexus regi
 - `data/quests.json`
 - `js/map/map-entities.js`
 - `js/map/map-engine.js` (Trigger checks & NPC dialogue flow)
+- `_concepts/mechanics/smart_patrol_routing.md` (Staged Blueprint)
