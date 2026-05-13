@@ -941,13 +941,20 @@ const MapEntities = (() => {
           return false;
         }
 
+        const uid = n._uid || `npc_${n.id}_${n.x}_${n.y}`;
+        if (typeof QuestSystem !== 'undefined' && QuestSystem.isNodeGathered && QuestSystem.isNodeGathered(uid)) {
+          return false;
+        }
+
         return true;
       }).map(n => {
         const def = (typeof NPC_DEFS !== 'undefined') ? NPC_DEFS[n.id] : null;
         const spritePath = def ? def.sprite : `images/characters/map/sheets/npc/${n.id}_sheet.png`;
+        const uid = n._uid || `npc_${n.id}_${n.x}_${n.y}`;
 
         return {
           ...n,
+          _uid: uid,
           name:   def ? def.name   : n.id,
           color:  def ? def.color  : '#ffffff',
           sprite: spritePath,
@@ -1345,8 +1352,8 @@ const MapEntities = (() => {
         const idx = _npcs.findIndex(n => n.id === npcId);
         if (idx !== -1) _npcs.splice(idx, 1);
       },
-      triggerDissolve: (npcId) => {
-        const n = _npcs.find(n => n.id === npcId);
+      triggerDissolve: (identifier) => {
+        const n = _npcs.find(n => n._uid === identifier || n.id === identifier);
         if (n && !n._dissolving) {
           n._dissolving = true;
           n._dissolveTimer = 0;
