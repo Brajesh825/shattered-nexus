@@ -2013,6 +2013,12 @@ const MapEngine = (() => {
     } else if (opt.action === 'submit' && opt.questId && typeof QuestSystem !== 'undefined') {
       QuestSystem.submit(opt.questId);
       if (typeof SFX !== 'undefined' && SFX.buff) SFX.buff();
+      const def = (_npcCurrent && typeof NPC_DEFS !== 'undefined') ? NPC_DEFS[_npcCurrent.id] : null;
+      if (def && def.dissolveAfterQuest === opt.questId) {
+        if (typeof MapEntities !== 'undefined' && MapEntities.triggerNPCDissolve) {
+          MapEntities.triggerNPCDissolve(_npcCurrent.id);
+        }
+      }
     }
     // dismiss — just close
     _closeNPCDialogue();
