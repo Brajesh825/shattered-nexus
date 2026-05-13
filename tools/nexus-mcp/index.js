@@ -21,6 +21,8 @@ import { handleAuditAssets } from "./handlers/auditAssets.js";
 import { handleSemanticSearch } from "./handlers/semanticSearch.js";
 import { handleSyncRag } from "./handlers/ragIndexer.js";
 import { handleValidateThreatCurve } from "./handlers/validateThreatCurve.js";
+import { handleRunIntegrityCheck } from "./handlers/runIntegrityCheck.js";
+import { handleVerifyServiceWorker } from "./handlers/verifyServiceWorker.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -266,6 +268,22 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           },
           required: ["targetBossId", "partyAverageLevel"]
         }
+      },
+      {
+        name: "nexus_run_integrity_check",
+        description: "Executes complete pre-release static structure audits across core project directories to guarantee schema consistency, ensure companion sprite sets exist, and confirm mapped JSON levels correlate correctly.",
+        inputSchema: {
+          type: "object",
+          properties: {}
+        }
+      },
+      {
+        name: "nexus_verify_service_worker",
+        description: "Audits sw.js caching contracts to extract active manifest paths and asserts absolute local file existence on disk, automatically isolating missing offline assets.",
+        inputSchema: {
+          type: "object",
+          properties: {}
+        }
       }
     ],
   };
@@ -312,6 +330,14 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
   if (name === "nexus_validate_threat_curve") {
     return await handleValidateThreatCurve(args, ROOT_DIR);
+  }
+
+  if (name === "nexus_run_integrity_check") {
+    return await handleRunIntegrityCheck(ROOT_DIR);
+  }
+
+  if (name === "nexus_verify_service_worker") {
+    return await handleVerifyServiceWorker(ROOT_DIR);
   }
 
   throw new Error(`Unknown tool requested: ${name}`);
