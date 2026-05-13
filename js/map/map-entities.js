@@ -934,6 +934,13 @@ const MapEntities = (() => {
         if (n.hideAfterScene  && fired.has(n.hideAfterScene)) return false;
         if (n.showAfterScene  && !fired.has(n.showAfterScene)) return false;
         if (n.showIfMapCleared && (!G.clearedMaps || !G.clearedMaps.includes(n.showIfMapCleared))) return false;
+        
+        const def = (typeof NPC_DEFS !== 'undefined') ? NPC_DEFS[n.id] : null;
+        const targetQuest = (def && def.dissolveAfterQuest) || n.dissolveAfterQuest;
+        if (targetQuest && typeof QuestSystem !== 'undefined' && QuestSystem.getCompleted().includes(targetQuest)) {
+          return false;
+        }
+
         return true;
       }).map(n => {
         const def = (typeof NPC_DEFS !== 'undefined') ? NPC_DEFS[n.id] : null;
