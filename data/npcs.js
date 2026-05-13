@@ -910,11 +910,7 @@ const NPC_DEFS = {
     sprite: 'images/characters/map/sheets/npc/soldier_sheet.png',
     dialogues: {
       verdant_vale: [
-        { speaker: 'Fallen Guard', text: 'Cough... you carry no rot. Listen to me... the vanguard...' },
-        { speaker: 'Tao', text: 'Save your breath. The corruption is already in your veins.' },
-        { speaker: 'Fallen Guard', text: 'I know. But my squad... their insignias lie scattered near the eastern woods. Bury them... break the gold\'s hold before their souls are pulled into the King\'s treasury.' },
-        { speaker: 'Lulu', text: 'We will find them. May your memory walk free.' },
-        { speaker: 'narrator', text: '✦ NEW QUEST ECHO TRIGGERED: The Hollow Guard' }
+        { speaker: 'Fallen Guard', text: 'The air feels lighter now... my squad\'s resonance has faded into peace.' }
       ]
     }
   },
@@ -967,12 +963,7 @@ const NPC_DEFS = {
     sprite: 'images/characters/map/sheets/npc/merchant_sheet.png',
     dialogues: {
       riverlands_crossing: [
-        { speaker: 'Guilt-Ridden Merchant', text: 'Please... don\'t hurt me! I can\'t go forward or back! The bridges are closed!' },
-        { speaker: 'Aya', text: 'Why are you stranded here?' },
-        { speaker: 'Guilt-Ridden Merchant', text: 'Because of what I traded! To secure lifelong free passage, I surrendered a Void-sealed idol directly into the River King\'s treasury!' },
-        { speaker: 'Rei', text: 'You gave him the catalyst that accelerated his corruption.' },
-        { speaker: 'Guilt-Ridden Merchant', text: 'I know! The cursed idol lies discarded in the weeds near the western cascades... please, recover and purify it! It will break his shield!' },
-        { speaker: 'narrator', text: '✦ NEW QUEST ECHO TRIGGERED: The Price of Neutrality' }
+        { speaker: 'Guilt-Ridden Merchant', text: 'Thank you for breaking the idol\'s hold. The waters are clear for crossing.' }
       ]
     }
   }

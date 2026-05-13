@@ -200,5 +200,50 @@
       { "speaker": "Lira", "text": "Thank you. I think... I think I can finally start looking forward now, instead of just looking back." },
       { "speaker": "Lira", "text": "I'm going to help the Azure Commanders rebuild. It's what he would have wanted." }
     ]
+  },
+  {
+    "id": "the_hollow_guard",
+    "label": "The Hollow Guard",
+    "desc": "Recover scattered squad insignias near the eastern woods to spare fallen Vale soldiers from King Galdor's golden treasury.",
+    "type": "gather",
+    "target": "squad_insignia",
+    "count": 4,
+    "giver": "dying_royal_guard",
+    "arc": 1,
+    "rewards": { "exp": 300, "gold": 200 },
+    "acceptDialogue": [
+      { "speaker": "Fallen Guard", "text": "Cough... you carry no rot. Listen to me... the vanguard..." },
+      { "speaker": "Fallen Guard", "text": "My squad... their insignias lie scattered near the eastern woods. Bury them... break the gold's hold before their souls are pulled into the King's treasury." }
+    ],
+    "activeDialogue": [
+      { "speaker": "Fallen Guard", "text": "Find the insignias... do not let the King claim their names..." }
+    ],
+    "submitDialogue": [
+      { "speaker": "Fallen Guard", "text": "The weight... it lifts. I can feel the pure air again." },
+      { "speaker": "Fallen Guard", "text": "They are free. My vanguard walks unchained. Take this... my vigil is done." }
+    ]
+  },
+  {
+    "id": "price_of_neutrality",
+    "label": "Price of Neutrality",
+    "desc": "Recover and cleanse the Void-sealed idol discarded near the western cascades to weaken the River King's mitigation shield.",
+    "type": "gather",
+    "target": "cursed_idol",
+    "count": 1,
+    "giver": "guilt_ridden_merchant",
+    "arc": 1,
+    "rewards": { "exp": 400, "item": "elixir" },
+    "acceptDialogue": [
+      { "speaker": "Guilt-Ridden Merchant", "text": "Please... don't hurt me! I can't go forward or back! The bridges are closed!" },
+      { "speaker": "Guilt-Ridden Merchant", "text": "To secure lifelong free passage, I surrendered a Void-sealed idol directly into the River King's treasury! It accelerated his corruption!" },
+      { "speaker": "Guilt-Ridden Merchant", "text": "The cursed idol lies discarded in the weeds near the western cascades... please, recover and purify it! It will break his shield!" }
+    ],
+    "activeDialogue": [
+      { "speaker": "Guilt-Ridden Merchant", "text": "The idol is in the river weeds... cleanse it before facing him!" }
+    ],
+    "submitDialogue": [
+      { "speaker": "Guilt-Ridden Merchant", "text": "You cleansed it! The dark resonance is completely gone!" },
+      { "speaker": "Guilt-Ridden Merchant", "text": "His shield is shattered! You've given us all a chance to cross safely. Take this... it's the least I can do." }
+    ]
   }
 ]
