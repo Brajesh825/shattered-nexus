@@ -966,5 +966,27 @@ const NPC_DEFS = {
         { speaker: 'Guilt-Ridden Merchant', text: 'Thank you for breaking the idol\'s hold. The waters are clear for crossing.' }
       ]
     }
+  },
+
+  squad_insignia: {
+    name: 'Squad Insignia',
+    color: '#eab308',
+    sprite: 'images/environment/png/offering_point.png',
+    dialogues: {
+      verdant_vale: [
+        { speaker: 'narrator', text: 'You recover a mud-stained, golden insignia of the Royal Vanguard. A cold resonance dissipates from the metal.' }
+      ]
+    }
+  },
+
+  cursed_idol: {
+    name: 'Cursed Idol',
+    color: '#ef4444',
+    sprite: 'images/environment/png/offering_point.png',
+    dialogues: {
+      riverlands_crossing: [
+        { speaker: 'narrator', text: 'You pry the Void-sealed idol from the tangled river weeds. Purifying its core shatters the River King\'s ambient barrier.' }
+      ]
+    }
   }
 };

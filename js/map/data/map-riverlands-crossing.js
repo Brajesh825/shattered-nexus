@@ -61,7 +61,8 @@ MAP_DEFS.riverlands_crossing = {
         { id: 'old_guard', x: 9, y: 25, dialogueKey: 'riverlands_crossing', behavior: 'stationary' },
         { id: 'ghost_soldier', x: 75, y: 27, dialogueKey: 'riverlands_crossing', behavior: 'wander', range: 2 },
         { id: 'toll_bridge_marker', x: 34, y: 26, dialogueKey: 'riverlands_crossing', behavior: 'stationary' },
-        { id: 'guilt_ridden_merchant', x: 30, y: 25, dialogueKey: 'riverlands_crossing', behavior: 'stationary', giveQuest: 'price_of_neutrality' }
+        { id: 'guilt_ridden_merchant', x: 30, y: 25, dialogueKey: 'riverlands_crossing', behavior: 'stationary', giveQuest: 'price_of_neutrality' },
+        { id: 'cursed_idol', x: 22, y: 25, dialogueKey: 'riverlands_crossing', behavior: 'stationary' }
     ],
     triggers: [
         {
