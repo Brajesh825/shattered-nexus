@@ -909,6 +909,7 @@ const NPC_DEFS = {
     color: '#9ca3af',
     sprite: 'images/characters/map/sheets/npc/soldier_sheet.png',
     quests: ['the_hollow_guard'],
+    dissolveAfterQuest: 'the_hollow_guard',
     dialogues: {
       verdant_vale: [
         { speaker: 'Fallen Guard', text: 'The air feels lighter now... my squad\'s resonance has faded into peace.' }
