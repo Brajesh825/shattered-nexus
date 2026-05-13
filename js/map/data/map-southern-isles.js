@@ -60,7 +60,8 @@ MAP_DEFS.southern_isles = {
         { id: 'survivor',     x: 50, y: 58, dialogueKey: 'southern_isles_child',   behavior: 'stationary', name: 'Child' },
 
         // ── GATE KEEPER ───────────────────────────────────────────
-        { id: 'guardian',     x: 60, y: 15, dialogueKey: 'southern_isles',         behavior: 'stationary' }
+        { id: 'guardian',     x: 60, y: 15, dialogueKey: 'southern_isles',         behavior: 'stationary' },
+        { id: 'ancient_tide_bell', x: 50, y: 12, dialogueKey: 'southern_isles', behavior: 'stationary' }
     ],
     triggers: [
         {

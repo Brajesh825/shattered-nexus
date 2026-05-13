@@ -888,5 +888,92 @@ const NPC_DEFS = {
         { speaker: 'narrator', text: 'Rest well, Arren. The road is yours no longer.' }
       ]
     }
+  },
+
+  galdor_decree_stone: {
+    name: 'Weathered Slab',
+    color: '#eab308',
+    sprite: 'images/environment/png/offering_point.png',
+    dialogues: {
+      verdant_vale: [
+        { speaker: 'narrator', text: 'Deep runic carvings glint with faint golden residue upon the stone.' },
+        { speaker: 'Rune Stone', text: '"Decree of Sovereign Galdor: Let every vault be unsealed. The metal of the stars offers immunity against the coming rot. We trade our names for weight."' },
+        { speaker: 'Rei', text: 'He traded his civilization\'s humanity to fuse with Void-Gild... thinking it would save them.' },
+        { speaker: 'Aya', text: 'It saved them from dying. But it didn\'t save them from the Void.' }
+      ]
+    }
+  },
+
+  dying_royal_guard: {
+    name: 'Fallen Guard',
+    color: '#9ca3af',
+    sprite: 'images/characters/map/sheets/npc/soldier_sheet.png',
+    dialogues: {
+      verdant_vale: [
+        { speaker: 'Fallen Guard', text: 'Cough... you carry no rot. Listen to me... the vanguard...' },
+        { speaker: 'Tao', text: 'Save your breath. The corruption is already in your veins.' },
+        { speaker: 'Fallen Guard', text: 'I know. But my squad... their insignias lie scattered near the eastern woods. Bury them... break the gold\'s hold before their souls are pulled into the King\'s treasury.' },
+        { speaker: 'Lulu', text: 'We will find them. May your memory walk free.' },
+        { speaker: 'narrator', text: '✦ NEW QUEST ECHO TRIGGERED: The Hollow Guard' }
+      ]
+    }
+  },
+
+  holographic_log_orb: {
+    name: 'Crystal Orb',
+    color: '#38bdf8',
+    sprite: 'images/environment/png/offering_point.png',
+    dialogues: {
+      crystal_cavern_f1: [
+        { speaker: 'narrator', text: 'A smooth crystalline sphere rests upon a stone pedestal. Touching its surface triggers a faint, shimmering projection.' },
+        { speaker: 'Hologram Echo', text: '"Archive Log 409: The core data relay is failing. Solvan insists on routing secondary logic strings through the Fire Fragment interface to preserve access. He does not see that the interface is siphoning our identities."' },
+        { speaker: 'Tao', text: 'Solvan became the Demon Lord because he refused to let the Sky Archive go offline.' },
+        { speaker: 'Lulu', text: 'A desire to preserve knowledge... twisted into endless burning.' }
+      ]
+    }
+  },
+
+  ancient_tide_bell: {
+    name: 'Tide Bell',
+    color: '#0ea5e9',
+    sprite: 'images/environment/png/offering_point.png',
+    dialogues: {
+      southern_isles: [
+        { speaker: 'narrator', text: 'You strike the rusted metal of the ancient Tide Bell. A deep, crystalline chime reverberates down through the ocean layers.' },
+        { speaker: 'narrator', text: 'The shallow waters swirl. A massive, peaceful Sea Turtle surfaces near the stilt platform, drawn by the pure frequency.' },
+        { speaker: 'Sea Turtle', text: '✦ BLESSING OF THE DEEP GRANTED: Maximum party HP buffers reinforced permanently (+5 Max HP).' },
+        { speaker: 'Lulu', text: 'It remembers the old trade paths... before the Leviathan took the channel.' }
+      ]
+    }
+  },
+
+  toll_bridge_marker: {
+    name: 'River Marker',
+    color: '#06b6d4',
+    sprite: 'images/environment/png/offering_point.png',
+    dialogues: {
+      riverlands_crossing: [
+        { speaker: 'narrator', text: 'A carved stone pillar rises from the rushing water, blocking the bridge keystone.' },
+        { speaker: 'River Spirit Echo', text: '"Who passes the neutral domain? Deliver your tribute of truth or forfeit your kinetic weight to the current."' },
+        { speaker: 'Tao', text: 'We owe nothing to a king who surrendered his borders to Void-Gild.' },
+        { speaker: 'narrator', text: '⚠ The water swirls violently! High-level water elementals manifest upon the bridge planks!' }
+      ]
+    }
+  },
+
+  guilt_ridden_merchant: {
+    name: 'Guilt-Ridden Merchant',
+    color: '#f59e0b',
+    sprite: 'images/characters/map/sheets/npc/merchant_sheet.png',
+    dialogues: {
+      riverlands_crossing: [
+        { speaker: 'Guilt-Ridden Merchant', text: 'Please... don\'t hurt me! I can\'t go forward or back! The bridges are closed!' },
+        { speaker: 'Aya', text: 'Why are you stranded here?' },
+        { speaker: 'Guilt-Ridden Merchant', text: 'Because of what I traded! To secure lifelong free passage, I surrendered a Void-sealed idol directly into the River King\'s treasury!' },
+        { speaker: 'Rei', text: 'You gave him the catalyst that accelerated his corruption.' },
+        { speaker: 'Guilt-Ridden Merchant', text: 'I know! The cursed idol lies discarded in the weeds near the western cascades... please, recover and purify it! It will break his shield!' },
+        { speaker: 'narrator', text: '✦ NEW QUEST ECHO TRIGGERED: The Price of Neutrality' }
+      ]
+    }
   }
 };
