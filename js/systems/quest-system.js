@@ -6,6 +6,7 @@
 const QuestSystem = (() => {
   let _active = [];     // [{ id, type, target, count, current, label, rewards, complete }]
   let _completed = [];  // [id, id...]
+  let _gatheredNodes = []; // persistent spatial uids
 
   function _getDef(id) {
     if (typeof window !== 'undefined' && window.QUESTS_DATA) {
@@ -40,9 +41,11 @@ const QuestSystem = (() => {
     if (savedQuests) {
       _active = savedQuests.active || [];
       _completed = savedQuests.completed || [];
+      _gatheredNodes = savedQuests.gatheredNodes || [];
     } else {
       _active = [];
       _completed = [];
+      _gatheredNodes = [];
       // Auto-accept arc-0 quests (no giver — available from the start)
       if (typeof window !== 'undefined' && window.QUESTS_DATA) {
         window.QUESTS_DATA
@@ -94,10 +97,12 @@ const QuestSystem = (() => {
 
   function onGather(itemId) {
     const toComplete = [];
+    let gathered = false;
     _active.forEach(q => {
       if (q.complete || q.type !== 'gather') return;
       if (q.target === itemId) {
         q.current++;
+        gathered = true;
         if (q.current >= q.count) {
           q.complete = true;
           toComplete.push(q);
@@ -106,6 +111,7 @@ const QuestSystem = (() => {
       }
     });
     toComplete.filter(q => !q.giver).forEach(_grantRewards);
+    return gathered;
   }
 
   function getActive()    { return [..._active]; }
@@ -134,10 +140,19 @@ const QuestSystem = (() => {
     if (q) _grantRewards(q);
   }
 
+  function markNodeGathered(uid) {
+    if (uid && !_gatheredNodes.includes(uid)) _gatheredNodes.push(uid);
+  }
+
+  function isNodeGathered(uid) {
+    return _gatheredNodes.includes(uid);
+  }
+
   function save() {
-    return { active: _active, completed: _completed };
+    return { active: _active, completed: _completed, gatheredNodes: _gatheredNodes };
   }
 
   return { init, accept, onArcAdvance, onKill, onGather,
-           getActive, getCompleted, isActive, isReadyToSubmit, canAccept, submit, save };
+           getActive, getCompleted, isActive, isReadyToSubmit, canAccept, submit,
+           markNodeGathered, isNodeGathered, save };
 })();

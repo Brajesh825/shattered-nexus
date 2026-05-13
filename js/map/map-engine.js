@@ -1907,7 +1907,16 @@ const MapEngine = (() => {
 
     // Trigger quest 'gather' progress if this NPC is a target (delivery style)
     if (typeof QuestSystem !== 'undefined' && npc.id) {
-      QuestSystem.onGather(npc.id);
+      const didGather = QuestSystem.onGather(npc.id);
+      const def = (typeof NPC_DEFS !== 'undefined') ? NPC_DEFS[npc.id] : null;
+      if (didGather && def && def.dissolveOnGather) {
+        if (typeof QuestSystem.markNodeGathered === 'function') {
+          QuestSystem.markNodeGathered(npc._uid);
+        }
+        if (typeof MapEntities !== 'undefined' && MapEntities.triggerNPCDissolve) {
+          MapEntities.triggerNPCDissolve(npc._uid || npc.id);
+        }
+      }
     }
 
     const def      = (typeof NPC_DEFS !== 'undefined') ? NPC_DEFS[npc.id] : null;

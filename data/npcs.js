@@ -975,6 +975,7 @@ const NPC_DEFS = {
     name: 'Squad Insignia',
     color: '#eab308',
     sprite: 'images/environment/png/offering_point.png',
+    dissolveOnGather: true,
     dialogues: {
       verdant_vale: [
         { speaker: 'narrator', text: 'You recover a mud-stained, golden insignia of the Royal Vanguard. A cold resonance dissipates from the metal.' }
@@ -986,6 +987,7 @@ const NPC_DEFS = {
     name: 'Cursed Idol',
     color: '#ef4444',
     sprite: 'images/environment/png/offering_point.png',
+    dissolveOnGather: true,
     dialogues: {
       riverlands_crossing: [
         { speaker: 'narrator', text: 'You pry the Void-sealed idol from the tangled river weeds. Purifying its core shatters the River King\'s ambient barrier.' }
