@@ -57,6 +57,7 @@ MAP_DEFS.crystal_cavern_f1 = {
 
   npcs: [
     { id: 'the_archivist', x: 12, y: 15, dialogueKey: 'crystal_cavern_f1', giveQuest: 'bones_of_the_fallen' },
+    { id: 'holographic_log_orb', x: 25, y: 12, dialogueKey: 'crystal_cavern_f1', behavior: 'stationary' },
   ],
 
   triggers: [
