@@ -908,6 +908,7 @@ const NPC_DEFS = {
     name: 'Fallen Guard',
     color: '#9ca3af',
     sprite: 'images/characters/map/sheets/npc/soldier_sheet.png',
+    quests: ['the_hollow_guard'],
     dialogues: {
       verdant_vale: [
         { speaker: 'Fallen Guard', text: 'The air feels lighter now... my squad\'s resonance has faded into peace.' }
@@ -961,6 +962,7 @@ const NPC_DEFS = {
     name: 'Guilt-Ridden Merchant',
     color: '#f59e0b',
     sprite: 'images/characters/map/sheets/npc/merchant_sheet.png',
+    quests: ['price_of_neutrality'],
     dialogues: {
       riverlands_crossing: [
         { speaker: 'Guilt-Ridden Merchant', text: 'Thank you for breaking the idol\'s hold. The waters are clear for crossing.' }
