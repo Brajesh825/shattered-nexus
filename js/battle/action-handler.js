@@ -1092,6 +1092,9 @@ function enemyAct(enemy, enemyIdx) {
   // 4. Execution via enemyStrike — handles full animation + callback timing
   const targets = ab?.effect?.aoe ? alive : [target];
 
+  const displayedMoveName = ab ? ab.name.toUpperCase() : 'ATTACK';
+  BattleUI.popAI(enemyIdx, `⚡ ${displayedMoveName}`);
+
   BattleUI.enemyStrike(
     enemyIdx,
     strikeType,

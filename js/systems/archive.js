@@ -21,6 +21,7 @@ const Archive = {
       this.data = { bestiary: {}, story: {} };
       G.archive = this.data;
     }
+    this.evaluateLoreUnlocks();
   },
 
   /**
@@ -57,11 +58,20 @@ const Archive = {
   /**
    * Record a story fragment or NPC interaction
    */
-  recordStoryFragment(fragmentId) {
-    if (!this.data.story[fragmentId]) {
-      this.data.story[fragmentId] = { seen: true, date: Date.now() };
+  recordStoryFragment(fragmentId, silent = false) {
+    if (!fragmentId) return;
+    let targetFrag = null;
+    if (typeof window !== 'undefined' && window.LORE_FRAGMENTS) {
+      targetFrag = window.LORE_FRAGMENTS.find(f => f.id === fragmentId)
+        || window.LORE_FRAGMENTS.find(f => f.id === 'npc_' + fragmentId)
+        || window.LORE_FRAGMENTS.find(f => f.id.includes(fragmentId) || (f.region && f.region === fragmentId));
     }
-    this.sync();
+    const idToUnlock = targetFrag ? targetFrag.id : fragmentId;
+
+    if (!this.data.story[idToUnlock]) {
+      this.data.story[idToUnlock] = { seen: true, date: Date.now() };
+      if (!silent) this.sync();
+    }
   },
 
   /**
@@ -118,9 +128,65 @@ const Archive = {
   },
 
   /**
+   * Retroactively evaluates and activates lore fragments based on current progress metrics.
+   */
+  evaluateLoreUnlocks() {
+    if (typeof window === 'undefined' || !window.LORE_FRAGMENTS) return;
+    
+    // Always unlock foundational records to seed archive context
+    const foundational = [
+      'world_five_civilizations', 'world_verdant_throne', 'valdris_origin', 
+      'valdris_star_maps', 'valdris_nexus_discovery', 'world_nexus_purpose', 
+      'world_relics', 'world_oracle_lineage', 'world_fallen_angels', 'essabella_vessel'
+    ];
+    foundational.forEach(id => this.recordStoryFragment(id, true));
+
+    const bestiary = this.data.bestiary;
+    const seen = id => bestiary[id] && bestiary[id].seen;
+
+    // Boss & Regional progression links
+    if (seen('galdor_king') || seen('void_knight')) {
+      ['vale_green_emperor', 'vale_king_galdor', 'vale_before', 'vale_void_knight_name', 'vale_bridge_ward', 'valdris_seduction_emperor', 'valdris_galdor'].forEach(id => this.recordStoryFragment(id, true));
+    }
+    if (seen('demon_lord') || seen('spectral_guardian')) {
+      ['world_ashveil_kingdom', 'valdris_seduction_archivist', 'cavern_demon_lord_origin', 'cavern_archivist', 'cavern_ghost_knight', 'npc_archivist_distinction'].forEach(id => this.recordStoryFragment(id, true));
+    }
+    if (seen('forge_sentinel') || seen('dark_phoenix')) {
+      ['world_forge_lords', 'world_forge_lords_vault', 'valdris_seduction_forge', 'wastes_forge_lords_end', 'wastes_dark_phoenix', 'wastes_drake_ash'].forEach(id => this.recordStoryFragment(id, true));
+    }
+    if (seen('deep_archpriest') || seen('kraken')) {
+      ['world_tide_priests', 'world_tide_water_market', 'valdris_seduction_tide', 'temple_tide_civilization', 'temple_water_market', 'temple_transformed_people', 'temple_kraken_guardian', 'temple_valdris_speaks', 'essabella_kraken'].forEach(id => this.recordStoryFragment(id, true));
+    }
+    
+    // Side Region links
+    if (seen('sunken_leviathan')) {
+      ['southern_isles_before', 'npc_survivor_southern_isles'].forEach(id => this.recordStoryFragment(id, true));
+    }
+    if (seen('river_king')) {
+      ['riverlands_river_king', 'npc_old_guard_riverlands'].forEach(id => this.recordStoryFragment(id, true));
+    }
+    if (seen('molten_golem')) {
+      this.recordStoryFragment('ashen_foothills_mines', true);
+    }
+    if (seen('abyssal_kraken')) {
+      this.recordStoryFragment('lighthouse_isles_ghost_ship', true);
+    }
+    if (seen('abomination')) {
+      ['eastern_wetlands_abomination', 'npc_mire_witch'].forEach(id => this.recordStoryFragment(id, true));
+    }
+    if (seen('dragon')) {
+      this.recordStoryFragment('northern_highlands_dragon', true);
+    }
+    if (seen('lich') || seen('bone_dragon')) {
+      this.recordStoryFragment('sky_ruins_origin', true);
+    }
+  },
+
+  /**
    * Sync data back to global state for saving
    */
   sync() {
+    this.evaluateLoreUnlocks();
     G.archive = this.data;
   }
 };

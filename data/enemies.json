@@ -2935,16 +2935,36 @@
       {
         "id": "demon_lord_transformation",
         "fired": false,
-        "trigger": { "type": "hp", "threshold": 0.5 },
+        "trigger": {
+          "type": "hp",
+          "threshold": 0.5
+        },
         "lines": [
-          { "speaker": "Demon Lord", "text": "The archives... they are burning. My memory... it turns to ash." },
-          { "speaker": "Lulu", "text": "He's losing himself! The fire isn't just coming from him—it's consuming him!" },
-          { "speaker": "Demon Lord", "text": "I WILL NOT... BE FORGOTTEN... IN THE DARK!" }
+          {
+            "speaker": "Demon Lord",
+            "text": "The archives... they are burning. My memory... it turns to ash."
+          },
+          {
+            "speaker": "Lulu",
+            "text": "He's losing himself! The fire isn't just coming from him—it's consuming him!"
+          },
+          {
+            "speaker": "Demon Lord",
+            "text": "I WILL NOT... BE FORGOTTEN... IN THE DARK!"
+          }
         ],
         "onComplete": {
           "logMsg": "★ Demon Lord enters Prince of Cinders!",
           "flash": "rgba(255, 60, 0, 0.4)",
-          "addStatus": { "id": "status_atk_boost", "icon": "🔥", "label": "Prince of Cinders", "stat": "atk", "value": 1.5, "turns": 99, "color": "#ff3c00" },
+          "addStatus": {
+            "id": "status_atk_boost",
+            "icon": "🔥",
+            "label": "Prince of Cinders",
+            "stat": "atk",
+            "value": 1.5,
+            "turns": 99,
+            "color": "#ff3c00"
+          },
           "screenShake": true
         }
       }
@@ -3002,7 +3022,8 @@
         "item": "Elixir",
         "chance": 0.1
       }
-    ]
+    ],
+    "bgm": "boss_demon_king"
   },
   {
     "id": "bone_dragon",
@@ -3151,6 +3172,7 @@
       "physical"
     ],
     "tier": 3,
+    "bgm": "boss_void",
     "isBoss": true,
     "aiType": "sequenced",
     "statPhases": [
@@ -3177,19 +3199,48 @@
       {
         "id": "void_knight_awakening",
         "fired": false,
-        "trigger": { "type": "hp", "threshold": 0.5 },
+        "trigger": {
+          "type": "hp",
+          "threshold": 0.5
+        },
         "lines": [
-          { "speaker": "Void Knight", "text": "The... weight... it is lifting..." },
-          { "speaker": "Aya", "text": "Look at his shadow! It's cracking. Tao, the light is getting through!" },
-          { "speaker": "Tao", "text": "The man beneath. He is fighting his own blade for every inch of ground." },
-          { "speaker": "Void Knight", "text": "REI... YOU SHOULD HAVE... STAYED IN THE WEST..." },
-          { "speaker": "Rei", "text": "Arren! We aren't leaving you to the shadow again!" },
-          { "speaker": "Void Knight", "text": "THEN WITNESS... THE END OF THE AZURE REMNANT!" }
+          {
+            "speaker": "Void Knight",
+            "text": "The... weight... it is lifting..."
+          },
+          {
+            "speaker": "Aya",
+            "text": "Look at his shadow! It's cracking. Tao, the light is getting through!"
+          },
+          {
+            "speaker": "Tao",
+            "text": "The man beneath. He is fighting his own blade for every inch of ground."
+          },
+          {
+            "speaker": "Void Knight",
+            "text": "REI... YOU SHOULD HAVE... STAYED IN THE WEST..."
+          },
+          {
+            "speaker": "Rei",
+            "text": "Arren! We aren't leaving you to the shadow again!"
+          },
+          {
+            "speaker": "Void Knight",
+            "text": "THEN WITNESS... THE END OF THE AZURE REMNANT!"
+          }
         ],
         "onComplete": {
           "logMsg": "★ Void Knight enters Abyssal Flare!",
           "flash": "rgba(120, 0, 255, 0.4)",
-          "addStatus": { "id": "status_atk_boost", "icon": "💠", "label": "Abyssal Flare", "stat": "atk", "value": 1.4, "turns": 99, "color": "#7800ff" },
+          "addStatus": {
+            "id": "status_atk_boost",
+            "icon": "💠",
+            "label": "Abyssal Flare",
+            "stat": "atk",
+            "value": 1.4,
+            "turns": 99,
+            "color": "#7800ff"
+          },
           "screenShake": true
         }
       }
@@ -3883,7 +3934,8 @@
         }
       }
     ],
-    "lore": "The Spectral Guardian predates the five civilizations — built by the nameless architects of the Sky Ruins to protect their high-altitude record archive. When Valdris placed the Four Kings in the ruins, he did not corrupt the Guardian. He could not. It has no self to corrupt, no desire to exploit, no leader to seduce. It simply continues the instruction it was given before anyone living was born: nothing reaches the archive that intends harm to it. At 40% HP, it shatters the defensive mass it has been maintaining and redirects everything into a single coherent point of force — the last resort of something that has decided slowing down is no longer an option."
+    "lore": "The Spectral Guardian predates the five civilizations — built by the nameless architects of the Sky Ruins to protect their high-altitude record archive. When Valdris placed the Four Kings in the ruins, he did not corrupt the Guardian. He could not. It has no self to corrupt, no desire to exploit, no leader to seduce. It simply continues the instruction it was given before anyone living was born: nothing reaches the archive that intends harm to it. At 40% HP, it shatters the defensive mass it has been maintaining and redirects everything into a single coherent point of force — the last resort of something that has decided slowing down is no longer an option.",
+    "bgm": "boss_spectral_guardian"
   },
   {
     "id": "galdor_king",
@@ -3899,6 +3951,7 @@
       "void"
     ],
     "tier": 2,
+    "bgm": "boss_galdor",
     "isBoss": true,
     "background": "galdor_garden",
     "statPhases": [
@@ -3916,7 +3969,7 @@
       },
       {
         "hp": 0.25,
-        "atk": 2.0,
+        "atk": 2,
         "def": 1.5,
         "spd": 0.75
       }
@@ -3925,12 +3978,27 @@
       {
         "id": "galdor_rage",
         "fired": false,
-        "trigger": { "type": "hp", "threshold": 0.5 },
+        "trigger": {
+          "type": "hp",
+          "threshold": 0.5
+        },
         "lines": [
-          { "speaker": "King Galdor", "text": "...this was not in the terms of our arrangement." },
-          { "speaker": "King Galdor", "text": "The gold was given. I held my end. This kingdom held its end." },
-          { "speaker": "Aya", "text": "He... doesn't know. He has no idea what happened to his people." },
-          { "speaker": "King Galdor", "text": "VALDRIS PROMISED PEACE! AND I — I WILL HOLD THIS THRONE UNTIL HE HONOURS IT!" }
+          {
+            "speaker": "King Galdor",
+            "text": "...this was not in the terms of our arrangement."
+          },
+          {
+            "speaker": "King Galdor",
+            "text": "The gold was given. I held my end. This kingdom held its end."
+          },
+          {
+            "speaker": "Aya",
+            "text": "He... doesn't know. He has no idea what happened to his people."
+          },
+          {
+            "speaker": "King Galdor",
+            "text": "VALDRIS PROMISED PEACE! AND I — I WILL HOLD THIS THRONE UNTIL HE HONOURS IT!"
+          }
         ],
         "onComplete": {
           "addStatus": {
@@ -4000,7 +4068,7 @@
     "drops": [
       {
         "item": "Sovereign Ring",
-        "chance": 1.0
+        "chance": 1
       },
       {
         "item": "Gilded Relic",
@@ -4058,7 +4126,7 @@
       },
       {
         "item": "Goblin Ear",
-        "chance": 1.0
+        "chance": 1
       }
     ]
   },
@@ -4415,7 +4483,7 @@
         "name": "Void Crush",
         "type": "physical",
         "weight": 40,
-        "dmgMultiplier": 2.0
+        "dmgMultiplier": 2
       },
       {
         "id": "data_overload",
@@ -4476,7 +4544,7 @@
       },
       {
         "hp": 0.3,
-        "mag": 2.0,
+        "mag": 2,
         "spd": 1.6,
         "def": 0.5
       }
@@ -4532,7 +4600,7 @@
     "drops": [
       {
         "item": "Void Tear",
-        "chance": 1.0
+        "chance": 1
       },
       {
         "item": "Final Shard",
@@ -4621,7 +4689,8 @@
         "item": "Deep Water Shard",
         "chance": 0.4
       }
-    ]
+    ],
+    "bgm": "boss_sunken_leviathan"
   },
   {
     "id": "river_king",
@@ -4704,7 +4773,8 @@
         "item": "Current Crystal",
         "chance": 0.35
       }
-    ]
+    ],
+    "bgm": "boss_river_king"
   },
   {
     "id": "molten_golem",
@@ -4755,7 +4825,7 @@
         "name": "Molten Press",
         "type": "physical",
         "weight": 40,
-        "dmgMultiplier": 2.0,
+        "dmgMultiplier": 2,
         "effect": {
           "aoe": true
         }
@@ -4882,7 +4952,7 @@
       {
         "hp": 0.4,
         "mag": 2.2,
-        "spd": 2.0,
+        "spd": 2,
         "def": 0.25
       }
     ],
@@ -5008,7 +5078,7 @@
     "drops": [
       {
         "item": "Fallen Crown",
-        "chance": 1.0
+        "chance": 1
       },
       {
         "item": "Shadow Essence",

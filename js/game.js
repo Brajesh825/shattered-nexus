@@ -305,6 +305,8 @@ const G = {
   enemies: [],
   /** @type {Array} Loaded item definitions (from items.json) */
   items: [],
+  /** @type {Array} Loaded merchant catalogs (from merchants.json) */
+  merchants: [],
   /** @type {Array<{itemId:string, qty:number}>} Party inventory — max 20 stacks */
   inventory: [],
   /** @type {Array} Loaded relic definitions (from relics.json) */
@@ -432,7 +434,8 @@ function showScreen(id) {
       'story-screen': null,
       'explore-screen': null
     };
-    Focus.setContext(contextMap[id] || id);
+    const targetCtx = contextMap.hasOwnProperty(id) ? contextMap[id] : id;
+    Focus.setContext(targetCtx);
   }
 
   requestAnimationFrame(scaleGame);
@@ -463,15 +466,11 @@ function showScreen(id) {
     ControlHints.setContext(hintCtx);
   }
 
-  // BGM — fade out current track then play the next one
-  if (typeof BGM !== 'undefined') {
-    const _next =
-      id === 'title-screen' ? 'title' :
-        id === 'battle-screen' ? 'battle' :
-          id === 'explore-screen' ? 'exploration' :
-            id === 'story-screen' ? 'story' : null;
-    BGM.fadeOut(600, () => { if (_next) BGM.play(_next); });
-  }
+  // BGM is now handled specifically by specialized managers:
+  // - Story battles: story.js -> _launchStoryBattle
+  // - Map battles: menu-manager.js -> MapEngine.onEncounterStart
+  // - Title/Explore/Story: Managed by their respective entry points
+  // This prevents showScreen('battle-screen') from resetting boss themes to 'battle'.
 }
 
 /* ============================================================
@@ -1109,38 +1108,7 @@ function retryBattle() {
    ============================================================ */
 /* Move mute/TTS/zoom into the explore header so they don't clash */
 function _dockPersistentBtns(dock) {
-  const hdrRight = document.querySelector('.explore-header-right');
-  const muteBtn = document.getElementById('mute-btn');
-  const ttsBtn = document.getElementById('tts-btn');
-  const zoomBtn = document.getElementById('zoom-btn');
-  const resetBtn = document.getElementById('reset-zoom-btn');
-  const gameEl = document.getElementById('game');
-
-  if (dock && hdrRight) {
-    // Make them inline in the header
-    [muteBtn, ttsBtn].forEach(b => {
-      if (!b) return;
-      b.style.position = 'static';
-      b.style.width = '28px';
-      b.style.height = '28px';
-      b.style.fontSize = '13px';
-      hdrRight.insertBefore(b, hdrRight.firstChild);
-    });
-    if (zoomBtn) zoomBtn.style.display = 'none';
-    if (resetBtn) resetBtn.style.display = 'none';
-  } else {
-    // Restore to absolute positioning
-    [muteBtn, ttsBtn].forEach(b => {
-      if (!b) return;
-      b.style.position = 'absolute';
-      b.style.width = '';
-      b.style.height = '';
-      b.style.fontSize = '';
-      if (gameEl) gameEl.appendChild(b);
-    });
-    if (zoomBtn) zoomBtn.style.display = '';
-    if (resetBtn) resetBtn.style.display = '';
-  }
+  // Deprecated: persistent buttons reside natively inside .explore-header-right as standard static flex items.
 }
 
 function leaveExplore() {

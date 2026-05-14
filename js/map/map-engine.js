@@ -625,6 +625,8 @@ const MapEngine = (() => {
         const sepia = (fogT * 0.4).toFixed(2);
         const bright = (1.0 - fogT * 0.15).toFixed(2);
         wrap.style.filter = `hue-rotate(${hue}deg) sepia(${sepia}) brightness(${bright})`;
+      } else if (typeof ChronosEngine !== 'undefined') {
+        wrap.style.filter = ChronosEngine.getFilter();
       } else {
         wrap.style.filter = '';
       }
@@ -997,6 +999,7 @@ const MapEngine = (() => {
     if (!_map) return;
     _time += dt;
     _fogTime += dt;
+    if (typeof ChronosEngine !== 'undefined') ChronosEngine.update(dt);
     MapInput.poll();
     if (!_playerLocked) MapPlayer.update(dt, _map);
     MapEntities.updateEnemies(dt, _map);
@@ -1087,6 +1090,8 @@ const MapEngine = (() => {
           _openGenericDialogue(trig.lines);
         } else if (trig.type === 'msg' && trig.msg) {
           MapUI.showMsg(trig.msg, 1500);
+        } else if (trig.type === 'shop' && typeof ShopUI !== 'undefined') {
+          ShopUI.open(trig.merchantId);
         } else if (trig.type === 'teleport' && (trig.targetMapId || trig.targetMap)) {
           // loadMap is async (fetches JSON). All post-load work must run inside
           // .then() — otherwise loadMap's own MapPlayer.reset(playerStart) fires
@@ -1556,6 +1561,7 @@ const MapEngine = (() => {
     _canvas.width = canvasEl.offsetWidth || window.innerWidth;
     _canvas.height = canvasEl.offsetHeight || window.innerHeight;
     TILE = _calcTileSize();
+    if (typeof ChronosEngine !== 'undefined') ChronosEngine.init();
     if (typeof MapInput !== 'undefined') MapInput.init(canvasEl);
 
     // ── NATIVE MOBILE CONTROLS (JOYSTICK + BUTTONS) ──
@@ -1905,6 +1911,12 @@ const MapEngine = (() => {
     _npcQuestFlow = false;
     _hideQuestChoices();
 
+    // Dynamically unlock companion lore records upon dialogue initiation
+    if (typeof Archive !== 'undefined' && npc) {
+      if (npc.id) Archive.recordStoryFragment(npc.id);
+      if (npc.dialogueKey) Archive.recordStoryFragment(npc.dialogueKey);
+    }
+
     // Trigger quest 'gather' progress if this NPC is a target (delivery style)
     if (typeof QuestSystem !== 'undefined' && npc.id) {
       const didGather = QuestSystem.onGather(npc.id);
@@ -1979,8 +1991,17 @@ const MapEngine = (() => {
     } else {
       key = npc.dialogueKey;
     }
-    _npcLines = (def && def.dialogues && (def.dialogues[key] || def.dialogues[npc.dialogueKey]))
+    let linesArr = (def && def.dialogues && (def.dialogues[key] || def.dialogues[npc.dialogueKey]))
       || [{ speaker: npc.name || npc.id, text: '...' }];
+    let matchMerchantId = null;
+    if (typeof G !== 'undefined' && G.merchants) {
+      const found = G.merchants.find(m => m.id === npc.id || (m.aliases && m.aliases.includes(npc.id)));
+      if (found) matchMerchantId = found.id;
+    }
+    if (matchMerchantId) {
+      linesArr = [...linesArr, { _type: 'shop', merchantId: matchMerchantId }];
+    }
+    _npcLines = linesArr;
     _npcLineIdx = 0;
     _showNPCLine();
   }
@@ -1998,11 +2019,17 @@ const MapEngine = (() => {
     if (!choicesEl) return;
     if (nextBtn) nextBtn.style.display = 'none';
 
-    const opts = line._type === 'submit'
-      ? [{ label: '✔ Collect Reward', action: 'submit',  questId: line._questId, primary: true },
-         { label: '✗ Not yet',        action: 'dismiss' }]
-      : [{ label: '✔ Accept',         action: 'accept',  questId: line._questId, primary: true },
+    let opts = [];
+    if (line._type === 'submit') {
+      opts = [{ label: '✔ Collect Reward', action: 'submit',  questId: line._questId, primary: true },
+         { label: '✗ Not yet',        action: 'dismiss' }];
+    } else if (line._type === 'choice') {
+      opts = [{ label: '✔ Accept',         action: 'accept',  questId: line._questId, primary: true },
          { label: '✗ Maybe later',    action: 'dismiss' }];
+    } else if (line._type === 'shop') {
+      opts = [{ label: '🛒 Browse Goods',  action: 'shop',    merchantId: line.merchantId, primary: true },
+         { label: '🚪 Leave',         action: 'dismiss' }];
+    }
 
     choicesEl.innerHTML = '';
     opts.forEach(opt => {
@@ -2028,6 +2055,10 @@ const MapEngine = (() => {
           MapEntities.triggerNPCDissolve(_npcCurrent.id);
         }
       }
+    } else if (opt.action === 'shop' && typeof ShopUI !== 'undefined') {
+      _closeNPCDialogue();
+      ShopUI.open(opt.merchantId);
+      return;
     }
     // dismiss — just close
     _closeNPCDialogue();
@@ -2045,7 +2076,7 @@ const MapEngine = (() => {
     const line = _npcLines[_npcLineIdx];
 
     // Synthetic entries — render choice UI instead of advancing text
-    if (line._type === 'choice' || line._type === 'submit') {
+    if (line._type === 'choice' || line._type === 'submit' || line._type === 'shop') {
       _showQuestChoices(line);
       el.style.display = 'flex';
       return;
@@ -2102,6 +2133,8 @@ const MapEngine = (() => {
     else _showNPCLine();
   }
 
+  let _lastInteractTime = 0;
+
   function _closeNPCDialogue() {
     _hideQuestChoices();
     // Capture before reset — used below to suppress legacy giveQuest when the new
@@ -2127,6 +2160,9 @@ const MapEngine = (() => {
       _npcCurrent._dialogueOpen = false;
       _npcCurrent = null;
     }
+    // Set interaction cooldown flag to suppress immediate Space-key polling loops
+    _lastInteractTime = Date.now();
+
     // Legacy map-file giveQuest (still works for NPCs that predate the new system)
     if (giveQuest && typeof QuestSystem !== 'undefined') QuestSystem.accept(giveQuest);
     if (completeCb) completeCb();
@@ -2138,6 +2174,9 @@ const MapEngine = (() => {
 
   function interact() {
     if (MapPlayer.moving) return;
+    // Suppress rapid dialogue re-triggering loop during window dismissal transient input frames
+    if (Date.now() - _lastInteractTime < 500) return;
+
     const ptx = MapPlayer.tx, pty = MapPlayer.ty;
     const face = MapPlayer.getFacing();
     
@@ -2161,6 +2200,7 @@ const MapEngine = (() => {
     }
 
     if (npc && !npc._dialogueOpen) {
+      _lastInteractTime = Date.now();
       npc._dialogueOpen = true;
       stop();
       _openNPCDialogue(npc);
