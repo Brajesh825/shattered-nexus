@@ -2102,6 +2102,8 @@ const MapEngine = (() => {
     else _showNPCLine();
   }
 
+  let _lastInteractTime = 0;
+
   function _closeNPCDialogue() {
     _hideQuestChoices();
     // Capture before reset — used below to suppress legacy giveQuest when the new
@@ -2127,6 +2129,9 @@ const MapEngine = (() => {
       _npcCurrent._dialogueOpen = false;
       _npcCurrent = null;
     }
+    // Set interaction cooldown flag to suppress immediate Space-key polling loops
+    _lastInteractTime = Date.now();
+
     // Legacy map-file giveQuest (still works for NPCs that predate the new system)
     if (giveQuest && typeof QuestSystem !== 'undefined') QuestSystem.accept(giveQuest);
     if (completeCb) completeCb();
@@ -2138,6 +2143,9 @@ const MapEngine = (() => {
 
   function interact() {
     if (MapPlayer.moving) return;
+    // Suppress rapid dialogue re-triggering loop during window dismissal transient input frames
+    if (Date.now() - _lastInteractTime < 500) return;
+
     const ptx = MapPlayer.tx, pty = MapPlayer.ty;
     const face = MapPlayer.getFacing();
     
@@ -2161,6 +2169,7 @@ const MapEngine = (() => {
     }
 
     if (npc && !npc._dialogueOpen) {
+      _lastInteractTime = Date.now();
       npc._dialogueOpen = true;
       stop();
       _openNPCDialogue(npc);
