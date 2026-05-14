@@ -622,5 +622,21 @@
     "category": "People",
     "region": "crystal_cavern",
     "description": "The Archivist insists there is a difference between a ghost and an unfinished record. A ghost is defined by what it lost. An unfinished record is defined by what it has not yet completed. He has not completed his documentation of the Crystal Cavern's resonance patterns. He is therefore not a ghost. He is prepared to explain this distinction to anyone who wishes to debate it. Tao listens carefully and says the distinction might be the same thing described from different directions. The Archivist says he will need to document it before he can respond adequately."
+  },
+  {
+    "id": "npc_old_guard_riverlands",
+    "title": "The Old Guard at the Gorge",
+    "icon": "🛡️",
+    "category": "People",
+    "region": "riverlands_crossing",
+    "description": "The Old Guard posted at the Western Ledge Camp remembers when the Great Expanse bridge was wide enough for three carts abreast. He stayed when the garrison retreated because someone had to watch the keystone where the River King made its deal. He tells the party that neutrality is not a shield—it is an agreement to look away while the rust sets in. He has been looking at the rust for twenty years. He does not recommend it as a career."
+  },
+  {
+    "id": "npc_survivor_southern_isles",
+    "title": "The Settlement Survivor",
+    "icon": "🎣",
+    "category": "People",
+    "region": "southern_isles",
+    "description": "The Survivor stationed on the outer stilts of the Southern Isles spends his days listening for the submerged bell tower. He explains that the Sunken Leviathan was never a monster—just a massive creature looking for a resonance that felt like home, trapped when the port flooded. He asks the party to free the Leviathan not out of mercy, but out of basic architectural decency: so the bell has something clean to ring for again."
   }
 ]

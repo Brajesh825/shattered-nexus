@@ -293,3 +293,27 @@ masterpiece, best quality, (highland shadow dragon:1.4), massive legendary drago
 
 [DONE][LUMINOUS GOLEM]
 masterpiece, best quality, (luminous golem:1.4), ancient towering construct built of glowing solid white quartz and brilliant golden light circuits, smooth streamlined golem geometry, heavy broad shoulders, radiating pure warm yellow light, full body, majestic sentinel pose, cel shaded, flat color, thin outlines, high contrast, vibrant white and gold palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[DONE][GOBLIN SCOUT REFRESH]
+masterpiece, best quality, green skin, (goblin scout:1.3), jagged rusted armor plates, carrying a small curved jagged blade, tragic but fierce expression, full body, majestic side-view profile pose, cel shaded, flat color, thin outlines, high contrast, vibrant green and rusted brown palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[HOLOGRAPHIC LOG ORB]
+masterpiece, best quality, (crystalline log orb:1.4), smooth polished translucent blue sphere resting upon a small ornate carved stone pedestal, radiating a soft shimmering light projection, faint digital streams orbiting, full body, majestic stationary pose, cel shaded, flat color, thin outlines, high contrast, vibrant sky blue and silver palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[ANCIENT TIDE BELL]
+masterpiece, best quality, (ancient tide bell:1.4), massive ornate bronze bell covered in rusted verdigris and glowing oceanic runes, deep sea resonance, hanging from a simple wooden frame, full body, majestic stationary pose, cel shaded, flat color, thin outlines, high contrast, vibrant cyan and bronze palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[TOLL BRIDGE MARKER]
+masterpiece, best quality, (toll bridge marker:1.4), carved stone pillar emerging from river weeds, glowing light cyan keystone runes, moss and water droplets, full body, majestic stationary pose, cel shaded, flat color, thin outlines, high contrast, vibrant light cyan and stone grey palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[BONE SHARD]
+masterpiece, best quality, (glowing bone shard:1.4), sharp jagged crystalline bone fragment resting on the ground, radiating subtle white marrow energy, full body, majestic stationary pose, cel shaded, flat color, thin outlines, high contrast, vibrant bone white and silver palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[SILVER LOCKET]
+masterpiece, best quality, (delicate silver locket:1.4), small open silver locket with a brilliantly glowing blue gemstone inside, intricate filigree engravings, resting on simple ground, full body, majestic stationary pose, cel shaded, flat color, thin outlines, high contrast, vibrant silver and bright blue palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[SQUAD INSIGNIA]
+masterpiece, best quality, (royal squad insignia:1.4), heavy gold vanguard emblem shaped like a winged shield, slightly scuffed with faint ambient golden void light dissipating, full body, majestic stationary pose, cel shaded, flat color, thin outlines, high contrast, vibrant gold and metallic palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background
+
+[CURSED IDOL]
+masterpiece, best quality, (cursed wooden idol:1.4), small tribal carving sealed with glowing crimson void markings, dark tangled river weeds wrapping around its base, full body, majestic stationary pose, cel shaded, flat color, thin outlines, high contrast, vibrant red and dark brown palette, 2D anime style, studio quality anime, sharp focus, clean lines, white background, simple background

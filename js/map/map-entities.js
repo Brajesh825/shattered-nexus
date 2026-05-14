@@ -934,13 +934,34 @@ const MapEntities = (() => {
         if (n.hideAfterScene  && fired.has(n.hideAfterScene)) return false;
         if (n.showAfterScene  && !fired.has(n.showAfterScene)) return false;
         if (n.showIfMapCleared && (!G.clearedMaps || !G.clearedMaps.includes(n.showIfMapCleared))) return false;
+        
+        const def = (typeof NPC_DEFS !== 'undefined') ? NPC_DEFS[n.id] : null;
+        const targetQuest = (def && def.dissolveAfterQuest) || n.dissolveAfterQuest;
+        if (targetQuest && typeof QuestSystem !== 'undefined' && QuestSystem.getCompleted().includes(targetQuest)) {
+          return false;
+        }
+
+        const uid = n._uid || `npc_${n.id}_${n.x}_${n.y}`;
+        if (typeof QuestSystem !== 'undefined' && QuestSystem.isNodeGathered && QuestSystem.isNodeGathered(uid)) {
+          return false;
+        }
+
+        if (n.showOnlyDuringQuest && typeof QuestSystem !== 'undefined') {
+          const inProgress = QuestSystem.getActive().map(q => q.id);
+          if (!inProgress.includes(n.showOnlyDuringQuest)) {
+            return false;
+          }
+        }
+
         return true;
       }).map(n => {
         const def = (typeof NPC_DEFS !== 'undefined') ? NPC_DEFS[n.id] : null;
         const spritePath = def ? def.sprite : `images/characters/map/sheets/npc/${n.id}_sheet.png`;
+        const uid = n._uid || `npc_${n.id}_${n.x}_${n.y}`;
 
         return {
           ...n,
+          _uid: uid,
           name:   def ? def.name   : n.id,
           color:  def ? def.color  : '#ffffff',
           sprite: spritePath,
@@ -986,8 +1007,28 @@ const MapEntities = (() => {
 
     function update(dt, map) {
       const TILE = MapEngine.getTile();
-      _npcs.forEach(n => {
-        if (n.isTalking) return;
+      for (let i = _npcs.length - 1; i >= 0; i--) {
+        const n = _npcs[i];
+        
+        // Tick mist particles
+        if (n._mistParticles) {
+          n._mistParticles.forEach(p => {
+            p.life -= dt;
+            p.dx += (Math.random() - 0.5) * 4 * dt;
+            p.dy -= p.speed * 18 * dt;
+          });
+        }
+
+        // Tick dissolving timer
+        if (n._dissolving) {
+          n._dissolveTimer += dt;
+          if (n._dissolveTimer >= n._dissolveDur) {
+            _npcs.splice(i, 1);
+          }
+          continue;
+        }
+
+        if (n.isTalking) continue;
 
         // ── Scene walk-to-player ─────────────────────────
         if (n._sceneWalkTarget) {
@@ -1023,7 +1064,7 @@ const MapEntities = (() => {
             // Start first step immediately
             _npcStepToward(n, ptx, pty, map);
           }
-          return;
+          continue;
         }
 
         // ── Scene exit walk ──────────────────────────────
@@ -1039,7 +1080,7 @@ const MapEntities = (() => {
             n.facingOverride = null;
             n.idleTimer = 0;
             if (onArrival) onArrival();
-            return;
+            continue;
           }
           if (n.moving) {
             n.moveTimer += dt;
@@ -1056,7 +1097,7 @@ const MapEntities = (() => {
           } else {
             _npcStepToward(n, target.x, target.y, map);
           }
-          return;
+          continue;
         }
 
         if (n.moving) {
@@ -1091,7 +1132,7 @@ const MapEntities = (() => {
             }
           }
         }
-      });
+      }
     }
 
     function _decideNPCMove(n, map) {
@@ -1219,6 +1260,13 @@ const MapEntities = (() => {
           : 0;
         
         const img = _loadImg(n.sprite);
+        let fade = 1.0;
+        let driftY = 0;
+        if (n._dissolving) {
+          fade = Math.max(0, 1.0 - (n._dissolveTimer / n._dissolveDur));
+          driftY = -25 * (1.0 - fade);
+        }
+
         if (img.complete && img.naturalWidth) {
           const frameW = img.naturalWidth / 6;
           const frameH = img.naturalHeight / 2;
@@ -1228,26 +1276,53 @@ const MapEntities = (() => {
           const srcY = dir.cy;
 
           ctx.save();
+          ctx.globalAlpha = fade;
+          if (n._dissolving) {
+            ctx.filter = `blur(${Math.round(4 * (1 - fade))}px) brightness(1.5)`;
+          }
           ctx.imageSmoothingEnabled = true;
           ctx.imageSmoothingQuality = 'high';
-          ctx.drawImage(img, srcX, srcY, frameW, frameH, sx + ox, sy + oy + bounce, dw, dh);
+          ctx.drawImage(img, srcX, srcY, frameW, frameH, sx + ox, sy + oy + bounce + driftY, dw, dh);
           ctx.restore();
         } else {
+          ctx.save();
+          ctx.globalAlpha = fade;
           ctx.fillStyle = '#40ff80';
-          ctx.fillRect(sx + 8, sy + 8 + bounce, TILE - 16, TILE - 16);
+          ctx.fillRect(sx + 8, sy + 8 + bounce + driftY, TILE - 16, TILE - 16);
+          ctx.restore();
         }
 
-        // Interaction prompt — quest-state-aware
-        _renderNPCIndicator(ctx, n, sx, sy, oy, bounce, TILE);
+        // Render premium HSL mist particles!
+        if (n._mistParticles) {
+          ctx.save();
+          n._mistParticles.forEach(p => {
+            if (p.life <= 0) return;
+            const pAlpha = Math.min(1, p.life) * (fade > 0 ? 1 : Math.max(0, p.life / 1.8));
+            ctx.fillStyle = p.color;
+            ctx.globalAlpha = pAlpha * 0.8;
+            ctx.shadowColor = '#bae6fd';
+            ctx.shadowBlur = 8;
+            ctx.beginPath();
+            ctx.arc(sx + TILE / 2 + p.dx, sy + oy + bounce + dh / 2 + p.dy + driftY, p.size, 0, Math.PI * 2);
+            ctx.fill();
+          });
+          ctx.restore();
+        }
 
-        // Name Tag
-        ctx.fillStyle = 'rgba(0,0,0,0.55)';
-        ctx.fillRect(sx + ox, sy + TILE + 2, dw, 11);
-        ctx.fillStyle = '#40ff80';
-        ctx.font = '8px monospace';
-        ctx.textAlign = 'center';
-        ctx.fillText(n.name || n.id, sx + TILE / 2, sy + TILE + 11);
-        ctx.textAlign = 'left';
+        // Only draw interaction prompt and Name Tag if not dissolving into mist
+        if (!n._dissolving) {
+          // Interaction prompt — quest-state-aware
+          _renderNPCIndicator(ctx, n, sx, sy, oy, bounce, TILE);
+
+          // Name Tag
+          ctx.fillStyle = 'rgba(0,0,0,0.55)';
+          ctx.fillRect(sx + ox, sy + TILE + 2, dw, 11);
+          ctx.fillStyle = '#40ff80';
+          ctx.font = '8px monospace';
+          ctx.textAlign = 'center';
+          ctx.fillText(n.name || n.id, sx + TILE / 2, sy + TILE + 11);
+          ctx.textAlign = 'left';
+        }
     }
 
     function render(ctx, cam, TILE, inVision) {
@@ -1304,6 +1379,22 @@ const MapEntities = (() => {
         const idx = _npcs.findIndex(n => n.id === npcId);
         if (idx !== -1) _npcs.splice(idx, 1);
       },
+      triggerDissolve: (identifier) => {
+        const n = _npcs.find(n => n._uid === identifier || n.id === identifier);
+        if (n && !n._dissolving) {
+          n._dissolving = true;
+          n._dissolveTimer = 0;
+          n._dissolveDur = 1.8;
+          n._mistParticles = Array.from({ length: 15 }, () => ({
+            dx: (Math.random() - 0.5) * 32,
+            dy: -5 - Math.random() * 25,
+            size: 3 + Math.random() * 6,
+            color: Math.random() < 0.4 ? '#f0f9ff' : '#bae6fd',
+            speed: 0.6 + Math.random() * 0.8,
+            life: 0.3 + Math.random() * 1.5
+          }));
+        }
+      },
     };
   })();
 
@@ -1339,6 +1430,7 @@ const MapEntities = (() => {
     setNPCExitWalk:  (id, tgt, cb)   => MapNPCs.setNPCExitWalk(id, tgt, cb),
     setNPCFacing:    (id, dir)       => MapNPCs.setNPCFacing(id, dir),
     despawnNPC:      (id)            => MapNPCs.despawnNPC(id),
+    triggerNPCDissolve: (id)         => MapNPCs.triggerDissolve(id),
     refresh: () => { Object.keys(_spriteCache).forEach(k => delete _spriteCache[k]); _spriteLoading.clear(); }
   };
 })();

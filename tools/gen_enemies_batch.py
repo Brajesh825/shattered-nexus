@@ -98,8 +98,8 @@ def main():
     enemies = parse_prompts()
     # Filter for the specific 7 enemies requested
     targets = [
-        "void-touched_valkyrie", "mire_horror", "sky_reaver", 
-        "starknight_sentinel", "void_reaver", "reality_fracture", "abyssal_eye"
+        "holographic_log_orb", "ancient_tide_bell", "toll_bridge_marker", 
+        "bone_shard", "silver_locket", "squad_insignia", "cursed_idol"
     ]
     enemies = [e for e in enemies if e["id"] in targets]
     
