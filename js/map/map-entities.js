@@ -946,6 +946,13 @@ const MapEntities = (() => {
           return false;
         }
 
+        if (n.showOnlyDuringQuest && typeof QuestSystem !== 'undefined') {
+          const inProgress = QuestSystem.getActive().map(q => q.id);
+          if (!inProgress.includes(n.showOnlyDuringQuest)) {
+            return false;
+          }
+        }
+
         return true;
       }).map(n => {
         const def = (typeof NPC_DEFS !== 'undefined') ? NPC_DEFS[n.id] : null;
@@ -1000,8 +1007,28 @@ const MapEntities = (() => {
 
     function update(dt, map) {
       const TILE = MapEngine.getTile();
-      _npcs.forEach(n => {
-        if (n.isTalking) return;
+      for (let i = _npcs.length - 1; i >= 0; i--) {
+        const n = _npcs[i];
+        
+        // Tick mist particles
+        if (n._mistParticles) {
+          n._mistParticles.forEach(p => {
+            p.life -= dt;
+            p.dx += (Math.random() - 0.5) * 4 * dt;
+            p.dy -= p.speed * 18 * dt;
+          });
+        }
+
+        // Tick dissolving timer
+        if (n._dissolving) {
+          n._dissolveTimer += dt;
+          if (n._dissolveTimer >= n._dissolveDur) {
+            _npcs.splice(i, 1);
+          }
+          continue;
+        }
+
+        if (n.isTalking) continue;
 
         // ── Scene walk-to-player ─────────────────────────
         if (n._sceneWalkTarget) {
@@ -1037,7 +1064,7 @@ const MapEntities = (() => {
             // Start first step immediately
             _npcStepToward(n, ptx, pty, map);
           }
-          return;
+          continue;
         }
 
         // ── Scene exit walk ──────────────────────────────
@@ -1053,7 +1080,7 @@ const MapEntities = (() => {
             n.facingOverride = null;
             n.idleTimer = 0;
             if (onArrival) onArrival();
-            return;
+            continue;
           }
           if (n.moving) {
             n.moveTimer += dt;
@@ -1070,7 +1097,7 @@ const MapEntities = (() => {
           } else {
             _npcStepToward(n, target.x, target.y, map);
           }
-          return;
+          continue;
         }
 
         if (n.moving) {
@@ -1105,7 +1132,7 @@ const MapEntities = (() => {
             }
           }
         }
-      });
+      }
     }
 
     function _decideNPCMove(n, map) {

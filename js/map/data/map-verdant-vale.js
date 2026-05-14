@@ -71,10 +71,11 @@ MAP_DEFS.verdant_vale = {
         { id: 'ruin_closure', x: 53, y: 29, dialogueKey: 'verdant_vale', showIfMapCleared: 'verdant_vale', behavior: 'stationary' },
         { id: 'dying_royal_guard', x: 46, y: 15, dialogueKey: 'verdant_vale', behavior: 'stationary', giveQuest: 'the_hollow_guard' },
         { id: 'galdor_decree_stone', x: 50, y: 50, dialogueKey: 'verdant_vale', behavior: 'stationary' },
-        { id: 'squad_insignia', x: 36, y: 38, dialogueKey: 'verdant_vale', behavior: 'stationary' },
-        { id: 'squad_insignia', x: 34, y: 53, dialogueKey: 'verdant_vale', behavior: 'stationary' },
-        { id: 'squad_insignia', x: 45, y: 54, dialogueKey: 'verdant_vale', behavior: 'stationary' },
-        { id: 'squad_insignia', x: 52, y: 46, dialogueKey: 'verdant_vale', behavior: 'stationary' }
+        { id: 'squad_insignia', x: 36, y: 38, dialogueKey: 'verdant_vale', behavior: 'stationary', showOnlyDuringQuest: 'the_hollow_guard' },
+        { id: 'squad_insignia', x: 34, y: 53, dialogueKey: 'verdant_vale', behavior: 'stationary', showOnlyDuringQuest: 'the_hollow_guard' },
+        { id: 'squad_insignia', x: 45, y: 54, dialogueKey: 'verdant_vale', behavior: 'stationary', showOnlyDuringQuest: 'the_hollow_guard' },
+        { id: 'squad_insignia', x: 52, y: 46, dialogueKey: 'verdant_vale', behavior: 'stationary', showOnlyDuringQuest: 'the_hollow_guard' },
+        { id: 'silver_locket', x: 55, y: 18, dialogueKey: 'verdant_vale', behavior: 'stationary', showOnlyDuringQuest: 'locket_lost' }
     ],
 
     scenes: [
