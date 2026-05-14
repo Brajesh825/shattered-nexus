@@ -149,7 +149,7 @@ const Focus = (() => {
 
     // Generic close buttons (party menu, item overlay, etc.)
     const backBtn = document.querySelector(
-      '.pm-close-btn, .pms-close, .itm-close, .bestiary-close, .pause-btn:last-child, .tutorial-close'
+      '.pm-close-btn, .pms-close, .itm-close, .bestiary-close, .pause-btn:last-child, .tutorial-close, .shop-close-btn'
     );
     if (backBtn?.offsetParent) { backBtn.click(); return; }
 
@@ -279,7 +279,7 @@ const Focus = (() => {
       '.pause-inv-slot, .itm-entry, .itm-target-card, .bestiary-row, ' +
       '.b-tab, .title-btn, .char-card, .class-card, .swap-card, ' +
       '.sc, .sc-action, .tutorial-close, .npc-dialogue-next, ' +
-      '.map-node, .mrp-btn'
+      '.map-node, .mrp-btn, .shop-tab, .shop-item-row, .shop-qty-btn, .shop-confirm-btn'
     );
     // NOTE: enemy elements intentionally excluded here — only reachable in Phase 3.
     return Array.from(candidates).filter(_isVisible);

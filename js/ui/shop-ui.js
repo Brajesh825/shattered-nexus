@@ -108,6 +108,7 @@ const ShopUI = (() => {
     if (overlay) {
       overlay.style.display = 'flex';
       if (typeof SFX !== 'undefined' && SFX.click) SFX.click();
+      if (typeof Focus !== 'undefined') Focus.setContext('shop-overlay');
     }
   }
 
@@ -116,6 +117,7 @@ const ShopUI = (() => {
     if (overlay) overlay.style.display = 'none';
     _activeMerchant = null;
     if (typeof SFX !== 'undefined' && SFX.cancel) SFX.cancel();
+    if (typeof Focus !== 'undefined') Focus.setContext(null);
   }
 
   function setTab(tab) {
