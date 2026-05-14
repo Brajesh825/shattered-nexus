@@ -466,15 +466,11 @@ function showScreen(id) {
     ControlHints.setContext(hintCtx);
   }
 
-  // BGM — fade out current track then play the next one
-  if (typeof BGM !== 'undefined') {
-    const _next =
-      id === 'title-screen' ? 'title' :
-        id === 'battle-screen' ? 'battle' :
-          id === 'explore-screen' ? 'exploration' :
-            id === 'story-screen' ? 'story' : null;
-    BGM.fadeOut(600, () => { if (_next) BGM.play(_next); });
-  }
+  // BGM is now handled specifically by specialized managers:
+  // - Story battles: story.js -> _launchStoryBattle
+  // - Map battles: menu-manager.js -> MapEngine.onEncounterStart
+  // - Title/Explore/Story: Managed by their respective entry points
+  // This prevents showScreen('battle-screen') from resetting boss themes to 'battle'.
 }
 
 /* ============================================================
