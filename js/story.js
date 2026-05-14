@@ -698,19 +698,23 @@ const Story = {
   },
 
   async _launchStoryBattle(enemyId) {
+    const raw = this._allEnemies.find(e => e.id === enemyId);
+    if (!raw) { console.warn('Story: enemy not found:', enemyId); this.onBattleWon(); return; }
+
     if (typeof BGM !== 'undefined') {
       const chap = this.currentChap || {};
       const isBoss = (this.phase === 'boss_in');
-      const track = isBoss ? (chap.bossBgm || 'boss') : (chap.battleBgm || 'battle');
+      // Priority: Chapter BGM -> Enemy BGM -> Default ('boss' or 'battle')
+      const fallback = isBoss ? 'boss' : 'battle';
+      const track = isBoss 
+        ? (chap.bossBgm || raw.bgm || fallback) 
+        : (chap.battleBgm || raw.bgm || fallback);
       BGM.crossfade(track);
     }
 
     // Hide dialogue during battle
     const dialogue = this.el('s-dialogue');
     if (dialogue) dialogue.style.display = 'none';
-
-    const raw = this._allEnemies.find(e => e.id === enemyId);
-    if (!raw) { console.warn('Story: enemy not found:', enemyId); this.onBattleWon(); return; }
     const def = this._scaleEnemy(raw);
 
     // Build enemy group: boss is always solo
