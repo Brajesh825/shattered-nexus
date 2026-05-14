@@ -1905,6 +1905,12 @@ const MapEngine = (() => {
     _npcQuestFlow = false;
     _hideQuestChoices();
 
+    // Dynamically unlock companion lore records upon dialogue initiation
+    if (typeof Archive !== 'undefined' && npc) {
+      if (npc.id) Archive.recordStoryFragment(npc.id);
+      if (npc.dialogueKey) Archive.recordStoryFragment(npc.dialogueKey);
+    }
+
     // Trigger quest 'gather' progress if this NPC is a target (delivery style)
     if (typeof QuestSystem !== 'undefined' && npc.id) {
       const didGather = QuestSystem.onGather(npc.id);
