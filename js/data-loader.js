@@ -52,7 +52,7 @@ async function loadAllGameData() {
     return r.json();
   });
 
-  const [chars, classes, enemies, items, relics, moveAnims, loreFrags, quests] = await Promise.all([
+  const [chars, classes, enemies, items, relics, moveAnims, loreFrags, quests, merchants] = await Promise.all([
     load('data/characters.json'),
     load('data/classes.json'),
     load('data/enemies.json'),
@@ -61,6 +61,7 @@ async function loadAllGameData() {
     load('data/move-animations.json'),
     load('data/lore_fragments.json'),
     load('data/quests.json'),
+    load('js/data/merchants.json'),
   ]);
 
   validateEnemy(enemies);
@@ -73,4 +74,5 @@ async function loadAllGameData() {
   window.MOVE_ANIMATIONS  = moveAnims;
   window.LORE_FRAGMENTS   = loreFrags;
   window.QUESTS_DATA      = quests;
+  window.MERCHANTS_DATA   = merchants;
 }
