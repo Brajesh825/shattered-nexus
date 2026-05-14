@@ -373,6 +373,7 @@ const NPC_DEFS = {
     color: '#a5b4fc',
     sprite: 'images/characters/map/sheets/npc/archivist_sheet.png',
     quests: ['bones_of_the_fallen'],
+    dissolveAfterQuest: 'bones_of_the_fallen',
     dialogues: {
       crystal_cavern: [
         { speaker: 'The Archivist', text: 'Still here. Still here. I have been cataloguing the resonance patterns for… how long has it been.' },
@@ -920,7 +921,7 @@ const NPC_DEFS = {
   holographic_log_orb: {
     name: 'Crystal Orb',
     color: '#38bdf8',
-    sprite: 'images/environment/png/offering_point.png',
+    sprite: 'images/characters/map/sheets/npc/holographic_log_orb_sheet.png',
     dialogues: {
       crystal_cavern_f1: [
         { speaker: 'narrator', text: 'A smooth crystalline sphere rests upon a stone pedestal. Touching its surface triggers a faint, shimmering projection.' },
@@ -934,7 +935,7 @@ const NPC_DEFS = {
   ancient_tide_bell: {
     name: 'Tide Bell',
     color: '#0ea5e9',
-    sprite: 'images/environment/png/offering_point.png',
+    sprite: 'images/characters/map/sheets/npc/ancient_tide_bell_sheet.png',
     dialogues: {
       southern_isles: [
         { speaker: 'narrator', text: 'You strike the rusted metal of the ancient Tide Bell. A deep, crystalline chime reverberates down through the ocean layers.' },
@@ -948,7 +949,7 @@ const NPC_DEFS = {
   toll_bridge_marker: {
     name: 'River Marker',
     color: '#06b6d4',
-    sprite: 'images/environment/png/offering_point.png',
+    sprite: 'images/characters/map/sheets/npc/toll_bridge_marker_sheet.png',
     dialogues: {
       riverlands_crossing: [
         { speaker: 'narrator', text: 'A carved stone pillar rises from the rushing water, blocking the bridge keystone.' },
@@ -971,10 +972,34 @@ const NPC_DEFS = {
     }
   },
 
+  bone_shard: {
+    name: 'Bone Shard',
+    color: '#e2e8f0',
+    sprite: 'images/characters/map/sheets/npc/bone_shard_sheet.png',
+    dissolveOnGather: true,
+    dialogues: {
+      crystal_cavern_f1: [
+        { speaker: 'narrator', text: 'You carefully retrieve a crystalline bone fragment from the cavern floor. A faint hum resonates inside the marrow.' }
+      ]
+    }
+  },
+
+  silver_locket: {
+    name: 'Silver Locket',
+    color: '#38bdf8',
+    sprite: 'images/characters/map/sheets/npc/silver_locket_sheet.png',
+    dissolveOnGather: true,
+    dialogues: {
+      verdant_vale: [
+        { speaker: 'narrator', text: 'You uncover a delicate silver locket with a small blue gem resting in the dirt. It feels strangely warm.' }
+      ]
+    }
+  },
+
   squad_insignia: {
     name: 'Squad Insignia',
     color: '#eab308',
-    sprite: 'images/environment/png/offering_point.png',
+    sprite: 'images/characters/map/sheets/npc/squad_insignia_sheet.png',
     dissolveOnGather: true,
     dialogues: {
       verdant_vale: [
@@ -986,7 +1011,7 @@ const NPC_DEFS = {
   cursed_idol: {
     name: 'Cursed Idol',
     color: '#ef4444',
-    sprite: 'images/environment/png/offering_point.png',
+    sprite: 'images/characters/map/sheets/npc/cursed_idol_sheet.png',
     dissolveOnGather: true,
     dialogues: {
       riverlands_crossing: [

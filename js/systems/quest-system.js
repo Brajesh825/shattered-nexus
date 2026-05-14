@@ -61,6 +61,10 @@ const QuestSystem = (() => {
     if (def) {
       _active.push({ ...def, current: 0, complete: false });
       if (typeof MapUI !== 'undefined') MapUI.showMsg(`✦ NEW ECHO: ${def.label}`, 2000);
+      if (typeof MapEntities !== 'undefined' && typeof MapEngine !== 'undefined' && MapEngine.getMap()) {
+        MapEntities.init(MapEngine.getMap());
+        if (MapEntities.initNPCs) MapEntities.initNPCs(MapEngine.getMap());
+      }
     }
   }
 
@@ -137,7 +141,13 @@ const QuestSystem = (() => {
   // Called by the dialogue choice handler after the player clicks "Collect Reward"
   function submit(id) {
     const q = _active.find(q => q.id === id && q.complete);
-    if (q) _grantRewards(q);
+    if (q) {
+      _grantRewards(q);
+      if (typeof MapEntities !== 'undefined' && typeof MapEngine !== 'undefined' && MapEngine.getMap()) {
+        MapEntities.init(MapEngine.getMap());
+        if (MapEntities.initNPCs) MapEntities.initNPCs(MapEngine.getMap());
+      }
+    }
   }
 
   function markNodeGathered(uid) {
