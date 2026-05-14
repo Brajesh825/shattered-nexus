@@ -23,6 +23,7 @@ import { handleSyncRag } from "./handlers/ragIndexer.js";
 import { handleValidateThreatCurve } from "./handlers/validateThreatCurve.js";
 import { handleRunIntegrityCheck } from "./handlers/runIntegrityCheck.js";
 import { handleVerifyServiceWorker } from "./handlers/verifyServiceWorker.js";
+import { handleFetchAudio } from "./handlers/fetchAudio.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -284,6 +285,19 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           type: "object",
           properties: {}
         }
+      },
+      {
+        name: "nexus_fetch_audio",
+        description: "Executes automated yt-dlp scraping for royalty-free audio, natively pipelining downloads into ffmpeg for immediate libopus .webm compression.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            query: { type: "string", description: "YouTube URL or search string (e.g. 'ytsearch1:royalty free boss music')" },
+            filename: { type: "string", description: "Output filename without extension (e.g. 'boss_leviathan')" },
+            category: { type: "string", enum: ["bgm", "sfx"], description: "Audio category" }
+          },
+          required: ["query", "filename"]
+        }
       }
     ],
   };
@@ -338,6 +352,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
   if (name === "nexus_verify_service_worker") {
     return await handleVerifyServiceWorker(ROOT_DIR);
+  }
+
+  if (name === "nexus_fetch_audio") {
+    return await handleFetchAudio(args, ROOT_DIR);
   }
 
   throw new Error(`Unknown tool requested: ${name}`);

@@ -11,6 +11,9 @@ const ArchiveUI = {
     const overlay = document.getElementById('bestiary-overlay');
     if (!overlay) return;
     overlay.style.display = 'flex';
+    if (typeof Archive !== 'undefined' && Archive.evaluateLoreUnlocks) {
+      Archive.evaluateLoreUnlocks();
+    }
     this.updateProgress();
     this.renderList();
     if (typeof Focus !== 'undefined') {

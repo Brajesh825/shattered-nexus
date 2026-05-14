@@ -37,41 +37,41 @@ const BattleUI = {
    * Add new bosses here to avoid if/else logic bloat.
    */
   BOSS_CONFIG: {
-    'king_galdor': {
+    'galdor_king': {
       theme: 'king-galdor',
       flash: '#4ade80',
       fx: 'petalDrift',
-      bg: 'galdor_garden.webp'
+      bg: 'galdor_garden'
     },
     'spectral_guardian': {
       theme: 'guardian',
       flash: '#a5f3fc',
       fx: 'frostShatter',
-      bg: 'guardian_arena.webp'
+      bg: 'guardian_arena'
     },
     'demon_lord': {
       theme: 'demon-lord',
       flash: '#f97316',
       fx: 'obsidianMelt',
-      bg: 'demon_lord_arena.webp'
+      bg: 'demon_lord_arena'
     },
     'void_knight': {
       theme: 'void-knight',
       flash: '#c084fc',
       fx: 'nullInversion',
-      bg: 'eternal_void.webp'
+      bg: 'eternal_void'
     },
     'river_king': {
       theme: 'river-king',
       flash: '#38bdf8',
       fx: 'tidalSurge',
-      bg: 'riverlands.webp'
+      bg: 'riverlands'
     },
     'sunken_leviathan': {
       theme: 'sunken-leviathan',
       flash: '#818cf8',
       fx: 'abyssalCurrent',
-      bg: 'stage_submerged_market.webp'
+      bg: 'stage_submerged_market'
     }
   },
 

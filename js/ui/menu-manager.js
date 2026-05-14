@@ -13,7 +13,8 @@ const UI = {
       'relic-panel',
       'party-swap-overlay',
       'map-pause-menu',
-      'camp-menu'
+      'camp-menu',
+      'shop-overlay'
     ];
     overlays.forEach(id => {
       const el = document.getElementById(id);
@@ -42,11 +43,12 @@ function closePartyMenu() {
 window.addEventListener('DOMContentLoaded', async () => {
   await loadAllGameData();
   moveAnimations = window.MOVE_ANIMATIONS || {};
-  G.chars   = window.CHARACTERS_DATA || [];
-  G.classes = window.CLASSES_DATA    || [];
-  G.enemies = window.ENEMIES_DATA    || [];
-  G.items   = window.ITEMS_DATA      || [];
-  G.relics  = window.RELICS_DATA     || [];
+  G.chars     = window.CHARACTERS_DATA || [];
+  G.classes   = window.CLASSES_DATA    || [];
+  G.enemies   = window.ENEMIES_DATA    || [];
+  G.items     = window.ITEMS_DATA      || [];
+  G.relics    = window.RELICS_DATA     || [];
+  G.merchants = window.MERCHANTS_DATA  || [];
   window._origEnemies = G.enemies.slice();
   initStars();
   scaleGame();
@@ -187,7 +189,18 @@ MapEngine.onEncounterStart = async (enc, map) => {
   }
 
   if (typeof BGM !== 'undefined') {
-    BGM.playBattle(map, isBossEncounter);
+    let customBossTrack = enc.bgm || null;
+    if (!customBossTrack && isBossEncounter && G.enemyGroup && G.enemyGroup.length > 0) {
+      if (G.enemyGroup[0].bgm) {
+        customBossTrack = G.enemyGroup[0].bgm;
+      }
+    }
+    
+    if (customBossTrack) {
+      BGM.crossfade(customBossTrack);
+    } else {
+      BGM.playBattle(map, isBossEncounter);
+    }
   }
 
   await _initBattle();
