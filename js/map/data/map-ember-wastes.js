@@ -71,7 +71,7 @@ MAP_DEFS.ember_wastes = (function() {
         bgColor: '#1a0808',
         bgm: 'ember_wastes_explore',
         battleBgm: 'ember_wastes_battle',
-        battleBg: 'ember_wastes.webp',
+        battleBg: 'ember_wastes',
         ambientLight: 'rgba(255,100,50,0.12)',
         weather: 'embers',
         enemyLevelRange: [12, 20],

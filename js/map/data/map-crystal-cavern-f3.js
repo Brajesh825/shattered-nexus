@@ -27,10 +27,9 @@ MAP_DEFS.crystal_cavern_f3 = {
   enemyLevelRange: [15, 18],
   jsonFile: 'js/map/data/map-crystal-cavern-f3.json',
   
-  bgm: 'cavern_explore',
-  battleBgm: 'cavern_battle',
-  battleBg: 'cavern_f3.webp',
-  bossBgm: 'spectral_guardian_theme',
+  bgm: 'ice_paradise',
+  battleBgm: 'icy_ruins',
+  battleBg: 'cavern_f3',
 
   mutationConfig: {
     corruptThreshold: 100,

@@ -189,7 +189,18 @@ MapEngine.onEncounterStart = async (enc, map) => {
   }
 
   if (typeof BGM !== 'undefined') {
-    BGM.playBattle(map, isBossEncounter);
+    let customBossTrack = enc.bgm || null;
+    if (!customBossTrack && isBossEncounter && G.enemyGroup && G.enemyGroup.length > 0) {
+      if (G.enemyGroup[0].bgm) {
+        customBossTrack = G.enemyGroup[0].bgm;
+      }
+    }
+    
+    if (customBossTrack) {
+      BGM.crossfade(customBossTrack);
+    } else {
+      BGM.playBattle(map, isBossEncounter);
+    }
   }
 
   await _initBattle();
