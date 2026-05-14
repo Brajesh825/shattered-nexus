@@ -5092,55 +5092,48 @@ body {
 #mute-btn,
 #tts-btn,
 #settings-btn {
-  position: absolute;
+  position: static;
   z-index: 9999;
   background: rgba(5, 4, 20, 0.7);
   backdrop-filter: blur(8px);
-  border: 1px solid #2a1860;
+  border: 1px solid hsl(260, 40%, 30%);
   border-radius: 4px;
-  color: #6050a0;
-  font-size: 16px;
-  width: 30px;
-  height: 30px;
+  color: hsl(260, 40%, 65%);
+  font-size: 14px;
+  width: 28px;
+  height: 28px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all .2s;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   padding: 0;
+  flex-shrink: 0;
 }
 
 #settings-btn {
-  top: 9px;
-  left: 50%;
-  transform: translateX(-50%);
-  color: #a090d0;
-  border-color: #5040a0;
-}
-
-#mute-btn {
-  top: 10px;
-  right: 90px;
-}
-
-#tts-btn {
-  top: 10px;
-  right: 126px;
+  color: hsl(260, 50%, 75%);
+  border-color: hsl(260, 40%, 45%);
 }
 
 #mute-btn:hover,
 #tts-btn:hover,
-#settings-btn:hover {
-  color: #a0c8ff;
-  border-color: #5040a0;
-  background: rgba(80, 60, 150, 0.2);
+#settings-btn:hover,
+#mute-btn.kb-focus,
+#tts-btn.kb-focus,
+#settings-btn.kb-focus {
+  color: hsl(215, 100%, 80%);
+  border-color: hsl(255, 45%, 65%);
+  background: hsla(255, 50%, 40%, 0.25);
+  box-shadow: 0 0 12px hsla(255, 60%, 60%, 0.4);
+  transform: translateY(-1px);
 }
 
 #tts-btn.tts-active {
-  color: #c084fc;
-  border-color: #8833cc;
-  background: rgba(80, 20, 120, 0.35);
-  box-shadow: 0 0 8px #8833cc60;
+  color: hsl(280, 95%, 75%);
+  border-color: hsl(280, 60%, 50%);
+  background: hsla(280, 70%, 30%, 0.35);
+  box-shadow: 0 0 8px hsla(280, 60%, 50%, 0.4);
 }
 
 #zoom-btn,

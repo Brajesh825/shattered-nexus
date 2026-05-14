@@ -434,7 +434,8 @@ function showScreen(id) {
       'story-screen': null,
       'explore-screen': null
     };
-    Focus.setContext(contextMap[id] || id);
+    const targetCtx = contextMap.hasOwnProperty(id) ? contextMap[id] : id;
+    Focus.setContext(targetCtx);
   }
 
   requestAnimationFrame(scaleGame);
@@ -1111,38 +1112,7 @@ function retryBattle() {
    ============================================================ */
 /* Move mute/TTS/zoom into the explore header so they don't clash */
 function _dockPersistentBtns(dock) {
-  const hdrRight = document.querySelector('.explore-header-right');
-  const muteBtn = document.getElementById('mute-btn');
-  const ttsBtn = document.getElementById('tts-btn');
-  const zoomBtn = document.getElementById('zoom-btn');
-  const resetBtn = document.getElementById('reset-zoom-btn');
-  const gameEl = document.getElementById('game');
-
-  if (dock && hdrRight) {
-    // Make them inline in the header
-    [muteBtn, ttsBtn].forEach(b => {
-      if (!b) return;
-      b.style.position = 'static';
-      b.style.width = '28px';
-      b.style.height = '28px';
-      b.style.fontSize = '13px';
-      hdrRight.insertBefore(b, hdrRight.firstChild);
-    });
-    if (zoomBtn) zoomBtn.style.display = 'none';
-    if (resetBtn) resetBtn.style.display = 'none';
-  } else {
-    // Restore to absolute positioning
-    [muteBtn, ttsBtn].forEach(b => {
-      if (!b) return;
-      b.style.position = 'absolute';
-      b.style.width = '';
-      b.style.height = '';
-      b.style.fontSize = '';
-      if (gameEl) gameEl.appendChild(b);
-    });
-    if (zoomBtn) zoomBtn.style.display = '';
-    if (resetBtn) resetBtn.style.display = '';
-  }
+  // Deprecated: persistent buttons reside natively inside .explore-header-right as standard static flex items.
 }
 
 function leaveExplore() {
