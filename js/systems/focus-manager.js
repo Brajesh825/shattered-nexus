@@ -73,7 +73,7 @@ const Focus = (() => {
     // Map pause menu — must run before _isNavigationBlocked() so it works on the
     // explore screen (where navigation is otherwise suppressed). BACK mirrors MENU
     // so players don't need to hunt for the right key.
-    if (Input.justPressed('MENU') || Input.justPressed('BACK')) {
+    if (!_container && (Input.justPressed('MENU') || Input.justPressed('BACK'))) {
       const exploreActive = document.getElementById('explore-screen')?.classList.contains('active');
       if (exploreActive && typeof MapUI !== 'undefined') {
         const pauseMenu = document.getElementById('map-pause-menu');
@@ -148,10 +148,11 @@ const Focus = (() => {
     }
 
     // Generic close buttons (party menu, item overlay, etc.)
-    const backBtn = document.querySelector(
+    const backBtns = document.querySelectorAll(
       '.pm-close-btn, .pms-close, .itm-close, .bestiary-close, .pause-btn:last-child, .tutorial-close, .shop-close-btn'
     );
-    if (backBtn?.offsetParent) { backBtn.click(); return; }
+    const visibleBackBtn = Array.from(backBtns).find(b => b.offsetParent);
+    if (visibleBackBtn) { visibleBackBtn.click(); return; }
 
     // Phase 2 → Phase 1 (battle sub-menu open)
     if (typeof BattleUI !== 'undefined') {
