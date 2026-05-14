@@ -1238,6 +1238,9 @@ const MapEntities = (() => {
     }
 
     function _renderNPC(ctx, cam, TILE, n, inVision) {
+        // Nocturnal despawn check
+        if (typeof ChronosEngine !== 'undefined' && ChronosEngine.getPhase() === 'midnight') return;
+
         // NPCs in a scene walk are always rendered — don't let fog cull them mid-exit.
         // Non-scene NPCs use pixel position (not snapped tile) for a smooth fade.
         const inScene = n._sceneWalkTarget || n._sceneExitTarget;
@@ -1356,10 +1359,13 @@ const MapEntities = (() => {
       init, update, render, renderForRow, getDialogue, markTalked, prepareBuckets,
       // Block both destination AND previous tile while mid-step so player can't
       // walk through an NPC during the interpolation window
-      checkNPCAt: (x,y) => _npcs.find(n =>
-        (n.tx === x && n.ty === y) ||
-        (n.moving && n.prevTx === x && n.prevTy === y)
-      ),
+      checkNPCAt: (x,y) => {
+        if (typeof ChronosEngine !== 'undefined' && ChronosEngine.getPhase() === 'midnight') return null;
+        return _npcs.find(n =>
+          (n.tx === x && n.ty === y) ||
+          (n.moving && n.prevTx === x && n.prevTy === y)
+        );
+      },
       getNPCs: () => _npcs,
       setNPCSceneWalk: (npcId, onArrival) => {
         const n = _npcs.find(n => n.id === npcId);

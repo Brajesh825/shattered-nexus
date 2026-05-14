@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nexus-cache-v8.59';
+const CACHE_NAME = 'nexus-cache-v8.60';
 
 // Core shell — always pre-cached regardless of quality setting
 const SHELL_ASSETS = [
@@ -68,6 +68,7 @@ const SHELL_ASSETS = [
   './js/ui/world-explorer.js',
   // Systems
   './js/systems/archive.js',
+  './js/systems/chronos-engine.js',
   './js/systems/focus-manager.js',
   './js/systems/input-manager.js',
   './js/systems/inventory.js',
