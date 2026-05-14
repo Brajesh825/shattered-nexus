@@ -1,30 +1,32 @@
-# Concept: Regional Shops & The Economy
+# 📜 Concept: Regional Shops, Economy & Supply Pouch Restrictions
 
-## Overview
-Currently, the game has `items.json` and enemies drop `gold`, but there is no way to spend that gold. To prevent the economy from becoming meaningless, we need a robust Shop System that ties into the lore and forces strategic decisions.
+## 🎯 Core Objectives
+Gold is continuously collected across free-roam and narrative maps, but players currently lack a resource sink. This concept establishes a high-fidelity **Regional Shop System** coupled with a **Supply Pouch limit** to prevent infinite consumable hoarding and restore strategic attrition before descending into dungeon depths.
 
-## How It Works: The "Supply Pouch" Limit
-In many classic RPGs, players hoard 99 Potions and brute-force bosses. To maintain tactical depth, the game will enforce a **Supply Pouch**. 
-- Players cannot carry infinite items. The pouch holds max stacks (e.g., 5x Potions, 3x Ethers, 1x Phoenix Down).
-- Shops become incredibly important as **Restock Points** before heading into a dungeon floor, rather than places to hoard.
+---
 
-## Regional Merchants
-Instead of one generic shop screen, merchants are tied to the lore of the 5 maps. They each have unique, static inventories.
+## 🏛️ Architectural Blueprint
 
-1. **The Outpost Quartermaster (Verdant Vale)**
-   - *Lore*: A surviving Aethelgard quartermaster selling scavenged military supplies.
-   - *Inventory*: Standard Potions (50G), Ethers (100G), and low-tier Relics (e.g., "Iron Ring" for +10 DEF).
+### 1. Data Structure (`js/data/merchants.json`)
+Define an explicit static catalog mapping unique merchants to tailored arrays of items/relics and premium pricing tiers:
+*   **Outpost Quartermaster** (`outpost_quartermaster` mapped exclusively to `soldier_2` in `verdant_vale`): Sells Potions (50G), Antidotes (40G), Ethers (100G), Smoke Bombs (60G), Iron Helm (250G), and Silver Lock (400G).
+*   **Drowned Trader** (`drowned_trader` mapped exclusively to `isle_merchant` in `southern_isles`): Sells Hi-Potions (150G), Kraken Ink (300G), Sea Pearl (600G), Sea Crystal (450G), and Water Seal Fragment context elements.
+*   **Riverlands Crossing Trader** (`riverlands_merchant` mapped exclusively to `guilt_ridden_merchant` in `riverlands_crossing`): Sells Tents (200G), Cursed Straw (150G), Shadow Shards, and Barrier Stones.
 
-2. **The Drowned Trader (Southern Isles)**
-   - *Lore*: The ghost market trader. She sells things recovered from the shipwreck and the deep.
-   - *Inventory*: Hi-Potions (150G), Water-ward Relics (e.g., "Coral Pendant"), and unique consumables like "Abyssal Ink" (inflicts blind).
-   - *Mechanic*: Items here are extremely expensive (3x markup) until the player completes the "Drowned Ledger" side quest, which fixes her prices.
+### 2. Supply Pouch & Economy Constraints
+*   **Restock Attrition**: Enforce strict purchase limits on standard consumables so players cannot carry more than 15 of a single combat restoration item, keeping combat tightly balanced.
+*   **Shared Party Vault**: Calculate aggregate spending pools by combining gold across all alive/KO party members.
 
-3. **The Crystal Forger (Crystal Cavern F1)**
-   - *Lore*: An automated Sky Archive terminal that requires Gold as "processing material."
-   - *Inventory*: Sells Hi-Ethers, Magic-boosting Relics, and single-use "Crystal Shards" (cast a random elemental spell).
+### 3. Engine Integration Hooks
+*   **Synthetic Shop Dialogue Action**: Append a `{ _type: 'shop', merchantId: npc.id }` action onto dialogue outputs inside `js/map/map-engine.js` whenever the target NPC is a recognized trader.
+*   **Interactive Modal Design**: Implement `ShopUI` inside `js/ui/shop-ui.js` featuring Premium Vivid glassmorphism interfaces, item icon galleries, detailed stat sheets, and Buy/Sell item switches.
 
-## Implementation Complexity: MEDIUM
-- **Data Structure**: We need to add a `merchants.json` file that defines arrays of item IDs and prices for each specific merchant.
-- **Map Engine**: We add a new trigger type: `type: 'shop', merchantId: 'drowned_trader'`.
-- **UI Element**: We need a dedicated Shop UI modal overlay. It lists the merchant's items, shows the player's current Gold, and has Buy/Sell tabs. Selling old Relics should be the primary way to afford the extremely expensive endgame items.
+---
+
+## 🛡️ Integration Check-Offs
+- [x] **Concept Staging**: Registered inside `_concepts/mechanics/shops_and_economy.md` under **The Curator's** oversight.
+- [x] **Data Subsystem Creation**: Build `js/data/merchants.json` mapping strictly one unique NPC ID per region to prevent alias cross-over.
+- [x] **Data Loader Wiring**: Register `merchants.json` inside `js/data-loader.js`.
+- [x] **Engine Interception Layer**: Hook synthetic line array routing inside `js/map/map-engine.js` with exact ID queries.
+- [x] **Modal Interface Build**: Code `js/ui/shop-ui.js` with premium vivid aesthetics and inject into `index.html` overlay wrappers.
+- [x] **Service Worker Sync**: Bump `CACHE_NAME` in `sw.js` to ensure immediate production uptake.

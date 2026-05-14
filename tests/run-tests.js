@@ -14,6 +14,7 @@ require('./data-contract.test.js');
 require('./settings-save-contract.test.js');
 require('./save-migration.test.js');
 require('./scene-system.test.js');
+require('./shop-economy.test.js');
 
 const { run } = require('./test-harness.js');
 

@@ -1087,6 +1087,8 @@ const MapEngine = (() => {
           _openGenericDialogue(trig.lines);
         } else if (trig.type === 'msg' && trig.msg) {
           MapUI.showMsg(trig.msg, 1500);
+        } else if (trig.type === 'shop' && typeof ShopUI !== 'undefined') {
+          ShopUI.open(trig.merchantId);
         } else if (trig.type === 'teleport' && (trig.targetMapId || trig.targetMap)) {
           // loadMap is async (fetches JSON). All post-load work must run inside
           // .then() — otherwise loadMap's own MapPlayer.reset(playerStart) fires
@@ -1985,8 +1987,17 @@ const MapEngine = (() => {
     } else {
       key = npc.dialogueKey;
     }
-    _npcLines = (def && def.dialogues && (def.dialogues[key] || def.dialogues[npc.dialogueKey]))
+    let linesArr = (def && def.dialogues && (def.dialogues[key] || def.dialogues[npc.dialogueKey]))
       || [{ speaker: npc.name || npc.id, text: '...' }];
+    let matchMerchantId = null;
+    if (typeof G !== 'undefined' && G.merchants) {
+      const found = G.merchants.find(m => m.id === npc.id || (m.aliases && m.aliases.includes(npc.id)));
+      if (found) matchMerchantId = found.id;
+    }
+    if (matchMerchantId) {
+      linesArr = [...linesArr, { _type: 'shop', merchantId: matchMerchantId }];
+    }
+    _npcLines = linesArr;
     _npcLineIdx = 0;
     _showNPCLine();
   }
@@ -2004,11 +2015,17 @@ const MapEngine = (() => {
     if (!choicesEl) return;
     if (nextBtn) nextBtn.style.display = 'none';
 
-    const opts = line._type === 'submit'
-      ? [{ label: '✔ Collect Reward', action: 'submit',  questId: line._questId, primary: true },
-         { label: '✗ Not yet',        action: 'dismiss' }]
-      : [{ label: '✔ Accept',         action: 'accept',  questId: line._questId, primary: true },
+    let opts = [];
+    if (line._type === 'submit') {
+      opts = [{ label: '✔ Collect Reward', action: 'submit',  questId: line._questId, primary: true },
+         { label: '✗ Not yet',        action: 'dismiss' }];
+    } else if (line._type === 'choice') {
+      opts = [{ label: '✔ Accept',         action: 'accept',  questId: line._questId, primary: true },
          { label: '✗ Maybe later',    action: 'dismiss' }];
+    } else if (line._type === 'shop') {
+      opts = [{ label: '🛒 Browse Goods',  action: 'shop',    merchantId: line.merchantId, primary: true },
+         { label: '🚪 Leave',         action: 'dismiss' }];
+    }
 
     choicesEl.innerHTML = '';
     opts.forEach(opt => {
@@ -2034,6 +2051,10 @@ const MapEngine = (() => {
           MapEntities.triggerNPCDissolve(_npcCurrent.id);
         }
       }
+    } else if (opt.action === 'shop' && typeof ShopUI !== 'undefined') {
+      _closeNPCDialogue();
+      ShopUI.open(opt.merchantId);
+      return;
     }
     // dismiss — just close
     _closeNPCDialogue();
@@ -2051,7 +2072,7 @@ const MapEngine = (() => {
     const line = _npcLines[_npcLineIdx];
 
     // Synthetic entries — render choice UI instead of advancing text
-    if (line._type === 'choice' || line._type === 'submit') {
+    if (line._type === 'choice' || line._type === 'submit' || line._type === 'shop') {
       _showQuestChoices(line);
       el.style.display = 'flex';
       return;

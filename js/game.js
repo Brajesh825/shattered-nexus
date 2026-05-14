@@ -305,6 +305,8 @@ const G = {
   enemies: [],
   /** @type {Array} Loaded item definitions (from items.json) */
   items: [],
+  /** @type {Array} Loaded merchant catalogs (from merchants.json) */
+  merchants: [],
   /** @type {Array<{itemId:string, qty:number}>} Party inventory — max 20 stacks */
   inventory: [],
   /** @type {Array} Loaded relic definitions (from relics.json) */

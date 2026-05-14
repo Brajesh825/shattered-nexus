@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nexus-cache-v8.55';
+const CACHE_NAME = 'nexus-cache-v8.57';
 
 // Core shell — always pre-cached regardless of quality setting
 const SHELL_ASSETS = [
@@ -14,6 +14,7 @@ const SHELL_ASSETS = [
   './css/battle-screens.css',
   './css/combat.css',
   './css/end-screens.css',
+  './css/fx.css',
   './css/loader.css',
   './css/map.css',
   './css/party-menu.css',
@@ -60,6 +61,7 @@ const SHELL_ASSETS = [
   './js/ui/home-engine.js',
   './js/ui/input-settings.js',
   './js/ui/menu-manager.js',
+  './js/ui/shop-ui.js',
   './js/ui/quest-ui.js',
   './js/ui/result-ui.js',
   './js/ui/weather-engine.js',
