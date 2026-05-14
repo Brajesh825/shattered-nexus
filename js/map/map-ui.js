@@ -293,6 +293,14 @@ const MapUI = (() => {
     if (_hudTick % 6 === 0) {   // ~10×/s at 60fps
       _updatePartyHUD();
       _renderMinimap();
+      if (typeof ChronosEngine !== 'undefined') {
+        const hintEl = document.querySelector('.explore-map-hint');
+        if (hintEl) {
+          const phaseIcons = { dawn: '🌅 Dawn', noon: '☀️ Noon', dusk: '🌆 Dusk', midnight: '🌙 Midnight' };
+          const phase = ChronosEngine.getPhase();
+          hintEl.textContent = `↑↓←→ · WASD to move  |  🕰️ ${ChronosEngine.formatTime()} — ${phaseIcons[phase] || phase}`;
+        }
+      }
     }
   }
 

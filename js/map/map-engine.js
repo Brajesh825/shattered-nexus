@@ -625,6 +625,8 @@ const MapEngine = (() => {
         const sepia = (fogT * 0.4).toFixed(2);
         const bright = (1.0 - fogT * 0.15).toFixed(2);
         wrap.style.filter = `hue-rotate(${hue}deg) sepia(${sepia}) brightness(${bright})`;
+      } else if (typeof ChronosEngine !== 'undefined') {
+        wrap.style.filter = ChronosEngine.getFilter();
       } else {
         wrap.style.filter = '';
       }
@@ -997,6 +999,7 @@ const MapEngine = (() => {
     if (!_map) return;
     _time += dt;
     _fogTime += dt;
+    if (typeof ChronosEngine !== 'undefined') ChronosEngine.update(dt);
     MapInput.poll();
     if (!_playerLocked) MapPlayer.update(dt, _map);
     MapEntities.updateEnemies(dt, _map);
@@ -1558,6 +1561,7 @@ const MapEngine = (() => {
     _canvas.width = canvasEl.offsetWidth || window.innerWidth;
     _canvas.height = canvasEl.offsetHeight || window.innerHeight;
     TILE = _calcTileSize();
+    if (typeof ChronosEngine !== 'undefined') ChronosEngine.init();
     if (typeof MapInput !== 'undefined') MapInput.init(canvasEl);
 
     // ── NATIVE MOBILE CONTROLS (JOYSTICK + BUTTONS) ──
