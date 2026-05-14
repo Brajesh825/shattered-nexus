@@ -39,7 +39,7 @@
   text-shadow: 0 0 14px var(--gold-glow);
 }
 
-.pms-close {
+.pms-close, .pms-settings {
   background: transparent;
   border: 1px solid #3a2870;
   color: #c0b8e8;
@@ -54,8 +54,7 @@
   cursor: pointer;
   transition: all 0.15s;
 }
-
-.pms-close:hover { border-color: #c084fc; color: #fff; box-shadow: 0 0 8px #c084fc50; }
+.pms-close:hover, .pms-settings:hover { border-color: #c084fc; color: #fff; box-shadow: 0 0 8px #c084fc50; }
 
 /* ── Nav Row ─────────────────────────────────────────────── */
 .pms-nav {

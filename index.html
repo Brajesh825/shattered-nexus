@@ -501,8 +501,10 @@
     <div id="party-menu" style="display:none">
       <div class="pms-header">
         <span class="pms-title">⚔ PARTY STATUS ⚔</span>
-        <button class="pms-close" onclick="Settings.open()" style="right: 50px; font-size: 14px;">⚙</button>
-        <button class="pms-close" onclick="PartyMenu.close()">✕</button>
+        <div style="display: flex; gap: 8px;">
+          <button class="pms-settings" onclick="Settings.open()" style="font-size: 14px;">⚙</button>
+          <button class="pms-close" onclick="PartyMenu.close()">✕</button>
+        </div>
       </div>
       <div class="pms-nav">
         <button class="pms-arrow" id="pm-prev" onclick="PartyMenu.prev()">❮</button>
@@ -587,9 +589,9 @@
           <span class="explore-map-hint">↑↓←→ · WASD to move</span>
         </div>
         <div class="explore-header-right">
-          <button id="mute-btn" onclick="SFX.toggleMute()" title="Toggle sound effects">🔊</button>
-          <button id="tts-btn" onclick="TTS.toggle()" title="Voice: OFF">💬</button>
           <button id="settings-btn" onclick="Settings.open()" title="Settings">⚙️</button>
+          <button id="tts-btn" onclick="TTS.toggle()" title="Voice: OFF">💬</button>
+          <button id="mute-btn" onclick="SFX.toggleMute()" title="Toggle sound effects">🔊</button>
           <button class="explore-menu-btn" onclick="MapUI.openPauseMenu()">☰ MENU</button>
         </div>
       </div>

@@ -31,6 +31,9 @@ const MapInput = (() => {
   }
 
   function poll() {
+    if (typeof Focus !== 'undefined' && Focus.hasActiveContext && Focus.hasActiveContext()) {
+      return { left: false, right: false, up: false, down: false };
+    }
     const axis = (typeof Input !== 'undefined') ? Input.getAxis() : { x: 0, y: 0 };
     const x = axis.x || _vec.dx;
     const y = axis.y || _vec.dy;

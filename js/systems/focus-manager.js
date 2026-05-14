@@ -356,7 +356,11 @@ const Focus = (() => {
     if (best) _focus(best);
   }
 
-  return { init, setContext, setTargeting, cancelTargeting, syncHover };
+  function hasActiveContext() {
+    return !!_container;
+  }
+
+  return { init, setContext, setTargeting, cancelTargeting, syncHover, hasActiveContext };
 })();
 
 Focus.init();
