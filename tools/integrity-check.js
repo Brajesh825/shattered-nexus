@@ -64,6 +64,13 @@ if (fs.existsSync(enemiesPath)) {
         errors++;
       }
     }
+    if (e.bgm) {
+      const bgmPath = path.join(process.cwd(), 'audio', 'bgm', `${e.bgm}.webm`);
+      if (!fs.existsSync(bgmPath)) {
+        log(`Enemy [${e.id}] missing assigned BGM audio asset: ${bgmPath}`, 'error');
+        errors++;
+      }
+    }
   });
   log(`Validated ${enemies.length} enemies against core Void Knight Standard WebP delivery packages.`, 'success');
 }

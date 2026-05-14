@@ -21,11 +21,10 @@ MAP_DEFS.crystal_cavern_f1 = {
   ambientLight: 'rgba(140,80,255,0.08)',
   weather: 'sparks',
   enemyLevelRange: [10, 13],
-  jsonFile: 'js/map/data/map-crystal-cavern-f1.json',
-  
+  jsonFile: 'js/map/data/map-crystal-cavern-f1.json',  
   bgm: 'cavern_explore',
   battleBgm: 'cavern_battle',
-  battleBg: 'cavern_f1.webp',
+  battleBg: 'cavern_f1',
 
   mutationConfig: {
     corruptThreshold: 60,

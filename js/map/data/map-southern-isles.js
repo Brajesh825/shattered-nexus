@@ -9,7 +9,7 @@ MAP_DEFS.southern_isles = {
     height: 80,
     playerStart: { x: 60, y: 65 },
     bgColor: '#081a08',
-    battleBg: 'sunken_temple.webp',
+    battleBg: 'sunken_temple',
     ambientLight: 'rgba(50,200,100,0.1)',
     weather: 'rain',
     safeZones: [
@@ -41,7 +41,6 @@ MAP_DEFS.southern_isles = {
     
     bgm: 'isles_explore',
     battleBgm: 'isles_battle',
-    bossBgm: 'leviathan_theme',
     
     npcs: [
         // ── PRIMARY STORY CONTACT ─────────────────────────────────
