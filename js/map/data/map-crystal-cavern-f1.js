@@ -57,6 +57,10 @@ MAP_DEFS.crystal_cavern_f1 = {
 
   npcs: [
     { id: 'the_archivist', x: 12, y: 15, dialogueKey: 'crystal_cavern_f1', giveQuest: 'bones_of_the_fallen' },
+    { id: 'holographic_log_orb', x: 25, y: 2, dialogueKey: 'crystal_cavern_f1', behavior: 'stationary' },
+    { id: 'bone_shard', x: 15, y: 22, dialogueKey: 'crystal_cavern_f1', behavior: 'stationary', showOnlyDuringQuest: 'bones_of_the_fallen' },
+    { id: 'bone_shard', x: 28, y: 40, dialogueKey: 'crystal_cavern_f1', behavior: 'stationary', showOnlyDuringQuest: 'bones_of_the_fallen' },
+    { id: 'bone_shard', x: 50, y: 53, dialogueKey: 'crystal_cavern_f1', behavior: 'stationary', showOnlyDuringQuest: 'bones_of_the_fallen' }
   ],
 
   triggers: [

@@ -373,6 +373,7 @@ const NPC_DEFS = {
     color: '#a5b4fc',
     sprite: 'images/characters/map/sheets/npc/archivist_sheet.png',
     quests: ['bones_of_the_fallen'],
+    dissolveAfterQuest: 'bones_of_the_fallen',
     dialogues: {
       crystal_cavern: [
         { speaker: 'The Archivist', text: 'Still here. Still here. I have been cataloguing the resonance patterns for… how long has it been.' },
@@ -886,6 +887,135 @@ const NPC_DEFS = {
         { speaker: 'narrator', text: 'The air here is clear of shadow. You place Lira\'s locket among the stone fragments of the eastern bridge.' },
         { speaker: 'narrator', text: 'For a second, the blue gem pulses with a soft, warm light \u2014 the light of a home that was never forgotten.' },
         { speaker: 'narrator', text: 'Rest well, Arren. The road is yours no longer.' }
+      ]
+    }
+  },
+
+  galdor_decree_stone: {
+    name: 'Weathered Slab',
+    color: '#eab308',
+    sprite: 'images/environment/png/offering_point.png',
+    dialogues: {
+      verdant_vale: [
+        { speaker: 'narrator', text: 'Deep runic carvings glint with faint golden residue upon the stone.' },
+        { speaker: 'Rune Stone', text: '"Decree of Sovereign Galdor: Let every vault be unsealed. The metal of the stars offers immunity against the coming rot. We trade our names for weight."' },
+        { speaker: 'Rei', text: 'He traded his civilization\'s humanity to fuse with Void-Gild... thinking it would save them.' },
+        { speaker: 'Aya', text: 'It saved them from dying. But it didn\'t save them from the Void.' }
+      ]
+    }
+  },
+
+  dying_royal_guard: {
+    name: 'Fallen Guard',
+    color: '#9ca3af',
+    sprite: 'images/characters/map/sheets/npc/soldier_sheet.png',
+    quests: ['the_hollow_guard'],
+    dissolveAfterQuest: 'the_hollow_guard',
+    dialogues: {
+      verdant_vale: [
+        { speaker: 'Fallen Guard', text: 'The air feels lighter now... my squad\'s resonance has faded into peace.' }
+      ]
+    }
+  },
+
+  holographic_log_orb: {
+    name: 'Crystal Orb',
+    color: '#38bdf8',
+    sprite: 'images/characters/map/sheets/npc/holographic_log_orb_sheet.png',
+    dialogues: {
+      crystal_cavern_f1: [
+        { speaker: 'narrator', text: 'A smooth crystalline sphere rests upon a stone pedestal. Touching its surface triggers a faint, shimmering projection.' },
+        { speaker: 'Hologram Echo', text: '"Archive Log 409: The core data relay is failing. Solvan insists on routing secondary logic strings through the Fire Fragment interface to preserve access. He does not see that the interface is siphoning our identities."' },
+        { speaker: 'Tao', text: 'Solvan became the Demon Lord because he refused to let the Sky Archive go offline.' },
+        { speaker: 'Lulu', text: 'A desire to preserve knowledge... twisted into endless burning.' }
+      ]
+    }
+  },
+
+  ancient_tide_bell: {
+    name: 'Tide Bell',
+    color: '#0ea5e9',
+    sprite: 'images/characters/map/sheets/npc/ancient_tide_bell_sheet.png',
+    dialogues: {
+      southern_isles: [
+        { speaker: 'narrator', text: 'You strike the rusted metal of the ancient Tide Bell. A deep, crystalline chime reverberates down through the ocean layers.' },
+        { speaker: 'narrator', text: 'The shallow waters swirl. A massive, peaceful Sea Turtle surfaces near the stilt platform, drawn by the pure frequency.' },
+        { speaker: 'Sea Turtle', text: '✦ BLESSING OF THE DEEP GRANTED: Maximum party HP buffers reinforced permanently (+5 Max HP).' },
+        { speaker: 'Lulu', text: 'It remembers the old trade paths... before the Leviathan took the channel.' }
+      ]
+    }
+  },
+
+  toll_bridge_marker: {
+    name: 'River Marker',
+    color: '#06b6d4',
+    sprite: 'images/characters/map/sheets/npc/toll_bridge_marker_sheet.png',
+    dialogues: {
+      riverlands_crossing: [
+        { speaker: 'narrator', text: 'A carved stone pillar rises from the rushing water, blocking the bridge keystone.' },
+        { speaker: 'River Spirit Echo', text: '"Who passes the neutral domain? Deliver your tribute of truth or forfeit your kinetic weight to the current."' },
+        { speaker: 'Tao', text: 'We owe nothing to a king who surrendered his borders to Void-Gild.' },
+        { speaker: 'narrator', text: '⚠ The water swirls violently! High-level water elementals manifest upon the bridge planks!' }
+      ]
+    }
+  },
+
+  guilt_ridden_merchant: {
+    name: 'Guilt-Ridden Merchant',
+    color: '#f59e0b',
+    sprite: 'images/characters/map/sheets/npc/merchant_sheet.png',
+    quests: ['price_of_neutrality'],
+    dialogues: {
+      riverlands_crossing: [
+        { speaker: 'Guilt-Ridden Merchant', text: 'Thank you for breaking the idol\'s hold. The waters are clear for crossing.' }
+      ]
+    }
+  },
+
+  bone_shard: {
+    name: 'Bone Shard',
+    color: '#e2e8f0',
+    sprite: 'images/characters/map/sheets/npc/bone_shard_sheet.png',
+    dissolveOnGather: true,
+    dialogues: {
+      crystal_cavern_f1: [
+        { speaker: 'narrator', text: 'You carefully retrieve a crystalline bone fragment from the cavern floor. A faint hum resonates inside the marrow.' }
+      ]
+    }
+  },
+
+  silver_locket: {
+    name: 'Silver Locket',
+    color: '#38bdf8',
+    sprite: 'images/characters/map/sheets/npc/silver_locket_sheet.png',
+    dissolveOnGather: true,
+    dialogues: {
+      verdant_vale: [
+        { speaker: 'narrator', text: 'You uncover a delicate silver locket with a small blue gem resting in the dirt. It feels strangely warm.' }
+      ]
+    }
+  },
+
+  squad_insignia: {
+    name: 'Squad Insignia',
+    color: '#eab308',
+    sprite: 'images/characters/map/sheets/npc/squad_insignia_sheet.png',
+    dissolveOnGather: true,
+    dialogues: {
+      verdant_vale: [
+        { speaker: 'narrator', text: 'You recover a mud-stained, golden insignia of the Royal Vanguard. A cold resonance dissipates from the metal.' }
+      ]
+    }
+  },
+
+  cursed_idol: {
+    name: 'Cursed Idol',
+    color: '#ef4444',
+    sprite: 'images/characters/map/sheets/npc/cursed_idol_sheet.png',
+    dissolveOnGather: true,
+    dialogues: {
+      riverlands_crossing: [
+        { speaker: 'narrator', text: 'You pry the Void-sealed idol from the tangled river weeds. Purifying its core shatters the River King\'s ambient barrier.' }
       ]
     }
   }

@@ -17,6 +17,7 @@ Maintain the narrative weight and character consistency of the Shattered Nexus. 
 5. **Chapter Advancement**: Respect the structured chapter phases (`explore`, `cutscene`, `battle`, `boss_battle`) and ensure dialogue flows logically between them.
 
 ## 🔌 Assigned MCP Capabilities
+- **`nexus_semantic_search`**: Directly queries verified canonical lore matrices, quest strings, character bios, and NPC dialogues to semantically anchor map dialogue strings, ambient triggers, and atmospheric subtext perfectly within established source reality.
 - **`nexus_search_entities`**: Accesses foundational JSON archives (`enemies.json`, `characters.json`, `classes.json`) natively to search entity titles, lore subtext strings, and key schema attributes, ensuring flawless narrative weight continuity without direct manual directory indexing.
 
 ## ✍️ Personality & Communication Style

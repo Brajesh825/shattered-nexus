@@ -18,6 +18,11 @@ import { handleSimulateCombat } from "./handlers/simulateCombat.js";
 import { handleSearchEntities } from "./handlers/searchEntities.js";
 import { handleGenerateSprites } from "./handlers/generateSprites.js";
 import { handleAuditAssets } from "./handlers/auditAssets.js";
+import { handleSemanticSearch } from "./handlers/semanticSearch.js";
+import { handleSyncRag } from "./handlers/ragIndexer.js";
+import { handleValidateThreatCurve } from "./handlers/validateThreatCurve.js";
+import { handleRunIntegrityCheck } from "./handlers/runIntegrityCheck.js";
+import { handleVerifyServiceWorker } from "./handlers/verifyServiceWorker.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -209,6 +214,76 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             }
           }
         }
+      },
+      {
+        name: "nexus_semantic_search",
+        description: "Performs fast semantic vector retrieval across verified canonical lore matrices, party configurations, active quest logs, NPC databases, and environmental tile registries.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            collection: {
+              type: "string",
+              enum: ["lore", "classes", "characters", "quests", "npcs", "tiles"],
+              description: "Target verified production collection namespace to query."
+            },
+            query: {
+              type: "string",
+              description: "Natural language search intent string for semantic trigram/token projection."
+            }
+          },
+          required: ["collection", "query"]
+        }
+      },
+      {
+        name: "nexus_sync_rag",
+        description: "Pre-calculates static token/trigram Cosine Similarity projection vectors across core production namespaces and persists them to an offline index cache file for O(1) semantic lookups.",
+        inputSchema: {
+          type: "object",
+          properties: {}
+        }
+      },
+      {
+        name: "nexus_validate_threat_curve",
+        description: "Simulates round-by-round asymmetric 4v1 combat scenarios against target boss entities inside sandboxed VM contexts to validate Time-to-Kill (TTK) statistics, verify phase transformations, and enforce absolute mitigation clamps.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            targetBossId: {
+              type: "string",
+              description: "Unique identifier key of the canonical boss entity inside enemies.json (e.g., 'sunken_leviathan')."
+            },
+            partyAverageLevel: {
+              type: "integer",
+              description: "Simulated base level configuration for the 4-member striking party."
+            },
+            simulatedRounds: {
+              type: "integer",
+              description: "Maximum round boundary limit for the automated sweep. Defaults to 20 rounds."
+            },
+            partySustainProfile: {
+              type: "string",
+              enum: ["aggressive", "balanced", "defensive"],
+              description: "Virtual operational strategy governing party resource allocation and healing loop sensitivity."
+            }
+          },
+          required: ["targetBossId", "partyAverageLevel"]
+        }
+      },
+      {
+        name: "nexus_run_integrity_check",
+        description: "Executes complete pre-release static structure audits across core project directories to guarantee schema consistency, ensure companion sprite sets exist, and confirm mapped JSON levels correlate correctly.",
+        inputSchema: {
+          type: "object",
+          properties: {}
+        }
+      },
+      {
+        name: "nexus_verify_service_worker",
+        description: "Audits sw.js caching contracts to extract active manifest paths and asserts absolute local file existence on disk, automatically isolating missing offline assets.",
+        inputSchema: {
+          type: "object",
+          properties: {}
+        }
       }
     ],
   };
@@ -243,6 +318,26 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
   if (name === "nexus_audit_enemy_assets") {
     return await handleAuditAssets(args, ROOT_DIR);
+  }
+
+  if (name === "nexus_semantic_search") {
+    return await handleSemanticSearch(args, ROOT_DIR);
+  }
+
+  if (name === "nexus_sync_rag") {
+    return await handleSyncRag(args, ROOT_DIR);
+  }
+
+  if (name === "nexus_validate_threat_curve") {
+    return await handleValidateThreatCurve(args, ROOT_DIR);
+  }
+
+  if (name === "nexus_run_integrity_check") {
+    return await handleRunIntegrityCheck(ROOT_DIR);
+  }
+
+  if (name === "nexus_verify_service_worker") {
+    return await handleVerifyServiceWorker(ROOT_DIR);
   }
 
   throw new Error(`Unknown tool requested: ${name}`);

@@ -397,6 +397,12 @@ Every NPC with a `quests: []` list shows one of four indicators above their head
 - **Kill tracking**: `QuestSystem.onKill` is called in `checkBattleEnd()` (not `showResult()`), so explore-mode battles count correctly.
 - **`canAccept(id)`**: returns true only if neither `_active` nor `_completed` contains the quest id.
 
+### Ethereal Departure Resolutions (`dissolveAfterQuest`)
+**Technical Contract**: To physically transition a character or spatial anomaly out of the game world instantly upon task submission without custom cutscene scripting, append `dissolveAfterQuest: 'target_quest_id'` onto the entity definition in `data/npcs.js`.
+- **Trigger Interception**: Selecting `[✔ Collect Reward]` via the premium dialog choices panel triggers `MapEntities.triggerNPCDissolve(npc.id)` natively.
+- **Shader Pipelines**: The sprite undergoes smooth upwards drift (`driftY`), renders blooming filters (`blur() brightness()`), and emits persistent tailored HSL mist droplets drifting towards the screen boundary. UI overlays (**❕** tags and name containers) are suppressed during resolution.
+- **Garbage Collection**: After exactly `1.8s` of runtime execution, the entity object is marked `_dissolved = true` and stripped from active client arrays to unblock collision pathways.
+
 ---
 
 ## 🎬 Cinematic NPC Encounter System
