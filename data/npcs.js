@@ -479,6 +479,11 @@ const NPC_DEFS = {
         { speaker: 'Lulu', text: 'We\'ll finish what you started. All of it.' },
         { speaker: 'Ghost Soldier', text: '...There\'s a loose stone in the east wall. What\'s behind it is yours now. It\'s not doing anyone any good with me.' },
       ],
+      crystal_cavern_f3_soldier: [
+        { speaker: 'Ghost Soldier', text: 'Shh... stay low. The Guardian patrols the South West passage.' },
+        { speaker: 'Ghost Soldier', text: 'It shatters into shards when pushed to the limit, but the core... the core always reforms. We cannot breach it alone.' },
+        { speaker: 'Ghost Soldier', text: 'Vane is trying to calibrate the resonance to help. Speak to him.' }
+      ]
     },
   },
 
@@ -842,6 +847,7 @@ const NPC_DEFS = {
     name: 'Kaelen',
     color: '#f59e0b',
     sprite: 'images/characters/map/sheets/npc/kaelen_sheet.png',
+    quests: ['forge_relics'],
     dialogues: {
       ember_wastes: [
         { speaker: 'Kaelen', text: 'My crawler is running smoothly now. Thanks again.' }
@@ -853,6 +859,7 @@ const NPC_DEFS = {
     name: 'Scholar Vane',
     color: '#60a5fa',
     sprite: 'images/characters/map/sheets/npc/vane_sheet.png',
+    quests: ['resonance_cull'],
     dialogues: {
       crystal_cavern_f2: [
         { speaker: 'Scholar Vane', text: 'The resonance is stable. The Archive is communicating.' }
@@ -860,6 +867,12 @@ const NPC_DEFS = {
       crystal_cavern_f2_post_arc: [
         { speaker: 'Scholar Vane', text: 'The signal! It\'s clear! The Fire Seal\'s interference has vanished.' },
         { speaker: 'Scholar Vane', text: 'I can finally hear the baseline of the world again. We have a lot of work to do. Ashveil is finally reachable!' },
+      ],
+      crystal_cavern_f3_vane: [
+        { speaker: 'Scholar Vane', text: 'You! You made it deeper than any of my scouts.' },
+        { speaker: 'Scholar Vane', text: 'The resonance down here is suffocating. Those crystal shards... they are siphoning the core\'s data and feeding it back as static.' },
+        { speaker: 'Scholar Vane', text: 'Clear out 5 of those resonant shards. If I can get a clean reading, I might be able to find the frequency that shatters the Guardian\'s armor.' },
+        { speaker: 'Aya', text: 'We\'re on it, Vane.' }
       ]
     }
   },
@@ -868,6 +881,7 @@ const NPC_DEFS = {
     name: 'Isle Merchant',
     color: '#10b981',
     sprite: 'images/characters/map/sheets/npc/merchant_sheet.png',
+    quests: ['tide_clearance'],
     dialogues: {
       southern_isles: [
         { speaker: 'Isle Merchant', text: 'Trade is finally flowing again. The tides are kind.' }
@@ -1016,6 +1030,20 @@ const NPC_DEFS = {
     dialogues: {
       riverlands_crossing: [
         { speaker: 'narrator', text: 'You pry the Void-sealed idol from the tangled river weeds. Purifying its core shatters the River King\'s ambient barrier.' }
+      ]
+    }
+  },
+  spectral_collector: {
+    name: 'Spectral Collector',
+    color: '#a0aec0',
+    sprite: 'images/characters/map/sheets/npc/vane_sheet.png',
+    dialogues: {
+      crystal_cavern_f3_toll: [
+        { speaker: 'Spectral Collector', text: 'Stop. The Archive is not a public thoroughfare.' },
+        { speaker: 'Tao', text: 'We noticed. The welcoming committee tried to eat us.' },
+        { speaker: 'Spectral Collector', text: 'They are merely ensuring that only those with resonant weight may proceed. Do you carry the frequency of the surface, or the silence of the void?' },
+        { speaker: 'Aya', text: 'We carry the light of the Shattered Nexus.' },
+        { speaker: 'Spectral Collector', text: '...Acceptable. You may pass, but your presence is noted in the Ledger of the Fallen. Move quickly. The Guardian does not like being ignored.' },
       ]
     }
   }

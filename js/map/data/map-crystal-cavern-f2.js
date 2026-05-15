@@ -40,24 +40,31 @@ MAP_DEFS.crystal_cavern_f2 = {
   ],
 
   encounterTemplates: [
-    { weight: 4, enemies: ['ghost', 'ghost'], activePhases: ['midnight', 'dawn'] },       // Spectral Scholars
-    { weight: 3, enemies: ['lich', 'ghost'], activePhases: ['midnight'] },               // Archive Overseers
-    { weight: 2, enemies: ['crystal_shard', 'bat'], activePhases: ['noon', 'dusk'] },   // Natural pests
-    { weight: 2, enemies: ['rat', 'rat'], activePhases: ['midnight', 'dawn'] },          // Scavengers
-    { weight: 1, enemies: ['gem_mimic'], activePhases: ['midnight'] },                  // Cursed scrolls
+    { weight: 3, enemies: ['rat', 'rat', 'rat'], activePhases: ['noon', 'dusk', 'midnight', 'dawn'] },
+    { weight: 4, enemies: ['bat', 'bat' ,'bat'], activePhases: ['noon', 'dusk', 'midnight', 'dawn'] },
+    { weight: 4, enemies: ['skeleton', 'skeleton' ,'skeleton','skeleton'], activePhases: ['noon', 'dusk', 'midnight', 'dawn'] },
+    { weight: 4, enemies: ['crystal_shard', 'crystal_shard','crystal_shard','crystal_shard'], activePhases: ['noon', 'dusk'] },
+    { weight: 1, enemies: ['skeleton', 'skeleton', 'bat'], activePhases: ['dusk', 'midnight', 'dawn'] },
+    { weight: 1, enemies: ['rat', 'rat', 'rat','rat'], activePhases: ['midnight', 'dawn'] },
+    { weight: 1, enemies: ['gem_mimic'], activePhases: ['midnight'] },
+    { weight: 4, enemies: ['ghost', 'ghost' ,'ghost','ghost'], activePhases: ['midnight', 'dawn'] },       // Spectral Scholars
+    { weight: 4, enemies: ['lich', 'ghost', 'skeleton', 'skeleton'], activePhases: ['midnight'] },               // Archive Overseers
+    { weight: 1, enemies: ['crystal_shard', 'bat' , 'rat', 'rat'], activePhases: ['noon', 'dusk'] },   // Natural pests
+    { weight: 1, enemies: ['rat', 'rat' , 'rat' , 'rat'], activePhases: ['midnight', 'dawn'] },          // Scavengers
+    { weight: 1, enemies: ['gem_mimic' ,'ghost'], activePhases: ['midnight'] },                  // Cursed scrolls
   ],
 
   objective: null,
 
   enemies: [
-    { id: 'ghost', x: 20, y: 15, patrol: 'random', range: 5, speed: 1.2, activePhases: ['midnight', 'dawn'] },        // Top corridor phantom
+    { id: 'ghost', x: 14, y: 14, patrol: 'random', range: 5, speed: 1.2, activePhases: ['midnight', 'dawn'] },        // Top corridor phantom
     { id: 'skeleton', x: 45, y: 55, patrol: 'horizontal', range: 8, speed: 1.0, activePhases: ['midnight'] },         // Bottom workshop knight
     { id: 'rat', x: 25, y: 12, patrol: 'random', range: 6, speed: 1.5, activePhases: ['midnight', 'dawn'] },
   ],
 
   npcs: [
     { id: 'ghost_knight', x: 34, y: 32, dialogueKey: 'crystal_cavern_f2' },
-    { id: 'scholar_vane', x: 10, y: 28, dialogueKey: 'crystal_cavern_f2' },
+    { id: 'scholar_vane', x: 10, y: 28, dialogueKey: 'crystal_cavern_f2', giveQuest: 'resonance_cull' },
   ],
 
   triggers: [

@@ -164,7 +164,10 @@ const Story = {
       this.phase = null;
       G.mode = 'story';
       G.firedScenes = new Set();
-      if (typeof QuestSystem !== 'undefined') QuestSystem.init();
+      if (typeof QuestSystem !== 'undefined') {
+        QuestSystem.init();
+        QuestSystem.onArcAdvance(0);
+      }
 
       // Load characters if not already loaded
       if (!G.chars || G.chars.length === 0) {
