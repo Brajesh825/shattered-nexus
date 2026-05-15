@@ -542,17 +542,127 @@ const MapUI = (() => {
   function campTalk() {
     const bond = _checkBonds();
     if (!bond) return;
-    
+
     closeCampMenu();
     const lines = bond.tier.dialogue.map(d => ({ speaker: d.speaker, text: d.text }));
-    
+
     if (typeof MapEngine !== 'undefined' && MapEngine.openDialogue) {
       MapEngine.openDialogue(lines, () => {
+        // Advance tier
         G.bondProgress[bond.pair.id] = (G.bondProgress[bond.pair.id] || 0) + 1;
+
+        // Store and apply reward
+        if (bond.tier.reward) {
+          G.earnedBondRewards = G.earnedBondRewards || [];
+          G.earnedBondRewards.push({ pairId: bond.pair.id, reward: bond.tier.reward });
+          if (typeof applyBondRewards === 'function') applyBondRewards();
+        }
+
         showMsg(`✦ Bond Resonance Up: ${bond.tier.title}!`, 2500);
-        if (typeof Save !== 'undefined' && Save.patch) Save.patch({ bondProgress: G.bondProgress });
+        if (bond.tier.reward) showMsg(`✦ ${bond.tier.reward.label} unlocked!`, 2200);
+
+        if (typeof Save !== 'undefined' && Save.patch) {
+          Save.patch({ bondProgress: G.bondProgress, earnedBondRewards: G.earnedBondRewards });
+        }
       });
     }
+  }
+
+  /* ── Bond Panel ─────────────────────────────────────────── */
+  const _BOND_COLORS = {
+    aya: '#7dd3fc', tao: '#ef4444', lulu: '#2dd4bf', rei: '#4ade80',
+    ria: '#a78bfa', valka: '#e879f9', drake: '#0ea5e9', rex: '#fbbf24', sera: '#93c5fd',
+  };
+
+  function openBondPanel() {
+    const campEl = document.getElementById('camp-menu');
+    if (campEl) campEl.style.display = 'none';
+    const panel = document.getElementById('bond-panel');
+    if (!panel) return;
+    _renderBondPanel();
+    panel.style.display = 'flex';
+    if (typeof Focus !== 'undefined') Focus.setContext('bond-panel');
+  }
+
+  function closeBondPanel() {
+    const panel = document.getElementById('bond-panel');
+    if (panel) panel.style.display = 'none';
+    const campEl = document.getElementById('camp-menu');
+    if (campEl) campEl.style.display = 'flex';
+    if (typeof Focus !== 'undefined') Focus.setContext('camp-menu');
+  }
+
+  function _renderBondPanel() {
+    const list = document.getElementById('bond-pairs-list');
+    if (!list || typeof BOND_DATA === 'undefined') return;
+    list.innerHTML = '';
+
+    const activeIds = (G.party || []).map(m => m.charId);
+    const progress = G.bondProgress || {};
+    const earned = G.earnedBondRewards || [];
+
+    BOND_DATA.pairs.forEach(pair => {
+      const currentTier = progress[pair.id] || 0;
+      const totalTiers = pair.tiers.length;
+      const isComplete = currentTier >= totalTiers;
+      const inParty = pair.chars.every(id => activeIds.includes(id));
+      const nextTier = !isComplete ? pair.tiers[currentTier] : null;
+      const isAvailable = !!(nextTier && inParty && _checkCriteria(nextTier.criteria));
+
+      // Character portrait pair
+      const charPair = pair.chars.map(id => {
+        const ch = (G.chars || []).find(c => c.id === id);
+        const col = _BOND_COLORS[id] || '#888';
+        return `<div class="bp-char">
+          <div class="bp-avatar" style="border-color:${col};box-shadow:0 0 8px ${col}44">
+            <span style="font-size:22px">${ch?.icon || '?'}</span>
+          </div>
+          <div class="bp-char-name" style="color:${col}">${ch?.name || id}</div>
+        </div>`;
+      }).join('<div class="bp-link">✦</div>');
+
+      // Tier pips
+      const pips = Array.from({ length: totalTiers }, (_, i) =>
+        `<div class="bp-pip${i < currentTier ? ' filled' : ''}"></div>`
+      ).join('');
+
+      // Earned reward tags
+      const earnedForPair = earned.filter(e => e.pairId === pair.id);
+      const rewardTags = earnedForPair.map(e =>
+        `<span class="bp-reward">${e.reward.label}</span>`
+      ).join('');
+
+      // Next criteria line
+      let nextInfo = '';
+      if (nextTier && !isAvailable) {
+        const c = nextTier.criteria || {};
+        const parts = [];
+        if (c.minLevel) parts.push(`Lv ${c.minLevel}+`);
+        if (c.mapCleared) parts.push(c.mapCleared.replace(/_/g, ' '));
+        nextInfo = `<div class="bp-next-req">Requires: ${parts.join(' · ')}</div>`;
+      }
+
+      const card = document.createElement('div');
+      card.className = [
+        'bp-card',
+        isComplete  ? 'bp-complete'  : '',
+        isAvailable ? 'bp-available' : '',
+        !inParty    ? 'bp-inactive'  : '',
+      ].filter(Boolean).join(' ');
+
+      card.innerHTML = `
+        <div class="bp-chars-row">${charPair}</div>
+        <div class="bp-info">
+          <div class="bp-tier-label">${isComplete ? '★ BOND COMPLETE' : `Tier ${currentTier} / ${totalTiers}`}</div>
+          <div class="bp-pips">${pips}</div>
+          ${nextTier ? `<div class="bp-tier-name">${isAvailable ? '✨ ' : ''}${nextTier.title}</div>` : ''}
+          ${isAvailable ? '<div class="bp-cta">Ready — rest at camp!</div>' : nextInfo}
+          ${rewardTags ? `<div class="bp-rewards">${rewardTags}</div>` : ''}
+          ${!inParty ? '<div class="bp-absent">Not in current party</div>' : ''}
+        </div>
+      `;
+      list.appendChild(card);
+    });
   }
 
   function _renderRelicPanel() {
@@ -659,6 +769,8 @@ const MapUI = (() => {
     campSave,
     campRelics,
     closeRelics,
+    openBondPanel,
+    closeBondPanel,
     triggerBanter: _showBanter,
   };
 })();

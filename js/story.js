@@ -269,6 +269,8 @@ const Story = {
       if (typeof QuestSystem !== 'undefined') QuestSystem.init(s.questState || null);
       G.firedScenes = new Set(s.firedScenes || []);
       G.shownBanter = new Set(s.shownBanter || []);
+      if (s.bondProgress) G.bondProgress = s.bondProgress;
+      if (s.earnedBondRewards) G.earnedBondRewards = s.earnedBondRewards;
 
       // If saved from explore map, restore directly to that map (no overlay/selection)
       if (s.mapId) {
@@ -1110,6 +1112,8 @@ const Story = {
       activeRelics: G.activeRelics || [],
       archive: G.archive || {},
       shownBanter: Array.from(G.shownBanter || []),
+      bondProgress: G.bondProgress || {},
+      earnedBondRewards: G.earnedBondRewards || [],
       questState: typeof QuestSystem !== 'undefined' ? QuestSystem.save() : null,
       firedScenes: Array.from(G.firedScenes || []),
       mapId,
