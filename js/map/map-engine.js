@@ -101,6 +101,9 @@ const MapEngine = (() => {
   let _fogCanvas = null, _fogCtx = null;
   let _fogMilestone = 0; // 0=none, 1=30%, 2=60%, 3=90%
   let _ambientTimer = 0, _ambientInterval = 60; // seconds between ambient lines
+  // Particle pool for ambient world effects
+  let _particles = [];
+  const MAX_PARTICLES = 120;
   // Speech bubble queue: [{char, color, text, life, maxLife}]
   const _bubbles = [];
 
@@ -898,6 +901,52 @@ const MapEngine = (() => {
     });
   }
 
+  /* ── Particle Engine (Ethereal Bloom) ───────────────── */
+  function _spawnParticle(x, y, color = '#4ade80', count = 1) {
+    if (_particles.length >= MAX_PARTICLES) return;
+    for (let i = 0; i < count; i++) {
+        _particles.push({
+            x, y,
+            vx: (Math.random() - 0.5) * 40,
+            vy: (Math.random() - 0.5) * 20 - 15,
+            life: 1.0 + Math.random() * 1.5,
+            maxLife: 1.0 + Math.random() * 1.5,
+            size: 1.5 + Math.random() * 3.5,
+            color
+        });
+    }
+  }
+
+  function _updateParticles(dt) {
+    // Ambient spawn
+    if (Math.random() < 0.08 && _map) {
+        const vx = cam.x + Math.random() * _canvas.width;
+        const vy = cam.y + Math.random() * _canvas.height;
+        _spawnParticle(vx, vy, _map.ambientLight || '#4ade80');
+    }
+
+    for (let i = _particles.length - 1; i >= 0; i--) {
+      const p = _particles[i];
+      p.x += p.vx * dt;
+      p.y += p.vy * dt;
+      p.life -= dt;
+      if (p.life <= 0) _particles.splice(i, 1);
+    }
+  }
+
+  function _renderParticles() {
+    _ctx.save();
+    _particles.forEach(p => {
+      const alpha = Math.min(1.0, p.life / 0.5) * 0.4;
+      _ctx.globalAlpha = alpha;
+      _ctx.fillStyle = p.color;
+      _ctx.beginPath();
+      _ctx.arc(p.x - cam.x, p.y - cam.y, p.size, 0, Math.PI * 2);
+      _ctx.fill();
+    });
+    _ctx.restore();
+  }
+
   /* ── Fog milestone + ambient dialogue ───────────────── */
   function _updateFogDialogue(dt) {
     if (!_map || !_map.voiceLines) return;
@@ -970,6 +1019,8 @@ const MapEngine = (() => {
     _renderObjectiveHUD();
     _renderBubbles();
     
+    // 3. World Overlays (Particles / Weather)
+    _renderParticles();
     if (typeof WeatherEngine !== 'undefined') WeatherEngine.draw(_ctx);
     _renderMinimap();
   }
@@ -1022,12 +1073,18 @@ const MapEngine = (() => {
     if (!_playerLocked) MapPlayer.update(dt, _map);
     MapEntities.updateEnemies(dt, _map);
     if (_marchEnemies.length) _updateMarchEnemies(dt);
+    _updateParticles(dt);
 
     // Detect step landing → footstep SFX
     if (_prevMoving && !MapPlayer.moving) {
-      if (_footstepCooldown <= 0 && typeof SFX !== 'undefined') {
+      if (_footstepCooldown <= 0) {
         const tid = MapData.getTileAt(_map, MapPlayer.tx, MapPlayer.ty);
-        SFX.footstep(_tileToSurface(tid));
+        if (typeof SFX !== 'undefined') SFX.footstep(_tileToSurface(tid));
+        
+        // Spawn 2-3 tiny particles at hero feet
+        const pColor = (TILE_DEFS[tid] || TILE_DEFS[0]).color || '#4ade80';
+        _spawnParticle(MapPlayer.px + TILE/2, MapPlayer.py + TILE - 8, pColor, 3);
+        
         _footstepCooldown = 0.14;
       }
     }
@@ -1476,11 +1533,21 @@ const MapEngine = (() => {
       MapUI.showMsg(`${prefix}${name}${suffix}`, 2200);
     }
 
-    // 6. Brief dramatic pause, then transition
+    // 6. Nexus Shatter Transition
     MapEntities.removeEncountered();
     const delay = (mut || isAmbush) ? 750 : 480;
-    if (typeof MapEngine !== 'undefined' && typeof MapEngine.onEncounterStart === 'function') {
-      setTimeout(() => MapEngine.onEncounterStart(enc, _map), delay);
+    if (typeof FX !== 'undefined') {
+      setTimeout(() => {
+        FX.shatter(() => {
+          if (typeof MapEngine !== 'undefined' && typeof MapEngine.onEncounterStart === 'function') {
+            MapEngine.onEncounterStart(enc, _map);
+          }
+        });
+      }, delay);
+    } else {
+      if (typeof MapEngine !== 'undefined' && typeof MapEngine.onEncounterStart === 'function') {
+        setTimeout(() => MapEngine.onEncounterStart(enc, _map), delay);
+      }
     }
   }
 
@@ -1810,9 +1877,16 @@ const MapEngine = (() => {
     _lastTs = performance.now();
     _rafId = requestAnimationFrame(_loop);
 
-    // Trigger map enter banter (ambient)
-    if (typeof MapUI !== 'undefined' && MapUI.triggerBanter) {
-      setTimeout(() => MapUI.triggerBanter(`map_enter_${mapId}`), 2000);
+    // Trigger cinematic map title banner
+    if (typeof MapUI !== 'undefined') {
+      setTimeout(() => {
+        MapUI.showMsg(`✦ Entering ${_map.name} ✦`, 3000);
+      }, 500);
+      
+      // Trigger ambient banter
+      if (MapUI.triggerBanter) {
+        setTimeout(() => MapUI.triggerBanter(`map_enter_${mapId}`), 3500);
+      }
     }
   }
 
