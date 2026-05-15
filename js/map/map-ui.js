@@ -372,7 +372,9 @@ const MapUI = (() => {
 
     // 3. Movement input resets idle timer
     const input = (typeof MapInput !== 'undefined') ? MapInput.poll() : null;
-    if (input && (input.up || input.down || input.left || input.right)) {
+    const touchActive = (typeof MapTouch !== 'undefined' && typeof MapTouch.isActive === 'function') ? MapTouch.isActive() : false;
+    
+    if ((input && (input.up || input.down || input.left || input.right)) || touchActive) {
       _idleTimer = 0;
     } else {
       _idleTimer += dt;
