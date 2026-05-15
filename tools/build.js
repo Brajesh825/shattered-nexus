@@ -44,9 +44,20 @@ async function build() {
     // 3. Clean/Create dist folder
     if (fs.existsSync(DIST_DIR)) {
       log('Cleaning existing dist folder...', 'info');
-      fs.rmSync(DIST_DIR, { recursive: true, force: true });
+      try {
+        // Try to delete the folder first
+        fs.rmSync(DIST_DIR, { recursive: true, force: true });
+        fs.mkdirSync(DIST_DIR);
+      } catch (e) {
+        log('Warning: Could not remove dist folder directly. Emptying contents instead.', 'warn');
+        const files = fs.readdirSync(DIST_DIR);
+        for (const file of files) {
+          fs.rmSync(path.join(DIST_DIR, file), { recursive: true, force: true });
+        }
+      }
+    } else {
+      fs.mkdirSync(DIST_DIR);
     }
-    fs.mkdirSync(DIST_DIR);
 
     // 4. Copy Directories
     INCLUDE_DIRS.forEach(dir => {

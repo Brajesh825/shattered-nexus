@@ -243,10 +243,11 @@ const MapPlayer = (() => {
     Object.keys(_variantMap).forEach(k => delete _variantMap[k]);
     // Clear cache so new variants are loaded fresh
     Object.keys(_heroImgCache).forEach(k => delete _heroImgCache[k]);
-    if (!G || !G.party) return;
+    if (!G || !G.party || MAX_VARIANTS <= 0) return;
+    
     G.party.forEach(m => {
       if (!m || !m.charId) return;
-      const n = Math.floor(Math.random() * MAX_VARIANTS) + 1; // 1–20
+      const n = Math.floor(Math.random() * MAX_VARIANTS) + 1; // 1–N
       _variantMap[m.charId] = `_${n}`;
     });
   }
