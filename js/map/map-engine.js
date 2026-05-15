@@ -992,11 +992,31 @@ const MapEngine = (() => {
     return 'default';
   }
 
+  /* ── Safe-zone check ────────────────────────────────── */
+  function _playerInSafeZone() {
+    if (!_map || !_map.safeZones || !_map.safeZones.length) return false;
+    const tx = MapPlayer.tx, ty = MapPlayer.ty;
+    return _map.safeZones.some(z =>
+      tx >= z.xMin && tx <= z.xMax && ty >= z.yMin && ty <= z.yMax
+    );
+  }
+
   /* ── Update ──────────────────────────────────────────── */
   function _update(dt) {
     if (!_map) return;
     _time += dt;
-    _fogTime += dt;
+
+    // Corruption accumulates outside safe zones, drains inside them (2× speed)
+    if (_playerInSafeZone()) {
+      _fogTime = Math.max(0, _fogTime - dt * 2);
+      // Roll back milestones as corruption drains below their thresholds
+      const p = _fogProgress();
+      if (_fogMilestone >= 3 && p < 0.90) _fogMilestone = 2;
+      if (_fogMilestone >= 2 && p < 0.60) _fogMilestone = 1;
+      if (_fogMilestone >= 1 && p < 0.30) _fogMilestone = 0;
+    } else {
+      _fogTime += dt;
+    }
     if (typeof ChronosEngine !== 'undefined') ChronosEngine.update(dt);
     MapInput.poll();
     if (!_playerLocked) MapPlayer.update(dt, _map);
@@ -2213,7 +2233,9 @@ const MapEngine = (() => {
 
   return {
     init, loadMap, start, stop, resume, onBattleComplete,
-    getMap, getCam, getTile, isRunning, resetFog, fogProgress, npcDialogueNext,
+    getMap, getCam, getTile, isRunning, resetFog, fogProgress,
+    inSafeZone: _playerInSafeZone,
+    npcDialogueNext,
     interact,
     isBlocked: _isBlocked,
     getWeather: () => _map?.weather || null,
