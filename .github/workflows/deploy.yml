@@ -35,13 +35,22 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-      - name: Run Build
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run Integrity Audit
+        run: node tools/integrity-check.js
+
+      - name: Run Production Build
         run: node tools/build.js
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload only the build output
           path: "dist"
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
