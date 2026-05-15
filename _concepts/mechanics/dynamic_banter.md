@@ -41,6 +41,24 @@ A banter event fires when one of these conditions is met. A minimum **45-second 
 
 ---
 
+## Character Voice Reference
+
+Before reading the banter library, note the voice of each character. Banter should never feel expository — it should feel like something overheard between people who know each other.
+
+| Character | Age | Voice |
+|---|---|---|
+| **Aya** | 19 | Quiet, precise, graceful. Notices beauty before danger. Does not over-explain. |
+| **Tao** | 20 | Dry, mischievous, deeply caring underneath. Her humor is a shield. Comfortable with death in a way that makes others uneasy. |
+| **Rei** | 2000 | Minimal words. Every sentence has weight. Stoic but not cold — protective in a way that takes you by surprise. |
+| **Lulu** | 18 | Warm and honest. She says what she feels without embarrassment. The most straightforwardly kind person in the party. |
+| **Ria** | 25 | Thoughtful. Attentive to things others overlook. Speaks with quiet wonder. |
+| **Valka** | 1000 | Principled, composed. Ancient observations delivered plainly, with no arrogance. |
+| **Drake** | 28 | Conflicted, loyal. Carries something he doesn't mention. Sometimes you catch him looking at the sky. |
+| **Rex** | 200 | Kingly in posture but genuinely curious about ordinary things. Being mortal surprises him constantly. |
+| **Sera** | 26 | Duty-bound but not joyless. She has been carrying other people's grief for so long she forgets to name her own. |
+
+---
+
 ## Data Structure — `data/banter.json`
 
 ```json
@@ -48,53 +66,213 @@ A banter event fires when one of these conditions is met. A minimum **45-second 
   "map_enter_verdant_vale": [
     {
       "id": "banter_vale_001",
-      "requires_party": [],
+      "requires_party": ["aya"],
       "lines": [
-        { "speaker": "Tao", "text": "So this is the Verdant Vale. Or... what's left of it." },
-        { "speaker": "Aya", "text": "It smelled like cherry blossoms once. The lore says so." }
+        { "speaker": "Aya", "text": "The flowers are gone. But the soil still knows where they were." }
       ]
     },
     {
       "id": "banter_vale_002",
-      "requires_party": ["rei"],
+      "requires_party": ["sera"],
       "lines": [
-        { "speaker": "Rei", "text": "These ruins are old. Older than the Rift. Whatever was here... it chose to stay." }
+        { "speaker": "Sera", "text": "My grandmother walked this road. She described it differently." },
+        { "speaker": "Sera", "text": "I think she was being kind." }
+      ]
+    },
+    {
+      "id": "banter_vale_003",
+      "requires_party": ["tao"],
+      "lines": [
+        { "speaker": "Tao", "text": "You know what bothers me? The silence. Places like this should be loud with the living." },
+        { "speaker": "Tao", "text": "It isn't." }
       ]
     }
   ],
+
+  "map_enter_crystal_cavern": [
+    {
+      "id": "banter_cavern_001",
+      "requires_party": ["ria"],
+      "lines": [
+        { "speaker": "Ria", "text": "The crystals remember sound. If you listen carefully, you can almost hear them." }
+      ]
+    },
+    {
+      "id": "banter_cavern_002",
+      "requires_party": ["aya"],
+      "lines": [
+        { "speaker": "Aya", "text": "It is cold here, but not the cold I know. This cold has grief in it." }
+      ]
+    },
+    {
+      "id": "banter_cavern_003",
+      "requires_party": ["rei"],
+      "lines": [
+        { "speaker": "Rei", "text": "There is something buried deep in this place. Something that was once a person." },
+        { "speaker": "Rei", "text": "I can smell the years on it." }
+      ]
+    }
+  ],
+
   "camp_close_general": [
     {
       "id": "banter_camp_001",
       "requires_party": ["lulu"],
       "lines": [
-        { "speaker": "Lulu", "text": "I used to dance for audiences of thousands. Now my audience is just you all, and the fire. I think I prefer it." }
+        { "speaker": "Lulu", "text": "The fire is almost out. I don't mind." },
+        { "speaker": "Lulu", "text": "I used to need an audience. I think I outgrew it." }
       ]
     },
     {
       "id": "banter_camp_002",
       "requires_party": ["rei"],
       "lines": [
-        { "speaker": "Rei", "text": "Rest when you can. The next path will not rest for you." }
+        { "speaker": "Rei", "text": "You slept. Good." }
+      ]
+    },
+    {
+      "id": "banter_camp_003",
+      "requires_party": ["tao"],
+      "lines": [
+        { "speaker": "Tao", "text": "I wrote a small poem last night. About the ash." },
+        { "speaker": "Tao", "text": "It was honestly pretty good. I'm not going to share it." }
+      ]
+    },
+    {
+      "id": "banter_camp_004",
+      "requires_party": ["drake"],
+      "lines": [
+        { "speaker": "Drake", "text": "I dreamed about my kingdom again." },
+        { "speaker": "Drake", "text": "It was good. I'm glad I remembered it before waking." }
       ]
     }
   ],
+
   "boss_defeated_void_knight": [
     {
       "id": "banter_void_knight_001",
-      "requires_party": [],
+      "requires_party": ["tao"],
       "lines": [
-        { "speaker": "Tao", "text": "...He was just a soldier. Someone's soldier." },
-        { "speaker": "Rei", "text": "All the worst things in this world were, once." }
+        { "speaker": "Tao", "text": "He had a name before all of this." },
+        { "speaker": "Tao", "text": "I hope someone still knows it." }
+      ]
+    },
+    {
+      "id": "banter_void_knight_002",
+      "requires_party": ["rei"],
+      "lines": [
+        { "speaker": "Rei", "text": "He did not want to fight. I could feel it in each swing." },
+        { "speaker": "Rei", "text": "That does not make it easier. It makes it worse." }
       ]
     }
   ],
+
+  "boss_defeated_galdor_king": [
+    {
+      "id": "banter_galdor_001",
+      "requires_party": ["sera"],
+      "lines": [
+        { "speaker": "Sera", "text": "The Azure records say he was a fair king. Once." },
+        { "speaker": "Sera", "text": "I believe that. Looking at him. I believe it." }
+      ]
+    }
+  ],
+
   "boss_defeated_demon_lord": [
     {
       "id": "banter_demon_lord_001",
-      "requires_party": [],
+      "requires_party": ["aya"],
       "lines": [
-        { "speaker": "Aya", "text": "He was searching for something, until the very end. I could see it." },
-        { "speaker": "Tao", "text": "Knowledge. The Void took what he loved most and made it his cage." }
+        { "speaker": "Aya", "text": "He never stopped reaching for it. Even at the very end." }
+      ]
+    },
+    {
+      "id": "banter_demon_lord_002",
+      "requires_party": ["ria"],
+      "lines": [
+        { "speaker": "Ria", "text": "He wanted to know everything. There's nothing wrong with that." },
+        { "speaker": "Ria", "text": "The Void just found him before wisdom did." }
+      ]
+    }
+  ],
+
+  "time_midnight_general": [
+    {
+      "id": "banter_midnight_001",
+      "requires_party": ["rei"],
+      "lines": [
+        { "speaker": "Rei", "text": "Two thousand years. The dark always looks the same." },
+        { "speaker": "Rei", "text": "And yet I am still surprised by it." }
+      ]
+    },
+    {
+      "id": "banter_midnight_002",
+      "requires_party": ["valka"],
+      "lines": [
+        { "speaker": "Valka", "text": "The stars here are arranged wrong." },
+        { "speaker": "Valka", "text": "I have been trying to name them anyway." }
+      ]
+    }
+  ],
+
+  "corruption_high": [
+    {
+      "id": "banter_corruption_001",
+      "requires_party": ["tao"],
+      "lines": [
+        { "speaker": "Tao", "text": "The Void is talkative today." },
+        { "speaker": "Tao", "text": "I'm not answering it." }
+      ]
+    },
+    {
+      "id": "banter_corruption_002",
+      "requires_party": ["sera"],
+      "lines": [
+        { "speaker": "Sera", "text": "Stay close. The air is wrong here — I can feel it in the armor." }
+      ]
+    }
+  ],
+
+  "idle_general": [
+    {
+      "id": "banter_idle_001",
+      "requires_party": ["drake"],
+      "lines": [
+        { "speaker": "Drake", "text": "The constellations in my world had different names." },
+        { "speaker": "Drake", "text": "I've been looking for ones I recognize. Not yet." }
+      ]
+    },
+    {
+      "id": "banter_idle_002",
+      "requires_party": ["aya"],
+      "lines": [
+        { "speaker": "Aya", "text": "..." },
+        { "speaker": "Aya", "text": "The wind just changed direction. Something is moving, far away." }
+      ]
+    },
+    {
+      "id": "banter_idle_003",
+      "requires_party": ["rex"],
+      "lines": [
+        { "speaker": "Rex", "text": "I led two hundred years of council meetings." },
+        { "speaker": "Rex", "text": "Standing still like this is somehow harder." }
+      ]
+    }
+  ],
+
+  "preset_loaded": [
+    {
+      "id": "banter_preset_rex",
+      "requires_party": ["rex"],
+      "lines": [
+        { "speaker": "Rex", "text": "Formation set. The doctrine holds." }
+      ]
+    },
+    {
+      "id": "banter_preset_valka",
+      "requires_party": ["valka"],
+      "lines": [
+        { "speaker": "Valka", "text": "This arrangement will do." }
       ]
     }
   ]
