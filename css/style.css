@@ -179,7 +179,7 @@ body {
   position: absolute;
   width: 120vw;
   height: 120vh;
-  background-image: url('../images/enemies/shadow_emperor.png');
+  background-image: url('../images/enemies/shadow_emperor.webp');
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center 20%;
