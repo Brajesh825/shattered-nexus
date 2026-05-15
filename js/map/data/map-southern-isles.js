@@ -17,23 +17,23 @@ MAP_DEFS.southern_isles = {
     ],
     enemyLevelRange: [10, 20],
     encounterTemplates: [
-        { weight: 4, enemies: ['naga', 'naga'] },
-        { weight: 3, enemies: ['crab'] },
-        { weight: 2, enemies: ['naga', 'crab'] },
-        { weight: 2, enemies: ['merman'] },
-        { weight: 1, enemies: ['naga', 'naga', 'crab'] },
-        { weight: 1, enemies: ['crab', 'merman'] },
-        { weight: 1, enemies: ['merman', 'merman'] }
+        { weight: 4, enemies: ['naga', 'naga'], activePhases: ['midnight', 'dawn'] },
+        { weight: 3, enemies: ['crab'], activePhases: ['noon', 'dusk'] },
+        { weight: 2, enemies: ['naga', 'crab'], activePhases: ['dusk', 'midnight'] },
+        { weight: 2, enemies: ['merman'], activePhases: ['midnight', 'dawn'] },
+        { weight: 1, enemies: ['naga', 'naga', 'crab'], activePhases: ['midnight'] },
+        { weight: 1, enemies: ['crab', 'merman'], activePhases: ['dusk', 'midnight'] },
+        { weight: 1, enemies: ['merman', 'merman'], activePhases: ['midnight', 'dawn'] }
     ],
     enemies: [
         // --- STILT VILLAGE SENTINELS ---
-        { id: 'naga',   x: 30, y: 32, patrol: 'random',     range: 7,  speed: 1.2 },
-        { id: 'naga',   x: 90, y: 32, patrol: 'random',     range: 7,  speed: 1.2 },
-        { id: 'naga',   x: 55, y: 28, patrol: 'random',     range: 5,  speed: 1.1 },
+        { id: 'naga',   x: 30, y: 32, patrol: 'random',     range: 7,  speed: 1.2, activePhases: ['midnight', 'dawn'] },
+        { id: 'naga',   x: 90, y: 32, patrol: 'random',     range: 7,  speed: 1.2, activePhases: ['midnight', 'dawn'] },
+        { id: 'naga',   x: 55, y: 28, patrol: 'random',     range: 5,  speed: 1.1, activePhases: ['midnight', 'dawn'] },
         // --- DOCK GUARDIANS ---
-        { id: 'crab',   x: 60, y: 30, patrol: 'horizontal', range: 18, speed: 0.6 },
-        { id: 'naga',   x: 18, y: 20, patrol: 'vertical',   range: 10, speed: 1.3 },
-        { id: 'naga',   x: 102, y: 20, patrol: 'vertical',  range: 10, speed: 1.3 },
+        { id: 'crab',   x: 60, y: 30, patrol: 'horizontal', range: 18, speed: 0.6, activePhases: ['noon', 'dusk'] },
+        { id: 'naga',   x: 18, y: 20, patrol: 'vertical',   range: 10, speed: 1.3, activePhases: ['midnight'] },
+        { id: 'naga',   x: 102, y: 20, patrol: 'vertical',  range: 10, speed: 1.3, activePhases: ['midnight'] },
         // --- MAP BOSS ---
         { id: 'sunken_leviathan', x: 60, y: 4,  patrol: 'stationary', isBoss: true, level: 20, label: 'Sunken Leviathan' }
     ],

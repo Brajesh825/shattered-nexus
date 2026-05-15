@@ -29,22 +29,25 @@ MAP_DEFS.verdant_vale = {
     },
 
     encounterTemplates: [
-        { weight: 3, enemies: ['goblin'] },
-        { weight: 3, enemies: ['wolf'] },
-        { weight: 2, enemies: ['zombie_soldier'] },
-        { weight: 2, enemies: ['bat', 'bat'] },
-        { weight: 2, enemies: ['zombie_soldier', 'wolf'] },
-        { weight: 2, enemies: ['spider', 'spider'] },
+        { weight: 4, enemies: ['goblin'], activePhases: ['dawn', 'noon', 'dusk'] },
+        { weight: 3, enemies: ['wolf'], activePhases: ['dusk', 'midnight'] },
+        { weight: 2, enemies: ['zombie_soldier'], activePhases: ['dusk', 'midnight'] },
+        { weight: 3, enemies: ['bat', 'bat'], activePhases: ['midnight'] },
+        { weight: 2, enemies: ['zombie_soldier', 'wolf'], activePhases: ['midnight'] },
+        { weight: 3, enemies: ['spider', 'spider'], activePhases: ['midnight'] },
         { weight: 1, enemies: ['goblin', 'goblin', 'zombie_soldier'] },
-        { weight: 1, enemies: ['wolf', 'spider', 'bat'] },
-        { weight: 1, enemies: ['zombie_soldier', 'zombie_soldier', 'wolf'] },
+        { weight: 1, enemies: ['wolf', 'spider', 'bat'], activePhases: ['dusk', 'midnight'] },
+        { weight: 1, enemies: ['zombie_soldier', 'zombie_soldier', 'wolf'], activePhases: ['midnight'] },
+        { weight: 3, enemies: ['rat', 'rat', 'rat'], activePhases: ['midnight', 'dawn'] },
     ],
 
     enemies: [
-        { id: 'bat', x: 34, y: 13, patrol: 'vertical', range: 3, speed: 1.8 },
-        { id: 'wolf', x: 42, y: 22, patrol: 'random', range: 4, speed: 1.4 },
-        { id: 'zombie_soldier', x: 40, y: 18, patrol: 'horizontal', range: 3, speed: 0.8 },
-        { id: 'goblin', x: 48, y: 6, patrol: 'random', range: 2, speed: 1.1 },
+        { id: 'bat', x: 34, y: 13, patrol: 'vertical', range: 3, speed: 1.8, activePhases: ['midnight'] },
+        { id: 'wolf', x: 42, y: 22, patrol: 'random', range: 4, speed: 1.4, activePhases: ['dusk', 'midnight'] },
+        { id: 'zombie_soldier', x: 40, y: 18, patrol: 'horizontal', range: 3, speed: 0.8, activePhases: ['midnight'] },
+        { id: 'goblin', x: 48, y: 6, patrol: 'random', range: 2, speed: 1.1, activePhases: ['dawn', 'noon', 'dusk'] },
+        { id: 'rat', x: 12, y: 15, patrol: 'random', range: 5, speed: 1.5, activePhases: ['midnight', 'dawn'] },
+        { id: 'rat', x: 25, y: 45, patrol: 'random', range: 5, speed: 1.5, activePhases: ['midnight', 'dawn'] },
         { id: 'galdor_king', x: 52, y: 54, patrol: 'horizontal', range: 2, speed: 0.9, isBoss: true, level: 6 }
     ],
 

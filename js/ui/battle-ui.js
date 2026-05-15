@@ -466,10 +466,16 @@ const BattleUI = {
       scene.className = scene.className.split(' ').filter(c => !c.startsWith('arc-bg-')).join(' ');
       scene.classList.add(`arc-bg-${Story.arcIdx % 8}`);
     }
+
+    // 5. Apply Chronos Cycle Atmosphere
+    if (typeof ChronosEngine !== 'undefined') {
+      scene.style.filter = ChronosEngine.getFilter();
+    } else {
+      scene.style.filter = '';
+    }
   },
 
   _initBattleWeather() {
-    if (this._weatherLoopActive) return;
     if (this._weatherLoopActive) return;
     const canvas = this.el('battle-effects-canvas');
     if (!canvas) return;
@@ -482,7 +488,10 @@ const BattleUI = {
     let lastTs = performance.now();
     
     const loop = (ts) => {
-      if (!this._weatherLoopActive || !this.el('battle-screen').classList.contains('active')) return;
+      if (!this._weatherLoopActive || !this.el('battle-screen').classList.contains('active')) {
+        this._weatherLoopActive = false;
+        return;
+      }
       const dt = (ts - lastTs) / 1000;
       lastTs = ts;
       
@@ -490,6 +499,13 @@ const BattleUI = {
         WeatherEngine.update(dt);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         WeatherEngine.draw(ctx);
+      }
+
+      // Keep the Chronos Cycle heartbeat alive during battle
+      if (typeof ChronosEngine !== 'undefined') {
+        ChronosEngine.update(dt);
+        this._applyArcAtmosphere();
+        this.updateStats();
       }
       
       requestAnimationFrame(loop);

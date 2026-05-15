@@ -78,7 +78,20 @@ const CombatEngine = (() => {
       }
     }
 
-    // 4. Final Result with Absolute Safety Cap (8.0x - "Extreme Premium")
+    // 4. Temporal Resonance (Chronos Cycle)
+    if (typeof ChronosEngine !== 'undefined') {
+      const phase = ChronosEngine.getPhase();
+      const res = NexusScaling.chronos?.[phase];
+      if (res && res.stat === stat) {
+        finalMult *= res.mult;
+      }
+      // Special case: noon hp bonus also applies to maxHp
+      if (phase === 'noon' && stat === 'hp' && NexusScaling.chronos.noon.stat === 'maxHp') {
+        finalMult *= NexusScaling.chronos.noon.mult;
+      }
+    }
+
+    // 5. Final Result with Absolute Safety Cap (8.0x - "Extreme Premium")
     finalMult = Math.min(8.0, finalMult);
     const result = (base + flat) * finalMult;
 
