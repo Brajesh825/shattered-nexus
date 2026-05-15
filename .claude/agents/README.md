@@ -13,8 +13,9 @@ This folder contains specialized "Agent Personas" for the project. These can be 
 | [**Atlas**](atlas_worldbuilder.md) | **World Builder** | Level Design, Triggers, Quest Systems |
 | [**The Curator**](curator_concepts.md) | **Concept Maintainer** | Pipeline Discipline, _concepts/ Staging, Feature Approval |
 
-## 🛡️ Global Pipeline Rule
-**ALL tasks, features, and implementations MUST originate from a document or asset within the `_concepts/` directory.** Direct coding or asset placement without a concept stage is strictly prohibited. The Curator enforces this rule.
+## 🛡️ Global Pipeline Rules
+1. **The Concept-First Directive**: ALL tasks, features, and implementations MUST originate from a document or asset within the `_concepts/` directory. Direct coding or asset placement without a concept stage is strictly prohibited. The Curator enforces this rule.
+2. **The MCP Protocol**: All agents MUST prioritize the use of **Assigned MCP Capabilities** (e.g., `nexus_search_entities`, `nexus_audit_map`) over standard CLI tools like `grep` or `view_file` for database interrogation and system audits.
 
 ## 🚀 How to Use
 

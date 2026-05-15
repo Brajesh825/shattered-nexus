@@ -41,10 +41,11 @@ MAP_DEFS.crystal_cavern_f1 = {
   ],
 
   encounterTemplates: [
-    { weight: 2, enemies: ['rat', 'rat'], activePhases: ['noon', 'dusk', 'midnight', 'dawn'] },
-    { weight: 4, enemies: ['crystal_shard', 'crystal_shard'], activePhases: ['noon', 'dusk'] },
-    { weight: 3, enemies: ['skeleton', 'skeleton', 'bat'], activePhases: ['dusk', 'midnight', 'dawn'] },
-    { weight: 2, enemies: ['rat', 'rat', 'rat','rat'], activePhases: ['midnight', 'dawn'] },
+    { weight: 4, enemies: ['rat', 'rat'], activePhases: ['noon', 'dusk', 'midnight', 'dawn'] },
+    { weight: 4, enemies: ['bat', 'bat' ,'bat'], activePhases: ['noon', 'dusk', 'midnight', 'dawn'] },
+    { weight: 3, enemies: ['crystal_shard', 'crystal_shard'], activePhases: ['noon', 'dusk'] },
+    { weight: 2, enemies: ['skeleton', 'skeleton', 'bat'], activePhases: ['dusk', 'midnight', 'dawn'] },
+    { weight: 1, enemies: ['rat', 'rat', 'rat','rat'], activePhases: ['midnight', 'dawn'] },
     { weight: 1, enemies: ['gem_mimic'], activePhases: ['midnight'] },
   ],
 

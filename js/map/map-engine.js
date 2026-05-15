@@ -1956,7 +1956,12 @@ const MapEngine = (() => {
     }
 
     const def      = (typeof NPC_DEFS !== 'undefined') ? NPC_DEFS[npc.id] : null;
-    const questIds = (def && def.quests) || [];
+    let questIds   = (def && def.quests) ? [...def.quests] : [];
+    
+    // Support map-level giveQuest property for direct overrides/additions
+    if (npc.giveQuest && !questIds.includes(npc.giveQuest)) {
+      questIds.push(npc.giveQuest);
+    }
 
     // ── Quest priority flow ──────────────────────────────────────────
     if (questIds.length && typeof QuestSystem !== 'undefined') {
