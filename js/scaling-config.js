@@ -123,6 +123,15 @@ const NexusScaling = {
     noon: { stat: 'maxHp', mult: 1.05, label: 'Vitality of Noon' },
     dusk: { stat: 'def', mult: 1.10, label: 'Resilience of Dusk' },
     midnight: { stat: 'mag', mult: 1.15, label: 'Wisdom of Midnight' }
+  },
+
+  // 10. DYNAMIC WEATHER AURAS
+  weather: {
+    rain:   { aura: 'aura_water',  label: 'Drenched' },
+    storm:  { aura: 'aura_water',  label: 'Thunderstorm' },
+    fog:    { aura: 'status_obscured', label: 'Mist-Bound', missChance: 0.15 },
+    sun:    { aura: 'aura_fire',   label: 'Solar Flare', healMult: 0.5 },
+    embers: { aura: 'aura_fire',   label: 'Ashfall', healMult: 0.5 }
   }
 };
 

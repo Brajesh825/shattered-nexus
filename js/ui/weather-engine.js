@@ -166,5 +166,5 @@ const WeatherEngine = (() => {
     }
   }
 
-  return { setWeather, update, draw };
+  return { setWeather, update, draw, getType: () => currentType };
 })();
