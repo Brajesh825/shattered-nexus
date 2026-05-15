@@ -353,6 +353,41 @@ const MapUI = (() => {
 
 
 
+  /* ── Corruption meter ───────────────────────────────── */
+  function _renderCorruptionMeter() {
+    const bar   = document.getElementById('corruption-fill');
+    const label = document.getElementById('corruption-label');
+    const wrap  = document.getElementById('corruption-meter');
+    if (!bar || !label || !wrap) return;
+
+    const p      = (typeof MapEngine !== 'undefined') ? MapEngine.fogProgress() : 0;
+    const safe   = (typeof MapEngine !== 'undefined') && MapEngine.inSafeZone();
+    const pct    = Math.round(p * 100);
+
+    bar.style.width = `${pct}%`;
+
+    // Color: green → yellow → red → purple
+    const hue = Math.round(120 - p * 150); // 120 (green) → -30 → clamped as purple via hsl
+    const sat = 70 + p * 20;
+    const lit = 52 - p * 14;
+    bar.style.background = p > 0.85
+      ? `linear-gradient(90deg, #7c3aed, #a855f7)`
+      : `hsl(${hue}, ${sat}%, ${lit}%)`;
+
+    if (safe) {
+      label.textContent = '◈ SAFE ZONE';
+      label.style.color = '#4ade80';
+      bar.style.opacity = '0.5'; // dim bar while draining
+    } else {
+      label.textContent = pct > 0 ? `☠ ${pct}%` : '◈ CLEAR';
+      label.style.color = p > 0.6 ? '#f87171' : p > 0.3 ? '#fbbf24' : '#9ca3af';
+      bar.style.opacity = '1';
+    }
+
+    // Pulse the wrap at high corruption
+    wrap.classList.toggle('corruption-danger', p >= 0.8);
+  }
+
   /* ── Periodic HUD / minimap refresh (called by engine each frame) ── */
   let _hudTick = 0;
   function update(dt) {
@@ -360,6 +395,7 @@ const MapUI = (() => {
     if (_hudTick % 6 === 0) {   // ~10×/s at 60fps
       _updatePartyHUD();
       _renderMinimap();
+      _renderCorruptionMeter();
       if (typeof ChronosEngine !== 'undefined') {
         const hintEl = document.querySelector('.explore-map-hint');
         if (hintEl) {
