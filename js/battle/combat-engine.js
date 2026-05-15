@@ -92,7 +92,6 @@ const CombatEngine = (() => {
     }
     
     // 4c. Character Resonance (Bonds)
-    const passiveSystem = getPassiveSystem();
     if (passiveSystem && passiveSystem.getBondMultiplier) {
       finalMult *= passiveSystem.getBondMultiplier(unit, stat);
       flat += passiveSystem.getBondBonus(unit, stat);
