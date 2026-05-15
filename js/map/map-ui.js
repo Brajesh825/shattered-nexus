@@ -602,6 +602,9 @@ const MapUI = (() => {
         if (typeof Save !== 'undefined' && Save.patch) {
           Save.patch({ bondProgress: G.bondProgress, earnedBondRewards: G.earnedBondRewards });
         }
+
+        // CRITICAL: Restart the engine loop stopped by openDialogue
+        MapEngine.resume();
       });
     }
   }

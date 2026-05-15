@@ -4,6 +4,14 @@ This document contains the essential architectural and technical rules for the R
 
 ---
 
+## 🌍 Character Origin Protocol (The Summoned vs. The Native)
+The narrative core of *Shattered Nexus* relies on the distinction between the "Summoned" and the "Native."
+- **The Major 8 (Summoned)**: Aya, Tao, Lulu, Rei, Ria, Valka, Drake, and Rex are **Summoned Strangers**. Each comes from a different world/reality torn apart by the rifts. Their origins in `characters.json` must remain "Unknown — memory lost to the Rift" (or specific to their original world, NOT Aethoria).
+- **Sera (Native)**: As of the current build, **Sera is the sole native Aethorian** among the playable cast. She belongs to the Verdant Vale and the Azure Remnant.
+- **Rule**: Do not attribute Aethorian regional history (e.g., being a "Sky-Kin" of the Caldera) to the Major 8. They are observers and saviors of this world, not its inhabitants.
+
+---
+
 ## 🛡️ Diamond Formation & Vanguard Logic
 The 4-slot diamond arrangement is the foundation of targeting logic.
 - **Slot 1 (Back)**: Grants a **30% Evasion bonus** against physical strikes.

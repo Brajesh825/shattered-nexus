@@ -62,6 +62,7 @@ const EnemyScaling = (() => {
       resistTo: def.resistTo || [],
       tier,
       isBoss: actualIsBoss,
+      bgm: def.bgm || null,
       statPhases: def.statPhases || [],
       aiRole: def.aiRole || 'attacker',
       aiType: def.aiType || 'random',
