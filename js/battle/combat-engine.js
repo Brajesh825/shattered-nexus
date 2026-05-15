@@ -90,6 +90,16 @@ const CombatEngine = (() => {
         finalMult *= NexusScaling.chronos.noon.mult;
       }
     }
+    
+    // 4b. Dynamic Weather Impact
+    if (typeof MapEngine !== 'undefined') {
+      const weather = MapEngine.getWeather();
+      const wConf = NexusScaling.weather?.[weather];
+      if (wConf) {
+        if (stat === 'accuracy' && wConf.missChance) finalMult *= (1 - wConf.missChance);
+        if (stat === 'healBoost' && wConf.healMult) finalMult *= wConf.healMult;
+      }
+    }
 
     // 5. Final Result with Absolute Safety Cap (8.0x - "Extreme Premium")
     finalMult = Math.min(8.0, finalMult);

@@ -833,6 +833,19 @@ async function _initBattle() {
     G.busy = false;
   }
 
+  // 4. Apply Initial Weather Auras
+  if (typeof MapEngine !== 'undefined') {
+    const weather = MapEngine.getWeather();
+    const wConf = NexusScaling.weather?.[weather];
+    if (wConf && wConf.aura) {
+      G.party.forEach(m => StatusSystem.add(m, wConf.aura));
+      G.enemyGroup.forEach(e => StatusSystem.add(e, wConf.aura));
+      if (typeof BattleUI !== 'undefined') {
+        BattleUI.addLog(`✦ Atmosphere: ${wConf.label}`, 'hi');
+      }
+    }
+  }
+
   // Right-click anywhere on the battle scene = BACK (cancel targeting / close sub-menu)
   const scene = document.getElementById('battle-scene');
   if (scene && !scene._ctxBound) {

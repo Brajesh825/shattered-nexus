@@ -632,9 +632,6 @@ const MapEngine = (() => {
       }
     }
 
-    const atmo = _getAtmosphereColor();
-    _ctx.fillStyle = atmo.c;
-    _ctx.fillRect(0, 0, cw, ch);
 
     if (_map.ambientLight) {
       _ctx.fillStyle = _map.ambientLight;
@@ -2212,6 +2209,7 @@ const MapEngine = (() => {
     getMap, getCam, getTile, isRunning, resetFog, fogProgress, npcDialogueNext,
     interact,
     isBlocked: _isBlocked,
+    getWeather: () => _map?.weather || null,
     getFogTime: () => _fogTime,
     openDialogue: _openGenericDialogue,
     hasTriggerFired: id => _firedTriggers.has(id),

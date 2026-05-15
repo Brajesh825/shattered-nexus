@@ -484,6 +484,10 @@ const BattleUI = {
     canvas.width = canvas.offsetWidth;
     canvas.height = canvas.offsetHeight;
     
+    if (typeof WeatherEngine !== 'undefined' && typeof MapEngine !== 'undefined') {
+      WeatherEngine.setWeather(MapEngine.getWeather());
+    }
+
     this._weatherLoopActive = true;
     let lastTs = performance.now();
     
