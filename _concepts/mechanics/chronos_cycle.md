@@ -13,22 +13,16 @@ The world uses a global CSS overlay that shifts HSL values to simulate light pro
 | **Dusk** | 17:00 - 20:00 | `hue-rotate(-20deg) saturate(140%)` | Deep crimson and violet. |
 | **Midnight**| 20:00 - 04:00 | `brightness(60%) hue-rotate(180deg) saturate(80%)` | Indigo, bioluminescent. |
 
-## ⚔️ Mechanical Impacts
-1. **Time-Gated Spawns**: 
-   - Entities (NPCs/Enemies) can now have an `activeHours` property (e.g., `[20, 4]`).
-   - The "Rumor Board" triggers (e.g., The Tide Bell) only fire during specific windows.
+## ⚔️ Remaining Mechanical Goals
+1. **Time-Gated Triggers**: 
+   - [ ] The "Rumor Board" triggers (e.g., The Tide Bell) only fire during specific windows.
 2. **Economic Shifting**: 
-   - Certain Black Market merchants only appear during the Midnight phase in safe zones.
-3. **Combat Buffs**:
-   - Celestial relics provide stat bonuses during Noon; Void relics during Midnight.
+   - [ ] Certain Black Market merchants only appear during the Midnight phase in safe zones.
+3. **Advanced Combat Buffs**:
+   - [ ] Celestial relics provide stat bonuses during Noon; Void relics during Midnight.
 
-## 🛠️ Technical Implementation
+## 🛠️ Technical Implementation Notes
 - **Data Persistence**: `G.nexusTime` (0.0 to 24.0) stored in global state.
-- **Clockwork Loop**: A background interval in `MapEngine.js` that increments time and updates the global CSS filter.
-- **UI Dial**: A radial HUD element in the top-right corner of the `explore-screen` showing the current cycle icon (☀️/🌙).
-
-## ✅ Phase 1: Prototype Deliverables
-- [ ] Implement `js/systems/chronos-engine.js` (Clock logic).
-- [ ] Add `G.nexusTime` to `SaveContract`.
-- [ ] Integrate CSS Filter grading into `index.css`.
-- [ ] Update `MapEntities.init()` to respect `activeHours`.
+- **Clockwork Heartbeat**: Synchronized background loop in `MapEngine.js` and `BattleUI.js`.
+- **World Resonance**: Global multipliers applied dynamically in `CombatEngine.js`.
+- **Atmospheric Sync**: Visual filters applied to `#explore-canvas-wrap` and `#battle-scene`.

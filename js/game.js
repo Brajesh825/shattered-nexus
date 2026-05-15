@@ -325,6 +325,12 @@ const G = {
   clearedMaps: [],
   /** @type {Object.<string, string[]>} { mapId: [npcId, ...] } — persisted across sessions */
   npcTalked: {},
+  /** @type {Object.<string, number>} { pairId: tierIndex } — Character Resonance levels */
+  bondProgress: {},
+  /** @type {Array<{pairId: string, reward: object}>} Accumulated bond tier rewards */
+  earnedBondRewards: [],
+  /** @type {Set<string>} IDs of banter shown in the current session (not persisted to save) */
+  shownBanter: new Set(),
 
   /** @type {PartyMember[]} Active party — up to 4 members */
   party: [],
@@ -831,6 +837,19 @@ async function _initBattle() {
     G.busy = true;
     await BattleUI.showBossIntro(boss.id, boss.name);
     G.busy = false;
+  }
+
+  // 4. Apply Initial Weather Auras
+  if (typeof MapEngine !== 'undefined') {
+    const weather = MapEngine.getWeather();
+    const wConf = NexusScaling.weather?.[weather];
+    if (wConf && wConf.aura) {
+      G.party.forEach(m => StatusSystem.add(m, wConf.aura));
+      G.enemyGroup.forEach(e => StatusSystem.add(e, wConf.aura));
+      if (typeof BattleUI !== 'undefined') {
+        BattleUI.addLog(`✦ Atmosphere: ${wConf.label}`, 'hi');
+      }
+    }
   }
 
   // Right-click anywhere on the battle scene = BACK (cancel targeting / close sub-menu)

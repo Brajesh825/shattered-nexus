@@ -118,7 +118,6 @@
     "target": "forge_core",
     "count": 4,
     "giver": "kaelen",
-    "arc": 2,
     "rewards": { "exp": 450, "item": "elixir" },
     "acceptDialogue": [
       { "speaker": "Kaelen", "text": "You look sturdy. I got pinned here by the Sentinels." },
@@ -140,7 +139,6 @@
     "target": "crystal_shard",
     "count": 5,
     "giver": "scholar_vane",
-    "arc": 1,
     "rewards": { "exp": 350, "gold": 200 },
     "acceptDialogue": [
       { "speaker": "Scholar Vane", "text": "The frequency in this cavern is extraordinary, but those jagged shards are throwing off my readings!" },
@@ -162,7 +160,6 @@
     "target": "naga",
     "count": 3,
     "giver": "isle_merchant",
-    "arc": 0,
     "rewards": { "exp": 500, "gold": 400 },
     "acceptDialogue": [
       { "speaker": "Isle Merchant", "text": "The trade routes are blocked. These Naga are tearing apart any ship that gets close." },
@@ -209,7 +206,6 @@
     "target": "squad_insignia",
     "count": 4,
     "giver": "dying_royal_guard",
-    "arc": 1,
     "rewards": { "exp": 300, "gold": 200 },
     "acceptDialogue": [
       { "speaker": "Fallen Guard", "text": "Cough... you carry no rot. Listen to me... the vanguard..." },
@@ -231,7 +227,6 @@
     "target": "cursed_idol",
     "count": 1,
     "giver": "guilt_ridden_merchant",
-    "arc": 1,
     "rewards": { "exp": 400, "item": "elixir" },
     "acceptDialogue": [
       { "speaker": "Guilt-Ridden Merchant", "text": "Please... don't hurt me! I can't go forward or back! The bridges are closed!" },

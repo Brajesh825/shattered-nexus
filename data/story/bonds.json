@@ -1,0 +1,166 @@
+{
+  "pairs": [
+    {
+      "id": "aya_tao",
+      "chars": ["aya", "tao"],
+      "tiers": [
+        {
+          "tier": 1,
+          "title": "Embers in the Frost",
+          "criteria": { "minLevel": 5 },
+          "dialogue": [
+            { "speaker": "Tao", "emotion": "thoughtful", "text": "The fire tonight... it's a quiet one. Not like the spirits in the Rift." },
+            { "speaker": "Aya", "emotion": "noble", "text": "Fire has its own language, Tao. One of change. My ice is but a pause." },
+            { "speaker": "Tao", "emotion": "gentle", "text": "A pause? I like that. A moment to breathe before everything starts moving again." },
+            { "speaker": "Aya", "emotion": "graceful", "text": "Precisely. Perhaps together, we can find the rhythm between the pause and the motion." }
+          ],
+          "reward": { "type": "resonance", "stat": "critRate", "val": 0.05, "label": "Resonance: Thermal Strike" }
+        },
+        {
+          "tier": 2,
+          "title": "Synchronized Pulse",
+          "criteria": { "minLevel": 20, "mapCleared": "crystal_cavern_f3" },
+          "dialogue": [
+            { "speaker": "Aya", "emotion": "observant", "text": "Your movements have a certain... inevitability, Tao. Like the falling of ash." },
+            { "speaker": "Tao", "emotion": "energetic", "text": "It's the spark. It doesn't ask where it lands, it just... is. But your ice gives it a place to burn." },
+            { "speaker": "Aya", "emotion": "thoughtful", "text": "I anchor the moment. You light it up. It is a strange symmetry, but it holds." },
+            { "speaker": "Tao", "emotion": "happy", "text": "Symmetry or not, the Nexus feels a little less cold when we're standing together." }
+          ],
+          "reward": { "type": "reaction_boost", "detonator": "fire", "aura": "ice", "mult": 0.25, "label": "Melt Resonance" }
+        },
+        {
+          "tier": 3,
+          "title": "Unity of Void and Flame",
+          "criteria": { "minLevel": 45, "mapCleared": "void_citadel" },
+          "dialogue": [
+            { "speaker": "Tao", "emotion": "serious", "text": "The ghosts are quiet tonight. Even they can feel the end approaching." },
+            { "speaker": "Aya", "emotion": "protective", "text": "Let them watch. My ice will be the foundation upon which your final flame shall burn." },
+            { "speaker": "Tao", "emotion": "radiant", "text": "And that flame will be the dawn for this shattered world. I'll stay by your side until the frost melts." },
+            { "speaker": "Aya", "emotion": "noble", "text": "And I shall stay until the last ember fades into the starlight." }
+          ],
+          "reward": { "type": "resonance", "stat": "atk", "val": 0.15, "label": "Resonance: Nexus Unity" }
+        }
+      ]
+    },
+    {
+      "id": "lulu_rei",
+      "chars": ["lulu", "rei"],
+      "tiers": [
+        {
+          "tier": 1,
+          "title": "The Warden's Whisper",
+          "criteria": { "minLevel": 8 },
+          "dialogue": [
+            { "speaker": "Lulu", "emotion": "gentle", "text": "The stars are particularly bright tonight, Rei. They look like they're trying to tell us something." },
+            { "speaker": "Rei", "emotion": "stoic", "text": "They speak of things long forgotten. Of debts that have outlasted the worlds that made them." },
+            { "speaker": "Lulu", "emotion": "radiant", "text": "Then perhaps we should dance for them. To show them that even in the dark, there is beauty." },
+            { "speaker": "Rei", "emotion": "solitary", "text": "A dance in the dark. It is a fragile thing. But... it is enough for tonight." }
+          ],
+          "reward": { "type": "resonance", "stat": "spd", "val": 3, "label": "Resonance: Zephyr Grace" }
+        },
+        {
+          "tier": 2,
+          "title": "Flowing Karma",
+          "criteria": { "minLevel": 25, "mapCleared": "sunken_temple" },
+          "dialogue": [
+            { "speaker": "Rei", "emotion": "observant", "text": "The tides here are heavy, Lulu. They carry the weight of many souls." },
+            { "speaker": "Lulu", "emotion": "thoughtful", "text": "I feel them. But water doesn't want to be heavy. It just wants to reach the sea." },
+            { "speaker": "Rei", "emotion": "protective", "text": "Then I will be the riverbed. I will guide you through the jagged rocks until the path is clear." },
+            { "speaker": "Lulu", "emotion": "happy", "text": "And I will be the current. We'll find the way together, Rei." }
+          ],
+          "reward": { "type": "resonance", "stat": "def", "val": 5, "label": "Resonance: Flowing Guard" }
+        },
+        {
+          "tier": 3,
+          "title": "Tides of the Ancients",
+          "criteria": { "minLevel": 50, "mapCleared": "northern_highlands" },
+          "dialogue": [
+            { "speaker": "Lulu", "emotion": "radiant", "text": "The wind is different here. It smells of the open sky." },
+            { "speaker": "Rei", "emotion": "resolute", "text": "It is the smell of freedom. A debt finally being paid. My duty has never felt so light." },
+            { "speaker": "Lulu", "emotion": "determined", "text": "Then let's make this the most beautiful dance of all. For the sky, and for everything beneath it." }
+          ],
+          "reward": { "type": "resonance", "stat": "hp", "val": 50, "label": "Resonance: Eternal Tide" }
+        }
+      ]
+    },
+    {
+      "id": "ria_rex",
+      "chars": ["ria", "rex"],
+      "tiers": [
+        {
+          "tier": 1,
+          "title": "Sovereign Summons",
+          "criteria": { "minLevel": 12 },
+          "dialogue": [
+            { "speaker": "Rex", "emotion": "regal", "text": "Your creatures move with a grace that even kings might envy, Ria." },
+            { "speaker": "Ria", "emotion": "wise", "text": "They are the memory of worlds that are no more, Rex. I am merely their vessel." },
+            { "speaker": "Rex", "emotion": "stoic", "text": "A heavy burden, being a vessel for an entire history. I know it well." },
+            { "speaker": "Ria", "emotion": "compassionate", "text": "Then perhaps we can share the weight. Even a king needs someone to hold the line." }
+          ],
+          "reward": { "type": "resonance", "stat": "mag", "val": 5, "label": "Resonance: Ancient Contract" }
+        },
+        {
+          "tier": 2,
+          "title": "Eldritch Command",
+          "criteria": { "minLevel": 30, "mapCleared": "shadow_reach" },
+          "dialogue": [
+            { "speaker": "Rex", "emotion": "divine", "text": "The shadows here are ancient, but your light... it cuts through them with ease." },
+            { "speaker": "Ria", "emotion": "magically_attuned", "text": "The eidolons find strength in your presence, Rex. Your authority is an anchor for them." },
+            { "speaker": "Rex", "emotion": "resolute", "text": "If my crown can serve as a beacon for your magic, then I shall wear it with pride." }
+          ],
+          "reward": { "type": "resonance", "stat": "mp", "val": 20, "label": "Resonance: Ley Anchor" }
+        },
+        {
+          "tier": 3,
+          "title": "Legacy of the Lionheart",
+          "criteria": { "minLevel": 55, "mapCleared": "sky_ruins" },
+          "dialogue": [
+            { "speaker": "Ria", "emotion": "wise", "text": "The sky ruins... they feel like home, in a way. A place where magic and kings once met." },
+            { "speaker": "Rex", "emotion": "regal", "text": "And they meet here again. Let us show this world that true majesty never truly fades." }
+          ],
+          "reward": { "type": "resonance", "stat": "mag", "val": 0.20, "label": "Resonance: Divine Singularity" }
+        }
+      ]
+    },
+    {
+      "id": "valka_sera",
+      "chars": ["valka", "sera"],
+      "tiers": [
+        {
+          "tier": 1,
+          "title": "Judgment and Duty",
+          "criteria": { "minLevel": 15 },
+          "dialogue": [
+            { "speaker": "Valka", "emotion": "commanding", "text": "You lead with the heart of a soldier, but the eyes of someone who has lost much, Sera." },
+            { "speaker": "Sera", "emotion": "resolute", "text": "I lead for those who cannot. Losses are just the cost of keeping the line intact." },
+            { "speaker": "Valka", "emotion": "principled", "text": "Duty is a sharp blade. It can protect, but it can also isolate. Do not lose yourself in the ranks." },
+            { "speaker": "Sera", "emotion": "protective", "text": "As long as there is someone to stand next to me, I am never truly lost." }
+          ],
+          "reward": { "type": "resonance", "stat": "def", "val": 8, "label": "Resonance: Shield of Souls" }
+        },
+        {
+          "tier": 2,
+          "title": "Valkyrie's Aegis",
+          "criteria": { "minLevel": 35, "mapCleared": "fortress_ramparts" },
+          "dialogue": [
+            { "speaker": "Sera", "emotion": "commanding", "text": "The walls are old, but our resolve is new. We hold here, Valka." },
+            { "speaker": "Valka", "emotion": "divine", "text": "My wings will be your shield. I see the worthy in your heart, Commander." },
+            { "speaker": "Sera", "emotion": "resolute", "text": "And I see a guardian in you. Let us show them what happens when duty and divinity unite." }
+          ],
+          "reward": { "type": "resonance", "stat": "def", "val": 0.15, "label": "Resonance: Bastion Eternal" }
+        },
+        {
+          "tier": 3,
+          "title": "Redemption's Commander",
+          "criteria": { "minLevel": 60, "mapCleared": "eternal_void" },
+          "dialogue": [
+            { "speaker": "Valka", "emotion": "commanding", "text": "The void is the end of all things. But your spirit... it remains unbroken." },
+            { "speaker": "Sera", "emotion": "noble", "text": "Because the duty isn't over yet. We have a world to bring back." },
+            { "speaker": "Valka", "emotion": "divinely_righteous", "text": "Then I shall be your wings until the very end. The judgment is passed, and you are found worthy." }
+          ],
+          "reward": { "type": "resonance", "stat": "atk", "val": 0.25, "label": "Resonance: Sovereign Guard" }
+        }
+      ]
+    }
+  ]
+}

@@ -702,6 +702,10 @@
           <div class="camp-panel">
             <div class="camp-title">⛺ CAMP</div>
             <div class="camp-subtitle">Rest, regroup, or move on.</div>
+            
+            <div class="camp-roster" id="camp-roster">
+              <!-- Characters with spark bubbles go here -->
+            </div>
             <div class="camp-actions">
               <button class="camp-btn camp-btn-worldmap" onclick="MapUI.campWorldMap()"><span>🗺</span>WORLD MAP</button>
               <button class="camp-btn" onclick="MapUI.campChangeParty()"><span>👥</span>CHANGE PARTY</button>
@@ -709,6 +713,8 @@
               <button class="camp-btn" onclick="MapUI.campHeal()"><span>💊</span>HEAL PARTY</button>
               <button class="camp-btn" onclick="MapUI.campSave()"><span>💾</span>SAVE PROGRESS</button>
               <button class="camp-btn" onclick="MapUI.campRelics()"><span>✦</span>RELICS</button>
+              <button class="camp-btn camp-btn-bond" id="camp-btn-bond" onclick="MapUI.campTalk()" style="display:none; background: linear-gradient(135deg, #a855f7, #ec4899); border-color: #f472b6;"><span>✨</span>BOND EVENTS</button>
+              <button class="camp-btn" onclick="MapUI.openBondPanel()"><span>💞</span>VIEW BONDS</button>
               <button class="camp-btn camp-btn-minor" onclick="MapUI.closeCampMenu()">▶ CONTINUE</button>
             </div>
           </div>
@@ -724,6 +730,16 @@
             <div class="relic-list" id="relic-list"></div>
             <button class="camp-btn camp-btn-minor" onclick="MapUI.closeRelics()" style="margin-top:12px">◀ BACK TO
               CAMP</button>
+          </div>
+        </div>
+
+        <!-- Bond progression panel -->
+        <div id="bond-panel" style="display:none">
+          <div class="bond-panel-inner">
+            <div class="bond-panel-title">✦ RESONANCE BONDS ✦</div>
+            <div class="bond-panel-subtitle">Rest together to deepen your bonds.</div>
+            <div id="bond-pairs-list" class="bond-pairs-list"></div>
+            <button class="camp-btn camp-btn-minor" onclick="MapUI.closeBondPanel()" style="margin-top:16px">◀ BACK TO CAMP</button>
           </div>
         </div>
 
@@ -909,6 +925,14 @@
 
         <!-- Gold notification banner -->
         <div id="explore-notif"></div>
+
+        <!-- Corruption meter (top-right of canvas) -->
+        <div id="corruption-meter">
+          <span id="corruption-label">◈ CLEAR</span>
+          <div id="corruption-track">
+            <div id="corruption-fill"></div>
+          </div>
+        </div>
 
         <!-- Party HP strip (bottom-left, above loc bar) -->
         <div id="explore-party-hud"></div>

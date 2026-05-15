@@ -72,6 +72,12 @@ const BattleUI = {
       flash: '#818cf8',
       fx: 'abyssalCurrent',
       bg: 'stage_submerged_market'
+    },
+    'shadow_emperor': {
+      theme: 'shadow-emperor',
+      flash: '#7e22ce',
+      fx: 'voidCollapse',
+      bg: 'void_throne'
     }
   },
 
@@ -179,6 +185,45 @@ const BattleUI = {
             }
           });
           if (alive) requestAnimationFrame(animate); else resolve();
+        };
+        animate();
+      });
+    },
+
+    async voidCollapse(ctx, canvas) {
+      return new Promise(resolve => {
+        let radius = 0;
+        const maxRadius = Math.max(canvas.width, canvas.height) * 0.8;
+        const particles = [];
+        for (let i = 0; i < 60; i++) {
+          const ang = Math.random() * Math.PI * 2;
+          const dist = maxRadius + Math.random() * 200;
+          particles.push({
+            x: canvas.width/2 + Math.cos(ang) * dist,
+            y: canvas.height/2 + Math.sin(ang) * dist,
+            tx: canvas.width/2, ty: canvas.height/2,
+            v: 5 + Math.random() * 10
+          });
+        }
+        const animate = () => {
+          ctx.fillStyle = 'rgba(0,0,0,0.15)';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          radius += 25;
+          ctx.fillStyle = '#000';
+          ctx.beginPath(); ctx.arc(canvas.width/2, canvas.height/2, radius, 0, Math.PI * 2); ctx.fill();
+          
+          let pAlive = false;
+          particles.forEach(p => {
+            const dx = p.tx - p.x; const dy = p.ty - p.y;
+            const dist = Math.sqrt(dx*dx + dy*dy);
+            if (dist > 5) {
+              p.x += (dx/dist) * p.v; p.y += (dy/dist) * p.v;
+              ctx.fillStyle = '#7e22ce';
+              ctx.fillRect(p.x, p.y, 4, 4);
+              pAlive = true;
+            }
+          });
+          if (radius < maxRadius || pAlive) requestAnimationFrame(animate); else resolve();
         };
         animate();
       });
@@ -466,10 +511,16 @@ const BattleUI = {
       scene.className = scene.className.split(' ').filter(c => !c.startsWith('arc-bg-')).join(' ');
       scene.classList.add(`arc-bg-${Story.arcIdx % 8}`);
     }
+
+    // 5. Apply Chronos Cycle Atmosphere
+    if (typeof ChronosEngine !== 'undefined') {
+      scene.style.filter = ChronosEngine.getFilter();
+    } else {
+      scene.style.filter = '';
+    }
   },
 
   _initBattleWeather() {
-    if (this._weatherLoopActive) return;
     if (this._weatherLoopActive) return;
     const canvas = this.el('battle-effects-canvas');
     if (!canvas) return;
@@ -478,11 +529,18 @@ const BattleUI = {
     canvas.width = canvas.offsetWidth;
     canvas.height = canvas.offsetHeight;
     
+    if (typeof WeatherEngine !== 'undefined' && typeof MapEngine !== 'undefined') {
+      WeatherEngine.setWeather(MapEngine.getWeather());
+    }
+
     this._weatherLoopActive = true;
     let lastTs = performance.now();
     
     const loop = (ts) => {
-      if (!this._weatherLoopActive || !this.el('battle-screen').classList.contains('active')) return;
+      if (!this._weatherLoopActive || !this.el('battle-screen').classList.contains('active')) {
+        this._weatherLoopActive = false;
+        return;
+      }
       const dt = (ts - lastTs) / 1000;
       lastTs = ts;
       
@@ -490,6 +548,13 @@ const BattleUI = {
         WeatherEngine.update(dt);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         WeatherEngine.draw(ctx);
+      }
+
+      // Keep the Chronos Cycle heartbeat alive during battle
+      if (typeof ChronosEngine !== 'undefined') {
+        ChronosEngine.update(dt);
+        this._applyArcAtmosphere();
+        this.updateStats();
       }
       
       requestAnimationFrame(loop);

@@ -135,6 +135,7 @@ function buildParty() {
   applyRelicBonuses();
   const mastery = _getArchiveMasteryBuffs();
   G.party.forEach(m => applyArchiveMasteryToMember(m, mastery));
+  applyBondRewards();
 }
 
 // Apply active relic bonuses as multipliers on top of base party stats
@@ -189,6 +190,66 @@ function applyRelicBonuses() {
   // firstStrike: flag on G so TurnManager can guarantee party acts first in round 1
   G._firstStrikeRelic = bonus.firstStrike;
   if (bonus.firstStrike) G._firstStrikeUsed = false;
+}
+
+// Apply earned bond tier rewards to current party members.
+// Mirrors applyRelicBonuses() — called at the end of buildParty() so rewards
+// survive every stat recompute (level-up, relic swap, load from save).
+function applyBondRewards() {
+  const rewards = G.earnedBondRewards;
+  if (!rewards || !rewards.length || typeof BOND_DATA === 'undefined') return;
+
+  // Build pairId → charIds lookup
+  const pairChars = {};
+  BOND_DATA.pairs.forEach(p => { pairChars[p.id] = p.chars; });
+
+  // Aggregate per-character flat/pct bonuses and global reaction boosts
+  const charBonus = {}; // { charId: { stat: totalVal, ... } }
+  const reactionBoosts = [];
+
+  rewards.forEach(({ pairId, reward }) => {
+    const chars = pairChars[pairId];
+    if (!chars || !reward) return;
+
+    if (reward.type === 'resonance') {
+      chars.forEach(charId => {
+        if (!charBonus[charId]) charBonus[charId] = {};
+        charBonus[charId][reward.stat] = (charBonus[charId][reward.stat] || 0) + reward.val;
+      });
+    } else if (reward.type === 'reaction_boost') {
+      reactionBoosts.push({ detonator: reward.detonator, aura: reward.aura, mult: reward.mult });
+    }
+  });
+
+  // Apply to party members in the current party
+  G.party.forEach(m => {
+    const bonus = charBonus[m.charId];
+    if (!bonus) return;
+
+    const STAT_FIELD = { hp: 'maxHp', mp: 'maxMp', atk: 'atk', def: 'def', spd: 'spd', mag: 'mag', lck: 'lck' };
+    Object.entries(bonus).forEach(([stat, val]) => {
+      if (stat === 'critRate') {
+        m.critRate = (m.critRate || 0.05) + val;
+        return;
+      }
+      const field = STAT_FIELD[stat];
+      if (!field) return;
+      if (Number.isInteger(val)) {
+        // Flat addition (e.g. spd +3, hp +50)
+        m[field] = (m[field] || 0) + val;
+        if (field === 'maxHp') m.hp = Math.min((m.hp || 0) + val, m.maxHp);
+        if (field === 'maxMp') m.mp = Math.min((m.mp || 0) + val, m.maxMp);
+      } else {
+        // Percentage boost (e.g. atk +0.15 = +15%)
+        m[field] = Math.floor((m[field] || 0) * (1 + val));
+        if (field === 'maxHp') m.hp = Math.min(m.hp || 0, m.maxHp);
+        if (field === 'maxMp') m.mp = Math.min(m.mp || 0, m.maxMp);
+      }
+    });
+  });
+
+  // Store reaction boosts on G for CombatEngine to read
+  G._bondReactionBoosts = reactionBoosts;
 }
 
 function checkLevel() { return checkMemberLevel(G.hero); }
@@ -248,6 +309,7 @@ if (typeof module !== 'undefined' && module.exports) {
     computeStats,
     buildParty,
     applyRelicBonuses,
+    applyBondRewards,
     getExpThreshold,
     checkLevel,
     checkMemberLevel,

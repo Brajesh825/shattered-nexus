@@ -44,3 +44,24 @@ Each location has two boss layers:
 - **Unlock Logic**: Side maps become travel-ready the moment their parent arc is marked as `done`.
 - **Level Scaling**: All regions follow the **Smooth-Curve Pattern** (approx. +7 levels per stage with overlap). This prevents sharp difficulty spikes and encourages exploration.
 - **Connectivity**: Every 80x40 map (Main and Side) follows the "Safe Haven" standard — NPCs and player starts are never blocked by decorative tiles.
+- **Ambient Banter**: Dynamic MapUI system that triggers flavor text based on party composition, location, and idle time. Defined in `data/banter.json`.
+- **Narrative Reflections**: Blocking dialogue triggered after key boss battles to provide emotional closure and world-building. These use the `blocking: true` flag in the banter registry.
+
+---
+
+## 🎭 Dynamic Banter & Reflection Registry
+
+The banter system is the narrative glue of the Shattered Nexus. It is divided into three functional categories:
+
+1. **Ambient (Idle/Explore)**: Triggered after 20s of inactivity or upon map entry. Non-blocking `MapUI.showMsg` banners.
+2. **Contextual (Triggered)**: Manually called by `Story` logic (e.g., `Story.onBattleWon`). 
+3. **Reflective (Blocking)**: High-weight narrative beats that use the full dialogue panel to reflect on boss defeats.
+
+| Banter Key | Trigger Event | Requirement | Tone |
+| :--- | :--- | :--- | :--- |
+| `idle_general` | 20s Inactivity | None | Reflective / Philosophical |
+| `map_entry_general` | Map Load (2s) | None | Observational |
+| `boss_reflection_arc1` | Defeat Void Knight | Rei, Aya, Lulu | Hopeful / Reminiscent |
+| `boss_reflection_arc2` | Defeat Demon Lord | Tao, Rei | Grave / Intellectual |
+
+*Technical Note: All banter triggers are session-tracked via `G.shownBanter` and persisted in the save file to prevent repetition.*

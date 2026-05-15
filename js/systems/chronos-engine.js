@@ -21,7 +21,7 @@ const ChronosEngine = (() => {
   }
 
   function getPhase() {
-    const t = G.nexusTime || 0;
+    const t = G.nexusTime ?? 8.0;
     if (t >= 4 && t < 8)   return 'dawn';
     if (t >= 8 && t < 17)  return 'noon';
     if (t >= 17 && t < 20) return 'dusk';
@@ -29,7 +29,7 @@ const ChronosEngine = (() => {
   }
 
   function getFilter() {
-    const t = G.nexusTime || 0;
+    const t = G.nexusTime ?? 8.0;
     const phase = getPhase();
     
     // Simple block transitions for now; future can interpolate
@@ -46,7 +46,7 @@ const ChronosEngine = (() => {
   }
 
   function formatTime() {
-    const t = G.nexusTime || 0;
+    const t = G.nexusTime ?? 8.0;
     const hours = Math.floor(t);
     const mins = Math.floor((t % 1) * 60);
     return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;

@@ -29,7 +29,8 @@ const StatusSystem = {
     aura_ice: { id: 'aura_ice', label: 'Ice Aura', icon: '❄️', type: 'aura', color: '#00ccff' },
     aura_water: { id: 'aura_water', label: 'Water Aura', icon: '💧', type: 'aura', color: '#0066ff' },
     aura_nature: { id: 'aura_nature', label: 'Nature Aura', icon: '🌿', type: 'aura', color: '#22cc44' },
-    aura_lightning: { id: 'aura_lightning', label: 'Spark Aura', icon: '⚡', type: 'aura', color: '#ffcc00' }
+    aura_lightning: { id: 'aura_lightning', label: 'Spark Aura', icon: '⚡', type: 'aura', color: '#ffcc00' },
+    status_obscured: { id: 'status_obscured', label: 'Obscured', icon: '🌫️', type: 'aura', color: '#cbd5e1' }
   },
 
   /**

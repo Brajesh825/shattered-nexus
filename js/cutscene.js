@@ -14,6 +14,7 @@ const Cutscene = {
     Valka: '#e879f9',
     Drake: '#0ea5e9',
     Rex: '#fbbf24',
+    Sera: '#93c5fd',
   },
 
   ALIAS_TO_CHARID: {

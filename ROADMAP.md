@@ -12,7 +12,7 @@
 
 ### 1. Stability & Maintainability
 - [ ] **Named Damage Modifiers**: Refactor the combat damage chain so STAB, affinity, reactions, mitigation, crits, passives, and relics are named steps.
-- [ ] **JSON Loading Standard**: Move all data loading onto a unified `DataLoader` service.
+- [x] **JSON Loading Standard**: Move all data loading onto a unified `DataLoader` service.
 
 ---
 
@@ -54,6 +54,7 @@
 - [x] **Echo Quest System**: Data-driven hunt/gather quests from `data/quests.json`; NPC `giveQuest` field; arc auto-unlock via `onArcAdvance`. *(Concept: `world_quests_and_rumors.md`)*
 - [x] **World Corruption & Fog**: Time-based corruption accumulation in wild zones, visual void-purple decay, mutant encounter scaling. *(Concept: `corruption_and_infection.md`)*
 - [x] **Character Recruitment Reorder**: Valka → Arc 4 (Sunken Temple), Rex → Arc 5 (Shadow Reach), Drake → Arc 3.
+- [x] **Dynamic Banter & Reflection System**: MapUI-driven flavor text and post-boss narrative reflections with session-aware persistence.
 
 ### 🌍 World & Map Foundations (May 2026)
 - [x] **Arc 1 (Verdant Vale)**: Narrative, enemies, and Void Knight boss finalized.

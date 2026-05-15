@@ -8,6 +8,7 @@ const BGM = {
   _volume: 0.5,
   _userInteracted: false,
   _pendingTrack: null,
+  _fadeInterval: null,
 
   /**
    * Initialize on first user interaction
@@ -109,16 +110,18 @@ const BGM = {
     const stepVolOut = startVolOut / steps;
     const stepVolIn = this._volume / steps;
     let step = 0;
-    
-    const fade = setInterval(() => {
+
+    clearInterval(this._fadeInterval);
+    this._fadeInterval = setInterval(() => {
       step++;
       try {
         oldTrack.volume = Math.max(0, startVolOut - (stepVolOut * step));
         newAudio.volume = Math.min(this._volume, stepVolIn * step);
       } catch(e) {}
-      
+
       if (step >= steps) {
-        clearInterval(fade);
+        clearInterval(this._fadeInterval);
+        this._fadeInterval = null;
         try {
             oldTrack.pause();
             oldTrack.currentTime = 0;
@@ -200,9 +203,14 @@ const BGM = {
   toggleMute(muted) {
     this._muted = muted;
     if (muted) {
+      clearInterval(this._fadeInterval);
+      this._fadeInterval = null;
       this.stop();
+    } else if (this._pendingTrack) {
+      const t = this._pendingTrack;
+      this._pendingTrack = null;
+      this.crossfade(t);
     }
-    // Resume will be handled by the play() call
   },
 };
 
