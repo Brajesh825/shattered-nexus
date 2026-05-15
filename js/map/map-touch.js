@@ -243,6 +243,8 @@ const MapTouch = (() => {
     _initPanelSwipe(panel);
   }
 
-  return { init, reset, initPanelSwipe };
+  function isActive() { return _pinching || _panning; }
+
+  return { init, reset, initPanelSwipe, isActive };
 
 })();

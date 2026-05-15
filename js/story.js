@@ -268,6 +268,7 @@ const Story = {
       if (s.archive) { G.archive = s.archive; if (typeof Archive !== 'undefined') Archive.init(); }
       if (typeof QuestSystem !== 'undefined') QuestSystem.init(s.questState || null);
       G.firedScenes = new Set(s.firedScenes || []);
+      G.shownBanter = new Set(s.shownBanter || []);
 
       // If saved from explore map, restore directly to that map (no overlay/selection)
       if (s.mapId) {
@@ -374,9 +375,19 @@ const Story = {
         this._pendingRelicMsg = null;
         // Prepend relic notification as a narrator line
         const relicLine = { speaker: 'narrator', emotion: 'solemn', text: msg };
-        this._showLines([relicLine, ...postLines], () => this._showCharMoment());
+        this._showLines([relicLine, ...postLines], () => {
+          if (typeof MapUI !== 'undefined' && MapUI.triggerBanter) {
+            MapUI.triggerBanter(`boss_defeated_${this.arc.boss_enemy}`);
+          }
+          this._showCharMoment();
+        });
       } else {
-        this._showLines(postLines, () => this._showCharMoment());
+        this._showLines(postLines, () => {
+          if (typeof MapUI !== 'undefined' && MapUI.triggerBanter) {
+            MapUI.triggerBanter(`boss_defeated_${this.arc.boss_enemy}`);
+          }
+          this._showCharMoment();
+        });
       }
     } else {
       this.phase = 'post_battle';
@@ -1098,6 +1109,7 @@ const Story = {
       ownedRelics: G.ownedRelics || [],
       activeRelics: G.activeRelics || [],
       archive: G.archive || {},
+      shownBanter: Array.from(G.shownBanter || []),
       questState: typeof QuestSystem !== 'undefined' ? QuestSystem.save() : null,
       firedScenes: Array.from(G.firedScenes || []),
       mapId,

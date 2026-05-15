@@ -19,6 +19,9 @@ const MapUI = (() => {
 
   /* ── Notification banner ─────────────────────────────── */
   let _notifTimer = null;
+  let _banterCooldown = false;
+  let _idleTimer = 0;
+
 
   function _toggleDpad(show) {
     const dpad = document.getElementById('joystick-container');
@@ -44,9 +47,11 @@ const MapUI = (() => {
     if (el) {
       el.textContent = text;
       el.classList.add('show');
+      el.style.opacity = '1';
       clearTimeout(_notifTimer);
       _notifTimer = setTimeout(() => {
         el.classList.remove('show');
+        el.style.opacity = '0';
         if (cb) cb();
       }, durationMs || 1200);
     } else {
@@ -54,6 +59,68 @@ const MapUI = (() => {
       if (cb) setTimeout(cb, durationMs || 1200);
     }
   }
+
+  /* ── Dynamic Banter System ───────────────────────────── */
+  
+  /**
+   * Triggers a banter sequence by key.
+   * Logic: Checks cooldown, session-uniqueness, and requirements before playing.
+   */
+  function _showBanter(key) {
+    if (_banterCooldown || !window.BANTER_DATA) return;
+    
+    // Find banter group matching the key (e.g. 'map_enter_verdant_vale')
+    const groups = window.BANTER_DATA[key];
+    if (!groups || !groups.length) return;
+
+    // Filter by requirements (party members present) and session-uniqueness
+    const validGroups = groups.filter(g => {
+      if (G.shownBanter.has(g.id)) return false;
+      const reqs = g.requires_party || g.requires;
+      if (reqs && !reqs.every(id => G.party.some(m => m.charId === id))) return false;
+      return true;
+    });
+
+    if (!validGroups.length) return;
+
+    // Pick a random valid group
+    const group = validGroups[Math.floor(Math.random() * validGroups.length)];
+    
+    // Special case: Boss defeated banter uses the full blocking dialogue UI
+    if (key.startsWith('boss_defeated_') && MapEngine.openDialogue) {
+      const dialogueLines = group.lines.map(l => ({ 
+        speaker: l.speaker, 
+        text: l.text,
+        emotion: l.emotion || 'normal'
+      }));
+      MapEngine.openDialogue(dialogueLines);
+      G.shownBanter.add(group.id);
+      return;
+    }
+
+    // Standard ambient banter uses showMsg pipeline
+    _banterCooldown = true;
+    G.shownBanter.add(group.id);
+    _playBanterLines(group.lines);
+
+    // 45s cooldown between ambient banter events
+    setTimeout(() => { _banterCooldown = false; }, 45000);
+  }
+
+  function _playBanterLines(lines) {
+    if (!lines || !lines.length) return;
+    const line = lines[0];
+    const speaker = (G.chars || []).find(c => c.id === line.speaker)?.name || line.speaker;
+    
+    // Display format: "Aya: 'The breeze here is quite refreshing.'"
+    showMsg(`${speaker}: "${line.text}"`, 3500, () => {
+      if (lines.length > 1) {
+        // Small gap between speakers
+        setTimeout(() => _playBanterLines(lines.slice(1)), 800);
+      }
+    });
+  }
+
 
   const showMapBanner = showMsg;
 
@@ -302,7 +369,21 @@ const MapUI = (() => {
         }
       }
     }
+
+    // 3. Movement input resets idle timer
+    const input = (typeof MapInput !== 'undefined') ? MapInput.poll() : null;
+    if (input && (input.up || input.down || input.left || input.right)) {
+      _idleTimer = 0;
+    } else {
+      _idleTimer += dt;
+      // 20s idle trigger
+      if (_idleTimer >= 20000) {
+        _idleTimer = 0;
+        _showBanter('idle_general');
+      }
+    }
   }
+
 
   /* ── Camp Menu ──────────────────────────────────────── */
   function openCampMenu() {
@@ -339,7 +420,11 @@ const MapUI = (() => {
       Focus.setContext(null);
     }
     MapEngine.resume();
+    
+    // Trigger camp-close banter
+    _showBanter('camp_close_general');
   }
+
 
   function campWorldMap() {
     // Locked until arc 1 boss beaten
@@ -574,5 +659,6 @@ const MapUI = (() => {
     campSave,
     campRelics,
     closeRelics,
+    triggerBanter: _showBanter,
   };
 })();

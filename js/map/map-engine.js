@@ -640,6 +640,7 @@ const MapEngine = (() => {
 
     // Vignette — lighter during day, lantern radius at night
     // Colored edge tint derived from map's ambient palette
+    const atmo = _getAtmosphereColor();
     const rgb = _ambientRGB();
     const edgeR = (rgb.r * 0.18) | 0;
     const edgeG = (rgb.g * 0.18) | 0;
@@ -1788,7 +1789,13 @@ const MapEngine = (() => {
     _running = true;
     _lastTs = performance.now();
     _rafId = requestAnimationFrame(_loop);
+
+    // Trigger map enter banter (ambient)
+    if (typeof MapUI !== 'undefined' && MapUI.triggerBanter) {
+      setTimeout(() => MapUI.triggerBanter(`map_enter_${mapId}`), 2000);
+    }
   }
+
 
   function stop() {
     _running = false;
