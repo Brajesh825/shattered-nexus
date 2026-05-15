@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nexus-cache-v8.90';
+const CACHE_NAME = 'nexus-cache-v8.91';
 
 // Core shell — always pre-cached regardless of quality setting
 const SHELL_ASSETS = [
@@ -239,7 +239,7 @@ self.addEventListener('fetch', event => {
   // Skip non-GET and cross-origin requests
   if (event.request.method !== 'GET' || url.origin !== self.location.origin) return;
 
-  const isMedia = /\.(png|webp|mp3|svg|jpg|jpeg)$/.test(path);
+  const isMedia = /\.(png|webp|mp3|webm|svg|jpg|jpeg)$/.test(path);
 
   if (isMedia) {
     // Cache-first: serve instantly offline, cache on first fetch
