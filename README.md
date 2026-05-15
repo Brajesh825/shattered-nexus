@@ -9,6 +9,13 @@ A browser-based tactical RPG with elemental reaction combat, a full narrative ca
 
 ---
 
+## 🌍 Character Origin Protocol
+The narrative core of *Shattered Nexus* relies on the distinction between the **Summoned** and the **Native**:
+- **The Major 8 (Summoned)**: Aya, Tao, Lulu, Rei, Ria, Valka, Drake, and Rex are **Summoned Strangers**. Each comes from a different world/reality torn apart by the rifts. They are observers and saviors of this world, not its inhabitants.
+- **Sera (Native)**: As of the current build, **Sera is the sole native Aethorian** among the playable cast. She belongs to the Verdant Vale and the Azure Remnant.
+
+---
+
 ## Quick Start
 
 ```

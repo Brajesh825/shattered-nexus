@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nexus-cache-v8.77';
+const CACHE_NAME = 'nexus-cache-v8.82';
 
 // Core shell — always pre-cached regardless of quality setting
 const SHELL_ASSETS = [
@@ -112,7 +112,9 @@ const SHELL_ASSETS = [
   './data/quests.json',
   './data/npcs.js',
   './data/relics.json',
+  './data/banter.json',
   './data/story/index.json',
+  './data/story/bonds.json',
   './data/story/arc_1.json',
   './data/story/arc_2.json',
   './data/story/arc_3.json',

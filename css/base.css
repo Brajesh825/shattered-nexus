@@ -212,7 +212,7 @@ button:active, .cmd-btn:active, .title-btn:active, .b-list-item:active, .pause-b
   position: absolute;
   width: 120vw;
   height: 120vh;
-  background-image: url('../images/enemies/shadow_emperor.png');
+  background-image: url('../images/enemies/shadow_emperor.webp');
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center 20%;

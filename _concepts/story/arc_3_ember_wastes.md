@@ -132,6 +132,8 @@ $$\text{Output Multiplier} = 1.0 + \left(0.12 \times \ln(\text{Turn Count} + 1)\
 
 ---
 
+---
+
 ## 💎 5. Premium Relic & Drop System
 
 Defeating these encounter entities injects bespoke artifacts into the engine registry:
@@ -155,7 +157,44 @@ Defeating these encounter entities injects bespoke artifacts into the engine reg
 
 ---
 
-## 🛠️ 6. Implementation Lifecycle Check
+## 💡 6. Advanced Atmospheric & Heroic Expansions
+
+### A. The Dragoon's Echo (Drake’s Narrative Staging)
+*   **Narrative Hook**: Drake is first encountered as a lone, black-armored silhouette standing atop the `F1 Obsidian Spire`. He is a "Sky-Kin" from a fallen world of floating isles. He recognizes the destruction in the Ember Wastes as a mirror of his own world's end.
+*   **The Three Beats of the Dragoon**:
+    1.  **The Spire (F1 Entrance)**: Drake acts as a distant sentinel. He warns the party about the "Pyroclastic Surges" but refuses to join, bound by a "Vigil of Watch" imposed by Valdris.
+    2.  **The Scavenger Bridge (F1 -> F2 Transition)**: A cinematic event where Drake is seen holding back a swarm of `Void Reavers` to allow scavengers to flee. He acknowledges the party's strength but remains on his vigil.
+    3.  **The Altar of Ash (Pre-Boss)**: Standing at the crater's edge, Drake reveals his curse: he was forced to watch the Phoenix burn eternally. He provides the final narrative setup for the boss fight.
+*   **Recruitment Event**: Occurs in the **Arc 3 Outro** after the Dark Phoenix is laid to rest. The "Vigil of Watch" is broken, and Drake pledges his lance to the party to ensure no other world suffers a "Scorched Spiral."
+*   **Recruitment Dialogue**: *"The sky is heavy today. My wings are gone, but my spear still remembers the weight of the fall. You broke the cycle... now let me help you break the one who started it."*
+
+### B. The Magma Tides (Spatial Puzzle)
+*   **Mechanic**: In F2, certain obsidian floor plates are "floating". Every 5 player steps, a `Magma Tide` occurs.
+*   **Spatial Logic**: Random `10x10` zones of walkable floor tiles swap with `lava` (deadly) tiles.
+*   **Visual Warning (Vivid)**: 2 steps before the swap, the affected tiles pulse with a high-intensity red glow (`#ef4444`).
+*   **Tactical Counter**: Standing on `Anchor Pillars` (unaffected tiles) prevents damage.
+
+### C. Weather Event: Pyroclastic Surge
+*   **Trigger**: Random `15%` chance per 100 steps in F1/F2.
+*   **Effect**: The screen turns a blinding white-orange (`#fbbf24` at 0.4 opacity). Character movement speed is reduced by 50%.
+*   **Gameplay Counter**: Players must find a `Cooling Vent` or hide under `Obsidian Overhangs` to wait out the 30-second surge.
+
+### D. The Smithing Records (Collectible Lore)
+*   **Items**: `Record of the First Hammer`, `Record of the Liquid Steel`, `Record of the Void-Chilled Blade`.
+*   **Payoff**: Turning these into **Kaelen** (Quest 1) unlocks "Relic Reforging" in the Camp menu, allowing for primary stat recalibration.
+
+---
+
+## 🎭 7. Atmospheric Soundscape (Chronicler/Vivid)
+*   **Ambient Track**: `ember_wastes_bgm` — Low, rhythmic industrial thrumming mixed with the sound of hissing steam and distant metallic groans.
+*   **Combat Track**: `scorched_pulse` — High-tempo percussion using metallic "clank" samples to mimic a heartbeat inside a forge.
+*   **Boss Theme**: `immortal_combustion` — Orchestral, featuring rising violins that mimic the flickering of a flame that cannot die.
+
+---
+
+## 🛠️ 8. Implementation Lifecycle Check
 1. **Grid Translation**: Convert the outlined markdown mapping logic into static JSON arrays via **Aethon's** matrix exporter scripts.
-2. **Text Serialization**: Bind the completed dialogue chains natively inside `data/story/arc_3.json`.
-3. **PWA Validation**: Synchronize cache versions inside `sw.js` to clear stale static client routes.
+2. **Dynamic Tiles**: Implement the `tile_swap` logic in `map-engine.js` to support the **Magma Tides** mechanic.
+3. **Weather Hook**: Register `pyroclasticSurge` as a global weather effect in `MapRenderer`.
+4. **Text Serialization**: Bind the completed dialogue chains natively inside `data/story/arc_3.json`.
+5. **PWA Validation**: Synchronize cache versions inside `sw.js` to clear stale static client routes.

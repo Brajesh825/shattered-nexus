@@ -41,17 +41,19 @@ MAP_DEFS.crystal_cavern_f1 = {
   ],
 
   encounterTemplates: [
-    { weight: 4, enemies: ['crystal_shard', 'crystal_shard'] },
-    { weight: 3, enemies: ['skeleton', 'skeleton', 'bat'] },
-    { weight: 1, enemies: ['gem_mimic'] },
+    { weight: 4, enemies: ['crystal_shard', 'crystal_shard'], activePhases: ['noon', 'dusk'] },
+    { weight: 3, enemies: ['skeleton', 'skeleton', 'bat'], activePhases: ['dusk', 'midnight', 'dawn'] },
+    { weight: 2, enemies: ['rat', 'rat', 'rat'], activePhases: ['midnight', 'dawn'] },
+    { weight: 1, enemies: ['gem_mimic'], activePhases: ['midnight'] },
   ],
 
   objective: null,
 
   enemies: [
-    { id: 'skeleton', x: 10, y: 30, patrol: 'random', range: 4, speed: 1.0 },
-    { id: 'bat', x: 45, y: 45, patrol: 'vertical', range: 6, speed: 1.8 },
-    { id: 'crystal_shard', x: 30, y: 30, patrol: 'random', range: 5, speed: 2.0 },
+    { id: 'skeleton', x: 10, y: 30, patrol: 'random', range: 4, speed: 1.0, activePhases: ['midnight', 'dawn'] },
+    { id: 'bat', x: 45, y: 45, patrol: 'vertical', range: 6, speed: 1.8, activePhases: ['dusk', 'midnight'] },
+    { id: 'crystal_shard', x: 30, y: 30, patrol: 'random', range: 5, speed: 2.0, activePhases: ['noon', 'dusk'] },
+    { id: 'rat', x: 22, y: 35, patrol: 'random', range: 4, speed: 1.5, activePhases: ['midnight', 'dawn'] },
   ],
 
   npcs: [

@@ -19,6 +19,9 @@ const MapUI = (() => {
 
   /* ── Notification banner ─────────────────────────────── */
   let _notifTimer = null;
+  let _banterCooldown = false;
+  let _idleTimer = 0;
+
 
   function _toggleDpad(show) {
     const dpad = document.getElementById('joystick-container');
@@ -44,9 +47,11 @@ const MapUI = (() => {
     if (el) {
       el.textContent = text;
       el.classList.add('show');
+      el.style.opacity = '1';
       clearTimeout(_notifTimer);
       _notifTimer = setTimeout(() => {
         el.classList.remove('show');
+        el.style.opacity = '0';
         if (cb) cb();
       }, durationMs || 1200);
     } else {
@@ -54,6 +59,68 @@ const MapUI = (() => {
       if (cb) setTimeout(cb, durationMs || 1200);
     }
   }
+
+  /* ── Dynamic Banter System ───────────────────────────── */
+  
+  /**
+   * Triggers a banter sequence by key.
+   * Logic: Checks cooldown, session-uniqueness, and requirements before playing.
+   */
+  function _showBanter(key) {
+    if (_banterCooldown || !window.BANTER_DATA) return;
+    
+    // Find banter group matching the key (e.g. 'map_enter_verdant_vale')
+    const groups = window.BANTER_DATA[key];
+    if (!groups || !groups.length) return;
+
+    // Filter by requirements (party members present) and session-uniqueness
+    const validGroups = groups.filter(g => {
+      if (G.shownBanter.has(g.id)) return false;
+      const reqs = g.requires_party || g.requires;
+      if (reqs && !reqs.every(id => G.party.some(m => m.charId === id))) return false;
+      return true;
+    });
+
+    if (!validGroups.length) return;
+
+    // Pick a random valid group
+    const group = validGroups[Math.floor(Math.random() * validGroups.length)];
+    
+    // Special case: Boss defeated banter uses the full blocking dialogue UI
+    if (key.startsWith('boss_defeated_') && MapEngine.openDialogue) {
+      const dialogueLines = group.lines.map(l => ({ 
+        speaker: l.speaker, 
+        text: l.text,
+        emotion: l.emotion || 'normal'
+      }));
+      MapEngine.openDialogue(dialogueLines);
+      G.shownBanter.add(group.id);
+      return;
+    }
+
+    // Standard ambient banter uses showMsg pipeline
+    _banterCooldown = true;
+    G.shownBanter.add(group.id);
+    _playBanterLines(group.lines);
+
+    // 45s cooldown between ambient banter events
+    setTimeout(() => { _banterCooldown = false; }, 45000);
+  }
+
+  function _playBanterLines(lines) {
+    if (!lines || !lines.length) return;
+    const line = lines[0];
+    const speaker = (G.chars || []).find(c => c.id === line.speaker)?.name || line.speaker;
+    
+    // Display format: "Aya: 'The breeze here is quite refreshing.'"
+    showMsg(`${speaker}: "${line.text}"`, 3500, () => {
+      if (lines.length > 1) {
+        // Small gap between speakers
+        setTimeout(() => _playBanterLines(lines.slice(1)), 800);
+      }
+    });
+  }
+
 
   const showMapBanner = showMsg;
 
@@ -286,6 +353,41 @@ const MapUI = (() => {
 
 
 
+  /* ── Corruption meter ───────────────────────────────── */
+  function _renderCorruptionMeter() {
+    const bar   = document.getElementById('corruption-fill');
+    const label = document.getElementById('corruption-label');
+    const wrap  = document.getElementById('corruption-meter');
+    if (!bar || !label || !wrap) return;
+
+    const p      = (typeof MapEngine !== 'undefined') ? MapEngine.fogProgress() : 0;
+    const safe   = (typeof MapEngine !== 'undefined') && MapEngine.inSafeZone();
+    const pct    = Math.round(p * 100);
+
+    bar.style.width = `${pct}%`;
+
+    // Color: green → yellow → red → purple
+    const hue = Math.round(120 - p * 150); // 120 (green) → -30 → clamped as purple via hsl
+    const sat = 70 + p * 20;
+    const lit = 52 - p * 14;
+    bar.style.background = p > 0.85
+      ? `linear-gradient(90deg, #7c3aed, #a855f7)`
+      : `hsl(${hue}, ${sat}%, ${lit}%)`;
+
+    if (safe) {
+      label.textContent = '◈ SAFE ZONE';
+      label.style.color = '#4ade80';
+      bar.style.opacity = '0.5'; // dim bar while draining
+    } else {
+      label.textContent = pct > 0 ? `☠ ${pct}%` : '◈ CLEAR';
+      label.style.color = p > 0.6 ? '#f87171' : p > 0.3 ? '#fbbf24' : '#9ca3af';
+      bar.style.opacity = '1';
+    }
+
+    // Pulse the wrap at high corruption
+    wrap.classList.toggle('corruption-danger', p >= 0.8);
+  }
+
   /* ── Periodic HUD / minimap refresh (called by engine each frame) ── */
   let _hudTick = 0;
   function update(dt) {
@@ -293,6 +395,7 @@ const MapUI = (() => {
     if (_hudTick % 6 === 0) {   // ~10×/s at 60fps
       _updatePartyHUD();
       _renderMinimap();
+      _renderCorruptionMeter();
       if (typeof ChronosEngine !== 'undefined') {
         const hintEl = document.querySelector('.explore-map-hint');
         if (hintEl) {
@@ -302,7 +405,23 @@ const MapUI = (() => {
         }
       }
     }
+
+    // 3. Movement input resets idle timer
+    const input = (typeof MapInput !== 'undefined') ? MapInput.poll() : null;
+    const touchActive = (typeof MapTouch !== 'undefined' && typeof MapTouch.isActive === 'function') ? MapTouch.isActive() : false;
+    
+    if ((input && (input.up || input.down || input.left || input.right)) || touchActive) {
+      _idleTimer = 0;
+    } else {
+      _idleTimer += dt;
+      // 20s idle trigger
+      if (_idleTimer >= 20000) {
+        _idleTimer = 0;
+        _showBanter('idle_general');
+      }
+    }
   }
+
 
   /* ── Camp Menu ──────────────────────────────────────── */
   function openCampMenu() {
@@ -327,6 +446,8 @@ const MapUI = (() => {
     if (typeof Focus !== 'undefined') {
       Focus.setContext('camp-menu');
     }
+    const bond = _checkBonds();
+    _renderCampRoster(bond);
   }
 
   function closeCampMenu() {
@@ -337,7 +458,11 @@ const MapUI = (() => {
       Focus.setContext(null);
     }
     MapEngine.resume();
+    
+    // Trigger camp-close banter
+    _showBanter('camp_close_general');
   }
+
 
   function campWorldMap() {
     // Locked until arc 1 boss beaten
@@ -395,6 +520,190 @@ const MapUI = (() => {
     if (typeof Focus !== 'undefined') {
       Focus.setContext('camp-menu');
     }
+  }
+
+  function _checkCriteria(criteria) {
+    if (!criteria) return true;
+    if (criteria.minLevel) {
+      const avgLv = G.party.reduce((s, m) => s + (m.lv || 1), 0) / Math.max(1, G.party.length);
+      if (avgLv < criteria.minLevel) return false;
+    }
+    if (criteria.mapCleared && !(G.clearedMaps || []).includes(criteria.mapCleared)) return false;
+    return true;
+  }
+
+  function _checkBonds() {
+    const btn = document.getElementById('camp-btn-bond');
+    if (!btn || typeof BOND_DATA === 'undefined') return null;
+    
+    const activeIds = G.party.map(m => m.charId);
+    for (const pair of BOND_DATA.pairs) {
+      if (pair.chars.every(c => activeIds.includes(c))) {
+        const currentTier = G.bondProgress[pair.id] || 0;
+        if (currentTier < pair.tiers.length) {
+          const tier = pair.tiers[currentTier];
+          if (_checkCriteria(tier.criteria)) {
+            btn.style.display = 'flex';
+            return { pair, tier };
+          }
+        }
+      }
+    }
+    btn.style.display = 'none';
+    return null;
+  }
+
+  function _renderCampRoster(bondAvailable) {
+    const rosterEl = document.getElementById('camp-roster');
+    if (!rosterEl) return;
+    rosterEl.innerHTML = '';
+    
+    G.party.forEach(member => {
+      const char = (G.chars || []).find(c => c.id === member.charId);
+      if (!char) return;
+      const card = document.createElement('div');
+      card.className = 'camp-char-card';
+      
+      const hasSpark = bondAvailable && bondAvailable.pair.chars.includes(member.charId);
+      
+      card.innerHTML = `
+        <div class="ccc-portrait" style="background-color: ${char.portrait_color || '#333'}">
+          <span class="ccc-icon">${char.icon}</span>
+          ${hasSpark ? '<div class="ccc-spark pulse">✨</div>' : ''}
+        </div>
+        <div class="ccc-name">${char.name}</div>
+      `;
+      rosterEl.appendChild(card);
+    });
+  }
+
+  function campTalk() {
+    const bond = _checkBonds();
+    if (!bond) return;
+
+    closeCampMenu();
+    const lines = bond.tier.dialogue.map(d => ({ speaker: d.speaker, text: d.text }));
+
+    if (typeof MapEngine !== 'undefined' && MapEngine.openDialogue) {
+      MapEngine.openDialogue(lines, () => {
+        // Advance tier
+        G.bondProgress[bond.pair.id] = (G.bondProgress[bond.pair.id] || 0) + 1;
+
+        // Store and apply reward
+        if (bond.tier.reward) {
+          G.earnedBondRewards = G.earnedBondRewards || [];
+          G.earnedBondRewards.push({ pairId: bond.pair.id, reward: bond.tier.reward });
+          if (typeof applyBondRewards === 'function') applyBondRewards();
+        }
+
+        showMsg(`✦ Bond Resonance Up: ${bond.tier.title}!`, 2500);
+        if (bond.tier.reward) showMsg(`✦ ${bond.tier.reward.label} unlocked!`, 2200);
+
+        if (typeof Save !== 'undefined' && Save.patch) {
+          Save.patch({ bondProgress: G.bondProgress, earnedBondRewards: G.earnedBondRewards });
+        }
+
+        // CRITICAL: Restart the engine loop stopped by openDialogue
+        MapEngine.resume();
+      });
+    }
+  }
+
+  /* ── Bond Panel ─────────────────────────────────────────── */
+  const _BOND_COLORS = {
+    aya: '#7dd3fc', tao: '#ef4444', lulu: '#2dd4bf', rei: '#4ade80',
+    ria: '#a78bfa', valka: '#e879f9', drake: '#0ea5e9', rex: '#fbbf24', sera: '#93c5fd',
+  };
+
+  function openBondPanel() {
+    const campEl = document.getElementById('camp-menu');
+    if (campEl) campEl.style.display = 'none';
+    const panel = document.getElementById('bond-panel');
+    if (!panel) return;
+    _renderBondPanel();
+    panel.style.display = 'flex';
+    if (typeof Focus !== 'undefined') Focus.setContext('bond-panel');
+  }
+
+  function closeBondPanel() {
+    const panel = document.getElementById('bond-panel');
+    if (panel) panel.style.display = 'none';
+    const campEl = document.getElementById('camp-menu');
+    if (campEl) campEl.style.display = 'flex';
+    if (typeof Focus !== 'undefined') Focus.setContext('camp-menu');
+  }
+
+  function _renderBondPanel() {
+    const list = document.getElementById('bond-pairs-list');
+    if (!list || typeof BOND_DATA === 'undefined') return;
+    list.innerHTML = '';
+
+    const activeIds = (G.party || []).map(m => m.charId);
+    const progress = G.bondProgress || {};
+    const earned = G.earnedBondRewards || [];
+
+    BOND_DATA.pairs.forEach(pair => {
+      const currentTier = progress[pair.id] || 0;
+      const totalTiers = pair.tiers.length;
+      const isComplete = currentTier >= totalTiers;
+      const inParty = pair.chars.every(id => activeIds.includes(id));
+      const nextTier = !isComplete ? pair.tiers[currentTier] : null;
+      const isAvailable = !!(nextTier && inParty && _checkCriteria(nextTier.criteria));
+
+      // Character portrait pair
+      const charPair = pair.chars.map(id => {
+        const ch = (G.chars || []).find(c => c.id === id);
+        const col = _BOND_COLORS[id] || '#888';
+        return `<div class="bp-char">
+          <div class="bp-avatar" style="border-color:${col};box-shadow:0 0 8px ${col}44">
+            <span style="font-size:22px">${ch?.icon || '?'}</span>
+          </div>
+          <div class="bp-char-name" style="color:${col}">${ch?.name || id}</div>
+        </div>`;
+      }).join('<div class="bp-link">✦</div>');
+
+      // Tier pips
+      const pips = Array.from({ length: totalTiers }, (_, i) =>
+        `<div class="bp-pip${i < currentTier ? ' filled' : ''}"></div>`
+      ).join('');
+
+      // Earned reward tags
+      const earnedForPair = earned.filter(e => e.pairId === pair.id);
+      const rewardTags = earnedForPair.map(e =>
+        `<span class="bp-reward">${e.reward.label}</span>`
+      ).join('');
+
+      // Next criteria line
+      let nextInfo = '';
+      if (nextTier && !isAvailable) {
+        const c = nextTier.criteria || {};
+        const parts = [];
+        if (c.minLevel) parts.push(`Lv ${c.minLevel}+`);
+        if (c.mapCleared) parts.push(c.mapCleared.replace(/_/g, ' '));
+        nextInfo = `<div class="bp-next-req">Requires: ${parts.join(' · ')}</div>`;
+      }
+
+      const card = document.createElement('div');
+      card.className = [
+        'bp-card',
+        isComplete  ? 'bp-complete'  : '',
+        isAvailable ? 'bp-available' : '',
+        !inParty    ? 'bp-inactive'  : '',
+      ].filter(Boolean).join(' ');
+
+      card.innerHTML = `
+        <div class="bp-chars-row">${charPair}</div>
+        <div class="bp-info">
+          <div class="bp-tier-label">${isComplete ? '★ BOND COMPLETE' : `Tier ${currentTier} / ${totalTiers}`}</div>
+          <div class="bp-pips">${pips}</div>
+          ${nextTier ? `<div class="bp-tier-name">${isAvailable ? '✨ ' : ''}${nextTier.title}</div>` : ''}
+          ${isAvailable ? '<div class="bp-cta">Ready — rest at camp!</div>' : nextInfo}
+          ${rewardTags ? `<div class="bp-rewards">${rewardTags}</div>` : ''}
+          ${!inParty ? '<div class="bp-absent">Not in current party</div>' : ''}
+        </div>
+      `;
+      list.appendChild(card);
+    });
   }
 
   function _renderRelicPanel() {
@@ -496,9 +805,13 @@ const MapUI = (() => {
     closeCampMenu,
     campWorldMap,
     campChangeParty,
+    campTalk,
     campHeal,
     campSave,
     campRelics,
     closeRelics,
+    openBondPanel,
+    closeBondPanel,
+    triggerBanter: _showBanter,
   };
 })();

@@ -91,6 +91,7 @@ MAP_DEFS.ember_wastes = (function() {
           { weight: 1, enemies: ['lesser_demon', 'imp', 'imp'] },
           { weight: 1, enemies: ['gargoyle', 'fire_elemental'] },
           { weight: 1, enemies: ['golem', 'imp', 'fire_elemental'] },
+          { weight: 2, enemies: ['rat', 'rat', 'rat'], activePhases: ['midnight', 'dawn'] },
         ],
         tiles: tiles,
         enemies: [
@@ -100,6 +101,8 @@ MAP_DEFS.ember_wastes = (function() {
             { id: 'gargoyle',       x: 85, y: 25, patrol: 'vertical',   range: 12,speed: 1.4 },
             { id: 'lesser_demon',   x: 70, y: 65, patrol: 'horizontal', range: 8, speed: 1.2 },
             { id: 'imp',            x: 30, y: 30, patrol: 'random',     range: 5, speed: 1.6 },
+            { id: 'rat',            x: 15, y: 35, patrol: 'random',     range: 6, speed: 1.4, activePhases: ['midnight', 'dawn'] },
+            { id: 'rat',            x: 40, y: 60, patrol: 'random',     range: 6, speed: 1.4, activePhases: ['midnight', 'dawn'] },
 
             // Central Guardians
             { id: 'golem',          x: 50, y: 45, patrol: 'random',     range: 3, speed: 1.0 },

@@ -40,17 +40,19 @@ MAP_DEFS.crystal_cavern_f2 = {
   ],
 
   encounterTemplates: [
-    { weight: 4, enemies: ['ghost', 'ghost'] },       // Spectral Scholars
-    { weight: 3, enemies: ['lich', 'ghost'] },        // Archive Overseers
-    { weight: 2, enemies: ['crystal_shard', 'bat'] }, // Natural pests
-    { weight: 1, enemies: ['gem_mimic'] },            // Cursed scrolls
+    { weight: 4, enemies: ['ghost', 'ghost'], activePhases: ['midnight', 'dawn'] },       // Spectral Scholars
+    { weight: 3, enemies: ['lich', 'ghost'], activePhases: ['midnight'] },               // Archive Overseers
+    { weight: 2, enemies: ['crystal_shard', 'bat'], activePhases: ['noon', 'dusk'] },   // Natural pests
+    { weight: 2, enemies: ['rat', 'rat'], activePhases: ['midnight', 'dawn'] },          // Scavengers
+    { weight: 1, enemies: ['gem_mimic'], activePhases: ['midnight'] },                  // Cursed scrolls
   ],
 
   objective: null,
 
   enemies: [
-    { id: 'ghost', x: 20, y: 15, patrol: 'random', range: 5, speed: 1.2 },        // Top corridor phantom
-    { id: 'skeleton', x: 45, y: 55, patrol: 'horizontal', range: 8, speed: 1.0 }, // Bottom workshop knight
+    { id: 'ghost', x: 20, y: 15, patrol: 'random', range: 5, speed: 1.2, activePhases: ['midnight', 'dawn'] },        // Top corridor phantom
+    { id: 'skeleton', x: 45, y: 55, patrol: 'horizontal', range: 8, speed: 1.0, activePhases: ['midnight'] },         // Bottom workshop knight
+    { id: 'rat', x: 25, y: 12, patrol: 'random', range: 6, speed: 1.5, activePhases: ['midnight', 'dawn'] },
   ],
 
   npcs: [
