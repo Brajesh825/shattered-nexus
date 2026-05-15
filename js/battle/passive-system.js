@@ -71,9 +71,63 @@ const PassiveSystem = (() => {
     return unit.passive.traits.some(t => t.type === traitType);
   }
 
+  function getBondMultiplier(unit, stat) {
+    if (typeof G === 'undefined' || !G.bondProgress || !G.party) return 1.0;
+    let mult = 1.0;
+    
+    for (const pairId in G.bondProgress) {
+      const tierIdx = G.bondProgress[pairId];
+      if (tierIdx <= 0) continue;
+      
+      const pair = (typeof BOND_DATA !== 'undefined') ? BOND_DATA.pairs.find(p => p.id === pairId) : null;
+      if (!pair || !pair.chars.includes(unit.charId)) continue;
+      
+      const otherCharId = pair.chars.find(c => c !== unit.charId);
+      const otherPresent = G.party.some(m => m.charId === otherCharId && !m.isKO);
+      if (!otherPresent) continue;
+      
+      for (let i = 0; i < tierIdx; i++) {
+        const tier = pair.tiers[i];
+        if (tier && tier.reward?.type === 'resonance' && tier.reward.stat === stat) {
+          if (stat !== 'critRate' && stat !== 'accuracy') mult *= (1.0 + (tier.reward.val || 0));
+        }
+      }
+    }
+    return mult;
+  }
+
+  function getBondBonus(unit, stat) {
+    if (typeof G === 'undefined' || !G.bondProgress || !G.party) return 0;
+    let bonus = 0;
+    
+    for (const pairId in G.bondProgress) {
+      const tierIdx = G.bondProgress[pairId];
+      if (tierIdx <= 0) continue;
+      
+      const pair = (typeof BOND_DATA !== 'undefined') ? BOND_DATA.pairs.find(p => p.id === pairId) : null;
+      if (!pair || !pair.chars.includes(unit.charId)) continue;
+      
+      const otherCharId = pair.chars.find(c => c !== unit.charId);
+      const otherPresent = G.party.some(m => m.charId === otherCharId && !m.isKO);
+      if (!otherPresent) continue;
+      
+      for (let i = 0; i < tierIdx; i++) {
+        const tier = pair.tiers[i];
+        if (tier && tier.reward?.type === 'resonance' && tier.reward.stat === stat) {
+          if (stat === 'critRate' || stat === 'accuracy' || tier.reward.val >= 1) {
+            bonus += (tier.reward.val || 0);
+          }
+        }
+      }
+    }
+    return bonus;
+  }
+
   return {
     getStatMultiplier,
     getStatBonus,
+    getBondMultiplier,
+    getBondBonus,
     val,
     hasTrait
   };

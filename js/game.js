@@ -325,6 +325,8 @@ const G = {
   clearedMaps: [],
   /** @type {Object.<string, string[]>} { mapId: [npcId, ...] } — persisted across sessions */
   npcTalked: {},
+  /** @type {Object.<string, number>} { pairId: tierIndex } — Character Resonance levels */
+  bondProgress: {},
 
   /** @type {PartyMember[]} Active party — up to 4 members */
   party: [],

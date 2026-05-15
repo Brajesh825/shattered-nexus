@@ -702,6 +702,10 @@
           <div class="camp-panel">
             <div class="camp-title">⛺ CAMP</div>
             <div class="camp-subtitle">Rest, regroup, or move on.</div>
+            
+            <div class="camp-roster" id="camp-roster">
+              <!-- Characters with spark bubbles go here -->
+            </div>
             <div class="camp-actions">
               <button class="camp-btn camp-btn-worldmap" onclick="MapUI.campWorldMap()"><span>🗺</span>WORLD MAP</button>
               <button class="camp-btn" onclick="MapUI.campChangeParty()"><span>👥</span>CHANGE PARTY</button>
@@ -709,6 +713,7 @@
               <button class="camp-btn" onclick="MapUI.campHeal()"><span>💊</span>HEAL PARTY</button>
               <button class="camp-btn" onclick="MapUI.campSave()"><span>💾</span>SAVE PROGRESS</button>
               <button class="camp-btn" onclick="MapUI.campRelics()"><span>✦</span>RELICS</button>
+              <button class="camp-btn camp-btn-bond" id="camp-btn-bond" onclick="MapUI.campTalk()" style="display:none; background: linear-gradient(135deg, #a855f7, #ec4899); border-color: #f472b6;"><span>✨</span>BOND EVENTS</button>
               <button class="camp-btn camp-btn-minor" onclick="MapUI.closeCampMenu()">▶ CONTINUE</button>
             </div>
           </div>

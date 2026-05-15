@@ -327,6 +327,8 @@ const MapUI = (() => {
     if (typeof Focus !== 'undefined') {
       Focus.setContext('camp-menu');
     }
+    const bond = _checkBonds();
+    _renderCampRoster(bond);
   }
 
   function closeCampMenu() {
@@ -394,6 +396,77 @@ const MapUI = (() => {
     if (campEl) campEl.style.display = 'flex';
     if (typeof Focus !== 'undefined') {
       Focus.setContext('camp-menu');
+    }
+  }
+
+  function _checkCriteria(criteria) {
+    if (!criteria) return true;
+    if (criteria.minLevel) {
+      const avgLv = G.party.reduce((s, m) => s + (m.lv || 1), 0) / Math.max(1, G.party.length);
+      if (avgLv < criteria.minLevel) return false;
+    }
+    if (criteria.mapCleared && !(G.clearedMaps || []).includes(criteria.mapCleared)) return false;
+    return true;
+  }
+
+  function _checkBonds() {
+    const btn = document.getElementById('camp-btn-bond');
+    if (!btn || typeof BOND_DATA === 'undefined') return null;
+    
+    const activeIds = G.party.map(m => m.charId);
+    for (const pair of BOND_DATA.pairs) {
+      if (pair.chars.every(c => activeIds.includes(c))) {
+        const currentTier = G.bondProgress[pair.id] || 0;
+        if (currentTier < pair.tiers.length) {
+          const tier = pair.tiers[currentTier];
+          if (_checkCriteria(tier.criteria)) {
+            btn.style.display = 'flex';
+            return { pair, tier };
+          }
+        }
+      }
+    }
+    btn.style.display = 'none';
+    return null;
+  }
+
+  function _renderCampRoster(bondAvailable) {
+    const rosterEl = document.getElementById('camp-roster');
+    if (!rosterEl) return;
+    rosterEl.innerHTML = '';
+    
+    G.party.forEach(member => {
+      const char = (G.chars || []).find(c => c.id === member.charId);
+      if (!char) return;
+      const card = document.createElement('div');
+      card.className = 'camp-char-card';
+      
+      const hasSpark = bondAvailable && bondAvailable.pair.chars.includes(member.charId);
+      
+      card.innerHTML = `
+        <div class="ccc-portrait" style="background-color: ${char.portrait_color || '#333'}">
+          <span class="ccc-icon">${char.icon}</span>
+          ${hasSpark ? '<div class="ccc-spark pulse">✨</div>' : ''}
+        </div>
+        <div class="ccc-name">${char.name}</div>
+      `;
+      rosterEl.appendChild(card);
+    });
+  }
+
+  function campTalk() {
+    const bond = _checkBonds();
+    if (!bond) return;
+    
+    closeCampMenu();
+    const lines = bond.tier.dialogue.map(d => ({ speaker: d.speaker, text: d.text }));
+    
+    if (typeof MapEngine !== 'undefined' && MapEngine.openDialogue) {
+      MapEngine.openDialogue(lines, () => {
+        G.bondProgress[bond.pair.id] = (G.bondProgress[bond.pair.id] || 0) + 1;
+        showMsg(`✦ Bond Resonance Up: ${bond.tier.title}!`, 2500);
+        if (typeof Save !== 'undefined' && Save.patch) Save.patch({ bondProgress: G.bondProgress });
+      });
     }
   }
 
@@ -496,6 +569,7 @@ const MapUI = (() => {
     closeCampMenu,
     campWorldMap,
     campChangeParty,
+    campTalk,
     campHeal,
     campSave,
     campRelics,

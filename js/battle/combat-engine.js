@@ -91,6 +91,13 @@ const CombatEngine = (() => {
       }
     }
     
+    // 4c. Character Resonance (Bonds)
+    const passiveSystem = getPassiveSystem();
+    if (passiveSystem && passiveSystem.getBondMultiplier) {
+      finalMult *= passiveSystem.getBondMultiplier(unit, stat);
+      flat += passiveSystem.getBondBonus(unit, stat);
+    }
+    
     // 4b. Dynamic Weather Impact
     if (typeof MapEngine !== 'undefined') {
       const weather = MapEngine.getWeather();
