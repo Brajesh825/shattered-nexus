@@ -327,6 +327,8 @@ const G = {
   npcTalked: {},
   /** @type {Object.<string, number>} { pairId: tierIndex } — Character Resonance levels */
   bondProgress: {},
+  /** @type {Array<{pairId: string, reward: object}>} Accumulated bond tier rewards */
+  earnedBondRewards: [],
   /** @type {Set<string>} IDs of banter shown in the current session (not persisted to save) */
   shownBanter: new Set(),
 
