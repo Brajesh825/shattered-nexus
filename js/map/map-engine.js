@@ -2196,6 +2196,12 @@ const MapEngine = (() => {
   // 0..1 — how far fog has progressed (used by entities to scale aggro/speed)
   function fogProgress() { return _fogProgress(); }
 
+  // 0..1 — raw corruption progress with no grace delay (for the HUD meter)
+  function corruptionProgress() {
+    const cfg = _fogCfg();
+    return Math.min(_fogTime / cfg.peak, 1);
+  }
+
   function interact() {
     if (MapPlayer.moving) return;
     // Suppress rapid dialogue re-triggering loop during window dismissal transient input frames
@@ -2233,7 +2239,7 @@ const MapEngine = (() => {
 
   return {
     init, loadMap, start, stop, resume, onBattleComplete,
-    getMap, getCam, getTile, isRunning, resetFog, fogProgress,
+    getMap, getCam, getTile, isRunning, resetFog, fogProgress, corruptionProgress,
     inSafeZone: _playerInSafeZone,
     npcDialogueNext,
     interact,

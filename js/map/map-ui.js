@@ -360,14 +360,13 @@ const MapUI = (() => {
     const wrap  = document.getElementById('corruption-meter');
     if (!bar || !label || !wrap) return;
 
-    const p      = (typeof MapEngine !== 'undefined') ? MapEngine.fogProgress() : 0;
-    const safe   = (typeof MapEngine !== 'undefined') && MapEngine.inSafeZone();
-    const pct    = Math.round(p * 100);
+    const p    = (typeof MapEngine !== 'undefined') ? MapEngine.corruptionProgress() : 0;
+    const safe = (typeof MapEngine !== 'undefined') && MapEngine.inSafeZone();
+    const pct  = Math.round(p * 100);
 
     bar.style.width = `${pct}%`;
 
-    // Color: green → yellow → red → purple
-    const hue = Math.round(120 - p * 150); // 120 (green) → -30 → clamped as purple via hsl
+    const hue = Math.round(120 - p * 150);
     const sat = 70 + p * 20;
     const lit = 52 - p * 14;
     bar.style.background = p > 0.85
@@ -377,14 +376,15 @@ const MapUI = (() => {
     if (safe) {
       label.textContent = '◈ SAFE ZONE';
       label.style.color = '#4ade80';
-      bar.style.opacity = '0.5'; // dim bar while draining
+      bar.style.opacity = pct > 0 ? '0.5' : '0';
+      wrap.style.opacity = '1';
     } else {
-      label.textContent = pct > 0 ? `☠ ${pct}%` : '◈ CLEAR';
-      label.style.color = p > 0.6 ? '#f87171' : p > 0.3 ? '#fbbf24' : '#9ca3af';
+      label.textContent = pct > 0 ? `☠ ${pct}%` : '☠ DANGER ZONE';
+      label.style.color = p > 0.6 ? '#f87171' : p > 0.3 ? '#fbbf24' : '#ef4444';
       bar.style.opacity = '1';
+      wrap.style.opacity = '1';
     }
 
-    // Pulse the wrap at high corruption
     wrap.classList.toggle('corruption-danger', p >= 0.8);
   }
 
