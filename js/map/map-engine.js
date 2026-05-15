@@ -2196,10 +2196,11 @@ const MapEngine = (() => {
   // 0..1 — how far fog has progressed (used by entities to scale aggro/speed)
   function fogProgress() { return _fogProgress(); }
 
-  // 0..1 — raw corruption progress with no grace delay (for the HUD meter)
+  // 0..1 normalized against mutantThreshold (per-map) — 50% = corrupted spawn, 100% = mutant spawn
   function corruptionProgress() {
-    const cfg = _fogCfg();
-    return Math.min(_fogTime / cfg.peak, 1);
+    const mc   = (_map && _map.mutationConfig) || {};
+    const peak = mc.mutantThreshold ?? 90;
+    return Math.min(_fogTime / peak, 1);
   }
 
   function interact() {
