@@ -115,6 +115,14 @@ const NexusScaling = {
     maxHp: 9999,         // UI comfort cap
     maxStat: 999,        // UI comfort cap
     maxLevel: 25         // Version 1.0 Level Cap
+  },
+  
+  // 9. CHRONOS RESONANCE (World-wide temporal modifiers)
+  chronos: {
+    dawn: { stat: 'spd', mult: 1.10, label: 'Swiftness of Dawn' },
+    noon: { stat: 'maxHp', mult: 1.05, label: 'Vitality of Noon' },
+    dusk: { stat: 'def', mult: 1.10, label: 'Resilience of Dusk' },
+    midnight: { stat: 'mag', mult: 1.15, label: 'Wisdom of Midnight' }
   }
 };
 

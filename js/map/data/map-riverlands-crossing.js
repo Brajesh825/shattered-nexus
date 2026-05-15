@@ -20,37 +20,37 @@ MAP_DEFS.riverlands_crossing = {
     enemyLevelRange: [10, 20],
     encounterTemplates: [
         // Groups of 4 (Rare/Hard Encounters)
-        { weight: 1, enemies: ['bandit', 'bandit', 'bandit', 'bandit'] },
-        { weight: 1, enemies: ['merman', 'merman', 'wisp', 'harpy'] },
-        { weight: 1, enemies: ['bandit', 'bandit', 'wisp', 'wisp'] },
+        { weight: 1, enemies: ['bandit', 'bandit', 'bandit', 'bandit'], activePhases: ['noon', 'dusk'] },
+        { weight: 1, enemies: ['merman', 'merman', 'wisp', 'harpy'], activePhases: ['midnight', 'dawn'] },
+        { weight: 1, enemies: ['bandit', 'bandit', 'wisp', 'wisp'], activePhases: ['dusk', 'midnight'] },
         
         // Groups of 3
-        { weight: 2, enemies: ['bandit', 'bandit', 'bandit'] },
-        { weight: 1, enemies: ['merman', 'merman', 'wisp'] },
-        { weight: 1, enemies: ['bandit', 'harpy', 'wisp'] },
+        { weight: 2, enemies: ['bandit', 'bandit', 'bandit'], activePhases: ['noon', 'dusk'] },
+        { weight: 1, enemies: ['merman', 'merman', 'wisp'], activePhases: ['midnight', 'dawn'] },
+        { weight: 1, enemies: ['bandit', 'harpy', 'wisp'], activePhases: ['dusk', 'midnight'] },
         
         // Groups of 2
-        { weight: 4, enemies: ['bandit', 'bandit'] },
-        { weight: 3, enemies: ['merman', 'merman'] },
-        { weight: 2, enemies: ['bandit', 'wisp'] },
-        { weight: 2, enemies: ['merman', 'wisp'] },
-        { weight: 1, enemies: ['wisp', 'wisp'] },
-        { weight: 1, enemies: ['harpy', 'bandit'] },
-        { weight: 1, enemies: ['merman', 'harpy'] },
+        { weight: 4, enemies: ['bandit', 'bandit'], activePhases: ['noon', 'dusk'] },
+        { weight: 3, enemies: ['merman', 'merman'], activePhases: ['midnight', 'dawn'] },
+        { weight: 2, enemies: ['bandit', 'wisp'], activePhases: ['dusk', 'midnight'] },
+        { weight: 2, enemies: ['merman', 'wisp'], activePhases: ['midnight', 'dawn'] },
+        { weight: 1, enemies: ['wisp', 'wisp'], activePhases: ['midnight'] },
+        { weight: 1, enemies: ['harpy', 'bandit'], activePhases: ['noon', 'dusk'] },
+        { weight: 1, enemies: ['merman', 'harpy'], activePhases: ['dusk', 'midnight'] },
         
         // Groups of 1
-        { weight: 3, enemies: ['wisp'] },
-        { weight: 2, enemies: ['harpy'] }
+        { weight: 3, enemies: ['wisp'], activePhases: ['midnight', 'dawn'] },
+        { weight: 2, enemies: ['harpy'], activePhases: ['noon', 'dusk'] }
     ],
     enemies: [
         // --- BRIDGE SENTINELS ---
-        { id: 'bandit', x: 11, y: 25,  patrol: 'horizontal', range: 4,  speed: 1.0 },
-        { id: 'bandit', x: 70, y: 29,  patrol: 'random',     range: 3,  speed: 1.1 },
+        { id: 'bandit', x: 11, y: 25,  patrol: 'horizontal', range: 4,  speed: 1.0, activePhases: ['noon', 'dusk'] },
+        { id: 'bandit', x: 70, y: 29,  patrol: 'random',     range: 3,  speed: 1.1, activePhases: ['noon', 'dusk'] },
         // --- WATERFALL PATROL ---
-        { id: 'wisp',   x: 24, y: 26,  patrol: 'vertical',   range: 8,  speed: 1.5 },
-        { id: 'merman', x: 27, y: 28,  patrol: 'horizontal', range: 6,  speed: 1.2 },
+        { id: 'wisp',   x: 24, y: 26,  patrol: 'vertical',   range: 8,  speed: 1.5, activePhases: ['midnight', 'dawn'] },
+        { id: 'merman', x: 27, y: 28,  patrol: 'horizontal', range: 6,  speed: 1.2, activePhases: ['midnight', 'dawn'] },
         // --- CANYON CLIFFS ---
-        { id: 'harpy',  x: 60, y: 25,  patrol: 'random',     range: 5,  speed: 1.4 },
+        { id: 'harpy',  x: 60, y: 25,  patrol: 'random',     range: 5,  speed: 1.4, activePhases: ['noon', 'dusk'] },
         // --- MAP BOSS ---
         { id: 'river_king', x: 40, y: 27, patrol: 'stationary', isBoss: true, level: 20, label: 'River King' }
     ],

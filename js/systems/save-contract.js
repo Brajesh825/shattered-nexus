@@ -23,7 +23,8 @@ const SaveContract = (() => {
       unlockedChars: G.unlockedChars || [],
       inventory: G.inventory || [],
       questState: typeof QuestSystem !== 'undefined' ? QuestSystem.save() : null,
-      firedScenes: Array.from(G.firedScenes || [])
+      firedScenes: Array.from(G.firedScenes || []),
+      nexusTime: G.nexusTime ?? 8.0
     };
   }
 

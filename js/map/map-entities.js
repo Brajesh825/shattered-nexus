@@ -438,10 +438,39 @@ const MapEntities = (() => {
     return 1.0 + 0.8 * fp;
   }
 
+  /**
+   * Helper: Is this entity (NPC/Enemy/Template) active at the current Nexus Time?
+   */
+  function _isEntityActive(n) {
+    if (typeof ChronosEngine === 'undefined') return true;
+    
+    // 1. Phase gating (e.g. ['dawn', 'noon'])
+    if (n.activePhases && !n.activePhases.includes(ChronosEngine.getPhase())) {
+      return false;
+    }
+    
+    // 2. Hour gating [start, end] (e.g. [22, 4] for night)
+    if (n.activeHours) {
+      const [start, end] = n.activeHours;
+      const t = G.nexusTime || 0;
+      if (start < end) {
+        if (t < start || t >= end) return false;
+      } else {
+        // Midnight wrap-around logic
+        if (t < start && t >= end) return false;
+      }
+    }
+    
+    return true;
+  }
+
   function init(map) {
     let normalCount = 0;
     const filteredEnemies = (map.enemies || []).filter(e => {
-      // Check if boss or elite
+      // 1. Timing Gating
+      if (!_isEntityActive(e)) return false;
+
+      // 2. Elite Check
       const raw = (G && G.enemies) ? G.enemies.find(r => r.id === e.id) : null;
       const isElite = raw ? (raw.isBoss || raw.tier >= 3) : (e.isBoss || e.id.includes('boss'));
       
@@ -665,6 +694,10 @@ const MapEntities = (() => {
     for (let i = 0; i < _enemies.length; i++) {
       const en = _enemies[i];
       if (!en.alive) continue;
+      
+      // Chronos gating check for physical map enemies
+      if (!_isEntityActive(en)) continue;
+
       if (en.tx === ptx && en.ty === pty) {
         _encounteredIdx = i;
         const ids = _buildEncounterGroup(en.id, map);
@@ -728,12 +761,28 @@ const MapEntities = (() => {
 
     // Use encounter templates if defined on the map, else roll random group size
     if (map.encounterTemplates && map.encounterTemplates.length) {
-      // Weighted random pick of a template
-      const total  = map.encounterTemplates.reduce((s, t) => s + (t.weight || 1), 0);
-      let roll     = Math.random() * total;
-      for (const tmpl of map.encounterTemplates) {
-        roll -= (tmpl.weight || 1);
-        if (roll <= 0) return tmpl.enemies.slice(0, 4);
+      // 1. Filter templates by Chronos Cycle (Time Gating)
+      let templates = map.encounterTemplates.filter(t => _isEntityActive(t));
+      
+      // 2. If we have a triggerId (physical enemy touched), prioritize templates containing that enemy
+      if (triggerId) {
+        const matching = templates.filter(t => t.enemies.includes(triggerId));
+        if (matching.length) templates = matching;
+        else {
+          // If the physical enemy isn't in ANY active template, skip template logic 
+          // to ensure the fallback logic uses the correct firstEnemy (line 785)
+          templates = []; 
+        }
+      }
+
+      if (templates.length) {
+        // Weighted random pick of a template
+        const total  = templates.reduce((s, t) => s + (t.weight || 1), 0);
+        let roll     = Math.random() * total;
+        for (const tmpl of templates) {
+          roll -= (tmpl.weight || 1);
+          if (roll <= 0) return tmpl.enemies.slice(0, 4);
+        }
       }
     }
 
@@ -1241,10 +1290,8 @@ const MapEntities = (() => {
     }
 
     function _renderNPC(ctx, cam, TILE, n, inVision) {
-        // Schedule gating check based on map configuration
-        if (typeof ChronosEngine !== 'undefined' && n.activePhases) {
-            if (!n.activePhases.includes(ChronosEngine.getPhase())) return;
-        }
+        // Schedule gating check based on Chronos Cycle
+        if (!_isEntityActive(n)) return;
 
         // NPCs in a scene walk are always rendered — don't let fog cull them mid-exit.
         // Non-scene NPCs use pixel position (not snapped tile) for a smooth fade.
@@ -1366,9 +1413,7 @@ const MapEntities = (() => {
       // walk through an NPC during the interpolation window
       checkNPCAt: (x,y) => {
         return _npcs.find(n => {
-          if (typeof ChronosEngine !== 'undefined' && n.activePhases) {
-            if (!n.activePhases.includes(ChronosEngine.getPhase())) return false;
-          }
+          if (!_isEntityActive(n)) return false;
           return (n.tx === x && n.ty === y) || (n.moving && n.prevTx === x && n.prevTy === y);
         });
       },

@@ -327,3 +327,47 @@ test('enemy and npc sprites exist', () => {
 
   assert.deepStrictEqual(missing, []);
 });
+
+test('map entities have valid Chronos phases', () => {
+  const mapDefs = loadMapDefs();
+  const validPhases = ['dawn', 'noon', 'dusk', 'midnight'];
+  const missing = [];
+
+  Object.entries(mapDefs).forEach(([mapId, map]) => {
+    const entities = [
+      ...(map.enemies || []),
+      ...(map.npcs || []),
+      ...(map.encounterTemplates || [])
+    ];
+
+    entities.forEach((ent, idx) => {
+      // 1. Validate Phase Gating
+      if (ent.activePhases) {
+        if (!Array.isArray(ent.activePhases)) {
+          missing.push(`${mapId} entity[${idx}]: activePhases must be an array`);
+        } else {
+          ent.activePhases.forEach(p => {
+            if (!validPhases.includes(p)) missing.push(`${mapId} entity[${idx}]: invalid phase "${p}"`);
+          });
+        }
+      }
+      
+      // 2. Validate Hour Gating
+      if (ent.activeHours) {
+        if (!Array.isArray(ent.activeHours) || ent.activeHours.length !== 2) {
+          missing.push(`${mapId} entity[${idx}]: activeHours must be [start, end]`);
+        } else {
+          const [s, e] = ent.activeHours;
+          if (typeof s !== 'number' || typeof e !== 'number' || s < 0 || s >= 24 || e < 0 || e >= 24) {
+            missing.push(`${mapId} entity[${idx}]: activeHours ${s}-${e} out of range 0-24`);
+          }
+        }
+      }
+    });
+  });
+
+  assert.deepStrictEqual(missing, []);
+});
+
+const { run } = require('./test-harness.js');
+run();
