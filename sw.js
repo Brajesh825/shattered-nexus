@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nexus-cache-v8.91';
+const CACHE_NAME = 'nexus-cache-v8.98';
 
 // Core shell — always pre-cached regardless of quality setting
 const SHELL_ASSETS = [
@@ -44,6 +44,7 @@ const SHELL_ASSETS = [
   './js/cutscene.js',
   // Battle
   './js/battle/action-handler.js',
+  './js/battle/auto-battle.js',
   './js/battle/combat-engine.js',
   './js/battle/enemy-scaling.js',
   './js/battle/formation-rules.js',

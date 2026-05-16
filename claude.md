@@ -113,14 +113,14 @@ Final_Stat = floor( ( (Base_Stat × Tier_Mult) + (SpawnLevel - 1) × Tier_Growth
 - **Tier 3 Growth (per level)**: HP: 22 | ATK: 3.0 | DEF: 2.0 | SPD: 1.0 | MAG: 0.6
 
 > [!CAUTION]
-> **HANDS-OFF DIRECTIVE**: The `Base_Stats` for Story Bosses in `enemies.json` are primary gameplay anchors. Antigravity is **NOT permitted** to tweak these values or the multipliers above without explicit user approval. 
+> **HANDS-OFF DIRECTIVE**: The `Base_Stats` for Story Bosses in `enemies.json` are primary gameplay anchors and represent the **authoritative source of truth** — they are hand-tuned and verified by the user. Antigravity is **NOT permitted** to tweak these values or the multipliers above without explicit user approval. If the archetype reference below ever conflicts with `enemies.json`, the JSON wins — update this doc, not the data.
 
-### 🛡️ Boss Archetypes (Reference)
-- **Void Knight (Arc 1)**: 240 HP / 22 DEF (The Balanced Start)
-- **Demon Lord (Arc 2)**: 185 HP / 15 DEF (The Magic Menace)
-- **King Galdor (Map Boss)**: 250 HP / 36 ATK (The Greed King - Scales ATK/DEF with HP loss)
-- **Spectral Guardian (Map Boss)**: 480 HP / 60 DEF (The Wall - Shatters into glass cannon at 40% HP)
-- **Dark Phoenix (Arc 3)**: 170 HP / 10 DEF (The Self-Healer)
+### 🛡️ Boss Archetypes (Reference — synced to `data/enemies.json`)
+- **Void Knight (Arc 1)**: 280 HP / 32 ATK / 22 DEF / 12 SPD / 26 MAG (The Balanced Start — sequenced AI, void/shadow/physical resist)
+- **Demon Lord (Arc 2)**: 340 HP / 38 ATK / 18 DEF / 14 SPD / 45 MAG (The Magic Menace — fire-element, statPhases enrage)
+- **King Galdor (Map Boss)**: 250 HP / 36 ATK / 16 DEF / 8 SPD / 10 MAG (The Greed King — Scales ATK/DEF with HP loss via statPhases)
+- **Spectral Guardian (Map Boss)**: 680 HP / 30 ATK / 60 DEF / 12 SPD / 24 MAG (The Wall — Shatters into glass cannon at 40% HP)
+- **Dark Phoenix (Arc 3)**: 170 HP / 18 ATK / 10 DEF / 15 SPD / 34 MAG (The Self-Healer — support AI role)
 
 ### 🗂️ Boss Classification (VVI Standard)
 Maintain the distinction between encounter triggers:

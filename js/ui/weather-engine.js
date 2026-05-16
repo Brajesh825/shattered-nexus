@@ -11,7 +11,9 @@ const WeatherEngine = (() => {
     rain:   { count: 60, color: '#6fb0ff', speed: 800, length: 15, width: 1,   angle: 75,  drift: 0  },
     ash:    { count: 35, color: '#b0a8a0', speed: 70,  length: 3,  width: 3,   angle: 90,  drift: 25,
               colors: ['#b0a8a0','#989088','#c0b8b0','#807870'] },
-    petal:  { count: 15, color: '#ffb7c5', speed: 60,  length: 6,  width: 4,   angle: 110, drift: 40 },
+    petal:  { count: 45, color: '#ffb7c5', speed: 60,  length: 6,  width: 4,   angle: 110, drift: 40 },
+    verdant_petal: { count: 60, color: '#4ade80', speed: 60, length: 6, width: 4, angle: 110, drift: 40,
+              colors: ['#4ade80', '#22c55e', '#86efac'] },
     snow:   { count: 50, color: '#ffffff', speed: 100, length: 3,  width: 3,   angle: 90,  drift: 10 },
     leaves: { count: 28, color: '#5b8a3e', speed: 85,  length: 9,  width: 5,   angle: 98,  drift: 70,
               colors: ['#5b8a3e','#7ab830','#c8a820','#b85010','#d4622a','#4d7832'] },
@@ -128,6 +130,17 @@ const WeatherEngine = (() => {
         ctx.arc(p.x, p.y, p.w * twinkle, 0, Math.PI * 2);
         ctx.fill();
         ctx.shadowBlur = 0;
+
+      } else if (currentType === 'petal' || currentType === 'verdant_petal') {
+        ctx.save();
+        ctx.globalAlpha = p.o;
+        ctx.fillStyle = pColor;
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.phase * 0.4);
+        ctx.beginPath();
+        ctx.ellipse(0, 0, p.w, p.l * 0.5, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
 
       } else if (currentType === 'ash') {
         ctx.globalAlpha = p.o * (0.5 + 0.5 * Math.sin(p.phase * 0.8));

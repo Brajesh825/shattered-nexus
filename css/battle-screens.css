@@ -703,6 +703,111 @@
   box-shadow: 0 0 12px #c084fc40;
 }
 
+/* ── Auto-Battle Toggle Button ─────────────────────────── */
+.cmd-auto-btn {
+  border-color: #557060;
+  color: #80f0c8;
+  font-size: var(--fs-base);
+}
+.cmd-auto-btn:hover:not(:disabled) {
+  border-color: #80f0c8;
+  color: #fff;
+  box-shadow: 0 0 12px #80f0c840;
+}
+.cmd-auto-btn.auto-active {
+  background: linear-gradient(135deg, rgba(80, 240, 200, 0.18), rgba(216, 189, 96, 0.22));
+  border-color: #80f0c8;
+  color: #fff;
+  text-shadow: 0 0 6px rgba(128, 255, 200, 0.7);
+  animation: autoBtnPulse 1.8s ease-in-out infinite;
+}
+@keyframes autoBtnPulse {
+  0%, 100% { box-shadow: 0 0 8px rgba(128, 255, 200, 0.35), inset 0 0 8px rgba(128, 255, 200, 0.15); }
+  50%      { box-shadow: 0 0 18px rgba(128, 255, 200, 0.65), inset 0 0 14px rgba(128, 255, 200, 0.3); }
+}
+
+/* ── Vivid AUTO MODE banner (top of battle screen) ───── */
+#auto-mode-banner {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 70;
+  pointer-events: none;
+  overflow: hidden;
+  animation: autoBannerSlide 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes autoBannerSlide {
+  from { opacity: 0; transform: translate(-50%, -24px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
+.ab-banner-pulse {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg,
+    rgba(128, 240, 200, 0) 0%,
+    rgba(128, 240, 200, 0.35) 50%,
+    rgba(128, 240, 200, 0) 100%);
+  animation: autoBannerSweep 2.4s linear infinite;
+  pointer-events: none;
+}
+@keyframes autoBannerSweep {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+.ab-banner-content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 22px;
+  background: rgba(10, 18, 30, 0.85);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(128, 240, 200, 0.5);
+  border-top: 2px solid #80f0c8;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5), 0 0 22px rgba(128, 240, 200, 0.2);
+}
+.ab-banner-icon {
+  font-size: 18px;
+  filter: drop-shadow(0 0 6px rgba(128, 240, 200, 0.7));
+  animation: autoBannerBob 1.6s ease-in-out infinite;
+}
+@keyframes autoBannerBob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-2px); }
+}
+.ab-banner-text {
+  font-family: var(--px);
+  font-size: var(--fs-sm);
+  letter-spacing: 3px;
+  color: #c0fde0;
+  text-shadow: 0 0 8px rgba(128, 240, 200, 0.6);
+  font-weight: 700;
+  white-space: nowrap;
+}
+.ab-banner-hint {
+  font-family: var(--px);
+  font-size: 8px;
+  letter-spacing: 1.5px;
+  color: rgba(192, 253, 224, 0.55);
+  margin-left: 4px;
+  border-left: 1px solid rgba(128, 240, 200, 0.3);
+  padding-left: 10px;
+  white-space: nowrap;
+}
+@media (max-width: 480px) {
+  .ab-banner-hint { display: none; }
+  .ab-banner-content { padding: 6px 14px; gap: 8px; }
+  .ab-banner-text { font-size: 10px; letter-spacing: 2px; }
+}
+
+/* Subtle dim on the action menu while AUTO is choosing */
+.cmd-grid.auto-thinking .cmd-btn:not(.cmd-auto-btn) {
+  opacity: 0.45;
+  transition: opacity 0.3s;
+}
+
 .cmd-btn {
   background: rgba(15, 12, 46, 0.35);
   backdrop-filter: blur(4px);
