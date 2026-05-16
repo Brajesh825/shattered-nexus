@@ -838,7 +838,8 @@ const MapEntities = (() => {
       const sy = en.py - cam.y;
       if (sx < -TILE || sy < -TILE || sx > ctx.canvas.width + TILE || sy > ctx.canvas.height + TILE) return;
 
-      const bounce = en.moving ? Math.sin(en.frame / 4 * Math.PI * 2) * 3 : 0;
+      const breathe = Math.sin((en.mutationPhase || 0) * 2.0) * 1.5;
+      const bounce  = en.moving ? Math.sin(en.frame / 4 * Math.PI * 2) * 3 : breathe;
       const mut    = en.mutation; 
 
       const bossScale = en.isBoss ? 2.2 : 1.0;
@@ -1153,6 +1154,22 @@ const MapEntities = (() => {
           continue;
         }
 
+        // ── Entity Awareness (Look-at player) ─────────────
+        n._awareFacing = null;
+        if (!n.moving && !n._sceneWalkTarget && !n._sceneExitTarget && !n.facingOverride) {
+            const ptx = (typeof MapPlayer !== 'undefined') ? MapPlayer.tx : n.tx;
+            const pty = (typeof MapPlayer !== 'undefined') ? MapPlayer.ty : n.ty;
+            const dx = ptx - n.tx, dy = pty - n.ty;
+            const distSq = dx*dx + dy*dy;
+            if (distSq <= 12.25) { // 3.5 tiles radius
+                if (Math.abs(dx) > Math.abs(dy)) {
+                    n._awareFacing = { dx: Math.sign(dx) || 1, dy: 0 };
+                } else {
+                    n._awareFacing = { dx: 0, dy: Math.sign(dy) || 1 };
+                }
+            }
+        }
+
         if (n.moving) {
           n.moveTimer += dt;
           const t = Math.min(n.moveTimer / NPC_MOVE_DUR, 1);
@@ -1232,8 +1249,8 @@ const MapEntities = (() => {
 
     function _getNPCDir(n, img) {
       const w = img.naturalWidth, h = img.naturalHeight;
-      // facingOverride lets the scene runner force a direction for cinematic effect
-      const face = n.facingOverride || n.facing;
+      // Priority: Forced Override > Aware Look-at > Natural Facing
+      const face = n.facingOverride || n._awareFacing || n.facing;
       const dx = face.dx, dy = face.dy;
       if      (dy > 0)  return { cx: 0,      cy: 0,      rev: false }; // front
       else if (dy < 0)  return { cx: w / 2,  cy: h / 2,  rev: false }; // back
@@ -1310,10 +1327,11 @@ const MapEntities = (() => {
         ctx.ellipse(sx + TILE / 2, sy + TILE - 3, TILE * 0.35, 6, 0, 0, Math.PI * 2);
         ctx.fill();
 
-        // Match player: walk bob when moving, flat when idle
+        // Match player: walk bob when moving, "breathe" when idle
+        const breathe = Math.sin(performance.now() / 600) * 1.5;
         const bounce = n.moving
           ? Math.sin(n.frame / NPC_FRAME_CNT * Math.PI * 2) * 2
-          : 0;
+          : breathe;
         
         const img = _loadImg(n.sprite);
         let fade = 1.0;
