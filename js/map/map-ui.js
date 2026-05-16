@@ -388,6 +388,48 @@ const MapUI = (() => {
     wrap.classList.toggle('corruption-danger', p >= 0.8);
   }
 
+  /* ── Quest Tracker (top-right, below minimap) ───────── */
+  let _lastQuestHash = '';
+  function _renderQuestTracker() {
+    const root = document.getElementById('quest-tracker');
+    if (!root || typeof QuestSystem === 'undefined') return;
+
+    const active = QuestSystem.getActive ? QuestSystem.getActive() : [];
+    if (!active.length) {
+      if (root.style.display !== 'none') root.style.display = 'none';
+      _lastQuestHash = '';
+      return;
+    }
+
+    // Show top 3, prioritise complete (ready-to-submit) first
+    const sorted = active.slice().sort((a, b) => (b.complete ? 1 : 0) - (a.complete ? 1 : 0));
+    const top = sorted.slice(0, 3);
+
+    const hash = top.map(q => `${q.id}|${q.current}|${q.count}|${q.complete?1:0}`).join('~');
+    if (hash === _lastQuestHash) return;
+    _lastQuestHash = hash;
+
+    root.style.display = '';
+    const list = document.getElementById('quest-tracker-list');
+    if (!list) return;
+    list.innerHTML = '';
+
+    top.forEach(q => {
+      const pct = q.complete ? 100 : Math.min(100, Math.floor(((q.current || 0) / Math.max(q.count || 1, 1)) * 100));
+      const label = q.label || q.id;
+      const row = document.createElement('div');
+      row.className = 'qt-row' + (q.complete ? ' qt-complete' : '');
+      const status = q.complete
+        ? '<span class="qt-progress" style="color:#b8ffc0">✔ READY — RETURN TO GIVER</span>'
+        : `<div class="qt-progress">
+             <span>${q.current || 0}/${q.count || 1}</span>
+             <div class="qt-bar-wrap"><div class="qt-bar-fill" style="width:${pct}%"></div></div>
+           </div>`;
+      row.innerHTML = `<div class="qt-name">${label}</div>${status}`;
+      list.appendChild(row);
+    });
+  }
+
   /* ── Periodic HUD / minimap refresh (called by engine each frame) ── */
   let _hudTick = 0;
   function update(dt) {
@@ -396,6 +438,7 @@ const MapUI = (() => {
       _updatePartyHUD();
       _renderMinimap();
       _renderCorruptionMeter();
+      _renderQuestTracker();
       if (typeof ChronosEngine !== 'undefined') {
         const hintEl = document.querySelector('.explore-map-hint');
         if (hintEl) {
