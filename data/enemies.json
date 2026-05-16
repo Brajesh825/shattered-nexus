@@ -4769,10 +4769,68 @@
     "aiRole": "support",
     "statPhases": [
       {
+        "hp": 0.75,
+        "atk": 1.2,
+        "def": 1.1,
+        "spd": 1.15,
+        "mag": 1.25
+      },
+      {
         "hp": 0.5,
-        "atk": 1.6,
-        "mag": 1.4,
-        "spd": 1.2
+        "atk": 1.5,
+        "def": 1.3,
+        "spd": 1.3,
+        "mag": 1.6
+      },
+      {
+        "hp": 0.25,
+        "atk": 1.9,
+        "def": 0.65,
+        "spd": 1.55,
+        "mag": 2.1
+      }
+    ],
+    "battleEvents": [
+      {
+        "id": "river_king_awakening",
+        "fired": false,
+        "trigger": {
+          "type": "hp",
+          "threshold": 0.5
+        },
+        "lines": [
+          {
+            "speaker": "River King",
+            "text": "We negotiated for peace... We paid in silence... But the river is choked with black shadow!"
+          },
+          {
+            "speaker": "Lulu",
+            "text": "The corruption has seeped completely into the riverbed! You can't stay neutral anymore!"
+          },
+          {
+            "speaker": "Aya",
+            "text": "The contract was a trap! Valdris never planned to spare the Riverlands!"
+          },
+          {
+            "speaker": "River King",
+            "text": "OUR COVENANT IS BROKEN! BY THE LAWS OF THE FLOOD, WE SHALL COLLECT THE FINAL TOLL!"
+          }
+        ],
+        "onComplete": {
+          "logMsg": "🌊 The River King unleashes Mirror of Truths! Direct combat fury erupts!",
+          "flash": "rgba(0, 218, 255, 0.4)",
+          "screenShake": true,
+          "addStatus": {
+            "id": "status_mag_boost",
+            "icon": "🔮",
+            "label": "Mirror of Truths",
+            "stat": "mag",
+            "type": "mult",
+            "value": 1.5,
+            "turns": 99,
+            "color": "#00d9ff"
+          }
+        }
       }
     ],
     "stats": {
