@@ -27,7 +27,7 @@ const MapEngine = (() => {
 
     const layers = MapData.getLayers(_map);
     if (!layers || !layers[0] || !Array.isArray(layers[0])) return true; // Map data not ready
-    
+
     // 1. Direct Hit Check (Layer-by-layer)
     for (const layer of layers) {
       if (!layer) continue;
@@ -74,10 +74,10 @@ const MapEngine = (() => {
               relX += Math.floor(w / 2);
             }
             // Bottom-Left: relX is already correct (0 is left)
-            
+
             // Invert relY because mask[0] is the top row, but ty is the bottom anchor
             // relY is negative for tiles above the anchor
-            const maskY = (h - 1) + relY; 
+            const maskY = (h - 1) + relY;
             const maskX = relX;
 
             if (maskY >= 0 && maskY < h && maskX >= 0 && maskX < w) {
@@ -120,10 +120,10 @@ const MapEngine = (() => {
   const _firedTriggers = new Set();
 
   // ── Cinematic Scene State ──────────────────────────────
-  let _sceneRunning      = false; // blocks encounters, triggers, and player movement
-  let _playerLocked      = false; // skips MapPlayer.update() during scene walk/dialogue
+  let _sceneRunning = false; // blocks encounters, triggers, and player movement
+  let _playerLocked = false; // skips MapPlayer.update() during scene walk/dialogue
   let _playerFacingOverride = null; // {dx,dy} or null
-  let _marchEnemies      = [];    // [{id,tx,ty,px,py,targetTx,targetTy,img,alpha}] marching in
+  let _marchEnemies = [];    // [{id,tx,ty,px,py,targetTx,targetTy,img,alpha}] marching in
   let _sceneAmbushActive = false;
   let _sceneAmbushCallback = null;
 
@@ -213,35 +213,35 @@ const MapEngine = (() => {
     const name = (def.name || "").toLowerCase();
 
     if (name.includes('grass')) {
-        ctx.fillStyle = hi;
-        for(let i=0; i<3; i++) {
-            ctx.fillRect(sx + (i*tw/3) + 2, sy + 4, 2, th/3);
-            ctx.fillRect(sx + (i*tw/3) + 6, sy + th/2, 2, th/4);
-        }
+      ctx.fillStyle = hi;
+      for (let i = 0; i < 3; i++) {
+        ctx.fillRect(sx + (i * tw / 3) + 2, sy + 4, 2, th / 3);
+        ctx.fillRect(sx + (i * tw / 3) + 6, sy + th / 2, 2, th / 4);
+      }
     } else if (name.includes('water')) {
-        ctx.strokeStyle = hi;
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        const wave = Math.sin(t * 2 + sx/10) * 3;
-        ctx.moveTo(sx + 2, sy + th/3 + wave);
-        ctx.bezierCurveTo(sx + tw/3, sy + 2 + wave, sx + 2*tw/3, sy + th/3 + wave, sx + tw - 2, sy + 2 + wave);
-        ctx.stroke();
+      ctx.strokeStyle = hi;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      const wave = Math.sin(t * 2 + sx / 10) * 3;
+      ctx.moveTo(sx + 2, sy + th / 3 + wave);
+      ctx.bezierCurveTo(sx + tw / 3, sy + 2 + wave, sx + 2 * tw / 3, sy + th / 3 + wave, sx + tw - 2, sy + 2 + wave);
+      ctx.stroke();
     } else if (name.includes('stone') || name.includes('wall') || name.includes('mountain')) {
-        ctx.fillStyle = shadow;
-        ctx.fillRect(sx, sy + th - 4, tw, 4);
-        ctx.fillStyle = hi;
-        ctx.fillRect(sx, sy, tw, 2);
+      ctx.fillStyle = shadow;
+      ctx.fillRect(sx, sy + th - 4, tw, 4);
+      ctx.fillStyle = hi;
+      ctx.fillRect(sx, sy, tw, 2);
     } else if (name.includes('path') || name.includes('sand')) {
-        ctx.fillStyle = hi;
-        // Deterministic random-ish dots based on position
-        const seed = sx * 13 + sy * 7;
-        for(let i=0; i<5; i++) {
-            const rx = ((seed + i * 17) % 100) / 100 * tw;
-            const ry = ((seed + i * 31) % 100) / 100 * th;
-            ctx.beginPath();
-            ctx.arc(sx + rx, sy + ry, 1.2, 0, Math.PI*2);
-            ctx.fill();
-        }
+      ctx.fillStyle = hi;
+      // Deterministic random-ish dots based on position
+      const seed = sx * 13 + sy * 7;
+      for (let i = 0; i < 5; i++) {
+        const rx = ((seed + i * 17) % 100) / 100 * tw;
+        const ry = ((seed + i * 31) % 100) / 100 * th;
+        ctx.beginPath();
+        ctx.arc(sx + rx, sy + ry, 1.2, 0, Math.PI * 2);
+        ctx.fill();
+      }
     }
 
     ctx.restore();
@@ -249,7 +249,7 @@ const MapEngine = (() => {
 
   function _paintTile(ctx, def, sx, sy, tw, th, t) {
     if (!def || def.hidden) return;
-    
+
     // 1. SVG Asset Support (High Fidelity Scaling)
     // Note: Most SVGs are handled in _renderRow for dynamic scaling, 
     // but some small 1x1 ones might be baked here.
@@ -287,7 +287,7 @@ const MapEngine = (() => {
 
         const frame = def.anim ? (Math.floor(t * 6) % frames) : 0;
         ctx.drawImage(
-          sheet, 
+          sheet,
           sx_src + (frame * sw), sy_src, sw, sh,
           sx, sy, tw, th
         );
@@ -373,48 +373,48 @@ const MapEngine = (() => {
       const sy = r * TILE - cam.y;
 
       if (def.vScale) {
-          // 1. Draw base terrain first (Matching Editor rule)
-          if (layerIdx === 0) {
-              _ctx.drawImage(_getTileCanvas(tileId), sx, sy);
+        // 1. Draw base terrain first (Matching Editor rule)
+        if (layerIdx === 0) {
+          _ctx.drawImage(_getTileCanvas(tileId), sx, sy);
+        }
+
+        const scale = def.vScale || 1.0;
+        const ox = (def.vOffset?.x || 0);
+        const oy = (def.vOffset?.y || 0);
+        const dw = TILE * scale;
+
+        if (def.svgAsset) {
+          const img = AssetPreloader.getImage(`env_${def.svgAsset}`);
+          if (img) {
+            // Preserve Aspect Ratio (Matching Editor rule)
+            const sh = dw * (img.height / img.width || 1);
+
+            // Always Bottom-Center (Matching Editor rule - ignoring def.anchor)
+            const dx = sx + (TILE - dw) / 2 + ox;
+            const dy = sy + TILE - sh + oy;
+
+            // Draw Glow
+            if (def.glows) {
+              const pulse = 0.8 + 0.2 * Math.sin(_time * 2.5);
+              const grad = _ctx.createRadialGradient(dx + dw / 2, dy + sh / 2, 0, dx + dw / 2, dy + sh / 2, dw * 0.8 * pulse);
+              grad.addColorStop(0, def.glows);
+              grad.addColorStop(1, 'rgba(0,0,0,0)');
+              _ctx.save();
+              _ctx.globalCompositeOperation = 'screen';
+              _ctx.fillStyle = grad;
+              _ctx.fillRect(dx - dw / 2, dy - sh / 2, dw * 2, sh * 2);
+              _ctx.restore();
+            }
+
+            _ctx.drawImage(img, dx, dy, dw, sh);
           }
-
-          const scale = def.vScale || 1.0;
-          const ox = (def.vOffset?.x || 0);
-          const oy = (def.vOffset?.y || 0);
-          const dw = TILE * scale;
-          
-          if (def.svgAsset) {
-              const img = AssetPreloader.getImage(`env_${def.svgAsset}`);
-              if (img) {
-                  // Preserve Aspect Ratio (Matching Editor rule)
-                  const sh = dw * (img.height / img.width || 1);
-                  
-                  // Always Bottom-Center (Matching Editor rule - ignoring def.anchor)
-                  const dx = sx + (TILE - dw) / 2 + ox;
-                  const dy = sy + TILE - sh + oy;
-
-                  // Draw Glow
-                  if (def.glows) {
-                      const pulse = 0.8 + 0.2 * Math.sin(_time * 2.5);
-                      const grad = _ctx.createRadialGradient(dx + dw/2, dy + sh/2, 0, dx + dw/2, dy + sh/2, dw * 0.8 * pulse);
-                      grad.addColorStop(0, def.glows);
-                      grad.addColorStop(1, 'rgba(0,0,0,0)');
-                      _ctx.save();
-                      _ctx.globalCompositeOperation = 'screen';
-                      _ctx.fillStyle = grad;
-                      _ctx.fillRect(dx - dw/2, dy - sh/2, dw * 2, sh * 2);
-                      _ctx.restore();
-                  }
-
-                  _ctx.drawImage(img, dx, dy, dw, sh);
-              }
-          }
+        }
       } else {
-          if (def.anim) {
-              _ctx.drawImage(_getAnimTileCanvas(tileId, _time), sx, sy);
-          } else {
-              _ctx.drawImage(_getTileCanvas(tileId), sx, sy);
-          }
+        if (def.anim) {
+          _ctx.drawImage(_getAnimTileCanvas(tileId, _time), sx, sy);
+        } else {
+          _ctx.drawImage(_getTileCanvas(tileId), sx, sy);
+        }
       }
       if (layerIdx === 0 && def.walkable) _drawTileShadow(sx, sy, c, r, tiles);
     }
@@ -547,7 +547,7 @@ const MapEngine = (() => {
 
     const obj = _map.objective;
     const isDone = _objState.done || _objAlreadyCleared();
-    
+
     let statusText = '';
     if (isDone) {
       statusText = '✔ ' + (obj.label || 'Objective complete');
@@ -656,7 +656,7 @@ const MapEngine = (() => {
       const vg = _ctx.createRadialGradient(px, py, innerR, px, py, outerR);
       vg.addColorStop(0, 'rgba(0,0,0,0)');
       vg.addColorStop(0.6, `rgba(${edgeR},${edgeG},${edgeB},0.55)`);
-      vg.addColorStop(1,   `rgba(${edgeR},${edgeG},${edgeB},0.82)`);
+      vg.addColorStop(1, `rgba(${edgeR},${edgeG},${edgeB},0.82)`);
       _ctx.fillStyle = vg;
       _ctx.fillRect(0, 0, cw, ch);
 
@@ -675,9 +675,9 @@ const MapEngine = (() => {
       const innerR = Math.max(cw, ch) * 0.38;
       const outerR = Math.max(cw, ch) * 1.05;
       const vg = _ctx.createRadialGradient(px, py, innerR, px, py, outerR);
-      vg.addColorStop(0,   'rgba(0,0,0,0)');
+      vg.addColorStop(0, 'rgba(0,0,0,0)');
       vg.addColorStop(0.5, `rgba(${edgeR},${edgeG},${edgeB},0.06)`);
-      vg.addColorStop(1,   `rgba(${edgeR},${edgeG},${edgeB},0.20)`);
+      vg.addColorStop(1, `rgba(${edgeR},${edgeG},${edgeB},0.20)`);
       _ctx.fillStyle = vg;
       _ctx.fillRect(0, 0, cw, ch);
     }
@@ -905,24 +905,24 @@ const MapEngine = (() => {
   function _spawnParticle(x, y, color = '#4ade80', count = 1) {
     if (_particles.length >= MAX_PARTICLES) return;
     for (let i = 0; i < count; i++) {
-        _particles.push({
-            x, y,
-            vx: (Math.random() - 0.5) * 40,
-            vy: (Math.random() - 0.5) * 20 - 15,
-            life: 1.0 + Math.random() * 1.5,
-            maxLife: 1.0 + Math.random() * 1.5,
-            size: 1.5 + Math.random() * 3.5,
-            color
-        });
+      _particles.push({
+        x, y,
+        vx: (Math.random() - 0.5) * 40,
+        vy: (Math.random() - 0.5) * 20 - 15,
+        life: 1.0 + Math.random() * 1.5,
+        maxLife: 1.0 + Math.random() * 1.5,
+        size: 1.5 + Math.random() * 3.5,
+        color
+      });
     }
   }
 
   function _updateParticles(dt) {
     // Ambient spawn
     if (Math.random() < 0.08 && _map) {
-        const vx = cam.x + Math.random() * _canvas.width;
-        const vy = cam.y + Math.random() * _canvas.height;
-        _spawnParticle(vx, vy, _map.ambientLight || '#4ade80');
+      const vx = cam.x + Math.random() * _canvas.width;
+      const vy = cam.y + Math.random() * _canvas.height;
+      _spawnParticle(vx, vy, _map.ambientLight || '#4ade80');
     }
 
     for (let i = _particles.length - 1; i >= 0; i--) {
@@ -982,10 +982,10 @@ const MapEngine = (() => {
     if (!_ctx || !_canvas || !_map) return;
     _ctx.fillStyle = _map.bgColor || '#080606';
     _ctx.fillRect(0, 0, _canvas.width, _canvas.height);
-    
+
     // 1. Ground Layer (Always below)
     _renderTiles(0);
-    
+
     // 2. Interleaved Y-Sorting
     const layers = MapData.getLayers(_map);
     const startR = Math.max(0, Math.floor(cam.y / TILE) - 1);
@@ -998,7 +998,7 @@ const MapEngine = (() => {
     for (let r = startR; r <= endR; r++) {
       // Draw Decor row
       if (layers[1]) _renderRow(1, r);
-      
+
       // Draw entities that are on this row (Y-Sorting)
       if (typeof MapEntities !== 'undefined') {
         if (MapEntities.renderEnemiesForRow) MapEntities.renderEnemiesForRow(_ctx, cam, TILE, r, _inVision.bind(null));
@@ -1009,7 +1009,7 @@ const MapEngine = (() => {
       // Draw Overhead row
       if (layers[2]) _renderRow(2, r);
     }
-    
+
     _renderObjectiveMarkers();
     _renderCampMarker();
     _renderMarchEnemies(_ctx);
@@ -1018,7 +1018,7 @@ const MapEngine = (() => {
     _renderFog();
     _renderObjectiveHUD();
     _renderBubbles();
-    
+
     // 3. World Overlays (Particles / Weather)
     _renderParticles();
     if (typeof WeatherEngine !== 'undefined') WeatherEngine.draw(_ctx);
@@ -1026,20 +1026,20 @@ const MapEngine = (() => {
   }
 
   /* ── Tile → footstep surface type ───────────────────── */
-  const _SURFACE_GRASS  = new Set([1,11,37,40,41,42,44]);
-  const _SURFACE_STONE  = new Set([2,6,7,8,9,15,26,30,51,52,61,62,68,73,110,111,112,115]);
-  const _SURFACE_WOOD   = new Set([4,63,77,78,104]);
-  const _SURFACE_WATER  = new Set([3,18,22,56,97,103]);
-  const _SURFACE_SAND   = new Set([10,21,24,101]);
-  const _SURFACE_ICE    = new Set([20,46,47,50]);
+  const _SURFACE_GRASS = new Set([1, 11, 37, 40, 41, 42, 44]);
+  const _SURFACE_STONE = new Set([2, 6, 7, 8, 9, 15, 26, 30, 51, 52, 61, 62, 68, 73, 110, 111, 112, 115]);
+  const _SURFACE_WOOD = new Set([4, 63, 77, 78, 104]);
+  const _SURFACE_WATER = new Set([3, 18, 22, 56, 97, 103]);
+  const _SURFACE_SAND = new Set([10, 21, 24, 101]);
+  const _SURFACE_ICE = new Set([20, 46, 47, 50]);
 
   function _tileToSurface(id) {
-    if (_SURFACE_GRASS.has(id))  return 'grass';
-    if (_SURFACE_STONE.has(id))  return 'stone';
-    if (_SURFACE_WOOD.has(id))   return 'wood';
-    if (_SURFACE_WATER.has(id))  return 'water';
-    if (_SURFACE_SAND.has(id))   return 'sand';
-    if (_SURFACE_ICE.has(id))    return 'ice';
+    if (_SURFACE_GRASS.has(id)) return 'grass';
+    if (_SURFACE_STONE.has(id)) return 'stone';
+    if (_SURFACE_WOOD.has(id)) return 'wood';
+    if (_SURFACE_WATER.has(id)) return 'water';
+    if (_SURFACE_SAND.has(id)) return 'sand';
+    if (_SURFACE_ICE.has(id)) return 'ice';
     return 'default';
   }
 
@@ -1080,11 +1080,11 @@ const MapEngine = (() => {
       if (_footstepCooldown <= 0) {
         const tid = MapData.getTileAt(_map, MapPlayer.tx, MapPlayer.ty);
         if (typeof SFX !== 'undefined') SFX.footstep(_tileToSurface(tid));
-        
+
         // Spawn 2-3 tiny particles at hero feet
         const pColor = (TILE_DEFS[tid] || TILE_DEFS[0]).color || '#4ade80';
-        _spawnParticle(MapPlayer.px + TILE/2, MapPlayer.py + TILE - 8, pColor, 3);
-        
+        _spawnParticle(MapPlayer.px + TILE / 2, MapPlayer.py + TILE - 8, pColor, 3);
+
         _footstepCooldown = 0.14;
       }
     }
@@ -1131,12 +1131,12 @@ const MapEngine = (() => {
       _bubbles[i].life -= dt;
       if (_bubbles[i].life <= 0) _bubbles.splice(i, 1);
     }
-    
+
     // NPC talk cooldowns
     if (typeof MapEntities !== 'undefined' && MapEntities.getNPCs) {
-        MapEntities.getNPCs().forEach(n => {
-            if (n._talkCooldown > 0) n._talkCooldown -= dt;
-        });
+      MapEntities.getNPCs().forEach(n => {
+        if (n._talkCooldown > 0) n._talkCooldown -= dt;
+      });
     }
 
     if (typeof WeatherEngine !== 'undefined') WeatherEngine.update(dt);
@@ -1157,7 +1157,7 @@ const MapEngine = (() => {
 
       // Check if player is inside the trigger rect
       const inside = (tx >= trig.x && tx < (trig.x + (trig.w || 1))) &&
-                     (ty >= trig.y && ty < (trig.y + (trig.h || 1)));
+        (ty >= trig.y && ty < (trig.y + (trig.h || 1)));
 
       if (inside) {
         _firedTriggers.add(id);
@@ -1217,7 +1217,7 @@ const MapEngine = (() => {
       const r = scene.trigger;
       if (!r) continue;
       const inside = tx >= r.x && tx < r.x + (r.w || 1) &&
-                     ty >= r.y && ty < r.y + (r.h || 1);
+        ty >= r.y && ty < r.y + (r.h || 1);
       if (inside) {
         _firedScenes.add(scene.id);
         _runScene(scene);
@@ -1253,10 +1253,10 @@ const MapEngine = (() => {
       const npcs = MapEntities.getNPCs();
       const n = npcs && npcs.find(x => x.id === scene.npcId);
       if (n) {
-        n._sceneWalkTarget  = null;
-        n._sceneExitTarget  = null;
-        n.facingOverride    = null;
-        n.moving            = false;
+        n._sceneWalkTarget = null;
+        n._sceneExitTarget = null;
+        n.facingOverride = null;
+        n.moving = false;
         // Snap pixel position to tile so there's no drift
         n.px = n.tx * TILE;
         n.py = n.ty * TILE;
@@ -1278,12 +1278,12 @@ const MapEngine = (() => {
   function _execAct(act, defaultNpcId, done) {
     const npcId = act.npcId || defaultNpcId;
     switch (act.type) {
-      case 'npc_walk':   return _actNpcWalk(npcId, act, done);
-      case 'dialogue':   return _actDialogue(act.lines, done);
-      case 'ambush':     return _actAmbush(act, done);
-      case 'npc_exit':   return _actNpcExit(npcId, act, done);
-      case 'face':       return _actFace(npcId, act, done);
-      case 'wait':       return _actWait(act.ms || 600, done);
+      case 'npc_walk': return _actNpcWalk(npcId, act, done);
+      case 'dialogue': return _actDialogue(act.lines, done);
+      case 'ambush': return _actAmbush(act, done);
+      case 'npc_exit': return _actNpcExit(npcId, act, done);
+      case 'face': return _actFace(npcId, act, done);
+      case 'wait': return _actWait(act.ms || 600, done);
       case 'msg':
         if (typeof MapUI !== 'undefined') MapUI.showMsg(act.text, act.ms || 1800);
         setTimeout(done, act.ms || 1800);
@@ -1386,10 +1386,10 @@ const MapEngine = (() => {
   function _dirVec(dir) {
     if (dir && typeof dir === 'object') return dir; // already {dx,dy}
     switch (dir) {
-      case 'up':    return {dx:  0, dy: -1};
-      case 'down':  return {dx:  0, dy:  1};
-      case 'left':  return {dx: -1, dy:  0};
-      default:      return {dx:  1, dy:  0}; // 'right'
+      case 'up': return { dx: 0, dy: -1 };
+      case 'down': return { dx: 0, dy: 1 };
+      case 'left': return { dx: -1, dy: 0 };
+      default: return { dx: 1, dy: 0 }; // 'right'
     }
   }
 
@@ -1399,7 +1399,7 @@ const MapEngine = (() => {
     const canvas = _canvas;
     const viewTilesX = Math.ceil(canvas.width / TILE);
     const viewTilesY = Math.ceil(canvas.height / TILE);
-    
+
     const startX = Math.floor(cam.x / TILE);
     const startY = Math.floor(cam.y / TILE);
 
@@ -1407,24 +1407,24 @@ const MapEngine = (() => {
     enemyIds.forEach((id, i) => {
       const raw = G && G.enemies && G.enemies.find(e => e.id === id);
       const sprite = raw ? (raw.sprite || `images/enemies/${id}.webp`) : `images/enemies/${id}.webp`;
-      
+
       // Spawn just outside the current screen view
       const startTx = dir === 'right' ? startX + viewTilesX + 2 + i
-                    : dir === 'left'  ? startX - 2 - i
-                    : startX + Math.floor(viewTilesX / 2);
-      
-      const startTy = (dir === 'up' || dir === 'down') 
-                    ? (dir === 'up' ? startY + viewTilesY + 2 + i : startY - 2 - i)
-                    : startY + Math.floor(viewTilesY / 2) + (i - enemyIds.length/2);
+        : dir === 'left' ? startX - 2 - i
+          : startX + Math.floor(viewTilesX / 2);
+
+      const startTy = (dir === 'up' || dir === 'down')
+        ? (dir === 'up' ? startY + viewTilesY + 2 + i : startY - 2 - i)
+        : startY + Math.floor(viewTilesY / 2) + (i - enemyIds.length / 2);
 
       // Target: move into the screen toward the player
-      const targetTx = dir === 'left'  ? MapPlayer.tx + 4 + i
-                     : dir === 'right' ? MapPlayer.tx - 4 - i
-                     : startTx;
-      
-      const targetTy = dir === 'up'    ? MapPlayer.ty + 4 + i
-                     : dir === 'down'  ? MapPlayer.ty - 4 - i
-                     : startTy;
+      const targetTx = dir === 'left' ? MapPlayer.tx + 4 + i
+        : dir === 'right' ? MapPlayer.tx - 4 - i
+          : startTx;
+
+      const targetTy = dir === 'up' ? MapPlayer.ty + 4 + i
+        : dir === 'down' ? MapPlayer.ty - 4 - i
+          : startTy;
 
       const img = new Image(); img.src = sprite;
       entries.push({ id, tx: startTx, ty: startTy, px: startTx * TILE, py: startTy * TILE, targetTx, targetTy, img, alpha: 0.7 });
@@ -1575,9 +1575,9 @@ const MapEngine = (() => {
       if (_map && _map.playerStart) {
         G.party.forEach(m => {
           if (!m) return;
-          m.hp     = Math.max(1, Math.floor(m.maxHp * 0.5));
-          m.mp     = Math.floor(m.maxMp * 0.5);
-          m.isKO   = false;
+          m.hp = Math.max(1, Math.floor(m.maxHp * 0.5));
+          m.mp = Math.floor(m.maxMp * 0.5);
+          m.isKO = false;
           m.statuses = [];
         });
         MapEntities.clear();
@@ -1614,7 +1614,7 @@ const MapEngine = (() => {
       } else {
         // All waves cleared
         const msg = _waveState.allClearMsg || '✦ All waves cleared!';
-        const cb  = _waveState.onAllClear;
+        const cb = _waveState.onAllClear;
         _waveState = null;
         MapUI.showMsg(msg, 2200, () => { if (cb) cb(); else resume(); });
       }
@@ -1672,11 +1672,11 @@ const MapEngine = (() => {
         const rect = joyBase.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
         const centerY = rect.top + rect.height / 2;
-        
+
         let dx = touch.clientX - centerX;
         let dy = touch.clientY - centerY;
         const dist = Math.sqrt(dx * dx + dy * dy);
-        
+
         const limit = 60; // Physical limit for visual
         if (dist > limit) {
           dx = (dx / dist) * limit;
@@ -1684,7 +1684,7 @@ const MapEngine = (() => {
         }
 
         joyKnob.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
-        
+
         // Normalize vector for MapInput (cap at 1.0)
         const normX = Math.min(1.0, Math.max(-1.0, dx / radius));
         const normY = Math.min(1.0, Math.max(-1.0, dy / radius));
@@ -1741,19 +1741,19 @@ const MapEngine = (() => {
   function _showLoader() {
     let loader = document.getElementById('map-loader');
     if (!loader) {
-        loader = document.createElement('div');
-        loader.id = 'map-loader';
-        loader.innerHTML = `
+      loader = document.createElement('div');
+      loader.id = 'map-loader';
+      loader.innerHTML = `
             <div class="loader-content">
                 <div class="loader-spinner"></div>
                 <div class="loader-text">MANIFESTING THE VALE...</div>
             </div>
         `;
-        document.body.appendChild(loader);
-        
-        const style = document.createElement('style');
-        style.id = 'map-loader-style';
-        style.textContent = `
+      document.body.appendChild(loader);
+
+      const style = document.createElement('style');
+      style.id = 'map-loader-style';
+      style.textContent = `
             #map-loader {
                 position: fixed; top: 0; left: 0; width: 100%; height: 100%;
                 background: rgba(10, 26, 5, 0.95);
@@ -1770,7 +1770,7 @@ const MapEngine = (() => {
             .loader-text { letter-spacing: 4px; font-size: 14px; font-weight: 600; text-shadow: 0 0 10px rgba(74, 222, 128, 0.5); }
             @keyframes spin { to { transform: rotate(360deg); } }
         `;
-        document.head.appendChild(style);
+      document.head.appendChild(style);
     }
     loader.style.opacity = '1';
     loader.style.display = 'flex';
@@ -1779,31 +1779,31 @@ const MapEngine = (() => {
   function _hideLoader() {
     const loader = document.getElementById('map-loader');
     if (loader) {
-        loader.style.opacity = '0';
-        setTimeout(() => { loader.style.display = 'none'; }, 500);
+      loader.style.opacity = '0';
+      setTimeout(() => { loader.style.display = 'none'; }, 500);
     }
   }
 
   async function loadMap(mapId) {
     _showLoader();
     _map = MAP_DEFS[mapId] || MAP_DEFS['verdant_vale'];
-    
+
     if (!_map) {
       console.warn(`⚠️ Map definition not found: ${mapId}. Falling back to default.`);
-      _map = Object.values(MAP_DEFS)[0]; 
+      _map = Object.values(MAP_DEFS)[0];
       if (!_map) return;
     }
 
     // Support External JSON Data
     if (_map.jsonFile) {
-        try {
-            const response = await fetch(_map.jsonFile);
-            const jsonData = await response.json();
-            _map.data = jsonData;
-            console.log(`[MapEngine] Successfully fetched JSON data for: ${_map.name}`);
-        } catch (e) {
-            console.error(`❌ Failed to fetch map JSON: ${_map.jsonFile}`, e);
-        }
+      try {
+        const response = await fetch(_map.jsonFile);
+        const jsonData = await response.json();
+        _map.data = jsonData;
+        console.log(`[MapEngine] Successfully fetched JSON data for: ${_map.name}`);
+      } catch (e) {
+        console.error(`❌ Failed to fetch map JSON: ${_map.jsonFile}`, e);
+      }
     }
 
     // Initialize layers: handle both raw arrays and Architect Pro wrappers
@@ -1812,10 +1812,10 @@ const MapEngine = (() => {
     } else if (_map.data) {
       const layers = Array.isArray(_map.data) ? _map.data : (_map.data.data || _map.data.layers);
       if (layers && Array.isArray(layers)) {
-          _map.layers = layers;
+        _map.layers = layers;
       }
     }
-    
+
     // Support new Architect Pro Metadata
     if (_map.metadata && _map.metadata.dimensions) {
       _map.width = _map.metadata.dimensions.width;
@@ -1842,7 +1842,7 @@ const MapEngine = (() => {
     MapEntities.initNPCs(_map);
     cam.x = 0; cam.y = 0;
     _updateCamera();
-    
+
     if (typeof WeatherEngine !== 'undefined') {
       WeatherEngine.setWeather(_map.weather || null);
     }
@@ -1882,7 +1882,7 @@ const MapEngine = (() => {
       setTimeout(() => {
         MapUI.showMsg(`✦ Entering ${_map.name} ✦`, 3000);
       }, 500);
-      
+
       // Trigger ambient banter
       if (MapUI.triggerBanter) {
         setTimeout(() => MapUI.triggerBanter(`map_enter_${mapId}`), 3500);
@@ -1935,13 +1935,13 @@ const MapEngine = (() => {
     img.onload = () => {
       const frameW = img.naturalWidth / 6;
       const frameH = img.naturalHeight / 2;
-      const scale  = targetH / frameH;
-      el.style.width           = Math.round(frameW * scale) + 'px';
-      el.style.height          = targetH + 'px';
+      const scale = targetH / frameH;
+      el.style.width = Math.round(frameW * scale) + 'px';
+      el.style.height = targetH + 'px';
       el.style.backgroundImage = `url('${src}')`;
-      el.style.backgroundSize  = `${Math.round(img.naturalWidth * scale)}px ${Math.round(img.naturalHeight * scale)}px`;
+      el.style.backgroundSize = `${Math.round(img.naturalWidth * scale)}px ${Math.round(img.naturalHeight * scale)}px`;
       el.style.backgroundPosition = '0 0';
-      el.style.backgroundRepeat   = 'no-repeat';
+      el.style.backgroundRepeat = 'no-repeat';
     };
     img.src = src;
   }
@@ -2029,9 +2029,9 @@ const MapEngine = (() => {
       }
     }
 
-    const def      = (typeof NPC_DEFS !== 'undefined') ? NPC_DEFS[npc.id] : null;
-    let questIds   = (def && def.quests) ? [...def.quests] : [];
-    
+    const def = (typeof NPC_DEFS !== 'undefined') ? NPC_DEFS[npc.id] : null;
+    let questIds = (def && def.quests) ? [...def.quests] : [];
+
     // Support map-level giveQuest property for direct overrides/additions
     if (npc.giveQuest && !questIds.includes(npc.giveQuest)) {
       questIds.push(npc.giveQuest);
@@ -2111,27 +2111,27 @@ const MapEngine = (() => {
 
   function _hideQuestChoices() {
     const choicesEl = document.getElementById('npc-dialogue-choices');
-    const nextBtn   = document.getElementById('npc-dialogue-next');
+    const nextBtn = document.getElementById('npc-dialogue-next');
     if (choicesEl) { choicesEl.style.display = 'none'; choicesEl.innerHTML = ''; }
-    if (nextBtn)   nextBtn.style.display = '';
+    if (nextBtn) nextBtn.style.display = '';
   }
 
   function _showQuestChoices(line) {
     const choicesEl = document.getElementById('npc-dialogue-choices');
-    const nextBtn   = document.getElementById('npc-dialogue-next');
+    const nextBtn = document.getElementById('npc-dialogue-next');
     if (!choicesEl) return;
     if (nextBtn) nextBtn.style.display = 'none';
 
     let opts = [];
     if (line._type === 'submit') {
-      opts = [{ label: '✔ Collect Reward', action: 'submit',  questId: line._questId, primary: true },
-         { label: '✗ Not yet',        action: 'dismiss' }];
+      opts = [{ label: '✔ Collect Reward', action: 'submit', questId: line._questId, primary: true },
+      { label: '✗ Not yet', action: 'dismiss' }];
     } else if (line._type === 'choice') {
-      opts = [{ label: '✔ Accept',         action: 'accept',  questId: line._questId, primary: true },
-         { label: '✗ Maybe later',    action: 'dismiss' }];
+      opts = [{ label: '✔ Accept', action: 'accept', questId: line._questId, primary: true },
+      { label: '✗ Maybe later', action: 'dismiss' }];
     } else if (line._type === 'shop') {
-      opts = [{ label: '🛒 Browse Goods',  action: 'shop',    merchantId: line.merchantId, primary: true },
-         { label: '🚪 Leave',         action: 'dismiss' }];
+      opts = [{ label: '🛒 Browse Goods', action: 'shop', merchantId: line.merchantId, primary: true },
+      { label: '🚪 Leave', action: 'dismiss' }];
     }
 
     choicesEl.innerHTML = '';
@@ -2255,9 +2255,9 @@ const MapEngine = (() => {
     // Only fire legacy completeCb / giveQuest on the very first interaction.
     // Skip giveQuest entirely when the new choice system handled this session —
     // accept/dismiss was already processed by _handleQuestChoice.
-    const firstTime  = _npcCurrent && !_npcCurrent.isTalked;
+    const firstTime = _npcCurrent && !_npcCurrent.isTalked;
     const completeCb = firstTime && _npcCurrent.onDialogueComplete;
-    const giveQuest  = firstTime && !wasQuestFlow && _npcCurrent.giveQuest;
+    const giveQuest = firstTime && !wasQuestFlow && _npcCurrent.giveQuest;
     if (_npcCurrent) {
       MapEntities.markNPCTalked(_npcCurrent.id);
       _npcCurrent._dialogueOpen = false;
@@ -2277,7 +2277,7 @@ const MapEngine = (() => {
 
   // 0..1 normalized against mutantThreshold (per-map) — 50% = corrupted spawn, 100% = mutant spawn
   function corruptionProgress() {
-    const mc   = (_map && _map.mutationConfig) || {};
+    const mc = (_map && _map.mutationConfig) || {};
     const peak = mc.mutantThreshold ?? 90;
     return Math.min(_fogTime / peak, 1);
   }
@@ -2289,7 +2289,7 @@ const MapEngine = (() => {
 
     const ptx = MapPlayer.tx, pty = MapPlayer.ty;
     const face = MapPlayer.getFacing();
-    
+
     // 1. Try Facing Tile
     const targetX = ptx + face.dx, targetY = pty + face.dy;
     let npc = MapEntities.checkNPCAt(targetX, targetY);
@@ -2301,7 +2301,7 @@ const MapEngine = (() => {
       let minDist = Infinity;
       npcs.forEach(n => {
         const dx = n.tx - ptx, dy = n.ty - pty;
-        const d = Math.sqrt(dx*dx + dy*dy);
+        const d = Math.sqrt(dx * dx + dy * dy);
         if (d < interactDist && d < minDist && !n._dialogueOpen) {
           minDist = d;
           npc = n;

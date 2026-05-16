@@ -18,13 +18,13 @@ const BattleUI = {
       opacity: 0.6;
     `;
     document.body.appendChild(overlay);
-    
+
     // Force reflow
     overlay.getBoundingClientRect();
-    
+
     // Start fade out
     overlay.style.opacity = '0';
-    
+
     setTimeout(() => overlay.remove(), duration);
   },
 
@@ -112,13 +112,13 @@ const BattleUI = {
             if (s.opacity > 0) {
               alive = true;
               ctx.save();
-              ctx.translate(s.x + w/2, s.y + h/2);
+              ctx.translate(s.x + w / 2, s.y + h / 2);
               ctx.rotate(s.angle);
               ctx.fillStyle = `rgba(165, 243, 252, ${s.opacity * 0.4})`;
               ctx.strokeStyle = `rgba(255, 255, 255, ${s.opacity * 0.8})`;
               ctx.lineWidth = 2;
               ctx.beginPath();
-              ctx.moveTo(-w/2, -h/2); ctx.lineTo(w/2, -h/3); ctx.lineTo(w/2, h/2); ctx.lineTo(-w/3, h/2);
+              ctx.moveTo(-w / 2, -h / 2); ctx.lineTo(w / 2, -h / 3); ctx.lineTo(w / 2, h / 2); ctx.lineTo(-w / 3, h / 2);
               ctx.closePath(); ctx.fill(); ctx.stroke(); ctx.restore();
             }
           });
@@ -133,7 +133,7 @@ const BattleUI = {
       if (typeof WeatherEngine !== 'undefined') {
         WeatherEngine.setWeather('verdant_petal');
       }
-      
+
       const petals = [];
       for (let i = 0; i < 40; i++) {
         petals.push({
@@ -160,7 +160,7 @@ const BattleUI = {
               ctx.fill(); ctx.restore();
             }
           });
-          
+
           if (alive) {
             requestAnimationFrame(animate);
           } else if (!resolved) {
@@ -218,9 +218,9 @@ const BattleUI = {
           const ang = Math.random() * Math.PI * 2;
           const dist = maxRadius + Math.random() * 200;
           particles.push({
-            x: canvas.width/2 + Math.cos(ang) * dist,
-            y: canvas.height/2 + Math.sin(ang) * dist,
-            tx: canvas.width/2, ty: canvas.height/2,
+            x: canvas.width / 2 + Math.cos(ang) * dist,
+            y: canvas.height / 2 + Math.sin(ang) * dist,
+            tx: canvas.width / 2, ty: canvas.height / 2,
             v: 5 + Math.random() * 10
           });
         }
@@ -229,14 +229,14 @@ const BattleUI = {
           ctx.fillRect(0, 0, canvas.width, canvas.height);
           radius += 25;
           ctx.fillStyle = '#000';
-          ctx.beginPath(); ctx.arc(canvas.width/2, canvas.height/2, radius, 0, Math.PI * 2); ctx.fill();
-          
+          ctx.beginPath(); ctx.arc(canvas.width / 2, canvas.height / 2, radius, 0, Math.PI * 2); ctx.fill();
+
           let pAlive = false;
           particles.forEach(p => {
             const dx = p.tx - p.x; const dy = p.ty - p.y;
-            const dist = Math.sqrt(dx*dx + dy*dy);
+            const dist = Math.sqrt(dx * dx + dy * dy);
             if (dist > 5) {
-              p.x += (dx/dist) * p.v; p.y += (dy/dist) * p.v;
+              p.x += (dx / dist) * p.v; p.y += (dy / dist) * p.v;
               ctx.fillStyle = '#7e22ce';
               ctx.fillRect(p.x, p.y, 4, 4);
               pAlive = true;
@@ -253,7 +253,7 @@ const BattleUI = {
       for (let i = 0; i < 8; i++) {
         const angle = Math.random() * Math.PI * 2;
         cracks.push({
-          points: [{ x: canvas.width/2, y: canvas.height/2 }],
+          points: [{ x: canvas.width / 2, y: canvas.height / 2 }],
           angle,
           len: 0,
           maxLen: 400 + Math.random() * 600,
@@ -266,23 +266,23 @@ const BattleUI = {
         const animate = () => {
           ctx.fillStyle = 'rgba(0,0,0,0.1)';
           ctx.fillRect(0, 0, canvas.width, canvas.height);
-          
+
           progress += 0.05;
           let done = progress >= 1.0;
-          
+
           ctx.strokeStyle = '#c084fc';
           ctx.lineWidth = 3;
           ctx.shadowBlur = 15;
           ctx.shadowColor = '#c084fc';
-          
+
           cracks.forEach(c => {
             ctx.beginPath();
             ctx.moveTo(c.points[0].x, c.points[0].y);
-            
+
             const currentMax = c.maxLen * progress;
             let currentX = c.points[0].x;
             let currentY = c.points[0].y;
-            
+
             for (let i = 0; i < c.segments; i++) {
               const segLen = currentMax / c.segments;
               const angleVar = (Math.random() - 0.5) * 0.5;
@@ -292,7 +292,7 @@ const BattleUI = {
             }
             ctx.stroke();
           });
-          
+
           if (!done) {
             requestAnimationFrame(animate);
           } else {
@@ -314,7 +314,7 @@ const BattleUI = {
           ctx.clearRect(0, 0, canvas.width, canvas.height);
           radius += 40;
           ctx.fillStyle = '#000';
-          ctx.beginPath(); ctx.arc(canvas.width/2, canvas.height/2, radius, 0, Math.PI * 2); ctx.fill();
+          ctx.beginPath(); ctx.arc(canvas.width / 2, canvas.height / 2, radius, 0, Math.PI * 2); ctx.fill();
           if (radius < maxRadius) requestAnimationFrame(animate); else resolve();
         };
         animate();
@@ -336,7 +336,7 @@ const BattleUI = {
           let alive = false;
           const cx = canvas.width / 2;
           const cy = canvas.height / 2;
-          
+
           ctx.save();
           ripples.forEach(r => {
             r.radius += r.speed;
@@ -348,7 +348,7 @@ const BattleUI = {
               ctx.beginPath();
               ctx.arc(cx, cy, r.radius, 0, Math.PI * 2);
               ctx.stroke();
-              
+
               // Internal subtle fill
               ctx.fillStyle = `rgba(14, 165, 233, ${r.alpha * 0.15})`;
               ctx.fill();
@@ -379,7 +379,7 @@ const BattleUI = {
         const animate = () => {
           ctx.clearRect(0, 0, canvas.width, canvas.height);
           let alive = false;
-          
+
           // Render deep sea ambient gradient pressure overlay
           wipeProgress = Math.min(1.0, wipeProgress + 0.02);
           ctx.save();
@@ -397,7 +397,7 @@ const BattleUI = {
             b.wobble += b.wobbleSpeed;
             const actualX = b.x + Math.sin(b.wobble) * 15;
             b.alpha -= 0.012;
-            
+
             if (b.alpha > 0) {
               alive = true;
               ctx.fillStyle = `rgba(129, 140, 248, ${b.alpha * 0.4})`;
@@ -407,7 +407,7 @@ const BattleUI = {
               ctx.arc(actualX, b.y, b.radius, 0, Math.PI * 2);
               ctx.fill();
               ctx.stroke();
-              
+
               // Bubble highlight
               ctx.fillStyle = `rgba(255, 255, 255, ${b.alpha * 0.8})`;
               ctx.beginPath();
@@ -432,7 +432,7 @@ const BattleUI = {
     const canvas = this.el('intro-canvas');
     const titleCard = this.el('intro-title-card');
     const nameEl = this.el('intro-boss-name');
-    
+
     if (!layer || !canvas || !titleCard) {
       if (onComplete) onComplete();
       return;
@@ -445,31 +445,32 @@ const BattleUI = {
 
     // Reset and Setup
     nameEl.textContent = bossName;
-    titleCard.className = ''; 
+    titleCard.className = '';
     layer.style.display = 'flex';
     layer.style.opacity = '1';
     layer.className = config.theme ? `theme--${config.theme}` : '';
 
     // Specialized Logic for Bosses
     if (bossId === 'void_knight') {
+      this.flash('#fff', 500);
       document.body.classList.add('theme--void-knight-active');
       setTimeout(() => document.body.classList.remove('theme--void-knight-active'), 2500);
-      
+
       // Crack happens first, completely blocking
       const fxHandler = this.INTRO_EFFECTS[config.fx];
       if (fxHandler) await fxHandler(ctx, canvas);
-      
+
       // Title card shows up rapidly AS the battle starts
       titleCard.classList.add('visible');
       await new Promise(r => setTimeout(r, 800));
-    } 
+    }
     else if (bossId === 'galdor_king') {
       if (config.flash) this.flash(config.flash, 800);
       const fxHandler = this.INTRO_EFFECTS[config.fx];
-      
+
       // Petals fall during the title, and persist into battle
       let fxPromise = fxHandler ? fxHandler(ctx, canvas) : Promise.resolve();
-      
+
       titleCard.classList.add('visible');
       await new Promise(r => setTimeout(r, 1800));
       // No await on fxPromise so the intro doesn't block the battle start
@@ -477,23 +478,23 @@ const BattleUI = {
     else {
       // 1. Play Thematic FX from Registry (Non-blocking Title Card start)
       if (config.flash) this.flash(config.flash, 800);
-      
+
       const fxHandler = this.INTRO_EFFECTS[config.fx];
       let fxPromise = fxHandler ? fxHandler(ctx, canvas) : Promise.resolve();
 
       // 2. Show Title Card (Starts shortly after FX begins)
       await new Promise(r => setTimeout(r, 600));
       titleCard.classList.add('visible');
-      
+
       // Wait for BOTH FX and Title duration
       await Promise.all([fxPromise, new Promise(r => setTimeout(r, 1800))]);
     }
-    
+
     // 3. Cleanup
     layer.style.transition = 'opacity 1s ease-out';
     layer.style.opacity = '0';
     await new Promise(r => setTimeout(r, 1000));
-    
+
     layer.style.display = 'none';
     layer.style.opacity = '1';
     layer.className = '';
@@ -506,9 +507,9 @@ const BattleUI = {
   setSpriteFrame(idx, frameName) {
     const spr = this.getSprite(idx, 'party');
     if (!spr || !spr.classList.contains('party-sprite-animated')) return;
-    
+
     const charId = spr.dataset.charId;
-    
+
     if (typeof SpriteRenderer !== 'undefined' && SpriteRenderer.setFrame) {
       SpriteRenderer.setFrame(spr, charId, frameName, 96);
     } else {
@@ -520,7 +521,7 @@ const BattleUI = {
       spr.style.backgroundSize = '300% 200%';
       spr.style.backgroundPosition = `${col * 50}% ${row * 100}%`;
     }
-    
+
     const frames = ['frame-idle', 'frame-prepare', 'frame-attack', 'frame-magic', 'frame-hurt', 'frame-fallen'];
     frames.forEach(f => spr.classList.remove(f));
     spr.classList.add('frame-' + frameName);
@@ -546,7 +547,7 @@ const BattleUI = {
     this.renderPartyStatus();
     this.renderActiveMemberBar();
     this.updateStats();
-    
+
     // Apply atmosphere based on Arc
     this._applyArcAtmosphere();
     // Start weather loop for battle canvas if active
@@ -629,11 +630,11 @@ const BattleUI = {
     if (this._weatherLoopActive) return;
     const canvas = this.el('battle-effects-canvas');
     if (!canvas) return;
-    
+
     const ctx = canvas.getContext('2d');
     canvas.width = canvas.offsetWidth;
     canvas.height = canvas.offsetHeight;
-    
+
     if (typeof WeatherEngine !== 'undefined' && typeof MapEngine !== 'undefined') {
       let wType = MapEngine.getWeather();
       // Boss-specific weather override
@@ -648,7 +649,7 @@ const BattleUI = {
 
     this._weatherLoopActive = true;
     let lastTs = performance.now();
-    
+
     const loop = (ts) => {
       if (!this._weatherLoopActive || !this.el('battle-screen').classList.contains('active')) {
         this._weatherLoopActive = false;
@@ -656,13 +657,13 @@ const BattleUI = {
       }
       const dt = (ts - lastTs) / 1000;
       lastTs = ts;
-      
+
       if (typeof WeatherEngine !== 'undefined') {
         WeatherEngine.update(dt);
         // Ensure canvas dimensions match actual display size (handles orientation/resize)
         if (canvas.width !== canvas.offsetWidth || canvas.height !== canvas.offsetHeight) {
-           canvas.width = canvas.offsetWidth;
-           canvas.height = canvas.offsetHeight;
+          canvas.width = canvas.offsetWidth;
+          canvas.height = canvas.offsetHeight;
         }
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         WeatherEngine.draw(ctx);
@@ -674,7 +675,7 @@ const BattleUI = {
         this._applyArcAtmosphere();
         this.updateStats();
       }
-      
+
       requestAnimationFrame(loop);
     };
     requestAnimationFrame(loop);
@@ -718,7 +719,7 @@ const BattleUI = {
     if (log && id) {
       log.innerHTML = '<p class="log-line" style="color:var(--text-dim);font-style:italic">Choose an action...</p>';
     } else if (log) {
-      this.refreshLog(); 
+      this.refreshLog();
     }
 
     // Switch focus context to the sub-menu or back to main
@@ -739,13 +740,13 @@ const BattleUI = {
       if (!unit) return;
       const isEnemy = t.type === 'enemy';
       const color = isEnemy ? '#ff4060' : (CHAR_COLOR[unit.charId] || '#c0b8e8');
-      
+
       const tok = document.createElement('div');
       tok.className = 'tb-tok' +
         (i === turnIdx ? ' active-tok' : '') +
         (isEnemy ? ' enemy-tok' : '') +
         (!Battle.alive(unit) ? ' dead-tok' : '');
-      
+
       // Enemy: sprite image. Party: colored initial badge.
       if (isEnemy) {
         const img = document.createElement('img');
@@ -794,7 +795,7 @@ const BattleUI = {
     G.enemyGroup.forEach((e, i) => {
       const alive = Battle.alive(e);
       const pct = Math.max(0, e.hp / e.maxHp * 100);
-      
+
       let enemy = existingEnemies[i];
       let spr, hpBar, info, indicator;
 
@@ -835,9 +836,9 @@ const BattleUI = {
       enemy.className = 'enemy' + (!alive ? ' ko-enemy' : '');
       const targetEnemyIdx = typeof TurnState !== 'undefined' ? TurnState.getTargetEnemyIdx() : G.targetEnemyIdx;
       enemy.dataset.target = i === targetEnemyIdx ? 'true' : 'false';
-      enemy.onclick     = () => typeof selectTarget  === 'function' ? selectTarget(i)  : null;
-      enemy.onmouseenter = () => typeof hoverTarget   === 'function' ? hoverTarget(i)   : null;
-      
+      enemy.onclick = () => typeof selectTarget === 'function' ? selectTarget(i) : null;
+      enemy.onmouseenter = () => typeof hoverTarget === 'function' ? hoverTarget(i) : null;
+
       // Ensure unit is anchored to DOM (Fix for disappearing units)
       if (enemy.parentElement !== container) container.appendChild(enemy);
 
@@ -853,11 +854,11 @@ const BattleUI = {
       spr.classList.toggle('enemy-corrupted', e.mutation === 'corrupted');
       const isFrozen = (typeof StatusSystem !== 'undefined' && StatusSystem.has(e, 'status_frozen'));
       spr.classList.toggle('frozen-sprite', isFrozen);
-      
+
       spr.style.width = sprW + 'px';
       spr.style.height = sprH + 'px';
       spr.id = 'espr-' + i; // Force correct ID for coordinate math
-      
+
       // Only redraw if src is different or missing
       if (!spr.src || spr.dataset.lastId !== e.id || spr.dataset.lastPal !== JSON.stringify(e.palette)) {
         if (typeof SpriteRenderer !== 'undefined') SpriteRenderer.drawEnemy(spr, e.id, e.palette);
@@ -868,7 +869,7 @@ const BattleUI = {
       // HP Update (Triggers CSS transition)
       hpBar.style.width = pct + '%';
       hpBar.style.background = pct > 50 ? '#4ade80' : pct > 25 ? '#eab308' : '#ef4444';
-      
+
       const drain = this.el('ehpd-' + i);
       if (drain) {
         setTimeout(() => { drain.style.width = pct + '%'; }, 300);
@@ -898,7 +899,7 @@ const BattleUI = {
       if (!m) return;
       const alive = Battle.alive(m);
       const pct = Math.max(0, m.hp / m.maxHp * 100);
-      
+
       let member = existingMembers[i];
       let spr, hpBar, info;
 
@@ -948,7 +949,7 @@ const BattleUI = {
       member.className = 'party-member' + (!alive ? ' ko-member' : '');
       const col = CHAR_COLOR[m.charId] || '#c0b8e8';
       member.style.color = col;
-      
+
       // Ensure member is anchored to DOM (Fix for disappearing units)
       if (member.parentElement !== container) container.appendChild(member);
 
@@ -992,7 +993,7 @@ const BattleUI = {
       if (hpBar) {
         hpBar.style.width = pct + '%';
         hpBar.style.background = pct > 50 ? 'var(--hp-hi)' : pct > 25 ? 'var(--hp-mid)' : 'var(--hp-lo)';
-        
+
         const drain = this.el('phpd-' + i);
         if (drain) {
           setTimeout(() => { drain.style.width = pct + '%'; }, 300);
@@ -1131,15 +1132,15 @@ const BattleUI = {
     const isSmall = window.innerWidth < 600;
     const classInfo = isSmall ? `LV ${m.lv}` : `${m.cls.name} · LV ${m.lv}`;
     const mpInfo = isSmall ? `MP ${m.mp}` : `MP ${m.mp}/${m.maxMp}`;
-    
+
     const esc = (typeof escapeHtml === 'function') ? escapeHtml : (v) => v;
     bar.innerHTML =
-      `<div class="amb-portrait" style="color:${col};border-color:${col}">${esc((m.displayName||m.charId||'?')[0].toUpperCase())}</div>` +
+      `<div class="amb-portrait" style="color:${col};border-color:${col}">${esc((m.displayName || m.charId || '?')[0].toUpperCase())}</div>` +
       `<span class="amb-arrow" style="color:${col}">▶</span>` +
       `<span class="amb-name" style="color:${col}">${esc(m.displayName)}</span>` +
       `<span class="amb-class">${esc(classInfo)}</span>` +
       `<span class="amb-mp" style="color:#6080ff">${esc(mpInfo)}</span>`;
-    
+
     // Auto-focus the action menu for keyboard/controller
     if (typeof Focus !== 'undefined') {
       Focus.setContext('cmd-grid-main');
@@ -1183,7 +1184,7 @@ const BattleUI = {
   _getAnchor(idx, type = 'enemy') {
     const s = this.el('battle-scene');
     if (!s) return { x: 200, y: 200 };
-    
+
     // Find by DOM data-idx for stability
     const selector = type === 'enemy' ? `.enemy[data-idx="${idx}"]` : `.party-member[data-idx="${idx}"]`;
     const container = s.querySelector(selector);
@@ -1194,7 +1195,7 @@ const BattleUI = {
 
     const sceneRect = s.getBoundingClientRect();
     const targetRect = target.getBoundingClientRect();
-    
+
     // Calculate the REAL scale applied to the scene (CSS scale or zoom)
     const sceneScale = sceneRect.width / s.offsetWidth || 1;
 
@@ -1224,7 +1225,7 @@ const BattleUI = {
     d.textContent = txt;
     d.style.left = pos.x + 'px';
     d.style.top = (pos.y - 60) + 'px';
-    
+
     s.appendChild(d);
     setTimeout(() => d.remove(), 2500);
   },
@@ -1249,7 +1250,7 @@ const BattleUI = {
     d.style.left = ((rect.left - sceneRect.left + rect.width / 2) / gameScale) + 'px';
     d.style.top = ((rect.top - sceneRect.top + rect.height / 4) / gameScale) + 'px';
     s.appendChild(d);
-    
+
     // Add a secondary burst effect
     setTimeout(() => d.classList.add('pop-burst'), 50);
     setTimeout(() => d.remove(), 1500);
@@ -1258,7 +1259,7 @@ const BattleUI = {
   _pop(text, x, y, type, element) {
     const s = this.el('battle-scene');
     const d = document.createElement('div');
-    
+
     // Add random jitter to x/y so multiple hits arc differently
     const ox = (Math.random() - 0.5) * 40;
     const oy = (Math.random() - 0.5) * 20;
@@ -1275,7 +1276,7 @@ const BattleUI = {
     const log = document.querySelector('.battle-log');
     if (!log || !ab) return;
     log.innerHTML = `<p class="log-line" style="color:var(--gold);font-weight:bold">${escapeHtml(ab.name)}</p>` +
-                    `<p class="log-line" style="font-size:12px;color:#fff">${escapeHtml(ab.description)}</p>`;
+      `<p class="log-line" style="font-size:12px;color:#fff">${escapeHtml(ab.description)}</p>`;
   },
 
   clearAbilityDesc() {
@@ -1420,8 +1421,8 @@ const BattleUI = {
     // t=150 — snap forward (fast, snappy ease-in)
     setTimeout(() => {
       member.style.transition = 'transform 0.2s cubic-bezier(0.3, 0, 0.7, 1)';
-      member.style.transform  = `translate(${dx}px, ${dy}px) scale(1.1)`;
-      member.style.zIndex     = '50';
+      member.style.transform = `translate(${dx}px, ${dy}px) scale(1.1)`;
+      member.style.zIndex = '50';
     }, 150);
 
     // t=350 — peak: switch to attack frame, fire damage
@@ -1433,8 +1434,8 @@ const BattleUI = {
     // t=600 — hold felt; now return smoothly
     setTimeout(() => {
       member.style.transition = 'transform 0.28s cubic-bezier(0.4, 0, 0.2, 1)';
-      member.style.transform  = '';
-      member.style.zIndex     = '';
+      member.style.transform = '';
+      member.style.zIndex = '';
     }, 600);
 
     // t=880 — landing: brief prepare recovery pose
@@ -1458,7 +1459,7 @@ const BattleUI = {
    */
   enemyStrike(enemyIdx, moveType, targetPartyIdx, element, onHit, onComplete) {
     const enemyEl = document.querySelector(`.enemy[data-idx="${enemyIdx}"]`);
-    const spr     = this.el('espr-' + enemyIdx);
+    const spr = this.el('espr-' + enemyIdx);
 
     // Fallback: no element — fire callbacks and bail
     if (!enemyEl) {
@@ -1469,7 +1470,7 @@ const BattleUI = {
 
     const _cleanup = () => {
       enemyEl.classList.remove('enemy-anim-charge', 'enemy-anim-lunge',
-                               'enemy-anim-cast', 'enemy-anim-debuff');
+        'enemy-anim-cast', 'enemy-anim-debuff');
       if (spr) spr.classList.remove(...Array.from(spr.classList)
         .filter(c => c.startsWith('element-')));
     };
@@ -1590,7 +1591,7 @@ const BattleUI = {
       const gameEl = this.el('game');
       const scaleMatch = gameEl?.style.transform.match(/scale\(([\d.]+)\)/);
       const gameScale = scaleMatch ? parseFloat(scaleMatch[1]) : 1;
-      
+
       const centerX = rect.width / 2;
       const centerY = rect.height / 2;
 

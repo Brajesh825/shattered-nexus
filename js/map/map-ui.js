@@ -28,7 +28,8 @@ const MapUI = (() => {
     if (!dpad) return;
     
     // Only show if we are actually on a touch device
-    const isTouch = window.matchMedia('(pointer: coarse)').matches;
+    const isTouch = document.body.classList.contains('is-touch-device') || 
+                   window.matchMedia('(pointer: coarse)').matches;
     if (!isTouch) {
       dpad.style.display = 'none';
       return;
