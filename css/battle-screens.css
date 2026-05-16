@@ -784,6 +784,7 @@
   color: #c0fde0;
   text-shadow: 0 0 8px rgba(128, 240, 200, 0.6);
   font-weight: 700;
+  white-space: nowrap;
 }
 .ab-banner-hint {
   font-family: var(--px);
@@ -793,6 +794,7 @@
   margin-left: 4px;
   border-left: 1px solid rgba(128, 240, 200, 0.3);
   padding-left: 10px;
+  white-space: nowrap;
 }
 @media (max-width: 480px) {
   .ab-banner-hint { display: none; }
