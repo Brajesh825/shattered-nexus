@@ -1157,10 +1157,13 @@ const Story = {
                     urlParams.get('dev') === 'true';
 
     // Determine which side regions are unlocked
+    // An arc's side routes unlock when that arc's boss is defeated:
+    // either we've already moved past it (arcIdx > fromIdx) OR we just finished it (arcIdx === fromIdx && arc_end)
+    const arcIsBeaten = idx => idx < this.arcIdx || (idx === this.arcIdx && (this.phase === 'arc_end' || this.phase === 'epilogue'));
     MAP_SIDE_ROUTES.forEach(([fromIdx, toIdx]) => {
       // Side region is only considered for unlocking if its parent arc is released (or in debug mode)
       if (isArcReleased(fromIdx) || isDebug) {
-        if (isDebug || fromIdx < this.arcIdx) {
+        if (isDebug || arcIsBeaten(fromIdx)) {
           unlockedPlaces.add(toIdx);
         }
       }
@@ -1203,8 +1206,8 @@ const Story = {
       const isCharted = !isStoryPlace;
       if (isCharted && !unlockedPlaces.has(placeIdx)) return;
 
-      const isDone = isStoryPlace && arcIdx < this.arcIdx;
-      const isCur = isStoryPlace && arcIdx === this.arcIdx;
+      const isDone = isStoryPlace && (arcIdx < this.arcIdx || (arcIdx === this.arcIdx && arcIsBeaten(arcIdx)));
+      const isCur = isStoryPlace && arcIdx === this.arcIdx && !isDone;
       const isNext = isStoryPlace && arcIdx === nextIdx;
       const isLock = isStoryPlace && arcIdx > nextIdx;
       
@@ -1256,18 +1259,33 @@ const Story = {
     /* ── Bottom info bar ── */
     const next = arcs[nextIdx];
     const arcComplete = this.phase === 'arc_end' || this.phase === 'epilogue';
+    const nextReleased = isArcReleased(nextIdx);
+    const canTravel = arcComplete && nextReleased;
     const proceedBtn = document.getElementById('map-proceed-btn');
     if (proceedBtn) {
-      proceedBtn.disabled = !arcComplete;
-      proceedBtn.style.opacity = arcComplete ? '' : '0.35';
-      proceedBtn.style.cursor = arcComplete ? '' : 'not-allowed';
-      proceedBtn.title = arcComplete ? '' : '⛔ Defeat the current arc boss first';
+      proceedBtn.disabled = !canTravel;
+      proceedBtn.style.opacity = canTravel ? '' : '0.35';
+      proceedBtn.style.cursor = canTravel ? '' : 'not-allowed';
+      if (!arcComplete) {
+        proceedBtn.textContent = '▶ TRAVEL THERE';
+        proceedBtn.title = '⛔ Defeat the current arc boss first';
+      } else if (!nextReleased) {
+        proceedBtn.textContent = '🔒 COMING SOON';
+        proceedBtn.title = 'The next arc is still in development — explore the side regions for now!';
+      } else {
+        proceedBtn.textContent = '▶ TRAVEL THERE';
+        proceedBtn.title = '';
+      }
     }
     this.el('map-arc-label').textContent = next
-      ? (arcComplete ? `NEXT: ${next.name.toUpperCase()}` : `⛔ BOSS UNDEFEATED`)
+      ? (arcComplete
+          ? (nextReleased ? `NEXT: ${next.name.toUpperCase()}` : `✦ EXPLORE SIDE REGIONS`)
+          : `⛔ BOSS UNDEFEATED`)
       : 'JOURNEY COMPLETE';
-    this.el('map-info-name').textContent = next ? next.name : '';
-    this.el('map-info-loc').textContent = next ? (next.location || '') : '';
+    this.el('map-info-name').textContent = next ? (nextReleased ? next.name : 'Arc Complete') : '';
+    this.el('map-info-loc').textContent = next
+      ? (nextReleased ? (next.location || '') : 'New content coming soon — side regions are open!')
+      : '';
 
     showScreen('map-screen');
     if (typeof SFX !== 'undefined') SFX.mapMove();

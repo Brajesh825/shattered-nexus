@@ -303,18 +303,27 @@ function goArcCharSelect() {
 let _partySwapSelection = [];
 
 function openPartySwap() {
-  // Start selection from current active party
-  _partySwapSelection = [...(G.selectedChars.length ? G.selectedChars : G.unlockedChars.slice(0, 4))];
-  _renderPartySwapGrid();
+  // Show the overlay FIRST so a render error never leaves us invisible-frozen
   const overlay = document.getElementById('party-swap-overlay');
   if (overlay) overlay.classList.add('open');
+  // Start selection from current active party
+  _partySwapSelection = [...(G.selectedChars.length ? G.selectedChars : G.unlockedChars.slice(0, 4))];
+  try {
+    _renderPartySwapGrid();
+  } catch (err) {
+    console.error('[openPartySwap] Grid render failed:', err);
+    const grid = document.getElementById('party-swap-grid');
+    if (grid) grid.innerHTML = '<div style="color:#ef4444;padding:20px;text-align:center">⚠ Failed to load characters. Check console.</div>';
+  }
 }
 
 function closePartySwap() {
   const overlay = document.getElementById('party-swap-overlay');
   if (overlay) overlay.classList.remove('open');
-  // Resume map engine if we're in explore mode
-  if (G.mode === 'story_explore' && typeof MapEngine !== 'undefined' && !MapEngine.isRunning()) {
+  // Resume map engine regardless of mode — camp + any story context stops the
+  // engine before opening this overlay, so we must always resume on close.
+  // (Safe to call even if already running — MapEngine.resume() is idempotent.)
+  if (typeof MapEngine !== 'undefined' && !MapEngine.isRunning()) {
     MapEngine.resume();
   }
 }
@@ -356,7 +365,7 @@ function _renderPartySwapGrid() {
       `<div class="swap-info">` +
         `<div class="swap-name">${esc(ch.alias || ch.name)}</div>` +
         `<div class="swap-title">${esc(ch.title)}</div>` +
-        `<div class="swap-stats">ATK ${ch.base_stats.atk + (ch.stat_bonuses.atk||0)} · SPD ${ch.base_stats.spd + (ch.stat_bonuses.spd||0)}</div>` +
+        `<div class="swap-stats">ATK ${ (ch.base_stats?.atk || 0) + (ch.stat_bonuses?.atk || 0) } · SPD ${ (ch.base_stats?.spd || 0) + (ch.stat_bonuses?.spd || 0) }</div>` +
       `</div>`;
 
     card.addEventListener('click', () => {
