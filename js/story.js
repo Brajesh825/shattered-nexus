@@ -1013,6 +1013,13 @@ const Story = {
     if (typeof SFX !== 'undefined') SFX.shardGet();
   },
 
+  returnToWorldMapFromBetaEnd() {
+    if (typeof SFX !== 'undefined' && SFX.click) SFX.click();
+    this.active = true;
+    G.mode = 'story';
+    this._showWorldMap();
+  },
+
   _beginEpilogue() {
     const epi = this.data.epilogue;
     this.phase = 'epilogue';
