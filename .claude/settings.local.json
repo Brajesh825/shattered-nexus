@@ -98,7 +98,9 @@
       "mcp__nexus-engine-mcp__nexus_simulate_combat",
       "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\ASUS\\\\VVI\\\\rpg+\" -Force)",
       "Bash(Select-Object Name, PSIsContainer)",
-      "Bash(Format-Table -AutoSize)"
+      "Bash(Format-Table -AutoSize)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\ASUS\\\\VVI\\\\rpg+\" -Recurse -Filter \"*.js\")",
+      "Bash(Select-Object -ExpandProperty FullName)"
     ]
   }
 }

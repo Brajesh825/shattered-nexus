@@ -226,7 +226,7 @@ const SpriteRenderer = (() => {
     if (!el) return;
     const id = charId.toLowerCase();
     const manifest = SPRITE_MANIFEST[id];
-    
+
     if (!manifest) {
       el.style.backgroundImage = `url(images/characters/spirits/${id}_sprite.png)`;
       el.style.backgroundSize = 'contain';
@@ -248,7 +248,7 @@ const SpriteRenderer = (() => {
     el.style.backgroundSize = `${manifest.cols * 100}% ${manifest.rows * 100}%`;
     el.style.backgroundPosition = `${posX}% ${posY}%`;
     el.style.backgroundRepeat = 'no-repeat';
-    
+
     if (typeof frameNameOrCoords === 'string') {
       const frames = ['frame-idle', 'frame-prepare', 'frame-attack', 'frame-magic', 'frame-hurt', 'frame-fallen'];
       frames.forEach(f => el.classList.remove(f));
@@ -257,12 +257,12 @@ const SpriteRenderer = (() => {
   }
 
   function getSuffix() {
-    const qual  = (typeof Settings !== 'undefined' ? Settings.getQuality() : (G.settings?.graphicsQuality || 'high'));
-    const style = (typeof Settings !== 'undefined' ? Settings.getStyle()   : (G.settings?.style || 'illustrious'));
-    
+    const qual = (typeof Settings !== 'undefined' ? Settings.getQuality() : (G.settings?.graphicsQuality || 'high'));
+    const style = (typeof Settings !== 'undefined' ? Settings.getStyle() : (G.settings?.style || 'illustrious'));
+
     const isIllustrious = style === 'illustrious';
     const isLow = qual === 'low' || (qual === 'auto' && window.innerWidth < 800);
-    
+
     if (isIllustrious) return isLow ? '_sprite_1_low.webp' : '_sprite_1.png';
     return isLow ? '_sprite_low.webp' : '_sprite.png';
   }
@@ -280,7 +280,7 @@ const SpriteRenderer = (() => {
   function refreshGlobalSprites() {
     console.log('[SpriteRenderer] Global refresh triggered.');
     document.querySelectorAll('.party-sprite').forEach(el => {
-      el.dataset.lastId = ''; 
+      el.dataset.lastId = '';
       el.dataset.lastClass = '';
     });
     if (window.BattleUI && BattleUI.render) BattleUI.render();
