@@ -1,0 +1,49 @@
+{
+    "id": "chloe",
+    "metadata": {
+        "name": "Chloe",
+        "title": "The Weaver of Hours",
+        "origin": "The Timeless Archive",
+        "class": "Chrono-Liturgist",
+        "rarity": "Legendary / Hero",
+        "element": "Light / Time"
+    },
+    "stats_baseline": {
+        "hp": 68,
+        "mp": 42,
+        "atk": 19,
+        "def": 13,
+        "spd": 24,
+        "mag": 18,
+        "lck": 12
+    },
+    "abilities": [
+        {
+            "id": "temporal_strike",
+            "name": "Temporal Strike",
+            "type": "Physical/Magic Hybrid",
+            "cost": 8,
+            "description": "A swift thrust from the Crystalline Chronometer. 10% chance to inflict Slow."
+        },
+        {
+            "id": "hourglass_barrier",
+            "name": "Hourglass Barrier",
+            "type": "Support/Time",
+            "cost": 15,
+            "description": "Encases an ally in a 1-second time-loop, granting +25% Evasion for 1 turn."
+        },
+        {
+            "id": "shattered_second",
+            "name": "Shattered Second",
+            "type": "Ultimate",
+            "cost": 100,
+            "description": "Chloe shatters her blade into a thousand shards, striking all enemies for 3x damage and reducing their SPD by 20%."
+        }
+    ],
+    "passive": {
+        "id": "chronos_resonance",
+        "name": "Chronos Resonance",
+        "effect": "+15% Physical Evasion. Successful dodges grant a stackable +5% SPD buff (Max 3 stacks)."
+    },
+    "lore_snippet": "She carries a clock that stopped at the exact moment her world ended. Chloe seeks to 'wind the key' of the Nexus to restart the heart of reality."
+}

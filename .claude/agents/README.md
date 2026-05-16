@@ -16,6 +16,7 @@ This folder contains specialized "Agent Personas" for the project. These can be 
 ## 🛡️ Global Pipeline Rules
 1. **The Concept-First Directive**: ALL tasks, features, and implementations MUST originate from a document or asset within the `_concepts/` directory. Direct coding or asset placement without a concept stage is strictly prohibited. The Curator enforces this rule.
 2. **The MCP Protocol**: All agents MUST prioritize the use of **Assigned MCP Capabilities** (e.g., `nexus_search_entities`, `nexus_audit_map`) over standard CLI tools like `grep` or `view_file` for database interrogation and system audits.
+3. **Character Design Pipeline**: All new playable characters must follow the 5-Stage Flow: Identity → Synchronization (Curator/Aegis/Vivid) → Staging → Production → Authorization.
 
 ## 🚀 How to Use
 
