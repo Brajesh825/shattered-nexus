@@ -526,7 +526,10 @@ const MapUI = (() => {
     // Hide camp menu without resuming the engine — party swap takes over
     const el = document.getElementById('camp-menu');
     if (el) el.style.display = 'none';
-    if (typeof openPartySwap === 'function') openPartySwap();
+    if (typeof openPartySwap === 'function') {
+      // Reopen camp menu when party swap closes (confirm or ✕)
+      openPartySwap(() => openCampMenu());
+    }
   }
 
   function campHeal() {

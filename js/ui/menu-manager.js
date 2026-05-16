@@ -301,11 +301,17 @@ function goArcCharSelect() {
    PARTY SWAP (World Map overlay)
    ============================================================ */
 let _partySwapSelection = [];
+let _partySwapOnClose = null; // optional callback fired after close or confirm
 
-function openPartySwap() {
-  // Show the overlay FIRST so a render error never leaves us invisible-frozen
+// onClose: optional fn called after the overlay closes (used by camp to reopen camp menu)
+function openPartySwap(onClose) {
+  _partySwapOnClose = onClose || null;
   const overlay = document.getElementById('party-swap-overlay');
-  if (overlay) overlay.classList.add('open');
+  if (overlay) {
+    // MUST clear the inline style set by UI.hideAllOverlays() — it overrides CSS classes
+    overlay.style.display = '';
+    overlay.classList.add('open');
+  }
   // Start selection from current active party
   _partySwapSelection = [...(G.selectedChars.length ? G.selectedChars : G.unlockedChars.slice(0, 4))];
   try {
@@ -319,12 +325,20 @@ function openPartySwap() {
 
 function closePartySwap() {
   const overlay = document.getElementById('party-swap-overlay');
-  if (overlay) overlay.classList.remove('open');
+  if (overlay) {
+    overlay.style.display = '';
+    overlay.classList.remove('open');
+  }
   // Resume map engine regardless of mode — camp + any story context stops the
   // engine before opening this overlay, so we must always resume on close.
   // (Safe to call even if already running — MapEngine.resume() is idempotent.)
   if (typeof MapEngine !== 'undefined' && !MapEngine.isRunning()) {
     MapEngine.resume();
+  }
+  if (_partySwapOnClose) {
+    const cb = _partySwapOnClose;
+    _partySwapOnClose = null;
+    cb();
   }
 }
 
@@ -333,7 +347,7 @@ function confirmPartySwap() {
   G.selectedChars = [..._partySwapSelection];
   G.selectedChar  = G.selectedChars[0];
   buildParty();
-  closePartySwap();
+  closePartySwap(); // fires _partySwapOnClose if set
   // Show brief confirmation toast
   if (typeof Save !== 'undefined') Save._showToast('Party updated');
 }
