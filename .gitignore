@@ -1,6 +1,9 @@
 # Utility/dev tools - not part of the game
 _utils/
 
+# Downloads folder (local installers, large binaries)
+_downloads/
+
 # Claude worktrees
 .claude/worktrees/
 

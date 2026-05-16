@@ -35,7 +35,7 @@ MAP_DEFS.southern_isles = {
         { id: 'naga',   x: 18, y: 20, patrol: 'vertical',   range: 10, speed: 1.3, activePhases: ['midnight'] },
         { id: 'naga',   x: 102, y: 20, patrol: 'vertical',  range: 10, speed: 1.3, activePhases: ['midnight'] },
         // --- MAP BOSS ---
-        { id: 'sunken_leviathan', x: 60, y: 4,  patrol: 'stationary', isBoss: true, level: 20, label: 'Sunken Leviathan' }
+        { id: 'sunken_leviathan', x: 60, y: 4,  patrol: 'stationary', isBoss: true, level: 25, label: 'Sunken Leviathan' }
     ],
     jsonFile: 'js/map/data/map-southern-isles.json',
     
@@ -108,7 +108,7 @@ MAP_DEFS.southern_isles = {
             type: 'encounter',
             isBoss: true,
             enemies: ['sunken_leviathan'],
-            level: 20,
+            level: 25,
             preMsg: '⚠ The Abyssal Gate trembles. Something vast stirs below…'
         }
     ],
