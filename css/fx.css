@@ -23,8 +23,8 @@
   backdrop-filter: blur(4px) brightness(1.2);
   border: 1px solid rgba(255, 255, 255, 0.15);
   transform: scale(1.1);
-  transition: transform 1.4s cubic-bezier(0.16, 1, 0.3, 1), 
-              opacity 1.1s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 1.4s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 1.1s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .shatter-overlay.shattered .shatter-shard {
@@ -45,19 +45,22 @@
   left: -150%;
   width: 300%;
   height: 300%;
-  background: linear-gradient(
-    45deg,
-    transparent 45%,
-    rgba(255, 255, 255, 0.08) 50%,
-    transparent 55%
-  );
+  background: linear-gradient(45deg,
+      transparent 45%,
+      rgba(255, 255, 255, 0.08) 50%,
+      transparent 55%);
   animation: sheen 6s infinite linear;
   pointer-events: none;
 }
 
 @keyframes sheen {
-  0% { transform: translate(-30%, -30%); }
-  100% { transform: translate(30%, 30%); }
+  0% {
+    transform: translate(-30%, -30%);
+  }
+
+  100% {
+    transform: translate(30%, 30%);
+  }
 }
 
 /* ── Impact Blur ─────────────────────────────────────── */
@@ -66,9 +69,17 @@
 }
 
 @keyframes impactBlur {
-  0% { filter: blur(0px) contrast(1) brightness(1); }
-  20% { filter: blur(6px) contrast(1.2) brightness(1.3); }
-  100% { filter: blur(0px) contrast(1) brightness(1); }
+  0% {
+    filter: blur(0px) contrast(1) brightness(1);
+  }
+
+  20% {
+    filter: blur(6px) contrast(1.2) brightness(1.3);
+  }
+
+  100% {
+    filter: blur(0px) contrast(1) brightness(1);
+  }
 }
 
 /* ── Boss Specific Themes ────────────────────────────── */
@@ -81,12 +92,31 @@
 }
 
 @keyframes voidGlitch {
-  0% { transform: translate(0); }
-  20% { transform: translate(-2px, 1px); filter: invert(1) sepia(1) hue-rotate(240deg); }
-  40% { transform: translate(2px, -1px); }
-  60% { transform: translate(-1px, 2px); filter: invert(1) contrast(2); }
-  80% { transform: translate(1px, -2px); }
-  100% { transform: translate(0); }
+  0% {
+    transform: translate(0);
+  }
+
+  20% {
+    transform: translate(-2px, 1px);
+    filter: invert(1) sepia(1) hue-rotate(240deg);
+  }
+
+  40% {
+    transform: translate(2px, -1px);
+  }
+
+  60% {
+    transform: translate(-1px, 2px);
+    filter: invert(1) contrast(2);
+  }
+
+  80% {
+    transform: translate(1px, -2px);
+  }
+
+  100% {
+    transform: translate(0);
+  }
 }
 
 /* King Galdor Verdant Radiance */
@@ -101,8 +131,15 @@
 }
 
 @keyframes galdorRadiance {
-  from { opacity: 0.4; transform: scale(1); }
-  to { opacity: 0.8; transform: scale(1.1); }
+  from {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+
+  to {
+    opacity: 0.8;
+    transform: scale(1.1);
+  }
 }
 
 /* Sunken Leviathan (Kraken) - Abyssal Pressure */
@@ -120,8 +157,15 @@
 }
 
 @keyframes waterDistort {
-  0%, 100% { filter: contrast(1.1) brightness(0.9) saturate(1.2); }
-  50% { filter: contrast(1.2) brightness(0.8) saturate(1.4) blur(0.5px); }
+
+  0%,
+  100% {
+    filter: contrast(1.1) brightness(0.9) saturate(1.2);
+  }
+
+  50% {
+    filter: contrast(1.2) brightness(0.8) saturate(1.4) blur(0.5px);
+  }
 }
 
 /* Ember Lord / Demon Lord - Heat Sync */
@@ -137,9 +181,20 @@
 }
 
 @keyframes heatShimmer {
-  0% { opacity: 0.3; filter: blur(2px); }
-  50% { opacity: 0.6; filter: blur(4px); }
-  100% { opacity: 0.3; filter: blur(2px); }
+  0% {
+    opacity: 0.3;
+    filter: blur(2px);
+  }
+
+  50% {
+    opacity: 0.6;
+    filter: blur(4px);
+  }
+
+  100% {
+    opacity: 0.3;
+    filter: blur(2px);
+  }
 }
 
 /* Spectral Guardian - Frost Shatter */
@@ -152,7 +207,7 @@
   position: absolute;
   inset: 0;
   border: 40px solid transparent;
-  border-image: radial-gradient(circle, transparent 60%, rgba(255,255,255,0.15) 100%) 40;
+  border-image: radial-gradient(circle, transparent 60%, rgba(255, 255, 255, 0.15) 100%) 40;
   pointer-events: none;
   z-index: 6;
   filter: blur(8px);
@@ -170,9 +225,15 @@
 }
 
 @keyframes tidePulse {
-  from { opacity: 0.3; }
-  to { opacity: 0.6; }
+  from {
+    opacity: 0.3;
+  }
+
+  to {
+    opacity: 0.6;
+  }
 }
+
 /* 
  * fx.css — Cinematic Transitions and Visual Effects
  * Part of Phase 1 Infrastructure
@@ -222,7 +283,7 @@
   letter-spacing: 0.5rem;
   color: rgba(255, 255, 255, 0.6);
   margin-bottom: 0.5rem;
-  text-shadow: 0 0 10px rgba(255,255,255,0.3);
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
 }
 
 #intro-boss-name {
@@ -232,7 +293,7 @@
   color: #fff;
   letter-spacing: 0.2rem;
   text-transform: uppercase;
-  text-shadow: 0 0 20px rgba(255,255,255,0.5), 0 0 40px rgba(255,255,255,0.2);
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.5), 0 0 40px rgba(255, 255, 255, 0.2);
 }
 
 .intro-title-line {
@@ -250,32 +311,42 @@
 /* Specific Boss Themes */
 .theme--guardian #intro-boss-name {
   color: #a5f3fc;
-  text-shadow: 0 0 20px rgba(165,243,252,0.8);
+  text-shadow: 0 0 20px rgba(165, 243, 252, 0.8);
 }
 
 .theme--demon-lord #intro-boss-name {
   color: #f97316;
-  text-shadow: 0 0 20px rgba(249,115,22,0.8), 0 0 40px rgba(239,68,68,0.4);
+  text-shadow: 0 0 20px rgba(249, 115, 22, 0.8), 0 0 40px rgba(239, 68, 68, 0.4);
 }
 
 .theme--king-galdor #intro-boss-name {
   color: #4ade80;
-  text-shadow: 0 0 20px rgba(74,222,128,0.8);
+  text-shadow: 0 0 20px rgba(74, 222, 128, 0.8);
 }
 
 .theme--void-knight #intro-boss-name {
   color: #c084fc;
-  text-shadow: 0 0 20px rgba(192,132,252,0.8), 0 0 40px rgba(139,92,246,0.5);
+  text-shadow: 0 0 20px rgba(192, 132, 252, 0.8), 0 0 40px rgba(139, 92, 246, 0.5);
 }
 
 @keyframes null-invert {
-  0% { filter: invert(0); }
-  20% { filter: invert(1) hue-rotate(180deg); }
-  80% { filter: invert(1) hue-rotate(180deg); }
-  100% { filter: invert(0); }
+  0% {
+    filter: invert(0);
+  }
+
+  20% {
+    filter: invert(1) hue-rotate(180deg);
+  }
+
+  80% {
+    filter: invert(1) hue-rotate(180deg);
+  }
+
+  100% {
+    filter: invert(0);
+  }
 }
 
 .theme--void-knight-active {
   animation: null-invert 2s ease-in-out forwards;
 }
-

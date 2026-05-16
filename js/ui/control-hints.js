@@ -8,24 +8,24 @@ const ControlHints = (() => {
   const HINT_SETS = {
     explore: [
       { key: '↕←→ / Stick', action: 'Move' },
-      { key: 'X / A',        action: 'Interact' },
-      { key: 'Y / Start',    action: 'Menu' },
-      { key: 'Tab',          action: 'Cycle Char' },
+      { key: 'X / A', action: 'Interact' },
+      { key: 'Y / Start', action: 'Menu' },
+      { key: 'Tab', action: 'Cycle Char' },
     ],
     battle: [
-      { key: '↕ / Stick',   action: 'Navigate' },
-      { key: 'A / Enter',   action: 'Confirm' },
-      { key: 'B / Esc',     action: 'Back' },
+      { key: '↕ / Stick', action: 'Navigate' },
+      { key: 'A / Enter', action: 'Confirm' },
+      { key: 'B / Esc', action: 'Back' },
     ],
     menu: [
-      { key: '↕ / Stick',   action: 'Navigate' },
-      { key: 'A / Enter',   action: 'Select' },
-      { key: 'B / Esc',     action: 'Close' },
-      { key: 'Start / M',   action: 'Menu' },
+      { key: '↕ / Stick', action: 'Navigate' },
+      { key: 'A / Enter', action: 'Select' },
+      { key: 'B / Esc', action: 'Close' },
+      { key: 'Start / M', action: 'Menu' },
     ],
     worldmap: [
       { key: 'Click / Tap', action: 'Select Node' },
-      { key: 'Pinch',       action: 'Zoom' },
+      { key: 'Pinch', action: 'Zoom' },
     ],
   };
 
@@ -40,7 +40,7 @@ const ControlHints = (() => {
     if (!_el) return;
 
     // Hide on mouse activity (not on touch devices)
-    if (!_isTouch) {
+    if (!_isTouchActive()) {
       window.addEventListener('mousemove', _hide);
     }
     // Hide on touch (player sees on-screen buttons instead)
@@ -66,7 +66,7 @@ const ControlHints = (() => {
   }
 
   function _showBriefly() {
-    if (_isTouch) return;
+    if (_isTouchActive()) return;
     _show();
     clearTimeout(_hideTimer);
     _hideTimer = setTimeout(_hide, 4000);
