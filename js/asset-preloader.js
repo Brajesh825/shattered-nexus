@@ -90,7 +90,7 @@ const AssetPreloader = (() => {
       (ASSETS.bgm?.length || 0) +
       (ASSETS.ui?.length || 0) +
       (ASSETS.environmentCore?.length || 0) +
-      (ASSETS.environmentExtended?.length || 0);
+      (ASSETS.backgrounds?.length || 0);
 
     let loaded = 0;
     const update = () => {
@@ -124,6 +124,9 @@ const AssetPreloader = (() => {
     await Promise.all([
       // 1. Spirits
       loadBatch(ASSETS.spirits, loadImage, 'spirit_', (id) => {
+        if (typeof SpriteRenderer !== 'undefined' && SpriteRenderer.getSpritePath) {
+          return SpriteRenderer.getSpritePath(id);
+        }
         const charId = id.toLowerCase();
         const fileName = isLowQuality ? `${charId}_sprite_low.webp` : `${charId}_sprite.png`;
         return `images/characters/spirits/${fileName}`;

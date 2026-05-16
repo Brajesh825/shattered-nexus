@@ -1,0 +1,90 @@
+{
+    "id": "chrono_liturgist",
+    "name": "Chrono-Liturgist",
+    "icon": "⏳",
+    "element": "holy",
+    "tag": "Time / Evasion",
+    "description": "A temporal manipulation art from a lost world. Weave the fabric of time to accelerate your own movements and shatter the continuity of your enemies.",
+    "color": "#8b5cf6",
+    "role": "Mage",
+    "stat_multipliers": {
+        "hp": 0.9,
+        "mp": 1.3,
+        "atk": 0.8,
+        "def": 0.85,
+        "spd": 1.5,
+        "mag": 1.4,
+        "lck": 1.1,
+        "accuracy": 1.0,
+        "critRate": 0.05
+    },
+    "abilities": [
+        {
+            "id": "temporal_strike",
+            "name": "Temporal Strike",
+            "icon": "⚔️",
+            "mp": 0,
+            "type": "magic_damage",
+            "description": "A swift thrust that distorts local time. 1.4x magic damage, 25% chance to inflict Slow.",
+            "effect": {
+                "dmgMultiplier": 1.4,
+                "element": "holy",
+                "slowChance": 0.25,
+                "statScale": "mag"
+            }
+        },
+        {
+            "id": "hourglass_barrier",
+            "name": "Hourglass Barrier",
+            "icon": "🛡️",
+            "mp": 15,
+            "type": "buff",
+            "description": "Encases an ally in a 1-second time-loop. Grants +25% Evasion and +15% SPD for 2 turns.",
+            "effect": {
+                "stat": "spd",
+                "multiplier": 1.15,
+                "evasion": 0.25,
+                "duration": 2
+            }
+        },
+        {
+            "id": "chronal_shift",
+            "name": "Chronal Shift",
+            "icon": "🔄",
+            "mp": 12,
+            "type": "debuff",
+            "description": "Accelerate the aging of enemy defenses. Reduces enemy DEF and MAG DEF by 25% for 3 turns.",
+            "effect": {
+                "stat": "def",
+                "multiplier": 0.75,
+                "duration": 3
+            }
+        },
+        {
+            "id": "shattered_second",
+            "name": "Shattered Second",
+            "icon": "✨",
+            "mp": 24,
+            "type": "magic_damage",
+            "isUltimate": true,
+            "description": "Shatter the chronometer to freeze time. 3.2x magic damage to all enemies, drops their SPD by 30%. Scales with SPD.",
+            "effect": {
+                "dmgMultiplier": 3.2,
+                "element": "holy",
+                "statScale": "spd",
+                "aoe": true,
+                "spdDebuff": 0.7,
+                "cooldown": 3
+            }
+        }
+    ],
+    "growthPerLevel": {
+        "hp": 6,
+        "mp": 7,
+        "atk": 2,
+        "def": 2,
+        "spd": 6,
+        "mag": 5,
+        "lck": 3
+    }
+}

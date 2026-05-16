@@ -12,7 +12,7 @@ Aethelgard uses a **Tiered Sprite System** to balance consistency and fidelity.
 
 ## II. BASELINE STYLE: "FLAT & CLEAN" (MANDATORY)
 **Goal**: Maximum readability, sharp lines, iconic JRPG feel.
-- **Positive Anchors**: `(thin outlines:1.2), (flat color:1.3), (cell shading:1.2), source_anime, clean lines, (solid color:1.1), (high contrast:1.1)`
+- **Positive Anchors**: `(thin outlines:1.2), (flat color:1.3), source_anime, clean lines, (solid color:1.1), (high contrast:1.1)`
 - **Negative Anchors**: `sketchy, gradients, blurry, soft shading, painterly, watercolor, realistic, 3d, (soft lighting:1.2)`
 
 weight : 0.40
@@ -51,7 +51,7 @@ Restyle 1x
 ---
 
 ## V. TECHNICAL SPECS (REQUIRED FOR BOTH)
-1. **Layout**: 2x3 sprite sheet for Combat, 2x6 for Map.
+1. **Layout**: 2 rows x 3 columns (Total 6 frames) for Combat, 2 rows x 6 columns for Map.
 2. **Background**: Pure white.
 3. **Facing**: Right (Standard).
 

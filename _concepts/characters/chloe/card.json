@@ -3,7 +3,7 @@
     "metadata": {
         "name": "Chloe",
         "title": "The Weaver of Hours",
-        "origin": "The Timeless Archive",
+        "origin": "Otherworlder (Found in Sky Ruins)",
         "class": "Chrono-Liturgist",
         "rarity": "Legendary / Hero",
         "element": "Light / Time"
@@ -45,5 +45,5 @@
         "name": "Chronos Resonance",
         "effect": "+15% Physical Evasion. Successful dodges grant a stackable +5% SPD buff (Max 3 stacks)."
     },
-    "lore_snippet": "She carries a clock that stopped at the exact moment her world ended. Chloe seeks to 'wind the key' of the Nexus to restart the heart of reality."
+    "lore_snippet": "An enigmatic traveler from another world, pulled into Aethelgard through a temporal anomaly. She wields time-bending arts from her home and seeks to understand the Shattered Nexus to forge her own path."
 }

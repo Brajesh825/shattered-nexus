@@ -1,0 +1,33 @@
+{
+    "character_id": "chloe",
+    "origin_world": "Unknown (Otherworlder)",
+    "entry_point": {
+        "location": "Sky Ruins (Elite Expansion Map)",
+        "arc_unlock": "Post-Arc 6",
+        "narrative_context": "The Sky Ruins predate all five ancient civilizations of Aethelgard. A natural dimensional rift, destabilized by the weakening of the world's Seals, pulled Chloe from her world into this one. The party discovers her exploring the ruins, trying to make sense of the ancient technology."
+    },
+    "recruitment_event": {
+        "trigger": "Defeat one of the Four Kings (Sky Ruins Map Bosses) with Chloe as an NPC ally.",
+        "motivation": "Chloe realizes the elemental Seals of Aethelgard share the exact dimensional frequency as the rift that brought her here. She joins the party, believing that repairing the Shattered Nexus is the only way to re-align the dimensions and open a path back home."
+    },
+    "dynamic_banter": [
+        {
+            "id": "chloe_sky_ruins_meeting",
+            "trigger": "First encounter in Sky Ruins",
+            "tone": "Curious / Cautious",
+            "dialogue": "You... you don't look like the phantoms in this place. Your 'time' is still moving. Are you from the world below?"
+        },
+        {
+            "id": "chloe_otherworld_reflection",
+            "trigger": "Idle in any town",
+            "tone": "Melancholic",
+            "dialogue": "The stars here are arranged differently. It's beautiful, but... it makes it hard to sleep."
+        },
+        {
+            "id": "chloe_arc8_ascension_banter",
+            "trigger": "Entering the Eternal Void (Arc 8)",
+            "tone": "Determined",
+            "dialogue": "If this Shadow Emperor shatters the core, my way home disappears with it. I won't let that happen. Not even if it takes my last second."
+        }
+    ]
+}
