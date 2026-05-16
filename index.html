@@ -480,10 +480,20 @@
           <button class="cmd-btn" onclick="heroDefend()">🛡️ DEFEND</button>
           <button class="cmd-btn" onclick="heroItem()">🧪 ITEM</button>
           <button class="cmd-btn" onclick="heroRun()">💨 RUN</button>
+          <button class="cmd-btn cmd-auto-btn" id="auto-battle-btn" onclick="AutoBattle.toggle()">🤖 AUTO</button>
           <button class="cmd-btn cmd-party-btn" onclick="openPartyMenu()">👥 PARTY</button>
         </div>
         <div class="sub-menu" id="ability-sub"></div>
         <div class="sub-menu" id="item-sub"></div>
+      </div>
+      <!-- Vivid Auto-Battle Takeover Banner -->
+      <div id="auto-mode-banner" style="display:none">
+        <div class="ab-banner-pulse"></div>
+        <div class="ab-banner-content">
+          <span class="ab-banner-icon">🤖</span>
+          <span class="ab-banner-text">AUTO MODE — VIVID</span>
+          <span class="ab-banner-hint">Tap AUTO to resume manual control</span>
+        </div>
       </div>
       <div class="party-status-bar" id="party-status-bar"></div>
       <div class="stats-bar">
@@ -956,6 +966,12 @@
           <canvas id="explore-minimap" width="96" height="60"></canvas>
         </div>
 
+        <!-- Quest Tracker (top-right, below minimap) -->
+        <div id="quest-tracker" style="display:none">
+          <div class="qt-label">✦ ACTIVE ECHOES</div>
+          <div id="quest-tracker-list"></div>
+        </div>
+
         <canvas id="explore-canvas"></canvas>
       </div>
 
@@ -1030,6 +1046,7 @@
   <script src="js/battle/combat-engine.js"></script>
   <script src="js/battle/formation-rules.js"></script>
   <script src="js/battle/action-handler.js"></script>
+  <script src="js/battle/auto-battle.js"></script>
 
   <!-- 6. UI Rendering & Screen Controllers -->
   <script src="js/ui/menu-manager.js"></script>

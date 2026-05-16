@@ -224,9 +224,14 @@ const TurnManager = {
     }
     
     // Start-of-Turn maintenance
-    StatusSystem.tick(actor); 
-    
+    StatusSystem.tick(actor);
+
     BattleUI.addLog(`${actor.displayName}'s turn — choose action!`, 'hi');
     BattleUI.updateStats();
+
+    // Vivid Auto-Battle — if AUTO is on, hand the turn to the AI
+    if (typeof AutoBattle !== 'undefined' && AutoBattle.maybeTakeOver) {
+      AutoBattle.maybeTakeOver();
+    }
   }
 };

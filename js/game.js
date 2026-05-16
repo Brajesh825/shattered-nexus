@@ -827,6 +827,8 @@ async function _initBattle() {
     G.activeMemberIdx = 0;
     G.busy = false;
   }
+  // Reset Auto-Battle each fresh encounter (player opts in per-battle)
+  if (typeof AutoBattle !== 'undefined') AutoBattle.reset();
   buildAbilityMenu();
   showScreen('battle-screen');
   BattleUI.render();

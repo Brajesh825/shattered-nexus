@@ -578,7 +578,13 @@ const BattleUI = {
     if (exp) exp.textContent = h.exp;
   },
 
-  btns(on) { document.querySelectorAll('.cmd-btn').forEach(b => b.disabled = !on); },
+  btns(on) {
+    document.querySelectorAll('.cmd-btn').forEach(b => {
+      // AUTO toggle stays enabled even during resolving — players can always exit AUTO
+      if (b.id === 'auto-battle-btn') { b.disabled = false; return; }
+      b.disabled = !on;
+    });
+  },
 
   openSub(id) {
     document.querySelectorAll('.sub-menu').forEach(m => m.classList.remove('open'));
