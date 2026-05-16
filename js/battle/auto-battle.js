@@ -179,7 +179,12 @@ const AutoBattle = (() => {
     }
   }
 
-  return { toggle, isOn, reset, maybeTakeOver };
+  return {
+    toggle, isOn, reset, maybeTakeOver,
+    // Exposed for unit tests — do not call from production code
+    _internal: { isAffordable: _isAffordable, pickTarget: _pickTarget, chooseAction: _chooseAction }
+  };
 })();
 
 if (typeof window !== 'undefined') window.AutoBattle = AutoBattle;
+if (typeof module !== 'undefined' && module.exports) module.exports = AutoBattle;
