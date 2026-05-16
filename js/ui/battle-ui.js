@@ -13,7 +13,7 @@ const BattleUI = {
     const overlay = document.createElement('div');
     overlay.style.cssText = `
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-      background: ${color}; z-index: 9999; pointer-events: none;
+      background: ${color}; z-index: 10001; pointer-events: none;
       transition: opacity ${duration}ms ease-out;
       opacity: 0.6;
     `;
@@ -41,7 +41,8 @@ const BattleUI = {
       theme: 'king-galdor',
       flash: '#4ade80',
       fx: 'petalDrift',
-      bg: 'galdor_garden'
+      bg: 'galdor_garden',
+      weather: 'verdant_petal'
     },
     'spectral_guardian': {
       theme: 'guardian',
@@ -58,7 +59,7 @@ const BattleUI = {
     'void_knight': {
       theme: 'void-knight',
       flash: '#c084fc',
-      fx: 'nullInversion',
+      fx: 'dimensionCrack',
       bg: 'eternal_void'
     },
     'river_king': {
@@ -128,6 +129,11 @@ const BattleUI = {
     },
 
     async petalDrift(ctx, canvas) {
+      // Set persistent weather so it keeps falling during battle
+      if (typeof WeatherEngine !== 'undefined') {
+        WeatherEngine.setWeather('verdant_petal');
+      }
+      
       const petals = [];
       for (let i = 0; i < 40; i++) {
         petals.push({
@@ -138,6 +144,7 @@ const BattleUI = {
         });
       }
       return new Promise(resolve => {
+        let resolved = false;
         const animate = () => {
           ctx.clearRect(0, 0, canvas.width, canvas.height);
           let alive = false;
@@ -153,7 +160,19 @@ const BattleUI = {
               ctx.fill(); ctx.restore();
             }
           });
-          if (alive) requestAnimationFrame(animate); else resolve();
+          
+          if (alive) {
+            requestAnimationFrame(animate);
+          } else if (!resolved) {
+            resolved = true;
+            resolve();
+          }
+
+          // Trigger title card early
+          if (!resolved && petals.every(p => p.y > canvas.height * 0.35)) {
+            resolved = true;
+            resolve();
+          }
         };
         animate();
       });
@@ -224,6 +243,64 @@ const BattleUI = {
             }
           });
           if (radius < maxRadius || pAlive) requestAnimationFrame(animate); else resolve();
+        };
+        animate();
+      });
+    },
+
+    async dimensionCrack(ctx, canvas) {
+      const cracks = [];
+      for (let i = 0; i < 8; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        cracks.push({
+          points: [{ x: canvas.width/2, y: canvas.height/2 }],
+          angle,
+          len: 0,
+          maxLen: 400 + Math.random() * 600,
+          segments: 5 + Math.floor(Math.random() * 5)
+        });
+      }
+
+      return new Promise(resolve => {
+        let progress = 0;
+        const animate = () => {
+          ctx.fillStyle = 'rgba(0,0,0,0.1)';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          
+          progress += 0.05;
+          let done = progress >= 1.0;
+          
+          ctx.strokeStyle = '#c084fc';
+          ctx.lineWidth = 3;
+          ctx.shadowBlur = 15;
+          ctx.shadowColor = '#c084fc';
+          
+          cracks.forEach(c => {
+            ctx.beginPath();
+            ctx.moveTo(c.points[0].x, c.points[0].y);
+            
+            const currentMax = c.maxLen * progress;
+            let currentX = c.points[0].x;
+            let currentY = c.points[0].y;
+            
+            for (let i = 0; i < c.segments; i++) {
+              const segLen = currentMax / c.segments;
+              const angleVar = (Math.random() - 0.5) * 0.5;
+              currentX += Math.cos(c.angle + angleVar) * segLen;
+              currentY += Math.sin(c.angle + angleVar) * segLen;
+              ctx.lineTo(currentX, currentY);
+            }
+            ctx.stroke();
+          });
+          
+          if (!done) {
+            requestAnimationFrame(animate);
+          } else {
+            // Final burst - pure blackout
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            setTimeout(() => resolve(), 100);
+          }
         };
         animate();
       });
@@ -373,35 +450,54 @@ const BattleUI = {
     layer.style.opacity = '1';
     layer.className = config.theme ? `theme--${config.theme}` : '';
 
-    // Specialized Logic for Void Knight Inversion
+    // Specialized Logic for Bosses
     if (bossId === 'void_knight') {
       document.body.classList.add('theme--void-knight-active');
       setTimeout(() => document.body.classList.remove('theme--void-knight-active'), 2500);
+      
+      // Crack happens first, completely blocking
+      const fxHandler = this.INTRO_EFFECTS[config.fx];
+      if (fxHandler) await fxHandler(ctx, canvas);
+      
+      // Title card shows up rapidly AS the battle starts
+      titleCard.classList.add('visible');
+      await new Promise(r => setTimeout(r, 800));
+    } 
+    else if (bossId === 'galdor_king') {
+      if (config.flash) this.flash(config.flash, 800);
+      const fxHandler = this.INTRO_EFFECTS[config.fx];
+      
+      // Petals fall during the title, and persist into battle
+      let fxPromise = fxHandler ? fxHandler(ctx, canvas) : Promise.resolve();
+      
+      titleCard.classList.add('visible');
+      await new Promise(r => setTimeout(r, 1800));
+      // No await on fxPromise so the intro doesn't block the battle start
     }
+    else {
+      // 1. Play Thematic FX from Registry (Non-blocking Title Card start)
+      if (config.flash) this.flash(config.flash, 800);
+      
+      const fxHandler = this.INTRO_EFFECTS[config.fx];
+      let fxPromise = fxHandler ? fxHandler(ctx, canvas) : Promise.resolve();
 
-    // 1. Play Thematic FX from Registry
-    if (config.flash) this.flash(config.flash, 600);
-    
-    const fxHandler = this.INTRO_EFFECTS[config.fx];
-    if (fxHandler) {
-      await fxHandler(ctx, canvas);
-    } else {
-      await new Promise(r => setTimeout(r, 800)); // Default pause
+      // 2. Show Title Card (Starts shortly after FX begins)
+      await new Promise(r => setTimeout(r, 600));
+      titleCard.classList.add('visible');
+      
+      // Wait for BOTH FX and Title duration
+      await Promise.all([fxPromise, new Promise(r => setTimeout(r, 1800))]);
     }
-
-    // 2. Show Title Card
-    titleCard.classList.add('visible');
-    await new Promise(r => setTimeout(r, 2200));
     
     // 3. Cleanup
     layer.style.transition = 'opacity 1s ease-out';
     layer.style.opacity = '0';
-    setTimeout(() => {
-      layer.style.display = 'none';
-      layer.style.opacity = '1';
-      layer.className = '';
-      if (onComplete) onComplete();
-    }, 1000);
+    await new Promise(r => setTimeout(r, 1000));
+    
+    layer.style.display = 'none';
+    layer.style.opacity = '1';
+    layer.className = '';
+    if (onComplete) onComplete();
   },
 
   /**
@@ -502,7 +598,16 @@ const BattleUI = {
     // 3. Check if we are in a map encounter
     const curMap = (typeof MapEngine !== 'undefined') ? MapEngine.getMap() : null;
     if (curMap && curMap.battleBg) {
-      if (setHFBg(curMap.battleBg)) return;
+      setHFBg(curMap.battleBg);
+    }
+
+    // 4. Sync Theme Class (for persistent boss atmosphere)
+    scene.className = scene.className.split(' ').filter(c => !c.startsWith('theme--')).join(' ');
+    if (typeof G !== 'undefined' && G.enemyGroup) {
+      const boss = G.enemyGroup.find(e => e.isBoss);
+      if (boss && this.BOSS_CONFIG[boss.id]?.theme) {
+        scene.classList.add(`theme--${this.BOSS_CONFIG[boss.id].theme}`);
+      }
     }
 
     // 4. Fallback: Story arc gradient classes (Don't clear entire className)
@@ -530,7 +635,15 @@ const BattleUI = {
     canvas.height = canvas.offsetHeight;
     
     if (typeof WeatherEngine !== 'undefined' && typeof MapEngine !== 'undefined') {
-      WeatherEngine.setWeather(MapEngine.getWeather());
+      let wType = MapEngine.getWeather();
+      // Boss-specific weather override
+      if (typeof G !== 'undefined' && G.enemyGroup) {
+        const boss = G.enemyGroup.find(e => e.isBoss);
+        if (boss && this.BOSS_CONFIG[boss.id]?.weather) {
+          wType = this.BOSS_CONFIG[boss.id].weather;
+        }
+      }
+      WeatherEngine.setWeather(wType);
     }
 
     this._weatherLoopActive = true;
@@ -546,6 +659,11 @@ const BattleUI = {
       
       if (typeof WeatherEngine !== 'undefined') {
         WeatherEngine.update(dt);
+        // Ensure canvas dimensions match actual display size (handles orientation/resize)
+        if (canvas.width !== canvas.offsetWidth || canvas.height !== canvas.offsetHeight) {
+           canvas.width = canvas.offsetWidth;
+           canvas.height = canvas.offsetHeight;
+        }
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         WeatherEngine.draw(ctx);
       }
