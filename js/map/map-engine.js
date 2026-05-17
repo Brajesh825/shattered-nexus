@@ -1739,6 +1739,7 @@ const MapEngine = (() => {
       if (dpad) dpad.style.display = 'none';
       return;
     }
+    document.body.classList.add('is-touch-device');
 
     const joyBase = document.getElementById('joy-base');
     const joyKnob = document.getElementById('joy-knob');
