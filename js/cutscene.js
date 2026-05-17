@@ -143,7 +143,6 @@ const Cutscene = {
 
     box.style.display = '';
     if (typeof SFX !== 'undefined' && SFX.dialogue) SFX.dialogue();
-    // VOICE_HOOK: VoicePlayer.stop() — cancel any playing character audio here
 
     // Render scene characters if chapter cast exists
     if (speaker && window.Story && window.Story.currentChap && window.Story.currentChap.cast) {
@@ -169,7 +168,6 @@ const Cutscene = {
       }
     }
 
-    // VOICE_HOOK: VoicePlayer.play(speaker || 'narrator', text || '') — wire character audio file here
     this._typewrite(txtEl, text || '');
   },
 
@@ -213,7 +211,6 @@ const Cutscene = {
   _skipTw() {
     if (this._tw.timer) clearTimeout(this._tw.timer);
     this._tw.done = true;
-    // VOICE_HOOK: VoicePlayer.stop() — cancel audio on typewriter skip
     const el = this._tw.el || this.el('s-text');
     if (el) el.textContent = this._tw.full;
   },
