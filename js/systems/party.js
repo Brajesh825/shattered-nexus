@@ -10,6 +10,40 @@ function computeStats(ch, cls) {
     const baseWithGrowth = b[k] + (lv - 1) * (g[k] || 0);
     out[k] = Math.floor((baseWithGrowth + (bon[k] || 0)) * (m[k] || 1));
   });
+
+  // Apply weapon stats
+  const weaponId = ch.equippedWeapon;
+  const weapons = window.WEAPONS_DATA || [];
+  const weaponDef = weapons.find(w => w.id === weaponId);
+  // Validation guard: warn if a weapon ID is set but not found in WEAPONS_DATA.
+  // Prevents silent stat loss from typos, renamed weapons, or stale saves.
+  if (weaponId && !weaponDef && typeof IS_DEV !== 'undefined' && IS_DEV) {
+    console.warn(`[Party] computeStats: equippedWeapon "${weaponId}" not found in WEAPONS_DATA for ${ch.name || ch.id}. Weapon stats skipped.`);
+  }
+  if (weaponDef && weaponDef.stats) {
+    const _G = typeof G !== 'undefined' ? G : (typeof global !== 'undefined' && global.G ? global.G : null);
+    const tier = (_G && _G.weaponsUpgrades && _G.weaponsUpgrades[weaponId]) || weaponDef.rarity || 'rare';
+    const level = (_G && _G.weaponsLevels && _G.weaponsLevels[weaponId]) || 1;
+    
+    // Rarity and level growth mapping (vivid_hybrid_weapon_system.md roadmap)
+    const growth = { hp: 8, mp: 2, atk: 4, def: 2, spd: 1, mag: 3, lck: 1 };
+
+    ['hp', 'mp', 'atk', 'def', 'spd', 'mag', 'lck'].forEach(k => {
+      if (weaponDef.stats[k] !== undefined) {
+        let val = weaponDef.stats[k];
+        // Apply level growth
+        if (growth[k]) {
+          val += growth[k] * (level - 1);
+        }
+        // Apply tier breakthrough multipliers
+        if (tier === 'epic') val = Math.floor(val * 1.25);
+        if (tier === 'legendary') val = Math.floor(val * 1.5);
+        
+        out[k] += val;
+      }
+    });
+  }
+
   return out;
 }
 
@@ -29,6 +63,25 @@ function applyArchiveMasteryToMember(member, mastery = _getArchiveMasteryBuffs()
   member.lck += mastery.lck || 0;
 }
 
+/**
+ * Recomputes all derived combat stats for a single party member in-place.
+ *
+ * @param {object} member   - A live party member object from G.party.
+ * @param {object} [options]
+ * @param {string} [options.resourceStrategy='clamp']
+ *   Controls how current HP/MP are adjusted when maxHp/maxMp changes:
+ *   - 'clamp'  (default) — Keeps current HP/MP, but clamps it to the new maximum.
+ *                          Use after equipment changes or relic equips where the
+ *                          player's bar should not refill.
+ *   - 'delta'  — Adjusts current HP/MP by the same delta as the max changed.
+ *                          Use when stats are boosted mid-battle so the member
+ *                          feels the gain proportionally (e.g. a buff that raises maxHp).
+ *   - 'full'   — Sets current HP/MP to the new maximum (full heal).
+ *                          Use when rebuilding a party at camp after a full rest,
+ *                          or when entering a new arc.
+ * @param {number} [options.hp]  Override source HP before clamping (used on save-load).
+ * @param {number} [options.mp]  Override source MP before clamping (used on save-load).
+ */
 function rebuildMemberCombatStats(member, options = {}) {
   if (!member?.char || !member.cls) return;
 
@@ -47,6 +100,9 @@ function rebuildMemberCombatStats(member, options = {}) {
   member.mag = Math.floor(base.mag * relicMult.mag);
   member.spd = Math.floor(base.spd * relicMult.spd);
   member.lck = Math.floor(base.lck * relicMult.lck);
+
+  const weapons = window.WEAPONS_DATA || [];
+  member.equippedWeapon = weapons.find(w => w.id === member.char.equippedWeapon) || null;
 
   applyArchiveMasteryToMember(member);
 
@@ -97,6 +153,13 @@ function buildParty() {
       critRate: cls.stat_multipliers.critRate || 0.05,
       lv: ch.lv || 1, exp: ch.exp || 0, gold: ch.gold || 0,
       char: ch, cls: cls,
+      equippedWeapon: (() => {
+        const wDef = (window.WEAPONS_DATA || []).find(w => w.id === ch.equippedWeapon) || null;
+        if (ch.equippedWeapon && !wDef && typeof IS_DEV !== 'undefined' && IS_DEV) {
+          console.warn(`[Party] buildParty: equippedWeapon "${ch.equippedWeapon}" not found in WEAPONS_DATA for ${ch.name || charId}. Equipped weapon set to null.`);
+        }
+        return wDef;
+      })(),
       passive: ch.passive,
       abilities: cls.abilities,
       isPlayer,
@@ -265,17 +328,25 @@ function getExpThreshold(lv) {
 }
 
 // Returns the aggregated relic stat multipliers without mutating any party member.
+// Each stat bonus is additive across all active relics, then clamped at NexusScaling.caps.relicBonusCap (1.5×).
+// Example: 3 relics each granting +0.25 atk → raw sum = 1.75, clamped to 1.5.
+// This prevents relic stacking from bypassing the CombatEngine 8× safety cap in an uncontrolled way.
 function _getRelicStatMult() {
   const mult = { hp: 1, mp: 1, atk: 1, def: 1, spd: 1, mag: 1, lck: 1 };
   const active = G.activeRelics || [];
   if (!active.length) return mult;
   const defs = G.relics || [];
+  const bonusCap = (typeof NexusScaling !== 'undefined' && NexusScaling.caps.relicBonusCap) || 1.5;
   active.forEach(id => {
     const r = defs.find(d => d.id === id);
     if (!r || !r.bonus) return;
     ['hp', 'mp', 'atk', 'def', 'spd', 'mag', 'lck'].forEach(k => {
       if (r.bonus[k]) mult[k] += r.bonus[k];
     });
+  });
+  // Enforce per-stat relic bonus cap after full aggregation
+  ['hp', 'mp', 'atk', 'def', 'spd', 'mag', 'lck'].forEach(k => {
+    mult[k] = Math.min(bonusCap, mult[k]);
   });
   return mult;
 }

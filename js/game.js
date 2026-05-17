@@ -983,6 +983,7 @@ function checkBattleEnd() {
     if (G.isGauntletMode) {
       BattleUI.addLog("❄️ Simulation Complete: Stress Test finished.", "hi");
     } else {
+      let voidFragmentsEarned = 0;
       G.enemyGroup.forEach(e => {
         totalExp += e.exp;
         totalGold += e.gold;
@@ -990,7 +991,21 @@ function checkBattleEnd() {
         if (rawDef) _awardDrops(rawDef).forEach(id => allDrops.push(id));
         // One relic drop attempt per encounter (elite enemies have higher chance)
         if (!relicDrop) relicDrop = _tryRelicDrop(rawDef?.elite || false);
+
+        // --- VOID FRAGMENT DROPS ---
+        const isElite = rawDef ? (rawDef.isBoss || rawDef.tier >= 3) : (e.isBoss || e.id.includes('boss'));
+        const isMutant = e.mutation === 'mutant';
+        if (isElite || isMutant) {
+          if (isMutant || Math.random() < 0.5) {
+            voidFragmentsEarned++;
+          }
+        }
       });
+
+      if (voidFragmentsEarned > 0) {
+        G.voidFragments = (G.voidFragments || 0) + voidFragmentsEarned;
+        allDrops.push(`${voidFragmentsEarned}x Void Fragment`);
+      }
 
       // Average enemy level for the encounter
       const avgEnemyLv = G.enemyGroup.length
@@ -1251,5 +1266,314 @@ function toggleFullscreen() {
     document.exitFullscreen();
   }
 }
+
+// --- DEVELOPER CHEATS PORTAL ---
+(function() {
+  function initDevCheats() {
+    const isDebug = (typeof ReleaseConfig !== 'undefined' && ReleaseConfig.IS_DEV) || (
+                    typeof window !== 'undefined' && typeof URLSearchParams !== 'undefined' && window.location && (
+                      new URLSearchParams(window.location.search).get('debug') === 'true' ||
+                      new URLSearchParams(window.location.search).get('dev') === 'true'
+                    ));
+    if (!isDebug) return;
+
+    const gameEl = document.getElementById('game');
+    if (!gameEl) {
+      // Retry if game element isn't in DOM yet
+      setTimeout(initDevCheats, 100);
+      return;
+    }
+
+    // 1. Inject Styles
+    const style = document.createElement('style');
+    style.textContent = `
+      #dev-cheats-pill {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        z-index: 10000;
+        background: hsla(240, 30%, 15%, 0.85);
+        border: 1px solid hsla(240, 30%, 40%, 0.5);
+        border-radius: 20px;
+        color: #fff;
+        padding: 8px 16px;
+        font-family: 'Outfit', 'Inter', sans-serif;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(8px);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        user-select: none;
+      }
+      #dev-cheats-pill:hover {
+        background: hsla(240, 30%, 25%, 0.95);
+        border-color: hsla(240, 30%, 60%, 0.8);
+        transform: translateY(-2px);
+      }
+      #dev-cheats-panel {
+        position: absolute;
+        bottom: 70px;
+        left: 20px;
+        width: 280px;
+        z-index: 10001;
+        background: rgba(10, 8, 25, 0.95);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+        font-family: 'Outfit', 'Inter', sans-serif;
+        overflow: hidden;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transform: scale(0.9) translateY(10px);
+        opacity: 0;
+        pointer-events: none;
+      }
+      #dev-cheats-panel.active {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .dev-cheats-header {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 12px 16px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      #dev-cheats-close {
+        background: none;
+        border: none;
+        color: #718096;
+        font-size: 1.2rem;
+        cursor: pointer;
+        padding: 0;
+        line-height: 1;
+        transition: color 0.2s;
+      }
+      #dev-cheats-close:hover {
+        color: #fff;
+      }
+      .dev-cheats-content {
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        max-height: 320px;
+        overflow-y: auto;
+      }
+      .dev-cheat-btn {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+        color: #e2e8f0;
+        padding: 8px 12px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        cursor: pointer;
+        text-align: left;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .dev-cheat-btn:hover {
+        background: rgba(255, 255, 255, 0.12);
+        border-color: rgba(255, 255, 255, 0.25);
+        color: #fff;
+        transform: translateX(4px);
+      }
+      .dev-cheat-btn:active {
+        transform: scale(0.97);
+      }
+    `;
+    document.head.appendChild(style);
+
+    // 2. Inject Elements
+    const pill = document.createElement('div');
+    pill.id = 'dev-cheats-pill';
+    pill.innerHTML = '🛠️ DEV CHEATS';
+    gameEl.appendChild(pill);
+
+    const panel = document.createElement('div');
+    panel.id = 'dev-cheats-panel';
+    panel.innerHTML = `
+      <div class="dev-cheats-header">
+        <span>🛠️ Developer Portal</span>
+        <button id="dev-cheats-close">×</button>
+      </div>
+      <div class="dev-cheats-content">
+        <button class="dev-cheat-btn" id="dev-cheat-testsave">💾 Load Sig. Test Slot</button>
+        <button class="dev-cheat-btn" id="dev-cheat-weapons">🔱 Equip Sig. Weapons</button>
+        <button class="dev-cheat-btn" id="dev-cheat-heal">🛡️ Heal Party</button>
+        <button class="dev-cheat-btn" id="dev-cheat-level">👑 Level Up +5</button>
+        <button class="dev-cheat-btn" id="dev-cheat-gold">✨ Gold +10k</button>
+        <button class="dev-cheat-btn" id="dev-cheat-win">🗡️ Win Battle</button>
+        <button class="dev-cheat-btn" id="dev-cheat-teleport">🗺️ Teleport to Cavern F1</button>
+      </div>
+    `;
+    gameEl.appendChild(panel);
+
+    // 3. Toggle Logic
+    pill.addEventListener('click', () => panel.classList.toggle('active'));
+    document.getElementById('dev-cheats-close').addEventListener('click', (e) => {
+      e.stopPropagation();
+      panel.classList.remove('active');
+    });
+
+    // 4. Click Handlers
+    document.getElementById('dev-cheat-win').addEventListener('click', () => {
+      if (G.mode === 'battle' || document.getElementById('battle-screen').classList.contains('active')) {
+        G.enemyGroup.forEach(e => {
+          e.hp = 0;
+          Battle.setKO(e, true);
+        });
+        BattleUI.renderEnemyRow();
+        BattleUI.addLog("⚡ DEV: Instantly Win Activated!", "hi");
+        setTimeout(() => {
+          TurnManager.advance();
+        }, 500);
+      } else {
+        alert("Not currently in battle!");
+      }
+    });
+
+    document.getElementById('dev-cheat-gold').addEventListener('click', () => {
+      G.gold = (G.gold || 0) + 10000;
+      if (G.party) {
+        G.party.forEach(m => m.gold = G.gold);
+      }
+      if (typeof BattleUI !== 'undefined') BattleUI.addLog("💰 DEV: +10,000 Gold!", "regen");
+      if (typeof MapUI !== 'undefined') MapUI.showMsg("💰 +10,000 Gold!", 1500);
+    });
+
+    document.getElementById('dev-cheat-heal').addEventListener('click', () => {
+      if (G.party && G.party.length) {
+        G.party.forEach(m => {
+          m.hp = m.maxHp;
+          m.mp = m.maxMp;
+          m.isKO = false;
+          m.regenTurns = 0;
+          m.stunned = false;
+          if (m.char) {
+            m.char.hp = m.hp;
+            m.char.mp = m.mp;
+            m.char.isKO = false;
+          }
+        });
+        if (typeof BattleUI !== 'undefined') {
+          BattleUI.renderPartyStatus();
+          BattleUI.renderEnemyRow();
+          BattleUI.addLog("💚 DEV: Party Fully Healed!", "regen");
+        }
+        if (typeof MapUI !== 'undefined') MapUI.showMsg("💚 Party Fully Healed!", 1500);
+      }
+    });
+
+    document.getElementById('dev-cheat-level').addEventListener('click', () => {
+      if (G.party && G.party.length) {
+        G.party.forEach(m => {
+          m.lv = Math.min(99, (m.lv || 1) + 5);
+          if (m.char) m.char.lv = m.lv;
+          rebuildMemberCombatStats(m, { resourceStrategy: 'full' });
+        });
+        if (typeof BattleUI !== 'undefined') {
+          BattleUI.renderPartyStatus();
+          BattleUI.addLog("👑 DEV: Party Level +5!", "hi");
+        }
+        if (typeof MapUI !== 'undefined') MapUI.showMsg("👑 Party Level +5!", 1500);
+      }
+    });
+
+    document.getElementById('dev-cheat-weapons').addEventListener('click', () => {
+      const sigWeapons = {
+        aya: 'winters_last_petal',
+        tao: 'laughing_lantern',
+        rei: 'chain_of_nights',
+        lulu: 'tide_caller',
+        drake: 'azure_vanguard',
+        valka: 'ignis_voulge',
+        ria: 'tome_of_wisdom',
+        rex: 'gilded_broadsword'
+      };
+      if (G.party && G.party.length) {
+        G.party.forEach(m => {
+          const weaponId = sigWeapons[m.charId];
+          if (weaponId) {
+            m.char.equippedWeapon = weaponId;
+            rebuildMemberCombatStats(m, { resourceStrategy: 'clamp' });
+          }
+        });
+        if (typeof BattleUI !== 'undefined') {
+          BattleUI.renderPartyStatus();
+          BattleUI.addLog("🔱 DEV: Signature Weapons Equipped!", "hi");
+        }
+        if (typeof MapUI !== 'undefined') MapUI.showMsg("🔱 Signature Weapons Equipped!", 1500);
+      }
+    });
+
+    document.getElementById('dev-cheat-testsave').addEventListener('click', () => {
+      const testSave = {
+        arcIdx: 1,
+        chapIdx: 2, // F1 Crystal Cavern (explore map)
+        phase: "exploring",
+        arcName: "Crystal Cavern",
+        selectedChar: "aya",
+        selectedChars: ["aya", "tao", "lulu", "rei"],
+        unlockedChars: ["aya", "tao", "lulu", "rei", "drake", "valka", "ria", "rex", "sera"],
+        clearedMaps: ["verdant_vale"],
+        gold: 50000,
+        timestamp: Date.now(),
+        version: "1.0",
+        inventory: [
+          { itemId: "potion", qty: 10 },
+          { itemId: "elixir", qty: 5 },
+          { itemId: "remedy", qty: 5 }
+        ],
+        partyStats: [
+          { charId: "aya", classId: "swordsman", lv: 15, exp: 0, gold: 0, hp: 450, mp: 100, isKO: false, equippedWeapon: "winters_last_petal" },
+          { charId: "tao", classId: "spearman", lv: 15, exp: 0, gold: 0, hp: 410, mp: 80, isKO: false, equippedWeapon: "laughing_lantern" },
+          { charId: "lulu", classId: "dancer", lv: 15, exp: 0, gold: 0, hp: 380, mp: 120, isKO: false, equippedWeapon: "tide_caller" },
+          { charId: "rei", classId: "brawler", lv: 15, exp: 0, gold: 0, hp: 520, mp: 60, isKO: false, equippedWeapon: "chain_of_nights" }
+        ],
+        hero: { lv: 15, exp: 0, gold: 50000 }
+      };
+
+      panel.classList.remove('active');
+      Story._activeSlot = 99;
+      Story._pendingSave = testSave;
+      Story.init(() => {
+        Story.active = true;
+        G.selectedChar = testSave.selectedChar;
+        G.selectedClass = 'swordsman';
+        G.selectedChars = testSave.selectedChars;
+        startBattle();
+      });
+    });
+
+    document.getElementById('dev-cheat-teleport').addEventListener('click', () => {
+      if (typeof MapEngine !== 'undefined' && MapEngine.isRunning()) {
+        MapEngine.start('crystal_cavern_f1');
+        if (typeof MapUI !== 'undefined') MapUI.showMsg("🗺️ Teleported to Cavern F1!", 1500);
+      } else {
+        alert("Only works while in Explore mode!");
+      }
+    });
+  }
+
+  // Bind to DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initDevCheats);
+  } else {
+    initDevCheats();
+  }
+})();
 
 window.G = G;

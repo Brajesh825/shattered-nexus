@@ -569,6 +569,489 @@ const MapUI = (() => {
     }
   }
 
+  let _selectedWeaponsCharId = null;
+  let _selectedWeaponToUpgrade = null;
+
+  function campWeapons() {
+    const campEl = document.getElementById('camp-menu');
+    if (campEl) campEl.style.display = 'none';
+    
+    if (!_selectedWeaponsCharId && G.party.length > 0) {
+      _selectedWeaponsCharId = G.party[0].charId;
+    }
+    
+    _renderWeaponsPanel();
+    const panel = document.getElementById('weapons-panel');
+    if (panel) panel.style.display = 'flex';
+  }
+
+  function closeWeapons() {
+    const panel = document.getElementById('weapons-panel');
+    if (panel) panel.style.display = 'none';
+    const campEl = document.getElementById('camp-menu');
+    if (campEl) campEl.style.display = 'flex';
+    if (typeof Focus !== 'undefined') {
+      Focus.setContext('camp-menu');
+    }
+  }
+
+  function _renderWeaponsPanel() {
+    const weapons = window.WEAPONS_DATA || [];
+    const party = G.party || [];
+    
+    // Update live currency indicators
+    const goldCountEl = document.getElementById('wp-gold-count');
+    const voidCountEl = document.getElementById('wp-void-count');
+    if (goldCountEl) goldCountEl.textContent = (G.gold || 0).toLocaleString();
+    if (voidCountEl) voidCountEl.textContent = (G.voidFragments || 0).toString();
+
+    const selectorEl = document.getElementById('weapon-char-selector');
+    if (selectorEl) {
+      selectorEl.innerHTML = '';
+      party.forEach(m => {
+        const tab = document.createElement('div');
+        const isSelected = m.charId === _selectedWeaponsCharId;
+        tab.className = isSelected ? 'weapon-char-tab active' : 'weapon-char-tab';
+        
+        const avatar = m.char?.icon || '👥';
+        tab.innerHTML = `
+          <span style="font-size: 20px; margin-right: 8px;">${avatar}</span>
+          <span>${m.displayName}</span>
+        `;
+        
+        tab.addEventListener('click', () => {
+          _selectedWeaponsCharId = m.charId;
+          _selectedWeaponToUpgrade = null; // reset to equipped
+          if (typeof SFX !== 'undefined') SFX.click();
+          _renderWeaponsPanel();
+        });
+        selectorEl.appendChild(tab);
+      });
+    }
+
+    const member = party.find(m => m.charId === _selectedWeaponsCharId);
+    if (!member) return;
+
+    const equippedId = member.char.equippedWeapon;
+    const equippedDef = weapons.find(w => w.id === equippedId);
+
+    // Initialize or fallback selected upgrade weapon
+    if (!_selectedWeaponToUpgrade) {
+      _selectedWeaponToUpgrade = equippedDef || weapons.find(w => w.resonance?.charId === member.charId) || weapons[0];
+    } else {
+      const stillExists = weapons.find(w => w.id === _selectedWeaponToUpgrade.id);
+      if (stillExists) _selectedWeaponToUpgrade = stillExists;
+    }
+
+    // Dynamic stats computation helper based on level/tier
+    const getUpgradedStats = (wDef) => {
+      if (!G.weaponsLevels) G.weaponsLevels = {};
+      if (!G.weaponsUpgrades) G.weaponsUpgrades = {};
+      const level = G.weaponsLevels[wDef.id] || 1;
+      const tier = G.weaponsUpgrades[wDef.id] || wDef.rarity || 'rare';
+      const growth = { hp: 8, mp: 2, atk: 4, def: 2, spd: 1, mag: 3, lck: 1 };
+      
+      const upgraded = {};
+      Object.entries(wDef.stats || {}).forEach(([s, baseVal]) => {
+        let val = baseVal;
+        if (growth[s]) {
+          val += growth[s] * (level - 1);
+        }
+        if (tier === 'epic') val = Math.floor(val * 1.25);
+        if (tier === 'legendary') val = Math.floor(val * 1.5);
+        upgraded[s] = val;
+      });
+      return upgraded;
+    };
+
+    const equippedSection = document.getElementById('weapon-equipped-section');
+    if (equippedSection) {
+      equippedSection.innerHTML = '';
+      
+      if (equippedDef) {
+        const activeStats = getUpgradedStats(equippedDef);
+        const statsHtml = Object.entries(activeStats).map(([s, val]) => `
+          <div class="wp-stat-chip">
+            <span style="opacity:0.6">${s.toUpperCase()}</span> <span>+${val}</span>
+          </div>
+        `).join('');
+
+        const eqLvl = G.weaponsLevels[equippedDef.id] || 1;
+        const eqTier = G.weaponsUpgrades[equippedDef.id] || equippedDef.rarity || 'rare';
+        
+        equippedSection.innerHTML = `
+          <div class="relic-card ${eqTier} equipped" style="width: 100%; max-width: 400px; cursor: pointer;">
+            <div class="active-tag">Equipped</div>
+            <div class="relic-icon">${equippedDef.icon}</div>
+            <div class="relic-name">${equippedDef.name}</div>
+            <div style="font-size:10px; font-weight:800; color:#38bdf8; margin-top:-6px; margin-bottom:8px; text-transform:uppercase;">Lv. ${eqLvl} Refined ${eqTier}</div>
+            <div class="relic-desc">
+              <div style="opacity:0.85; margin-bottom:10px; font-size:12px;">${equippedDef.description}</div>
+              
+              <div class="wp-stats-row">${statsHtml}</div>
+              
+              <div class="wp-passive-box">
+                <span class="wp-passive-title">✨ PASSIVE: ${equippedDef.passive.name}</span>
+                <span>${equippedDef.passive.description}</span>
+              </div>
+              
+              ${equippedDef.resonance ? `
+                <div class="wp-resonance-box active">
+                  <span class="wp-resonance-title">💖 RESONANCE: ${member.displayName}</span>
+                  <span>${equippedDef.resonance.description}</span>
+                </div>
+              ` : ''}
+            </div>
+            <div class="wp-action-hint unequip">Click to Unequip</div>
+          </div>
+        `;
+        
+        equippedSection.querySelector('.relic-card').addEventListener('click', (e) => {
+          _selectedWeaponToUpgrade = equippedDef;
+          const isUnequipClick = e.target.classList.contains('unequip') || e.target.textContent.includes('Unequip');
+          if (isUnequipClick) {
+            member.char.equippedWeapon = null;
+            member.equippedWeapon = null;
+            if (typeof rebuildMemberCombatStats !== 'undefined') {
+              rebuildMemberCombatStats(member, { resourceStrategy: 'clamp' });
+            }
+          }
+          if (typeof SFX !== 'undefined') SFX.click();
+          _renderWeaponsPanel();
+          _updatePartyHUD();
+        });
+      } else {
+        equippedSection.innerHTML = `
+          <div class="relic-card" style="width: 100%; max-width: 400px; padding: 40px; text-align: center; border: 2px dashed rgba(255,255,255,0.06); background: rgba(0,0,0,0.15); display:flex; flex-direction:column; justify-content:center; align-items:center; border-radius:16px; height:100%;">
+            <div style="font-size: 36px; opacity: 0.15; margin-bottom: 12px; filter: grayscale(100%);">⚔️</div>
+            <div style="font-size: 13px; color: rgba(255,255,255,0.3); font-weight:500;">No Weapon Equipped</div>
+            <div style="font-size: 11px; color: rgba(255,255,255,0.2); margin-top:4px;">Select an armament below to equip</div>
+          </div>
+        `;
+      }
+    }
+
+    // CAMPFIRE FORGE LOGIC (Integrated Level Up & Ascension Breakthrough)
+    const forgeEl = document.getElementById('weapon-forge-section');
+    if (forgeEl) {
+      forgeEl.innerHTML = '';
+      if (!_selectedWeaponToUpgrade) {
+        forgeEl.innerHTML = `<div style="font-size:11px;color:rgba(255,255,255,0.3);display:flex;align-items:center;height:100%;">Select an armament from the grid to upgrade/reforge at the campfire forge.</div>`;
+      } else {
+        const w = _selectedWeaponToUpgrade;
+        if (!G.weaponsLevels) G.weaponsLevels = {};
+        if (!G.weaponsUpgrades) G.weaponsUpgrades = {};
+        
+        const level = G.weaponsLevels[w.id] || 1;
+        const rarity = G.weaponsUpgrades[w.id] || w.rarity || 'rare';
+        
+        const getElementalMaterial = (elem, lvl) => {
+          const isTier2 = lvl >= 10;
+          if (elem === 'ice') {
+            return isTier2 ? { id: 'glacial_prism', name: 'Glacial Prism', icon: '💎' } : { id: 'ice_shard', name: 'Ice Shard', icon: '❄️' };
+          } else if (elem === 'fire') {
+            return isTier2 ? { id: 'phoenix_hearth', name: 'Phoenix Hearth', icon: '❤️' } : { id: 'ember_shard', name: 'Ember Shard', icon: '🔥' };
+          } else if (elem === 'wind') {
+            return isTier2 ? { id: 'tornado_core', name: 'Tornado Core', icon: '🌀' } : { id: 'gale_feather', name: 'Gale Feather', icon: '🪶' };
+          } else if (elem === 'water') {
+            return isTier2 ? { id: 'oceanic_pearl', name: 'Oceanic Pearl', icon: '🦪' } : { id: 'tide_shell', name: 'Tide Shell', icon: '🐚' };
+          } else {
+            return isTier2 ? { id: 'void_catalyst', name: 'Void Catalyst', icon: '🔮' } : { id: 'void_dust', name: 'Void Dust', icon: '🌫️' };
+          }
+        };
+
+        const getInventoryQty = (itemId) => {
+          const stack = G.inventory ? G.inventory.find(i => i.itemId === itemId) : null;
+          return stack ? stack.qty : 0;
+        };
+
+        // Level Up Cost calculations
+        const refGoldCost = level < 10 ? level * 100 : (level - 10) * 500;
+        const refMat = getElementalMaterial(w.element || 'void', level);
+        const refMatCost = level < 10 ? level * 2 : (level - 10) * 2;
+        
+        const hasRefGold = (G.gold || 0) >= refGoldCost;
+        const hasRefMat = getInventoryQty(refMat.id) >= refMatCost;
+        const isLevelLocked = (level === 10 && rarity === 'rare');
+        const isLevelMaxed = level >= 20;
+        const canLevelUp = hasRefGold && hasRefMat && !isLevelLocked && !isLevelMaxed;
+        
+        // Ascension Breakthrough calculations
+        const ascGoldCost = 2500;
+        const ascFragsCost = rarity === 'rare' ? 3 : 5;
+        const ascMat = getElementalMaterial(w.element || 'void', rarity === 'rare' ? 1 : 10);
+        const ascMatCost = 25;
+        
+        const hasAscGold = (G.gold || 0) >= ascGoldCost;
+        const hasAscFrags = (G.voidFragments || 0) >= ascFragsCost;
+        const hasAscMat = getInventoryQty(ascMat.id) >= ascMatCost;
+        const isAscEligible = (level === 10 && rarity === 'rare') || (level === 20 && rarity === 'epic');
+        const canAscend = hasAscGold && hasAscFrags && hasAscMat && isAscEligible;
+
+        const nextRarity = rarity === 'rare' ? 'epic' : 'legendary';
+
+        let actionHtml = '';
+        
+        if (rarity === 'legendary' && level >= 20) {
+          actionHtml = `
+            <div style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100%; width:100%;">
+              <div style="font-size:24px; margin-bottom:6px;">${w.icon}</div>
+              <div style="font-weight:700; color:#fbbf24; font-size:12px; margin-bottom:4px;">${w.name}</div>
+              <div style="font-size:10px; color:#f472b6; text-shadow:0 0 10px rgba(244,114,182,0.4); font-weight:700; letter-spacing:1.5px; margin-bottom:6px;">✦ ZENITH TIER REACHED ✦</div>
+              <div style="font-size:10px; color:rgba(255,255,255,0.4); text-align:center;">This weapon has been forged to its absolute peak capability (Lv. 20 Legendary).</div>
+            </div>
+          `;
+        } else {
+          const goldColorRef = hasRefGold ? '#fbbf24' : '#ef4444';
+          const matColorRef = hasRefMat ? '#4ade80' : '#ef4444';
+          
+          const goldColorAsc = hasAscGold ? '#fbbf24' : '#ef4444';
+          const fragColorAsc = hasAscFrags ? '#c084fc' : '#ef4444';
+          const matColorAsc = hasAscMat ? '#4ade80' : '#ef4444';
+
+          actionHtml = `
+            <div style="width:100%; display:flex; flex-direction:column; gap:12px; box-sizing:border-box; padding:6px 0;">
+              <div style="text-align:center; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:8px; margin-bottom:2px; display:flex; justify-content:center; align-items:center; gap:8px;">
+                <span style="font-size:11px; font-weight:700; color:#cbd5e1;">REFORGING TARGET: </span>
+                <span style="color:#00ddff; font-weight:700; font-size:11px;">${w.name}</span>
+                <span style="font-size:9px; padding:2px 8px; border-radius:10px; font-weight:800; background:rgba(255,255,255,0.08); color:#f472b6; border:1px solid rgba(244,114,182,0.2); text-transform:uppercase;">
+                  Lv. ${level} · ${rarity}
+                </span>
+              </div>
+              
+              <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; width:100%;">
+                
+                <!-- LEVEL UP COLUMN -->
+                <div style="background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.04); border-radius:12px; padding:10px; display:flex; flex-direction:column; justify-content:space-between; align-items:center; text-align:center; min-height:165px; box-sizing:border-box;">
+                  <div style="width:100%;">
+                    <div style="font-size:10px; font-weight:800; color:#38bdf8; letter-spacing:1px; margin-bottom:8px; text-shadow:0 0 8px rgba(56,189,248,0.2);">🔨 WEAPON REFINING</div>
+                    ${isLevelMaxed ? `
+                      <div style="font-size:11px; color:#a855f7; font-weight:700; margin:30px 0;">MAX LEVEL REACHED</div>
+                    ` : isLevelLocked ? `
+                      <div style="font-size:9px; color:#ef4444; font-weight:700; margin:16px 0; background:rgba(239,68,68,0.08); padding:6px; border-radius:6px; border:1px solid rgba(239,68,68,0.2); line-height:1.3;">
+                        🔒 LEVEL 10 LOCKED<br><span style="font-size:8px; opacity:0.8; font-weight:500;">ASCENSION REQUIRED TO UNLOCK</span>
+                      </div>
+                    ` : `
+                      <div style="font-size:13px; font-weight:800; color:#fff; margin-bottom:8px;">
+                        Lv. ${level} <span style="color:#38bdf8; font-size:11px;">➔</span> Lv. ${level + 1}
+                      </div>
+                      <div style="display:flex; flex-direction:column; gap:4px; font-size:9px; width:100%; text-align:left; background:rgba(0,0,0,0.25); padding:6px 8px; border-radius:8px; box-sizing:border-box; border:1px solid rgba(255,255,255,0.02)">
+                        <div style="display:flex; justify-content:space-between; color:${goldColorRef}; font-weight:700;">
+                          <span>💰 Gold Cost:</span>
+                          <span>${refGoldCost} / ${G.gold || 0}</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; color:${matColorRef}; font-weight:700;">
+                          <span>${refMat.icon} ${refMat.name}:</span>
+                          <span>${refMatCost} / ${getInventoryQty(refMat.id)}</span>
+                        </div>
+                      </div>
+                    `}
+                  </div>
+                  
+                  <button class="camp-btn" id="btn-forge-level" style="margin:8px 0 0 0; padding:6px 10px; font-size:9px; border-radius:20px; width:100%; background:${canLevelUp ? 'linear-gradient(135deg, #0ea5e9, #2563eb)' : 'rgba(255,255,255,0.03)'}; border:1px solid ${canLevelUp ? '#38bdf8' : 'rgba(255,255,255,0.08)'}; color:${canLevelUp ? '#fff' : 'rgba(255,255,255,0.2)'}; ${canLevelUp ? 'cursor:pointer' : 'cursor:not-allowed'}; font-weight:800; height:28px;" ${canLevelUp ? '' : 'disabled'}>
+                    REFINE WEAPON
+                  </button>
+                </div>
+                
+                <!-- ASCENSION COLUMN -->
+                <div style="background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.04); border-radius:12px; padding:10px; display:flex; flex-direction:column; justify-content:space-between; align-items:center; text-align:center; min-height:165px; box-sizing:border-box;">
+                  <div style="width:100%;">
+                    <div style="font-size:10px; font-weight:800; color:#c084fc; letter-spacing:1px; margin-bottom:8px; text-shadow:0 0 8px rgba(192,132,252,0.2);">🔮 VOID ASCENSION</div>
+                    ${rarity === 'legendary' ? `
+                      <div style="font-size:11px; color:#fbbf24; font-weight:700; margin:30px 0;">MAX TIER REACHED</div>
+                    ` : !isAscEligible ? `
+                      <div style="font-size:9px; color:rgba(255,255,255,0.35); font-weight:500; margin:22px 0; line-height:1.4; padding:0 4px;">
+                        🔒 Breakthrough unlocks at Level ${rarity === 'rare' ? '10' : '20'}.
+                      </div>
+                    ` : `
+                      <div style="font-size:10px; font-weight:800; color:#e2e8f0; margin-bottom:8px; text-transform:uppercase;">
+                        ${rarity} <span style="color:#c084fc; font-size:10px;">➔</span> <span style="color:#f472b6; font-weight:900;">${nextRarity}</span>
+                      </div>
+                      <div style="display:flex; flex-direction:column; gap:4px; font-size:9px; width:100%; text-align:left; background:rgba(0,0,0,0.25); padding:6px 8px; border-radius:8px; box-sizing:border-box; border:1px solid rgba(255,255,255,0.02)">
+                        <div style="display:flex; justify-content:space-between; color:${goldColorAsc}; font-weight:700;">
+                          <span>💰 Gold:</span>
+                          <span>${ascGoldCost} / ${G.gold || 0}</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; color:${fragColorAsc}; font-weight:700;">
+                          <span>🔮 Fragments:</span>
+                          <span>${ascFragsCost} / ${G.voidFragments || 0}</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; color:${matColorAsc}; font-weight:700;">
+                          <span>${ascMat.icon} ${ascMat.name}:</span>
+                          <span>${ascMatCost} / ${getInventoryQty(ascMat.id)}</span>
+                        </div>
+                      </div>
+                    `}
+                  </div>
+                  
+                  <button class="camp-btn" id="btn-forge-ascend" style="margin:8px 0 0 0; padding:6px 10px; font-size:9px; border-radius:20px; width:100%; background:${canAscend ? 'linear-gradient(135deg, #a855f7, #ec4899)' : 'rgba(255,255,255,0.03)'}; border:1px solid ${canAscend ? '#f472b6' : 'rgba(255,255,255,0.08)'}; color:${canAscend ? '#fff' : 'rgba(255,255,255,0.2)'}; ${canAscend ? 'cursor:pointer' : 'cursor:not-allowed'}; font-weight:800; height:28px;" ${canAscend ? '' : 'disabled'}>
+                    ASCEND TIER
+                  </button>
+                </div>
+                
+              </div>
+            </div>
+          `;
+        }
+
+        forgeEl.innerHTML = actionHtml;
+
+        // Wire level-up handler
+        const btnLevel = forgeEl.querySelector('#btn-forge-level');
+        if (btnLevel && canLevelUp) {
+          btnLevel.addEventListener('click', () => {
+            G.gold -= refGoldCost;
+            if (G.party) G.party.forEach(m => m.gold = G.gold);
+            removeFromInventory(refMat.id, refMatCost);
+            
+            G.weaponsLevels[w.id] = level + 1;
+
+            // Recompute combat stats
+            const eqMember = G.party.find(m => m.char.equippedWeapon === w.id);
+            if (eqMember) {
+              eqMember.equippedWeapon = w;
+              if (typeof rebuildMemberCombatStats !== 'undefined') {
+                rebuildMemberCombatStats(eqMember, { resourceStrategy: 'clamp' });
+              }
+            }
+
+            if (typeof SFX !== 'undefined' && SFX.victory) SFX.victory();
+            MapUI.showMsg(`✦ Refined ${w.name} to Level ${level + 1}! ✦`, 2200);
+            
+            _renderWeaponsPanel();
+            _updatePartyHUD();
+          });
+        }
+
+        // Wire ascend breakthrough handler
+        const btnAscend = forgeEl.querySelector('#btn-forge-ascend');
+        if (btnAscend && canAscend) {
+          btnAscend.addEventListener('click', () => {
+            G.gold -= ascGoldCost;
+            if (G.party) G.party.forEach(m => m.gold = G.gold);
+            G.voidFragments -= ascFragsCost;
+            removeFromInventory(ascMat.id, ascMatCost);
+            
+            G.weaponsUpgrades[w.id] = nextRarity;
+            w.rarity = nextRarity; // Keep backwards compatibility
+
+            // Recompute combat stats
+            const eqMember = G.party.find(m => m.char.equippedWeapon === w.id);
+            if (eqMember) {
+              eqMember.equippedWeapon = w;
+              if (typeof rebuildMemberCombatStats !== 'undefined') {
+                rebuildMemberCombatStats(eqMember, { resourceStrategy: 'clamp' });
+              }
+            }
+
+            if (typeof SFX !== 'undefined' && SFX.victory) SFX.victory();
+            MapUI.showMsg(`✦ ASCENDED ${w.name} to ${nextRarity.toUpperCase()} Tier! ✦`, 2800);
+            
+            _renderWeaponsPanel();
+            _updatePartyHUD();
+          });
+        }
+      }
+    }
+
+    const listEl = document.getElementById('weapon-list');
+    if (listEl) {
+      listEl.innerHTML = '';
+      listEl.className = 'relic-grid';
+      
+      const currentEquippedId = member.char.equippedWeapon;
+      
+      // Filter list so only unlocked weapons are visible in Beta 1.0
+      const unlockedWeapons = weapons.filter(w => {
+        const isEquippedHere = w.id === currentEquippedId;
+        const isEquippedByOther = party.some(m => m.charId !== member.charId && m.char.equippedWeapon === w.id);
+        const hasLevel = G.weaponsLevels && G.weaponsLevels[w.id] !== undefined;
+        const belongsToRecruit = G.chars && G.chars.some(c => c.equippedWeapon === w.id && (G.unlockedChars || []).includes(c.id));
+        return isEquippedHere || isEquippedByOther || hasLevel || belongsToRecruit;
+      });
+
+      if (!unlockedWeapons.length) {
+        listEl.innerHTML = '<div style="font-size:11px;color:rgba(144,128,255,0.4);text-align:center;padding:40px;grid-column:1/-1">No weapons acquired yet. Keep exploring or complete bosses to find signature armaments!</div>';
+        return;
+      }
+      
+      unlockedWeapons.forEach(w => {
+        const isEquippedHere = w.id === currentEquippedId;
+        const isEquippedByOther = party.some(m => m.charId !== member.charId && m.char.equippedWeapon === w.id);
+        const owner = isEquippedByOther ? party.find(m => m.char.equippedWeapon === w.id) : null;
+        const isResonant = w.resonance && w.resonance.charId === member.charId;
+        
+        const activeStats = getUpgradedStats(w);
+        const statsHtml = Object.entries(activeStats).map(([s, val]) => `
+          <div class="wp-stat-chip">
+            <span style="opacity:0.6">${s.toUpperCase()}</span> <span>+${val}</span>
+          </div>
+        `).join('');
+        
+        const wLvl = G.weaponsLevels[w.id] || 1;
+        const wTier = G.weaponsUpgrades[w.id] || w.rarity || 'rare';
+
+        const card = document.createElement('div');
+        card.className = `relic-card ${wTier}${isEquippedHere ? ' equipped' : ''}`;
+        if (isEquippedByOther) card.style.opacity = '0.45';
+        
+        card.innerHTML = `
+          ${isEquippedHere ? '<div class="active-tag">Equipped</div>' : ''}
+          ${isEquippedByOther ? `<div class="active-tag" style="background:#5ccfff; color:#050510">${owner.displayName}</div>` : ''}
+          <div class="relic-icon">${w.icon}</div>
+          <div class="relic-name">${w.name}</div>
+          <div style="font-size:9px; font-weight:800; color:#38bdf8; margin-top:-6px; margin-bottom:8px; text-transform:uppercase;">Lv. ${wLvl} · ${wTier}</div>
+          <div class="relic-desc">
+            <div style="opacity:0.85; margin-bottom:10px; font-size:12px;">${w.description}</div>
+            
+            <div class="wp-stats-row">${statsHtml}</div>
+            
+            <div class="wp-passive-box">
+              <span class="wp-passive-title">✨ PASSIVE: ${w.passive.name || 'Signature'}</span>
+              <span>${w.passive.description}</span>
+            </div>
+            
+            ${w.resonance && isResonant ? `
+              <div class="wp-resonance-box active">
+                <span class="wp-resonance-title">💖 RESONANCE ACTIVE</span>
+                <span>${w.resonance.description}</span>
+              </div>
+            ` : w.resonance ? `
+              <div class="wp-resonance-box" style="opacity:0.6">
+                <span class="wp-resonance-title" style="color:#94a3b8">💖 RESONANCE BOUND</span>
+                <span style="font-size:10px">Only unlocks for ${party.find(m => m.charId === w.resonance.charId)?.displayName || w.resonance.charId.toUpperCase()}</span>
+              </div>
+            ` : ''}
+          </div>
+          ${!isEquippedHere && !isEquippedByOther ? '<div class="wp-action-hint equip">Click to Equip</div>' : ''}
+        `;
+        
+        card.addEventListener('click', () => {
+          _selectedWeaponToUpgrade = w; // Set as forge target
+          if (isEquippedHere) {
+            member.char.equippedWeapon = null;
+            member.equippedWeapon = null;
+            if (typeof rebuildMemberCombatStats !== 'undefined') {
+              rebuildMemberCombatStats(member, { resourceStrategy: 'clamp' });
+            }
+            if (typeof SFX !== 'undefined') SFX.click();
+          } else if (!isEquippedByOther) {
+            member.char.equippedWeapon = w.id;
+            member.equippedWeapon = w;
+            if (typeof rebuildMemberCombatStats !== 'undefined') {
+              rebuildMemberCombatStats(member, { resourceStrategy: 'clamp' });
+            }
+            if (typeof SFX !== 'undefined') SFX.click();
+          }
+          _renderWeaponsPanel();
+          _updatePartyHUD();
+        });
+        
+        listEl.appendChild(card);
+      });
+    }
+  }
+
   function _checkCriteria(criteria) {
     if (!criteria) return true;
     if (criteria.minLevel) {
@@ -857,6 +1340,8 @@ const MapUI = (() => {
     campSave,
     campRelics,
     closeRelics,
+    campWeapons,
+    closeWeapons,
     openBondPanel,
     closeBondPanel,
     triggerBanter: _showBanter,

@@ -593,8 +593,7 @@
         </div>
         <div class="explore-header-right">
           <button id="settings-btn" onclick="Settings.open()" title="Settings">⚙️</button>
-          <button id="tts-btn" onclick="TTS.toggle()" title="Voice: OFF">💬</button>
-          <button id="mute-btn" onclick="SFX.toggleMute()" title="Toggle sound effects">🔊</button>
+<button id="mute-btn" onclick="SFX.toggleMute()" title="Toggle sound effects">🔊</button>
           <button class="explore-menu-btn" onclick="MapUI.openPauseMenu()">☰ MENU</button>
         </div>
       </div>
@@ -728,6 +727,7 @@
               <button class="camp-btn" onclick="MapUI.campHeal()"><span>💊</span>HEAL PARTY</button>
               <button class="camp-btn" onclick="MapUI.campSave()"><span>💾</span>SAVE PROGRESS</button>
               <button class="camp-btn" onclick="MapUI.campRelics()"><span>✦</span>RELICS</button>
+              <button class="camp-btn" onclick="MapUI.campWeapons()"><span>⚔️</span>WEAPONS</button>
               <button class="camp-btn camp-btn-bond" id="camp-btn-bond" onclick="MapUI.campTalk()"
                 style="display:none; background: linear-gradient(135deg, #a855f7, #ec4899); border-color: #f472b6;"><span>✨</span>BOND
                 EVENTS</button>
@@ -747,6 +747,392 @@
             <div class="relic-list" id="relic-list"></div>
             <button class="camp-btn camp-btn-minor" onclick="MapUI.closeRelics()" style="margin-top:12px">◀ BACK TO
               CAMP</button>
+          </div>
+        </div>
+
+        <!-- Weapons management panel -->
+        <div id="weapons-panel" style="display:none">
+          <style>
+            #weapons-panel {
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              background: radial-gradient(circle at 50% 20%, hsla(240, 50%, 8%, 0.98), hsla(240, 60%, 3%, 0.99));
+              backdrop-filter: blur(20px);
+              -webkit-backdrop-filter: blur(20px);
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              z-index: 1500;
+              box-sizing: border-box;
+              font-family: 'Outfit', 'Inter', sans-serif;
+            }
+            .weapons-panel-inner {
+              width: 92%;
+              max-width: 1080px;
+              height: 90%;
+              display: flex;
+              flex-direction: column;
+              background: hsla(240, 30%, 10%, 0.5);
+              border: 1px solid rgba(255, 255, 255, 0.08);
+              border-radius: 24px;
+              box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), inset 0 0 2px rgba(255, 255, 255, 0.15);
+              padding: 24px 30px;
+              box-sizing: border-box;
+              overflow: hidden;
+            }
+            .relic-panel-title {
+              font-size: 24px;
+              font-weight: 800;
+              letter-spacing: 2px;
+              text-align: center;
+              background: linear-gradient(135deg, #fbbf24, #f472b6, #00ddff);
+              -webkit-background-clip: text;
+              -webkit-text-fill-color: transparent;
+              margin-bottom: 4px;
+              text-shadow: 0 0 30px rgba(244, 114, 182, 0.25);
+            }
+            .relic-panel-subtitle {
+              font-size: 12px;
+              color: #94a3b8;
+              text-align: center;
+              margin-bottom: 16px;
+              font-weight: 400;
+            }
+            .weapon-char-selector {
+              display: flex;
+              gap: 10px;
+              margin-bottom: 16px;
+              border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+              padding-bottom: 12px;
+              width: 100%;
+              overflow-x: auto;
+              scrollbar-width: none;
+              flex-shrink: 0;
+            }
+            .weapon-char-selector::-webkit-scrollbar {
+              display: none;
+            }
+            .weapon-char-tab {
+              display: flex;
+              align-items: center;
+              padding: 8px 18px;
+              border: 1px solid rgba(255, 255, 255, 0.08);
+              border-radius: 50px;
+              cursor: pointer;
+              background: rgba(255, 255, 255, 0.02);
+              transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+              font-size: 13px;
+              font-weight: 600;
+              color: #94a3b8;
+              white-space: nowrap;
+            }
+            .weapon-char-tab:hover {
+              background: rgba(255, 255, 255, 0.06);
+              border-color: rgba(255, 255, 255, 0.2);
+              color: #f8fafc;
+              transform: translateY(-2px);
+            }
+            .weapon-char-tab.active {
+              background: linear-gradient(135deg, rgba(0, 221, 255, 0.15), rgba(236, 72, 153, 0.1));
+              border-color: #00ddff;
+              color: #00ddff;
+              box-shadow: 0 0 15px rgba(0, 221, 255, 0.25), inset 0 0 1px rgba(255, 255, 255, 0.2);
+            }
+            
+            /* Two Column Grid Workspace */
+            .weapons-workspace {
+              display: grid;
+              grid-template-columns: 1fr 1.6fr;
+              gap: 24px;
+              flex: 1;
+              overflow: hidden;
+              margin-bottom: 12px;
+            }
+            
+            .weapons-left-column, .weapons-right-column {
+              display: flex;
+              flex-direction: column;
+              overflow: hidden;
+              height: 100%;
+            }
+            
+            .relic-panel-label {
+              font-size: 11px;
+              font-weight: 700;
+              letter-spacing: 2px;
+              color: #f59e0b;
+              margin-bottom: 10px;
+              text-transform: uppercase;
+              text-shadow: 0 0 10px rgba(245, 158, 11, 0.2);
+              flex-shrink: 0;
+            }
+            
+            .weapon-equipped-section {
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              background: rgba(0, 0, 0, 0.2);
+              border: 1px solid rgba(255, 255, 255, 0.04);
+              border-radius: 16px;
+              padding: 16px;
+              box-sizing: border-box;
+              height: 100%;
+              overflow-y: auto;
+              width: 100%;
+            }
+            
+            .weapon-list-container {
+              overflow-y: auto;
+              height: 100%;
+              padding-right: 6px;
+            }
+            .weapon-list-container::-webkit-scrollbar {
+              width: 6px;
+            }
+            .weapon-list-container::-webkit-scrollbar-thumb {
+              background: rgba(255, 255, 255, 0.1);
+              border-radius: 10px;
+            }
+            
+            .relic-grid {
+              display: grid;
+              grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+              gap: 16px;
+            }
+            
+            /* Sacred Cards design inside Weapons screen */
+            .relic-card {
+              position: relative;
+              background: linear-gradient(135deg, rgba(30, 30, 45, 0.6), rgba(15, 15, 25, 0.85));
+              border: 1px solid rgba(255, 255, 255, 0.08);
+              border-radius: 16px;
+              padding: 16px;
+              box-sizing: border-box;
+              transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+              cursor: pointer;
+              display: flex;
+              flex-direction: column;
+              gap: 10px;
+              box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+              overflow: hidden;
+            }
+            .relic-card:hover {
+              transform: translateY(-4px);
+              border-color: rgba(255, 255, 255, 0.2);
+              box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+            }
+            
+            .relic-card.equipped {
+              border-color: #00ddff !important;
+              background: linear-gradient(135deg, rgba(0, 221, 255, 0.08), rgba(15, 15, 25, 0.9)) !important;
+              box-shadow: 0 0 25px rgba(0, 221, 255, 0.25) !important;
+            }
+            
+            /* Rarity Glow borders */
+            .relic-card.rare {
+              border-color: rgba(96, 165, 250, 0.35);
+              box-shadow: 0 0 15px rgba(96, 165, 250, 0.1);
+            }
+            .relic-card.legendary {
+              border-color: rgba(244, 114, 182, 0.35);
+              box-shadow: 0 0 15px rgba(244, 114, 182, 0.15);
+            }
+            
+            .relic-icon {
+              font-size: 32px;
+              height: 48px;
+              width: 48px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              background: rgba(0, 0, 0, 0.3);
+              border-radius: 12px;
+              border: 1px solid rgba(255, 255, 255, 0.06);
+              transition: all 0.3s ease;
+              box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.5);
+              flex-shrink: 0;
+            }
+            .relic-card:hover .relic-icon {
+              transform: scale(1.08) rotate(5deg);
+              background: rgba(255, 255, 255, 0.04);
+              border-color: rgba(255, 255, 255, 0.15);
+            }
+            
+            .relic-name {
+              font-size: 15px;
+              font-weight: 700;
+              color: #f8fafc;
+              letter-spacing: 0.5px;
+            }
+            
+            .relic-desc {
+              font-size: 12px;
+              color: #cbd5e1;
+              line-height: 1.5;
+              display: flex;
+              flex-direction: column;
+              gap: 8px;
+              flex: 1;
+            }
+            
+            .active-tag {
+              position: absolute;
+              top: 16px;
+              right: 16px;
+              font-size: 9px;
+              font-weight: 700;
+              letter-spacing: 1px;
+              text-transform: uppercase;
+              padding: 3px 8px;
+              border-radius: 4px;
+              background: #00ddff;
+              color: #050510;
+              box-shadow: 0 0 8px rgba(0, 221, 255, 0.4);
+            }
+            
+            /* Stat chips row */
+            .wp-stats-row {
+              display: flex;
+              flex-wrap: wrap;
+              gap: 6px;
+            }
+            .wp-stat-chip {
+              font-size: 10px;
+              font-weight: 700;
+              color: #e2e8f0;
+              background: rgba(255, 255, 255, 0.05);
+              border: 1px solid rgba(255, 255, 255, 0.08);
+              padding: 4px 8px;
+              border-radius: 4px;
+              letter-spacing: 0.5px;
+              display: flex;
+              gap: 4px;
+            }
+            
+            /* Passive Box */
+            .wp-passive-box {
+              padding: 10px;
+              border-radius: 8px;
+              background: rgba(168, 85, 247, 0.08);
+              border: 1px solid rgba(168, 85, 247, 0.15);
+              font-size: 11px;
+              line-height: 1.4;
+            }
+            .wp-passive-title {
+              font-weight: 700;
+              color: #c084fc;
+              display: block;
+              margin-bottom: 2px;
+              font-size: 11px;
+              letter-spacing: 0.5px;
+            }
+            
+            /* Resonance Box */
+            .wp-resonance-box {
+              padding: 10px;
+              border-radius: 8px;
+              background: rgba(236, 72, 153, 0.08);
+              border: 1px solid rgba(236, 72, 153, 0.2);
+              font-size: 11px;
+              line-height: 1.4;
+            }
+            .wp-resonance-box.active {
+              background: linear-gradient(135deg, rgba(236, 72, 153, 0.15), rgba(244, 114, 182, 0.05));
+              border-color: #ec4899;
+              box-shadow: 0 0 15px rgba(236, 72, 153, 0.2);
+            }
+            .wp-resonance-title {
+              font-weight: 700;
+              color: #f472b6;
+              display: block;
+              margin-bottom: 2px;
+              font-size: 11px;
+              letter-spacing: 0.5px;
+            }
+            
+            .wp-action-hint {
+              font-size: 10px;
+              font-weight: 700;
+              letter-spacing: 1px;
+              text-transform: uppercase;
+              text-align: center;
+              border-top: 1px solid rgba(255, 255, 255, 0.06);
+              padding-top: 10px;
+              margin-top: auto;
+              width: 100%;
+            }
+            .wp-action-hint.equip {
+              color: #fbbf24;
+            }
+            .wp-action-hint.unequip {
+              color: #f87171;
+            }
+            
+            /* Back to camp button */
+            .wp-footer {
+              display: flex;
+              justify-content: center;
+              margin-top: 14px;
+              flex-shrink: 0;
+            }
+            .wp-close-btn {
+              background: rgba(255, 255, 255, 0.03);
+              border: 1px solid rgba(255, 255, 255, 0.1);
+              border-radius: 30px;
+              color: #94a3b8;
+              font-size: 12px;
+              font-weight: 600;
+              letter-spacing: 1.5px;
+              padding: 10px 24px;
+              cursor: pointer;
+              transition: all 0.25s ease;
+            }
+            .wp-close-btn:hover {
+              background: rgba(239, 68, 68, 0.15);
+              border-color: rgba(239, 68, 68, 0.4);
+              color: #ef4444;
+              transform: translateY(-1px);
+              box-shadow: 0 5px 15px rgba(239, 68, 68, 0.1);
+            }
+          </style>
+          <div class="weapons-panel-inner">
+            <div class="relic-panel-title">⚔️ SACRED ARMORY ⚔️</div>
+            <div class="weapons-header-stats" style="display: flex; gap: 20px; justify-content: center; margin-bottom: 16px; font-size: 13px; font-weight: 700; letter-spacing: 1px;">
+              <span style="color: #fbbf24; text-shadow: 0 0 10px rgba(251,191,36,0.2)">💰 GOLD: <span id="wp-gold-count" style="color: #fff">0</span></span>
+              <span style="color: #a855f7; text-shadow: 0 0 10px rgba(168,85,247,0.2)">🔮 VOID FRAGMENTS: <span id="wp-void-count" style="color: #fff">0</span></span>
+            </div>
+            
+            <div class="weapon-char-selector" id="weapon-char-selector"></div>
+            
+            <div class="weapons-workspace">
+              <!-- Left side: Currently Equipped Showcase & Camp Forge -->
+              <div class="weapons-left-column" style="gap: 16px;">
+                <div style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
+                  <div class="relic-panel-label">CURRENTLY EQUIPPED</div>
+                  <div class="weapon-equipped-section" id="weapon-equipped-section" style="flex: 1;"></div>
+                </div>
+                <div style="height: 295px; flex-shrink: 0; display: flex; flex-direction: column;">
+                  <div class="relic-panel-label" style="color: #c084fc; text-shadow: 0 0 10px rgba(192,132,252,0.2);">🔨 CAMPFIRE FORGE</div>
+                  <div id="weapon-forge-section" style="flex: 1; background: rgba(0, 0, 0, 0.25); border: 1px solid rgba(168, 85, 247, 0.15); border-radius: 16px; padding: 14px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;"></div>
+                </div>
+              </div>
+              
+              <!-- Right side: Available Weapons Grid -->
+              <div class="weapons-right-column">
+                <div class="relic-panel-label">AVAILABLE ARMAMENTS</div>
+                <div class="weapon-list-container">
+                  <div class="relic-list" id="weapon-list"></div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="wp-footer">
+              <button class="wp-close-btn" onclick="MapUI.closeWeapons()">◀ RETURN TO CAMP</button>
+            </div>
           </div>
         </div>
 
@@ -1400,7 +1786,6 @@
   <script src="js/bgm.js"></script>
   <script src="js/sfx.js"></script>
   <script src="js/ambient.js"></script>
-  <script src="js/tts.js"></script>
   <script src="js/sprites.js"></script>
   <script src="js/svg-animations.js"></script>
 
@@ -1441,7 +1826,6 @@
   <script src="js/story.js"></script>
   <script src="js/startup-check.js"></script>
   <script>
-    TTS.init();
     if (typeof ControlHints !== 'undefined') ControlHints.init();
 
     // ── Fullscreen prompt for mobile ─────────────────────────
@@ -1481,11 +1865,6 @@
         if (document.fullscreenElement) banner.remove();
       });
     })();
-    if (!TTS.supported) {
-      const b = document.getElementById('tts-btn');
-      if (b) b.style.display = 'none';
-    }
-
     // Play title screen BGM
     BGM.play('title');
 

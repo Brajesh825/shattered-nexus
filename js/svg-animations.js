@@ -706,5 +706,212 @@ const SVGAnimations = {
     s.innerHTML = `<defs><style>@keyframes gbh-impact{0%{transform:scale(0.5);opacity:1}100%{transform:scale(1.8);opacity:0}}</style></defs>
     <circle cx="100" cy="100" r="30" fill="none" stroke="#ffcc88" stroke-width="10" stroke-dasharray="15 5" style="animation:gbh-impact 1400ms ease-out forwards;"/>`;
     return s;
+  }},
+
+  // === WEAPON OVERRIDES ===
+
+  // Aya: Winter's Last Petal
+  'winters_last_petal': { duration: 1600, create: () => {
+    const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    s.setAttribute('viewBox', '0 0 200 200'); s.setAttribute('width', '200'); s.setAttribute('height', '200');
+    s.classList.add('battle-svg-animation');
+    s.innerHTML = `<defs><style>
+      @keyframes wlp-slash { 0% { stroke-dashoffset: 160; opacity: 0; } 15% { opacity: 1; } 100% { stroke-dashoffset: 0; opacity: 0; } }
+      @keyframes wlp-petal { 0% { transform: rotate(var(--angle)) translate(10px, -20px) scale(0.6); opacity: 0; } 20% { opacity: 1; } 100% { transform: rotate(calc(var(--angle) + 120deg)) translate(var(--dx), var(--dy)) scale(0.2); opacity: 0; } }
+      @keyframes wlp-ring { 0% { r: 5; stroke-width: 4; opacity: 0.9; } 100% { r: 60; stroke-width: 0.2; opacity: 0; } }
+    </style>
+    <filter id="wlp-glow"><feGaussianBlur stdDeviation="3.5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    </defs>
+    <circle cx="100" cy="108" r="5" fill="none" stroke="#4ecfff" stroke-width="4" style="animation: wlp-ring 1600ms cubic-bezier(0.1, 0.8, 0.3, 1) forwards;"/>
+    <path d="M 40 140 Q 100 80 160 140" fill="none" stroke="#b0f0ff" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="160" stroke-dashoffset="160" filter="url(#wlp-glow)" style="animation: wlp-slash 1600ms cubic-bezier(0.1,0.6,0.3,1) forwards;"/>
+    <path d="M 40 140 Q 100 80 160 140" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-dasharray="160" stroke-dashoffset="160" style="animation: wlp-slash 1600ms cubic-bezier(0.1,0.6,0.3,1) forwards 50ms;"/>
+    <ellipse cx="100" cy="108" rx="4" ry="7" fill="#ffffff" fill-opacity="0.8" style="--angle: 0deg; --dx: -45px; --dy: -40px; transform-origin: 100px 108px; animation: wlp-petal 1600ms ease-out forwards;"/>
+    <ellipse cx="100" cy="108" rx="4" ry="7" fill="#7dd3fc" fill-opacity="0.9" filter="url(#wlp-glow)" style="--angle: 72deg; --dx: 45px; --dy: -35px; transform-origin: 100px 108px; animation: wlp-petal 1600ms ease-out forwards 100ms;"/>
+    <ellipse cx="100" cy="108" rx="4" ry="7" fill="#4ecfff" fill-opacity="0.75" style="--angle: 144deg; --dx: -35px; --dy: 45px; transform-origin: 100px 108px; animation: wlp-petal 1600ms ease-out forwards 200ms;"/>
+    <ellipse cx="100" cy="108" rx="4" ry="7" fill="#ffffff" fill-opacity="0.95" filter="url(#wlp-glow)" style="--angle: 216deg; --dx: 35px; --dy: 40px; transform-origin: 100px 108px; animation: wlp-petal 1600ms ease-out forwards 300ms;"/>
+    <ellipse cx="100" cy="108" rx="4" ry="7" fill="#7dd3fc" fill-opacity="0.8" style="--angle: 288deg; --dx: 0px; --dy: -50px; transform-origin: 100px 108px; animation: wlp-petal 1600ms ease-out forwards 400ms;"/>`;
+    return s;
+  }},
+
+  // Tao: The Laughing Lantern
+  'laughing_lantern': { duration: 1600, create: () => {
+    const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    s.setAttribute('viewBox', '0 0 200 200'); s.setAttribute('width', '200'); s.setAttribute('height', '200');
+    s.classList.add('battle-svg-animation');
+    s.innerHTML = `<defs><style>
+      @keyframes ll-slash { 0% { stroke-dashoffset: 150; opacity: 0; } 15% { opacity: 1; } 100% { stroke-dashoffset: 0; opacity: 0; } }
+      @keyframes ll-spark { 0% { transform: translate(0, 0) scale(1.2); opacity: 1; } 100% { transform: translate(var(--tx), var(--ty)) scale(0.2); opacity: 0; } }
+      @keyframes ll-ring { 0% { r: 4; stroke-width: 5; opacity: 0.9; } 100% { r: 70; stroke-width: 0.3; opacity: 0; } }
+    </style>
+    <filter id="ll-glow"><feGaussianBlur stdDeviation="4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    </defs>
+    <circle cx="100" cy="108" r="4" fill="none" stroke="#ffaa00" stroke-width="5" style="animation: ll-ring 1600ms cubic-bezier(0.1, 0.8, 0.3, 1) forwards;"/>
+    <line x1="45" y1="53" x2="155" y2="163" stroke="#ff3300" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="160" stroke-dashoffset="160" filter="url(#ll-glow)" style="animation: ll-slash 1600ms cubic-bezier(0.1,0.6,0.3,1) forwards;"/>
+    <line x1="45" y1="53" x2="155" y2="163" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-dasharray="160" stroke-dashoffset="160" style="animation: ll-slash 1600ms cubic-bezier(0.1,0.6,0.3,1) forwards 60ms;"/>
+    <circle cx="100" cy="108" r="3.5" fill="#ffaa00" filter="url(#ll-glow)" style="--tx: -40px; --ty: -55px; animation: ll-spark 1600ms ease-out forwards 150ms;"/>
+    <circle cx="100" cy="108" r="2.5" fill="#ff3300" style="--tx: 50px; --ty: -45px; animation: ll-spark 1600ms ease-out forwards 250ms;"/>
+    <circle cx="100" cy="108" r="3" fill="#ffffff" filter="url(#ll-glow)" style="--tx: -55px; --ty: 35px; animation: ll-spark 1600ms ease-out forwards 350ms;"/>
+    <circle cx="100" cy="108" r="2.5" fill="#ffaa00" style="--tx: 45px; --ty: 40px; animation: ll-spark 1600ms ease-out forwards 450ms;"/>
+    <circle cx="100" cy="108" r="2" fill="#ff3300" style="--tx: 0px; --ty: -60px; animation: ll-spark 1600ms ease-out forwards 550ms;"/>`;
+    return s;
+  }},
+
+  // Rei: Chain of Ten Thousand Nights
+  'chain_of_nights': { duration: 1600, create: () => {
+    const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    s.setAttribute('viewBox', '0 0 200 200'); s.setAttribute('width', '200'); s.setAttribute('height', '200');
+    s.classList.add('battle-svg-animation');
+    s.innerHTML = `<defs><style>
+      @keyframes con-chain { 0% { stroke-dashoffset: 140; opacity: 0; } 20% { opacity: 1; } 100% { stroke-dashoffset: 0; opacity: 0; } }
+      @keyframes con-wind { 0% { r: 5; opacity: 0.9; stroke-width: 3; } 100% { r: 65; opacity: 0; stroke-width: 0.3; } }
+      @keyframes con-spark { 0% { transform: translate(0,0) scale(1.2); opacity: 1; } 100% { transform: translate(var(--tx), var(--ty)) scale(0.2); opacity: 0; } }
+    </style>
+    <filter id="con-glow"><feGaussianBlur stdDeviation="3.5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    </defs>
+    <circle cx="100" cy="108" r="5" fill="none" stroke="#22bb88" stroke-width="3" style="animation: con-wind 1600ms ease-out forwards;"/>
+    <path d="M 50 150 C 70 80, 130 80, 150 150" fill="none" stroke="#66ffcc" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="140" stroke-dashoffset="140" filter="url(#con-glow)" style="animation: con-chain 1600ms cubic-bezier(0.15,0.7,0.3,1) forwards;"/>
+    <path d="M 150 150 C 130 80, 70 80, 50 150" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-dasharray="140" stroke-dashoffset="140" style="animation: con-chain 1600ms cubic-bezier(0.15,0.7,0.3,1) forwards 120ms;"/>
+    <circle cx="100" cy="108" r="3" fill="#66ffcc" filter="url(#con-glow)" style="--tx: -50px; --ty: -40px; animation: con-spark 1600ms ease-out forwards 200ms;"/>
+    <circle cx="100" cy="108" r="2.5" fill="#22bb88" style="--tx: 50px; --ty: -35px; animation: con-spark 1600ms ease-out forwards 300ms;"/>
+    <circle cx="100" cy="108" r="2" fill="#ddffaa" style="--tx: -35px; --ty: 45px; animation: con-spark 1600ms ease-out forwards 400ms;"/>`;
+    return s;
+  }},
+
+  // Lulu: Tide Caller
+  'tide_caller': { duration: 1600, create: () => {
+    const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    s.setAttribute('viewBox', '0 0 200 200'); s.setAttribute('width', '200'); s.setAttribute('height', '200');
+    s.classList.add('battle-svg-animation');
+    s.innerHTML = `<defs><style>
+      @keyframes tc-splash { 0% { r: 5; stroke-width: 4; opacity: 1; } 100% { r: 75; stroke-width: 0.2; opacity: 0; } }
+      @keyframes tc-bubble { 0% { transform: translate(var(--bx), var(--by)) scale(0.6); opacity: 0; } 20% { opacity: 0.9; } 100% { transform: translate(var(--bx), calc(var(--by) - 50px)) scale(0.2); opacity: 0; } }
+    </style>
+    <filter id="tc-glow"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    </defs>
+    <circle cx="100" cy="108" r="5" fill="none" stroke="#00d4b4" stroke-width="4" style="animation: tc-splash 1600ms ease-out forwards;"/>
+    <circle cx="100" cy="108" r="5" fill="none" stroke="#80ffee" stroke-width="2" style="animation: tc-splash 1600ms ease-out forwards 250ms;"/>
+    <circle cx="100" cy="108" r="4.5" fill="#80ffee" fill-opacity="0.3" stroke="#80ffee" stroke-width="1" filter="url(#tc-glow)" style="--bx: -35px; --by: -20px; animation: tc-bubble 1600ms ease-out forwards 150ms;"/>
+    <circle cx="100" cy="108" r="3.5" fill="#00b8f5" fill-opacity="0.25" stroke="#00b8f5" stroke-width="1" style="--bx: 35px; --by: -30px; animation: tc-bubble 1600ms ease-out forwards 300ms;"/>
+    <circle cx="100" cy="108" r="4" fill="#80ffee" fill-opacity="0.2" stroke="#80ffee" stroke-width="1" filter="url(#tc-glow)" style="--bx: -15px; --by: -40px; animation: tc-bubble 1600ms ease-out forwards 450ms;"/>`;
+    return s;
+  }},
+
+  // Ria: Eidolons' Grimoire
+  'eidolons_grimoire': { duration: 1600, create: () => {
+    const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    s.setAttribute('viewBox', '0 0 200 200'); s.setAttribute('width', '200'); s.setAttribute('height', '200');
+    s.classList.add('battle-svg-animation');
+    s.innerHTML = `<defs><style>
+      @keyframes eg-bolt { 0%, 20% { stroke-dashoffset: 120; opacity: 0; } 22% { opacity: 1; } 50% { stroke-dashoffset: 0; opacity: 0.8; } 100% { opacity: 0; } }
+      @keyframes eg-star { 0% { transform: rotate(0deg) scale(0); opacity: 0; } 30% { transform: rotate(90deg) scale(1.3); opacity: 0.9; } 100% { transform: rotate(180deg) scale(0.2); opacity: 0; } }
+    </style>
+    <filter id="eg-glow"><feGaussianBlur stdDeviation="3.5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    </defs>
+    <circle cx="100" cy="108" r="15" fill="#cc66ff" fill-opacity="0.25" filter="url(#eg-glow)"/>
+    <line x1="100" y1="108" x2="60" y2="68" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="120" stroke-dashoffset="120" filter="url(#eg-glow)" style="animation: eg-bolt 1600ms ease-out forwards;"/>
+    <line x1="100" y1="108" x2="140" y2="68" stroke="#cc66ff" stroke-width="2" stroke-linecap="round" stroke-dasharray="120" stroke-dashoffset="120" style="animation: eg-bolt 1600ms ease-out forwards 100ms;"/>
+    <line x1="100" y1="108" x2="65" y2="148" stroke="#ffff99" stroke-width="2" stroke-linecap="round" stroke-dasharray="120" stroke-dashoffset="120" style="animation: eg-bolt 1600ms ease-out forwards 200ms;"/>
+    <line x1="100" y1="108" x2="135" y2="148" stroke="#9933ff" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="120" stroke-dashoffset="120" filter="url(#eg-glow)" style="animation: eg-bolt 1600ms ease-out forwards 300ms;"/>
+    <g style="transform-origin: 100px 108px; animation: eg-star 1600ms ease-out forwards 150ms;">
+       <polygon points="100,82 103,98 118,98 106,108 110,124 100,114 90,124 94,108 82,98 97,98" fill="#ffff99" filter="url(#eg-glow)"/>
+    </g>`;
+    return s;
+  }},
+
+  // Valka: Aegis of the Archangel
+  'aegis_archangel': { duration: 1700, create: () => {
+    const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    s.setAttribute('viewBox', '0 0 200 200'); s.setAttribute('width', '200'); s.setAttribute('height', '200');
+    s.classList.add('battle-svg-animation');
+    s.innerHTML = `<defs><style>
+      @keyframes aa-slash { 0% { stroke-dashoffset: 140; opacity: 0; } 15% { opacity: 1; } 100% { stroke-dashoffset: 0; opacity: 0; } }
+      @keyframes aa-feather { 0% { transform: translate(var(--fx), var(--fy)) rotate(var(--fr)) scale(0.4); opacity: 0; } 20% { opacity: 1; } 100% { transform: translate(var(--fx), calc(var(--fy) - 50px)) rotate(calc(var(--fr) + 20deg)) scale(0.2); opacity: 0; } }
+      @keyframes aa-ring { 0% { r: 6; stroke-width: 4; opacity: 0.9; } 100% { r: 65; stroke-width: 0.3; opacity: 0; } }
+    </style>
+    <filter id="aa-glow"><feGaussianBlur stdDeviation="4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    </defs>
+    <circle cx="100" cy="108" r="6" fill="none" stroke="#ffdd00" stroke-width="4" style="animation: aa-ring 1700ms ease-out forwards;"/>
+    <line x1="50" y1="58" x2="150" y2="158" stroke="#ffffff" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="140" stroke-dashoffset="140" filter="url(#aa-glow)" style="animation: aa-slash 1700ms cubic-bezier(0.15,0.6,0.3,1) forwards;"/>
+    <line x1="150" y1="58" x2="50" y2="158" stroke="#ffff99" stroke-width="3" stroke-linecap="round" stroke-dasharray="140" stroke-dashoffset="140" style="animation: aa-slash 1700ms cubic-bezier(0.15,0.6,0.3,1) forwards 120ms;"/>
+    <ellipse cx="100" cy="108" rx="2" ry="7" fill="#ffffff" filter="url(#aa-glow)" style="--fx: -30px; --fy: -20px; --fr: -25deg; animation: aa-feather 1700ms ease-out forwards 250ms;"/>
+    <ellipse cx="100" cy="108" rx="2" ry="7" fill="#ffff99" style="--fx: 30px; --fy: -18px; --fr: 25deg; animation: aa-feather 1700ms ease-out forwards 350ms;"/>
+    <ellipse cx="100" cy="108" rx="1.5" ry="6" fill="#ffffff" style="--fx: -15px; --fy: -40px; --fr: -10deg; animation: aa-feather 1700ms ease-out forwards 450ms;"/>`;
+    return s;
+  }},
+
+  // Drake: Wyrmtooth Lance
+  'wyrmtooth_lance': { duration: 1600, create: () => {
+    const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    s.setAttribute('viewBox', '0 0 200 200'); s.setAttribute('width', '200'); s.setAttribute('height', '200');
+    s.classList.add('battle-svg-animation');
+    s.innerHTML = `<defs><style>
+      @keyframes wl-gale { 0% { transform: rotate(0deg) scale(0.2); opacity: 0; } 15% { opacity: 0.95; } 100% { transform: rotate(540deg) scale(1.3); opacity: 0; } }
+      @keyframes wl-ring { 0% { r: 8; stroke-width: 4; opacity: 1; } 100% { r: 85; stroke-width: 0.2; opacity: 0; } }
+      @keyframes wl-spark { 0% { transform: translate(0,0) scale(1.2); opacity: 1; } 100% { transform: translate(var(--tx), var(--ty)) scale(0.2); opacity: 0; } }
+    </style>
+    <filter id="wl-glow"><feGaussianBlur stdDeviation="3.5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    </defs>
+    <circle cx="100" cy="108" r="8" fill="none" stroke="#00ffcc" stroke-width="4" style="animation: wl-ring 1600ms ease-out forwards;"/>
+    <g style="transform-origin: 100px 108px; animation: wl-gale 1600ms cubic-bezier(0.1,0.8,0.3,1) forwards;">
+       <ellipse cx="100" cy="78" rx="6" ry="18" fill="#00ffcc" fill-opacity="0.8" filter="url(#wl-glow)"/>
+       <ellipse cx="100" cy="78" rx="6" ry="18" fill="#e0f8ff" fill-opacity="0.7" transform="rotate(120 100 108)"/>
+       <ellipse cx="100" cy="78" rx="6" ry="18" fill="#0099ff" fill-opacity="0.75" transform="rotate(240 100 108)"/>
+    </g>
+    <circle cx="100" cy="108" r="3" fill="#00ffcc" filter="url(#wl-glow)" style="--tx: -55px; --ty: -45px; animation: wl-spark 1600ms ease-out forwards 300ms;"/>
+    <circle cx="100" cy="108" r="2.5" fill="#e0f8ff" style="--tx: 50px; --ty: -55px; animation: wl-spark 1600ms ease-out forwards 400ms;"/>
+    <circle cx="100" cy="108" r="2" fill="#0099ff" style="--tx: -40px; --ty: 50px; animation: wl-spark 1600ms ease-out forwards 500ms;"/>`;
+    return s;
+  }},
+
+  // Rex: Arren's Oath
+  'arrens_oath': { duration: 1800, create: () => {
+    const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    s.setAttribute('viewBox', '0 0 200 200'); s.setAttribute('width', '200'); s.setAttribute('height', '200');
+    s.classList.add('battle-svg-animation');
+    s.innerHTML = `<defs><style>
+      @keyframes ao-sword { 0% { transform: translateY(-110px) scaleY(0.4); opacity: 0; } 18% { transform: translateY(-110px) scaleY(1.2); opacity: 1; } 45% { transform: translateY(80px) scaleY(1); opacity: 1; } 65% { transform: translateY(80px) scaleY(1); opacity: 0.7; } 100% { transform: translateY(80px) scaleY(0.4); opacity: 0; } }
+      @keyframes ao-shards { 0%, 44% { transform: translate(0, 0) scale(0.8); opacity: 0; } 45% { opacity: 1; } 100% { transform: translate(var(--sx), var(--sy)) rotate(360deg) scale(0.2); opacity: 0; } }
+      @keyframes ao-ring { 0%, 44% { r: 5; opacity: 0; } 45% { r: 5; opacity: 1; stroke-width: 5; } 100% { r: 85; opacity: 0; stroke-width: 0.3; } }
+    </style>
+    <filter id="ao-glow"><feGaussianBlur stdDeviation="4.5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    </defs>
+    <g style="animation: ao-sword 1800ms cubic-bezier(0.1, 0.8, 0.3, 1) forwards;">
+       <rect x="96" y="25" width="8" height="95" fill="#ffffff" filter="url(#ao-glow)"/>
+       <rect x="94" y="25" width="12" height="95" fill="#ffd700" fill-opacity="0.3"/>
+       <polygon points="100,18 93,32 107,32" fill="#ffd700" filter="url(#ao-glow)"/>
+       <rect x="85" y="115" width="30" height="6" fill="#ffd700" rx="1.5"/>
+     </g>
+     <circle cx="100" cy="115" r="5" fill="none" stroke="#ffd700" stroke-width="5" style="animation: ao-ring 1800ms ease-out forwards;"/>
+     <circle cx="100" cy="115" r="5" fill="none" stroke="#ffffff" stroke-width="2" style="animation: ao-ring 1800ms ease-out forwards 150ms;"/>
+     <polygon points="100,115 95,123 105,123" fill="#ffd700" filter="url(#ao-glow)" style="--sx: -55px; --sy: -45px; animation: ao-shards 1800ms ease-out forwards;"/>
+     <polygon points="100,115 96,123 104,123" fill="#ffffff" style="--sx: 50px; --sy: -55px; animation: ao-shards 1800ms ease-out forwards 80ms;"/>
+     <polygon points="100,115 95,122 105,122" fill="#ffd700" style="--sx: -40px; --sy: 50px; animation: ao-shards 1800ms ease-out forwards 160ms;"/>
+     <polygon points="100,115 96,122 104,122" fill="#ffffff" filter="url(#ao-glow)" style="--sx: 45px; --sy: 45px; animation: ao-shards 1800ms ease-out forwards 240ms;"/>`;
+    return s;
+  }},
+
+  // Sera: Azure Vanguard Standard
+  'azure_vanguard_standard': { duration: 1600, create: () => {
+    const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    s.setAttribute('viewBox', '0 0 200 200'); s.setAttribute('width', '200'); s.setAttribute('height', '200');
+    s.classList.add('battle-svg-animation');
+    s.innerHTML = `<defs><style>
+      @keyframes av-shield { 0% { transform: scale(0.2); opacity: 0; } 18% { transform: scale(1.1); opacity: 1; } 30% { transform: scale(1); opacity: 1; } 44% { opacity: 1; } 45% { opacity: 0; } 100% { opacity: 0; } }
+      @keyframes av-shatter { 0%, 44% { transform: translate(0, 0) scale(0.8); opacity: 0; } 45% { opacity: 1; } 100% { transform: translate(var(--sx), var(--sy)) rotate(180deg) scale(0.1); opacity: 0; } }
+      @keyframes av-frost { 0%, 44% { r: 5; opacity: 0; } 45% { r: 5; opacity: 0.95; } 100% { r: 85; opacity: 0; } }
+    </style>
+    <filter id="av-glow"><feGaussianBlur stdDeviation="3.5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    </defs>
+    <g style="transform-origin: 100px 108px; animation: av-shield 1600ms ease-out forwards;">
+       <polygon points="100,68 132,84 132,120 100,136 68,120 68,84" fill="#0088cc" fill-opacity="0.3" stroke="#a0e6ff" stroke-width="3" filter="url(#av-glow)"/>
+       <polygon points="100,78 122,90 122,114 100,126 78,114 78,90" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.6"/>
+    </g>
+    <circle cx="100" cy="108" r="5" fill="#a0e6ff" fill-opacity="0.25" filter="url(#av-glow)" style="animation: av-frost 1600ms ease-out forwards;"/>
+    <circle cx="100" cy="108" r="5" fill="none" stroke="#0088cc" stroke-width="1.5" style="animation: av-frost 1600ms ease-out forwards 100ms;"/>
+    <polygon points="100,108 97,116 103,116" fill="#a0e6ff" filter="url(#av-glow)" style="--sx: -60px; --sy: -50px; animation: av-shatter 1600ms cubic-bezier(0.15,0.85,0.2,1) forwards;"/>
+    <polygon points="100,108 96,116 104,116" fill="#ffffff" style="--sx: 55px; --sy: -60px; animation: av-shatter 1600ms cubic-bezier(0.15,0.85,0.2,1) forwards 80ms;"/>
+    <polygon points="100,108 96,115 104,115" fill="#0088cc" style="--sx: -50px; --sy: 60px; animation: av-shatter 1600ms cubic-bezier(0.15,0.85,0.2,1) forwards 160ms;"/>
+    <polygon points="100,108 97,115 103,115" fill="#ffffff" filter="url(#av-glow)" style="--sx: 60px; --sy: 50px; animation: av-shatter 1600ms cubic-bezier(0.15,0.85,0.2,1) forwards 240ms;"/>`;
+    return s;
   }}
 };

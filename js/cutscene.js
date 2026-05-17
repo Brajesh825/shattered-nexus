@@ -143,7 +143,6 @@ const Cutscene = {
 
     box.style.display = '';
     if (typeof SFX !== 'undefined' && SFX.dialogue) SFX.dialogue();
-    if (typeof TTS !== 'undefined') TTS.stop();
 
     // Render scene characters if chapter cast exists
     if (speaker && window.Story && window.Story.currentChap && window.Story.currentChap.cast) {
@@ -169,7 +168,6 @@ const Cutscene = {
       }
     }
 
-    if (typeof TTS !== 'undefined') TTS.speak(speaker || 'narrator', text || '');
     this._typewrite(txtEl, text || '');
   },
 
@@ -213,7 +211,6 @@ const Cutscene = {
   _skipTw() {
     if (this._tw.timer) clearTimeout(this._tw.timer);
     this._tw.done = true;
-    if (typeof TTS !== 'undefined') TTS.stop();
     const el = this._tw.el || this.el('s-text');
     if (el) el.textContent = this._tw.full;
   },

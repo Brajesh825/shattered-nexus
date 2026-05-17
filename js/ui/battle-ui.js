@@ -1013,6 +1013,42 @@ const BattleUI = {
           spr.dataset.lastClass = m.classId;
         }
       }
+
+      // Live Elemental Weapon Aura Glow & Spark Particles
+      const anchor = member.querySelector('.party-visual-anchor');
+      if (anchor) {
+        let auraGlow = anchor.querySelector('.elemental-aura-glow');
+        if (alive && m.equippedWeapon && m.equippedWeapon.element) {
+          if (!auraGlow) {
+            auraGlow = document.createElement('div');
+            auraGlow.className = 'elemental-aura-glow';
+            anchor.insertBefore(auraGlow, spr); // Positioned behind the hero sprite
+            
+            // Spawn 3 float particle nodes with randomized offsets and delays
+            for (let pIdx = 0; pIdx < 3; pIdx++) {
+              const pNode = document.createElement('div');
+              pNode.className = 'glow-particle';
+              
+              const dx = Math.round((Math.random() - 0.5) * 40) + 'px';
+              const tx = Math.round((Math.random() - 0.5) * 70) + 'px';
+              const delay = (Math.random() * 2.0).toFixed(2) + 's';
+              
+              pNode.style.setProperty('--dx', dx);
+              pNode.style.setProperty('--tx', tx);
+              pNode.style.animationDelay = delay;
+              
+              auraGlow.appendChild(pNode);
+            }
+          }
+          // Surgically bind matching element theme class
+          const targetClass = `elemental-aura-glow aura-${m.equippedWeapon.element}`;
+          if (auraGlow.className !== targetClass) {
+            auraGlow.className = targetClass;
+          }
+        } else if (auraGlow) {
+          auraGlow.remove();
+        }
+      }
     });
 
     // Final pass: Initialize high-res frames
@@ -1564,17 +1600,28 @@ const BattleUI = {
     let overlay = null;
     let duration = 600;
 
-    if (abilityId && typeof SVGAnimations !== 'undefined' && SVGAnimations[abilityId]) {
-      const _cfg = SVGAnimations[abilityId];
+    let activeAbilityId = abilityId;
+    if (targetType === 'enemy' && opts.actor && opts.actor.equippedWeapon) {
+      const weaponId = opts.actor.equippedWeapon.id;
+      if (typeof SVGAnimations !== 'undefined' && SVGAnimations[weaponId]) {
+        // Intercept standard attacks, generic slashes, or abilities without custom SVGAnimations
+        if (!abilityId || abilityId === 'generic_slash' || !SVGAnimations[abilityId]) {
+          activeAbilityId = weaponId;
+        }
+      }
+    }
+
+    if (activeAbilityId && typeof SVGAnimations !== 'undefined' && SVGAnimations[activeAbilityId]) {
+      const _cfg = SVGAnimations[activeAbilityId];
       if (_cfg.screenShake && !opts.suppressShake) {
         setTimeout(() => this.triggerScreenShake(_cfg.screenShake), _cfg.shakeDelay || 0);
       }
       overlay = _cfg.create(targetIdx, targetType);
       duration = _cfg.duration;
-    } else if (abilityId && moveAnimations[abilityId]) {
+    } else if (activeAbilityId && moveAnimations[activeAbilityId]) {
       overlay = document.createElement('div');
-      overlay.className = `effect-overlay overlay-${abilityId}`;
-      duration = moveAnimations[abilityId].overlayDuration;
+      overlay.className = `effect-overlay overlay-${activeAbilityId}`;
+      duration = moveAnimations[activeAbilityId].overlayDuration;
     } else {
       overlay = document.createElement('div');
       overlay.className = `effect-overlay element-${element}`;

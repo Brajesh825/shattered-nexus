@@ -103,10 +103,23 @@ function resolveOffensiveAction(actor, target, targetIdx, action, element) {
     dmg = Battle.magicDmg(Battle.getStat(actor, 'mag'), _mdef, e.dmgMultiplier || NexusScaling.engine.magicDmgFallback,
       { passiveBonus: _pBoost, magLevel: actor.lv || 1, mdefLevel: target.level || 1, isCrit });
     dmg = Math.floor(dmg * _em * _stab * _fireAmp * _lowHpMult * _summonBonus * _rxMult * _reduction);
-    if (!Number.isFinite(dmg)) { console.error('[MATH-MAGIC] NaN in damage pipeline', { actor: actor.displayName, target: target.name, _em, _stab, _fireAmp, _lowHpMult, _summonBonus, _rxMult, _reduction }); dmg = 1; }
 
+    // Named damage breakdown — every multiplier step explicitly labelled for auditability
+    const _breakdown = {
+      baseMag: Battle.getStat(actor, 'mag'), mDef: +_mdef.toFixed(1),
+      mult: e.dmgMultiplier || NexusScaling.engine.magicDmgFallback,
+      passive: +_pBoost.toFixed(2), stab: _stab, elem: +_em.toFixed(2),
+      reaction: +_rxMult.toFixed(2), fireAmp: +_fireAmp.toFixed(2),
+      lowHp: +_lowHpMult.toFixed(2), summon: +_summonBonus.toFixed(2),
+      reduction: +_reduction.toFixed(2), crit: isCrit
+    };
+    if (!Number.isFinite(dmg)) {
+      console.error('[MATH-MAGIC] NaN in damage pipeline', { actor: actor.displayName, target: target.name, breakdown: _breakdown });
+      dmg = 1;
+    }
     if (window.LogDebug) {
-      window.LogDebug(`[MATH-MAGIC] ${actor.displayName} -> ${target.name}: BaseMag=${Battle.getStat(actor, 'mag')}, T-MDef=${Battle.getStat(target, 'mag')}, Mult=${e.dmgMultiplier || 1.5}, Stab=${_stab}, Elem=${_em}, RX=${_rxMult} -> Final=${dmg}`, 'hi');
+      const chain = `passive=${_breakdown.passive} × stab=${_breakdown.stab} × elem=${_breakdown.elem} × rx=${_breakdown.reaction} × fireAmp=${_breakdown.fireAmp} × lowHp=${_breakdown.lowHp} × summon=${_breakdown.summon} × reduction=${_breakdown.reduction} × crit=${_breakdown.crit}`;
+      window.LogDebug(`[MATH-MAGIC] ${actor.displayName} → ${target.name} | BaseMag=${_breakdown.baseMag} mDef=${_breakdown.mDef} mult=${_breakdown.mult} | ${chain} → Final=${dmg}`, 'hi');
     }
   } else {
     const _effAtk = Battle.getStat(actor, 'atk');
@@ -120,15 +133,32 @@ function resolveOffensiveAction(actor, target, targetIdx, action, element) {
     dmg = Battle.physDmg(_effAtk + _scaleStat, Battle.getStat(target, 'def'), e.dmgMultiplier || 1,
       { atkLevel: actor.lv || 1, defLevel: target.level || 1, defPen: e.defPen || 0, isCrit });
     dmg = Math.floor(dmg * _em * _stab * _fireAmp * _lowHpMult * _rxMult * _reduction);
-    if (!Number.isFinite(dmg)) { console.error('[MATH-PHYS] NaN in damage pipeline', { actor: actor.displayName, target: target.name, _em, _stab, _fireAmp, _lowHpMult, _rxMult, _reduction }); dmg = 1; }
 
+    // Named damage breakdown — every multiplier step explicitly labelled for auditability
+    const _breakdown = {
+      effAtk: _effAtk + _scaleStat, scaleStat: _scaleStat, tDef: Battle.getStat(target, 'def'),
+      mult: e.dmgMultiplier || 1, stab: _stab, elem: +_em.toFixed(2),
+      reaction: +_rxMult.toFixed(2), fireAmp: +_fireAmp.toFixed(2),
+      lowHp: +_lowHpMult.toFixed(2), reduction: +_reduction.toFixed(2), crit: isCrit
+    };
+    if (!Number.isFinite(dmg)) {
+      console.error('[MATH-PHYS] NaN in damage pipeline', { actor: actor.displayName, target: target.name, breakdown: _breakdown });
+      dmg = 1;
+    }
     if (window.LogDebug) {
-      window.LogDebug(`[MATH-PHYS] ${actor.displayName} -> ${target.name}: Atk=${_effAtk + _scaleStat}, T-Def=${Battle.getStat(target, 'def')}, Mult=${e.dmgMultiplier || 1}, Stab=${_stab}, Elem=${_em}, RX=${_rxMult} -> Final=${dmg}`, 'hi');
+      const chain = `stab=${_breakdown.stab} × elem=${_breakdown.elem} × rx=${_breakdown.reaction} × fireAmp=${_breakdown.fireAmp} × lowHp=${_breakdown.lowHp} × reduction=${_breakdown.reduction} × crit=${_breakdown.crit}`;
+      window.LogDebug(`[MATH-PHYS] ${actor.displayName} → ${target.name} | Atk=${_breakdown.effAtk}(+scale=${_breakdown.scaleStat}) def=${_breakdown.tDef} mult=${_breakdown.mult} | ${chain} → Final=${dmg}`, 'hi');
     }
   }
 
   // Final floor for player attacks
   dmg = Math.max(1, Math.floor(dmg));
+
+  // Glacial Waltz Resonance: hits twice (deals double damage) on frozen targets
+  if (action.id === 'glacial_waltz' && actor.equippedWeapon?.id === 'winters_last_petal' && typeof StatusSystem !== 'undefined' && StatusSystem.has(target, 'status_frozen')) {
+    dmg = Math.floor(dmg * 2.0);
+    BattleUI.addLog(`❄️ Winter's Last Petal: Glacial Waltz strikes twice on frozen target!`, 'magic');
+  }
 
   // 4. Process Reaction Effects
   const reactionEffects = ReactionEffects.applyReactionEffects({
@@ -166,6 +196,15 @@ function resolveOffensiveAction(actor, target, targetIdx, action, element) {
     BattleUI.renderEnemyRow();
   }
 
+  // First Frost: first attack always applies freeze
+  if (actor.equippedWeapon?.id === 'winters_last_petal' && !actor._firstFrostFired) {
+    actor._firstFrostFired = true;
+    if (typeof StatusSystem !== 'undefined') {
+      Battle.addStatus(target, { id: 'status_frozen', label: 'Frozen', icon: '❄️', type: 'control', turns: 2 });
+      BattleUI.addLog(`❄️ Winter's Last Petal: First Frost freezes ${target.name}!`, 'magic');
+    }
+  }
+
   if (target.hp <= 0) {
     Battle.setKO(target, true);
   }
@@ -181,7 +220,7 @@ function resolveOffensiveAction(actor, target, targetIdx, action, element) {
 
   // Skip overlay for ultimates — heroAbility already fired it before the execute delay
   if (!action._ultimateOverlayShown) {
-    BattleUI.createEffectOverlay(targetIdx, element, 'enemy', action.id);
+    BattleUI.createEffectOverlay(targetIdx, element, 'enemy', action.id, { actor });
   }
 
   if (!reaction && element !== 'physical') {
@@ -286,9 +325,21 @@ function resolveEnemyOffensiveAction(actor, target, targetIdx, ab, element) {
     dmg = Battle.magicDmg(_eMag, _tMdef, ab.dmgMultiplier || NexusScaling.engine.enemyMagicFallback,
       { magLevel: actor.level || 1, mdefLevel: target.lv || 1, isCrit });
     dmg = Math.floor(dmg * _pm * _rxMult * _reduction);
-    if (!Number.isFinite(dmg)) { console.error('[ENEMY-MATH-MAGIC] NaN in damage pipeline', { actor: actor.name, target: target.displayName, _pm, _rxMult, _reduction }); dmg = 1; }
+
+    // Named damage breakdown — every multiplier step explicitly labelled for auditability
+    const _breakdown = {
+      baseMag: _eMag, mDef: +_tMdef.toFixed(1),
+      mult: ab.dmgMultiplier || NexusScaling.engine.enemyMagicFallback,
+      elemAffinity: +_pm.toFixed(2), reaction: +_rxMult.toFixed(2),
+      reduction: +_reduction.toFixed(2), crit: isCrit
+    };
+    if (!Number.isFinite(dmg)) {
+      console.error('[ENEMY-MATH-MAGIC] NaN in damage pipeline', { actor: actor.name, target: target.displayName, breakdown: _breakdown });
+      dmg = 1;
+    }
     if (window.LogDebug) {
-      window.LogDebug(`[ENEMY-MATH-MAGIC] ${actor.name} -> ${target.displayName}: BaseMag=${_eMag}, T-MDef=${_tMdef.toFixed(1)}, Mult=${ab.dmgMultiplier || 1.3}, PM=${_pm}, RX=${_rxMult} -> Final=${dmg}`, 'hi');
+      const chain = `elemAffinity=${_breakdown.elemAffinity} × rx=${_breakdown.reaction} × reduction=${_breakdown.reduction} × crit=${_breakdown.crit}`;
+      window.LogDebug(`[ENEMY-MATH-MAGIC] ${actor.name} → ${target.displayName} | BaseMag=${_breakdown.baseMag} mDef=${_breakdown.mDef} mult=${_breakdown.mult} | ${chain} → Final=${dmg}`, 'hi');
     }
   } else {
     const _eAtk = Battle.getStat(actor, 'atk');
@@ -297,9 +348,20 @@ function resolveEnemyOffensiveAction(actor, target, targetIdx, ab, element) {
     dmg = Battle.physDmg(_eAtk, _tDef, ab?.dmgMultiplier || 1,
       { atkLevel: actor.level || 1, defLevel: target.lv || 1, isCrit });
     dmg = Math.floor(dmg * _pm * _rxMult * _reduction);
-    if (!Number.isFinite(dmg)) { console.error('[ENEMY-MATH-PHYS] NaN in damage pipeline', { actor: actor.name, target: target.displayName, _pm, _rxMult, _reduction }); dmg = 1; }
+
+    // Named damage breakdown — every multiplier step explicitly labelled for auditability
+    const _breakdown = {
+      eAtk: _eAtk, tDef: _tDef, mult: ab?.dmgMultiplier || 1,
+      elemAffinity: +_pm.toFixed(2), reaction: +_rxMult.toFixed(2),
+      reduction: +_reduction.toFixed(2), crit: isCrit
+    };
+    if (!Number.isFinite(dmg)) {
+      console.error('[ENEMY-MATH-PHYS] NaN in damage pipeline', { actor: actor.name, target: target.displayName, breakdown: _breakdown });
+      dmg = 1;
+    }
     if (window.LogDebug) {
-      window.LogDebug(`[ENEMY-MATH-PHYS] ${actor.name} -> ${target.displayName}: Atk=${_eAtk}, T-Def=${_tDef}, Mult=${ab?.dmgMultiplier || 1.4}, PM=${_pm}, RX=${_rxMult} -> Final=${dmg}`, 'hi');
+      const chain = `elemAffinity=${_breakdown.elemAffinity} × rx=${_breakdown.reaction} × reduction=${_breakdown.reduction} × crit=${_breakdown.crit}`;
+      window.LogDebug(`[ENEMY-MATH-PHYS] ${actor.name} → ${target.displayName} | Atk=${_breakdown.eAtk} def=${_breakdown.tDef} mult=${_breakdown.mult} | ${chain} → Final=${dmg}`, 'hi');
       window.LogDebug(`[STATE-DIAG] ${target.displayName} HP: ${target.hp} pre-hit. [TargetIndex: ${targetIdx}]`, 'passive');
     }
   }
@@ -356,6 +418,18 @@ function resolveEnemyOffensiveAction(actor, target, targetIdx, ab, element) {
 
   if (target.hp <= 0) Battle.setKO(target, false);
   BattleUI.popParty(targetIdx, dmg, isMagic ? 'magic' : 'dmg', element);
+
+  // Iron Echo passive reflection (Chain of Ten Thousand Nights)
+  if (!isMagic && target.equippedWeapon?.id === 'chain_of_nights') {
+    const reflectDmg = Math.max(1, Math.floor(dmg * 0.20));
+    actor.hp = Math.max(0, actor.hp - reflectDmg);
+    BattleUI.addLog(`⛓️ Iron Echo: Reflected ${reflectDmg} damage back to ${actor.name}!`, 'dmg');
+    const eIdx = G.enemyGroup.indexOf(actor);
+    if (eIdx !== -1) {
+      BattleUI.popEnemy(eIdx, reflectDmg, 'dmg', 'physical');
+      if (actor.hp <= 0) Battle.setKO(actor, true);
+    }
+  }
 
   // 9. Aura
   if (!reaction && element !== 'physical') Battle.applyAura(target, element);
@@ -458,6 +532,12 @@ const ActionEngine = {
         if (!Battle.alive(m) && !ab.isUltimate) return;
         const amt = _getAmt(m);
         m.hp = Math.min(m.maxHp, m.hp + amt);
+
+        // Oceanic Grace passive (Tide Caller)
+        if (!isEnemyAction && actor.equippedWeapon?.id === 'tide_caller') {
+          m.mp = Math.min(m.maxMp, m.mp + 5);
+          BattleUI.addLog(`🌊 Oceanic Grace: Restored 5 MP to ${m.displayName}!`, 'heal');
+        }
 
         const mIdx = isEnemyAction ? G.enemyGroup.indexOf(m) : G.party.indexOf(m);
         const layer = isEnemyAction ? 'enemy' : 'party';
@@ -647,6 +727,9 @@ const ActionEngine = {
       if (!isEnemyAction) {
         if (e.lifeSteal && totalDmg > 0) {
           let lMult = e.lifeSteal;
+          if (ab.id === 'spirit_soother' && actor.equippedWeapon?.id === 'laughing_lantern') {
+            lMult = 0.50;
+          }
           if (e.healLowMult && actor.hp / actor.maxHp < NexusScaling.thresholds.wounded) lMult *= e.healLowMult;
           const healAmt = Math.floor(totalDmg * lMult);
           const healTargets = e.aoe ? G.party.filter(m => Battle.alive(m)) : [actor];
@@ -656,6 +739,14 @@ const ActionEngine = {
         }
         if (e.guardian) { G.party.forEach(m => { if (Battle.alive(m)) Battle.addStatus(m, StatusSystem.DEFS.guardian); }); BattleUI.addLog('🛡️ Phantom Guardian summoned!', 'heal'); }
         if (e.partyBuff) { G.party.forEach((m, idx) => { if (!Battle.alive(m)) return; Battle.addStatus(m, { id: 'status_atk_boost', label: 'ATK+', icon: '⚔️', type: 'mult', stat: 'atk', value: 1.3, turns: 3 }); Battle.addStatus(m, { id: 'status_def_boost', label: 'DEF+', icon: '🛡️', type: 'mult', stat: 'def', value: 1.3, turns: 3 }); BattleUI.popParty(idx, 'ATK & DEF Up!', 'buff', 'holy'); }); BattleUI.addLog(`✨ ${ab.name}: The party is blessed!`, 'buff'); }
+        if (e.guardMark) {
+          Battle.addStatus(actor, { id: `status_taunt_${ab.id}`, label: 'Taunt', icon: '🛡️', type: 'buff', turns: e.duration || 3 });
+          BattleUI.addLog(`🛡️ ${actor.displayName} taunted all enemies!`, 'buff');
+          if (ab.id === 'mastery_of_pain' && actor.equippedWeapon?.id === 'chain_of_nights') {
+            Battle.addStatus(actor, { id: 'status_mastery_pain_resonance', label: 'Karmic Shield', icon: '⛓️', type: 'reduction', value: 0.85, turns: 2 });
+            BattleUI.addLog(`⛓️ Chain of Ten Thousand Nights: Karmic Shield reduces damage taken by 15%!`, 'buff');
+          }
+        }
         if (actor._cryoReset) { actor.cooldowns[ab.id] = 0; BattleUI.addLog('❄ Cryoclasm Reset!', 'regen'); delete actor._cryoReset; }
         _checkDragonLeap(actor);
         BattleUI.renderPartyRow(); // Final catch-all refresh
@@ -878,7 +969,10 @@ function heroAbility(ab) {
     actor.mp = Math.max(0, actor.mp - _mpCost);
 
     // ── Set ultimate cooldown ──
-    const abilityCD = ab.effect?.cooldown ?? (ab.isUltimate ? 2 : 0);
+    let abilityCD = ab.effect?.cooldown ?? (ab.isUltimate ? 2 : 0);
+    if (ab.id === 'hajras_hymn' && actor.equippedWeapon?.id === 'tide_caller') {
+      abilityCD = 1;
+    }
     if (abilityCD > 0) {
       if (!actor.cooldowns) actor.cooldowns = {};
       actor.cooldowns[ab.id] = abilityCD + 1;
@@ -940,7 +1034,7 @@ function heroAbility(ab) {
           // Cascade overlay across each living enemy with 150ms stagger for visual impact
           offensiveTargets.forEach((en, i) => {
             const tIdx = G.enemyGroup.indexOf(en);
-            setTimeout(() => BattleUI.createEffectOverlay(tIdx, element, 'enemy', ab.id, { suppressShake: true }), i * 150);
+            setTimeout(() => BattleUI.createEffectOverlay(tIdx, element, 'enemy', ab.id, { suppressShake: true, actor }), i * 150);
           });
           ab._ultimateOverlayShown = true;
         }

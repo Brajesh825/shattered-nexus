@@ -64,7 +64,7 @@ MAP_DEFS.ember_wastes = (function() {
     return {
         id: 'ember_wastes',
         name: 'Ember Wastes',
-        arcId: 2,
+        arcId: 3,
         width: 100,
         height: 80,
         playerStart: { x: 5, y: 40 },
@@ -123,6 +123,39 @@ MAP_DEFS.ember_wastes = (function() {
           label: 'Find the Heart of the Spiral',
           completeMsg: '✦ The Dark Phoenix stirs — it has sensed you reach its lair.',
         },
+
+        safeZones: [
+          { xMin: 0, xMax: 12, yMin: 36, yMax: 44, name: 'The Entry Breach' }
+        ],
+
+        triggers: [
+          // --- RETURN TO SURFACE ---
+          {
+            x: 2, y: 40, w: 1, h: 1,
+            type: 'teleport',
+            targetMapId: 'verdant_vale',
+            targetX: 52, targetY: 29,
+            msg: '✦ Retreating to the surface...'
+          },
+          // --- REGION ANNOUNCEMENTS ---
+          {
+            id: 'ew_seg_entrance', x: 0, y: 36, w: 12, h: 8,
+            type: 'msg', msg: '✦ Entering: The Entry Breach — the air burns the skin.'
+          },
+          {
+            id: 'ew_seg_spiral', x: 13, y: 25, w: 55, h: 35,
+            type: 'msg', msg: '✦ Entering: The Scorched Spiral — embers drift upward from the stone.'
+          },
+          {
+            id: 'ew_seg_heart', x: 43, y: 33, w: 14, h: 14,
+            type: 'msg', msg: '✦ Entering: The Ashborn Heart — the heat is nearly unbearable.'
+          },
+          // --- NARRATIVE FLAVOUR ---
+          {
+            x: 35, y: 35, w: 3, h: 3,
+            type: 'msg', msg: '✦ The path is lined with glass where the stone melted and re-cooled — the Phoenix was circling this route for a long time.'
+          }
+        ],
 
         fog: { delay: 15, peak: 100, max: 0.82, vision: 3.0 },
 

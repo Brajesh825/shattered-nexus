@@ -11,8 +11,19 @@
 *(All P0 blockers cleared for Beta 1.0)*
 
 ### 1. Stability & Maintainability
-- [ ] **Named Damage Modifiers**: Refactor the combat damage chain so STAB, affinity, reactions, mitigation, crits, passives, and relics are named steps.
+- [x] **Named Damage Modifiers**: Each multiplier step (STAB, elem affinity, reaction, fireAmp, lowHp, summon, passive, reduction, crit) is now collected into a named `_breakdown` object in `resolveOffensiveAction` and `resolveEnemyOffensiveAction` ([action-handler.js](file:///c:/Users/ASUS/VVI/rpg+/js/battle/action-handler.js)). `[MATH-PHYS]` / `[MATH-MAGIC]` debug logs emit every step by name. NaN guards surface the full breakdown object for rapid diagnosis.
 - [x] **JSON Loading Standard**: Move all data loading onto a unified `DataLoader` service.
+
+### 2. Vivid Hybrid Weapon System (Staged)
+- [x] **Database Registration**: Load all 9 launch-tier weapon assets, elements, and Aegis-audited balanced stats into [weapons.json](file:///c:/Users/ASUS/VVI/rpg+/data/weapons.json).
+- [x] **Core Character Linkage**: Configure starting and pre-equipped weapon IDs inside [characters.json](file:///c:/Users/ASUS/VVI/rpg+/data/characters.json) for starting heroes (Aya, Tao, Rei, Lulu) and pre-equipped recruits (Drake, Valka, Ria, Rex).
+- [x] **Stat Computation Hooks**: Modify `computeStats` in `js/systems/party.js` to dynamically add weapon flat stats and bind passive traits during party assembly.
+- [x] **Dynamic Idle Aura Glows**: Render elegant, element-specific pulsing HSL radial backdrops and randomized floating spark particles behind active party sprites in [battle-ui.js](file:///c:/Users/ASUS/VVI/rpg+/js/ui/battle-ui.js) and [fx.css](file:///c:/Users/ASUS/VVI/rpg+/css/fx.css).
+- [x] **Combat Attack VFX Overrides**: Implement custom slash trails and particle flow overrides (frozen crystals, phoenix embers) during combat action ticks based on the active weapon ID.
+- [x] **Vivid Weapon Selection UI Overhaul**: Redevelop the weapon equipped section, character tabs, and available weapons grid into a stunning glassmorphic 2-column workspace layout with neon stat chips, passive description cards, and active Resonance energy banners.
+- [x] **Narrative Quest Triggers**: Code post-battle trigger hooks in the Map Engine to automatically yield the *Chain of Ten Thousand Nights* upon defeating the `river_king` and the *Tide Caller* upon defeating the `sunken_leviathan`.
+- [x] **Chest Exploration Placements**: Place the *Azure Vanguard Standard* inside a deep crystal-altar chest in the [map-crystal-cavern-f1.js](file:///c:/Users/ASUS/VVI/rpg+/js/map/data/map-crystal-cavern-f1.js) definition.
+- [x] **Camp Forge Crafting Interfaces**: Code Camp menu actions for weapon alternate forging and rarity tier upgrades using Void Fragments.
 
 ---
 
@@ -72,5 +83,16 @@
 - [x] **Architect Pro**: Browser-based tile editor for high-fidelity map creation.
 - [x] **Story Refactor**: Extracted cutscene logic into `js/cutscene.js`.
 
+### 🔧 Weapons & Relics System Audit Fixes (May 2026)
+- [x] **Named Damage Chain** *(P0)*: `_breakdown` object added to `resolveOffensiveAction` and `resolveEnemyOffensiveAction`; all modifiers (stab, elem, rx, fireAmp, lowHp, summon, passive, reduction, crit) named and logged.
+- [x] **Data-Driven Weapon Passives** *(P0)*: Removed hardcoded `laughing_lantern` check from `PassiveSystem.getStatMultiplier`. Weapons now declare `passive.thresholdOverride` in `weapons.json`; PassiveSystem reads it generically.
+- [x] **Weapon ID Validation** *(P1)*: `computeStats()` and `buildParty()` in `party.js` now warn (IS_DEV) if `equippedWeapon` ID is not found in `WEAPONS_DATA`, preventing silent stat loss.
+- [x] **Relic ID Validation** *(P1)*: `_tryRelicDrop()` and `awardBossRelic()` in `inventory.js` guard against invalid/missing relic IDs before adding to the active pool.
+- [x] **Relic Bonus Cap** *(P1)*: `_getRelicStatMult()` in `party.js` now clamps per-stat relic bonuses at `NexusScaling.caps.relicBonusCap` (1.5×). Cap is documented in `scaling-config.js`.
+- [x] **Save-Contract Weapon Validation** *(P1)*: `validateSaveStructure()` in `save-contract.js` strips `equippedWeapons`, `weaponsUpgrades`, and `weaponsLevels` keys that reference weapon IDs no longer present in `WEAPONS_DATA`, preventing corrupted stats on load.
+- [x] **getStat() Chain Renumbered** *(P2)*: `CombatEngine.getStat` modifier chain renumbered Step 1–8 (was `0`, `1`, `2`, `3`, `4`, `4c`, `4b`, `5`) matching the CLAUDE.md multiplier hierarchy spec.
+- [x] **Dev-Mode Fallback Warnings** *(P2)*: `getStat` now emits IS_DEV warnings when `BOND_DATA` is missing (Step 6) or `MapEngine.getWeather` is unavailable (Step 7), surfacing integration gaps during testing.
+- [x] **resourceStrategy JSDoc** *(P2)*: `rebuildMemberCombatStats()` in `party.js` now has full JSDoc explaining all three modes (`clamp`, `delta`, `full`) and when to use each.
+
 ---
-+*Last Audited: 2026-05-11 04:10. Status: Stable. Priority: Technical Debt & Release Blockers.*
++*Last Audited: 2026-05-17 — Weapons & Relics audit pass complete. Status: Stable. All P0/P1 blockers cleared.*

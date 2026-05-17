@@ -1181,6 +1181,46 @@ const MapEngine = (() => {
               Story.onMapTeleport(mapTarget);
             }
           });
+        } else if (trig.type === 'chest' && trig.weaponId) {
+          stop();
+          const wpName = trig.weaponName || trig.weaponId;
+          const lines = [
+            { speaker: 'narrator', text: `✦ Uncovered the ancient crystal-altar chest and found the legendary weapon: [${wpName}]! ✦` }
+          ];
+          _openGenericDialogue(lines, () => {
+            const wData = (window.WEAPONS_DATA || []).find(w => w.id === trig.weaponId);
+            if (wData && wData.resonance) {
+              const targetCharId = wData.resonance.charId;
+
+              // 1. Always write to G.chars (source of truth) so the weapon persists
+              //    even when the character is not in the active party.
+              if (!G.weaponsLevels) G.weaponsLevels = {};
+              if (G.weaponsLevels[trig.weaponId] === undefined) G.weaponsLevels[trig.weaponId] = 1;
+              const sourceChar = (G.chars || []).find(c => c.id === targetCharId);
+              if (sourceChar) {
+                sourceChar.equippedWeapon = trig.weaponId;
+              }
+
+              // 2. If the character is also in the active party, update the live member
+              //    immediately so their combat stats reflect the weapon this session.
+              const partyMember = (G.party || []).find(m => m.charId === targetCharId);
+              if (partyMember) {
+                partyMember.char.equippedWeapon = trig.weaponId;
+                partyMember.equippedWeapon = wData;
+                if (typeof rebuildMemberCombatStats !== 'undefined') {
+                  rebuildMemberCombatStats(partyMember, { resourceStrategy: 'clamp' });
+                }
+              }
+
+              // 3. Mark chest as permanently opened so it won't re-fire on reload.
+              const chestId = trig.id || `${trig.x},${trig.y}`;
+              if (!G.openedChests) G.openedChests = new Set();
+              G.openedChests.add(chestId);
+            }
+            if (typeof SFX !== 'undefined' && SFX.victory) SFX.victory();
+            if (typeof MapUI !== 'undefined') MapUI.showMsg(`🎁 Acquired ${wpName}!`, 2000);
+            resume();
+          });
         } else if (trig.type === 'encounter' && trig.enemies) {
           // Trigger a direct encounter / boss fight from a map zone
           // Optional: show a pre-battle message before launching
@@ -1622,6 +1662,49 @@ const MapEngine = (() => {
     }
 
     // ── Normal battle complete ───────────────────────────
+    const defeatedEnemy = MapEntities.getActiveEncountered ? MapEntities.getActiveEncountered() : null;
+    if (victory && defeatedEnemy) {
+      if (defeatedEnemy.id === 'river_king') {
+        const wData = (window.WEAPONS_DATA || []).find(w => w.id === 'chain_of_nights');
+        if (wData) {
+          const party = G.party || [];
+          const resChar = party.find(m => m.charId === 'rei');
+          if (resChar) {
+            resChar.char.equippedWeapon = 'chain_of_nights';
+            resChar.equippedWeapon = wData;
+            if (!G.weaponsLevels) G.weaponsLevels = {};
+            if (G.weaponsLevels['chain_of_nights'] === undefined) G.weaponsLevels['chain_of_nights'] = 1;
+            if (typeof rebuildMemberCombatStats !== 'undefined') {
+              rebuildMemberCombatStats(resChar, { resourceStrategy: 'clamp' });
+            }
+          }
+          if (typeof MapUI !== 'undefined') {
+            MapUI.showMsg('🎁 Acquired Chain of Ten Thousand Nights for Rei!', 3500);
+          }
+          if (typeof SFX !== 'undefined' && SFX.victory) SFX.victory();
+        }
+      } else if (defeatedEnemy.id === 'sunken_leviathan') {
+        const wData = (window.WEAPONS_DATA || []).find(w => w.id === 'tide_caller');
+        if (wData) {
+          const party = G.party || [];
+          const resChar = party.find(m => m.charId === 'lulu');
+          if (resChar) {
+            resChar.char.equippedWeapon = 'tide_caller';
+            resChar.equippedWeapon = wData;
+            if (!G.weaponsLevels) G.weaponsLevels = {};
+            if (G.weaponsLevels['tide_caller'] === undefined) G.weaponsLevels['tide_caller'] = 1;
+            if (typeof rebuildMemberCombatStats !== 'undefined') {
+              rebuildMemberCombatStats(resChar, { resourceStrategy: 'clamp' });
+            }
+          }
+          if (typeof MapUI !== 'undefined') {
+            MapUI.showMsg('🎁 Acquired Tide Caller for Lulu!', 3500);
+          }
+          if (typeof SFX !== 'undefined' && SFX.victory) SFX.victory();
+        }
+      }
+    }
+
     MapEntities.removeEncountered();
     showScreen('explore-screen');
     MapPlayer.setCooldown(8);
@@ -1813,6 +1896,12 @@ const MapEngine = (() => {
       const layers = Array.isArray(_map.data) ? _map.data : (_map.data.data || _map.data.layers);
       if (layers && Array.isArray(layers)) {
         _map.layers = layers;
+        if (mapId === 'crystal_cavern_f1') {
+          const targetLayer = layers[1] || layers[0];
+          if (targetLayer && targetLayer[12]) {
+            targetLayer[12][18] = 211; // SVG Golden Chest
+          }
+        }
       }
     }
 
@@ -1833,6 +1922,11 @@ const MapEngine = (() => {
     _fogMilestone = 0;
     _minimapBg = null;
     _firedTriggers.clear();
+    // Re-seed opened chests so they don't re-fire after a save/load.
+    // G.openedChests persists across saves; _firedTriggers is in-memory only.
+    if (G.openedChests) {
+      G.openedChests.forEach(id => _firedTriggers.add(id));
+    }
     // Ensure we always start in daytime (ratio 0.4 = solidly mid-day in the 0.3-0.7 day band)
     _time = _dayCycleTime * 0.4;
     _bubbles.length = 0;

@@ -1500,6 +1500,7 @@ const MapEntities = (() => {
   return {
     init, clear, updateEnemies, renderEnemies, renderEnemiesForRow, checkEncounter, removeEncountered,
     allCleared, bossCleared, remaining, hasEnemyAt, prepareBuckets,
+    getActiveEncountered: () => (_encounteredIdx >= 0 && _encounteredIdx < _enemies.length) ? _enemies[_encounteredIdx] : null,
     initNPCs, renderNPCs, renderNPCsForRow, checkNPCAt, getNPCDialogue, markNPCTalked,
     getNPCs: () => MapNPCs.getNPCs(),
     setNPCSceneWalk: (id, cb)        => MapNPCs.setNPCSceneWalk(id, cb),

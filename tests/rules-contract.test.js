@@ -105,6 +105,22 @@ test('SaveContract free-explore payload includes hp, mp, and isKO for each membe
   assert.equal(state.partyStats[1].isKO, true);
 });
 
+test('SaveContract free-explore payload preserves weaponsLevels, weaponsUpgrades, and voidFragments', () => {
+  const state = SaveContract.buildFreeExploreSaveState({
+    selectedChars: ['aya'],
+    party: [
+      { charId: 'aya', char: { equippedWeapon: 'winters_last_petal' } }
+    ],
+    weaponsLevels: { winters_last_petal: 12 },
+    weaponsUpgrades: { winters_last_petal: 'epic' },
+    voidFragments: 4
+  });
+
+  assert.deepEqual(state.weaponsLevels, { winters_last_petal: 12 });
+  assert.deepEqual(state.weaponsUpgrades, { winters_last_petal: 'epic' });
+  assert.equal(state.voidFragments, 4);
+});
+
 test('Production code is wired to the shared scaling and save-contract helpers', () => {
   const gameSource = fs.readFileSync('./js/game.js', 'utf8');
   const mapUiSource = fs.readFileSync('./js/map/map-ui.js', 'utf8');

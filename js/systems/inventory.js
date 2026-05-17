@@ -398,20 +398,53 @@ const InventoryUI = (() => {
 
 /* Award drops from a defeated enemy def */
 function _awardDrops(enemyDef) {
-  if (!enemyDef.drops || !enemyDef.drops.length) return [];
   const awarded = [];
-  enemyDef.drops.forEach(drop => {
-    if (Math.random() > (drop.chance || 0.2)) return;
-    let itemId = drop.itemId;
-    if (!itemId && drop.item) {
-      const match = (G.items || []).find(i =>
-        i.name.toLowerCase() === drop.item.toLowerCase() ||
-        i.id === drop.item.toLowerCase().replace(/[- ]/g, '_')
-      );
-      itemId = match?.id;
-    }
-    if (itemId) { addToInventory(itemId, drop.qty || 1); awarded.push(itemId); }
-  });
+  if (enemyDef.drops && enemyDef.drops.length) {
+    enemyDef.drops.forEach(drop => {
+      if (Math.random() > (drop.chance || 0.2)) return;
+      let itemId = drop.itemId;
+      if (!itemId && drop.item) {
+        const match = (G.items || []).find(i =>
+          i.name.toLowerCase() === drop.item.toLowerCase() ||
+          i.id === drop.item.toLowerCase().replace(/[- ]/g, '_')
+        );
+        itemId = match?.id;
+      }
+      if (itemId) { addToInventory(itemId, drop.qty || 1); awarded.push(itemId); }
+    });
+  }
+
+  // --- Dynamic Elemental Monster Materials (vivid_hybrid_weapon_system.md Roadmap) ---
+  const id = enemyDef.id;
+  let t1 = null;
+  let t2 = null;
+
+  if (['crystal_shard', 'crystal_golem', 'spectral_guardian', 'shadow_wraith'].includes(id)) {
+    t1 = 'ice_shard';
+    t2 = 'glacial_prism';
+  } else if (['imp', 'bat', 'chimera', 'forge_sentinel'].includes(id)) {
+    t1 = 'ember_shard';
+    t2 = 'phoenix_hearth';
+  } else if (['goblin', 'goblin_elite', 'wyvern', 'void_stalker'].includes(id)) {
+    t1 = 'gale_feather';
+    t2 = 'tornado_core';
+  } else if (['crab', 'mushroom', 'rat', 'void_colossus'].includes(id)) {
+    t1 = 'tide_shell';
+    t2 = 'oceanic_pearl';
+  } else if (['zombie', 'zombie_soldier'].includes(id)) {
+    t1 = 'void_dust';
+    t2 = 'void_catalyst';
+  }
+
+  if (t1 && Math.random() < 0.50) {
+    addToInventory(t1, 1);
+    awarded.push(t1);
+  }
+  if (t2 && Math.random() < 0.15) {
+    addToInventory(t2, 1);
+    awarded.push(t2);
+  }
+
   return awarded;
 }
 
@@ -421,6 +454,11 @@ function _tryRelicDrop(isElite) {
   const pool = (G.relics || []).filter(r => (r.rarity === 'common' || r.rarity === 'uncommon') && !G.ownedRelics.includes(r.id));
   if (!pool.length) return null;
   const relic = pool[Math.floor(Math.random() * pool.length)];
+  // Validation guard: drawn relic must have a valid id before entering the owned pool
+  if (!relic?.id) {
+    if (typeof IS_DEV !== 'undefined' && IS_DEV) console.warn('[Inventory] _tryRelicDrop: drawn relic is missing an id — drop skipped.');
+    return null;
+  }
   G.ownedRelics.push(relic.id);
   if (G.activeRelics.length < 3) G.activeRelics.push(relic.id);
   return relic;
@@ -429,5 +467,11 @@ function _tryRelicDrop(isElite) {
 function awardBossRelic(relicId) {
   if (!relicId || G.ownedRelics.includes(relicId)) return null;
   const relic = (G.relics || []).find(r => r.id === relicId);
-  if (relic) G.ownedRelics.push(relicId);
+  // Validation guard: warn if relicId doesn't exist in G.relics (typo, stale data, or renamed relic)
+  if (!relic) {
+    if (typeof IS_DEV !== 'undefined' && IS_DEV) console.warn(`[Inventory] awardBossRelic: relicId "${relicId}" not found in G.relics — award skipped.`);
+    return null;
+  }
+  G.ownedRelics.push(relicId);
+  return relic;
 }

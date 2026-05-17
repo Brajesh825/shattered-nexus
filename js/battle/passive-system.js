@@ -23,7 +23,13 @@ const PassiveSystem = (() => {
       
       // 2. Threshold Boosts (e.g. LOW_HP_STAT_BOOST: { stat: "atk", value: 1.35, threshold: 0.5 })
       if (t.type === 'LOW_HP_STAT_BOOST' && t.stat === stat) {
-        const threshold = t.threshold || 0.5;
+        let threshold = t.threshold || 0.5;
+        // Data-driven threshold override: weapon passive can declare { thresholdOverride: { trait, value } }
+        // to adjust a character's threshold without hardcoding weapon IDs here.
+        const weaponPassive = unit.equippedWeapon?.passive;
+        if (weaponPassive?.thresholdOverride?.trait === t.type) {
+          threshold = weaponPassive.thresholdOverride.value;
+        }
         if (hpPercent < threshold) mult *= (t.value || 1.3);
       }
     });
