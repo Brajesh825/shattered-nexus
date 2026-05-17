@@ -7,9 +7,9 @@
     "rarity": "rare",
     "description": "A katana found mid-draw, frozen in the moment its owner fell.",
     "stats": {
-      "atk": 18,
-      "spd": 10,
-      "def": 6
+      "atk": 24,
+      "spd": 8,
+      "def": 8
     },
     "passive": {
       "id": "freeze_start",
@@ -29,14 +29,14 @@
     "rarity": "rare",
     "description": "A funeral lantern that refuses to go out. It smells like incense and iron.",
     "stats": {
-      "atk": 20,
-      "mag": 10,
-      "hp": 30
+      "atk": 16,
+      "mag": 8,
+      "hp": 25
     },
     "passive": {
       "id": "blood_bloom_early",
       "name": "Premature Bloom",
-      "description": "Blood Blossom passive activates at 60% HP instead of 50%."
+      "description": "Blood Blossom passive activates at 60% HP instead of 50."
     },
     "resonance": {
       "charId": "tao",
@@ -51,9 +51,9 @@
     "rarity": "rare",
     "description": "Two thousand years of use have worn it smooth. It weighs nothing to its owner.",
     "stats": {
-      "atk": 12,
-      "def": 20,
-      "hp": 60
+      "atk": 10,
+      "def": 12,
+      "hp": 45
     },
     "passive": {
       "id": "reflect_phys",
@@ -73,9 +73,9 @@
     "rarity": "rare",
     "description": "A staff carved from driftwood from a coast that no longer exists.",
     "stats": {
-      "mag": 16,
-      "mp": 18,
-      "hp": 40
+      "mag": 14,
+      "mp": 12,
+      "hp": 30
     },
     "passive": {
       "id": "heal_mp_restore",
@@ -85,6 +85,116 @@
     "resonance": {
       "charId": "lulu",
       "description": "Hajra's Hymn cooldown reduced to 1 instead of 2."
+    }
+  },
+  {
+    "id": "eidolons_grimoire",
+    "name": "Eidolons' Grimoire",
+    "icon": "📖",
+    "element": "light",
+    "rarity": "rare",
+    "description": "A tome with heavy silver locks. Its pages smell of dry lightning and ozone.",
+    "stats": {
+      "mag": 20,
+      "mp": 18,
+      "lck": 6
+    },
+    "passive": {
+      "id": "mana_flow",
+      "name": "Mana Flow",
+      "description": "Reduces MP cost of all summon spells by 15%."
+    },
+    "resonance": {
+      "charId": "ria",
+      "description": "Summoned Eidolons gain +10% ATK and SPD while active."
+    }
+  },
+  {
+    "id": "aegis_archangel",
+    "name": "Aegis of the Archangel",
+    "icon": "🔱",
+    "element": "holy",
+    "rarity": "rare",
+    "description": "A light-infused spear forged in a golden tower before the sky cracked.",
+    "stats": {
+      "atk": 16,
+      "def": 14,
+      "hp": 40
+    },
+    "passive": {
+      "id": "righteous_judgment",
+      "name": "Righteous Judgment",
+      "description": "Reflects 15% of magical damage received as Holy damage."
+    },
+    "resonance": {
+      "charId": "valka",
+      "description": "Raises the stun chance of Divine Execution to 60%."
+    }
+  },
+  {
+    "id": "wyrmtooth_lance",
+    "name": "Wyrmtooth Lance",
+    "icon": "🐉",
+    "element": "wind",
+    "rarity": "rare",
+    "description": "Forged from the calcified tooth of a dragon, still warm with dragonfire.",
+    "stats": {
+      "atk": 18,
+      "spd": 6,
+      "hp": 30
+    },
+    "passive": {
+      "id": "tailwind",
+      "name": "Tailwind",
+      "description": "Gains a +15% SPD boost on the turn following a Dragon's Leap strike."
+    },
+    "resonance": {
+      "charId": "drake",
+      "description": "The 3rd-turn Dragon's Leap strike becomes an AoE slash hitting all front-row enemies."
+    }
+  },
+  {
+    "id": "arrens_oath",
+    "name": "Arren's Oath",
+    "icon": "👑",
+    "element": "divine",
+    "rarity": "epic",
+    "description": "The sacred greatsword carried by the first King of Aethoria. Its steel remembers every promise.",
+    "stats": {
+      "atk": 28,
+      "def": 20,
+      "hp": 80
+    },
+    "passive": {
+      "id": "sovereign_grace",
+      "name": "Sovereign Grace",
+      "description": "Increases allies' HP regeneration from Rex's passive to +25% and shields adjacent allies, absorbing 15% of their damage."
+    },
+    "resonance": {
+      "charId": "rex",
+      "description": "Divine Blade attacks shred 30% of the target's physical DEF for 3 turns."
+    }
+  },
+  {
+    "id": "azure_vanguard_standard",
+    "name": "Azure Vanguard Standard",
+    "icon": "🛡️",
+    "element": "ice",
+    "rarity": "rare",
+    "description": "The heavy banner carried at the front of the Azure Regiment. Still holds the scent of pine and battle.",
+    "stats": {
+      "atk": 8,
+      "def": 10,
+      "hp": 35
+    },
+    "passive": {
+      "id": "unbroken_wall",
+      "name": "Unbroken Wall",
+      "description": "Grants Sera a permanent 15% physical damage mitigation."
+    },
+    "resonance": {
+      "charId": "sera",
+      "description": "Activating Commander's Aegis grants a flat +30 DEF shield to the entire party for 2 turns."
     }
   }
 ]

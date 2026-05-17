@@ -98,7 +98,7 @@ const CombatEngine = (() => {
     }
     
     // 4b. Dynamic Weather Impact
-    if (typeof MapEngine !== 'undefined') {
+    if (typeof MapEngine !== 'undefined' && typeof MapEngine.getWeather === 'function') {
       const weather = MapEngine.getWeather();
       const wConf = NexusScaling.weather?.[weather];
       if (wConf) {

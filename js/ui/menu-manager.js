@@ -11,6 +11,7 @@ const UI = {
       'controls-overlay',
       'settings-overlay',
       'relic-panel',
+      'weapons-panel',
       'party-swap-overlay',
       'map-pause-menu',
       'camp-menu',

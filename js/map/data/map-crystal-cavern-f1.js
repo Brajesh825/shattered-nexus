@@ -93,6 +93,13 @@ MAP_DEFS.crystal_cavern_f1 = {
       x: 15, y: 20, w: 2, h: 2,
       type: 'msg', msg: '✦ You notice a pile of weathered bones. "These travelers never made it to the core... the crystals grew right through them."'
     },
+    // --- LEGENDARY ALTAR CHEST ---
+    {
+      x: 18, y: 12, w: 1, h: 1,
+      type: 'chest',
+      weaponId: 'azure_vanguard_standard',
+      weaponName: "Azure Vanguard Standard"
+    },
     // --- TELEPORT ---
     {
       x: 55, y: 10, w: 1, h: 1,

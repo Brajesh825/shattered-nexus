@@ -247,6 +247,9 @@ const Story = {
 
             // Sync level back to source char so computeStats uses the right level
             if (m.char) m.char.lv = m.lv;
+            if (saved.equippedWeapon && m.char) {
+              m.char.equippedWeapon = saved.equippedWeapon;
+            }
 
             rebuildMemberCombatStats(m, {
               resourceStrategy: 'clamp',
@@ -274,6 +277,37 @@ const Story = {
       G.shownBanter = new Set(s.shownBanter || []);
       if (s.bondProgress) G.bondProgress = s.bondProgress;
       if (s.earnedBondRewards) G.earnedBondRewards = s.earnedBondRewards;
+      if (s.voidFragments !== undefined) G.voidFragments = s.voidFragments;
+      if (s.weaponsUpgrades) {
+        G.weaponsUpgrades = s.weaponsUpgrades;
+        G.weaponsLevels = s.weaponsLevels || {};
+        const weapons = window.WEAPONS_DATA || [];
+        Object.entries(G.weaponsUpgrades).forEach(([wId, rarity]) => {
+          const w = weapons.find(wp => wp.id === wId);
+          if (w) {
+            if (!w.baseStats) w.baseStats = { ...w.stats };
+            w.rarity = rarity;
+            const multiplier = rarity === 'legendary' ? 1.5 : rarity === 'epic' ? 1.25 : 1.0;
+            Object.keys(w.baseStats).forEach(sk => {
+              w.stats[sk] = Math.floor(w.baseStats[sk] * multiplier);
+            });
+          }
+        });
+      } else {
+        G.weaponsLevels = s.weaponsLevels || {};
+      }
+      if (s.equippedWeapons && G.party) {
+        const weapons = window.WEAPONS_DATA || [];
+        G.party.forEach(m => {
+          if (s.equippedWeapons[m.charId] !== undefined) {
+            m.char.equippedWeapon = s.equippedWeapons[m.charId];
+            m.equippedWeapon = weapons.find(w => w.id === m.char.equippedWeapon) || null;
+            if (typeof rebuildMemberCombatStats !== 'undefined') {
+              rebuildMemberCombatStats(m, { resourceStrategy: 'clamp' });
+            }
+          }
+        });
+      }
 
       // If saved from explore map, restore directly to that map (no overlay/selection)
       if (s.mapId) {

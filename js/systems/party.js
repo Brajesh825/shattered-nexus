@@ -10,6 +10,35 @@ function computeStats(ch, cls) {
     const baseWithGrowth = b[k] + (lv - 1) * (g[k] || 0);
     out[k] = Math.floor((baseWithGrowth + (bon[k] || 0)) * (m[k] || 1));
   });
+
+  // Apply weapon stats
+  const weaponId = ch.equippedWeapon;
+  const weapons = window.WEAPONS_DATA || [];
+  const weaponDef = weapons.find(w => w.id === weaponId);
+  if (weaponDef && weaponDef.stats) {
+    const _G = typeof G !== 'undefined' ? G : (typeof global !== 'undefined' && global.G ? global.G : null);
+    const tier = (_G && _G.weaponsUpgrades && _G.weaponsUpgrades[weaponId]) || weaponDef.rarity || 'rare';
+    const level = (_G && _G.weaponsLevels && _G.weaponsLevels[weaponId]) || 1;
+    
+    // Rarity and level growth mapping (vivid_hybrid_weapon_system.md roadmap)
+    const growth = { hp: 8, mp: 2, atk: 4, def: 2, spd: 1, mag: 3, lck: 1 };
+
+    ['hp', 'mp', 'atk', 'def', 'spd', 'mag', 'lck'].forEach(k => {
+      if (weaponDef.stats[k] !== undefined) {
+        let val = weaponDef.stats[k];
+        // Apply level growth
+        if (growth[k]) {
+          val += growth[k] * (level - 1);
+        }
+        // Apply tier breakthrough multipliers
+        if (tier === 'epic') val = Math.floor(val * 1.25);
+        if (tier === 'legendary') val = Math.floor(val * 1.5);
+        
+        out[k] += val;
+      }
+    });
+  }
+
   return out;
 }
 
@@ -47,6 +76,9 @@ function rebuildMemberCombatStats(member, options = {}) {
   member.mag = Math.floor(base.mag * relicMult.mag);
   member.spd = Math.floor(base.spd * relicMult.spd);
   member.lck = Math.floor(base.lck * relicMult.lck);
+
+  const weapons = window.WEAPONS_DATA || [];
+  member.equippedWeapon = weapons.find(w => w.id === member.char.equippedWeapon) || null;
 
   applyArchiveMasteryToMember(member);
 
@@ -97,6 +129,7 @@ function buildParty() {
       critRate: cls.stat_multipliers.critRate || 0.05,
       lv: ch.lv || 1, exp: ch.exp || 0, gold: ch.gold || 0,
       char: ch, cls: cls,
+      equippedWeapon: (window.WEAPONS_DATA || []).find(w => w.id === ch.equippedWeapon) || null,
       passive: ch.passive,
       abilities: cls.abilities,
       isPlayer,

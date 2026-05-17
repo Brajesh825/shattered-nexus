@@ -26,7 +26,14 @@ const SaveContract = (() => {
       earnedBondRewards: G.earnedBondRewards || [],
       questState: typeof QuestSystem !== 'undefined' ? QuestSystem.save() : null,
       firedScenes: Array.from(G.firedScenes || []),
-      nexusTime: G.nexusTime ?? 8.0
+      nexusTime: G.nexusTime ?? 8.0,
+      voidFragments: G.voidFragments || 0,
+      weaponsUpgrades: G.weaponsUpgrades || {},
+      weaponsLevels: G.weaponsLevels || {},
+      equippedWeapons: (G.party || []).reduce((acc, m) => {
+        if (m.char?.equippedWeapon) acc[m.charId] = m.char.equippedWeapon;
+        return acc;
+      }, {})
     };
   }
 
@@ -87,9 +94,20 @@ const SaveContract = (() => {
 
     if (s.mapId !== undefined && s.mapId !== null) {
       if (typeof s.mapId !== 'string' || !s.mapId) return false;
-      // Skip MAP_DEFS check if not defined yet
-      if (typeof MAP_DEFS !== 'undefined' && !MAP_DEFS[s.mapId]) {
-        console.warn(`SaveContract: Unknown mapId in save: ${s.mapId}`);
+      if (typeof MAP_DEFS !== 'undefined') {
+        const mapDef = MAP_DEFS[s.mapId];
+        if (!mapDef) {
+          console.error(`SaveContract: Unknown mapId in save: ${s.mapId}`);
+          return false;
+        }
+        if (s.mapX !== undefined && (s.mapX < 0 || s.mapX >= mapDef.width)) {
+          console.error(`SaveContract: Invalid mapX coordinate: ${s.mapX}`);
+          return false;
+        }
+        if (s.mapY !== undefined && (s.mapY < 0 || s.mapY >= mapDef.height)) {
+          console.error(`SaveContract: Invalid mapY coordinate: ${s.mapY}`);
+          return false;
+        }
       }
     }
 

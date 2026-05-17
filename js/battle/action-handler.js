@@ -130,6 +130,12 @@ function resolveOffensiveAction(actor, target, targetIdx, action, element) {
   // Final floor for player attacks
   dmg = Math.max(1, Math.floor(dmg));
 
+  // Glacial Waltz Resonance: hits twice (deals double damage) on frozen targets
+  if (action.id === 'glacial_waltz' && actor.equippedWeapon?.id === 'winters_last_petal' && typeof StatusSystem !== 'undefined' && StatusSystem.has(target, 'status_frozen')) {
+    dmg = Math.floor(dmg * 2.0);
+    BattleUI.addLog(`❄️ Winter's Last Petal: Glacial Waltz strikes twice on frozen target!`, 'magic');
+  }
+
   // 4. Process Reaction Effects
   const reactionEffects = ReactionEffects.applyReactionEffects({
     reaction,
@@ -166,6 +172,15 @@ function resolveOffensiveAction(actor, target, targetIdx, action, element) {
     BattleUI.renderEnemyRow();
   }
 
+  // First Frost: first attack always applies freeze
+  if (actor.equippedWeapon?.id === 'winters_last_petal' && !actor._firstFrostFired) {
+    actor._firstFrostFired = true;
+    if (typeof StatusSystem !== 'undefined') {
+      Battle.addStatus(target, { id: 'status_frozen', label: 'Frozen', icon: '❄️', type: 'control', turns: 2 });
+      BattleUI.addLog(`❄️ Winter's Last Petal: First Frost freezes ${target.name}!`, 'magic');
+    }
+  }
+
   if (target.hp <= 0) {
     Battle.setKO(target, true);
   }
@@ -181,7 +196,7 @@ function resolveOffensiveAction(actor, target, targetIdx, action, element) {
 
   // Skip overlay for ultimates — heroAbility already fired it before the execute delay
   if (!action._ultimateOverlayShown) {
-    BattleUI.createEffectOverlay(targetIdx, element, 'enemy', action.id);
+    BattleUI.createEffectOverlay(targetIdx, element, 'enemy', action.id, { actor });
   }
 
   if (!reaction && element !== 'physical') {
@@ -357,6 +372,18 @@ function resolveEnemyOffensiveAction(actor, target, targetIdx, ab, element) {
   if (target.hp <= 0) Battle.setKO(target, false);
   BattleUI.popParty(targetIdx, dmg, isMagic ? 'magic' : 'dmg', element);
 
+  // Iron Echo passive reflection (Chain of Ten Thousand Nights)
+  if (!isMagic && target.equippedWeapon?.id === 'chain_of_nights') {
+    const reflectDmg = Math.max(1, Math.floor(dmg * 0.20));
+    actor.hp = Math.max(0, actor.hp - reflectDmg);
+    BattleUI.addLog(`⛓️ Iron Echo: Reflected ${reflectDmg} damage back to ${actor.name}!`, 'dmg');
+    const eIdx = G.enemyGroup.indexOf(actor);
+    if (eIdx !== -1) {
+      BattleUI.popEnemy(eIdx, reflectDmg, 'dmg', 'physical');
+      if (actor.hp <= 0) Battle.setKO(actor, true);
+    }
+  }
+
   // 9. Aura
   if (!reaction && element !== 'physical') Battle.applyAura(target, element);
 
@@ -458,6 +485,12 @@ const ActionEngine = {
         if (!Battle.alive(m) && !ab.isUltimate) return;
         const amt = _getAmt(m);
         m.hp = Math.min(m.maxHp, m.hp + amt);
+
+        // Oceanic Grace passive (Tide Caller)
+        if (!isEnemyAction && actor.equippedWeapon?.id === 'tide_caller') {
+          m.mp = Math.min(m.maxMp, m.mp + 5);
+          BattleUI.addLog(`🌊 Oceanic Grace: Restored 5 MP to ${m.displayName}!`, 'heal');
+        }
 
         const mIdx = isEnemyAction ? G.enemyGroup.indexOf(m) : G.party.indexOf(m);
         const layer = isEnemyAction ? 'enemy' : 'party';
@@ -647,6 +680,9 @@ const ActionEngine = {
       if (!isEnemyAction) {
         if (e.lifeSteal && totalDmg > 0) {
           let lMult = e.lifeSteal;
+          if (ab.id === 'spirit_soother' && actor.equippedWeapon?.id === 'laughing_lantern') {
+            lMult = 0.50;
+          }
           if (e.healLowMult && actor.hp / actor.maxHp < NexusScaling.thresholds.wounded) lMult *= e.healLowMult;
           const healAmt = Math.floor(totalDmg * lMult);
           const healTargets = e.aoe ? G.party.filter(m => Battle.alive(m)) : [actor];
@@ -656,6 +692,14 @@ const ActionEngine = {
         }
         if (e.guardian) { G.party.forEach(m => { if (Battle.alive(m)) Battle.addStatus(m, StatusSystem.DEFS.guardian); }); BattleUI.addLog('🛡️ Phantom Guardian summoned!', 'heal'); }
         if (e.partyBuff) { G.party.forEach((m, idx) => { if (!Battle.alive(m)) return; Battle.addStatus(m, { id: 'status_atk_boost', label: 'ATK+', icon: '⚔️', type: 'mult', stat: 'atk', value: 1.3, turns: 3 }); Battle.addStatus(m, { id: 'status_def_boost', label: 'DEF+', icon: '🛡️', type: 'mult', stat: 'def', value: 1.3, turns: 3 }); BattleUI.popParty(idx, 'ATK & DEF Up!', 'buff', 'holy'); }); BattleUI.addLog(`✨ ${ab.name}: The party is blessed!`, 'buff'); }
+        if (e.guardMark) {
+          Battle.addStatus(actor, { id: `status_taunt_${ab.id}`, label: 'Taunt', icon: '🛡️', type: 'buff', turns: e.duration || 3 });
+          BattleUI.addLog(`🛡️ ${actor.displayName} taunted all enemies!`, 'buff');
+          if (ab.id === 'mastery_of_pain' && actor.equippedWeapon?.id === 'chain_of_nights') {
+            Battle.addStatus(actor, { id: 'status_mastery_pain_resonance', label: 'Karmic Shield', icon: '⛓️', type: 'reduction', value: 0.85, turns: 2 });
+            BattleUI.addLog(`⛓️ Chain of Ten Thousand Nights: Karmic Shield reduces damage taken by 15%!`, 'buff');
+          }
+        }
         if (actor._cryoReset) { actor.cooldowns[ab.id] = 0; BattleUI.addLog('❄ Cryoclasm Reset!', 'regen'); delete actor._cryoReset; }
         _checkDragonLeap(actor);
         BattleUI.renderPartyRow(); // Final catch-all refresh
@@ -878,7 +922,10 @@ function heroAbility(ab) {
     actor.mp = Math.max(0, actor.mp - _mpCost);
 
     // ── Set ultimate cooldown ──
-    const abilityCD = ab.effect?.cooldown ?? (ab.isUltimate ? 2 : 0);
+    let abilityCD = ab.effect?.cooldown ?? (ab.isUltimate ? 2 : 0);
+    if (ab.id === 'hajras_hymn' && actor.equippedWeapon?.id === 'tide_caller') {
+      abilityCD = 1;
+    }
     if (abilityCD > 0) {
       if (!actor.cooldowns) actor.cooldowns = {};
       actor.cooldowns[ab.id] = abilityCD + 1;
@@ -940,7 +987,7 @@ function heroAbility(ab) {
           // Cascade overlay across each living enemy with 150ms stagger for visual impact
           offensiveTargets.forEach((en, i) => {
             const tIdx = G.enemyGroup.indexOf(en);
-            setTimeout(() => BattleUI.createEffectOverlay(tIdx, element, 'enemy', ab.id, { suppressShake: true }), i * 150);
+            setTimeout(() => BattleUI.createEffectOverlay(tIdx, element, 'enemy', ab.id, { suppressShake: true, actor }), i * 150);
           });
           ab._ultimateOverlayShown = true;
         }

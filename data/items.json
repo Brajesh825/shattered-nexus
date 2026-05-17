@@ -1462,5 +1462,113 @@
     "usable_in": [],
     "description": "A soldier’s locket — a small portrait of a family inside, name scratched into the back. Whoever wore this was someone’s person.",
     "rarity": "uncommon"
+  },
+  {
+    "id": "ice_shard",
+    "name": "Ice Shard",
+    "icon": "❄️",
+    "type": "trophy",
+    "subtype": "story",
+    "value": 15,
+    "effect": { "target": "none", "stat": "none", "amount": 0, "percent": false },
+    "usable_in": [],
+    "description": "A frozen fragment found in cold areas. Cold to the touch.",
+    "rarity": "common"
+  },
+  {
+    "id": "glacial_prism",
+    "name": "Glacial Prism",
+    "icon": "💎",
+    "type": "trophy",
+    "subtype": "story",
+    "value": 50,
+    "effect": { "target": "none", "stat": "none", "amount": 0, "percent": false },
+    "usable_in": [],
+    "description": "An advanced ice crystal that refracts pure winter energy.",
+    "rarity": "rare"
+  },
+  {
+    "id": "phoenix_hearth",
+    "name": "Phoenix Hearth",
+    "icon": "❤️",
+    "type": "trophy",
+    "subtype": "story",
+    "value": 50,
+    "effect": { "target": "none", "stat": "none", "amount": 0, "percent": false },
+    "usable_in": [],
+    "description": "A warm core containing the eternal sparks of a phoenix.",
+    "rarity": "rare"
+  },
+  {
+    "id": "gale_feather",
+    "name": "Gale Feather",
+    "icon": "🪶",
+    "type": "trophy",
+    "subtype": "story",
+    "value": 15,
+    "effect": { "target": "none", "stat": "none", "amount": 0, "percent": false },
+    "usable_in": [],
+    "description": "A light feather that floats on air currents.",
+    "rarity": "common"
+  },
+  {
+    "id": "tornado_core",
+    "name": "Tornado Core",
+    "icon": "🌀",
+    "type": "trophy",
+    "subtype": "story",
+    "value": 50,
+    "effect": { "target": "none", "stat": "none", "amount": 0, "percent": false },
+    "usable_in": [],
+    "description": "A swirling core of wind energy.",
+    "rarity": "rare"
+  },
+  {
+    "id": "tide_shell",
+    "name": "Tide Shell",
+    "icon": "🐚",
+    "type": "trophy",
+    "subtype": "story",
+    "value": 15,
+    "effect": { "target": "none", "stat": "none", "amount": 0, "percent": false },
+    "usable_in": [],
+    "description": "A damp shell reflecting the tide's rhythm.",
+    "rarity": "common"
+  },
+  {
+    "id": "oceanic_pearl",
+    "name": "Oceanic Pearl",
+    "icon": "🦪",
+    "type": "trophy",
+    "subtype": "story",
+    "value": 50,
+    "effect": { "target": "none", "stat": "none", "amount": 0, "percent": false },
+    "usable_in": [],
+    "description": "A rare pearl harvested from the deep abyss.",
+    "rarity": "rare"
+  },
+  {
+    "id": "void_dust",
+    "name": "Void Dust",
+    "icon": "🌫️",
+    "type": "trophy",
+    "subtype": "story",
+    "value": 15,
+    "effect": { "target": "none", "stat": "none", "amount": 0, "percent": false },
+    "usable_in": [],
+    "description": "Faintly glowing dust left behind by entropic creatures.",
+    "rarity": "common"
+  },
+  {
+    "id": "void_catalyst",
+    "name": "Void Catalyst",
+    "icon": "🔮",
+    "type": "trophy",
+    "subtype": "story",
+    "value": 50,
+    "effect": { "target": "none", "stat": "none", "amount": 0, "percent": false },
+    "usable_in": [],
+    "description": "A concentrated catalyst that amplifies void transformations.",
+    "rarity": "rare"
   }
 ]

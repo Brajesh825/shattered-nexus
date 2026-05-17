@@ -14,6 +14,17 @@
 - [ ] **Named Damage Modifiers**: Refactor the combat damage chain so STAB, affinity, reactions, mitigation, crits, passives, and relics are named steps.
 - [x] **JSON Loading Standard**: Move all data loading onto a unified `DataLoader` service.
 
+### 2. Vivid Hybrid Weapon System (Staged)
+- [x] **Database Registration**: Load all 9 launch-tier weapon assets, elements, and Aegis-audited balanced stats into [weapons.json](file:///c:/Users/ASUS/VVI/rpg+/data/weapons.json).
+- [x] **Core Character Linkage**: Configure starting and pre-equipped weapon IDs inside [characters.json](file:///c:/Users/ASUS/VVI/rpg+/data/characters.json) for starting heroes (Aya, Tao, Rei, Lulu) and pre-equipped recruits (Drake, Valka, Ria, Rex).
+- [x] **Stat Computation Hooks**: Modify `computeStats` in `js/systems/party.js` to dynamically add weapon flat stats and bind passive traits during party assembly.
+- [x] **Dynamic Idle Aura Glows**: Render elegant, element-specific pulsing HSL radial backdrops and randomized floating spark particles behind active party sprites in [battle-ui.js](file:///c:/Users/ASUS/VVI/rpg+/js/ui/battle-ui.js) and [fx.css](file:///c:/Users/ASUS/VVI/rpg+/css/fx.css).
+- [x] **Combat Attack VFX Overrides**: Implement custom slash trails and particle flow overrides (frozen crystals, phoenix embers) during combat action ticks based on the active weapon ID.
+- [x] **Vivid Weapon Selection UI Overhaul**: Redevelop the weapon equipped section, character tabs, and available weapons grid into a stunning glassmorphic 2-column workspace layout with neon stat chips, passive description cards, and active Resonance energy banners.
+- [x] **Narrative Quest Triggers**: Code post-battle trigger hooks in the Map Engine to automatically yield the *Chain of Ten Thousand Nights* upon defeating the `river_king` and the *Tide Caller* upon defeating the `sunken_leviathan`.
+- [x] **Chest Exploration Placements**: Place the *Azure Vanguard Standard* inside a deep crystal-altar chest in the [map-crystal-cavern-f1.js](file:///c:/Users/ASUS/VVI/rpg+/js/map/data/map-crystal-cavern-f1.js) definition.
+- [x] **Camp Forge Crafting Interfaces**: Code Camp menu actions for weapon alternate forging and rarity tier upgrades using Void Fragments.
+
 ---
 
 ## ✅ Completed Milestones (Condensed)

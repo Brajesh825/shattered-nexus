@@ -350,3 +350,101 @@
 .theme--void-knight-active {
   animation: null-invert 2s ease-in-out forwards;
 }
+
+/* ══════════════════════════════════════════════════════
+   HYBRID WEAPON ELEMENTAL GLOW AURAS (Vivid Aesthetics)
+   ══════════════════════════════════════════════════════ */
+.elemental-aura-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 96px;
+  height: 96px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 1; /* Positioned perfectly behind character sprites */
+}
+
+/* Pulsing backdrop light */
+.elemental-aura-glow::before {
+  content: '';
+  position: absolute;
+  inset: -18px;
+  border-radius: 50%;
+  opacity: 0.55;
+  filter: blur(16px);
+  mix-blend-mode: screen;
+  animation: aura-glow-pulse 2.8s cubic-bezier(0.4, 0, 0.2, 1) infinite alternate;
+}
+
+/* Curated harmonious HSL palettes per element */
+.aura-ice::before {
+  background: radial-gradient(circle, hsl(195, 90%, 65%) 0%, transparent 70%);
+}
+.aura-fire::before {
+  background: radial-gradient(circle, hsl(12, 90%, 55%) 0%, transparent 70%);
+}
+.aura-wind::before {
+  background: radial-gradient(circle, hsl(145, 75%, 45%) 0%, transparent 70%);
+}
+.aura-water::before {
+  background: radial-gradient(circle, hsl(175, 80%, 45%) 0%, transparent 70%);
+}
+.aura-light::before {
+  background: radial-gradient(circle, hsl(260, 85%, 70%) 0%, transparent 70%);
+}
+.aura-holy::before {
+  background: radial-gradient(circle, hsl(285, 90%, 75%) 0%, transparent 70%);
+}
+.aura-divine::before {
+  background: radial-gradient(circle, hsl(45, 95%, 60%) 0%, transparent 70%);
+}
+
+@keyframes aura-glow-pulse {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.35;
+  }
+  100% {
+    transform: scale(1.2);
+    opacity: 0.65;
+  }
+}
+
+/* Floating Drift Particles */
+.glow-particle {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  bottom: 12px;
+  left: 50%;
+  opacity: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  filter: blur(0.8px);
+  animation: aura-particle-drift 2.2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+/* HSL Color matches for particles */
+.aura-ice .glow-particle { background-color: hsl(195, 90%, 75%); }
+.aura-fire .glow-particle { background-color: hsl(12, 95%, 65%); }
+.aura-wind .glow-particle { background-color: hsl(145, 80%, 55%); }
+.aura-water .glow-particle { background-color: hsl(175, 85%, 55%); }
+.aura-light .glow-particle { background-color: hsl(260, 90%, 80%); }
+.aura-holy .glow-particle { background-color: hsl(285, 95%, 85%); }
+.aura-divine .glow-particle { background-color: hsl(45, 100%, 75%); }
+
+@keyframes aura-particle-drift {
+  0% {
+    transform: translate(var(--dx), 0px) scale(0.5);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate(var(--tx), -75px) scale(1.3);
+    opacity: 0;
+  }
+}

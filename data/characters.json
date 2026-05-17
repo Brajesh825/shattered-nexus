@@ -30,6 +30,7 @@
         "class_affinity": [
             "cryo_bladestorm"
         ],
+        "equippedWeapon": "",
         "passive": {
             "id": "frostflake",
             "name": "Frostflake Dance",
@@ -78,6 +79,7 @@
         "class_affinity": [
             "spirit_incinerator"
         ],
+        "equippedWeapon": "",
         "passive": {
             "id": "blood_blossom",
             "name": "Blood Blossom",
@@ -125,6 +127,7 @@
         "class_affinity": [
             "hydro_performer"
         ],
+        "equippedWeapon": "",
         "passive": {
             "id": "dance_of_haftkarsvar",
             "name": "Dance of Haftkarsvar",
@@ -169,6 +172,7 @@
         "class_affinity": [
             "yaksha_protector"
         ],
+        "equippedWeapon": "",
         "passive": {
             "id": "yakshas_valor",
             "name": "Warden\u0027s Valor",
@@ -225,6 +229,7 @@
         "class_affinity": [
             "summoner_eidolon"
         ],
+        "equippedWeapon": "eidolons_grimoire",
         "passive": {
             "id": "eidolon_bond",
             "name": "Eidolon Bond",
@@ -273,6 +278,7 @@
         "class_affinity": [
             "valkyrie_guardian"
         ],
+        "equippedWeapon": "aegis_archangel",
         "passive": {
             "id": "divine_authority",
             "name": "Divine Authority",
@@ -322,6 +328,7 @@
         "class_affinity": [
             "dragoon_skyward"
         ],
+        "equippedWeapon": "wyrmtooth_lance",
         "passive": {
             "id": "dragon_leap",
             "name": "Dragon\u0027s Leap",
@@ -372,6 +379,7 @@
         "class_affinity": [
             "knight_king_divine"
         ],
+        "equippedWeapon": "arrens_oath",
         "passive": {
             "id": "divine_blessing",
             "name": "Divine Blessing",
@@ -420,6 +428,7 @@
         "class_affinity": [
             "azure_commander"
         ],
+        "equippedWeapon": "",
         "passive": {
             "id": "azure_resolve",
             "name": "Azure Resolve",

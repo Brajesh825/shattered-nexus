@@ -1181,6 +1181,31 @@ const MapEngine = (() => {
               Story.onMapTeleport(mapTarget);
             }
           });
+        } else if (trig.type === 'chest' && trig.weaponId) {
+          stop();
+          const wpName = trig.weaponName || trig.weaponId;
+          const lines = [
+            { speaker: 'narrator', text: `✦ Uncovered the ancient crystal-altar chest and found the legendary weapon: [${wpName}]! ✦` }
+          ];
+          _openGenericDialogue(lines, () => {
+            const party = G.party || [];
+            const wData = (window.WEAPONS_DATA || []).find(w => w.id === trig.weaponId);
+            if (wData && wData.resonance) {
+              const resChar = party.find(m => m.charId === wData.resonance.charId);
+              if (resChar) {
+                resChar.char.equippedWeapon = trig.weaponId;
+                resChar.equippedWeapon = wData;
+                if (!G.weaponsLevels) G.weaponsLevels = {};
+                if (G.weaponsLevels[trig.weaponId] === undefined) G.weaponsLevels[trig.weaponId] = 1;
+                if (typeof rebuildMemberCombatStats !== 'undefined') {
+                  rebuildMemberCombatStats(resChar, { resourceStrategy: 'clamp' });
+                }
+              }
+            }
+            if (typeof SFX !== 'undefined' && SFX.victory) SFX.victory();
+            if (typeof MapUI !== 'undefined') MapUI.showMsg(`🎁 Acquired ${wpName}!`, 2000);
+            resume();
+          });
         } else if (trig.type === 'encounter' && trig.enemies) {
           // Trigger a direct encounter / boss fight from a map zone
           // Optional: show a pre-battle message before launching
@@ -1622,6 +1647,49 @@ const MapEngine = (() => {
     }
 
     // ── Normal battle complete ───────────────────────────
+    const defeatedEnemy = MapEntities.getActiveEncountered ? MapEntities.getActiveEncountered() : null;
+    if (victory && defeatedEnemy) {
+      if (defeatedEnemy.id === 'river_king') {
+        const wData = (window.WEAPONS_DATA || []).find(w => w.id === 'chain_of_nights');
+        if (wData) {
+          const party = G.party || [];
+          const resChar = party.find(m => m.charId === 'rei');
+          if (resChar) {
+            resChar.char.equippedWeapon = 'chain_of_nights';
+            resChar.equippedWeapon = wData;
+            if (!G.weaponsLevels) G.weaponsLevels = {};
+            if (G.weaponsLevels['chain_of_nights'] === undefined) G.weaponsLevels['chain_of_nights'] = 1;
+            if (typeof rebuildMemberCombatStats !== 'undefined') {
+              rebuildMemberCombatStats(resChar, { resourceStrategy: 'clamp' });
+            }
+          }
+          if (typeof MapUI !== 'undefined') {
+            MapUI.showMsg('🎁 Acquired Chain of Ten Thousand Nights for Rei!', 3500);
+          }
+          if (typeof SFX !== 'undefined' && SFX.victory) SFX.victory();
+        }
+      } else if (defeatedEnemy.id === 'sunken_leviathan') {
+        const wData = (window.WEAPONS_DATA || []).find(w => w.id === 'tide_caller');
+        if (wData) {
+          const party = G.party || [];
+          const resChar = party.find(m => m.charId === 'lulu');
+          if (resChar) {
+            resChar.char.equippedWeapon = 'tide_caller';
+            resChar.equippedWeapon = wData;
+            if (!G.weaponsLevels) G.weaponsLevels = {};
+            if (G.weaponsLevels['tide_caller'] === undefined) G.weaponsLevels['tide_caller'] = 1;
+            if (typeof rebuildMemberCombatStats !== 'undefined') {
+              rebuildMemberCombatStats(resChar, { resourceStrategy: 'clamp' });
+            }
+          }
+          if (typeof MapUI !== 'undefined') {
+            MapUI.showMsg('🎁 Acquired Tide Caller for Lulu!', 3500);
+          }
+          if (typeof SFX !== 'undefined' && SFX.victory) SFX.victory();
+        }
+      }
+    }
+
     MapEntities.removeEncountered();
     showScreen('explore-screen');
     MapPlayer.setCooldown(8);
@@ -1813,6 +1881,12 @@ const MapEngine = (() => {
       const layers = Array.isArray(_map.data) ? _map.data : (_map.data.data || _map.data.layers);
       if (layers && Array.isArray(layers)) {
         _map.layers = layers;
+        if (mapId === 'crystal_cavern_f1') {
+          const targetLayer = layers[1] || layers[0];
+          if (targetLayer && targetLayer[12]) {
+            targetLayer[12][18] = 211; // SVG Golden Chest
+          }
+        }
       }
     }
 
