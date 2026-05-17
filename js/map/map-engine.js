@@ -1188,19 +1188,34 @@ const MapEngine = (() => {
             { speaker: 'narrator', text: `✦ Uncovered the ancient crystal-altar chest and found the legendary weapon: [${wpName}]! ✦` }
           ];
           _openGenericDialogue(lines, () => {
-            const party = G.party || [];
             const wData = (window.WEAPONS_DATA || []).find(w => w.id === trig.weaponId);
             if (wData && wData.resonance) {
-              const resChar = party.find(m => m.charId === wData.resonance.charId);
-              if (resChar) {
-                resChar.char.equippedWeapon = trig.weaponId;
-                resChar.equippedWeapon = wData;
-                if (!G.weaponsLevels) G.weaponsLevels = {};
-                if (G.weaponsLevels[trig.weaponId] === undefined) G.weaponsLevels[trig.weaponId] = 1;
+              const targetCharId = wData.resonance.charId;
+
+              // 1. Always write to G.chars (source of truth) so the weapon persists
+              //    even when the character is not in the active party.
+              if (!G.weaponsLevels) G.weaponsLevels = {};
+              if (G.weaponsLevels[trig.weaponId] === undefined) G.weaponsLevels[trig.weaponId] = 1;
+              const sourceChar = (G.chars || []).find(c => c.id === targetCharId);
+              if (sourceChar) {
+                sourceChar.equippedWeapon = trig.weaponId;
+              }
+
+              // 2. If the character is also in the active party, update the live member
+              //    immediately so their combat stats reflect the weapon this session.
+              const partyMember = (G.party || []).find(m => m.charId === targetCharId);
+              if (partyMember) {
+                partyMember.char.equippedWeapon = trig.weaponId;
+                partyMember.equippedWeapon = wData;
                 if (typeof rebuildMemberCombatStats !== 'undefined') {
-                  rebuildMemberCombatStats(resChar, { resourceStrategy: 'clamp' });
+                  rebuildMemberCombatStats(partyMember, { resourceStrategy: 'clamp' });
                 }
               }
+
+              // 3. Mark chest as permanently opened so it won't re-fire on reload.
+              const chestId = trig.id || `${trig.x},${trig.y}`;
+              if (!G.openedChests) G.openedChests = new Set();
+              G.openedChests.add(chestId);
             }
             if (typeof SFX !== 'undefined' && SFX.victory) SFX.victory();
             if (typeof MapUI !== 'undefined') MapUI.showMsg(`🎁 Acquired ${wpName}!`, 2000);
@@ -1907,6 +1922,11 @@ const MapEngine = (() => {
     _fogMilestone = 0;
     _minimapBg = null;
     _firedTriggers.clear();
+    // Re-seed opened chests so they don't re-fire after a save/load.
+    // G.openedChests persists across saves; _firedTriggers is in-memory only.
+    if (G.openedChests) {
+      G.openedChests.forEach(id => _firedTriggers.add(id));
+    }
     // Ensure we always start in daytime (ratio 0.4 = solidly mid-day in the 0.3-0.7 day band)
     _time = _dayCycleTime * 0.4;
     _bubbles.length = 0;

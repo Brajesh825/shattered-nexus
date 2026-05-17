@@ -30,10 +30,15 @@ const SaveContract = (() => {
       voidFragments: G.voidFragments || 0,
       weaponsUpgrades: G.weaponsUpgrades || {},
       weaponsLevels: G.weaponsLevels || {},
-      equippedWeapons: (G.party || []).reduce((acc, m) => {
-        if (m.char?.equippedWeapon) acc[m.charId] = m.char.equippedWeapon;
-        return acc;
-      }, {})
+      equippedWeapons: (() => {
+        // Read from G.chars (source of truth) so benched characters retain their weapons.
+        const map = {};
+        (G.chars || []).forEach(c => { if (c.equippedWeapon) map[c.id] = c.equippedWeapon; });
+        // Party overrides — captures weapons equipped this session before being synced to G.chars.
+        (G.party || []).forEach(m => { if (m.char?.equippedWeapon) map[m.charId] = m.char.equippedWeapon; });
+        return map;
+      })(),
+      openedChests: Array.from(G.openedChests || [])
     };
   }
 

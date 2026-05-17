@@ -95,6 +95,7 @@ MAP_DEFS.crystal_cavern_f1 = {
     },
     // --- LEGENDARY ALTAR CHEST ---
     {
+      id: 'chest_azure_vanguard_standard',
       x: 18, y: 12, w: 1, h: 1,
       type: 'chest',
       weaponId: 'azure_vanguard_standard',

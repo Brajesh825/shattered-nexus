@@ -274,6 +274,7 @@ const Story = {
       if (s.archive) { G.archive = s.archive; if (typeof Archive !== 'undefined') Archive.init(); }
       if (typeof QuestSystem !== 'undefined') QuestSystem.init(s.questState || null);
       G.firedScenes = new Set(s.firedScenes || []);
+      G.openedChests = new Set(s.openedChests || []);
       G.shownBanter = new Set(s.shownBanter || []);
       if (s.bondProgress) G.bondProgress = s.bondProgress;
       if (s.earnedBondRewards) G.earnedBondRewards = s.earnedBondRewards;
@@ -296,17 +297,26 @@ const Story = {
       } else {
         G.weaponsLevels = s.weaponsLevels || {};
       }
-      if (s.equippedWeapons && G.party) {
+      if (s.equippedWeapons) {
         const weapons = window.WEAPONS_DATA || [];
-        G.party.forEach(m => {
-          if (s.equippedWeapons[m.charId] !== undefined) {
-            m.char.equippedWeapon = s.equippedWeapons[m.charId];
-            m.equippedWeapon = weapons.find(w => w.id === m.char.equippedWeapon) || null;
-            if (typeof rebuildMemberCombatStats !== 'undefined') {
-              rebuildMemberCombatStats(m, { resourceStrategy: 'clamp' });
-            }
+        // Restore to G.chars first (source of truth) — covers benched characters too.
+        (G.chars || []).forEach(c => {
+          if (s.equippedWeapons[c.id] !== undefined) {
+            c.equippedWeapon = s.equippedWeapons[c.id] || null;
           }
         });
+        // Then refresh live party members so their combat stats are immediately correct.
+        if (G.party) {
+          G.party.forEach(m => {
+            if (s.equippedWeapons[m.charId] !== undefined) {
+              m.char.equippedWeapon = s.equippedWeapons[m.charId];
+              m.equippedWeapon = weapons.find(w => w.id === m.char.equippedWeapon) || null;
+              if (typeof rebuildMemberCombatStats !== 'undefined') {
+                rebuildMemberCombatStats(m, { resourceStrategy: 'clamp' });
+              }
+            }
+          });
+        }
       }
 
       // If saved from explore map, restore directly to that map (no overlay/selection)
@@ -1118,7 +1128,9 @@ const Story = {
       Save.clear(this._newGameSlot);
       delete this._newGameSlot;
     }
-    // Save only progression + current resources — combat stats are always recomputed on load
+    // Save only progression + current resources — combat stats are always recomputed on load.
+    // equippedWeapon is included per-member so the load path at onHeroReady() can restore it
+    // without needing the separate equippedWeapons map (which is also saved below for redundancy).
     const partyStats = G.party.map(m => ({
       charId: m.charId,
       classId: m.classId,
@@ -1128,6 +1140,7 @@ const Story = {
       hp: m.hp,
       mp: m.mp,
       isKO: m.isKO || false,
+      equippedWeapon: m.char?.equippedWeapon || null,
     }));
     // Capture current map location if the explore map is actively running.
     const curMap = (typeof MapEngine !== 'undefined') ? MapEngine.getMap() : null;
@@ -1160,6 +1173,21 @@ const Story = {
       earnedBondRewards: G.earnedBondRewards || [],
       questState: typeof QuestSystem !== 'undefined' ? QuestSystem.save() : null,
       firedScenes: Array.from(G.firedScenes || []),
+      // Weapon system state — required to persist equipped weapons, forge upgrades, and
+      // weapon levels across saves. Without these, weapons acquired mid-arc (e.g. Sera's
+      // Azure Vanguard Standard from the Crystal Cavern chest) are lost on reload.
+      weaponsUpgrades: G.weaponsUpgrades || {},
+      weaponsLevels: G.weaponsLevels || {},
+      equippedWeapons: (() => {
+        // Build from G.chars (source of truth) so weapons on benched characters are also saved.
+        const map = {};
+        (G.chars || []).forEach(c => { if (c.equippedWeapon) map[c.id] = c.equippedWeapon; });
+        // Also capture live party in case char record differs (e.g. weapon just equipped this session)
+        (G.party || []).forEach(m => { if (m.char?.equippedWeapon) map[m.charId] = m.char.equippedWeapon; });
+        return map;
+      })(),
+      openedChests: Array.from(G.openedChests || []),
+      voidFragments: G.voidFragments || 0,
       mapId,
       mapX,
       mapY,
