@@ -12,8 +12,9 @@ const MapEngine = (() => {
   let TILE = 64;
 
   function _calcTileSize() {
-    // Landscape-only: height is the constraining dimension
-    const h = Math.min(_canvas.height, _canvas.width); // shortest side = landscape height
+    // Use CSS pixels (divide by DPR) so thresholds stay device-independent
+    const dpr = window.devicePixelRatio || 1;
+    const h = Math.min(_canvas.height, _canvas.width) / dpr; // shortest CSS side
     if (h <= 375) return 32; // iPhone SE
     if (h <= 390) return 36; // iPhone 12/13/14 Pro
     if (h <= 414) return 40; // iPhone XR/11
@@ -171,9 +172,13 @@ const MapEngine = (() => {
 
   function _getTileCanvas(tileId) {
     if (_tileCache[tileId]) return _tileCache[tileId];
-    const c = document.createElement('canvas');
-    c.width = TILE; c.height = TILE;
-    _paintTile(c.getContext('2d'), TILE_DEFS[tileId] || TILE_DEFS[0], 0, 0, TILE, TILE, 0);
+    const dpr = window.devicePixelRatio || 1;
+    const px  = Math.round(TILE * dpr);
+    const c   = document.createElement('canvas');
+    c.width   = px; c.height = px;
+    const ctx = c.getContext('2d');
+    ctx.scale(dpr, dpr);
+    _paintTile(ctx, TILE_DEFS[tileId] || TILE_DEFS[0], 0, 0, TILE, TILE, 0);
     _tileCache[tileId] = c;
     return c;
   }
@@ -1726,8 +1731,14 @@ const MapEngine = (() => {
   function init(canvasEl) {
     _canvas = canvasEl;
     _ctx = canvasEl.getContext('2d');
-    _canvas.width = canvasEl.offsetWidth || window.innerWidth;
-    _canvas.height = canvasEl.offsetHeight || window.innerHeight;
+    const dpr = window.devicePixelRatio || 1;
+    const cssW = canvasEl.offsetWidth || window.innerWidth;
+    const cssH = canvasEl.offsetHeight || window.innerHeight;
+    _canvas.width  = Math.round(cssW * dpr);
+    _canvas.height = Math.round(cssH * dpr);
+    _canvas.style.width  = cssW + 'px';
+    _canvas.style.height = cssH + 'px';
+    _ctx.scale(dpr, dpr);
     TILE = _calcTileSize();
     if (typeof ChronosEngine !== 'undefined') ChronosEngine.init();
     if (typeof MapInput !== 'undefined') MapInput.init(canvasEl);
@@ -1749,7 +1760,7 @@ const MapEngine = (() => {
     let _joyActive = false;
 
     if (joyBase && joyKnob) {
-      const radius = 50; // Use 50px for normalization to feel snappier
+      const radius = 44; // Half of the 110px base — knob travels to the rim
 
       const _handleJoy = (e) => {
         const touch = e.touches[0];
@@ -1761,7 +1772,8 @@ const MapEngine = (() => {
         let dy = touch.clientY - centerY;
         const dist = Math.sqrt(dx * dx + dy * dy);
 
-        const limit = 60; // Physical limit for visual
+        // Clamp knob travel to match the normalization radius
+        const limit = radius;
         if (dist > limit) {
           dx = (dx / dist) * limit;
           dy = (dy / dist) * limit;
@@ -1769,9 +1781,10 @@ const MapEngine = (() => {
 
         joyKnob.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
 
-        // Normalize vector for MapInput (cap at 1.0)
-        const normX = Math.min(1.0, Math.max(-1.0, dx / radius));
-        const normY = Math.min(1.0, Math.max(-1.0, dy / radius));
+        // Dead zone: ignore tiny movements < 8% of radius to prevent drift
+        const deadZone = radius * 0.08;
+        const normX = dist < deadZone ? 0 : Math.min(1.0, Math.max(-1.0, dx / radius));
+        const normY = dist < deadZone ? 0 : Math.min(1.0, Math.max(-1.0, dy / radius));
         MapInput.setVector(normX, normY);
       };
 
@@ -1811,8 +1824,14 @@ const MapEngine = (() => {
     }
 
     window.addEventListener('resize', () => {
-      _canvas.width = _canvas.offsetWidth || window.innerWidth;
-      _canvas.height = _canvas.offsetHeight || window.innerHeight;
+      const dpr = window.devicePixelRatio || 1;
+      const cssW = _canvas.offsetWidth || window.innerWidth;
+      const cssH = _canvas.offsetHeight || window.innerHeight;
+      _canvas.width  = Math.round(cssW * dpr);
+      _canvas.height = Math.round(cssH * dpr);
+      _canvas.style.width  = cssW + 'px';
+      _canvas.style.height = cssH + 'px';
+      _ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       const newTile = _calcTileSize();
       if (newTile !== TILE) {
         TILE = newTile;

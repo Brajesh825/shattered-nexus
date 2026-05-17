@@ -836,6 +836,9 @@
 
 .cmd-btn:active:not(:disabled) {
   transform: scale(.96) translateY(0);
+  background: linear-gradient(180deg, #1c1a50, #141040);
+  border-color: #8070e0;
+  color: #fff;
 }
 
 .cmd-btn:disabled {
@@ -861,12 +864,24 @@
   display: flex !important;
   align-items: center;
   gap: 6px;
-  padding: 2px 8px !important;
+  padding: 8px 10px !important;
   text-align: left !important;
   justify-content: flex-start !important;
-  min-height: 40px;
+  min-height: 48px;
   flex: 1;
   min-width: 0;
+}
+
+@media (pointer: coarse) {
+  .ability-btn {
+    min-height: 52px;
+    padding: 10px 12px !important;
+  }
+  .ability-btn:active {
+    background: rgba(96, 80, 184, 0.35) !important;
+    border-color: #8070e0 !important;
+    transform: scale(0.97);
+  }
 }
 
 .ab-content {
@@ -2655,8 +2670,9 @@
   }
 
   .cmd-btn {
-    padding: 8px 4px;
-    font-size: 8px;
+    padding: 12px 6px;
+    font-size: 10px;
+    min-height: 48px;
   }
 
   /* ── BATTLE — party formation (left side, 200px wide) ──────── */

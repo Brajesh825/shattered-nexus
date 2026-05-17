@@ -1298,7 +1298,8 @@
   display: block;
   width: 100% !important;
   height: 100% !important;
-  image-rendering: auto;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
 }
 
 /* ── Bond Panel ──────────────────────────────────────── */
@@ -1912,11 +1913,11 @@ body.is-touch-device #joystick-container {
   bottom: calc(28px + 30px + env(safe-area-inset-bottom));
   left: 0;
   right: 0;
-  height: 140px;
+  height: 160px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 20px;
+  padding: 0 24px;
   pointer-events: none;
   z-index: 1000;
 }
@@ -1925,49 +1926,49 @@ body.is-touch-device #joystick-container {
 .joystick-right {
   pointer-events: auto;
   position: relative;
-  width: 140px;
-  height: 140px;
+  width: 160px;
+  height: 160px;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .joystick-base {
-  width: 80px;
-  height: 80px;
+  width: 110px;
+  height: 110px;
   background: rgba(144, 128, 255, 0.08);
-  border: 2px solid rgba(144, 128, 255, 0.2);
+  border: 2px solid rgba(144, 128, 255, 0.25);
   border-radius: 50%;
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   position: relative;
   touch-action: none;
-  box-shadow: inset 0 0 12px rgba(144, 128, 255, 0.1);
+  box-shadow: inset 0 0 16px rgba(144, 128, 255, 0.12);
 }
 
 .joystick-knob {
-  width: 32px;
-  height: 32px;
+  width: 44px;
+  height: 44px;
   background: linear-gradient(135deg, #7050d8, #4030a0);
-  border: 2px solid rgba(255, 255, 255, 0.35);
+  border: 2px solid rgba(255, 255, 255, 0.4);
   border-radius: 50%;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4), 0 0 8px rgba(112, 80, 216, 0.5);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), 0 0 10px rgba(112, 80, 216, 0.6);
   pointer-events: none;
   will-change: transform;
 }
 
 .joystick-right {
-  width: 110px;
-  height: 110px;
+  width: 130px;
+  height: 130px;
 }
 
 .action-btn {
-  width: 48px;
-  height: 48px;
+  width: 58px;
+  height: 58px;
   border-radius: 50%;
   border: 2px solid rgba(255, 255, 255, 0.2);
   font-family: 'Cinzel', serif;
