@@ -12,9 +12,8 @@ const MapEngine = (() => {
   let TILE = 64;
 
   function _calcTileSize() {
-    // Use CSS pixels (divide by DPR) so thresholds stay device-independent
-    const dpr = window.devicePixelRatio || 1;
-    const h = Math.min(_canvas.height, _canvas.width) / dpr; // shortest CSS side
+    // Use _cssW/_cssH (CSS pixels) so thresholds stay device-independent
+    const h = Math.min(_cssH || window.innerHeight, _cssW || window.innerWidth);
     if (h <= 375) return 32; // iPhone SE
     if (h <= 390) return 36; // iPhone 12/13/14 Pro
     if (h <= 414) return 40; // iPhone XR/11
@@ -92,6 +91,7 @@ const MapEngine = (() => {
   }
 
   let _canvas = null, _ctx = null;
+  let _cssW = 0, _cssH = 0; // CSS-pixel viewport dimensions (physical = _cssW * DPR)
   let _map = null;
   let _rafId = null, _lastTs = 0, _running = false;
   let _time = 0;
@@ -135,7 +135,7 @@ const MapEngine = (() => {
 
   function _updateCamera(dt) {
     if (!_map) return;
-    const cw = _canvas.width, ch = _canvas.height;
+    const cw = _cssW, ch = _cssH;
     const maxX = _map.width * TILE - cw;
     const maxY = _map.height * TILE - ch;
 
@@ -172,13 +172,13 @@ const MapEngine = (() => {
 
   function _getTileCanvas(tileId) {
     if (_tileCache[tileId]) return _tileCache[tileId];
+    // Bake at physical pixel resolution for crisp HiDPI rendering.
+    // Drawn with explicit TILE×TILE destination so it maps 1:1 to physical pixels.
     const dpr = window.devicePixelRatio || 1;
     const px  = Math.round(TILE * dpr);
     const c   = document.createElement('canvas');
     c.width   = px; c.height = px;
-    const ctx = c.getContext('2d');
-    ctx.scale(dpr, dpr);
-    _paintTile(ctx, TILE_DEFS[tileId] || TILE_DEFS[0], 0, 0, TILE, TILE, 0);
+    _paintTile(c.getContext('2d'), TILE_DEFS[tileId] || TILE_DEFS[0], 0, 0, px, px, 0);
     _tileCache[tileId] = c;
     return c;
   }
@@ -191,9 +191,11 @@ const MapEngine = (() => {
     // Evict previous bucket for this tile
     const prefix = tileId + '_';
     for (const k in _animCache) { if (k.startsWith(prefix)) delete _animCache[k]; }
+    const dpr = window.devicePixelRatio || 1;
+    const px  = Math.round(TILE * dpr);
     const c = document.createElement('canvas');
-    c.width = TILE; c.height = TILE;
-    _paintTile(c.getContext('2d'), TILE_DEFS[tileId] || TILE_DEFS[0], 0, 0, TILE, TILE, t);
+    c.width = px; c.height = px;
+    _paintTile(c.getContext('2d'), TILE_DEFS[tileId] || TILE_DEFS[0], 0, 0, px, px, t);
     _animCache[key] = c;
     return c;
   }
@@ -366,7 +368,7 @@ const MapEngine = (() => {
     if (!tiles || !tiles[r]) return;
 
     const startC = Math.max(0, Math.floor(cam.x / TILE) - 1);
-    const endC = Math.min(_map.width - 1, Math.ceil((cam.x + _canvas.width) / TILE) + 1);
+    const endC = Math.min(_map.width - 1, Math.ceil((cam.x + _cssW) / TILE) + 1);
 
     const row = tiles[r];
     for (let c = startC; c <= endC; c++) {
@@ -380,7 +382,7 @@ const MapEngine = (() => {
       if (def.vScale) {
         // 1. Draw base terrain first (Matching Editor rule)
         if (layerIdx === 0) {
-          _ctx.drawImage(_getTileCanvas(tileId), sx, sy);
+          _ctx.drawImage(_getTileCanvas(tileId), sx, sy, TILE, TILE);
         }
 
         const scale = def.vScale || 1.0;
@@ -416,9 +418,9 @@ const MapEngine = (() => {
         }
       } else {
         if (def.anim) {
-          _ctx.drawImage(_getAnimTileCanvas(tileId, _time), sx, sy);
+          _ctx.drawImage(_getAnimTileCanvas(tileId, _time), sx, sy, TILE, TILE);
         } else {
-          _ctx.drawImage(_getTileCanvas(tileId), sx, sy);
+          _ctx.drawImage(_getTileCanvas(tileId), sx, sy, TILE, TILE);
         }
       }
       if (layerIdx === 0 && def.walkable) _drawTileShadow(sx, sy, c, r, tiles);
@@ -431,7 +433,7 @@ const MapEngine = (() => {
     if (!tiles) return;
 
     const startR = Math.max(0, Math.floor(cam.y / TILE) - 1);
-    const endR = Math.min(_map.height - 1, Math.ceil((cam.y + _canvas.height) / TILE) + 1);
+    const endR = Math.min(_map.height - 1, Math.ceil((cam.y + _cssH) / TILE) + 1);
 
     for (let r = startR; r <= endR; r++) {
       _renderRow(layerIdx, r);
@@ -619,7 +621,7 @@ const MapEngine = (() => {
   }
 
   function _renderAtmosphere() {
-    const cw = _canvas.width, ch = _canvas.height;
+    const cw = _cssW, ch = _cssH;
     const px = MapPlayer.px - cam.x + TILE / 2;
     const py = MapPlayer.py - cam.y + TILE / 2;
 
@@ -772,8 +774,8 @@ const MapEngine = (() => {
     mctx.strokeRect(
       cam.x / TILE * tw,
       cam.y / TILE * th,
-      (_canvas.width / TILE) * tw,
-      (_canvas.height / TILE) * th
+      (_cssW / TILE) * tw,
+      (_cssH / TILE) * th
     );
   }
 
@@ -809,7 +811,8 @@ const MapEngine = (() => {
   }
 
   function _ensureFogCanvas() {
-    const w = _canvas.width, h = _canvas.height;
+    // Use CSS-pixel dimensions — drawImage in the DPR-scaled ctx maps it 1:1
+    const w = _cssW, h = _cssH;
     if (!_fogCanvas || _fogCanvas.width !== w || _fogCanvas.height !== h) {
       _fogCanvas = document.createElement('canvas');
       _fogCanvas.width = w; _fogCanvas.height = h;
@@ -822,7 +825,7 @@ const MapEngine = (() => {
     if (alpha < 0.01) return;
 
     _ensureFogCanvas();
-    const w = _canvas.width, h = _canvas.height;
+    const w = _cssW, h = _cssH;
     const fc = _fogCtx;
     const px = MapPlayer.px - cam.x + TILE / 2;
     const py = MapPlayer.py - cam.y + TILE / 2;
@@ -866,7 +869,7 @@ const MapEngine = (() => {
 
   function _renderBubbles() {
     if (!_bubbles.length) return;
-    const w = _canvas.width;
+    const w = _cssW;
     let y = 52; // start below the header
 
     _bubbles.forEach((b, idx) => {
@@ -925,8 +928,8 @@ const MapEngine = (() => {
   function _updateParticles(dt) {
     // Ambient spawn
     if (Math.random() < 0.08 && _map) {
-      const vx = cam.x + Math.random() * _canvas.width;
-      const vy = cam.y + Math.random() * _canvas.height;
+      const vx = cam.x + Math.random() * _cssW;
+      const vy = cam.y + Math.random() * _cssH;
       _spawnParticle(vx, vy, _map.ambientLight || '#4ade80');
     }
 
@@ -986,7 +989,7 @@ const MapEngine = (() => {
   function _render() {
     if (!_ctx || !_canvas || !_map) return;
     _ctx.fillStyle = _map.bgColor || '#080606';
-    _ctx.fillRect(0, 0, _canvas.width, _canvas.height);
+    _ctx.fillRect(0, 0, _cssW, _cssH);
 
     // 1. Ground Layer (Always below)
     _renderTiles(0);
@@ -994,7 +997,7 @@ const MapEngine = (() => {
     // 2. Interleaved Y-Sorting
     const layers = MapData.getLayers(_map);
     const startR = Math.max(0, Math.floor(cam.y / TILE) - 1);
-    const endR = Math.min(_map.height - 1, Math.ceil((cam.y + _canvas.height) / TILE) + 1);
+    const endR = Math.min(_map.height - 1, Math.ceil((cam.y + _cssH) / TILE) + 1);
 
     if (typeof MapEntities !== 'undefined' && MapEntities.prepareBuckets) {
       MapEntities.prepareBuckets(startR, endR);
@@ -1441,9 +1444,8 @@ const MapEngine = (() => {
   // Build visual march-in entities (silhouettes that slide in from off-screen)
   function _buildMarchEntities(enemyIds, dir) {
     if (!_map) return [];
-    const canvas = _canvas;
-    const viewTilesX = Math.ceil(canvas.width / TILE);
-    const viewTilesY = Math.ceil(canvas.height / TILE);
+    const viewTilesX = Math.ceil(_cssW / TILE);
+    const viewTilesY = Math.ceil(_cssH / TILE);
 
     const startX = Math.floor(cam.x / TILE);
     const startY = Math.floor(cam.y / TILE);
@@ -1734,6 +1736,7 @@ const MapEngine = (() => {
     const dpr = window.devicePixelRatio || 1;
     const cssW = canvasEl.offsetWidth || window.innerWidth;
     const cssH = canvasEl.offsetHeight || window.innerHeight;
+    _cssW = cssW; _cssH = cssH;
     _canvas.width  = Math.round(cssW * dpr);
     _canvas.height = Math.round(cssH * dpr);
     _canvas.style.width  = cssW + 'px';
@@ -1827,6 +1830,7 @@ const MapEngine = (() => {
       const dpr = window.devicePixelRatio || 1;
       const cssW = _canvas.offsetWidth || window.innerWidth;
       const cssH = _canvas.offsetHeight || window.innerHeight;
+      _cssW = cssW; _cssH = cssH;
       _canvas.width  = Math.round(cssW * dpr);
       _canvas.height = Math.round(cssH * dpr);
       _canvas.style.width  = cssW + 'px';
