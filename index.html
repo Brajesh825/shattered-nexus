@@ -593,8 +593,7 @@
         </div>
         <div class="explore-header-right">
           <button id="settings-btn" onclick="Settings.open()" title="Settings">⚙️</button>
-          <button id="tts-btn" onclick="TTS.toggle()" title="Voice: OFF">💬</button>
-          <button id="mute-btn" onclick="SFX.toggleMute()" title="Toggle sound effects">🔊</button>
+<button id="mute-btn" onclick="SFX.toggleMute()" title="Toggle sound effects">🔊</button>
           <button class="explore-menu-btn" onclick="MapUI.openPauseMenu()">☰ MENU</button>
         </div>
       </div>
@@ -1787,7 +1786,6 @@
   <script src="js/bgm.js"></script>
   <script src="js/sfx.js"></script>
   <script src="js/ambient.js"></script>
-  <script src="js/tts.js"></script>
   <script src="js/sprites.js"></script>
   <script src="js/svg-animations.js"></script>
 
@@ -1828,7 +1826,6 @@
   <script src="js/story.js"></script>
   <script src="js/startup-check.js"></script>
   <script>
-    TTS.init();
     if (typeof ControlHints !== 'undefined') ControlHints.init();
 
     // ── Fullscreen prompt for mobile ─────────────────────────
@@ -1868,11 +1865,6 @@
         if (document.fullscreenElement) banner.remove();
       });
     })();
-    if (!TTS.supported) {
-      const b = document.getElementById('tts-btn');
-      if (b) b.style.display = 'none';
-    }
-
     // Play title screen BGM
     BGM.play('title');
 

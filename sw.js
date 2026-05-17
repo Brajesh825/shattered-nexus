@@ -40,7 +40,6 @@ const SHELL_ASSETS = [
   './js/sprites.js',
   './js/story.js',
   './js/svg-animations.js',
-  './js/tts.js',
   './js/cutscene.js',
   // Battle
   './js/battle/action-handler.js',

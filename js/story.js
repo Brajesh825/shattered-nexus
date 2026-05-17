@@ -1042,7 +1042,6 @@ const Story = {
   /** Handles the 'Coming Soon' state for beta releases */
   _showBetaEndScreen() {
     this.active = false;
-    if (typeof TTS !== 'undefined') TTS.stop();
     G.mode = 'story_end';
 
     const beTitle = this.el('be-title');
@@ -1105,7 +1104,6 @@ const Story = {
 
   _endStory() {
     this.active = false;
-    if (typeof TTS !== 'undefined') TTS.stop();
     G.enemies = this._allEnemies.slice();
     G.selectedChar = null; G.selectedClass = null;
 

@@ -977,7 +977,6 @@
    MUTE BUTTON
    ══════════════════════════════════════════════════════ */
 #mute-btn,
-#tts-btn,
 #settings-btn {
   position: absolute;
   z-index: 9999;
@@ -1010,10 +1009,6 @@
   right: 90px;
 }
 
-#tts-btn {
-  top: 10px;
-  right: 126px;
-}
 /* Emotion -> Portrait Visual Mapping */
 .s-scene-sprite[data-emotion="furious"], 
 .s-scene-sprite[data-emotion="sharp"], 
