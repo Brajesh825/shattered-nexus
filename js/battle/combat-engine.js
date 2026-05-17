@@ -28,7 +28,7 @@ const CombatEngine = (() => {
       else base = 0;
     }
 
-    // 0. Boss Phase Modifiers (Non-stacking per stat; takes highest triggered mult)
+    // Step 1. Boss Phase Modifiers (Non-stacking per stat; takes highest triggered mult)
     if (unit.statPhases) {
       let maxPhaseMult = 1.0;
       unit.statPhases.forEach(p => {
@@ -43,7 +43,7 @@ const CombatEngine = (() => {
     let sBonus = 0;
     let flat = 0;
 
-    // 1. Calculate Passive Multiplier (Capped at 2.5x - "Base Scaling")
+    // Step 2. Passive Multiplier (Capped at 2.5x — NexusScaling.caps.statMult)
     const passiveSystem = getPassiveSystem();
     if (passiveSystem) {
       pMult *= passiveSystem.getStatMultiplier(unit, stat);
@@ -51,9 +51,8 @@ const CombatEngine = (() => {
     }
     const cappedPassive = Math.min(NexusScaling.caps.statMult || 2.5, pMult);
 
-    // 2. Calculate Status Bonuses (Additive Stacking for Moves - Uncapped by Base)
-    // reductionMult is tracked separately because cappedPassive is already captured above;
-    // multiplying pMult here would have no effect on finalMult.
+    // Step 3. Status Bonuses (Additive stacking for moves — uncapped at this layer)
+    // reductionMult is tracked separately; it is applied as a multiplier outside finalMult.
     let reductionMult = 1.0;
     (unit.statuses || []).forEach(s => {
       if (s.stat === stat || s.type === stat) {
@@ -63,22 +62,23 @@ const CombatEngine = (() => {
       }
     });
 
-    // 3. Combine and apply HP-Based Stat Phases (Universal System)
+    // Step 4. HP-Based Stat Phases (Universal Phase System)
+    // Combine passive + status into finalMult first, then apply the deepest HP phase.
     let finalMult = Math.max(0.2, cappedPassive + sBonus);
-    
+
     if (unit.statPhases && unit.hp && unit.maxHp) {
       const hpRatio = unit.hp / unit.maxHp;
-      // Sort phases by HP descending to find the deepest reached phase
+      // Sort phases ascending by HP threshold to find the deepest reached phase
       const activePhase = [...unit.statPhases]
         .sort((a, b) => a.hp - b.hp)
         .find(p => hpRatio <= p.hp);
-      
+
       if (activePhase && activePhase[stat]) {
         finalMult *= activePhase[stat];
       }
     }
 
-    // 4. Temporal Resonance (Chronos Cycle)
+    // Step 5. Temporal Resonance (Chronos Cycle)
     if (typeof ChronosEngine !== 'undefined') {
       const phase = ChronosEngine.getPhase();
       const res = NexusScaling.chronos?.[phase];
@@ -90,14 +90,17 @@ const CombatEngine = (() => {
         finalMult *= NexusScaling.chronos.noon.mult;
       }
     }
-    
-    // 4c. Character Resonance (Bonds)
+
+    // Step 6. Character Resonance (Bond System)
     if (passiveSystem && passiveSystem.getBondMultiplier) {
+      if (typeof BOND_DATA === 'undefined' && typeof IS_DEV !== 'undefined' && IS_DEV) {
+        console.warn('[CombatEngine] getStat: BOND_DATA is undefined — bond resonance skipped. Check bond-data.js is loaded.');
+      }
       finalMult *= passiveSystem.getBondMultiplier(unit, stat);
       flat += passiveSystem.getBondBonus(unit, stat);
     }
-    
-    // 4b. Dynamic Weather Impact
+
+    // Step 7. Dynamic Weather Impact
     if (typeof MapEngine !== 'undefined' && typeof MapEngine.getWeather === 'function') {
       const weather = MapEngine.getWeather();
       const wConf = NexusScaling.weather?.[weather];
@@ -105,13 +108,19 @@ const CombatEngine = (() => {
         if (stat === 'accuracy' && wConf.missChance) finalMult *= (1 - wConf.missChance);
         if (stat === 'healBoost' && wConf.healMult) finalMult *= wConf.healMult;
       }
+    } else if (typeof IS_DEV !== 'undefined' && IS_DEV && typeof MapEngine === 'undefined') {
+      // Only warn once per session to avoid flooding the console during test runs
+      if (!getStat._warnedWeather) {
+        getStat._warnedWeather = true;
+        console.warn('[CombatEngine] getStat: MapEngine or MapEngine.getWeather unavailable — weather modifiers skipped.');
+      }
     }
 
-    // 5. Final Result with Absolute Safety Cap (8.0x - "Extreme Premium")
+    // Step 8. Final Result with Absolute Safety Cap (8.0x — "Extreme Premium" limit)
     finalMult = Math.min(8.0, finalMult);
     const result = (base + flat) * finalMult;
 
-    // 4. Handle Float-based Combat Stats
+    // Return float-based combat stats with their respective caps
     if (stat === 'accuracy') return Math.max(NexusScaling.caps.accuracyMin, Math.min(1.0, result));
     if (stat === 'critRate') return Math.min(NexusScaling.caps.critRate, result);
     if (stat === 'reduction') return Math.max(1 - NexusScaling.caps.mitigation, reductionMult);

@@ -92,6 +92,41 @@ const SaveContract = (() => {
       }
     }
 
+    // Weapon ID validation: strip any equippedWeapon / weaponsUpgrades / weaponsLevels
+    // entries whose IDs no longer exist in WEAPONS_DATA (renamed, removed, or typo'd in a future patch).
+    // This prevents silent stat corruption from loading stale weapon state.
+    const weaponsRegistry = (typeof window !== 'undefined' && window.WEAPONS_DATA)
+      ? window.WEAPONS_DATA
+      : (typeof WEAPONS_DATA !== 'undefined' ? WEAPONS_DATA : null);
+    if (weaponsRegistry) {
+      const validWeaponIds = new Set(weaponsRegistry.map(w => w.id));
+      if (s.equippedWeapons && typeof s.equippedWeapons === 'object') {
+        for (const charId of Object.keys(s.equippedWeapons)) {
+          const wId = s.equippedWeapons[charId];
+          if (wId && !validWeaponIds.has(wId)) {
+            console.warn(`SaveContract: equippedWeapon "${wId}" for char "${charId}" not in WEAPONS_DATA — cleared.`);
+            delete s.equippedWeapons[charId];
+          }
+        }
+      }
+      if (s.weaponsUpgrades && typeof s.weaponsUpgrades === 'object') {
+        for (const wId of Object.keys(s.weaponsUpgrades)) {
+          if (!validWeaponIds.has(wId)) {
+            console.warn(`SaveContract: weaponsUpgrades key "${wId}" not in WEAPONS_DATA — cleared.`);
+            delete s.weaponsUpgrades[wId];
+          }
+        }
+      }
+      if (s.weaponsLevels && typeof s.weaponsLevels === 'object') {
+        for (const wId of Object.keys(s.weaponsLevels)) {
+          if (!validWeaponIds.has(wId)) {
+            console.warn(`SaveContract: weaponsLevels key "${wId}" not in WEAPONS_DATA — cleared.`);
+            delete s.weaponsLevels[wId];
+          }
+        }
+      }
+    }
+
     if (s.mapId !== undefined && s.mapId !== null) {
       if (typeof s.mapId !== 'string' || !s.mapId) return false;
       if (typeof MAP_DEFS !== 'undefined') {

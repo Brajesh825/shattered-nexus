@@ -454,6 +454,11 @@ function _tryRelicDrop(isElite) {
   const pool = (G.relics || []).filter(r => (r.rarity === 'common' || r.rarity === 'uncommon') && !G.ownedRelics.includes(r.id));
   if (!pool.length) return null;
   const relic = pool[Math.floor(Math.random() * pool.length)];
+  // Validation guard: drawn relic must have a valid id before entering the owned pool
+  if (!relic?.id) {
+    if (typeof IS_DEV !== 'undefined' && IS_DEV) console.warn('[Inventory] _tryRelicDrop: drawn relic is missing an id — drop skipped.');
+    return null;
+  }
   G.ownedRelics.push(relic.id);
   if (G.activeRelics.length < 3) G.activeRelics.push(relic.id);
   return relic;
@@ -462,5 +467,11 @@ function _tryRelicDrop(isElite) {
 function awardBossRelic(relicId) {
   if (!relicId || G.ownedRelics.includes(relicId)) return null;
   const relic = (G.relics || []).find(r => r.id === relicId);
-  if (relic) G.ownedRelics.push(relicId);
+  // Validation guard: warn if relicId doesn't exist in G.relics (typo, stale data, or renamed relic)
+  if (!relic) {
+    if (typeof IS_DEV !== 'undefined' && IS_DEV) console.warn(`[Inventory] awardBossRelic: relicId "${relicId}" not found in G.relics — award skipped.`);
+    return null;
+  }
+  G.ownedRelics.push(relicId);
+  return relic;
 }

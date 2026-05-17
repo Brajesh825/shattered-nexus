@@ -36,7 +36,8 @@
     "passive": {
       "id": "blood_bloom_early",
       "name": "Premature Bloom",
-      "description": "Blood Blossom passive activates at 60% HP instead of 50."
+      "description": "Blood Blossom passive activates at 60% HP instead of 50.",
+      "thresholdOverride": { "trait": "LOW_HP_STAT_BOOST", "value": 0.6 }
     },
     "resonance": {
       "charId": "tao",

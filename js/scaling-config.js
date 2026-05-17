@@ -107,7 +107,8 @@ const NexusScaling = {
 
   // 8. NEXUS CAPS (Safety boundaries for high-level scaling)
   caps: {
-    statMult: 2.5,        // Max multiplier for ATK/DEF/SPD/MAG
+    statMult: 2.5,        // Max multiplier for ATK/DEF/SPD/MAG from PassiveSystem
+    relicBonusCap: 1.5,   // Max aggregate relic bonus per stat (e.g. 3× relics each +0.5 → capped at 1.5x total)
     evasion: 0.75,       // Max 75% dodge chance
     accuracyMin: 0.1,    // Min 10% hit chance
     critRate: 0.85,      // Max 85% crit rate

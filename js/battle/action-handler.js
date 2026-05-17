@@ -103,10 +103,23 @@ function resolveOffensiveAction(actor, target, targetIdx, action, element) {
     dmg = Battle.magicDmg(Battle.getStat(actor, 'mag'), _mdef, e.dmgMultiplier || NexusScaling.engine.magicDmgFallback,
       { passiveBonus: _pBoost, magLevel: actor.lv || 1, mdefLevel: target.level || 1, isCrit });
     dmg = Math.floor(dmg * _em * _stab * _fireAmp * _lowHpMult * _summonBonus * _rxMult * _reduction);
-    if (!Number.isFinite(dmg)) { console.error('[MATH-MAGIC] NaN in damage pipeline', { actor: actor.displayName, target: target.name, _em, _stab, _fireAmp, _lowHpMult, _summonBonus, _rxMult, _reduction }); dmg = 1; }
 
+    // Named damage breakdown — every multiplier step explicitly labelled for auditability
+    const _breakdown = {
+      baseMag: Battle.getStat(actor, 'mag'), mDef: +_mdef.toFixed(1),
+      mult: e.dmgMultiplier || NexusScaling.engine.magicDmgFallback,
+      passive: +_pBoost.toFixed(2), stab: _stab, elem: +_em.toFixed(2),
+      reaction: +_rxMult.toFixed(2), fireAmp: +_fireAmp.toFixed(2),
+      lowHp: +_lowHpMult.toFixed(2), summon: +_summonBonus.toFixed(2),
+      reduction: +_reduction.toFixed(2), crit: isCrit
+    };
+    if (!Number.isFinite(dmg)) {
+      console.error('[MATH-MAGIC] NaN in damage pipeline', { actor: actor.displayName, target: target.name, breakdown: _breakdown });
+      dmg = 1;
+    }
     if (window.LogDebug) {
-      window.LogDebug(`[MATH-MAGIC] ${actor.displayName} -> ${target.name}: BaseMag=${Battle.getStat(actor, 'mag')}, T-MDef=${Battle.getStat(target, 'mag')}, Mult=${e.dmgMultiplier || 1.5}, Stab=${_stab}, Elem=${_em}, RX=${_rxMult} -> Final=${dmg}`, 'hi');
+      const chain = `passive=${_breakdown.passive} × stab=${_breakdown.stab} × elem=${_breakdown.elem} × rx=${_breakdown.reaction} × fireAmp=${_breakdown.fireAmp} × lowHp=${_breakdown.lowHp} × summon=${_breakdown.summon} × reduction=${_breakdown.reduction} × crit=${_breakdown.crit}`;
+      window.LogDebug(`[MATH-MAGIC] ${actor.displayName} → ${target.name} | BaseMag=${_breakdown.baseMag} mDef=${_breakdown.mDef} mult=${_breakdown.mult} | ${chain} → Final=${dmg}`, 'hi');
     }
   } else {
     const _effAtk = Battle.getStat(actor, 'atk');
@@ -120,10 +133,21 @@ function resolveOffensiveAction(actor, target, targetIdx, action, element) {
     dmg = Battle.physDmg(_effAtk + _scaleStat, Battle.getStat(target, 'def'), e.dmgMultiplier || 1,
       { atkLevel: actor.lv || 1, defLevel: target.level || 1, defPen: e.defPen || 0, isCrit });
     dmg = Math.floor(dmg * _em * _stab * _fireAmp * _lowHpMult * _rxMult * _reduction);
-    if (!Number.isFinite(dmg)) { console.error('[MATH-PHYS] NaN in damage pipeline', { actor: actor.displayName, target: target.name, _em, _stab, _fireAmp, _lowHpMult, _rxMult, _reduction }); dmg = 1; }
 
+    // Named damage breakdown — every multiplier step explicitly labelled for auditability
+    const _breakdown = {
+      effAtk: _effAtk + _scaleStat, scaleStat: _scaleStat, tDef: Battle.getStat(target, 'def'),
+      mult: e.dmgMultiplier || 1, stab: _stab, elem: +_em.toFixed(2),
+      reaction: +_rxMult.toFixed(2), fireAmp: +_fireAmp.toFixed(2),
+      lowHp: +_lowHpMult.toFixed(2), reduction: +_reduction.toFixed(2), crit: isCrit
+    };
+    if (!Number.isFinite(dmg)) {
+      console.error('[MATH-PHYS] NaN in damage pipeline', { actor: actor.displayName, target: target.name, breakdown: _breakdown });
+      dmg = 1;
+    }
     if (window.LogDebug) {
-      window.LogDebug(`[MATH-PHYS] ${actor.displayName} -> ${target.name}: Atk=${_effAtk + _scaleStat}, T-Def=${Battle.getStat(target, 'def')}, Mult=${e.dmgMultiplier || 1}, Stab=${_stab}, Elem=${_em}, RX=${_rxMult} -> Final=${dmg}`, 'hi');
+      const chain = `stab=${_breakdown.stab} × elem=${_breakdown.elem} × rx=${_breakdown.reaction} × fireAmp=${_breakdown.fireAmp} × lowHp=${_breakdown.lowHp} × reduction=${_breakdown.reduction} × crit=${_breakdown.crit}`;
+      window.LogDebug(`[MATH-PHYS] ${actor.displayName} → ${target.name} | Atk=${_breakdown.effAtk}(+scale=${_breakdown.scaleStat}) def=${_breakdown.tDef} mult=${_breakdown.mult} | ${chain} → Final=${dmg}`, 'hi');
     }
   }
 
@@ -301,9 +325,21 @@ function resolveEnemyOffensiveAction(actor, target, targetIdx, ab, element) {
     dmg = Battle.magicDmg(_eMag, _tMdef, ab.dmgMultiplier || NexusScaling.engine.enemyMagicFallback,
       { magLevel: actor.level || 1, mdefLevel: target.lv || 1, isCrit });
     dmg = Math.floor(dmg * _pm * _rxMult * _reduction);
-    if (!Number.isFinite(dmg)) { console.error('[ENEMY-MATH-MAGIC] NaN in damage pipeline', { actor: actor.name, target: target.displayName, _pm, _rxMult, _reduction }); dmg = 1; }
+
+    // Named damage breakdown — every multiplier step explicitly labelled for auditability
+    const _breakdown = {
+      baseMag: _eMag, mDef: +_tMdef.toFixed(1),
+      mult: ab.dmgMultiplier || NexusScaling.engine.enemyMagicFallback,
+      elemAffinity: +_pm.toFixed(2), reaction: +_rxMult.toFixed(2),
+      reduction: +_reduction.toFixed(2), crit: isCrit
+    };
+    if (!Number.isFinite(dmg)) {
+      console.error('[ENEMY-MATH-MAGIC] NaN in damage pipeline', { actor: actor.name, target: target.displayName, breakdown: _breakdown });
+      dmg = 1;
+    }
     if (window.LogDebug) {
-      window.LogDebug(`[ENEMY-MATH-MAGIC] ${actor.name} -> ${target.displayName}: BaseMag=${_eMag}, T-MDef=${_tMdef.toFixed(1)}, Mult=${ab.dmgMultiplier || 1.3}, PM=${_pm}, RX=${_rxMult} -> Final=${dmg}`, 'hi');
+      const chain = `elemAffinity=${_breakdown.elemAffinity} × rx=${_breakdown.reaction} × reduction=${_breakdown.reduction} × crit=${_breakdown.crit}`;
+      window.LogDebug(`[ENEMY-MATH-MAGIC] ${actor.name} → ${target.displayName} | BaseMag=${_breakdown.baseMag} mDef=${_breakdown.mDef} mult=${_breakdown.mult} | ${chain} → Final=${dmg}`, 'hi');
     }
   } else {
     const _eAtk = Battle.getStat(actor, 'atk');
@@ -312,9 +348,20 @@ function resolveEnemyOffensiveAction(actor, target, targetIdx, ab, element) {
     dmg = Battle.physDmg(_eAtk, _tDef, ab?.dmgMultiplier || 1,
       { atkLevel: actor.level || 1, defLevel: target.lv || 1, isCrit });
     dmg = Math.floor(dmg * _pm * _rxMult * _reduction);
-    if (!Number.isFinite(dmg)) { console.error('[ENEMY-MATH-PHYS] NaN in damage pipeline', { actor: actor.name, target: target.displayName, _pm, _rxMult, _reduction }); dmg = 1; }
+
+    // Named damage breakdown — every multiplier step explicitly labelled for auditability
+    const _breakdown = {
+      eAtk: _eAtk, tDef: _tDef, mult: ab?.dmgMultiplier || 1,
+      elemAffinity: +_pm.toFixed(2), reaction: +_rxMult.toFixed(2),
+      reduction: +_reduction.toFixed(2), crit: isCrit
+    };
+    if (!Number.isFinite(dmg)) {
+      console.error('[ENEMY-MATH-PHYS] NaN in damage pipeline', { actor: actor.name, target: target.displayName, breakdown: _breakdown });
+      dmg = 1;
+    }
     if (window.LogDebug) {
-      window.LogDebug(`[ENEMY-MATH-PHYS] ${actor.name} -> ${target.displayName}: Atk=${_eAtk}, T-Def=${_tDef}, Mult=${ab?.dmgMultiplier || 1.4}, PM=${_pm}, RX=${_rxMult} -> Final=${dmg}`, 'hi');
+      const chain = `elemAffinity=${_breakdown.elemAffinity} × rx=${_breakdown.reaction} × reduction=${_breakdown.reduction} × crit=${_breakdown.crit}`;
+      window.LogDebug(`[ENEMY-MATH-PHYS] ${actor.name} → ${target.displayName} | Atk=${_breakdown.eAtk} def=${_breakdown.tDef} mult=${_breakdown.mult} | ${chain} → Final=${dmg}`, 'hi');
       window.LogDebug(`[STATE-DIAG] ${target.displayName} HP: ${target.hp} pre-hit. [TargetIndex: ${targetIdx}]`, 'passive');
     }
   }
