@@ -852,11 +852,44 @@
               margin-bottom: 12px;
             }
             
-            .weapons-left-column, .weapons-right-column {
+            .weapons-right-column {
               display: flex;
               flex-direction: column;
               overflow: hidden;
               height: 100%;
+            }
+            
+            .weapons-left-column {
+              display: flex;
+              flex-direction: column;
+              overflow-y: auto;
+              height: 100%;
+              padding-right: 6px;
+            }
+            .weapons-left-column::-webkit-scrollbar {
+              width: 6px;
+            }
+            .weapons-left-column::-webkit-scrollbar-thumb {
+              background: rgba(255, 255, 255, 0.1);
+              border-radius: 10px;
+            }
+            .weapons-left-column::-webkit-scrollbar-track {
+              background: transparent;
+            }
+            
+            @media (max-width: 720px) {
+              .weapons-workspace {
+                grid-template-columns: 1fr;
+                overflow-y: auto;
+              }
+              .weapons-right-column {
+                height: auto;
+                overflow: visible;
+              }
+              .weapons-left-column {
+                overflow: visible;
+                height: auto;
+              }
             }
             
             .relic-panel-label {
@@ -880,8 +913,7 @@
               border-radius: 16px;
               padding: 16px;
               box-sizing: border-box;
-              height: 100%;
-              overflow-y: auto;
+              height: auto;
               width: 100%;
             }
             
@@ -1111,13 +1143,13 @@
             <div class="weapons-workspace">
               <!-- Left side: Currently Equipped Showcase & Camp Forge -->
               <div class="weapons-left-column" style="gap: 16px;">
-                <div style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
+                <div style="flex-shrink: 0; display: flex; flex-direction: column;">
                   <div class="relic-panel-label">CURRENTLY EQUIPPED</div>
-                  <div class="weapon-equipped-section" id="weapon-equipped-section" style="flex: 1;"></div>
+                  <div class="weapon-equipped-section" id="weapon-equipped-section" style="height: auto;"></div>
                 </div>
-                <div style="height: 295px; flex-shrink: 0; display: flex; flex-direction: column;">
+                <div style="height: auto; flex-shrink: 0; display: flex; flex-direction: column; margin-bottom: 8px;">
                   <div class="relic-panel-label" style="color: #c084fc; text-shadow: 0 0 10px rgba(192,132,252,0.2);">🔨 CAMPFIRE FORGE</div>
-                  <div id="weapon-forge-section" style="flex: 1; background: rgba(0, 0, 0, 0.25); border: 1px solid rgba(168, 85, 247, 0.15); border-radius: 16px; padding: 14px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;"></div>
+                  <div id="weapon-forge-section" style="background: rgba(0, 0, 0, 0.25); border: 1px solid rgba(168, 85, 247, 0.15); border-radius: 16px; padding: 14px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; height: auto;"></div>
                 </div>
               </div>
               
@@ -1780,6 +1812,7 @@
   <script src="js/systems/quest-system.js"></script>
   <script src="js/systems/party.js"></script>
   <script src="js/systems/archive.js"></script>
+  <script src="js/systems/tutorial-manager.js"></script>
   <script src="js/save.js"></script>
   <script src="js/data-loader.js"></script>
   <script src="js/asset-preloader.js"></script>
@@ -2209,6 +2242,73 @@
       <div class="intro-title-prefix">✦ ENCOUNTER ✦</div>
       <div id="intro-boss-name">BOSS NAME</div>
       <div class="intro-title-line"></div>
+    </div>
+  </div>
+
+  <!-- INTERACTIVE TUTORIAL OVERLAY -->
+  <div id="tutorial-overlay" class="tut-overlay" style="display: none;">
+    <div class="tut-card">
+      <button class="tut-close-btn tutorial-close" onclick="TutorialSystem.close()">&times;</button>
+      <div class="tut-header">
+        <span class="tut-icon">🎮</span>
+        <span class="tut-title">Movement & Exploration</span>
+      </div>
+      
+      <div class="tut-body">
+        <p class="tut-text">Navigate Aethoria using your keyboard or primary controller:</p>
+        
+        <!-- Interactive Keycaps -->
+        <div class="tut-playground">
+          <div class="keyboard-wrap" style="display: flex; gap: 20px;">
+            <!-- WASD Cluster -->
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+              <div class="keycap" data-key="w">W</div>
+              <div class="keycap-row" style="display: flex; gap: 4px;">
+                <div class="keycap" data-key="a">A</div>
+                <div class="keycap" data-key="s">S</div>
+                <div class="keycap" data-key="d">D</div>
+              </div>
+            </div>
+            
+            <div class="separator-or" style="align-self: center;">or</div>
+            
+            <!-- Arrow Cluster -->
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+              <div class="keycap" data-key="↑">↑</div>
+              <div class="keycap-row" style="display: flex; gap: 4px;">
+                <div class="keycap" data-key="←">←</div>
+                <div class="keycap" data-key="↓">↓</div>
+                <div class="keycap" data-key="→">→</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="separator-or">or</div>
+          
+          <!-- Gamepad Joystick -->
+          <div class="gamepad-wrap">
+            <div class="gp-axis-analog">
+              <div class="gp-analog-stick"></div>
+            </div>
+            <div class="gp-label">L-Stick / D-Pad</div>
+          </div>
+        </div>
+
+        <p class="tut-subtext">Press directional keys to see them light up in real-time!</p>
+      </div>
+
+      <!-- Character dialogue card -->
+      <div class="tut-dialogue-box dialogue-glow-aya">
+        <div class="tut-avatar">❄️</div>
+        <div class="tut-msg-content">
+          <div class="tut-speaker">Aya</div>
+          <div class="tut-msg">"Our journey starts here. Let us stay focused and walk together."</div>
+        </div>
+      </div>
+
+      <div class="tut-footer">
+        <button class="tut-close-btn tutorial-close camp-btn" style="position: static; font-family: inherit; font-size: 14px; width: auto; height: auto; padding: 10px 24px; border-radius: 8px;" onclick="TutorialSystem.close()">BEGIN ADVENTURE</button>
+      </div>
     </div>
   </div>
 

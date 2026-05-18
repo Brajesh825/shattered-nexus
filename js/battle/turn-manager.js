@@ -63,6 +63,10 @@ const TurnManager = {
    * Main entry point for resolving the current turn in the queue.
    */
   process() {
+    if (typeof TutorialSystem !== 'undefined' && TutorialSystem.isOpen()) {
+      setTimeout(() => this.process(), 100);
+      return;
+    }
     TurnState.syncFromLegacy();
     let queue = TurnState.getQueue();
     let idx = TurnState.getIndex();

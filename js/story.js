@@ -538,7 +538,8 @@ const Story = {
 
     if (this.phase === 'arc_end') {
       const isLast = this.arcIdx >= this.data.arcs.length - 1;
-      if (isLast) this._startNextArc();
+      const nextReleased = isArcReleased(this.arcIdx + 1);
+      if (isLast && nextReleased) this._startNextArc();
       else this._showWorldMap();
       return;
     }
@@ -795,8 +796,17 @@ const Story = {
     G.party.forEach(m => { m.regenTurns = 0; m.stunned = false; });
 
     await _initBattle();
-    document.getElementById('cmd-grid-main').style.display = 'grid';
-    BattleUI.openSub('');
+
+    // Trigger Vanguard shielding tutorial if not seen yet
+    if (typeof TutorialSystem !== 'undefined') {
+      const alreadyFired = typeof MapEngine !== 'undefined' && MapEngine.hasFiredScene 
+        ? MapEngine.hasFiredScene('tut_vanguard')
+        : (typeof G !== 'undefined' && G.firedScenes && (G.firedScenes.has ? G.firedScenes.has('tut_vanguard') : G.firedScenes.includes('tut_vanguard')));
+      if (!alreadyFired) {
+        TutorialSystem.show('vanguard');
+      }
+    }
+
     document.getElementById('cmd-grid-main').style.display = 'grid';
     BattleUI.openSub('');
     const names = defs.map(d => d.name).join(' & ');
@@ -1006,7 +1016,8 @@ const Story = {
     this.el('s-ae-desc').textContent = shard.description || '';
 
     const isLast = this.arcIdx >= this.data.arcs.length - 1;
-    this._setContinue(isLast ? '▶ EPILOGUE' : '▶ WORLD MAP');
+    const nextReleased = isArcReleased(this.arcIdx + 1);
+    this._setContinue((isLast && nextReleased) ? '▶ EPILOGUE' : '▶ WORLD MAP');
     this._setBg(`arc${this.arc.number}_end`);
     showScreen('story-screen');
     if (typeof SFX !== 'undefined') SFX.shardGet();
@@ -1060,6 +1071,7 @@ const Story = {
     if (typeof SFX !== 'undefined' && SFX.click) SFX.click();
     this.active = true;
     G.mode = 'story';
+    this.phase = 'arc_end'; // Preserve Completed Arc State
     this._showWorldMap();
   },
 
@@ -1320,7 +1332,7 @@ const Story = {
     const next = arcs[nextIdx];
     const arcComplete = this.phase === 'arc_end' || this.phase === 'epilogue';
     const nextReleased = isArcReleased(nextIdx);
-    const canTravel = arcComplete && nextReleased;
+    const canTravel = arcComplete && !!next;
     const proceedBtn = document.getElementById('map-proceed-btn');
     if (proceedBtn) {
       proceedBtn.disabled = !canTravel;
@@ -1330,8 +1342,8 @@ const Story = {
         proceedBtn.textContent = '▶ TRAVEL THERE';
         proceedBtn.title = '⛔ Defeat the current arc boss first';
       } else if (!nextReleased) {
-        proceedBtn.textContent = '🔒 COMING SOON';
-        proceedBtn.title = 'The next arc is still in development — explore the side regions for now!';
+        proceedBtn.textContent = '▶ NEXT ARC';
+        proceedBtn.title = 'The next arc is under development — click to view release information or continue exploring!';
       } else {
         proceedBtn.textContent = '▶ TRAVEL THERE';
         proceedBtn.title = '';

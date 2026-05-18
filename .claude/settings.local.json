@@ -100,7 +100,14 @@
       "Bash(Select-Object Name, PSIsContainer)",
       "Bash(Format-Table -AutoSize)",
       "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\ASUS\\\\VVI\\\\rpg+\" -Recurse -Filter \"*.js\")",
-      "Bash(Select-Object -ExpandProperty FullName)"
+      "Bash(Select-Object -ExpandProperty FullName)",
+      "Bash(node -e \"require\\('./tests/run-tests.js'\\)\")",
+      "Bash(node tests/sw-cache-contract.test.js)",
+      "Bash(node -e \"require\\('./tests/sw-cache-contract.test.js'\\)\")",
+      "Bash(git push *)",
+      "Bash(git pull *)",
+      "Bash(node tools/build.js)",
+      "Bash(npm run *)"
     ]
   }
 }
