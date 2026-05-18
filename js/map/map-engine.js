@@ -1672,42 +1672,50 @@ const MapEngine = (() => {
     const defeatedEnemy = MapEntities.getActiveEncountered ? MapEntities.getActiveEncountered() : null;
     if (victory && defeatedEnemy) {
       if (defeatedEnemy.id === 'river_king') {
-        const wData = (window.WEAPONS_DATA || []).find(w => w.id === 'chain_of_nights');
-        if (wData) {
-          const party = G.party || [];
-          const resChar = party.find(m => m.charId === 'rei');
-          if (resChar) {
-            resChar.char.equippedWeapon = 'chain_of_nights';
-            resChar.equippedWeapon = wData;
-            if (!G.weaponsLevels) G.weaponsLevels = {};
-            if (G.weaponsLevels['chain_of_nights'] === undefined) G.weaponsLevels['chain_of_nights'] = 1;
-            if (typeof rebuildMemberCombatStats !== 'undefined') {
-              rebuildMemberCombatStats(resChar, { resourceStrategy: 'clamp' });
+        const wId = 'chain_of_nights';
+        const alreadyHas = G.weaponsLevels && G.weaponsLevels[wId] !== undefined;
+        if (!alreadyHas) {
+          const wData = (window.WEAPONS_DATA || []).find(w => w.id === wId);
+          if (wData) {
+            const party = G.party || [];
+            const resChar = party.find(m => m.charId === 'rei');
+            if (resChar) {
+              resChar.char.equippedWeapon = wId;
+              resChar.equippedWeapon = wData;
+              if (!G.weaponsLevels) G.weaponsLevels = {};
+              G.weaponsLevels[wId] = 1;
+              if (typeof rebuildMemberCombatStats !== 'undefined') {
+                rebuildMemberCombatStats(resChar, { resourceStrategy: 'clamp' });
+              }
             }
+            if (typeof MapUI !== 'undefined') {
+              MapUI.showMsg('🎁 Acquired Chain of Ten Thousand Nights for Rei!', 3500);
+            }
+            if (typeof SFX !== 'undefined' && SFX.victory) SFX.victory();
           }
-          if (typeof MapUI !== 'undefined') {
-            MapUI.showMsg('🎁 Acquired Chain of Ten Thousand Nights for Rei!', 3500);
-          }
-          if (typeof SFX !== 'undefined' && SFX.victory) SFX.victory();
         }
       } else if (defeatedEnemy.id === 'sunken_leviathan') {
-        const wData = (window.WEAPONS_DATA || []).find(w => w.id === 'tide_caller');
-        if (wData) {
-          const party = G.party || [];
-          const resChar = party.find(m => m.charId === 'lulu');
-          if (resChar) {
-            resChar.char.equippedWeapon = 'tide_caller';
-            resChar.equippedWeapon = wData;
-            if (!G.weaponsLevels) G.weaponsLevels = {};
-            if (G.weaponsLevels['tide_caller'] === undefined) G.weaponsLevels['tide_caller'] = 1;
-            if (typeof rebuildMemberCombatStats !== 'undefined') {
-              rebuildMemberCombatStats(resChar, { resourceStrategy: 'clamp' });
+        const wId = 'tide_caller';
+        const alreadyHas = G.weaponsLevels && G.weaponsLevels[wId] !== undefined;
+        if (!alreadyHas) {
+          const wData = (window.WEAPONS_DATA || []).find(w => w.id === wId);
+          if (wData) {
+            const party = G.party || [];
+            const resChar = party.find(m => m.charId === 'lulu');
+            if (resChar) {
+              resChar.char.equippedWeapon = wId;
+              resChar.equippedWeapon = wData;
+              if (!G.weaponsLevels) G.weaponsLevels = {};
+              G.weaponsLevels[wId] = 1;
+              if (typeof rebuildMemberCombatStats !== 'undefined') {
+                rebuildMemberCombatStats(resChar, { resourceStrategy: 'clamp' });
+              }
             }
+            if (typeof MapUI !== 'undefined') {
+              MapUI.showMsg('🎁 Acquired Tide Caller for Lulu!', 3500);
+            }
+            if (typeof SFX !== 'undefined' && SFX.victory) SFX.victory();
           }
-          if (typeof MapUI !== 'undefined') {
-            MapUI.showMsg('🎁 Acquired Tide Caller for Lulu!', 3500);
-          }
-          if (typeof SFX !== 'undefined' && SFX.victory) SFX.victory();
         }
       }
     }
@@ -2004,6 +2012,13 @@ const MapEngine = (() => {
       // Trigger ambient banter
       if (MapUI.triggerBanter) {
         setTimeout(() => MapUI.triggerBanter(`map_enter_${mapId}`), 3500);
+      }
+
+      // Trigger Interactive Tutorial if not seen yet
+      if (typeof TutorialSystem !== 'undefined' && !hasFiredScene('tut_explore')) {
+        setTimeout(() => {
+          TutorialSystem.show('explore');
+        }, 1500);
       }
     }
   }
@@ -2452,6 +2467,11 @@ const MapEngine = (() => {
     runScene: (scene) => _runScene(scene),
     isSceneRunning: () => _sceneRunning,
     hasFiredScene: (id) => _firedScenes.has(id) || !!(G.firedScenes && G.firedScenes.has && G.firedScenes.has(id)),
+    fireScene: (id) => {
+      _firedScenes.add(id);
+      if (!G.firedScenes) G.firedScenes = new Set();
+      G.firedScenes.add(id);
+    },
     // Optional callback — wire this up after init to handle encounter transitions:
     // MapEngine.onEncounterStart = function(enc) { ... }
     onEncounterStart: null,

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nexus-cache-v9.14';
+const CACHE_NAME = 'nexus-cache-v9.16';
 
 // Core shell — always pre-cached regardless of quality setting
 const SHELL_ASSETS = [
@@ -76,6 +76,7 @@ const SHELL_ASSETS = [
   './js/systems/quest-system.js',
   './js/systems/save-contract.js',
   './js/systems/settings-manager.js',
+  './js/systems/tutorial-manager.js',
   // Map
   './js/map/map-data.js',
   './js/map/data/tile-defs.js',

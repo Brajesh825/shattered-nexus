@@ -419,19 +419,19 @@ function _awardDrops(enemyDef) {
   let t1 = null;
   let t2 = null;
 
-  if (['crystal_shard', 'crystal_golem', 'spectral_guardian', 'shadow_wraith'].includes(id)) {
+  if (['crystal_shard', 'crystal_golem', 'spectral_guardian', 'shadow_wraith', 'gem_mimic'].includes(id)) {
     t1 = 'ice_shard';
     t2 = 'glacial_prism';
   } else if (['imp', 'bat', 'chimera', 'forge_sentinel'].includes(id)) {
     t1 = 'ember_shard';
     t2 = 'phoenix_hearth';
-  } else if (['goblin', 'goblin_elite', 'wyvern', 'void_stalker'].includes(id)) {
+  } else if (['goblin', 'goblin_elite', 'wyvern', 'void_stalker', 'wolf', 'bandit'].includes(id)) {
     t1 = 'gale_feather';
     t2 = 'tornado_core';
-  } else if (['crab', 'mushroom', 'rat', 'void_colossus'].includes(id)) {
+  } else if (['crab', 'mushroom', 'rat', 'void_colossus', 'basilisk', 'troll'].includes(id)) {
     t1 = 'tide_shell';
     t2 = 'oceanic_pearl';
-  } else if (['zombie', 'zombie_soldier'].includes(id)) {
+  } else if (['zombie', 'zombie_soldier', 'skeleton', 'ghost', 'wisp', 'lich', 'spider', 'void_knight', 'galdor_king'].includes(id)) {
     t1 = 'void_dust';
     t2 = 'void_catalyst';
   }

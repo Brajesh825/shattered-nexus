@@ -70,6 +70,11 @@ function resolveOffensiveAction(actor, target, targetIdx, action, element) {
   if (reaction) {
     BattleUI.popReaction(targetIdx, reaction.label, 'enemy');
 
+    // Trigger Elements & Reactions interactive tutorial if never seen
+    if (typeof TutorialSystem !== 'undefined' && !MapEngine.hasFiredScene('tut_reactions')) {
+      TutorialSystem.show('reactions');
+    }
+
     // Record discovered weakness in Archive
     if (typeof Archive !== 'undefined') {
       Archive.recordWeakness(target.id, element);
