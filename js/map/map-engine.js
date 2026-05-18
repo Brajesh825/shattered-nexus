@@ -2466,7 +2466,7 @@ const MapEngine = (() => {
     // Scene runner API
     runScene: (scene) => _runScene(scene),
     isSceneRunning: () => _sceneRunning,
-    hasFiredScene: (id) => _firedScenes.has(id) || !!(G.firedScenes && G.firedScenes.has && G.firedScenes.has(id)),
+    hasFiredScene: (id) => _firedScenes.has(id) || !!(G.firedScenes && (G.firedScenes.has ? G.firedScenes.has(id) : G.firedScenes.includes(id))),
     fireScene: (id) => {
       _firedScenes.add(id);
       if (!G.firedScenes) G.firedScenes = new Set();

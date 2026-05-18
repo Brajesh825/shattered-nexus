@@ -796,8 +796,17 @@ const Story = {
     G.party.forEach(m => { m.regenTurns = 0; m.stunned = false; });
 
     await _initBattle();
-    document.getElementById('cmd-grid-main').style.display = 'grid';
-    BattleUI.openSub('');
+
+    // Trigger Vanguard shielding tutorial if not seen yet
+    if (typeof TutorialSystem !== 'undefined') {
+      const alreadyFired = typeof MapEngine !== 'undefined' && MapEngine.hasFiredScene 
+        ? MapEngine.hasFiredScene('tut_vanguard')
+        : (typeof G !== 'undefined' && G.firedScenes && G.firedScenes.has && G.firedScenes.has('tut_vanguard'));
+      if (!alreadyFired) {
+        TutorialSystem.show('vanguard');
+      }
+    }
+
     document.getElementById('cmd-grid-main').style.display = 'grid';
     BattleUI.openSub('');
     const names = defs.map(d => d.name).join(' & ');
