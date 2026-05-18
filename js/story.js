@@ -801,7 +801,7 @@ const Story = {
     if (typeof TutorialSystem !== 'undefined') {
       const alreadyFired = typeof MapEngine !== 'undefined' && MapEngine.hasFiredScene 
         ? MapEngine.hasFiredScene('tut_vanguard')
-        : (typeof G !== 'undefined' && G.firedScenes && G.firedScenes.has && G.firedScenes.has('tut_vanguard'));
+        : (typeof G !== 'undefined' && G.firedScenes && (G.firedScenes.has ? G.firedScenes.has('tut_vanguard') : G.firedScenes.includes('tut_vanguard')));
       if (!alreadyFired) {
         TutorialSystem.show('vanguard');
       }
