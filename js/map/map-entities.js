@@ -1276,35 +1276,84 @@ const MapEntities = (() => {
       const iy  = sy + oy + bounce - 14;
       const qs  = _getNPCQuestState(n);
 
-      ctx.save();
-      ctx.textAlign = 'center';
+      // Check distance to player
+      const ptx = (typeof MapPlayer !== 'undefined') ? MapPlayer.tx : 999;
+      const pty = (typeof MapPlayer !== 'undefined') ? MapPlayer.ty : 999;
+      const adjacent = (Math.abs(n.tx - ptx) + Math.abs(n.ty - pty)) <= 1;
 
-      if (qs === 'ready') {
-        // ❕ — quest ready to submit, fully visible with subtle scale bounce
-        const scale = 1 + 0.12 * Math.sin(t / 180);
-        ctx.globalAlpha = 1.0;
-        ctx.font = `bold ${Math.round(22 * scale)}px serif`;
-        ctx.fillText('❕', cx, iy);
-      } else if (qs === 'available') {
-        // ❗ — quest available, always fully visible
-        const scale = 1 + 0.08 * Math.sin(t / 320);
-        ctx.globalAlpha = 1.0;
-        ctx.font = `bold ${Math.round(22 * scale)}px serif`;
-        ctx.fillText('❗', cx, iy);
-      } else if (qs === 'available_active') {
-        // ❓ — quest in progress, always fully visible
-        ctx.globalAlpha = 1.0;
-        ctx.font = 'bold 20px serif';
-        ctx.fillText('❓', cx, iy);
-      } else if (!n.isTalked) {
-        // 💬 — untalked NPC, slightly dimmed
-        ctx.globalAlpha = 0.9;
-        ctx.font = 'bold 18px serif';
-        ctx.fillText('💬', cx, iy);
+      if (adjacent && !n.isTalking) {
+        // Draw highly premium, animated confirm key prompt badge!
+        const scale = 1 + 0.05 * Math.sin(t / 150);
+        const bw = Math.round(52 * scale);
+        const bh = Math.round(14 * scale);
+        const bx = Math.round(cx - bw / 2);
+        const by = Math.round(iy - bh / 2 - 2);
+        const rx = 4; // rounded corner radius
+
+        ctx.save();
+        // Glow effect
+        ctx.shadowColor = '#00ddff';
+        ctx.shadowBlur = 8 + 4 * Math.sin(t / 180);
+
+        // Badge pill background (Slate-955 with rich opacity)
+        ctx.fillStyle = 'rgba(8, 12, 24, 0.92)';
+        ctx.strokeStyle = '#00ddff';
+        ctx.lineWidth = 1.5;
+
+        // Draw rounded rectangle path
+        ctx.beginPath();
+        ctx.moveTo(bx + rx, by);
+        ctx.lineTo(bx + bw - rx, by);
+        ctx.arcTo(bx + bw, by, bx + bw, by + rx, rx);
+        ctx.lineTo(bx + bw, by + bh - rx);
+        ctx.arcTo(bx + bw, by + bh, bx + bw - rx, by + bh, rx);
+        ctx.lineTo(bx + rx, by + bh);
+        ctx.arcTo(bx, by + bh, bx, by + bh - rx, rx);
+        ctx.lineTo(bx, by + rx);
+        ctx.arcTo(bx, by, bx + rx, by, rx);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Keycap Text: ENTER 💬
+        ctx.shadowBlur = 0; // Disable shadow for clean text
+        ctx.fillStyle = '#ffffff';
+        ctx.font = `bold ${Math.round(8 * scale)}px monospace`;
+        ctx.textAlign = 'center';
+        ctx.fillText('ENTER 💬', cx, by + bh - 4);
+        ctx.textAlign = 'left';
+        ctx.restore();
+      } else {
+        ctx.save();
+        ctx.textAlign = 'center';
+
+        if (qs === 'ready') {
+          // ❕ — quest ready to submit, fully visible with subtle scale bounce
+          const scale = 1 + 0.12 * Math.sin(t / 180);
+          ctx.globalAlpha = 1.0;
+          ctx.font = `bold ${Math.round(22 * scale)}px serif`;
+          ctx.fillText('❕', cx, iy);
+        } else if (qs === 'available') {
+          // ❗ — quest available, always fully visible
+          const scale = 1 + 0.08 * Math.sin(t / 320);
+          ctx.globalAlpha = 1.0;
+          ctx.font = `bold ${Math.round(22 * scale)}px serif`;
+          ctx.fillText('❗', cx, iy);
+        } else if (qs === 'available_active') {
+          // ❓ — quest in progress, always fully visible
+          ctx.globalAlpha = 1.0;
+          ctx.font = 'bold 20px serif';
+          ctx.fillText('❓', cx, iy);
+        } else if (!n.isTalked) {
+          // 💬 — untalked NPC, slightly dimmed
+          ctx.globalAlpha = 0.9;
+          ctx.font = 'bold 18px serif';
+          ctx.fillText('💬', cx, iy);
+        }
+
+        ctx.textAlign = 'left';
+        ctx.restore();
       }
-
-      ctx.textAlign = 'left';
-      ctx.restore();
     }
 
     function _renderNPC(ctx, cam, TILE, n, inVision) {
