@@ -2015,7 +2015,8 @@ const MapEngine = (() => {
       }
 
       // Trigger Interactive Tutorial if not seen yet
-      if (typeof TutorialSystem !== 'undefined' && !hasFiredScene('tut_explore')) {
+      const alreadyFired = _firedScenes.has('tut_explore') || !!(typeof G !== 'undefined' && G.firedScenes && (G.firedScenes.has ? G.firedScenes.has('tut_explore') : G.firedScenes.includes('tut_explore')));
+      if (typeof TutorialSystem !== 'undefined' && !alreadyFired) {
         setTimeout(() => {
           TutorialSystem.show('explore');
         }, 1500);
