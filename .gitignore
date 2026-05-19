@@ -24,3 +24,12 @@ node_modules/
 
 # RAG Cache
 data/rag_index_cache.json
+
+# Sprite tool workshop folder
+tools/workshop/
+
+# 4K / 4X Upscaled Master Sprites (Local only)
+*_4k.png
+*_4k.webp
+*_4x.png
+*_4x.webp

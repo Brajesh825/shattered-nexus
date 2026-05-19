@@ -12,7 +12,7 @@ Aethelgard uses a **Tiered Sprite System** to balance consistency and fidelity.
 
 ## II. BASELINE STYLE: "FLAT & CLEAN" (MANDATORY)
 **Goal**: Maximum readability, sharp lines, iconic JRPG feel.
-- **Positive Anchors**: `(thin outlines:1.2), (flat color:1.3), source_anime, clean lines, (solid color:1.1), (high contrast:1.1)`
+- **Positive Anchors**: `(thin outlines:1.2), (flat color:1.3), source_anime, clean lines, (solid color:1.1), (high contrast:1.1), <lora:add-detail-xl:0.8>, refined features, detailed face, perfect anatomy `
 - **Negative Anchors**: `sketchy, gradients, blurry, soft shading, painterly, watercolor, realistic, 3d, (soft lighting:1.2)`
 
 weight : 0.40
@@ -22,7 +22,7 @@ Restyle 1x
 
 ## III. PREMIUM STYLE: "ILLUSTRIOUS VIVID" (UPGRADE)
 **Goal**: Cinematic depth, high-budget anime feel, rich lighting.
-- **Positive Anchors**: `(illustrious vivid:1.2), (vivid anime style:1.3), rich lighting, detailed gradients, cinematic anime, <lora:add-detail-xl:0.8>, refined features, detailed face, perfect anatomy`
+- **Positive Anchors**: `<lora:add-detail-xl:0.8>, refined features, detailed face, perfect anatomy`
 - **Negative Anchors**: `blurry, lowres, simple, flat, (sketchy:1.2), (messy:1.1)`
 
 ---
