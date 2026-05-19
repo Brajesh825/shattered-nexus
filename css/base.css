@@ -16,7 +16,7 @@
 }
 
 canvas {
-  image-rendering: pixelated;
+  image-rendering: auto;
 }
 
 :root {

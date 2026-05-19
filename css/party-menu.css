@@ -209,7 +209,7 @@
 #pms-sprite {
   width: 45%;
   height: 70%;
-  image-rendering: pixelated;
+  image-rendering: auto;
   transition: transform 0.3s ease;
 }
 
