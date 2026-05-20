@@ -164,6 +164,11 @@ const Story = {
       this.phase = null;
       G.mode = 'story';
       G.firedScenes = new Set();
+      // Seed from cross-slot tutorial registry so previously-seen tutorials never re-fire
+      try {
+        const seen = JSON.parse(localStorage.getItem('nexus_seen_tutorials') || '[]');
+        if (Array.isArray(seen)) seen.forEach(id => G.firedScenes.add(id));
+      } catch (e) { /* private mode — ignore */ }
       if (typeof QuestSystem !== 'undefined') {
         QuestSystem.init();
         QuestSystem.onArcAdvance(0);
@@ -274,6 +279,11 @@ const Story = {
       if (s.archive) { G.archive = s.archive; if (typeof Archive !== 'undefined') Archive.init(); }
       if (typeof QuestSystem !== 'undefined') QuestSystem.init(s.questState || null);
       G.firedScenes = new Set(s.firedScenes || []);
+      // Merge in cross-slot tutorial registry so tutorials seen on any slot stay dismissed
+      try {
+        const seen = JSON.parse(localStorage.getItem('nexus_seen_tutorials') || '[]');
+        if (Array.isArray(seen)) seen.forEach(id => G.firedScenes.add(id));
+      } catch (e) { /* private mode — ignore */ }
       G.openedChests = new Set(s.openedChests || []);
       G.shownBanter = new Set(s.shownBanter || []);
       if (s.bondProgress) G.bondProgress = s.bondProgress;

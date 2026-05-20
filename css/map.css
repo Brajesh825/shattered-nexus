@@ -1088,6 +1088,10 @@
   border-radius: 14px;
   padding: 26px 30px 22px;
   width: min(340px, 92vw);
+  max-height: calc(100dvh - 16px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
   display: flex;
   flex-direction: column;
   gap: 14px;
