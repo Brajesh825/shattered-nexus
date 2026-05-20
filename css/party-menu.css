@@ -308,6 +308,36 @@
   flex-shrink: 0;
 }
 
+/* EXP leveling hint */
+.pms-exp-hint {
+  font-family: var(--px);
+  font-size: 0.52rem;
+  letter-spacing: 0.8px;
+  color: #3d3460;
+  line-height: 1.5;
+  padding: 3px 6px;
+  background: rgba(0, 0, 0, 0.25);
+  border-left: 2px solid #2a1f52;
+  border-radius: 0 3px 3px 0;
+  flex-shrink: 0;
+  transition: color 0.3s, border-color 0.3s;
+}
+
+.pms-exp-hint:has(+ *) { /* fallback for older browsers handled via JS */ }
+
+/* Highlight when "LEVEL UP READY!" appears in text */
+.pms-exp-hint.pms-level-ready {
+  color: #fbbf24;
+  border-left-color: #fbbf2480;
+  text-shadow: 0 0 8px rgba(251, 191, 36, 0.4);
+  animation: readyPulse 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes readyPulse {
+  0%   { opacity: 0.7; }
+  100% { opacity: 1;   }
+}
+
 /* Divider */
 .pms-divider {
   height: 1px;

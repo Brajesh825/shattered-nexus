@@ -1731,6 +1731,169 @@
   opacity: 1;
 }
 
+/* ── Encounter Warning Overlay ───────────────────────── */
+#encounter-warning-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  background: radial-gradient(circle, rgba(16, 4, 4, 0.4) 0%, rgba(5, 1, 1, 0.95) 100%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-sizing: border-box;
+}
+
+#encounter-warning-overlay.show {
+  opacity: 1;
+}
+
+/* Custom variant vignettes based on mutation status */
+#encounter-warning-overlay.variant-corrupted {
+  background: radial-gradient(circle, rgba(20, 4, 30, 0.4) 0%, rgba(8, 2, 15, 0.95) 100%);
+}
+
+#encounter-warning-overlay.variant-mutant {
+  background: radial-gradient(circle, rgba(4, 20, 8, 0.4) 0%, rgba(1, 10, 3, 0.95) 100%);
+}
+
+#encounter-warning-overlay.variant-ambush {
+  background: radial-gradient(circle, rgba(30, 16, 4, 0.4) 0%, rgba(15, 6, 1, 0.95) 100%);
+}
+
+/* Hazard lines top & bottom */
+.warning-stripes {
+  width: 100%;
+  height: 20px;
+  background: repeating-linear-gradient(
+    -45deg,
+    #ff2222,
+    #ff2222 10px,
+    #0a0505 10px,
+    #0a0505 20px
+  );
+  box-shadow: 0 0 15px rgba(255, 34, 34, 0.6);
+  opacity: 0.85;
+}
+
+#encounter-warning-overlay.variant-corrupted .warning-stripes {
+  background: repeating-linear-gradient(
+    -45deg,
+    #a855f7,
+    #a855f7 10px,
+    #05010a 10px,
+    #05010a 20px
+  );
+  box-shadow: 0 0 15px rgba(168, 85, 247, 0.6);
+}
+
+#encounter-warning-overlay.variant-mutant .warning-stripes {
+  background: repeating-linear-gradient(
+    -45deg,
+    #22c55e,
+    #22c55e 10px,
+    #010a03 10px,
+    #010a03 20px
+  );
+  box-shadow: 0 0 15px rgba(34, 197, 94, 0.6);
+}
+
+#encounter-warning-overlay.variant-ambush .warning-stripes {
+  background: repeating-linear-gradient(
+    -45deg,
+    #f59e0b,
+    #f59e0b 10px,
+    #0a0501 10px,
+    #0a0501 20px
+  );
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.6);
+}
+
+.warning-stripes-top {
+  border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+  animation: scrollStripesRight 2s linear infinite;
+}
+
+.warning-stripes-bottom {
+  border-top: 2px solid rgba(255, 255, 255, 0.15);
+  animation: scrollStripesLeft 2s linear infinite;
+}
+
+@keyframes scrollStripesRight {
+  0% { background-position: 0 0; }
+  100% { background-position: 40px 0; }
+}
+
+@keyframes scrollStripesLeft {
+  0% { background-position: 0 0; }
+  100% { background-position: -40px 0; }
+}
+
+/* Central text container */
+.warning-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: 16px;
+}
+
+.warning-title {
+  font-family: var(--px);
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: 6px;
+  color: #ff3333;
+  text-shadow: 0 0 20px rgba(255, 51, 51, 0.8), 0 0 40px rgba(255, 51, 51, 0.4);
+  animation: alertGlitch 1.5s infinite;
+}
+
+#encounter-warning-overlay.variant-corrupted .warning-title {
+  color: #c084fc;
+  text-shadow: 0 0 20px rgba(192, 132, 252, 0.8), 0 0 40px rgba(192, 132, 252, 0.4);
+}
+
+#encounter-warning-overlay.variant-mutant .warning-title {
+  color: #4ade80;
+  text-shadow: 0 0 20px rgba(74, 222, 128, 0.8), 0 0 40px rgba(74, 222, 128, 0.4);
+}
+
+#encounter-warning-overlay.variant-ambush .warning-title {
+  color: #fbbf24;
+  text-shadow: 0 0 20px rgba(251, 191, 36, 0.8), 0 0 40px rgba(251, 191, 36, 0.4);
+}
+
+.warning-detail {
+  font-family: var(--vt);
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: #fff;
+  text-transform: uppercase;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  animation: textPulse 1s ease-in-out infinite alternate;
+}
+
+@keyframes alertGlitch {
+  0%, 100% { transform: skew(0deg); }
+  20% { transform: skew(-3deg); }
+  21% { transform: skew(5deg); }
+  22% { transform: skew(0deg); }
+  80% { transform: skew(0deg); }
+  81% { transform: skew(3deg); }
+  82% { transform: skew(-5deg); }
+  83% { transform: skew(0deg); }
+}
+
+@keyframes textPulse {
+  0% { transform: scale(0.98); opacity: 0.85; filter: brightness(0.9); }
+  100% { transform: scale(1.03); opacity: 1; filter: brightness(1.1); }
+}
+
 /* ── Corruption meter (top-right of canvas wrap) ─────── */
 #corruption-meter {
   position: absolute;

@@ -612,6 +612,7 @@ const PartyMenu = (() => {
         <div class="pms-exp-bg"><div class="pms-exp-fill" style="width:${expPct}%;background:${col}"></div></div>
         <span class="pms-exp-val">${m.exp}/${expNext}</span>
       </div>
+      <div class="pms-exp-hint">⬆ Defeat enemies in battle to gain EXP · Level up auto-upgrades HP, MP, ATK, DEF, MAG &amp; SPD · ${expNext - m.exp > 0 ? `${expNext - m.exp} EXP to next level` : 'LEVEL UP READY!'}</div>
 
       <div class="pms-divider"></div>
 
@@ -646,6 +647,12 @@ const PartyMenu = (() => {
       <div class="pms-section-title">ABILITIES</div>
       <div class="pms-abilities">${abRows || '<div style="color:var(--text-dim);font-size:0.82rem">No abilities.</div>'}</div>
     `;
+
+    // Apply level-ready highlight class if exp is maxed
+    const hintEl = infoPanel.querySelector('.pms-exp-hint');
+    if (hintEl) {
+      hintEl.classList.toggle('pms-level-ready', m.exp >= expNext);
+    }
   }
 
   function renderCurrent() { _renderCurrent(); }

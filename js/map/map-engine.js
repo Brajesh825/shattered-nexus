@@ -1550,8 +1550,8 @@ const MapEngine = (() => {
     // 1. Stop movement immediately
     stop();
 
-    // 2. Screen shake — stronger for mutated enemies
-    _shakeTime = mut ? (isAmbush ? 0.85 : 0.60) : (isAmbush ? 0.55 : 0.35);
+    // 2. Screen shake — stronger and longer for pre-encounter warning phase
+    _shakeTime = mut ? 1.2 : isAmbush ? 1.0 : 0.8;
 
     // 3. Edge flash — purple for corrupted, green for mutant
     const flashEl = document.getElementById('explore-flash');
@@ -1580,22 +1580,63 @@ const MapEngine = (() => {
       MapUI.showMsg(`${prefix}${name}${suffix}`, 2200);
     }
 
-    // 6. Nexus Shatter Transition
+    // 6. Pre-encounter Warning Overlay Sequence
+    const overlay = document.getElementById('encounter-warning-overlay');
+    if (overlay) {
+      overlay.style.display = 'flex';
+      overlay.className = ''; // Reset classes
+      if (mut === 'corrupted') {
+        overlay.classList.add('variant-corrupted');
+      } else if (mut === 'mutant') {
+        overlay.classList.add('variant-mutant');
+      } else if (isAmbush) {
+        overlay.classList.add('variant-ambush');
+      }
+      
+      const titleEl = overlay.querySelector('.warning-title');
+      if (titleEl) {
+        titleEl.textContent = isAmbush ? '⚠️ AMBUSH ⚠️' : '⚠️ WARNING ⚠️';
+      }
+
+      const nameEl = document.getElementById('warning-enemy-name');
+      if (nameEl) {
+        nameEl.textContent = name;
+      }
+      
+      // Trigger animation
+      overlay.offsetHeight; // Force reflow
+      overlay.classList.add('show');
+    }
+
+    // Play synthesized alert sound
+    if (typeof SFX !== 'undefined' && SFX.encounterWarning) {
+      SFX.encounterWarning();
+    }
+
+    // 7. Delayed Nexus Shatter Transition
     MapEntities.removeEncountered();
-    const delay = (mut || isAmbush) ? 750 : 480;
-    if (typeof FX !== 'undefined') {
-      setTimeout(() => {
+    const alertDelay = 1200;
+    setTimeout(() => {
+      // Hide warning overlay
+      if (overlay) {
+        overlay.classList.remove('show');
+        setTimeout(() => {
+          overlay.style.display = 'none';
+        }, 250);
+      }
+
+      if (typeof FX !== 'undefined') {
         FX.shatter(() => {
           if (typeof MapEngine !== 'undefined' && typeof MapEngine.onEncounterStart === 'function') {
             MapEngine.onEncounterStart(enc, _map);
           }
         });
-      }, delay);
-    } else {
-      if (typeof MapEngine !== 'undefined' && typeof MapEngine.onEncounterStart === 'function') {
-        setTimeout(() => MapEngine.onEncounterStart(enc, _map), delay);
+      } else {
+        if (typeof MapEngine !== 'undefined' && typeof MapEngine.onEncounterStart === 'function') {
+          MapEngine.onEncounterStart(enc, _map);
+        }
       }
-    }
+    }, alertDelay);
   }
 
   function onBattleComplete(victory) {

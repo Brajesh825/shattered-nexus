@@ -65,6 +65,45 @@ const SFX = {
     });
   },
 
+  /* ── Pre-combat danger alert heartbeat ────────────────────────────────── */
+  encounterWarning() {
+    this._run(ctx => {
+      const now = ctx.currentTime;
+      const playPulse = (delay) => {
+        const time = now + delay;
+        // Sawtooth sweep (low alert rumble)
+        const osc1 = ctx.createOscillator();
+        const gain1 = ctx.createGain();
+        osc1.connect(gain1);
+        gain1.connect(ctx.destination);
+        osc1.type = 'sawtooth';
+        osc1.frequency.setValueAtTime(130, time);
+        osc1.frequency.linearRampToValueAtTime(30, time + 0.35);
+        gain1.gain.setValueAtTime(0.35, time);
+        gain1.gain.exponentialRampToValueAtTime(0.001, time + 0.38);
+        osc1.start(time);
+        osc1.stop(time + 0.4);
+
+        // Sine sweep (dissonant high alarm)
+        const osc2 = ctx.createOscillator();
+        const gain2 = ctx.createGain();
+        osc2.connect(gain2);
+        gain2.connect(ctx.destination);
+        osc2.type = 'sine';
+        osc2.frequency.setValueAtTime(320, time);
+        osc2.frequency.linearRampToValueAtTime(440, time + 0.35);
+        gain2.gain.setValueAtTime(0.18, time);
+        gain2.gain.exponentialRampToValueAtTime(0.001, time + 0.38);
+        osc2.start(time);
+        osc2.stop(time + 0.4);
+      };
+      
+      playPulse(0);
+      playPulse(0.38);
+      playPulse(0.76);
+    });
+  },
+
   /* ── Attack (physical impact) ────────────────────────────────────────── */
   attack() {
     this._run(ctx => {
