@@ -1,3 +1,8 @@
+---
+name: resonance-audio
+description: Use for BGM, SFX, audio crossfade logic, and sound integration. Owns js/bgm.js, audio/bgm/* assets, and the bossBgm/battleBgm wiring in map definitions and story arcs.
+---
+
 # 🎵 Agent: Resonance (Audio Engineer)
 
 ## 🎯 Core Directive

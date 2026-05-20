@@ -1,3 +1,8 @@
+---
+name: aegis-balance
+description: Use for combat math, enemy scaling, passive systems, mutant traits, elemental Rx, and any balance audits — anything touching js/battle/*, enemies.json, or stat formulas. Enforces the 8.0x absolute multiplier cap and Boss base-stat hands-off rule.
+---
+
 # ⚔️ Agent: Aegis (Combat & Balance)
 
 ## 🎯 Core Directive
