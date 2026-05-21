@@ -145,7 +145,7 @@ const Cutscene = {
     if (typeof SFX !== 'undefined' && SFX.dialogue) SFX.dialogue();
 
     // Render scene characters if chapter cast exists
-    if (speaker && window.Story && window.Story.currentChap && window.Story.currentChap.cast) {
+    if (window.Story && window.Story.currentChap && window.Story.currentChap.cast) {
       this._renderSceneCharacters(speaker, emotion);
     }
 
@@ -223,7 +223,7 @@ const Cutscene = {
 
     const cast = window.Story.currentChap.cast;
 
-    cast.forEach(charName => {
+    cast.forEach((charName, idx) => {
       if (!charName) return;
 
       if (!this._charAppeared[charName]) {
@@ -233,12 +233,22 @@ const Cutscene = {
         charEl.className = 's-scene-char';
         charEl.id = `s-scene-char-${charName.toLowerCase()}`;
 
+        // Calculate horizontal offset based on cast index
+        let leftPct = 50;
+        if (cast.length === 2) {
+          leftPct = idx === 0 ? 25 : 75;
+        } else if (cast.length === 3) {
+          leftPct = idx === 0 ? 15 : idx === 1 ? 50 : 85;
+        } else if (cast.length >= 4) {
+          leftPct = 10 + (idx / (cast.length - 1)) * 80;
+        }
+        charEl.style.left = `${leftPct}%`;
+
         const spriteEl = document.createElement('div');
         spriteEl.className = 's-scene-sprite';
         const speakerCharId = this._charIdForSpeaker(charName);
-        const vHeight = window.innerHeight;
-        const isLandscape = window.innerWidth > vHeight;
-        const portraitHeight = Math.max(300, Math.floor(vHeight * (isLandscape ? 0.75 : 0.52)));
+        const isLandscape = window.innerWidth > window.innerHeight;
+        const portraitHeight = isLandscape ? '80vh' : '55vh';
         
         if (typeof SpriteRenderer !== 'undefined') {
           SpriteRenderer.setFrame(spriteEl, speakerCharId, 'idle', portraitHeight);

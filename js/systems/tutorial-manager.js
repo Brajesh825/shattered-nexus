@@ -276,10 +276,21 @@ const TutorialSystem = (() => {
         if (!G.firedScenes) G.firedScenes = new Set();
         G.firedScenes.add(sceneId);
       }
-      
-      // Auto-save save game state
-      if (typeof Save !== 'undefined' && typeof G !== 'undefined') {
-        const slot = Save.getActiveSlot ? Save.getActiveSlot() : 0;
+
+      // Layer 1 — standalone localStorage key, independent of save slots.
+      // Survives slot switching, pre-save quits, and new game starts.
+      try {
+        const raw = localStorage.getItem('nexus_seen_tutorials');
+        const seen = raw ? JSON.parse(raw) : [];
+        if (Array.isArray(seen) && !seen.includes(sceneId)) {
+          seen.push(sceneId);
+          localStorage.setItem('nexus_seen_tutorials', JSON.stringify(seen));
+        }
+      } catch (e) { /* private mode / quota — silently ignore */ }
+
+      // Layer 2 — existing save-slot persistence, using authoritative slot source.
+      if (typeof Save !== 'undefined' && typeof G !== 'undefined' && Save.patch) {
+        const slot = (typeof Story !== 'undefined' && Story._activeSlot !== undefined) ? Story._activeSlot : 0;
         Save.patch({ firedScenes: Array.from(G.firedScenes || []) }, slot);
       }
     }

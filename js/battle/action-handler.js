@@ -4,14 +4,7 @@
  */
 
 const ActionHandler = {
-  _tutCount: 0,
   execute(actor, target, ab, targetIdx, isEnemy = false) {
-    // Show one-time tutorial hint for Vanguard
-    if (!isEnemy && this._tutCount === 0) {
-      this._tutCount++;
-      BattleUI.showTutorial("🛡️ VANGUARD: The front-most ally (left) intercepts single-target attacks. Keep them healthy!");
-    }
-
     const element = ab.element || ab.effect?.element || 'physical';
 
     if (ab.type === 'physical' || ab.type === 'magic_damage') {
@@ -71,7 +64,7 @@ function resolveOffensiveAction(actor, target, targetIdx, action, element) {
     BattleUI.popReaction(targetIdx, reaction.label, 'enemy');
 
     // Trigger Elements & Reactions interactive tutorial if never seen
-    if (typeof TutorialSystem !== 'undefined' && !MapEngine.hasFiredScene('tut_reactions')) {
+    if (typeof TutorialSystem !== 'undefined' && typeof MapEngine !== 'undefined' && !MapEngine.hasFiredScene('tut_reactions')) {
       TutorialSystem.show('reactions');
     }
 

@@ -238,13 +238,18 @@ const SpriteRenderer = (() => {
     const coords = Array.isArray(frameNameOrCoords) ? frameNameOrCoords : (FRAME_MAP[frameNameOrCoords] || FRAME_MAP.idle);
     const col = Math.max(0, Math.min(manifest.cols - 1, coords[0] || 0));
     const row = Math.max(0, Math.min(manifest.rows - 1, coords[1] || 0));
-    const baseHeight = customHeight || (el.offsetHeight > 0 ? el.offsetHeight : 128);
     const posX = manifest.cols === 1 ? 0 : (col / (manifest.cols - 1)) * 100;
     const posY = manifest.rows === 1 ? 0 : (row / (manifest.rows - 1)) * 100;
 
     el.style.backgroundImage = `url(${getSpritePath(manifest.baseId)})`;
-    el.style.width = `${baseHeight}px`;
-    el.style.height = `${baseHeight}px`;
+    if (typeof customHeight === 'string') {
+      el.style.width = customHeight;
+      el.style.height = customHeight;
+    } else {
+      const baseHeight = customHeight || (el.offsetHeight > 0 ? el.offsetHeight : 128);
+      el.style.width = `${baseHeight}px`;
+      el.style.height = `${baseHeight}px`;
+    }
     el.style.backgroundSize = `${manifest.cols * 100}% ${manifest.rows * 100}%`;
     el.style.backgroundPosition = `${posX}% ${posY}%`;
     el.style.backgroundRepeat = 'no-repeat';
