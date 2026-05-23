@@ -121,7 +121,7 @@
                 "effect": {
                     "dmgMultiplier": 1.6,
                     "element": "fire",
-                    "lifeSteal": 0.15
+                    "lifeSteal": 0.22
                 }
             },
             {
@@ -174,7 +174,7 @@
             "hp": 7,
             "mp": 4,
             "atk": 5,
-            "def": 1,
+            "def": 2,
             "spd": 3,
             "mag": 4,
             "lck": 2
@@ -359,7 +359,7 @@
             "mp": 2,
             "atk": 3,
             "def": 5,
-            "spd": 0,
+            "spd": 1,
             "mag": 1,
             "lck": 2
         }

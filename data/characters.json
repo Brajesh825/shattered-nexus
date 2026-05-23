@@ -64,10 +64,10 @@
         "skin_color": "#f5c8a0",
         "armor_color": "#c03010",
         "base_stats": {
-            "hp": 50,
+            "hp": 55,
             "mp": 22,
             "atk": 20,
-            "def": 7,
+            "def": 9,
             "spd": 14,
             "mag": 12,
             "lck": 10
@@ -161,7 +161,7 @@
             "mp": 18,
             "atk": 18,
             "def": 16,
-            "spd": 13,
+            "spd": 15,
             "mag": 8,
             "lck": 10
         },

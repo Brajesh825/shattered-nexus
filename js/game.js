@@ -218,6 +218,20 @@ const Battle = {
         if (window.LogDebug) window.LogDebug(`[AI-Predator] ${ab.name} suppressed — vanguard blocks physical reach`, 'hi');
       }
 
+      // Smart Buff AI: suppress buff/regen skills already active with >1 turn remaining
+      const isSelfBuff = ab.type === 'buff_def' || ab.type === 'buff_self' || ab.type === 'buff_atk' || ab.type === 'buff';
+      const isRegenAbility = ab.type === 'regen';
+      if ((isSelfBuff || isRegenAbility) && actor.statuses && actor.statuses.length) {
+        const activeStatus = actor.statuses.find(s => {
+          if (isRegenAbility) return s.id === 'status_regen' || s.id.startsWith('status_regen_');
+          return s.id.includes(ab.id);
+        });
+        if (activeStatus && (activeStatus.turns ?? 0) > 1) {
+          weight *= 0.05; // 95% suppression — almost never re-casts
+          if (window.LogDebug) window.LogDebug(`[AI-SmartBuff] ${ab.name} suppressed — status "${activeStatus.id}" active with ${activeStatus.turns} turns left`, 'hi');
+        }
+      }
+
       return { ...ab, _tempWeight: weight };
     });
 
@@ -1076,6 +1090,25 @@ function checkBattleEnd() {
       });
     }
 
+    // ── Boss Defeat Impact: shatter flash + heavy screen shake ──────────
+    const BOSS_IDS = new Set(['void_knight', 'demon_lord', 'river_king', 'sunken_leviathan', 'spectral_guardian', 'galdor_king', 'shadow_titan', 'void_colossus']);
+    const defeatedBoss = G.enemyGroup.find(e => !Battle.alive(e) && (e.isBoss || BOSS_IDS.has(e.id)));
+    let bossImpactDelay = 0;
+    if (defeatedBoss && !G.isGauntletMode) {
+      bossImpactDelay = 1200;
+      // Fullscreen whiteout flash
+      const flash = document.createElement('div');
+      flash.className = 'shatter-flash';
+      document.body.appendChild(flash);
+      setTimeout(() => { if (flash.parentNode) flash.parentNode.removeChild(flash); }, 750);
+      // Heavy shake on battle screen container
+      const bsEl = document.getElementById('battle-screen');
+      if (bsEl) {
+        bsEl.classList.add('shake-heavy');
+        setTimeout(() => bsEl.classList.remove('shake-heavy'), 560);
+      }
+    }
+
     setTimeout(() => {
       if (leveledNames.length) {
         BattleUI.addLog(`★ LEVEL UP: ${leveledNames.join(', ')}!`, 'hi');
@@ -1090,7 +1123,7 @@ function checkBattleEnd() {
         else if (typeof Story !== 'undefined' && Story.active) Story.onBattleWon();
         else showResult('victory');
       }, leveledNames.length ? 1400 : 500);
-    }, 1100);
+    }, 1100 + bossImpactDelay);
     return true;
   }
 
