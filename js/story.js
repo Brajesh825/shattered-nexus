@@ -272,6 +272,22 @@ const Story = {
       // Restore unlocked characters and inventory from save
       if (s.unlockedChars) G.unlockedChars = s.unlockedChars;
       if (s.clearedMaps) G.clearedMaps = s.clearedMaps;
+
+      // ── Migration: heal premature-clearedMaps softlock ──────────────────
+      // Older builds pushed the current map id into G.clearedMaps the moment
+      // the explore objective fired (BEFORE the arc boss battle). If the
+      // player lost/quit that boss, showIfMapCleared NPCs (e.g. Verdant Vale's
+      // ruin_closure offering point) would spawn onto the objective tile and
+      // block the player from re-triggering the boss chapter. If the player
+      // is still on arc N, the arc's primary map cannot legitimately be
+      // cleared yet — strip it.
+      if (Array.isArray(G.clearedMaps) && ARC_MAP_ID[this.arcIdx]) {
+        const currentArcMap = ARC_MAP_ID[this.arcIdx];
+        if (G.clearedMaps.includes(currentArcMap)) {
+          G.clearedMaps = G.clearedMaps.filter(m => m !== currentArcMap);
+          console.warn('[SaveMigration] Stripped premature clearedMaps entry:', currentArcMap);
+        }
+      }
       if (s.inventory) G.inventory = s.inventory;
       if (s.npcTalked) G.npcTalked = s.npcTalked;
       if (s.ownedRelics) G.ownedRelics = s.ownedRelics;
@@ -930,17 +946,22 @@ const Story = {
 
   /** Called by MapEngine when story_explore mode battle/explore ends */
   onExploreComplete() {
+    const objType = (typeof MapEngine !== 'undefined' && MapEngine.getMap && MapEngine.getMap()?.objective?.type) || null;
     MapEngine.stop();
     G.mode = 'story';
     const chap = this._exploreChap;
     this._exploreChap = null;
 
-    // Mark current map as cleared so it can be revisited directly from the world map
-    if (chap && chap.map) {
+    // Mark map cleared ONLY for kill_boss objectives (multi-floor dungeon floors,
+    // where the floor boss is actually dead by the time this fires). For
+    // reach/collect/survive objectives the arc boss hasn't been fought yet —
+    // defer to the boss_in→boss_post push in onBattleWon so showIfMapCleared
+    // NPCs don't spawn onto the objective tile and softlock the player.
+    if (chap && chap.map && objType === 'kill_boss') {
       if (!Array.isArray(G.clearedMaps)) G.clearedMaps = [];
       if (!G.clearedMaps.includes(chap.map)) G.clearedMaps.push(chap.map);
     }
-    
+
     this._showLines((chap && chap.post_dialogue) || [], () => this._nextChapter());
     showScreen('story-screen');
   },

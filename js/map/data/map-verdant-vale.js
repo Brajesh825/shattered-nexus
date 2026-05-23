@@ -70,7 +70,7 @@ MAP_DEFS.verdant_vale = {
         { id: 'soldier_2', x: 15, y: 6, dialogueKey: 'verdant_vale', behavior: 'stationary' },
         { id: 'soldier_3', x: 17, y: 15, dialogueKey: 'verdant_vale', behavior: 'patrol', waypoints: [{ x: 17, y: 15 }, { x: 17, y: 12 }] },
         { id: 'lira', x: 8, y: 7, dialogueKey: 'verdant_vale', behavior: 'wander', range: 2, activePhases: ['dawn', 'noon', 'dusk'] },
-        { id: 'ruin_closure', x: 53, y: 29, dialogueKey: 'verdant_vale', showIfMapCleared: 'verdant_vale', behavior: 'stationary' },
+        { id: 'ruin_closure', x: 53, y: 30, dialogueKey: 'verdant_vale', showIfMapCleared: 'verdant_vale', behavior: 'stationary' },
         { id: 'dying_royal_guard', x: 46, y: 15, dialogueKey: 'verdant_vale', behavior: 'stationary', giveQuest: 'the_hollow_guard' },
         { id: 'galdor_decree_stone', x: 50, y: 50, dialogueKey: 'verdant_vale', behavior: 'stationary' },
         { id: 'squad_insignia', x: 36, y: 38, dialogueKey: 'verdant_vale', behavior: 'stationary', showOnlyDuringQuest: 'the_hollow_guard' },
