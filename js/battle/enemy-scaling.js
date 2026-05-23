@@ -25,7 +25,7 @@ const EnemyScaling = (() => {
 
     return {
       exp: Math.floor(def.reward.exp * growth.expMult * hordeScale * levelScale * bossExpMult),
-      gold: Math.floor(def.reward.gold * growth.expMult * hordeScale * bossGoldMult)
+      gold: Math.floor(def.reward.gold * growth.expMult * hordeScale * levelScale * bossGoldMult * 2.5)
     };
   }
 

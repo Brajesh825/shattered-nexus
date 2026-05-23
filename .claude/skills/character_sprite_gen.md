@@ -62,3 +62,103 @@ Restyle 1x
 2. **Settings**: Run Img2Img at **0.4 - 0.5 Denoising Strength**.
 3. **Prompt**: Combine the character's unique prompt with the **Premium Style** anchors.
 4. **Output**: Save as `_sprite_1.png`.
+
+---
+
+## VII. FACE DETAILER PROTOCOL (ADetailer)
+
+> **When to use**: After any spritesheet generation — both Flat & Vivid tiers.
+> **When to SKIP**: Map/chibi sheets (Section IV). Faces are too small (~10px) for reliable YOLO detection. Fix chibi faces manually or via inpaint brush instead.
+
+### How It Works on a Spritesheet
+ADetailer runs a YOLO face detection pass over the full sheet, finds **one bounding box per frame cell**, then crops → upscales → re-renders → pastes each face back independently. All 6 faces on a 2×3 combat sheet are fixed in a single pass.
+
+---
+
+### 🔧 Required Setup (one-time)
+| Item | How to get it |
+| :--- | :--- |
+| **ADetailer extension** | A1111 → Extensions → Install from URL → `github.com/Bing-su/adetailer` |
+| **`face_yolov8n.pt`** | Auto-downloads on first ADetailer use (Slot 1 — whole face) |
+| **`eyes_yolov8n.pt`** | Auto-downloads from ADetailer model list (Slot 2 — eyes only) |
+
+---
+
+### ⚙️ Slot 1 — Face Pass (both tiers)
+
+| Setting | Flat & Clean | Illustrious Vivid |
+| :--- | :--- | :--- |
+| **Model** | `face_yolov8n.pt` | `face_yolov8n.pt` |
+| **Confidence** | `0.30` | `0.30` |
+| **Mask padding** | `32 px` | `48 px` |
+| **Denoising** | `0.35 – 0.45` | `0.45 – 0.55` |
+
+**Slot 1 Prompt template** (customise per character):
+```
+(thin outlines:1.2), flat color, clean anime face,
+[HAIR_COLOR] hair framing face, [EYE_COLOR] eyes,
+sharp iris, (defined pupils:1.1), high contrast
+```
+**Slot 1 Negative**:
+```
+blurry, soft, realistic eyes, 3d, gradients, smudged, deformed face, extra eyes
+```
+
+For the **Vivid tier**, swap the positive to:
+```
+(detailed anime face:1.3), cinematic lighting on face,
+[EYE_COLOR] glowing eyes, sharp iris, (complex eye detail:1.2),
+soft rim light, high fidelity, [HAIR_COLOR] hair
+```
+
+---
+
+### ⚙️ Slot 2 — Eyes Pass (runs after Slot 1)
+
+| Setting | Value |
+| :--- | :--- |
+| **Model** | `eyes_yolov8n.pt` |
+| **Confidence** | `0.25` (lower — eyes are tiny) |
+| **Mask padding** | `16 px` |
+| **Denoising** | `0.25 – 0.35` (gentle — just sharpening) |
+
+**Slot 2 Prompt template** (reusable — swap colour only):
+```
+(detailed iris:1.3), (sharp pupils:1.2), (anime eye:1.2),
+bright catch light, [EYE_COLOR] iris, perfect symmetry
+```
+**Slot 2 Negative**:
+```
+blurry iris, dull eyes, flat eyes, asymmetric, deformed pupils
+```
+
+---
+
+### 📋 Per-Character Quick Reference
+
+Fill this in for each character when building their concept doc:
+
+```
+Character : [NAME]
+Eye colour : [e.g. crimson red / violet / teal]
+Hair colour: [e.g. silver-white / dark navy / fiery orange]
+Face marks : [scar / markings / none]
+Slot 1 (+) : (thin outlines:1.2), flat color, clean anime face,
+             [HAIR] hair, [EYE] eyes, sharp iris, defined pupils
+Slot 2 (+) : detailed iris, bright catch light, [EYE] iris,
+             sharp pupils, anime eye, perfect symmetry
+```
+
+---
+
+### 🔁 Full Pipeline Order
+
+```
+txt2img / img2img  →  base spritesheet
+        ↓
+ADetailer Slot 1   →  face_yolov8n  (all 6 faces refined)
+        ↓
+ADetailer Slot 2   →  eyes_yolov8n  (all 6 eye pairs sharpened)
+        ↓
+Save as _sprite.png (Flat) or _sprite_1.png (Vivid)
+```

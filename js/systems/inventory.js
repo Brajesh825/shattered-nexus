@@ -436,11 +436,11 @@ function _awardDrops(enemyDef) {
     t2 = 'void_catalyst';
   }
 
-  if (t1 && Math.random() < 0.50) {
+  if (t1 && Math.random() < 0.75) {
     addToInventory(t1, 1);
     awarded.push(t1);
   }
-  if (t2 && Math.random() < 0.15) {
+  if (t2 && Math.random() < 0.35) {
     addToInventory(t2, 1);
     awarded.push(t2);
   }

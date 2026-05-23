@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nexus-cache-v9.21';
+const CACHE_NAME = 'nexus-cache-v9.22';
 
 // Core shell — always pre-cached regardless of quality setting
 const SHELL_ASSETS = [
@@ -140,9 +140,11 @@ const SHELL_ASSETS = [
   './images/enemies/rat.webp',
   './images/enemies/slime.webp',
   './images/enemies/void_knight.webp',
-  // Backgrounds (Arc 1)
+  // Backgrounds (Arc 1 & Riverside/Isles)
   './images/backgrounds/verdant_vale.webp',
   './images/backgrounds/forest_path.webp',
+  './images/backgrounds/riverlands.webp',
+  './images/backgrounds/sunken_temple.webp',
   './images/environment/png/offering_point.png',
 ];
 

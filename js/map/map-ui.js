@@ -766,7 +766,7 @@ const MapUI = (() => {
         };
 
         // Level Up Cost calculations
-        const refGoldCost = level < 10 ? level * 100 : (level - 10) * 500;
+        const refGoldCost = level < 10 ? level * 50 : 500 + (level - 10) * 150;
         const refMat = getElementalMaterial(w.element || 'void', level);
         const refMatCost = level < 10 ? level * 2 : (level - 10) * 2;
         
