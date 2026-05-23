@@ -346,6 +346,38 @@
   z-index: 10;
 }
 
+/* ── Crowded-scene layout (5-cast boss intros) ───────────────────────
+   Shrink dimmed siblings harder + cap sprite height so 5 portraits
+   never bump shoulders or clip the screen edges on mobile. */
+#s-scene-layer[data-cast-count="5"] .s-scene-char.dimmed {
+  transform: translate(-50%, 18px) scale(0.78);
+  opacity: 0.42;
+  filter: brightness(0.35) grayscale(0.25);
+}
+#s-scene-layer[data-cast-count="5"] .s-scene-char.active {
+  transform: translate(-50%, 0) scale(1.02);
+}
+#s-scene-layer[data-cast-count="5"] .s-scene-char .s-scene-sprite {
+  max-height: 70vh;
+}
+@media (max-width: 768px) {
+  #s-scene-layer[data-cast-count="5"] .s-scene-char .s-scene-sprite {
+    max-height: 48vh;
+  }
+  #s-scene-layer[data-cast-count="5"] .s-scene-char.dimmed {
+    transform: translate(-50%, 20px) scale(0.7);
+    opacity: 0.38;
+  }
+}
+@media (max-width: 480px) {
+  #s-scene-layer[data-cast-count="5"] .s-scene-char .s-scene-sprite {
+    max-height: 42vh;
+  }
+  #s-scene-layer[data-cast-count="5"] .s-scene-char.dimmed {
+    transform: translate(-50%, 22px) scale(0.62);
+  }
+}
+
 .s-scene-char.active .s-scene-sprite {
   filter: drop-shadow(0 0 25px rgba(160, 144, 208, 0.75)) drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5));
 }

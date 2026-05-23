@@ -247,6 +247,12 @@ const Cutscene = {
       cast.push(speaker);
     }
 
+    // Surface the cast count on the layer so CSS can scale dimmed siblings tighter
+    // when the scene is crowded (e.g. 5-cast boss intros: 4 heroes + boss enemy).
+    if (layer.dataset.castCount !== String(cast.length)) {
+      layer.dataset.castCount = String(cast.length);
+    }
+
     cast.forEach((charName, idx) => {
       if (!charName) return;
 
@@ -257,14 +263,21 @@ const Cutscene = {
         charEl.className = 's-scene-char';
         charEl.id = `s-scene-char-${charName.toLowerCase().replace(/ /g, '_')}`;
 
-        // Calculate horizontal offset based on cast index
+        // Calculate horizontal offset based on cast index.
+        // 5-cast uses tighter ends (8/92) and a true center to keep the boss
+        // anchored opposite the four heroes without clipping the screen edges.
         let leftPct = 50;
         if (cast.length === 2) {
           leftPct = idx === 0 ? 25 : 75;
         } else if (cast.length === 3) {
           leftPct = idx === 0 ? 15 : idx === 1 ? 50 : 85;
-        } else if (cast.length >= 4) {
-          leftPct = 10 + (idx / (cast.length - 1)) * 80;
+        } else if (cast.length === 4) {
+          leftPct = [12, 38, 62, 88][idx];
+        } else if (cast.length === 5) {
+          leftPct = [8, 28, 50, 72, 92][idx];
+        } else if (cast.length > 5) {
+          // Safety net — should never happen per design (5 is the hard cap)
+          leftPct = 8 + (idx / (cast.length - 1)) * 84;
         }
         charEl.style.left = `${leftPct}%`;
 

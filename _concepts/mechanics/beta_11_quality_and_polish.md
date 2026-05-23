@@ -25,6 +25,7 @@
 | Curator | Enemy debuff tuning | ✅ | spore_cloud sleep 60%, venom_strike poison 75%/3t, haunt MP-drain 12, rotten_grasp stun 35%, void_shriek stun 25%, gem_mimic `greed_bind` (MP-drain 8 + slow 2t) |
 | Curator | Poison DOT bumped to 8% max HP | ✅ | `js/scaling-config.js → status.poisonHP: 0.08` |
 | Curator | Smart Enemy AI Buff Selection | ✅ | Weight ×0.05 when matching buff status has >1 turn remaining (Phase 3) |
+| Vivid | 5-cast cutscene layout (Phase 5) | ✅ | `cutscene.js` adds explicit `cast.length===5` row at 8/28/50/72/92%, `data-cast-count` on `#s-scene-layer`. `story-ui.css` shrinks dimmed siblings to scale 0.78 (mobile 0.62-0.70) + caps portrait height so boss intros never bump shoulders or clip the screen. Hard cap: 5 cast members per scene. |
 
 ---
 
