@@ -117,7 +117,7 @@
                 "icon": "🔥",
                 "mp": 0,
                 "type": "physical",
-                "description": "Vampiric ghost-fire strike — 1.6x ATK, self-heal 15% damage",
+                "description": "Vampiric ghost-fire strike — 1.6x ATK, self-heal 22% damage",
                 "effect": {
                     "dmgMultiplier": 1.6,
                     "element": "fire",

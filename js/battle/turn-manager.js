@@ -92,13 +92,14 @@ const TurnManager = {
     const t = queue[idx];
     const unit = t.type === 'party' ? G.party[t.idx] : G.enemyGroup[t.idx];
 
-    // 3. Status/Control Check (Stun/Frozen)
+    // 3. Status/Control Check (Stun/Frozen/Sleep)
     const stun = StatusSystem.has(unit, 'status_stunned');
     const frozen = StatusSystem.has(unit, 'status_frozen');
+    const asleep = StatusSystem.has(unit, 'status_sleep');
 
-    if (stun || frozen) {
-      const label = stun ? 'stunned' : 'frozen';
-      const icon = stun ? '💫' : '❄️';
+    if (stun || frozen || asleep) {
+      const label = stun ? 'stunned' : frozen ? 'frozen' : 'asleep';
+      const icon  = stun ? '💫' : frozen ? '❄️' : '😴';
       
       // Tick statuses (decrement duration) even when incapacitated
       StatusSystem.tick(unit, t.type === 'enemy');

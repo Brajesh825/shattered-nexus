@@ -75,7 +75,7 @@ const NexusScaling = {
   // Multipliers for specific status types and periodic effects.
   status: {
     regenHP: 0.08,           // 8% Max HP per tick
-    poisonHP: 0.05,          // 5% Max HP per tick
+    poisonHP: 0.08,          // 8% Max HP per tick
     mendHealBoost: 1.5,      // 1.5x healing multiplier
     guardianReduction: 0.5,  // 50% damage reduction
     empowerAtk: 1.3,         // 30% ATK boost

@@ -2,8 +2,29 @@
 
 ## 📋 Identity
 - **Ref**: `nexus-concept-beta-1.1-quality-polish-v1.0`
-- **Status**: PROPOSED
+- **Status**: IMPLEMENTED (Beta 1.1 — Phases 1–4 shipped on `feature/beta-1.1-polish`)
 - **Enforcing Personas**: The Curator (Gatekeeper), Aethon (Architect), Vivid (Aesthetics)
+
+### ✅ Implementation Ledger
+| Block | Item | Status | Notes |
+|---|---|---|---|
+| Vivid | Cinematic Weapon UI Overlay | ✅ | `css/ui-overlays.css` + `js/map/map-ui.js` (Phase 2) |
+| Vivid | Pre-Combat Boss Introductions | ✅ | Boss cast + speaker tags wired in `arc_1.json`/`arc_2.json` (Phase 1) |
+| Vivid | Widescreen Desktop Typography | ✅ | Media queries in `css/ui-overlays.css` + `css/story-ui.css` (Phase 2) |
+| Vivid | Boss Defeat Shatter Flash | ✅ | `css/animations.css` + `js/game.js` whiteout/shake (Phase 3) |
+| Aethon | Economy & Drop Tuning | ✅ | 2.5× gold mult, T1 75% / T2 35%, refining curve in `js/systems/inventory.js` |
+| Aethon | Asset Preloader + SW Cache | ✅ | `js/asset-preloader.js` battle backgrounds, `sw.js` riverlands/sunken_temple + v9.23 |
+| Aethon | Spawn / Chase Tuning | ✅ | `map-engine.js` (3.5% spawn, 10/12 grace, 3.2/4.0 chase) |
+| Aethon | Dynamic Cutscene Cast | ✅ | `js/cutscene.js` + `js/sprites.js` enemy sprite fallback |
+| Aethon | Post-Battle Boss Dialogue & Weapon Grants | ✅ | `_lastEncountered` buffer, one-time boss removal, Rei/Lulu weapon dialogues |
+| Aethon | Boss Defeat Impact Integration | ✅ | `js/game.js` victory hook → flash/shake gate (Phase 3) |
+| Curator | Rei SPD + base | ✅ | `growthPerLevel.spd: 1`, `base_stats.spd: 15` (Phase 3) |
+| Curator | Tao HP/DEF/life-steal | ✅ | HP 55, DEF 9, `spirit_flame.effect.lifeSteal: 0.22` |
+| Curator | Sleep status framework | ✅ | `StatusSystem.DEFS.sleep`, wake-on-damage in `action-handler.js`, `turn-manager.js` |
+| Curator | MP Drain framework | ✅ | `effect.mpDrain` in both offensive and debuff branches of `action-handler.js` |
+| Curator | Enemy debuff tuning | ✅ | spore_cloud sleep 60%, venom_strike poison 75%/3t, haunt MP-drain 12, rotten_grasp stun 35%, void_shriek stun 25%, gem_mimic `greed_bind` (MP-drain 8 + slow 2t) |
+| Curator | Poison DOT bumped to 8% max HP | ✅ | `js/scaling-config.js → status.poisonHP: 0.08` |
+| Curator | Smart Enemy AI Buff Selection | ✅ | Weight ×0.05 when matching buff status has >1 turn remaining (Phase 3) |
 
 ---
 
