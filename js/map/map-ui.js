@@ -1320,6 +1320,109 @@ const MapUI = (() => {
   });
   */
 
+  /* ── Weapon Acquisition Cinematic Overlay ─────────────────────── */
+  let _waoCallback = null;
+
+  function showWeaponAcquisition(weaponId, characterId, cb) {
+    const overlay = document.getElementById('weapon-acquisition-overlay');
+    if (!overlay) { if (cb) cb(); return; }
+
+    _waoCallback = cb || null;
+
+    // Resolve weapon data
+    const wData = (window.WEAPONS_DATA || []).find(w => w.id === weaponId);
+    if (!wData) { if (cb) cb(); return; }
+
+    // Element theming
+    const elem = (wData.element || 'void').toLowerCase();
+    const elemColors = {
+      wind: '#22d3ee', water: '#38bdf8', fire: '#fb923c', ice: '#7dd3fc',
+      lightning: '#facc15', void: '#a78bfa', physical: '#e2e8f0'
+    };
+    const accentColor = elemColors[elem] || elemColors.void;
+    const elemIcons = {
+      wind: '🌀', water: '💧', fire: '🔥', ice: '❄️', lightning: '⚡', void: '🌑', physical: '⚔️'
+    };
+
+    // Populate: icon
+    const iconEl = document.getElementById('wao-icon');
+    if (iconEl) iconEl.textContent = wData.icon || elemIcons[elem] || '⚔️';
+
+    // Name
+    const nameEl = document.getElementById('wao-weapon-name');
+    if (nameEl) nameEl.textContent = wData.name || weaponId;
+
+    // Element badge
+    const elemEl = document.getElementById('wao-weapon-element');
+    if (elemEl) { elemEl.textContent = `${elemIcons[elem] || ''} ${elem.toUpperCase()} WEAPON`; elemEl.style.color = accentColor; }
+
+    // Description
+    const descEl = document.getElementById('wao-weapon-desc');
+    if (descEl) descEl.textContent = wData.description || wData.desc || '';
+
+    // Stats
+    const statsEl = document.getElementById('wao-stats-grid');
+    if (statsEl) {
+      const stats = [];
+      if (wData.atk   !== undefined) stats.push({ label: 'ATK',  value: `+${wData.atk}`  });
+      if (wData.mag   !== undefined) stats.push({ label: 'MAG',  value: `+${wData.mag}`  });
+      if (wData.def   !== undefined) stats.push({ label: 'DEF',  value: `+${wData.def}`  });
+      if (wData.spd   !== undefined) stats.push({ label: 'SPD',  value: `+${wData.spd}`  });
+      if (wData.hp    !== undefined) stats.push({ label: 'HP',   value: `+${wData.hp}`   });
+      if (wData.mp    !== undefined) stats.push({ label: 'MP',   value: `+${wData.mp}`   });
+      statsEl.innerHTML = stats.map(s =>
+        `<div class="wao-stat-chip"><div class="label">${s.label}</div><div class="value" style="color:${accentColor}">${s.value}</div></div>`
+      ).join('');
+    }
+
+    // Passive
+    const passiveEl = document.getElementById('wao-passive-block');
+    if (passiveEl) {
+      const passive = wData.passive || wData.passiveSkill;
+      if (passive) {
+        passiveEl.style.display = '';
+        passiveEl.innerHTML = `<div class="wao-passive-label">✦ PASSIVE SKILL</div><div class="wao-passive-text" style="color:hsl(275,60%,82%)">${passive.name || ''}: ${passive.desc || passive.description || ''}</div>`;
+      } else {
+        passiveEl.style.display = 'none';
+      }
+    }
+
+    // Resonance
+    const resonEl = document.getElementById('wao-resonance-block');
+    if (resonEl) {
+      const reson = wData.resonance || wData.characterResonance;
+      if (reson) {
+        resonEl.style.display = '';
+        resonEl.innerHTML = `<div class="wao-resonance-label">✦ CHARACTER RESONANCE</div><div class="wao-resonance-text">${reson.name || ''}: ${reson.desc || reson.description || ''}</div>`;
+      } else {
+        resonEl.style.display = 'none';
+      }
+    }
+
+    // Owner badge
+    const ownerEl = document.getElementById('wao-owner-badge');
+    if (ownerEl) {
+      const charNames = { aya: 'Aya', tao: 'Tao', lulu: 'Lulu', rei: 'Rei', ria: 'Ria', valka: 'Valka', drake: 'Drake', rex: 'Rex', sera: 'Sera' };
+      ownerEl.textContent = `⚔ EQUIPPED ON ${(charNames[characterId] || characterId).toUpperCase()}`;
+    }
+
+    // Set element attribute for colour overrides
+    const card = overlay.querySelector('.wao-card');
+    if (card) card.dataset.element = elem;
+
+    // Show
+    overlay.style.display = 'flex';
+    if (typeof SFX !== 'undefined' && SFX.victory) SFX.victory();
+  }
+
+  function closeWeaponAcquisition() {
+    const overlay = document.getElementById('weapon-acquisition-overlay');
+    if (overlay) overlay.style.display = 'none';
+    const cb = _waoCallback;
+    _waoCallback = null;
+    if (cb) cb();
+  }
+
   return {
     showMsg,
     showMapBanner,
@@ -1345,5 +1448,7 @@ const MapUI = (() => {
     openBondPanel,
     closeBondPanel,
     triggerBanter: _showBanter,
+    showWeaponAcquisition,
+    closeWeaponAcquisition,
   };
 })();

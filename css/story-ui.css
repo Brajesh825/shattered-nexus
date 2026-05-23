@@ -1049,3 +1049,11 @@
   filter: contrast(1.1) drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
 }
 
+
+/* ══════════════════════════════════════════════════════════════
+   DESKTOP TYPOGRAPHY SCALING  (≥ 1024 px)
+   ══════════════════════════════════════════════════════════════ */
+@media (min-width: 1024px) {
+  .s-text    { font-size: 26px !important; line-height: 1.7 !important; }
+  .s-speaker { font-size: 17px !important; }
+}

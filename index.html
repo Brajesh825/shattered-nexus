@@ -1728,6 +1728,32 @@
           </div>
         </div>
 
+        <!-- ══ Weapon Acquisition Cinematic Overlay ══ -->
+        <div id="weapon-acquisition-overlay" class="weapon-acquisition-overlay" style="display:none" role="dialog" aria-modal="true" aria-label="Weapon Acquired">
+          <div class="wao-backdrop"></div>
+          <div class="wao-card">
+            <div class="wao-conic-ring"></div>
+            <div class="wao-header">
+              <div class="wao-eyebrow">✦ NEW WEAPON ACQUIRED ✦</div>
+              <div class="wao-icon-wrap">
+                <div class="wao-icon" id="wao-icon">⚔️</div>
+              </div>
+            </div>
+            <div class="wao-body">
+              <div class="wao-weapon-name" id="wao-weapon-name">—</div>
+              <div class="wao-weapon-element" id="wao-weapon-element"></div>
+              <div class="wao-weapon-desc" id="wao-weapon-desc"></div>
+              <div class="wao-stats-grid" id="wao-stats-grid"></div>
+              <div class="wao-passive-block" id="wao-passive-block"></div>
+              <div class="wao-resonance-block" id="wao-resonance-block"></div>
+            </div>
+            <div class="wao-footer">
+              <div class="wao-owner-badge" id="wao-owner-badge"></div>
+              <button class="wao-equip-btn" id="wao-equip-btn" onclick="MapUI.closeWeaponAcquisition()">⚔ EQUIP WEAPON</button>
+            </div>
+          </div>
+        </div>
+
         <!-- Encounter ember flash -->
         <div id="explore-flash"></div>
 
