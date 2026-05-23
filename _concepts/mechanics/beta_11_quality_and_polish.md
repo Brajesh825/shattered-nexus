@@ -101,3 +101,40 @@
   - In the battle outcome logic (`js/game.js`), check if any defeated enemy is a boss (e.g. `isBoss` or tier checks).
   - If a boss is defeated, trigger a rapid CSS class addition for a fullscreen whiteout overlay (`#battle-screen .shatter-flash` or similar overlay) and initiate a 500ms screen shake animation.
   - Delay the display of the leveling-up, items/relic logs, and map-return sequence to ensure the flash and screen shake complete.
+
+---
+
+## ⚖️ Character & Enemy Balance Audit (The Curator / Aethon)
+
+After auditing base stats, growths, class multipliers, and boss scaling for Arc 1 and Arc 2, we propose the following balance tuning changes to ensure gameplay feels challenging but fair:
+
+### 1. Playable Character Buffs
+
+* **Rei (Yaksha Protector - Tank)**:
+  * **The Issue**: Rei has a speed growth of `0` in his class definition (`growthPerLevel`). At higher levels, he becomes too slow to act, making it impossible to refresh shields (*Karmic Barrier*) or taunts (*Mastery of Pain*).
+  * **The Buff**: Increase Rei's class speed growth from `0` to `1` per level, and raise his base SPD from `13` to `15` to ensure he maintains turn-order presence.
+* **Tao (Spirit Incinerator - Berserker)**:
+  * **The Issue**: Tao has massive ATK multipliers but extremely low defense (base DEF `7`, growth `1`, multiplier `0.7`). Using *Paramita Papilio* (drains 30% current HP) makes her extremely easy to one-shot.
+  * **The Buff**: Raise Tao's base HP from `50` to `55`, raise base DEF from `7` to `9`, and increase the life-steal factor of *Spirit Flame* from `15%` to `22%` to reward active recovery.
+
+### 2. Normal Enemy Mechanics & Debuff Tuning
+
+To make random map encounters tactically interesting and challenging, we propose introducing specific status effects and resource-drain mechanics for normal/standard enemies in Arc 1 and Arc 2 maps:
+
+* **New Mechanic: Sleep Status (`status_sleep`)**:
+  * **Behavior**: Skips the affected character's turn for 2 turns.
+  * **Wake Up Condition**: If the sleeping character takes any damage from a physical or magic attack, the sleep status is immediately removed and a log message indicates they woke up.
+* **New Mechanic: MP Drain**:
+  * **Behavior**: Allows enemy abilities to drain a flat amount of MP from player characters, transferring it to the enemy (reducing player options to cast expensive magic or ultimate skills).
+
+#### Standard Enemy Ability Upgrades:
+* **Spore Mushroom (Verdant Vale - Arc 1)**:
+  * **The Buff**: Upgrade *Spore Cloud* to apply the new `sleep` status (60% chance) for 2 turns, forcing the party to wake each other up or deal with skipped turns.
+* **Poison Spider (Verdant Vale / Shadow Reach - Arc 1)**:
+  * **The Buff**: Upgrade *Venom Strike* to apply the `poison` status (75% chance) for 3 turns, dealing 8% max HP damage per turn.
+* **Lost Wisp (Crystal Cavern F3 - Arc 2)**:
+  * **The Buff**: Upgrade *Haunt* to drain `12 MP` from the targeted character, disrupting spellcasting.
+* **Gem Mimic (Crystal Cavern F1/F2 - Arc 2)**:
+  * **The Buff**: Upgrade *Shell Harden* or add *Greed Bind* to drain `8 MP` and apply `slow` for 2 turns, representing the heavy weight of greed.
+* **Rotting Zombie / Void-Hollowed Soldier (Verdant Vale - Arc 1)**:
+  * **The Buff**: Upgrade *Rotten Grasp* to have a `35%` chance to apply `stunned` for 1 turn (incapacitating the player character).
