@@ -26,6 +26,10 @@ const Cutscene = {
     valka: 'valka',
     drake: 'drake',
     rex: 'rex',
+    sera: 'sera',
+    'king_galdor': 'galdor_king',
+    'void_knight': 'void_knight',
+    'demon_lord': 'demon_lord'
   },
 
   SPEAKER_PORTRAIT: {
@@ -216,12 +220,32 @@ const Cutscene = {
   },
 
   _renderSceneCharacters(speaker, emotion) {
-    if (!window.Story || !window.Story.currentChap || !window.Story.currentChap.cast) return;
+    if (!window.Story || !window.Story.currentChap) return;
+    if (!window.Story.currentChap.cast) window.Story.currentChap.cast = [];
 
     const layer = this.el('s-scene-layer');
     if (!layer) return;
 
     const cast = window.Story.currentChap.cast;
+
+    // Dynamically inject active party members into cast
+    if (window.G && G.party) {
+      G.party.forEach(m => {
+        if (!m) return;
+        const nameMap = {
+          aya: 'Aya', tao: 'Tao', lulu: 'Lulu', rei: 'Rei', ria: 'Ria', valka: 'Valka', drake: 'Drake', rex: 'Rex', sera: 'Sera'
+        };
+        const standardName = nameMap[m.charId];
+        if (standardName && !cast.includes(standardName)) {
+          cast.push(standardName);
+        }
+      });
+    }
+
+    // Dynamically inject current speaker if not already in cast
+    if (speaker && speaker.toLowerCase() !== 'narrator' && !cast.includes(speaker)) {
+      cast.push(speaker);
+    }
 
     cast.forEach((charName, idx) => {
       if (!charName) return;
@@ -231,7 +255,7 @@ const Cutscene = {
 
         const charEl = document.createElement('div');
         charEl.className = 's-scene-char';
-        charEl.id = `s-scene-char-${charName.toLowerCase()}`;
+        charEl.id = `s-scene-char-${charName.toLowerCase().replace(/ /g, '_')}`;
 
         // Calculate horizontal offset based on cast index
         let leftPct = 50;
@@ -263,7 +287,7 @@ const Cutscene = {
         layer.appendChild(charEl);
       }
 
-      const charEl = this.el(`s-scene-char-${charName.toLowerCase()}`);
+      const charEl = this.el(`s-scene-char-${charName.toLowerCase().replace(/ /g, '_')}`);
       if (charEl) {
         const spriteEl = charEl.querySelector('.s-scene-sprite');
         if (speaker && speaker.toLowerCase() === charName.toLowerCase()) {
@@ -287,7 +311,9 @@ const Cutscene = {
   /* ── Helpers ────────────────────────────────────────────────────────────── */
 
   _charIdForSpeaker(name) {
-    return this.ALIAS_TO_CHARID[name.toLowerCase()] || name.toLowerCase();
+    if (!name) return '';
+    const clean = name.toLowerCase().replace(/ /g, '_');
+    return this.ALIAS_TO_CHARID[clean] || clean;
   },
 
   _spiritSrc(name) {

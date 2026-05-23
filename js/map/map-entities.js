@@ -154,7 +154,7 @@ const MapPlayer = (() => {
                 ty >= zone.yMin && ty <= zone.yMax
             );
             
-            if (!isSafe && Math.random() < 0.08) {
+            if (!isSafe && Math.random() < 0.035) {
                 _pendingRandomEncounter = true;
             }
         }
@@ -420,6 +420,7 @@ const MapPlayer = (() => {
 const MapEntities = (() => {
   let _enemies = [];  // live enemy objects
   let _encounteredIdx = -1;
+  let _lastEncountered = null;
 
   const PATROL_SPEED = {
     horizontal: 1.5, vertical: 1.5, random: 1.2, chase: 2.0,
@@ -471,7 +472,11 @@ const MapEntities = (() => {
       // 1. Timing Gating
       if (!_isEntityActive(e)) return false;
 
-      // 2. Elite Check
+      // 2. Already Defeated Side Boss Check
+      if (e.id === 'river_king' && window.G && G.weaponsLevels && G.weaponsLevels['chain_of_nights'] !== undefined) return false;
+      if (e.id === 'sunken_leviathan' && window.G && G.weaponsLevels && G.weaponsLevels['tide_caller'] !== undefined) return false;
+
+      // 3. Elite Check
       const raw = (G && G.enemies) ? G.enemies.find(r => r.id === e.id) : null;
       const isElite = raw ? (raw.isBoss || raw.tier >= 3) : (e.isBoss || e.id.includes('boss'));
       
@@ -493,7 +498,8 @@ const MapEntities = (() => {
       py:      e.y * MapEngine.getTile(),
       patrol:  e.patrol || 'random',
       range:   e.range  || 3,
-      speed:   e.speed  || 1.2,
+      baseSpeed: e.speed || PATROL_SPEED[e.patrol || 'random'] || 1.2,
+      speed:   e.speed  || PATROL_SPEED[e.patrol || 'random'] || 1.2,
       moveTimer: 0,
       moveDur:   1 / (e.speed || 1.2),
       moving:    false,
@@ -659,6 +665,11 @@ const MapEntities = (() => {
       }
 
       // Fog scales movement speed — recalc moveDur each frame
+      const ptx = MapPlayer.tx, pty = MapPlayer.ty;
+      const dist = Math.abs(en.tx - ptx) + Math.abs(en.ty - pty);
+      const isChasing = (en.patrol === 'chase' || dist <= _aggroRange());
+      const targetSpeed = isChasing ? Math.max(en.baseSpeed || 1.2, en.isBoss ? 4.0 : 3.2) : (en.baseSpeed || 1.2);
+      en.speed = targetSpeed;
       en.moveDur = (1 / en.speed) / _fogSpeedMult();
       if (en.moving) {
         en.moveTimer += dt;
@@ -701,6 +712,7 @@ const MapEntities = (() => {
 
       if (en.tx === ptx && en.ty === pty) {
         _encounteredIdx = i;
+        _lastEncountered = en;
         const ids = _buildEncounterGroup(en.id, map);
         return { 
           enemies: ids, 
@@ -1550,6 +1562,8 @@ const MapEntities = (() => {
     init, clear, updateEnemies, renderEnemies, renderEnemiesForRow, checkEncounter, removeEncountered,
     allCleared, bossCleared, remaining, hasEnemyAt, prepareBuckets,
     getActiveEncountered: () => (_encounteredIdx >= 0 && _encounteredIdx < _enemies.length) ? _enemies[_encounteredIdx] : null,
+    getLastEncountered: () => _lastEncountered,
+    clearLastEncountered: () => { _lastEncountered = null; },
     initNPCs, renderNPCs, renderNPCsForRow, checkNPCAt, getNPCDialogue, markNPCTalked,
     getNPCs: () => MapNPCs.getNPCs(),
     setNPCSceneWalk: (id, cb)        => MapNPCs.setNPCSceneWalk(id, cb),

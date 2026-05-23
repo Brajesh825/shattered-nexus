@@ -1646,7 +1646,7 @@ const MapEngine = (() => {
     if (_sceneAmbushActive) {
       _sceneAmbushActive = false;
       showScreen('explore-screen');
-      MapPlayer.setCooldown(4);
+      MapPlayer.setCooldown(10);
       resume();
       const cb = _sceneAmbushCallback;
       _sceneAmbushCallback = null;
@@ -1672,7 +1672,7 @@ const MapEngine = (() => {
         MapPlayer.reset(_map.playerStart.x, _map.playerStart.y);
         _campUnlocked = false; _atCamp = false;
         showScreen('explore-screen');
-        MapPlayer.setCooldown(8); // Grace period
+        MapPlayer.setCooldown(12); // Grace period
         resume();
         if (typeof MapUI !== 'undefined') MapUI.showMsg('💀 Defeated — returned to camp.', 2400);
       } else {
@@ -1690,7 +1690,7 @@ const MapEngine = (() => {
       const interMsg = _waveState.waves[_waveState.waveIdx] && _waveState.waves[_waveState.waveIdx].interWaveMsg;
       _waveState.waveIdx++;
       showScreen('explore-screen');
-      MapPlayer.setCooldown(4);
+      MapPlayer.setCooldown(10);
 
       if (_waveState.waveIdx < _waveState.waves.length) {
         // More waves — brief pause then next
@@ -1710,60 +1710,99 @@ const MapEngine = (() => {
     }
 
     // ── Normal battle complete ───────────────────────────
-    const defeatedEnemy = MapEntities.getActiveEncountered ? MapEntities.getActiveEncountered() : null;
+    const defeatedEnemy = (MapEntities.getLastEncountered ? MapEntities.getLastEncountered() : null) || (MapEntities.getActiveEncountered ? MapEntities.getActiveEncountered() : null);
     if (victory && defeatedEnemy) {
       if (defeatedEnemy.id === 'river_king') {
         const wId = 'chain_of_nights';
         const alreadyHas = G.weaponsLevels && G.weaponsLevels[wId] !== undefined;
         if (!alreadyHas) {
-          const wData = (window.WEAPONS_DATA || []).find(w => w.id === wId);
-          if (wData) {
-            const party = G.party || [];
-            const resChar = party.find(m => m.charId === 'rei');
-            if (resChar) {
-              resChar.char.equippedWeapon = wId;
-              resChar.equippedWeapon = wData;
-              if (!G.weaponsLevels) G.weaponsLevels = {};
-              G.weaponsLevels[wId] = 1;
-              if (typeof rebuildMemberCombatStats !== 'undefined') {
-                rebuildMemberCombatStats(resChar, { resourceStrategy: 'clamp' });
+          const dialogueLines = [
+            { speaker: null, text: "The River King sinks back into the depths of the waterfall. As the mist clears, a heavy, dark iron chain lies coiled on the stone altar, pulsing with wind resonance." },
+            { speaker: "Rei", text: "This... is the Chain of Ten Thousand Nights. It was forged in the deep vaults of Aethalgard before the corruption." },
+            { speaker: "Aya", text: "It responds to your resonance, Rei. It has been waiting for someone who carries your weight." },
+            { speaker: "Rei", text: "Then I will carry it. Its balance is familiar." }
+          ];
+          showScreen('explore-screen');
+          _openGenericDialogue(dialogueLines, () => {
+            const wData = (window.WEAPONS_DATA || []).find(w => w.id === wId);
+            if (wData) {
+              const party = G.party || [];
+              const resChar = party.find(m => m.charId === 'rei');
+              if (resChar) {
+                resChar.char.equippedWeapon = wId;
+                resChar.equippedWeapon = wData;
+                if (!G.weaponsLevels) G.weaponsLevels = {};
+                G.weaponsLevels[wId] = 1;
+                if (typeof rebuildMemberCombatStats !== 'undefined') {
+                  rebuildMemberCombatStats(resChar, { resourceStrategy: 'clamp' });
+                }
               }
             }
-            if (typeof MapUI !== 'undefined') {
-              MapUI.showMsg('🎁 Acquired Chain of Ten Thousand Nights for Rei!', 3500);
+            if (typeof MapUI !== 'undefined' && MapUI.showWeaponAcquisition) {
+              MapUI.showWeaponAcquisition(wId, 'rei', () => {
+                MapEntities.removeEncountered();
+                MapEntities.clearLastEncountered();
+                MapPlayer.setCooldown(12);
+                resume();
+              });
+            } else {
+              MapEntities.removeEncountered();
+              MapEntities.clearLastEncountered();
+              MapPlayer.setCooldown(12);
+              resume();
             }
-            if (typeof SFX !== 'undefined' && SFX.victory) SFX.victory();
-          }
+          });
+          return;
         }
       } else if (defeatedEnemy.id === 'sunken_leviathan') {
         const wId = 'tide_caller';
         const alreadyHas = G.weaponsLevels && G.weaponsLevels[wId] !== undefined;
         if (!alreadyHas) {
-          const wData = (window.WEAPONS_DATA || []).find(w => w.id === wId);
-          if (wData) {
-            const party = G.party || [];
-            const resChar = party.find(m => m.charId === 'lulu');
-            if (resChar) {
-              resChar.char.equippedWeapon = wId;
-              resChar.equippedWeapon = wData;
-              if (!G.weaponsLevels) G.weaponsLevels = {};
-              G.weaponsLevels[wId] = 1;
-              if (typeof rebuildMemberCombatStats !== 'undefined') {
-                rebuildMemberCombatStats(resChar, { resourceStrategy: 'clamp' });
+          const dialogueLines = [
+            { speaker: null, text: "The Leviathan retreats into the abyssal trench. As the water calms, a glowing staff of blue driftwood floats to the surface, surrounded by pristine tide bubbles." },
+            { speaker: "Lulu", text: "The Tide Caller... I can feel the memories of the old priests inside it. It's warm, despite the deep water." },
+            { speaker: "Tao", text: "It likes you, Lulu! The tide spirits are dancing around your feet. That's a good sign." },
+            { speaker: "Lulu", text: "I will carry their memories. They won't be forgotten." }
+          ];
+          showScreen('explore-screen');
+          _openGenericDialogue(dialogueLines, () => {
+            const wData = (window.WEAPONS_DATA || []).find(w => w.id === wId);
+            if (wData) {
+              const party = G.party || [];
+              const resChar = party.find(m => m.charId === 'lulu');
+              if (resChar) {
+                resChar.char.equippedWeapon = wId;
+                resChar.equippedWeapon = wData;
+                if (!G.weaponsLevels) G.weaponsLevels = {};
+                G.weaponsLevels[wId] = 1;
+                if (typeof rebuildMemberCombatStats !== 'undefined') {
+                  rebuildMemberCombatStats(resChar, { resourceStrategy: 'clamp' });
+                }
               }
             }
-            if (typeof MapUI !== 'undefined') {
-              MapUI.showMsg('🎁 Acquired Tide Caller for Lulu!', 3500);
+            if (typeof MapUI !== 'undefined' && MapUI.showWeaponAcquisition) {
+              MapUI.showWeaponAcquisition(wId, 'lulu', () => {
+                MapEntities.removeEncountered();
+                MapEntities.clearLastEncountered();
+                MapPlayer.setCooldown(12);
+                resume();
+              });
+            } else {
+              MapEntities.removeEncountered();
+              MapEntities.clearLastEncountered();
+              MapPlayer.setCooldown(12);
+              resume();
             }
-            if (typeof SFX !== 'undefined' && SFX.victory) SFX.victory();
-          }
+          });
+          return;
         }
       }
     }
 
     MapEntities.removeEncountered();
+    if (MapEntities.clearLastEncountered) MapEntities.clearLastEncountered();
     showScreen('explore-screen');
-    MapPlayer.setCooldown(8);
+    MapPlayer.setCooldown(12);
     resume();
     if (typeof MapUI !== 'undefined') MapUI.showMsg('Victory!', 1200);
   }

@@ -138,3 +138,10 @@ To make random map encounters tactically interesting and challenging, we propose
   * **The Buff**: Upgrade *Shell Harden* or add *Greed Bind* to drain `8 MP` and apply `slow` for 2 turns, representing the heavy weight of greed.
 * **Rotting Zombie / Void-Hollowed Soldier (Verdant Vale - Arc 1)**:
   * **The Buff**: Upgrade *Rotten Grasp* to have a `35%` chance to apply `stunned` for 1 turn (incapacitating the player character).
+
+### 3. Smart Enemy AI Buff Selection
+* **The Issue**: Enemies and bosses (like King Galdor or Spectral Guardian) spam self-buff/regen skills even when the respective buff status is already active, wasting valuable combat turns.
+* **The Smart Buff Upgrade**:
+  * **Active Check**: If an actor has an active status associated with a buff/regen ability (matched by checking if the status ID contains the ability ID as a suffix, e.g., `_${ab.id}`, or if `status_regen` is active for a regen ability), the AI inspects the remaining turns.
+  * **Turn Threshold**: If the active status has **more than 1 turn remaining**, it is not considered about to expire.
+  * **Weight Suppression**: Under this condition, the selection weight of that ability is reduced by 95% (multiplied by `0.05`). This prevents spamming while still permitting refresh casts on the final turn of the buff.

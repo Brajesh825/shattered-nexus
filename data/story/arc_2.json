@@ -188,7 +188,8 @@
       "Aya",
       "Tao",
       "Lulu",
-      "Rei"
+      "Rei",
+      "Demon Lord"
     ],
     "pre_dialogue": [
       {
@@ -197,9 +198,9 @@
         "text": "The Demon Lord fills the undercroft \u2014 the fire Seal Fragment blazing against his chest, the heat warping the air around him. He did not wait in his throne room. He hunted them into the tunnel and let them walk straight to him."
       },
       {
-        "speaker": "narrator",
+        "speaker": "Demon Lord",
         "emotion": "sinister",
-        "text": "Demon Lord: You are smaller than I expected. The Fragment told me you were coming days ago. I have been patient."
+        "text": "You are smaller than I expected. The Fragment told me you were coming days ago. I have been patient."
       },
       {
         "speaker": "Rei",
@@ -207,9 +208,9 @@
         "text": "The Fragment speaks to you."
       },
       {
-        "speaker": "narrator",
+        "speaker": "Demon Lord",
         "emotion": "sinister",
-        "text": "Demon Lord: Everything that burns speaks to me. And you four burn very brightly."
+        "text": "Everything that burns speaks to me. And you four burn very brightly."
       },
       {
         "speaker": "Tao",
@@ -217,9 +218,9 @@
         "text": "Release them. The ones you took. A summoner and a warrior. Release them."
       },
       {
-        "speaker": "narrator",
+        "speaker": "Demon Lord",
         "emotion": "amused",
-        "text": "Demon Lord: My guests? They sustain the Fragment. Without their resonance anchoring it, it would have consumed me months ago. They are... useful. As you will be, once I am done with you."
+        "text": "My guests? They sustain the Fragment. Without their resonance anchoring it, it would have consumed me months ago. They are... useful. As you will be, once I am done with you."
       },
       {
         "speaker": "Lulu",

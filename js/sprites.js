@@ -228,7 +228,13 @@ const SpriteRenderer = (() => {
     const manifest = SPRITE_MANIFEST[id];
 
     if (!manifest) {
-      el.style.backgroundImage = `url(images/characters/spirits/${id}_sprite.png)`;
+      const playableChars = ['aya', 'tao', 'lulu', 'rei', 'ria', 'valka', 'drake', 'rex', 'sera'];
+      const isPlayable = playableChars.includes(id);
+      if (!isPlayable) {
+        el.style.backgroundImage = `url(images/enemies/${id}.webp)`;
+      } else {
+        el.style.backgroundImage = `url(images/characters/spirits/${id}_sprite.png)`;
+      }
       el.style.backgroundSize = 'contain';
       el.style.backgroundPosition = 'bottom center';
       el.style.backgroundRepeat = 'no-repeat';
