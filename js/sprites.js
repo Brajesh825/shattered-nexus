@@ -274,8 +274,8 @@ const SpriteRenderer = (() => {
     const isIllustrious = style === 'illustrious';
     const isLow = qual === 'low' || (qual === 'auto' && window.innerWidth < 800);
 
-    if (isIllustrious) return isLow ? '_sprite_1_low.webp' : '_sprite_1.png';
-    return isLow ? '_sprite_low.webp' : '_sprite.png';
+    if (isIllustrious) return isLow ? '_sprite_1_low.webp' : '_sprite_1.webp';
+    return isLow ? '_sprite_low.webp' : '_sprite.webp';
   }
 
   function getSpritePath(charId) {
