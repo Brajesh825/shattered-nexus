@@ -632,6 +632,9 @@ const MapEntities = (() => {
     const TILE = MapEngine.getTile();
     _enemies.forEach(en => {
       if (!en.alive) return;
+      // Phase-gated enemies freeze (no movement, no mutation tick) when their
+      // Chronos phase is inactive. They re-animate when the phase comes back.
+      if (!_isEntityActive(en)) return;
 
       // ── Mutation timer ────────────────────────────────
       en.mapTime       += dt;
@@ -785,18 +788,19 @@ const MapEntities = (() => {
 
     // Use encounter templates if defined on the map, else roll random group size
     if (map.encounterTemplates && map.encounterTemplates.length) {
-      // 1. Filter templates by Chronos Cycle (Time Gating)
-      let templates = map.encounterTemplates.filter(t => _isEntityActive(t));
-      
-      // 2. If we have a triggerId (physical enemy touched), prioritize templates containing that enemy
+      let templates;
+
       if (triggerId) {
-        const matching = templates.filter(t => t.enemies.includes(triggerId));
-        if (matching.length) templates = matching;
-        else {
-          // If the physical enemy isn't in ANY active template, skip template logic 
-          // to ensure the fallback logic uses the correct firstEnemy (line 785)
-          templates = []; 
-        }
+        // Visible-enemy trigger: the player can already see what they walked
+        // into, so phase gating is bypassed — any template containing this
+        // enemy is fair game ("whatever feels similar should trigger"). This
+        // also closes the prior leak where time-gated templates silently
+        // dropped the trigger into the random-pool fallback.
+        templates = map.encounterTemplates.filter(t => t.enemies.includes(triggerId));
+      } else {
+        // Invisible random encounter (fog ambush / step-roll) — respect the
+        // Chronos phase gating so the random pool reflects time of day.
+        templates = map.encounterTemplates.filter(t => _isEntityActive(t));
       }
 
       if (templates.length) {
@@ -856,6 +860,9 @@ const MapEntities = (() => {
 
   function _renderEnemy(ctx, cam, TILE, en, inVision) {
       if (!en.alive) return;
+      // Hide phase-gated enemies whose active phase doesn't match the current
+      // Chronos cycle (mirrors the NPC render gate at _renderNPC).
+      if (!_isEntityActive(en)) return;
       if (typeof inVision === 'function' && !inVision(en.tx, en.ty)) return;
       const sx = en.px - cam.x;
       const sy = en.py - cam.y;
