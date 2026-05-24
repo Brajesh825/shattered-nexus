@@ -4449,6 +4449,21 @@ body {
   filter: drop-shadow(0 0 20px rgba(160, 144, 208, 0.6)) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
 }
 
+.s-scene-char.s-enemy.active {
+  opacity: 1;
+  transform: translate(-50%, -10px) scale(1.22);
+  z-index: 21;
+  filter: brightness(1) drop-shadow(0 0 25px rgba(220, 38, 38, 0.75)) drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5));
+}
+
+.s-scene-char.s-enemy.dimmed {
+  opacity: 0.45;
+  transform: translate(-50%, 15px) scale(1.0);
+  filter: brightness(0.35) grayscale(0.2);
+  z-index: 10;
+}
+
+
 .s-scene-char-name {
   font-size: 11px;
   color: #a090d0;

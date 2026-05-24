@@ -15,6 +15,8 @@ const Cutscene = {
     Drake: '#0ea5e9',
     Rex: '#fbbf24',
     Sera: '#93c5fd',
+    'Demon Lord': '#f97316',
+    Valdris: '#c084fc',
   },
 
   ALIAS_TO_CHARID: {
@@ -249,8 +251,9 @@ const Cutscene = {
       });
     }
 
-    // Dynamically inject current speaker if not already in cast
-    if (speaker && speaker.toLowerCase() !== 'narrator' && !cast.includes(speaker)) {
+    // Dynamically inject current speaker if not already in cast (excluding off-screen voices)
+    const offScreenSpeakers = ['valdris'];
+    if (speaker && speaker.toLowerCase() !== 'narrator' && !offScreenSpeakers.includes(speaker.toLowerCase()) && !cast.includes(speaker)) {
       cast.push(speaker);
     }
 
@@ -260,31 +263,64 @@ const Cutscene = {
       layer.dataset.castCount = String(cast.length);
     }
 
+    // Separate into heroes and enemies to calculate position offsets
+    const playableIds = ['aya', 'tao', 'lulu', 'rei', 'ria', 'valka', 'drake', 'rex', 'sera'];
+    const categorized = cast.map((charName, index) => {
+      const charId = this._charIdForSpeaker(charName);
+      const isPlayable = playableIds.includes(charId);
+      return { charName, index, charId, isPlayable };
+    });
+
+    const heroesList = categorized.filter(c => c.isPlayable);
+    const enemiesList = categorized.filter(c => !c.isPlayable);
+    const hasMix = heroesList.length > 0 && enemiesList.length > 0;
+
     cast.forEach((charName, idx) => {
       if (!charName) return;
+
+      const charId = this._charIdForSpeaker(charName);
+      const isPlayable = playableIds.includes(charId);
 
       if (!this._charAppeared[charName]) {
         this._charAppeared[charName] = true;
 
         const charEl = document.createElement('div');
         charEl.className = 's-scene-char';
+        if (!isPlayable) {
+          charEl.classList.add('s-enemy');
+        }
         charEl.id = `s-scene-char-${charName.toLowerCase().replace(/ /g, '_')}`;
 
-        // Calculate horizontal offset based on cast index.
-        // 5-cast uses tighter ends (8/92) and a true center to keep the boss
-        // anchored opposite the four heroes without clipping the screen edges.
+        // Calculate horizontal offset based on character type
         let leftPct = 50;
-        if (cast.length === 2) {
-          leftPct = idx === 0 ? 25 : 75;
-        } else if (cast.length === 3) {
-          leftPct = idx === 0 ? 15 : idx === 1 ? 50 : 85;
-        } else if (cast.length === 4) {
-          leftPct = [12, 38, 62, 88][idx];
-        } else if (cast.length === 5) {
-          leftPct = [8, 28, 50, 72, 92][idx];
-        } else if (cast.length > 5) {
-          // Safety net — should never happen per design (5 is the hard cap)
-          leftPct = 8 + (idx / (cast.length - 1)) * 84;
+        if (hasMix) {
+          if (isPlayable) {
+            const heroIdx = heroesList.findIndex(h => h.charName === charName);
+            if (heroesList.length === 1) {
+              leftPct = 25;
+            } else {
+              leftPct = Math.round(8 + (heroIdx / (heroesList.length - 1)) * 46);
+            }
+          } else {
+            const enemyIdx = enemiesList.findIndex(e => e.charName === charName);
+            if (enemiesList.length === 1) {
+              leftPct = 82;
+            } else {
+              leftPct = Math.round(72 + (enemyIdx / (enemiesList.length - 1)) * 20);
+            }
+          }
+        } else {
+          if (cast.length === 2) {
+            leftPct = idx === 0 ? 25 : 75;
+          } else if (cast.length === 3) {
+            leftPct = idx === 0 ? 15 : idx === 1 ? 50 : 85;
+          } else if (cast.length === 4) {
+            leftPct = [12, 38, 62, 88][idx];
+          } else if (cast.length === 5) {
+            leftPct = [8, 28, 50, 72, 92][idx];
+          } else if (cast.length > 5) {
+            leftPct = Math.round(8 + (idx / (cast.length - 1)) * 84);
+          }
         }
         charEl.style.left = `${leftPct}%`;
 

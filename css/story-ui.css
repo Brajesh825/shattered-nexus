@@ -346,6 +346,29 @@
   z-index: 10;
 }
 
+.s-scene-char.s-enemy.active {
+  opacity: 1;
+  transform: translate(-50%, -10px) scale(1.22);
+  z-index: 21;
+  filter: brightness(1) drop-shadow(0 0 25px rgba(220, 38, 38, 0.75)) drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5));
+}
+
+.s-scene-char.s-enemy.dimmed {
+  opacity: 0.45;
+  transform: translate(-50%, 15px) scale(1.0);
+  filter: brightness(0.35) grayscale(0.2);
+  z-index: 10;
+}
+
+#s-scene-layer[data-cast-count="5"] .s-scene-char.s-enemy.active {
+  transform: translate(-50%, -10px) scale(1.22);
+}
+
+#s-scene-layer[data-cast-count="5"] .s-scene-char.s-enemy.dimmed {
+  transform: translate(-50%, 15px) scale(1.0);
+}
+
+
 /* ── Crowded-scene layout (5-cast boss intros) ───────────────────────
    Shrink dimmed siblings harder + cap sprite height so 5 portraits
    never bump shoulders or clip the screen edges on mobile. */
