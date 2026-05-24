@@ -55,12 +55,15 @@ const Cutscene = {
     this.clear();
   },
 
-  /** 
-   * Start a sequence of lines. 
+  /**
+   * Start a sequence of lines.
    * @param {Array} lines - Array of { speaker, text, emotion } objects.
    * @param {Function} onDone - Callback when lines are finished.
+   * @param {Array<string>} [castOverride] - Optional cast for this segment only.
+   *   When provided, replaces the chapter's canonical cast as the rendering
+   *   baseline (used by character_moment scenes to drop the defeated boss).
    */
-  start(lines, onDone) {
+  start(lines, onDone, castOverride) {
     const flat = [];
     (lines || []).forEach(l => {
       if (l.is_narration || (!l.speaker && l.narration)) {
@@ -82,6 +85,24 @@ const Cutscene = {
     // etc.) stacks fresh DOM sprites on top of the old ones since _charAppeared
     // was just reset to {} but the layer still held the prior chapter's cast.
     this._clearSceneLayer();
+
+    // Reset the chapter cast to a canonical baseline so speaker / party
+    // auto-injects from a *previous* segment don't bleed into this one.
+    // On first sight, snapshot the chapter's authored cast (or null if none).
+    // If the caller passed a `castOverride`, use that as the baseline for
+    // this segment only — character_moment scenes use this to drop the
+    // already-defeated boss from the layer.
+    if (window.Story && window.Story.currentChap) {
+      const chap = window.Story.currentChap;
+      if (chap._canonicalCast === undefined) {
+        chap._canonicalCast = Array.isArray(chap.cast) ? [...chap.cast] : null;
+      }
+      if (Array.isArray(castOverride)) {
+        chap.cast = [...castOverride];
+      } else {
+        chap.cast = chap._canonicalCast ? [...chap._canonicalCast] : [];
+      }
+    }
 
     if (flat.length === 0) {
       onDone && onDone();
@@ -237,8 +258,17 @@ const Cutscene = {
 
     const cast = window.Story.currentChap.cast;
 
-    // Dynamically inject active party members into cast
-    if (window.G && G.party) {
+    // Author-curated cast: if the chapter shipped an explicit cast, respect
+    // it and SKIP the party auto-injection so unlocked-but-not-relevant
+    // party members (e.g. Sera during the Arc 2 boss intro) don't leak onto
+    // the layer. Speaker auto-injection below still fires so guest speakers
+    // appear correctly.
+    const canonical = window.Story.currentChap._canonicalCast;
+    const isAuthorCurated = canonical && canonical.length > 0;
+
+    // Dynamically inject active party members into cast — only when the
+    // chapter didn't define its own cast (free-explore / generic scenes).
+    if (!isAuthorCurated && window.G && G.party) {
       G.party.forEach(m => {
         if (!m) return;
         const nameMap = {

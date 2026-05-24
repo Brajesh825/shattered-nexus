@@ -726,8 +726,8 @@ const Story = {
   /* ════════════════════════════════════════════════════════════════════════
      GENERIC LINE LIST RENDERER
   ════════════════════════════════════════════════════════════════════════ */
-  _showLines(lines, onDone) {
-    Cutscene.start(lines, onDone);
+  _showLines(lines, onDone, castOverride) {
+    Cutscene.start(lines, onDone, castOverride);
   },
 
 
@@ -1031,7 +1031,25 @@ const Story = {
         lines.push({ speaker: d.speaker, text: d.text });
       }
     });
-    this._showLines(lines, () => this._showOutro());
+
+    // Build a cast override for the character_moment so the now-defeated
+    // boss doesn't linger on the layer next to the recruit. If the JSON
+    // specifies its own cast, use it directly. Otherwise default to the
+    // boss_chapter cast with non-playable speakers stripped out (the
+    // recruit's own name is auto-injected by Cutscene via the speaker path).
+    let castOverride = boss.character_moment.cast;
+    if (!castOverride && Array.isArray(boss.cast)) {
+      const playableIds = ['aya', 'tao', 'lulu', 'rei', 'ria', 'valka', 'drake', 'rex', 'sera'];
+      const aliasMap = (typeof Cutscene !== 'undefined' && Cutscene.ALIAS_TO_CHARID) ? Cutscene.ALIAS_TO_CHARID : {};
+      castOverride = boss.cast.filter(name => {
+        if (!name) return false;
+        const key = name.toLowerCase().replace(/\s+/g, '_');
+        const id = aliasMap[key] || key;
+        return playableIds.includes(id);
+      });
+    }
+
+    this._showLines(lines, () => this._showOutro(), castOverride);
     showScreen('story-screen');
   },
 
