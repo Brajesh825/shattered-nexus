@@ -55,10 +55,16 @@ MAP_DEFS.crystal_cavern_f3 = {
     { weight: 1, enemies: ['gem_mimic', 'gem_mimic'], activePhases: ['midnight'] },                  // Cursed Treasury
   ],
 
+  // Spectral Guardian is an OPTIONAL map boss (same pattern as galdor_king on
+  // Verdant Vale, river_king on Riverlands, sunken_leviathan on Sunken Temple).
+  // It lives in enemies[] with isBoss:true, the player can choose to fight or
+  // skip it. Story progression is handled by the separate `reach` objective
+  // at the Crystal Heart exit tile — defeating the Guardian is not required.
   objective: {
-    type: 'kill_boss',
-    label: 'Defeat the Spectral Guardian',
-    completeMsg: '✦ THE GUARDIAN FALLS ✦\nThe resonance lock shatters. The path through the frozen core is clear—the resonance artifact in the South West is yours.'
+    type: 'reach',
+    target: { x: 55, y: 30 },
+    label: 'Reach the Crystal Heart — the path to the palace undercroft',
+    completeMsg: '✦ The resonance lock yields. The way into Ashveil\'s undercroft is open.'
   },
 
   enemies: [

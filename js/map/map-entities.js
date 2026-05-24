@@ -519,13 +519,30 @@ const MapEntities = (() => {
       bg:             e.bg || e.background || null,
     }));
     _encounteredIdx = -1;
+    // CRITICAL: also reset _lastEncountered. Without this, a boss entity from
+    // a previous map session (e.g. river_king / sunken_leviathan) can survive
+    // into the next map and falsely trigger weapon-acquisition dialogues on
+    // any subsequent victory.
+    _lastEncountered = null;
 
     // Preload PNG sprites for all unique enemy IDs on this map
     const uniqueIds = [...new Set(_enemies.map(e => e.id))];
     uniqueIds.forEach(id => _getEnemySprite(id));
   }
 
-  function clear() { _enemies = []; _encounteredIdx = -1; }
+  function clear() {
+    _enemies = [];
+    _encounteredIdx = -1;
+    _lastEncountered = null;
+  }
+
+  // Lighter than clear() — used on battle defeat. Releases the encounter
+  // handles so the next checkEncounter() can fire cleanly, but leaves the
+  // enemy roster intact so the player can re-attempt the fight.
+  function releaseEncountered() {
+    _encounteredIdx = -1;
+    _lastEncountered = null;
+  }
 
   function removeEncountered() {
     if (_encounteredIdx >= 0 && _encounteredIdx < _enemies.length) {
@@ -1577,7 +1594,7 @@ const MapEntities = (() => {
   function markNPCTalked(id) { MapNPCs.markTalked(id); }
 
   return {
-    init, clear, updateEnemies, renderEnemies, renderEnemiesForRow, checkEncounter, removeEncountered,
+    init, clear, releaseEncountered, updateEnemies, renderEnemies, renderEnemiesForRow, checkEncounter, removeEncountered,
     allCleared, bossCleared, remaining, hasEnemyAt, prepareBuckets,
     getActiveEncountered: () => (_encounteredIdx >= 0 && _encounteredIdx < _enemies.length) ? _enemies[_encounteredIdx] : null,
     getLastEncountered: () => _lastEncountered,

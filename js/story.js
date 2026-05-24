@@ -954,6 +954,13 @@ const Story = {
       console.log('[Story] Seamlessly advancing chapter to:', nextChap.id);
       this.chapIdx++;
       this.currentChap = nextChap;
+      // Also bump _exploreChap so multi-floor dungeons (e.g. Crystal Cavern
+      // F1→F2→F3) end the final floor with the correct chapter's
+      // post_dialogue and `clearedMaps` entry. Without this, the post-boss
+      // handoff to the arc's boss_chapter uses Floor 1's stale chapter data.
+      if (nextChap.type === 'explore') {
+        this._exploreChap = nextChap;
+      }
       this._doSave();
 
       const lbl = document.getElementById('explore-map-name');

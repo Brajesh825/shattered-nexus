@@ -81,6 +81,24 @@ const BossGauntlet = {
                         }
                     }
                 });
+                // Also register tile-based encounter bosses (e.g. the Crystal
+                // Cavern F3 Spectral Guardian). These live in triggers[] as
+                // `type: 'encounter', isBoss: true` instead of map.enemies[].
+                (map.triggers || []).forEach(trig => {
+                    if (trig.type === 'encounter' && trig.isBoss && Array.isArray(trig.enemies)) {
+                        trig.enemies.forEach(eid => {
+                            if (!registry[eid]) {
+                                registry[eid] = {
+                                    id: eid,
+                                    arcIdx: mapArcIdx - 1,
+                                    mapId: mapId,
+                                    isStoryBoss: false,
+                                    tier: 3
+                                };
+                            }
+                        });
+                    }
+                });
             });
         }
 

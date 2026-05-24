@@ -119,6 +119,10 @@ const MapEngine = (() => {
 
   // Region triggers already fired this session
   const _firedTriggers = new Set();
+  // ID of the encounter-type trigger that launched the current/last battle.
+  // Used to refire the trigger when the player loses, so boss tiles like the
+  // Spectral Guardian can be re-attempted instead of being permanently skipped.
+  let _lastEncounterTriggerId = null;
 
   // ── Cinematic Scene State ──────────────────────────────
   let _sceneRunning = false; // blocks encounters, triggers, and player movement
@@ -1127,12 +1131,16 @@ const MapEngine = (() => {
       interact();
     }
 
-    // Objective check each frame
-    _checkObjective();
-
-    // Region triggers and scene triggers
+    // Region triggers FIRST — when a `reach` objective and an `encounter`
+    // trigger share the same tile (the Spectral Guardian / tile-based boss
+    // pattern), the encounter must fire before the objective auto-completes.
+    // If a trigger pauses the engine (battle / dialogue / scene), the
+    // objective check below is skipped this tick so the trigger's flow wins.
     if (!_sceneRunning) _checkRegionTriggers();
     _checkScenes();
+
+    // Objective check each frame — but only if no trigger paused us this tick
+    if (_running) _checkObjective();
 
     // Fog dialogue + ambient voice lines
     _updateFogDialogue(dt);
@@ -1240,8 +1248,12 @@ const MapEngine = (() => {
             resume();
           });
         } else if (trig.type === 'encounter' && trig.enemies) {
-          // Trigger a direct encounter / boss fight from a map zone
-          // Optional: show a pre-battle message before launching
+          // Trigger a direct encounter / boss fight from a map zone.
+          // Stop the engine immediately so subsequent ticks don't race the
+          // pre-message setTimeout (e.g. a `reach` objective sharing the tile
+          // would otherwise auto-complete before the boss fight begins).
+          stop();
+          _lastEncounterTriggerId = id;
           const launch = () => _triggerEncounter({
             enemies: trig.enemies,
             isBoss: trig.isBoss || false,
@@ -1655,6 +1667,12 @@ const MapEngine = (() => {
   function onBattleComplete(victory) {
     if (typeof BGM !== 'undefined') BGM.playMap(_map);
 
+    // On victory, the encounter trigger has done its job and the tile-based
+    // boss fight is resolved — drop the trigger ID so a future loss elsewhere
+    // doesn't mis-target the wrong _firedTriggers entry. The defeat branch
+    // below handles its own cleanup before this point.
+    if (victory) _lastEncounterTriggerId = null;
+
     // Scene ambush intercept — hand control back to the scene runner
     if (_sceneAmbushActive) {
       _sceneAmbushActive = false;
@@ -1681,7 +1699,18 @@ const MapEngine = (() => {
           m.isKO = false;
           m.statuses = [];
         });
-        MapEntities.clear();
+        // Do NOT call MapEntities.clear() here — it would wipe every enemy on
+        // the map including the boss the player just lost to (Bug 3). On loss
+        // we only need to release the encounter handles so the map can be
+        // re-traversed cleanly.
+        if (MapEntities.releaseEncountered) MapEntities.releaseEncountered();
+        // If the battle was launched by an `encounter`-type region trigger,
+        // clear that trigger from _firedTriggers so the player can re-attempt
+        // the fight by walking back onto the tile.
+        if (_lastEncounterTriggerId) {
+          _firedTriggers.delete(_lastEncounterTriggerId);
+          _lastEncounterTriggerId = null;
+        }
         MapPlayer.reset(_map.playerStart.x, _map.playerStart.y);
         _campUnlocked = false; _atCamp = false;
         showScreen('explore-screen');
