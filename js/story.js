@@ -295,16 +295,22 @@ const Story = {
       // block the player from re-triggering the boss chapter. If the player
       // is still on arc N, the arc's primary map cannot legitimately be
       // cleared yet — strip it.
-      if (Array.isArray(G.clearedMaps) && ARC_MAP_ID[this.arcIdx]) {
-        const currentArcMap = ARC_MAP_ID[this.arcIdx];
-        if (G.clearedMaps.includes(currentArcMap)) {
-          if (typeof StateManager !== 'undefined') {
-            StateManager.removeClearedMap(currentArcMap);
-          } else {
-            G.clearedMaps = G.clearedMaps.filter(m => m !== currentArcMap);
-          }
-          console.warn('[SaveMigration] Stripped premature clearedMaps entry:', currentArcMap);
+      if (Array.isArray(G.clearedMaps)) {
+        const mapsToStrip = [];
+        if (ARC_MAP_ID[this.arcIdx]) mapsToStrip.push(ARC_MAP_ID[this.arcIdx]);
+        if (this.arcIdx === 1) {
+          mapsToStrip.push('crystal_cavern_f2', 'crystal_cavern_f3');
         }
+        mapsToStrip.forEach(mapId => {
+          if (G.clearedMaps.includes(mapId)) {
+            if (typeof StateManager !== 'undefined') {
+              StateManager.removeClearedMap(mapId);
+            } else {
+              G.clearedMaps = G.clearedMaps.filter(m => m !== mapId);
+            }
+            console.warn('[SaveMigration] Stripped premature clearedMaps entry:', mapId);
+          }
+        });
       }
       if (s.inventory) G.inventory = s.inventory;
       if (s.npcTalked) G.npcTalked = s.npcTalked;
@@ -981,6 +987,10 @@ const Story = {
         if (!Array.isArray(G.clearedMaps)) G.clearedMaps = [];
         if (!G.clearedMaps.includes(chap.map)) G.clearedMaps.push(chap.map);
       }
+    }
+    
+    if (chap && chap.background) {
+      this._setBg(chap.background);
     }
 
     this._showLines((chap && chap.post_dialogue) || [], () => this._nextChapter());
