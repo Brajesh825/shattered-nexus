@@ -493,6 +493,7 @@ function selectChar(id) {
           <span class="stat-chip">MP <span>${s.mp}</span></span>
           <span class="stat-chip">ATK <span>${s.atk}</span></span>
           <span class="stat-chip">DEF <span>${s.def}</span></span>
+          <span class="stat-chip">MDEF <span>${s.mdef}</span></span>
           <span class="stat-chip">SPD <span>${s.spd}</span></span>
           <span class="stat-chip">MAG <span>${s.mag}</span></span>
         </div>

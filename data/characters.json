@@ -21,7 +21,8 @@
             "def": 12,
             "spd": 18,
             "mag": 14,
-            "lck": 10
+            "lck": 10,
+            "mdef": 11
         },
         "stat_bonuses": {
             "spd": 3,
@@ -70,7 +71,8 @@
             "def": 9,
             "spd": 14,
             "mag": 12,
-            "lck": 10
+            "lck": 10,
+            "mdef": 10
         },
         "stat_bonuses": {
             "atk": 4,
@@ -117,7 +119,8 @@
             "def": 13,
             "spd": 11,
             "mag": 20,
-            "lck": 10
+            "lck": 10,
+            "mdef": 16
         },
         "stat_bonuses": {
             "hp": 8,
@@ -163,7 +166,8 @@
             "def": 16,
             "spd": 15,
             "mag": 8,
-            "lck": 10
+            "lck": 10,
+            "mdef": 11
         },
         "stat_bonuses": {
             "atk": 3,
@@ -220,7 +224,8 @@
             "def": 9,
             "spd": 12,
             "mag": 24,
-            "lck": 10
+            "lck": 10,
+            "mdef": 20
         },
         "stat_bonuses": {
             "mag": 6,
@@ -269,7 +274,8 @@
             "def": 18,
             "spd": 15,
             "mag": 16,
-            "lck": 10
+            "lck": 10,
+            "mdef": 15
         },
         "stat_bonuses": {
             "atk": 4,
@@ -319,7 +325,8 @@
             "def": 14,
             "spd": 16,
             "mag": 10,
-            "lck": 10
+            "lck": 10,
+            "mdef": 11
         },
         "stat_bonuses": {
             "atk": 3,
@@ -369,7 +376,8 @@
             "def": 20,
             "spd": 14,
             "mag": 18,
-            "lck": 10
+            "lck": 10,
+            "mdef": 16
         },
         "stat_bonuses": {
             "atk": 5,
@@ -419,7 +427,8 @@
             "def": 22,
             "spd": 10,
             "mag": 12,
-            "lck": 10
+            "lck": 10,
+            "mdef": 14
         },
         "stat_bonuses": {
             "def": 6,

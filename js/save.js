@@ -6,6 +6,25 @@
  * • Auto-save toast notification
  * • Migrates legacy v1 single save to slot 0
  */
+
+// One-time localStorage migration for legacy character IDs
+(function() {
+  const MAP = { 'ayaka': 'aya', 'hutao': 'tao', 'nilou': 'lulu', 'xiao': 'rei', 'aria': 'ria' };
+  const KEYS = ['cc_save_v1', 'cc_save_v2_s0', 'cc_save_v2_s1', 'cc_save_v2_s2'];
+  KEYS.forEach(k => {
+    const raw = localStorage.getItem(k);
+    if (!raw) return;
+    try {
+      let str = raw;
+      for (let [old, ali] of Object.entries(MAP)) {
+        str = str.replace(new RegExp(':"' + old + '"', 'gi'), ':"' + ali + '"');
+        str = str.replace(new RegExp('"' + old + '"', 'gi'), '"' + ali + '"');
+      }
+      localStorage.setItem(k, str);
+    } catch (e) { }
+  });
+})();
+
 const Save = {
   SLOTS: 3,
   _key: (slot) => `cc_save_v2_s${slot}`,
@@ -38,7 +57,7 @@ const Save = {
           console.log(`[Save] Sync successful for slot ${slot}`);
         } catch (syncErr) {
           // Silent fail for sync — the localStorage write already succeeded
-          console.warn('[Save] Sync bridge not available.');
+          console.log('[Save] Sync bridge not available (offline).');
         }
       }
 

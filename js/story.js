@@ -787,11 +787,6 @@ const Story = {
      BATTLE LAUNCHER
   ════════════════════════════════════════════════════════════════════════ */
 
-  _scaleEnemy(def) {
-    // Only use leveling for difficulty scaling (no ARC_SCALE multiplier)
-    return def;
-  },
-
   async _launchStoryBattle(enemyId) {
     const raw = this._allEnemies.find(e => e.id === enemyId);
     if (!raw) { console.warn('Story: enemy not found:', enemyId); this.onBattleWon(); return; }
@@ -810,7 +805,7 @@ const Story = {
     // Hide dialogue during battle
     const dialogue = this.el('s-dialogue');
     if (dialogue) dialogue.style.display = 'none';
-    const def = this._scaleEnemy(raw);
+    const def = raw;
 
     // Build enemy group: boss is always solo
     const defs = [def];

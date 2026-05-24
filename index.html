@@ -31,27 +31,6 @@
   <link rel="stylesheet" href="css/item-menu.css">
   <link rel="icon"
     href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚔️</text></svg>">
-  <script>
-    /** Cold Migration: Maps legacy IDs in LocalStorage BEFORE any other scripts run. */
-    (function () {
-      const MAP = { 'ayaka': 'aya', 'hutao': 'tao', 'nilou': 'lulu', 'xiao': 'rei', 'aria': 'ria' };
-      const KEYS = ['cc_save_v1', 'cc_save_v2_s0', 'cc_save_v2_s1', 'cc_save_v2_s2'];
-      KEYS.forEach(k => {
-        const raw = localStorage.getItem(k);
-        if (!raw) return;
-        try {
-          let str = raw;
-          for (let [old, ali] of Object.entries(MAP)) {
-            // Precise replacement for "id":"ayaka" or "charId":"ayaka"
-            str = str.replace(new RegExp(':"' + old + '"', 'gi'), ':"' + ali + '"');
-            // Compatibility for array strings ["ayaka", ...]
-            str = str.replace(new RegExp('"' + old + '"', 'gi'), '"' + ali + '"');
-          }
-          localStorage.setItem(k, str);
-        } catch (e) { }
-      });
-    })();
-  </script>
   <script src="js/utils.js"></script>
   <script src="js/scaling-config.js"></script>
   <script src="js/systems/settings-manager.js"></script>

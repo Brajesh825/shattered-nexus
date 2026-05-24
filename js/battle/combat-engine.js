@@ -45,41 +45,7 @@ const CombatEngine = (() => {
   }
 
   function setupHpListener(unit) {
-    if (unit._hpListenerSetup) return;
-    unit._hpListenerSetup = true;
-
-    let hpValue = unit.hp;
-    let maxHpValue = unit.maxHp;
-
-    Object.defineProperty(unit, 'hp', {
-      get() {
-        return hpValue;
-      },
-      set(newVal) {
-        const oldVal = hpValue;
-        hpValue = newVal;
-        if (oldVal !== newVal) {
-          cacheActivePhase(unit);
-        }
-      },
-      configurable: true,
-      enumerable: true
-    });
-
-    Object.defineProperty(unit, 'maxHp', {
-      get() {
-        return maxHpValue;
-      },
-      set(newVal) {
-        const oldVal = maxHpValue;
-        maxHpValue = newVal;
-        if (oldVal !== newVal) {
-          cacheActivePhase(unit);
-        }
-      },
-      configurable: true,
-      enumerable: true
-    });
+    // Deprecated: No-op to preserve backwards compatibility/imports without runtime hijacking
   }
 
   /**
@@ -94,6 +60,7 @@ const CombatEngine = (() => {
       else if (stat === 'reduction') base = 1.0;
       else if (stat === 'healBoost') base = 1.0;
       else if (stat === 'evasion') base = 0.0;
+      else if (stat === 'mdef') base = 1;
       else base = 0;
     }
 
@@ -144,11 +111,10 @@ const CombatEngine = (() => {
     let finalMult = Math.max(0.2, cappedPassive + sBonus);
 
     if (unit.statPhases && unit.hp && unit.maxHp) {
-      if (!unit._hpListenerSetup) {
-        setupHpListener(unit);
-        cacheActivePhase(unit);
-      }
-      const activePhase = unit._cachedActivePhase;
+      const hpRatio = unit.hp / unit.maxHp;
+      const activePhase = [...unit.statPhases]
+        .sort((a, b) => a.hp - b.hp)
+        .find(p => hpRatio <= p.hp);
       if (activePhase && activePhase[stat]) {
         finalMult *= activePhase[stat];
       }

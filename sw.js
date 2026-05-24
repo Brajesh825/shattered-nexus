@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nexus-cache-v9.32';
+const CACHE_NAME = 'nexus-cache-v9.33';
 
 // Core shell — always pre-cached regardless of quality setting
 const SHELL_ASSETS = [
@@ -28,6 +28,7 @@ const SHELL_ASSETS = [
   './js/game.js',
   './js/utils.js',
   './js/systems/settings-manager.js',
+  './js/systems/state-manager.js',
   './js/asset-preloader.js',
   './js/ambient.js',
   './js/bgm.js',

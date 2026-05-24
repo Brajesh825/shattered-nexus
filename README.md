@@ -64,26 +64,26 @@ RPG+ is a full-featured JRPG running entirely in the browser:
 
 ## 🧙 Characters
 
-Eight characters join your party across the campaign. The first four are available from the start; the remaining four are recruited through story events.
+Nine characters join your party across the campaign. The first four are available from the start; the remaining five are recruited through story events.
 
 ### Starter Party
 
 | Character | Class | Role | Passive |
 |-----------|-------|------|---------|
-| **Aya** | Cryo Bladestorm | Swift physical striker | **Frostflake Dance** — Always acts first; +3 SPD, attacks carry a cryo edge |
-| **Tao** | Spirit Incinerator | High-risk fire attacker | **Blood Blossom** — When HP < 50%, ATK +35% |
-| **Lulu** | Hydro Performer | Healer / buffer | **Dance of Haftkarsvar** — All healing amplified by 30% |
-| **Rei** | Ancient Warden | Tank / barrier setter | **Warden's Valor** — Takes 10% reduced damage; ATK +15% from karmic resolve |
-
+| **Aya** | Cryo Princess | Swift physical striker | **Rime-Petal Dance** — Always acts first; +3 SPD, attacks carry a cryo edge |
+| **Tao** | Ghost Guide | High-risk fire attacker | **Soul-Sacrifice Ember** — When HP < 50%, ATK +35% |
+| **Lulu** | Star Dancer | Healer / buffer | **Priestess's Cleansing Dance** — All healing amplified by 30% |
+| **Rei** | Ancient Warden | Tank / barrier setter | **Vigilant Karma** — Takes 10% reduced damage; ATK +15% from karmic resolve; DEF boost at low HP |
 
 ### Recruited Characters
 
 | Character | Class | Arc Joined | Role | Passive |
 |-----------|-------|-----------|------|---------|
-| **Ria** | Summoner | Arc 2 | AOE magic / healing | **Eidolon Bond** — Summons +20% stats; MP efficiency +15% |
-| **Drake** | Divine Dragoon | Arc 3 | Speed striker / evader | **Dragon's Leap** — Every 3rd turn, bonus aerial strike; SPD +2 in aerial combat |
-| **Valka** | Valkyrie | Arc 4 | Holy attacker / debuffer | **Divine Authority** — DEF +20%; reflects 10% of damage taken |
-| **Rex** | Grail Guardian | Arc 5 | Demi-god tank / healer | **Divine Blessing** — Grants allies +15% HP regen per turn; takes 12% reduced damage |
+| **Ria** | Summoner | Arc 2 | AOE magic / healing | **Bound Pact** — Summons +20% stats; MP efficiency +15% |
+| **Drake** | Dragoon | Arc 3 | Speed striker / evader | **Tempest Leap** — Every 3rd turn, bonus aerial strike; SPD +10% |
+| **Valka** | Valkyrie | Arc 4 | Holy attacker / debuffer | **Ascendant Scale** — DEF +20%; reflects 10% of damage taken |
+| **Rex** | Lionheart King | Arc 5 | Demi-god tank / healer | **Imperial Grace** — Grants allies +15% HP regen per turn; takes 12% reduced damage |
+| **Sera** | Azure Commander | Arc 5 (Expansion) | Elite physical tank / gravity controller | **Azure Resolve** — Takes 15% reduced damage from Elite and Boss enemies |
 
 Full base stats and growth rates are in `data/characters.json`.
 
