@@ -70,7 +70,7 @@
             {
               "speaker": "narrator",
               "emotion": "fearful",
-              "text": "Old Keeper: He was in the throne room. But he moves. He knows when something is coming. He has been waiting for something to be worth facing."
+              "text": "Old Keeper: He is in the throne room, waiting. He knows when something is coming. He has been waiting for something to be worth facing."
             },
             {
               "speaker": "Lulu",
@@ -80,17 +80,17 @@
             {
               "speaker": "narrator",
               "emotion": "hollow",
-              "text": "Old Keeper: Two did. A summoner and a winged warrior — radiant things, not from here. They fought him in the undercroft before the city fell. He did not kill them. He kept them. Said their power was too rare to waste."
+              "text": "Old Keeper: Two did. A summoner and a winged warrior — radiant things, not from here. The winged one was dragged off toward the ocean depths, but the summoner... he kept her chained here in the deep vault beneath the palace."
             },
             {
               "speaker": "Rei",
               "emotion": "sharp",
-              "text": "He has prisoners."
+              "text": "He has a prisoner."
             },
             {
               "speaker": "narrator",
               "emotion": "hollow",
-              "text": "Old Keeper: Chained in the deep vault beneath the palace. He feeds on their resonance to hold the Fragment steady. Without them, it would burn him alive."
+              "text": "Old Keeper: Chained in the deep vault beneath the palace. He feeds on her resonance to hold the Fragment steady. Without her, it would burn him alive."
             },
             {
               "speaker": "Tao",
@@ -195,7 +195,7 @@
       {
         "speaker": "narrator",
         "emotion": "intense",
-        "text": "The Demon Lord fills the undercroft \u2014 the fire Seal Fragment blazing against his chest, the heat warping the air around him. He did not wait in his throne room. He hunted them into the tunnel and let them walk straight to him."
+        "text": "The Demon Lord fills the throne room — the fire Seal Fragment blazing against his chest, the heat warping the air around him. He waited for them in his seat of power, letting them walk straight into his trap."
       },
       {
         "speaker": "Demon Lord",
@@ -215,17 +215,17 @@
       {
         "speaker": "Tao",
         "emotion": "cold",
-        "text": "Release them. The ones you took. A summoner and a warrior. Release them."
+        "text": "Release her. The summoner you took. Release her."
       },
       {
         "speaker": "Demon Lord",
         "emotion": "amused",
-        "text": "My guests? They sustain the Fragment. Without their resonance anchoring it, it would have consumed me months ago. They are... useful. As you will be, once I am done with you."
+        "text": "My guest? She sustains the Fragment. Without her resonance anchoring it, it would have consumed me months ago. She is... useful. As you will be, once I am done with you."
       },
       {
         "speaker": "Lulu",
         "emotion": "steady",
-        "text": "They are not yours to use. That Fragment does not belong to you. None of this does."
+        "text": "She is not yours to use. That Fragment does not belong to you. None of this does."
       },
       {
         "speaker": "Rei",
@@ -312,7 +312,7 @@
       {
         "speaker": "narrator",
         "emotion": "precise",
-        "text": "Valdris: I am very good at patient."
+        "text": "Valdris: I am very good at being patient."
       },
       {
         "speaker": "narrator",
@@ -351,7 +351,7 @@
       "dialogue": [
         {
           "speaker": null,
-          "text": "The deep vault beneath the undercroft shudders. Then cracks. Chains of shadow-iron, laced with the Demon Lord's binding sigils, fracture all at once \u2014 his power gone, his hold over them dissolved."
+          "text": "The deep vault beneath the undercroft shudders. Then cracks. Chains of shadow-iron, laced with the Demon Lord's binding sigils, fracture all at once \u2014 his power gone, his hold over her dissolved."
         },
         {
           "speaker": null,
