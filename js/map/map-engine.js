@@ -1628,7 +1628,6 @@ const MapEngine = (() => {
     }
 
     // 7. Delayed Nexus Shatter Transition
-    MapEntities.removeEncountered();
     const alertDelay = 1200;
     setTimeout(() => {
       // Hide warning overlay
