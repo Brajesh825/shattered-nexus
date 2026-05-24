@@ -75,6 +75,12 @@ const Cutscene = {
     this._charPositions = {};
     this._posCounter = 0;
 
+    // Wipe any sprites from the previous cutscene segment. Without this, each
+    // consecutive start() call (pre_dialogue → post_dialogue → character_moment,
+    // etc.) stacks fresh DOM sprites on top of the old ones since _charAppeared
+    // was just reset to {} but the layer still held the prior chapter's cast.
+    this._clearSceneLayer();
+
     if (flat.length === 0) {
       onDone && onDone();
       return;
