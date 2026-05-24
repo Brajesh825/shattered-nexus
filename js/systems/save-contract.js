@@ -27,6 +27,7 @@ const SaveContract = (() => {
       questState: typeof QuestSystem !== 'undefined' ? QuestSystem.save() : null,
       firedScenes: Array.from(G.firedScenes || []),
       nexusTime: G.nexusTime ?? 8.0,
+      nexusStepCounter: G.nexusStepCounter ?? 0,
       voidFragments: G.voidFragments || 0,
       weaponsUpgrades: G.weaponsUpgrades || {},
       weaponsLevels: G.weaponsLevels || {},

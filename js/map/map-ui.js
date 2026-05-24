@@ -441,11 +441,14 @@ const MapUI = (() => {
       _renderCorruptionMeter();
       _renderQuestTracker();
       if (typeof ChronosEngine !== 'undefined') {
-        const hintEl = document.querySelector('.explore-map-hint');
-        if (hintEl) {
-          const phaseIcons = { dawn: '🌅 Dawn', noon: '☀️ Noon', dusk: '🌆 Dusk', midnight: '🌙 Midnight' };
+        const clockEl = document.getElementById('explore-hud-clock');
+        if (clockEl) {
           const phase = ChronosEngine.getPhase();
-          hintEl.textContent = `↑↓←→ · WASD to move  |  🕰️ ${ChronosEngine.formatTime()} — ${phaseIcons[phase] || phase}`;
+          const label = (typeof ChronosEngine.getPhaseLabel === 'function')
+            ? ChronosEngine.getPhaseLabel()
+            : phase;
+          clockEl.textContent = `🕰️ ${ChronosEngine.formatTime()} — ${label}`;
+          clockEl.dataset.phase = phase;
         }
       }
     }

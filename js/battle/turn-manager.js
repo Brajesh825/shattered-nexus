@@ -82,6 +82,13 @@ const TurnManager = {
 
     // 2. New round if current queue is exhausted
     if (idx >= queue.length) {
+      // Chronos: advance the in-game clock by 30 minutes for each completed
+      // battle round. Skip the opening round — `idx >= queue.length` also
+      // fires on the very first call when the prior queue was empty (battle
+      // start), and we only want to tick when a *previous* round just finished.
+      if (queue.length > 0 && typeof ChronosEngine !== 'undefined') {
+        ChronosEngine.advanceByBattleRound();
+      }
       queue = this.buildQueue();
       TurnState.setQueue(queue);
       TurnState.setIndex(0);

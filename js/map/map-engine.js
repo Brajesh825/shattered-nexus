@@ -1076,15 +1076,18 @@ const MapEngine = (() => {
     } else {
       _fogTime += dt;
     }
-    if (typeof ChronosEngine !== 'undefined') ChronosEngine.update(dt);
+    // Chronos is step- and battle-round-driven now; update(dt) is a no-op.
     MapInput.poll();
     if (!_playerLocked) MapPlayer.update(dt, _map);
     MapEntities.updateEnemies(dt, _map);
     if (_marchEnemies.length) _updateMarchEnemies(dt);
     _updateParticles(dt);
 
-    // Detect step landing → footstep SFX
+    // Detect step landing → footstep SFX + Chronos advancement
     if (_prevMoving && !MapPlayer.moving) {
+      // Advance the Nexus clock exactly once per logical tile-step.
+      if (typeof ChronosEngine !== 'undefined') ChronosEngine.advanceBySteps(1);
+
       if (_footstepCooldown <= 0) {
         const tid = MapData.getTileAt(_map, MapPlayer.tx, MapPlayer.ty);
         if (typeof SFX !== 'undefined') SFX.footstep(_tileToSurface(tid));
