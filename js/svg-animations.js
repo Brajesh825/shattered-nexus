@@ -170,8 +170,8 @@ const SVGAnimations = {
     return s;
   }},
 
-  // Paramita Papilio
-  'paramita_papilio': { duration: 2300, create: () => {
+  // Wraith-Form Ascension
+  'wraith_form_ascension': { duration: 2300, create: () => {
     const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     s.setAttribute('viewBox', '0 0 200 200');
     s.setAttribute('width', '200');
@@ -235,8 +235,8 @@ const SVGAnimations = {
     return s;
   }},
 
-  // Hajra's Hymn — Light Feathers & Prismatic Lens Flare
-  'hajras_hymn': { duration: 2600, create: () => {
+  // Oasis Invocation — Light Feathers & Prismatic Lens Flare
+  'oasis_invocation': { duration: 2600, create: () => {
     const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     s.setAttribute('viewBox', '0 0 200 200');
     s.setAttribute('width', '200');
@@ -313,8 +313,8 @@ const SVGAnimations = {
     return s;
   }},
 
-  // Yaksha Valor
-  'yaksha_valor_active': { duration: 2300, create: () => {
+  // Sentinel's Resolve
+  'sentinels_resolve': { duration: 2300, create: () => {
     const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     s.setAttribute('viewBox', '0 0 200 200');
     s.setAttribute('width', '200');
@@ -345,8 +345,8 @@ const SVGAnimations = {
     return s;
   }},
 
-  // Mastery of Pain
-  'mastery_of_pain': { duration: 2900, create: () => {
+  // Aura of Retribution
+  'aura_of_retribution': { duration: 2900, create: () => {
     const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     s.setAttribute('viewBox', '0 0 200 200');
     s.setAttribute('width', '200');
@@ -364,10 +364,10 @@ const SVGAnimations = {
 
 
   /* ════════════════════════════════════════════════════════════════════════
-     NEW CHARACTERS: RYDIA (Summoner) • LENNETH (Valkyrie) • KAIN (Dragoon) • LEON (King)
+     NEW CHARACTERS: RIA (Summoner) • VALKA (Valkyrie) • DRAKE (Dragoon) • REX (King)
   ════════════════════════════════════════════════════════════════════════ */
 
-  // ─ RYDIA (SUMMONER) ─────────────────────────────────────────────────
+  // ─ RIA (SUMMONER) ───────────────────────────────────────────────────
   // Summon Bahamut — Shadow Passthrough + Megaflare
   'summon_bahamut': { duration: 2600, screenShake: 380, shakeDelay: 1200, create: () => {
     const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -442,7 +442,7 @@ const SVGAnimations = {
     return s;
   }},
 
-  // ─ LENNETH (VALKYRIE) ──────────────────────────────────────────────
+  // ─ VALKA (VALKYRIE) ────────────────────────────────────────────────
   'valkyrie_strike': { duration: 1800, create: () => {
     const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     s.setAttribute('viewBox', '0 0 200 200'); s.setAttribute('width', '200'); s.setAttribute('height', '200');
@@ -511,7 +511,7 @@ const SVGAnimations = {
     return s;
   }},
 
-  // ─ KAIN (DRAGOON) ──────────────────────────────────────────────────
+  // ─ DRAKE (DRAGOON) ─────────────────────────────────────────────────
   'dragoon_lance': { duration: 1900, create: () => {
     const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     s.setAttribute('viewBox', '0 0 200 200'); s.setAttribute('width', '200'); s.setAttribute('height', '200');
@@ -544,7 +544,7 @@ const SVGAnimations = {
     return s;
   }},
 
-  // ─ LEON (GRAIL GUARDIAN) ───────────────────────────────────────────
+  // ─ REX (GRAIL GUARDIAN) ────────────────────────────────────────────
   'holy_strike': { duration: 1850, create: () => {
     const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     s.setAttribute('viewBox', '0 0 200 200'); s.setAttribute('width', '200'); s.setAttribute('height', '200');

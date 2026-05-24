@@ -63,7 +63,7 @@
     },
     "resonance": {
       "charId": "rei",
-      "description": "Mastery of Pain also reduces all incoming damage by 15% for 2 turns."
+      "description": "Aura of Retribution also reduces all incoming damage by 15% for 2 turns."
     }
   },
   {
@@ -85,7 +85,7 @@
     },
     "resonance": {
       "charId": "lulu",
-      "description": "Hajra's Hymn cooldown reduced to 1 instead of 2."
+      "description": "Oasis Invocation cooldown reduced to 1 instead of 2."
     }
   },
   {

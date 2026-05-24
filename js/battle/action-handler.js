@@ -778,8 +778,8 @@ const ActionEngine = {
         if (e.guardMark) {
           Battle.addStatus(actor, { id: `status_taunt_${ab.id}`, label: 'Taunt', icon: '🛡️', type: 'buff', turns: e.duration || 3 });
           BattleUI.addLog(`🛡️ ${actor.displayName} taunted all enemies!`, 'buff');
-          if (ab.id === 'mastery_of_pain' && actor.equippedWeapon?.id === 'chain_of_nights') {
-            Battle.addStatus(actor, { id: 'status_mastery_pain_resonance', label: 'Karmic Shield', icon: '⛓️', type: 'reduction', value: 0.85, turns: 2 });
+          if (ab.id === 'aura_of_retribution' && actor.equippedWeapon?.id === 'chain_of_nights') {
+            Battle.addStatus(actor, { id: 'status_retribution_resonance', label: 'Karmic Shield', icon: '⛓️', type: 'reduction', value: 0.85, turns: 2 });
             BattleUI.addLog(`⛓️ Chain of Ten Thousand Nights: Karmic Shield reduces damage taken by 15%!`, 'buff');
           }
         }
@@ -1006,7 +1006,7 @@ function heroAbility(ab) {
 
     // ── Set ultimate cooldown ──
     let abilityCD = ab.effect?.cooldown ?? (ab.isUltimate ? 2 : 0);
-    if (ab.id === 'hajras_hymn' && actor.equippedWeapon?.id === 'tide_caller') {
+    if (ab.id === 'oasis_invocation' && actor.equippedWeapon?.id === 'tide_caller') {
       abilityCD = 1;
     }
     if (abilityCD > 0) {
@@ -1038,7 +1038,7 @@ function heroAbility(ab) {
     }
     BattleUI.setLog([`${actor.displayName} uses ${ab.name}!`], ['magic']);
 
-    const ultimateChannels = { cryoclasm: 'channels ice blades...', spirit_soother: 'channels soul fire...', hajras_hymn: 'channels star blessing...', mastery_of_pain: 'channels karmic winds...', absolute_summon: 'commands the Phantom Guardian...' };
+    const ultimateChannels = { cryoclasm: 'channels ice blades...', spirit_soother: 'channels soul fire...', oasis_invocation: 'channels star blessing...', aura_of_retribution: 'channels karmic winds...', absolute_summon: 'commands the Phantom Guardian...' };
     const isUltimate = ultimateChannels.hasOwnProperty(ab.id);
 
     const enemy = G.enemy;

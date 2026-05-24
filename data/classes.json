@@ -1,7 +1,7 @@
 [
     {
         "id": "cryo_bladestorm",
-        "name": "Cryo Bladestorm",
+        "name": "Cryo Princess",
         "icon": "❄️",
         "element": "ice",
         "tag": "Ice / Swift Strike",
@@ -92,7 +92,7 @@
     },
     {
         "id": "spirit_incinerator",
-        "name": "Spirit Incinerator",
+        "name": "Ghost Guide",
         "icon": "🔥",
         "element": "fire",
         "tag": "Fire / Life Force",
@@ -125,12 +125,12 @@
                 }
             },
             {
-                "id": "paramita_papilio",
-                "name": "Paramita Papilio",
+                "id": "wraith_form_ascension",
+                "name": "Wraith-Form Ascension",
                 "icon": "🦋",
                 "mp": 12,
                 "type": "buff",
-                "description": "Enter the butterfly state — Costs 30% current HP, ATK +60% for 3 turns",
+                "description": "Enter the wraith state — Costs 30% current HP, ATK +60% for 3 turns",
                 "effect": {
                     "stat": "atk",
                     "multiplier": 1.6,
@@ -139,12 +139,12 @@
                 }
             },
             {
-                "id": "sanguine_rouge",
-                "name": "Sanguine Rouge",
+                "id": "aura_of_ember",
+                "name": "Aura of Ember",
                 "icon": "🩸",
                 "mp": 8,
                 "type": "buff",
-                "description": "Passive empowerment — Fire damage +33% and absorb fire damage as healing, lasts 5 turns",
+                "description": "Soul-fire empowerment — Fire damage +33% and absorb fire damage as healing, lasts 5 turns",
                 "effect": {
                     "fireAmp": 1.33,
                     "absorb": "fire",
@@ -182,7 +182,7 @@
     },
     {
         "id": "hydro_performer",
-        "name": "Hydro Performer",
+        "name": "Star Dancer",
         "icon": "💧",
         "element": "water",
         "tag": "Water / Grace",
@@ -245,13 +245,13 @@
                 }
             },
             {
-                "id": "hajras_hymn",
-                "name": "Hajra's Hymn",
+                "id": "oasis_invocation",
+                "name": "Oasis Invocation",
                 "icon": "✨",
                 "mp": 14,
                 "type": "heal",
                 "isUltimate": true,
-                "description": "Ultimate star dance — restore 50% max HP, cleanse all debuffs, +1 SPD",
+                "description": "Ultimate oasis dance — restore 50% max HP, cleanse all debuffs, +1 SPD",
                 "effect": {
                     "healPercent": 0.5,
                     "aoe": true,
@@ -277,7 +277,7 @@
         "icon": "🌀",
         "element": "wind",
         "tag": "Guardian / Karmic",
-        "description": "An ancient warden's power. Protective stance with karmic resolution, reducing damage and punishing aggressors.",
+        "description": "An ancient sentinel's power. Protective stance with karmic resolution, reducing damage and punishing aggressors.",
         "color": "#0a4030",
         "role": "Knight",
         "stat_multipliers": {
@@ -306,12 +306,12 @@
                 }
             },
             {
-                "id": "yaksha_valor_active",
-                "name": "Warden's Valor",
+                "id": "sentinels_resolve",
+                "name": "Sentinel's Resolve",
                 "icon": "🛡️",
                 "mp": 6,
                 "type": "buff",
-                "description": "Enter guardian stance — take 25% less damage, reflect 15% damage back, 3 turns",
+                "description": "Enter sentinel stance — take 25% less damage, reflect 15% damage back, 3 turns",
                 "effect": {
                     "stat": "def",
                     "multiplier": 1.3,
@@ -336,8 +336,8 @@
                 }
             },
             {
-                "id": "mastery_of_pain",
-                "name": "Mastery of Pain",
+                "id": "aura_of_retribution",
+                "name": "Aura of Retribution",
                 "icon": "⚡",
                 "mp": 14,
                 "type": "magic_damage",
@@ -545,7 +545,7 @@
     },
     {
         "id": "dragoon_skyward",
-        "name": "Divine Dragoon",
+        "name": "Dragoon",
         "icon": "🏹",
         "element": "wind",
         "tag": "Dragon / Sky",
@@ -628,14 +628,14 @@
             "mp": 2,
             "atk": 5,
             "def": 3,
-            "spd": 5,
+            "spd": 4,
             "mag": 1,
             "lck": 2
         }
     },
     {
         "id": "knight_king_divine",
-        "name": "Grail Guardian",
+        "name": "Lionheart King",
         "icon": "⚔️",
         "element": "holy",
         "tag": "Holy / Divinity",
@@ -709,22 +709,6 @@
                         "atk",
                         "def"
                     ]
-                }
-            },
-            {
-                "id": "divine_execution",
-                "name": "Divine Execution",
-                "icon": "💫",
-                "mp": 13,
-                "type": "magic_damage",
-                "isUltimate": true,
-                "description": "Execute judgment — 3.6x magic damage, scales with DEF, stuns if enemy HP low",
-                "effect": {
-                    "dmgMultiplier": 3.6,
-                    "element": "holy",
-                    "statScale": "def",
-                    "stunLow": true,
-                    "cooldown": 2
                 }
             }
         ],

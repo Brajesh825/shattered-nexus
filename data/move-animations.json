@@ -5,19 +5,19 @@
   "cryoclasm":           { "actorDuration": 800, "overlayDuration": 3000, "isUltimate": true  },
 
   "spirit_flame":     { "actorDuration": 560, "overlayDuration":  600, "isUltimate": false },
-  "paramita_papilio": { "actorDuration": 560, "overlayDuration":  600, "isUltimate": false },
-  "sanguine_rouge":   { "actorDuration": 560, "overlayDuration":  600, "isUltimate": false },
+  "wraith_form_ascension": { "actorDuration": 560, "overlayDuration":  600, "isUltimate": false },
+  "aura_of_ember":         { "actorDuration": 560, "overlayDuration":  600, "isUltimate": false },
   "spirit_soother":   { "actorDuration": 560, "overlayDuration":  700, "isUltimate": true  },
 
   "dance_of_blessing":    { "actorDuration": 560, "overlayDuration":  600, "isUltimate": false },
   "water_wheel":          { "actorDuration": 560, "overlayDuration":  600, "isUltimate": false },
   "harmony_preservation": { "actorDuration": 560, "overlayDuration":  600, "isUltimate": false },
-  "hajras_hymn":          { "actorDuration": 800, "overlayDuration": 3000, "isUltimate": true  },
+  "oasis_invocation":     { "actorDuration": 800, "overlayDuration": 3000, "isUltimate": true  },
 
   "lancing_strike":     { "actorDuration": 560, "overlayDuration":  600, "isUltimate": false },
-  "yaksha_valor_active": { "actorDuration": 560, "overlayDuration":  600, "isUltimate": false },
-  "karmic_barrier":     { "actorDuration": 560, "overlayDuration":  600, "isUltimate": false },
-  "mastery_of_pain":    { "actorDuration": 800, "overlayDuration": 3000, "isUltimate": true  },
+  "sentinels_resolve":   { "actorDuration": 560, "overlayDuration":  600, "isUltimate": false },
+  "karmic_barrier":      { "actorDuration": 560, "overlayDuration":  600, "isUltimate": false },
+  "aura_of_retribution": { "actorDuration": 800, "overlayDuration": 3000, "isUltimate": true  },
 
   "summon_bahamut":   { "actorDuration": 700, "overlayDuration": 2400, "isUltimate": false },
   "summon_syldra":    { "actorDuration": 700, "overlayDuration": 2200, "isUltimate": false },
