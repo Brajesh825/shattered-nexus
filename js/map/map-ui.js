@@ -903,11 +903,16 @@ const MapUI = (() => {
         const btnLevel = forgeEl.querySelector('#btn-forge-level');
         if (btnLevel && canLevelUp) {
           btnLevel.addEventListener('click', () => {
-            G.gold -= refGoldCost;
-            if (G.party) G.party.forEach(m => m.gold = G.gold);
-            removeFromInventory(refMat.id, refMatCost);
-            
-            G.weaponsLevels[w.id] = level + 1;
+            if (typeof StateManager !== 'undefined') {
+              StateManager.spendGold(refGoldCost);
+              removeFromInventory(refMat.id, refMatCost);
+              StateManager.setWeaponLevel(w.id, level + 1);
+            } else {
+              G.gold -= refGoldCost;
+              if (G.party) G.party.forEach(m => m.gold = G.gold);
+              removeFromInventory(refMat.id, refMatCost);
+              G.weaponsLevels[w.id] = level + 1;
+            }
 
             // Recompute combat stats
             const eqMember = G.party.find(m => m.char.equippedWeapon === w.id);
@@ -930,12 +935,18 @@ const MapUI = (() => {
         const btnAscend = forgeEl.querySelector('#btn-forge-ascend');
         if (btnAscend && canAscend) {
           btnAscend.addEventListener('click', () => {
-            G.gold -= ascGoldCost;
-            if (G.party) G.party.forEach(m => m.gold = G.gold);
-            G.voidFragments -= ascFragsCost;
-            removeFromInventory(ascMat.id, ascMatCost);
-            
-            G.weaponsUpgrades[w.id] = nextRarity;
+            if (typeof StateManager !== 'undefined') {
+              StateManager.spendGold(ascGoldCost);
+              StateManager.spendVoidFragments(ascFragsCost);
+              removeFromInventory(ascMat.id, ascMatCost);
+              StateManager.setWeaponUpgrade(w.id, nextRarity);
+            } else {
+              G.gold -= ascGoldCost;
+              if (G.party) G.party.forEach(m => m.gold = G.gold);
+              G.voidFragments -= ascFragsCost;
+              removeFromInventory(ascMat.id, ascMatCost);
+              G.weaponsUpgrades[w.id] = nextRarity;
+            }
             w.rarity = nextRarity; // Keep backwards compatibility
 
             // Recompute combat stats
@@ -1120,12 +1131,22 @@ const MapUI = (() => {
     if (typeof MapEngine !== 'undefined' && MapEngine.openDialogue) {
       MapEngine.openDialogue(lines, () => {
         // Advance tier
-        G.bondProgress[bond.pair.id] = (G.bondProgress[bond.pair.id] || 0) + 1;
+        const nextTier = (G.bondProgress[bond.pair.id] || 0) + 1;
+        if (typeof StateManager !== 'undefined') {
+          StateManager.setBondProgress(bond.pair.id, nextTier);
+        } else {
+          G.bondProgress[bond.pair.id] = nextTier;
+        }
 
         // Store and apply reward
         if (bond.tier.reward) {
-          G.earnedBondRewards = G.earnedBondRewards || [];
-          G.earnedBondRewards.push({ pairId: bond.pair.id, reward: bond.tier.reward });
+          const reward = { pairId: bond.pair.id, reward: bond.tier.reward };
+          if (typeof StateManager !== 'undefined') {
+            StateManager.addEarnedBondReward(reward);
+          } else {
+            G.earnedBondRewards = G.earnedBondRewards || [];
+            G.earnedBondRewards.push(reward);
+          }
           if (typeof applyBondRewards === 'function') applyBondRewards();
         }
 
@@ -1455,3 +1476,22 @@ const MapUI = (() => {
     closeWeaponAcquisition,
   };
 })();
+
+// ── StateManager subscriber proof-of-life ─────────────────────────────────
+// Live-update the Weapons-panel gold/void counters whenever a transaction
+// fires `gold_changed` or `void_fragments_changed`, instead of relying on
+// the full panel re-render path to push the new value.
+if (typeof StateManager !== 'undefined' && StateManager.on) {
+  StateManager.on('gold_changed', (payload) => {
+    const el = document.getElementById('wp-gold-count');
+    if (el && payload && typeof payload.gold === 'number') {
+      el.textContent = payload.gold.toLocaleString();
+    }
+  });
+  StateManager.on('void_fragments_changed', (payload) => {
+    const el = document.getElementById('wp-void-count');
+    if (el && payload && typeof payload.voidFragments === 'number') {
+      el.textContent = payload.voidFragments.toString();
+    }
+  });
+}

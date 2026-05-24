@@ -239,7 +239,13 @@ function goCharSelect() {
   // If not in story mode, this is free battle mode — unlock all characters
   if (G.mode !== 'story') {
     G.mode = 'free';
-    G.unlockedChars = G.chars.map(c => c.id);
+    // Bulk-unlock for free mode. Route each id through StateManager so
+    // unlockChar events fire and subscribers (e.g. menu redraws) react.
+    if (typeof StateManager !== 'undefined') {
+      G.chars.forEach(c => StateManager.unlockChar(c.id));
+    } else {
+      G.unlockedChars = G.chars.map(c => c.id);
+    }
   }
 
   showScreen('char-screen');

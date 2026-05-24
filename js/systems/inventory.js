@@ -108,10 +108,16 @@ const ItemSystem = {
 function addToInventory(itemId, qty = 1) {
   const def = G.items.find(i => i.id === itemId);
   if (!def) return false;
-  
+
   // --- QUEST SYSTEM INTEGRATION ---
   if (typeof QuestSystem !== 'undefined') {
     for (let i = 0; i < qty; i++) QuestSystem.onGather(itemId);
+  }
+
+  // Route through StateManager so inventory_changed events fire and the
+  // mutation is recorded under the protected-write contract.
+  if (typeof StateManager !== 'undefined') {
+    return StateManager.addItemToInventory(itemId, qty);
   }
 
   const existing = G.inventory.find(s => s.itemId === itemId);
@@ -125,6 +131,9 @@ function addToInventory(itemId, qty = 1) {
 }
 
 function removeFromInventory(itemId, qty = 1) {
+  if (typeof StateManager !== 'undefined') {
+    return StateManager.removeInventoryItem(itemId, qty);
+  }
   const idx = G.inventory.findIndex(s => s.itemId === itemId);
   if (idx < 0) return false;
   G.inventory[idx].qty -= qty;

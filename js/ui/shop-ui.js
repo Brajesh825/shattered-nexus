@@ -394,12 +394,16 @@ const ShopUI = (() => {
         if (!G.ownedRelics) G.ownedRelics = [];
         if (!G.ownedRelics.includes(itemDef.id)) G.ownedRelics.push(itemDef.id);
       } else {
-        if (!G.inventory) G.inventory = [];
-        const stack = G.inventory.find(i => i && i.itemId === itemDef.id);
-        if (stack) {
-          stack.qty += _selectedQty;
+        if (typeof StateManager !== 'undefined') {
+          StateManager.addItemToInventory(itemDef.id, _selectedQty);
         } else {
-          G.inventory.push({ itemId: itemDef.id, qty: _selectedQty });
+          if (!G.inventory) G.inventory = [];
+          const stack = G.inventory.find(i => i && i.itemId === itemDef.id);
+          if (stack) {
+            stack.qty += _selectedQty;
+          } else {
+            G.inventory.push({ itemId: itemDef.id, qty: _selectedQty });
+          }
         }
       }
 
@@ -424,12 +428,16 @@ const ShopUI = (() => {
         if (rIdx !== -1) G.ownedRelics.splice(rIdx, 1);
       } else {
         // Reduce count in single inventory structure
-        const stack = G.inventory ? G.inventory.find(i => i && i.itemId === itemDef.id) : null;
-        if (stack) {
-          stack.qty -= _selectedQty;
-          if (stack.qty <= 0) {
-            const sIdx = G.inventory.indexOf(stack);
-            if (sIdx !== -1) G.inventory.splice(sIdx, 1);
+        if (typeof StateManager !== 'undefined') {
+          StateManager.removeInventoryItem(itemDef.id, _selectedQty);
+        } else {
+          const stack = G.inventory ? G.inventory.find(i => i && i.itemId === itemDef.id) : null;
+          if (stack) {
+            stack.qty -= _selectedQty;
+            if (stack.qty <= 0) {
+              const sIdx = G.inventory.indexOf(stack);
+              if (sIdx !== -1) G.inventory.splice(sIdx, 1);
+            }
           }
         }
       }

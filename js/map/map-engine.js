@@ -1206,7 +1206,10 @@ const MapEngine = (() => {
               // 1. Always write to G.chars (source of truth) so the weapon persists
               //    even when the character is not in the active party.
               if (!G.weaponsLevels) G.weaponsLevels = {};
-              if (G.weaponsLevels[trig.weaponId] === undefined) G.weaponsLevels[trig.weaponId] = 1;
+              if (G.weaponsLevels[trig.weaponId] === undefined) {
+                if (typeof StateManager !== 'undefined') StateManager.setWeaponLevel(trig.weaponId, 1);
+                else G.weaponsLevels[trig.weaponId] = 1;
+              }
               const sourceChar = (G.chars || []).find(c => c.id === targetCharId);
               if (sourceChar) {
                 sourceChar.equippedWeapon = trig.weaponId;
@@ -1225,8 +1228,12 @@ const MapEngine = (() => {
 
               // 3. Mark chest as permanently opened so it won't re-fire on reload.
               const chestId = trig.id || `${trig.x},${trig.y}`;
-              if (!G.openedChests) G.openedChests = new Set();
-              G.openedChests.add(chestId);
+              if (typeof StateManager !== 'undefined') {
+                StateManager.openChest(chestId);
+              } else {
+                if (!G.openedChests) G.openedChests = new Set();
+                G.openedChests.add(chestId);
+              }
             }
             if (typeof SFX !== 'undefined' && SFX.victory) SFX.victory();
             if (typeof MapUI !== 'undefined') MapUI.showMsg(`🎁 Acquired ${wpName}!`, 2000);
@@ -1316,8 +1323,12 @@ const MapEngine = (() => {
     }
 
     // Persist the "seen" flag immediately so it survives before next camp save
-    if (!G.firedScenes) G.firedScenes = new Set();
-    G.firedScenes.add(scene.id);
+    if (typeof StateManager !== 'undefined') {
+      StateManager.recordFiredScene(scene.id);
+    } else {
+      if (!G.firedScenes) G.firedScenes = new Set();
+      G.firedScenes.add(scene.id);
+    }
     const slot = (G.currentSaveSlot !== undefined) ? G.currentSaveSlot : 0;
     if (typeof Save !== 'undefined') {
       Save.patch({ firedScenes: Array.from(G.firedScenes) }, slot);
@@ -1734,8 +1745,12 @@ const MapEngine = (() => {
               if (resChar) {
                 resChar.char.equippedWeapon = wId;
                 resChar.equippedWeapon = wData;
-                if (!G.weaponsLevels) G.weaponsLevels = {};
-                G.weaponsLevels[wId] = 1;
+                if (typeof StateManager !== 'undefined') {
+                  StateManager.setWeaponLevel(wId, 1);
+                } else {
+                  if (!G.weaponsLevels) G.weaponsLevels = {};
+                  G.weaponsLevels[wId] = 1;
+                }
                 if (typeof rebuildMemberCombatStats !== 'undefined') {
                   rebuildMemberCombatStats(resChar, { resourceStrategy: 'clamp' });
                 }
@@ -1776,8 +1791,12 @@ const MapEngine = (() => {
               if (resChar) {
                 resChar.char.equippedWeapon = wId;
                 resChar.equippedWeapon = wData;
-                if (!G.weaponsLevels) G.weaponsLevels = {};
-                G.weaponsLevels[wId] = 1;
+                if (typeof StateManager !== 'undefined') {
+                  StateManager.setWeaponLevel(wId, 1);
+                } else {
+                  if (!G.weaponsLevels) G.weaponsLevels = {};
+                  G.weaponsLevels[wId] = 1;
+                }
                 if (typeof rebuildMemberCombatStats !== 'undefined') {
                   rebuildMemberCombatStats(resChar, { resourceStrategy: 'clamp' });
                 }
@@ -2553,8 +2572,12 @@ const MapEngine = (() => {
     hasFiredScene: (id) => _firedScenes.has(id) || !!(G.firedScenes && (G.firedScenes.has ? G.firedScenes.has(id) : G.firedScenes.includes(id))),
     fireScene: (id) => {
       _firedScenes.add(id);
-      if (!G.firedScenes) G.firedScenes = new Set();
-      G.firedScenes.add(id);
+      if (typeof StateManager !== 'undefined') {
+        StateManager.recordFiredScene(id);
+      } else {
+        if (!G.firedScenes) G.firedScenes = new Set();
+        G.firedScenes.add(id);
+      }
     },
     // Optional callback — wire this up after init to handle encounter transitions:
     // MapEngine.onEncounterStart = function(enc) { ... }

@@ -284,7 +284,11 @@ const Story = {
       if (Array.isArray(G.clearedMaps) && ARC_MAP_ID[this.arcIdx]) {
         const currentArcMap = ARC_MAP_ID[this.arcIdx];
         if (G.clearedMaps.includes(currentArcMap)) {
-          G.clearedMaps = G.clearedMaps.filter(m => m !== currentArcMap);
+          if (typeof StateManager !== 'undefined') {
+            StateManager.removeClearedMap(currentArcMap);
+          } else {
+            G.clearedMaps = G.clearedMaps.filter(m => m !== currentArcMap);
+          }
           console.warn('[SaveMigration] Stripped premature clearedMaps entry:', currentArcMap);
         }
       }
@@ -438,10 +442,14 @@ const Story = {
 
     if (this.phase === 'boss_in') {
       // CLEAR MAP FOR THIS ARC ON BOSS DEFEAT
-      if (!Array.isArray(G.clearedMaps)) G.clearedMaps = [];
       const mapId = ARC_MAP_ID[this.arcIdx];
-      if (mapId && !G.clearedMaps.includes(mapId)) {
-        G.clearedMaps.push(mapId);
+      if (mapId) {
+        if (typeof StateManager !== 'undefined') {
+          StateManager.addClearedMap(mapId);
+        } else {
+          if (!Array.isArray(G.clearedMaps)) G.clearedMaps = [];
+          if (!G.clearedMaps.includes(mapId)) G.clearedMaps.push(mapId);
+        }
       }
       this.phase = 'boss_post';
       const postLines = chap.post_dialogue || [];
@@ -958,8 +966,12 @@ const Story = {
     // defer to the boss_in→boss_post push in onBattleWon so showIfMapCleared
     // NPCs don't spawn onto the objective tile and softlock the player.
     if (chap && chap.map && objType === 'kill_boss') {
-      if (!Array.isArray(G.clearedMaps)) G.clearedMaps = [];
-      if (!G.clearedMaps.includes(chap.map)) G.clearedMaps.push(chap.map);
+      if (typeof StateManager !== 'undefined') {
+        StateManager.addClearedMap(chap.map);
+      } else {
+        if (!Array.isArray(G.clearedMaps)) G.clearedMaps = [];
+        if (!G.clearedMaps.includes(chap.map)) G.clearedMaps.push(chap.map);
+      }
     }
 
     this._showLines((chap && chap.post_dialogue) || [], () => this._nextChapter());

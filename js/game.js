@@ -385,6 +385,25 @@ const G = {
   enemyIdx: 0,
 };
 
+// Initialize StateManager with the global G reference.
+// All future writes to protected root props (gold, inventory, unlockedChars,
+// clearedMaps, voidFragments, weaponsLevels, weaponsUpgrades, openedChests,
+// firedScenes, nexusTime, npcTalked, bondProgress, earnedBondRewards) should
+// route through StateManager.* mutation methods. Direct writes still work but
+// the StateManager tracks all transitions and emits events to subscribers.
+//
+// NOTE on Deliverable C (write-protection): A Proxy wrap of `G` is intentionally
+// skipped here. `G` is declared `const` and is the lexical reference every other
+// module reads through the global scope chain — reassigning `window.G` to a
+// Proxy would NOT intercept those existing reads/writes (it would only catch
+// access via the `window.G` indirection, which essentially no module uses).
+// Installing a true guard would require either making G non-const + replacing
+// the binding, or migrating every consumer to read through `StateManager.getRawState()`.
+// Both are out of scope for this wiring pass; ship as a follow-up.
+if (typeof StateManager !== 'undefined') {
+  StateManager.init(G);
+}
+
 /* ============================================================
    UI HELPERS
    ============================================================ */
@@ -501,9 +520,8 @@ const PartyMenu = (() => {
   let _fromPause = false;
 
   const CHAR_COLOR = {
-    aya:'#7dd3fc', tao:'#ef4444', lulu:'#2dd4bf', rei:'#4ade80',
-    rydia:'#a78bfa', lenneth:'#e879f9', kain:'#0ea5e9', leon:'#fbbf24',
-    drake:'#fb923c', rex:'#94a3b8'
+    aya: '#7dd3fc', tao: '#ef4444', lulu: '#2dd4bf', rei: '#4ade80',
+    ria: '#a78bfa', valka: '#e879f9', drake: '#0ea5e9', rex: '#fbbf24'
   };
 
   function open() {
@@ -696,7 +714,11 @@ function buildEnemyGroup(defs, spawnLevel = 1, isBoss = false) {
  */
 function unlockCharacter(charId) {
   if (!G.unlockedChars.includes(charId)) {
-    G.unlockedChars.push(charId);
+    if (typeof StateManager !== 'undefined') {
+      StateManager.unlockChar(charId);
+    } else {
+      G.unlockedChars.push(charId);
+    }
     return true;
   }
   return false;
@@ -1024,7 +1046,11 @@ function checkBattleEnd() {
       });
 
       if (voidFragmentsEarned > 0) {
-        G.voidFragments = (G.voidFragments || 0) + voidFragmentsEarned;
+        if (typeof StateManager !== 'undefined') {
+          StateManager.addVoidFragments(voidFragmentsEarned);
+        } else {
+          G.voidFragments = (G.voidFragments || 0) + voidFragmentsEarned;
+        }
         allDrops.push(`${voidFragmentsEarned}x Void Fragment`);
       }
 
@@ -1486,9 +1512,11 @@ function toggleFullscreen() {
     });
 
     document.getElementById('dev-cheat-gold').addEventListener('click', () => {
-      G.gold = (G.gold || 0) + 10000;
-      if (G.party) {
-        G.party.forEach(m => m.gold = G.gold);
+      if (typeof StateManager !== 'undefined') {
+        StateManager.addGold(10000);
+      } else {
+        G.gold = (G.gold || 0) + 10000;
+        if (G.party) G.party.forEach(m => m.gold = G.gold);
       }
       if (typeof BattleUI !== 'undefined') BattleUI.addLog("💰 DEV: +10,000 Gold!", "regen");
       if (typeof MapUI !== 'undefined') MapUI.showMsg("💰 +10,000 Gold!", 1500);

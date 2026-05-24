@@ -187,6 +187,7 @@ const SPRITES_LOW = [
   './images/characters/map/sheets/rei_sheet_low.webp',
   './images/characters/map/sheets/rex_sheet_low.webp',
   './images/characters/map/sheets/ria_sheet_low.webp',
+  './images/characters/map/sheets/sera_sheet_low.webp',
   './images/characters/map/sheets/tao_sheet_low.webp',
   './images/characters/map/sheets/valka_sheet_low.webp',
 ];
