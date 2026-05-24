@@ -152,7 +152,10 @@ function buildParty() {
       atk: s.atk, def: s.def, spd: s.spd, mag: s.mag, lck: s.lck, mdef: s.mdef,
       accuracy: cls.stat_multipliers.accuracy || 0.95,
       critRate: cls.stat_multipliers.critRate || 0.05,
-      lv: ch.lv || 1, exp: ch.exp || 0, gold: ch.gold || 0,
+      // gold is a shared wallet; fall back to G.gold if the per-character field
+      // is missing (fresh build / mid-arc unlock) so every member mirrors the
+      // shared value. After this, StateManager.addGold/spendGold keeps them in sync.
+      lv: ch.lv || 1, exp: ch.exp || 0, gold: (ch.gold !== undefined ? ch.gold : (G.gold || 0)),
       char: ch, cls: cls,
       equippedWeapon: (() => {
         const wDef = (window.WEAPONS_DATA || []).find(w => w.id === ch.equippedWeapon) || null;

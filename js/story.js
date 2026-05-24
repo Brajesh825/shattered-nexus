@@ -187,6 +187,11 @@ const Story = {
       G.selectedChars = defaultChars;
       G.unlockedChars = defaultChars;
 
+      // Seed the shared wallet for fresh story start (300g covers a few early
+      // potions / first refine). buildParty's gold fallback mirrors this onto
+      // each party member.
+      G.gold = 300;
+
       // Find and set class for first character
       const firstChar = (G.chars || []).find(c => c.id === defaultChars[0]);
       if (firstChar) G.selectedClass = firstChar.classId || 'swordsman';
@@ -269,6 +274,15 @@ const Story = {
         G.hero.exp = s.hero.exp || 0;
         G.hero.gold = s.hero.gold || 0;
       }
+
+      // Sync the shared wallet (G.gold) from whichever save shape is present.
+      // partyStats[*].gold all match at save time because StateManager.addGold
+      // mirrors G.gold onto every member. Fall back to legacy hero.gold.
+      const savedGold = (s.partyStats && s.partyStats[0] && s.partyStats[0].gold) ||
+                        (s.hero && s.hero.gold) || 0;
+      G.gold = savedGold;
+      if (G.party) G.party.forEach(m => { m.gold = G.gold; });
+
       // Restore unlocked characters and inventory from save
       if (s.unlockedChars) G.unlockedChars = s.unlockedChars;
       if (s.clearedMaps) G.clearedMaps = s.clearedMaps;

@@ -11,7 +11,11 @@
       { "itemId": "ether", "price": 100, "stock": 10 },
       { "itemId": "smoke_bomb", "price": 60, "stock": 5 },
       { "itemId": "iron_helm", "price": 250, "stock": 1 },
-      { "itemId": "silver_lock", "price": 400, "stock": 1 }
+      { "itemId": "silver_lock", "price": 400, "stock": 1 },
+      { "itemId": "ice_shard", "price": 180, "stock": 6 },
+      { "itemId": "ember_shard", "price": 180, "stock": 6 },
+      { "itemId": "gale_feather", "price": 180, "stock": 6 },
+      { "itemId": "tide_shell", "price": 180, "stock": 6 }
     ]
   },
   {
@@ -25,7 +29,12 @@
       { "itemId": "phoenix_down", "price": 300, "stock": 5 },
       { "itemId": "kraken_ink", "price": 300, "stock": 3 },
       { "itemId": "sea_pearl", "price": 600, "stock": 2 },
-      { "itemId": "sea_crystal", "price": 450, "stock": 2 }
+      { "itemId": "sea_crystal", "price": 450, "stock": 2 },
+      { "itemId": "glacial_prism", "price": 600, "stock": 3 },
+      { "itemId": "phoenix_hearth", "price": 600, "stock": 3 },
+      { "itemId": "tornado_core", "price": 600, "stock": 3 },
+      { "itemId": "oceanic_pearl", "price": 600, "stock": 3 },
+      { "itemId": "void_fragment", "price": 1200, "stock": 2 }
     ]
   },
   {
@@ -39,7 +48,12 @@
       { "itemId": "hi_potion", "price": 150, "stock": 15 },
       { "itemId": "cursed_straw", "price": 150, "stock": 5 },
       { "itemId": "shadow_shard", "price": 400, "stock": 3 },
-      { "itemId": "barrier_stone", "price": 150, "stock": 5 }
+      { "itemId": "barrier_stone", "price": 150, "stock": 5 },
+      { "itemId": "ice_shard", "price": 200, "stock": 4 },
+      { "itemId": "ember_shard", "price": 200, "stock": 4 },
+      { "itemId": "gale_feather", "price": 200, "stock": 4 },
+      { "itemId": "tide_shell", "price": 200, "stock": 4 },
+      { "itemId": "void_fragment", "price": 1500, "stock": 1 }
     ]
   }
 ]

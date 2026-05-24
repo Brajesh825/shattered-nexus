@@ -12,15 +12,33 @@ const ShopUI = (() => {
   // Supply pouch static limit for combat attrition management
   const POUCH_CAP = 15;
 
-  /** Helper to fetch the aggregate gold available across the entire active party */
+  /**
+   * Shared-wallet gold helpers.
+   * Primary path routes through G.gold (mirrored by StateManager); the
+   * legacy per-character summation/deduction logic is retained as a fallback
+   * so existing tests/shop-economy.test.js paths continue to work.
+   */
   function _getPlayerGold() {
-    if (typeof G === 'undefined' || !G.party) return 0;
+    if (typeof G === 'undefined') return 0;
+    if (typeof G.gold === 'number') return G.gold;
+    if (!G.party) return 0;
     return G.party.reduce((sum, member) => sum + (member ? (member.gold || 0) : 0), 0);
   }
 
-  /** Helper to deduct gold from party members sequentially until covered */
   function _deductPlayerGold(amount) {
-    if (typeof G === 'undefined' || !G.party) return false;
+    if (typeof G === 'undefined') return false;
+    if (typeof G.gold === 'number') {
+      if (G.gold < amount) return false;
+      if (typeof StateManager !== 'undefined' && StateManager.spendGold) {
+        StateManager.spendGold(amount);
+      } else {
+        G.gold -= amount;
+        if (G.party) G.party.forEach(m => { m.gold = G.gold; });
+      }
+      return true;
+    }
+    // Legacy fallback: sequential per-member deduction
+    if (!G.party) return false;
     let remaining = amount;
     for (const member of G.party) {
       if (!member || !member.gold) continue;
@@ -36,9 +54,19 @@ const ShopUI = (() => {
     return remaining === 0;
   }
 
-  /** Helper to grant gold evenly or to the main active protagonist slot */
   function _addPlayerGold(amount) {
-    if (typeof G === 'undefined' || !G.party || !G.party[0]) return;
+    if (typeof G === 'undefined') return;
+    if (typeof G.gold === 'number') {
+      if (typeof StateManager !== 'undefined' && StateManager.addGold) {
+        StateManager.addGold(amount);
+      } else {
+        G.gold += amount;
+        if (G.party) G.party.forEach(m => { m.gold = G.gold; });
+      }
+      return;
+    }
+    // Legacy fallback: credit slot-0 protagonist
+    if (!G.party || !G.party[0]) return;
     G.party[0].gold = (G.party[0].gold || 0) + amount;
   }
 
@@ -393,6 +421,13 @@ const ShopUI = (() => {
       if (isRelic) {
         if (!G.ownedRelics) G.ownedRelics = [];
         if (!G.ownedRelics.includes(itemDef.id)) G.ownedRelics.push(itemDef.id);
+      } else if (itemDef.isCurrency === 'voidFragments') {
+        // Currency items deposit directly into the wallet, not the inventory.
+        if (typeof StateManager !== 'undefined' && StateManager.addVoidFragments) {
+          StateManager.addVoidFragments(_selectedQty);
+        } else {
+          G.voidFragments = (G.voidFragments || 0) + _selectedQty;
+        }
       } else {
         if (typeof StateManager !== 'undefined') {
           StateManager.addItemToInventory(itemDef.id, _selectedQty);

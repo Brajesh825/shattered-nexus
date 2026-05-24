@@ -769,9 +769,12 @@ const MapUI = (() => {
         };
 
         // Level Up Cost calculations
+        // Material curve halved (Math.ceil(n/2)) so L1→L10 total drops from
+        // 90 to 25 shards per tier — pacing-feasible for the Arc 1–2 beta given
+        // the 75% T1 / 35% T2 drop rates.
         const refGoldCost = level < 10 ? level * 50 : 500 + (level - 10) * 150;
         const refMat = getElementalMaterial(w.element || 'void', level);
-        const refMatCost = level < 10 ? level * 2 : (level - 10) * 2;
+        const refMatCost = level < 10 ? Math.ceil(level / 2) : Math.ceil((level - 10) / 2);
         
         const hasRefGold = (G.gold || 0) >= refGoldCost;
         const hasRefMat = getInventoryQty(refMat.id) >= refMatCost;

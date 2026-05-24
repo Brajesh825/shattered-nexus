@@ -1062,11 +1062,22 @@ function checkBattleEnd() {
       // Split EXP among alive members — fewer survivors means more EXP each
       const aliveCount = G.party.filter(m => Battle.alive(m)).length || 1;
       const splitExp = Math.floor(totalExp / aliveCount);
-      const splitGold = Math.floor(totalGold / aliveCount);
 
-      // Award EXP and gold to all alive members; loop level-ups until threshold not met
+      // Gold is a shared wallet — credit the full pool to G.gold via StateManager
+      // (which mirrors it to every party member's `gold` field for legacy code that
+      // reads m.gold directly). The dev-cheat path at game.js:1516 uses the same call.
+      if (totalGold > 0) {
+        if (typeof StateManager !== 'undefined' && StateManager.addGold) {
+          StateManager.addGold(totalGold);
+        } else {
+          G.gold = (G.gold || 0) + totalGold;
+          G.party.forEach(m => { m.gold = G.gold; });
+        }
+      }
+
+      // Award EXP to all alive members; loop level-ups until threshold not met
       G.party.forEach(m => {
-        // Award EXP and gold only to surviving members
+        // Award EXP only to surviving members (gold was credited above to the shared wallet)
         if (Battle.alive(m)) {
           // Level-gap penalty: scale exp down as member outlevels enemies.
           // At +3 levels above enemy: 0 exp. Linear ramp from gap 0 → gap 3.
@@ -1074,7 +1085,6 @@ function checkBattleEnd() {
           const expScale = gap >= 3 ? 0 : gap <= 0 ? 1 : 1 - (gap / 3);
           const earnedExp = Math.floor(splitExp * expScale);
           m.exp += earnedExp;
-          m.gold += splitGold;
           while (checkMemberLevel(m)) {
             if (!leveledNames.includes(m.displayName)) leveledNames.push(m.displayName);
           }

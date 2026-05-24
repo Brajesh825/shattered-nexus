@@ -1570,5 +1570,18 @@
     "usable_in": [],
     "description": "A concentrated catalyst that amplifies void transformations.",
     "rarity": "rare"
+  },
+  {
+    "id": "void_fragment",
+    "name": "Void Fragment",
+    "icon": "🔮",
+    "type": "currency",
+    "subtype": "ascension",
+    "value": 0,
+    "isCurrency": "voidFragments",
+    "effect": { "target": "none", "stat": "none", "amount": 0, "percent": false },
+    "usable_in": [],
+    "description": "A crystallized fragment of pure void energy. Required for weapon ascension breakthroughs — deposits directly into your reserve on purchase.",
+    "rarity": "epic"
   }
 ]
