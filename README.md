@@ -3,7 +3,7 @@
 > [!IMPORTANT]
 > **AUTOSAVE IS NOT ALLOWED**: Progress in RPG+ can only be saved manually from the Camp menu (`💾 SAVE PROGRESS`). The game will never automatically save your progress.
 
-> *Eight heroes. Five seals. One immortal shadow that has consumed worlds for six centuries.*
+> *Eight heroes. Five seals. One immortal shadow that has consumed civilizations for six centuries.*
 
 A browser-based tactical RPG with elemental reaction combat, a full narrative campaign across 8 story arcs, and a living world map — no install required.
 
@@ -206,7 +206,7 @@ The Vanguard interception mechanic makes tank characters like Rei and Rex extrem
 
 ## 📖 Story & World
 
-The world of Aethoria is in crisis. **Valdris**, the Shadow Emperor, has consumed entire civilizations for seventeen centuries using five stolen Seal Fragments. Your party must collect all five and reassemble them before Valdris finishes breaking through to the last remaining realm.
+The world of Aethoria is in crisis. **Valdris**, the Shadow Emperor, has consumed entire civilizations for six centuries using five stolen Seal Fragments. Your party must collect all five and reassemble them before Valdris finishes breaking through to the last remaining realm.
 
 ### Story Arcs
 

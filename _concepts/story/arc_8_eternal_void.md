@@ -22,7 +22,7 @@ Driven by an intense human dread of mortal dissolution, Valdris breached the Zer
 
 > [!NOTE]
 > **The Eternal Emptiness**  
-> By bypassing death, Valdris achieved literal physical eternity. Yet, because the core was severed from its natural output cycles, the computational weight of countless unmade worlds pooled inside him as raw, unexpressed hunger. The more dimensional data he absorbed to sustain his immortality, the more profound his inner emptiness became. He became a static monument to fear, trapped in an unending loop of self-preservation.
+> By bypassing death, Valdris achieved literal physical eternity. Yet, because the core was severed from its natural output cycles, the computational weight of countless unmade civilizations pooled inside him as raw, unexpressed hunger. The more elemental data he absorbed to sustain his immortality, the more profound his inner emptiness became. He became a static monument to fear, trapped in an unending loop of self-preservation.
 
 ### The Phenomenon: Lore of The Unravelling
 Guarding the approach to the final threshold is **The Unravelling** (`the_unravelling`). This encounter is not a sentient combatant, a demon, or a localized construct. Sourced directly from our master archives (`STORY_PROGRESSION.md`), it is the literal defensive reaction of the Void itself responding to the party's coherent presence. It manifests as a process of continuous structural decay—a storm of ambient static space-time logic trying to erase the underlying coordinate variables of the heroes before they can reach the central throne.
@@ -102,7 +102,7 @@ $$\text{Erosion Percentage} = 0.25 \times \left(1.0 - \frac{\text{Active Coheren
 * **Cinematic Integration (Wired for Vivid)**: Screen executes absolute UI inversion loops, plunging the canvas layout into absolute stellar pitch black (`#000000`), pierced by transcendent golden script threads (`#facc15`) that draw the massive, tragic human outline of the eternal scholar.
 * **Explicit Combat Math**: Implements an Absolute Eternity Cycle loop. The entity cycles between an Invulnerable Siphon Phase and a Vulnerable Core Phase based on precise sine-wave modular turn arithmetic:
 $$\text{Phase State Multiplier} = \left|\sin\left(\frac{\pi \times \text{Turn Counter}}{6}\right)\right|$$
-* **Mechanics**: Reaching $0\%$ HP does not trigger standard unit destruction. It executes the native script hook inside `arc_8.json` where Valdris releases his internal aggregation buffers, allowing countless consumed worlds to unfold like flowers across a newly restored cosmic starfield.
+* **Mechanics**: Reaching $0\%$ HP does not trigger standard unit destruction. It executes the native script hook inside `arc_8.json` where Valdris releases his internal aggregation buffers, allowing the consumed civilizations to unfold like flowers across a newly restored cosmic starfield.
 
 ---
 
