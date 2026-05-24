@@ -13,6 +13,75 @@ const CombatEngine = (() => {
     return undefined;
   }
 
+  function cacheActivePhase(unit) {
+    if (!unit.statPhases || !unit.maxHp) {
+      unit._cachedActivePhase = null;
+      return;
+    }
+    const hpRatio = unit.hp / unit.maxHp;
+    const activePhase = [...unit.statPhases]
+      .sort((a, b) => a.hp - b.hp)
+      .find(p => hpRatio <= p.hp);
+    unit._cachedActivePhase = activePhase || null;
+  }
+
+  /**
+   * Caches the currently-triggered phase objects on the unit so getStat
+   * never has to walk the full statPhases array on the hot path.
+   * Called by _checkStatPhases (action-handler.js) whenever a phase flips
+   * triggered=true, and lazily on first getStat invocation as a safety net.
+   */
+  function refreshTriggeredCache(unit) {
+    if (!unit.statPhases) {
+      unit._cachedTriggeredPhases = null;
+      return;
+    }
+    const out = [];
+    for (let i = 0; i < unit.statPhases.length; i++) {
+      const p = unit.statPhases[i];
+      if (p && p.triggered) out.push(p);
+    }
+    unit._cachedTriggeredPhases = out.length ? out : null;
+  }
+
+  function setupHpListener(unit) {
+    if (unit._hpListenerSetup) return;
+    unit._hpListenerSetup = true;
+
+    let hpValue = unit.hp;
+    let maxHpValue = unit.maxHp;
+
+    Object.defineProperty(unit, 'hp', {
+      get() {
+        return hpValue;
+      },
+      set(newVal) {
+        const oldVal = hpValue;
+        hpValue = newVal;
+        if (oldVal !== newVal) {
+          cacheActivePhase(unit);
+        }
+      },
+      configurable: true,
+      enumerable: true
+    });
+
+    Object.defineProperty(unit, 'maxHp', {
+      get() {
+        return maxHpValue;
+      },
+      set(newVal) {
+        const oldVal = maxHpValue;
+        maxHpValue = newVal;
+        if (oldVal !== newVal) {
+          cacheActivePhase(unit);
+        }
+      },
+      configurable: true,
+      enumerable: true
+    });
+  }
+
   /**
    * Returns final combat stats by applying active modifiers.
    * Formula: (base + Sum(Flat)) * Product(Multipliers)
@@ -29,14 +98,22 @@ const CombatEngine = (() => {
     }
 
     // Step 1. Boss Phase Modifiers (Non-stacking per stat; takes highest triggered mult)
+    // O(k) cached lookup — k = number of currently-triggered phases (typically 0-1).
+    // Cache is refreshed by CombatEngine.refreshTriggeredCache, called from
+    // _checkStatPhases (action-handler.js) whenever a new phase flips triggered=true.
     if (unit.statPhases) {
-      let maxPhaseMult = 1.0;
-      unit.statPhases.forEach(p => {
-        if (p.triggered && p[stat] !== undefined) {
-          maxPhaseMult = Math.max(maxPhaseMult, p[stat]);
+      if (unit._cachedTriggeredPhases === undefined) {
+        refreshTriggeredCache(unit);
+      }
+      const triggered = unit._cachedTriggeredPhases;
+      if (triggered) {
+        let maxPhaseMult = 1.0;
+        for (let i = 0; i < triggered.length; i++) {
+          const v = triggered[i][stat];
+          if (v !== undefined && v > maxPhaseMult) maxPhaseMult = v;
         }
-      });
-      base *= maxPhaseMult;
+        base *= maxPhaseMult;
+      }
     }
 
     let pMult = 1.0;
@@ -67,12 +144,11 @@ const CombatEngine = (() => {
     let finalMult = Math.max(0.2, cappedPassive + sBonus);
 
     if (unit.statPhases && unit.hp && unit.maxHp) {
-      const hpRatio = unit.hp / unit.maxHp;
-      // Sort phases ascending by HP threshold to find the deepest reached phase
-      const activePhase = [...unit.statPhases]
-        .sort((a, b) => a.hp - b.hp)
-        .find(p => hpRatio <= p.hp);
-
+      if (!unit._hpListenerSetup) {
+        setupHpListener(unit);
+        cacheActivePhase(unit);
+      }
+      const activePhase = unit._cachedActivePhase;
       if (activePhase && activePhase[stat]) {
         finalMult *= activePhase[stat];
       }
@@ -232,7 +308,8 @@ const CombatEngine = (() => {
     physDmg,
     magicDmg,
     rollHit,
-    rollCrit
+    rollCrit,
+    refreshTriggeredCache
   };
 })();
 if (typeof window !== 'undefined') window.CombatEngine = CombatEngine;

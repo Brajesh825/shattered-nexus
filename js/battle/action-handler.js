@@ -1297,6 +1297,11 @@ function _checkStatPhases(unit) {
   });
 
   if (triggeredNew) {
+    // Phase 4 cache invalidation: keep CombatEngine's triggered-phase cache
+    // in lockstep with the authoritative triggered flag.
+    if (typeof CombatEngine !== 'undefined' && CombatEngine.refreshTriggeredCache) {
+      CombatEngine.refreshTriggeredCache(unit);
+    }
     BattleUI.addLog(`⚡ ${unit.name} is evolving!`, 'dmg');
     if (unit.id === 'spectral_guardian') {
       BattleUI.addLog(`⚡ THE GUARDIAN SHATTERS!`, 'magic');
