@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nexus-cache-v9.31';
+const CACHE_NAME = 'nexus-cache-v9.32';
 
 // Core shell — always pre-cached regardless of quality setting
 const SHELL_ASSETS = [
