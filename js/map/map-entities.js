@@ -772,6 +772,17 @@ const MapEntities = (() => {
       }
     }
 
+    // Strip bosses / Tier-3 alphas from the pool used for random group composition.
+    // The trigger-is-boss case already returned solo above; this guard prevents a
+    // map boss listed in `enemies[]` from being rolled into a normal mob group
+    // (e.g. galdor_king appearing alongside a `bat` encounter on Verdant Vale).
+    const _isBossOrAlpha = (id) => {
+      const r = (G && G.enemies) ? G.enemies.find(x => x.id === id) : null;
+      return r ? !!(r.isBoss || r.tier >= 3) : false;
+    };
+    const safePool = pool.filter(id => !_isBossOrAlpha(id));
+    const rollPool = safePool.length ? safePool : pool;
+
     // Use encounter templates if defined on the map, else roll random group size
     if (map.encounterTemplates && map.encounterTemplates.length) {
       // 1. Filter templates by Chronos Cycle (Time Gating)
@@ -807,10 +818,10 @@ const MapEntities = (() => {
     else if (r < 0.85) groupSize = 3;   // 25% trio
     else               groupSize = 4;   // 15% quad (horde)
 
-    const firstEnemy = triggerId || pool[Math.floor(Math.random() * pool.length)];
+    const firstEnemy = triggerId || rollPool[Math.floor(Math.random() * rollPool.length)];
     const ids = [firstEnemy];
     while (ids.length < groupSize) {
-      ids.push(pool[Math.floor(Math.random() * pool.length)]);
+      ids.push(rollPool[Math.floor(Math.random() * rollPool.length)]);
     }
     return ids;
   }
