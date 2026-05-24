@@ -311,8 +311,8 @@ const MapUI = (() => {
 
   /* ── Pause Menu ─────────────────────────────────────── */
   const CHAR_COLOR_MAP = {
-    aya:'#7dd3fc', tao:'#ef4444', lulu:'#2dd4bf', rei:'#4ade80',
-    rydia:'#a78bfa', lenneth:'#e879f9', kain:'#0ea5e9', leon:'#fbbf24'
+    aya: '#7dd3fc', tao: '#ef4444', lulu: '#2dd4bf', rei: '#4ade80',
+    ria: '#a78bfa', valka: '#e879f9', drake: '#0ea5e9', rex: '#fbbf24'
   };
 
   function openPauseMenu() {

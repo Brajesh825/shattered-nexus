@@ -562,22 +562,22 @@
   background: #2a1e70;
 }
 
-.s-dialogue[data-speaker="ayaka"]::before {
+.s-dialogue[data-speaker="aya"]::before {
   background: var(--c-aya);
   box-shadow: 0 0 12px var(--c-aya);
 }
 
-.s-dialogue[data-speaker="hutao"]::before {
+.s-dialogue[data-speaker="tao"]::before {
   background: var(--c-tao);
   box-shadow: 0 0 12px var(--c-tao);
 }
 
-.s-dialogue[data-speaker="nilou"]::before {
+.s-dialogue[data-speaker="lulu"]::before {
   background: var(--c-lulu);
   box-shadow: 0 0 12px var(--c-lulu);
 }
 
-.s-dialogue[data-speaker="xiao"]::before {
+.s-dialogue[data-speaker="rei"]::before {
   background: var(--c-rei);
   box-shadow: 0 0 12px var(--c-rei);
 }
@@ -706,19 +706,19 @@
 }
 
 /* Speaker name colours */
-.s-dialogue[data-speaker="ayaka"] .s-speaker {
+.s-dialogue[data-speaker="aya"] .s-speaker {
   color: var(--c-aya);
 }
 
-.s-dialogue[data-speaker="hutao"] .s-speaker {
+.s-dialogue[data-speaker="tao"] .s-speaker {
   color: var(--c-tao);
 }
 
-.s-dialogue[data-speaker="nilou"] .s-speaker {
+.s-dialogue[data-speaker="lulu"] .s-speaker {
   color: var(--c-lulu);
 }
 
-.s-dialogue[data-speaker="xiao"] .s-speaker {
+.s-dialogue[data-speaker="rei"] .s-speaker {
   color: var(--c-rei);
 }
 

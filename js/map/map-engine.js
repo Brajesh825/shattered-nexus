@@ -2150,7 +2150,7 @@ const MapEngine = (() => {
   let _npcLines = [], _npcLineIdx = 0, _npcCurrent = null;
   let _npcQuestFlow = false; // true when dialogue came from quest priority path
 
-  const _NPC_PARTY_IDS = ['aya', 'tao', 'lulu', 'rei', 'ria', 'rydia', 'lenneth', 'kain', 'leon', 'sera'];
+  const _NPC_PARTY_IDS = ['aya', 'tao', 'lulu', 'rei', 'ria', 'valka', 'drake', 'rex', 'sera'];
 
   function _isPartySpeaker(name) {
     const sl = (name || '').toLowerCase().replace(/\s+/g, '_');
