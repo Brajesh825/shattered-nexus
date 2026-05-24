@@ -29,7 +29,8 @@ const Cutscene = {
     sera: 'sera',
     'king_galdor': 'galdor_king',
     'void_knight': 'void_knight',
-    'demon_lord': 'demon_lord'
+    'demon_lord': 'demon_lord',
+    'valdris': 'shadow_emperor'
   },
 
   SPEAKER_PORTRAIT: {

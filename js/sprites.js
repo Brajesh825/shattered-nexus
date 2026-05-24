@@ -134,6 +134,15 @@ const SpriteRenderer = (() => {
       el.style.backgroundSize = 'contain';
       el.style.backgroundPosition = 'bottom center';
       el.style.backgroundRepeat = 'no-repeat';
+
+      if (typeof customHeight === 'string') {
+        el.style.width = customHeight;
+        el.style.height = customHeight;
+      } else {
+        const baseHeight = customHeight || (el.offsetHeight > 0 ? el.offsetHeight : 128);
+        el.style.width = `${baseHeight}px`;
+        el.style.height = `${baseHeight}px`;
+      }
       return;
     }
 
