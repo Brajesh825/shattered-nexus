@@ -218,6 +218,20 @@ const Battle = {
         if (window.LogDebug) window.LogDebug(`[AI-Predator] ${ab.name} suppressed — vanguard blocks physical reach`, 'hi');
       }
 
+      // Smart Buff AI: suppress buff/regen skills already active with >1 turn remaining
+      const isSelfBuff = ab.type === 'buff_def' || ab.type === 'buff_self' || ab.type === 'buff_atk' || ab.type === 'buff';
+      const isRegenAbility = ab.type === 'regen';
+      if ((isSelfBuff || isRegenAbility) && actor.statuses && actor.statuses.length) {
+        const activeStatus = actor.statuses.find(s => {
+          if (isRegenAbility) return s.id === 'status_regen' || s.id.startsWith('status_regen_');
+          return s.id.includes(ab.id);
+        });
+        if (activeStatus && (activeStatus.turns ?? 0) > 1) {
+          weight *= 0.05; // 95% suppression — almost never re-casts
+          if (window.LogDebug) window.LogDebug(`[AI-SmartBuff] ${ab.name} suppressed — status "${activeStatus.id}" active with ${activeStatus.turns} turns left`, 'hi');
+        }
+      }
+
       return { ...ab, _tempWeight: weight };
     });
 
@@ -371,6 +385,25 @@ const G = {
   enemyIdx: 0,
 };
 
+// Initialize StateManager with the global G reference.
+// All future writes to protected root props (gold, inventory, unlockedChars,
+// clearedMaps, voidFragments, weaponsLevels, weaponsUpgrades, openedChests,
+// firedScenes, nexusTime, npcTalked, bondProgress, earnedBondRewards) should
+// route through StateManager.* mutation methods. Direct writes still work but
+// the StateManager tracks all transitions and emits events to subscribers.
+//
+// NOTE on Deliverable C (write-protection): A Proxy wrap of `G` is intentionally
+// skipped here. `G` is declared `const` and is the lexical reference every other
+// module reads through the global scope chain — reassigning `window.G` to a
+// Proxy would NOT intercept those existing reads/writes (it would only catch
+// access via the `window.G` indirection, which essentially no module uses).
+// Installing a true guard would require either making G non-const + replacing
+// the binding, or migrating every consumer to read through `StateManager.getRawState()`.
+// Both are out of scope for this wiring pass; ship as a follow-up.
+if (typeof StateManager !== 'undefined') {
+  StateManager.init(G);
+}
+
 /* ============================================================
    UI HELPERS
    ============================================================ */
@@ -487,9 +520,8 @@ const PartyMenu = (() => {
   let _fromPause = false;
 
   const CHAR_COLOR = {
-    aya:'#7dd3fc', tao:'#ef4444', lulu:'#2dd4bf', rei:'#4ade80',
-    rydia:'#a78bfa', lenneth:'#e879f9', kain:'#0ea5e9', leon:'#fbbf24',
-    drake:'#fb923c', rex:'#94a3b8'
+    aya: '#7dd3fc', tao: '#ef4444', lulu: '#2dd4bf', rei: '#4ade80',
+    ria: '#a78bfa', valka: '#e879f9', drake: '#0ea5e9', rex: '#fbbf24'
   };
 
   function open() {
@@ -682,7 +714,11 @@ function buildEnemyGroup(defs, spawnLevel = 1, isBoss = false) {
  */
 function unlockCharacter(charId) {
   if (!G.unlockedChars.includes(charId)) {
-    G.unlockedChars.push(charId);
+    if (typeof StateManager !== 'undefined') {
+      StateManager.unlockChar(charId);
+    } else {
+      G.unlockedChars.push(charId);
+    }
     return true;
   }
   return false;
@@ -1010,7 +1046,11 @@ function checkBattleEnd() {
       });
 
       if (voidFragmentsEarned > 0) {
-        G.voidFragments = (G.voidFragments || 0) + voidFragmentsEarned;
+        if (typeof StateManager !== 'undefined') {
+          StateManager.addVoidFragments(voidFragmentsEarned);
+        } else {
+          G.voidFragments = (G.voidFragments || 0) + voidFragmentsEarned;
+        }
         allDrops.push(`${voidFragmentsEarned}x Void Fragment`);
       }
 
@@ -1022,11 +1062,22 @@ function checkBattleEnd() {
       // Split EXP among alive members — fewer survivors means more EXP each
       const aliveCount = G.party.filter(m => Battle.alive(m)).length || 1;
       const splitExp = Math.floor(totalExp / aliveCount);
-      const splitGold = Math.floor(totalGold / aliveCount);
 
-      // Award EXP and gold to all alive members; loop level-ups until threshold not met
+      // Gold is a shared wallet — credit the full pool to G.gold via StateManager
+      // (which mirrors it to every party member's `gold` field for legacy code that
+      // reads m.gold directly). The dev-cheat path at game.js:1516 uses the same call.
+      if (totalGold > 0) {
+        if (typeof StateManager !== 'undefined' && StateManager.addGold) {
+          StateManager.addGold(totalGold);
+        } else {
+          G.gold = (G.gold || 0) + totalGold;
+          G.party.forEach(m => { m.gold = G.gold; });
+        }
+      }
+
+      // Award EXP to all alive members; loop level-ups until threshold not met
       G.party.forEach(m => {
-        // Award EXP and gold only to surviving members
+        // Award EXP only to surviving members (gold was credited above to the shared wallet)
         if (Battle.alive(m)) {
           // Level-gap penalty: scale exp down as member outlevels enemies.
           // At +3 levels above enemy: 0 exp. Linear ramp from gap 0 → gap 3.
@@ -1034,7 +1085,6 @@ function checkBattleEnd() {
           const expScale = gap >= 3 ? 0 : gap <= 0 ? 1 : 1 - (gap / 3);
           const earnedExp = Math.floor(splitExp * expScale);
           m.exp += earnedExp;
-          m.gold += splitGold;
           while (checkMemberLevel(m)) {
             if (!leveledNames.includes(m.displayName)) leveledNames.push(m.displayName);
           }
@@ -1076,6 +1126,25 @@ function checkBattleEnd() {
       });
     }
 
+    // ── Boss Defeat Impact: shatter flash + heavy screen shake ──────────
+    const BOSS_IDS = new Set(['void_knight', 'demon_lord', 'river_king', 'sunken_leviathan', 'spectral_guardian', 'galdor_king', 'shadow_titan', 'void_colossus']);
+    const defeatedBoss = G.enemyGroup.find(e => !Battle.alive(e) && (e.isBoss || BOSS_IDS.has(e.id)));
+    let bossImpactDelay = 0;
+    if (defeatedBoss && !G.isGauntletMode) {
+      bossImpactDelay = 1200;
+      // Fullscreen whiteout flash
+      const flash = document.createElement('div');
+      flash.className = 'shatter-flash';
+      document.body.appendChild(flash);
+      setTimeout(() => { if (flash.parentNode) flash.parentNode.removeChild(flash); }, 750);
+      // Heavy shake on battle screen container
+      const bsEl = document.getElementById('battle-screen');
+      if (bsEl) {
+        bsEl.classList.add('shake-heavy');
+        setTimeout(() => bsEl.classList.remove('shake-heavy'), 560);
+      }
+    }
+
     setTimeout(() => {
       if (leveledNames.length) {
         BattleUI.addLog(`★ LEVEL UP: ${leveledNames.join(', ')}!`, 'hi');
@@ -1090,7 +1159,7 @@ function checkBattleEnd() {
         else if (typeof Story !== 'undefined' && Story.active) Story.onBattleWon();
         else showResult('victory');
       }, leveledNames.length ? 1400 : 500);
-    }, 1100);
+    }, 1100 + bossImpactDelay);
     return true;
   }
 
@@ -1453,9 +1522,11 @@ function toggleFullscreen() {
     });
 
     document.getElementById('dev-cheat-gold').addEventListener('click', () => {
-      G.gold = (G.gold || 0) + 10000;
-      if (G.party) {
-        G.party.forEach(m => m.gold = G.gold);
+      if (typeof StateManager !== 'undefined') {
+        StateManager.addGold(10000);
+      } else {
+        G.gold = (G.gold || 0) + 10000;
+        if (G.party) G.party.forEach(m => m.gold = G.gold);
       }
       if (typeof BattleUI !== 'undefined') BattleUI.addLog("💰 DEV: +10,000 Gold!", "regen");
       if (typeof MapUI !== 'undefined') MapUI.showMsg("💰 +10,000 Gold!", 1500);

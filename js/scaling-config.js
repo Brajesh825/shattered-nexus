@@ -10,9 +10,9 @@ const NexusScaling = {
   // growth: flat value added per level-1.
   // statMult: base multiplier applied to definitions in enemies.json.
   tierGrowth: {
-    1: { hp: 5, atk: 1.2, def: 0.5, spd: 0.5, mag: 0.3, statMult: 1.0, expMult: 1.0 },
-    2: { hp: 10, atk: 2.5, def: 1.0, spd: 0.8, mag: 0.5, statMult: 1.3, expMult: 1.5 },
-    3: { hp: 22, atk: 3.0, def: 2.0, spd: 1.0, mag: 0.6, statMult: 1.3, expMult: 2.5 }
+    1: { hp: 5, atk: 1.2, def: 0.5, spd: 0.5, mag: 0.3, mdef: 0.4, statMult: 1.0, expMult: 1.0 },
+    2: { hp: 10, atk: 2.5, def: 1.0, spd: 0.8, mag: 0.5, mdef: 0.8, statMult: 1.3, expMult: 1.5 },
+    3: { hp: 22, atk: 3.0, def: 2.0, spd: 1.0, mag: 0.6, mdef: 1.5, statMult: 1.3, expMult: 2.5 }
   },
 
   // 2. BOSS MULTIPLIERS (Applied when isBoss: true)
@@ -23,6 +23,7 @@ const NexusScaling = {
     def: 1.3,    // You can actually hurt him now (Was 1.4x)
     spd: 1.1,    // Fair speed (Was 1.2x)
     mag: 1.3,
+    mdef: 1.3,
     exp: 2.5,
     gold: 2.0
   },
@@ -75,7 +76,7 @@ const NexusScaling = {
   // Multipliers for specific status types and periodic effects.
   status: {
     regenHP: 0.08,           // 8% Max HP per tick
-    poisonHP: 0.05,          // 5% Max HP per tick
+    poisonHP: 0.08,          // 8% Max HP per tick
     mendHealBoost: 1.5,      // 1.5x healing multiplier
     guardianReduction: 0.5,  // 50% damage reduction
     empowerAtk: 1.3,         // 30% ATK boost

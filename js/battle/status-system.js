@@ -22,6 +22,7 @@ const StatusSystem = {
     slow: { id: 'status_slow', label: 'Slow', icon: '🐌', type: 'control', turns: 2, color: '#aa88ff' },
     burn: { id: 'status_burn', label: 'Burn', icon: '🔥', type: 'dot', color: '#ff4400' },
     poison: { id: 'status_poison', label: 'Poison', icon: '🟢', type: 'dot_percent', color: '#44cc44' },
+    sleep: { id: 'status_sleep', label: 'Asleep', icon: '😴', type: 'control', turns: 2, color: '#9bc5ff' },
     def_shatter: { id: 'status_def_shatter', label: 'Shattered', icon: '❄️', stat: 'def', type: 'mult', value: NexusScaling.status.shatterDef, color: '#00ccff' },
 
     // Auras

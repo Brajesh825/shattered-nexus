@@ -1,7 +1,7 @@
 [
     {
         "id": "cryo_bladestorm",
-        "name": "Cryo Bladestorm",
+        "name": "Cryo Princess",
         "icon": "❄️",
         "element": "ice",
         "tag": "Ice / Swift Strike",
@@ -17,7 +17,8 @@
             "mag": 1,
             "lck": 1,
             "accuracy": 0.95,
-            "critRate": 0.05
+            "critRate": 0.05,
+            "mdef": 1
         },
         "abilities": [
             {
@@ -87,12 +88,13 @@
             "def": 2,
             "spd": 5,
             "mag": 3,
-            "lck": 2
+            "lck": 2,
+            "mdef": 3
         }
     },
     {
         "id": "spirit_incinerator",
-        "name": "Spirit Incinerator",
+        "name": "Ghost Guide",
         "icon": "🔥",
         "element": "fire",
         "tag": "Fire / Life Force",
@@ -108,7 +110,8 @@
             "mag": 1.1,
             "lck": 1,
             "accuracy": 0.95,
-            "critRate": 0.05
+            "critRate": 0.05,
+            "mdef": 1
         },
         "abilities": [
             {
@@ -117,20 +120,20 @@
                 "icon": "🔥",
                 "mp": 0,
                 "type": "physical",
-                "description": "Vampiric ghost-fire strike — 1.6x ATK, self-heal 15% damage",
+                "description": "Vampiric ghost-fire strike — 1.6x ATK, self-heal 22% damage",
                 "effect": {
                     "dmgMultiplier": 1.6,
                     "element": "fire",
-                    "lifeSteal": 0.15
+                    "lifeSteal": 0.22
                 }
             },
             {
-                "id": "paramita_papilio",
-                "name": "Paramita Papilio",
+                "id": "wraith_form_ascension",
+                "name": "Wraith-Form Ascension",
                 "icon": "🦋",
                 "mp": 12,
                 "type": "buff",
-                "description": "Enter the butterfly state — Costs 30% current HP, ATK +60% for 3 turns",
+                "description": "Enter the wraith state — Costs 30% current HP, ATK +60% for 3 turns",
                 "effect": {
                     "stat": "atk",
                     "multiplier": 1.6,
@@ -139,12 +142,12 @@
                 }
             },
             {
-                "id": "sanguine_rouge",
-                "name": "Sanguine Rouge",
+                "id": "aura_of_ember",
+                "name": "Aura of Ember",
                 "icon": "🩸",
                 "mp": 8,
                 "type": "buff",
-                "description": "Passive empowerment — Fire damage +33% and absorb fire damage as healing, lasts 5 turns",
+                "description": "Soul-fire empowerment — Fire damage +33% and absorb fire damage as healing, lasts 5 turns",
                 "effect": {
                     "fireAmp": 1.33,
                     "absorb": "fire",
@@ -174,15 +177,16 @@
             "hp": 7,
             "mp": 4,
             "atk": 5,
-            "def": 1,
+            "def": 2,
             "spd": 3,
             "mag": 4,
-            "lck": 2
+            "lck": 2,
+            "mdef": 3
         }
     },
     {
         "id": "hydro_performer",
-        "name": "Hydro Performer",
+        "name": "Star Dancer",
         "icon": "💧",
         "element": "water",
         "tag": "Water / Grace",
@@ -198,7 +202,8 @@
             "mag": 1.3,
             "lck": 1,
             "accuracy": 0.95,
-            "critRate": 0.05
+            "critRate": 0.05,
+            "mdef": 1.25
         },
         "abilities": [
             {
@@ -245,13 +250,13 @@
                 }
             },
             {
-                "id": "hajras_hymn",
-                "name": "Hajra's Hymn",
+                "id": "oasis_invocation",
+                "name": "Oasis Invocation",
                 "icon": "✨",
                 "mp": 14,
                 "type": "heal",
                 "isUltimate": true,
-                "description": "Ultimate star dance — restore 50% max HP, cleanse all debuffs, +1 SPD",
+                "description": "Ultimate oasis dance — restore 50% max HP, cleanse all debuffs, +1 SPD",
                 "effect": {
                     "healPercent": 0.5,
                     "aoe": true,
@@ -268,7 +273,8 @@
             "def": 2,
             "spd": 1,
             "mag": 5,
-            "lck": 2
+            "lck": 2,
+            "mdef": 4
         }
     },
     {
@@ -277,7 +283,7 @@
         "icon": "🌀",
         "element": "wind",
         "tag": "Guardian / Karmic",
-        "description": "An ancient warden's power. Protective stance with karmic resolution, reducing damage and punishing aggressors.",
+        "description": "An ancient sentinel's power. Protective stance with karmic resolution, reducing damage and punishing aggressors.",
         "color": "#0a4030",
         "role": "Knight",
         "stat_multipliers": {
@@ -289,7 +295,8 @@
             "mag": 0.7,
             "lck": 1,
             "accuracy": 0.95,
-            "critRate": 0.05
+            "critRate": 0.05,
+            "mdef": 1.1
         },
         "abilities": [
             {
@@ -306,12 +313,12 @@
                 }
             },
             {
-                "id": "yaksha_valor_active",
-                "name": "Warden's Valor",
+                "id": "sentinels_resolve",
+                "name": "Sentinel's Resolve",
                 "icon": "🛡️",
                 "mp": 6,
                 "type": "buff",
-                "description": "Enter guardian stance — take 25% less damage, reflect 15% damage back, 3 turns",
+                "description": "Enter sentinel stance — take 25% less damage, reflect 15% damage back, 3 turns",
                 "effect": {
                     "stat": "def",
                     "multiplier": 1.3,
@@ -336,8 +343,8 @@
                 }
             },
             {
-                "id": "mastery_of_pain",
-                "name": "Mastery of Pain",
+                "id": "aura_of_retribution",
+                "name": "Aura of Retribution",
                 "icon": "⚡",
                 "mp": 14,
                 "type": "magic_damage",
@@ -359,9 +366,10 @@
             "mp": 2,
             "atk": 3,
             "def": 5,
-            "spd": 0,
+            "spd": 1,
             "mag": 1,
-            "lck": 2
+            "lck": 2,
+            "mdef": 2
         }
     },
     {
@@ -382,16 +390,17 @@
             "mag": 1.6,
             "lck": 1,
             "accuracy": 0.95,
-            "critRate": 0.05
+            "critRate": 0.05,
+            "mdef": 1.35
         },
         "abilities": [
             {
                 "id": "summon_bahamut",
-                "name": "Summon Bahamut",
+                "name": "Summon Pyroclast Wyrm",
                 "icon": "🏹",
                 "mp": 18,
                 "type": "magic_damage",
-                "description": "Call the dragon king — 2.4x magic damage to all enemies, fire element",
+                "description": "Call the ancient fire drake — 2.4x magic damage to all enemies, fire element",
                 "effect": {
                     "dmgMultiplier": 2.4,
                     "element": "fire",
@@ -400,11 +409,11 @@
             },
             {
                 "id": "summon_syldra",
-                "name": "Summon Syldra",
+                "name": "Summon Abyss Leviathan",
                 "icon": "🌊",
                 "mp": 16,
                 "type": "heal",
-                "description": "Invoke the water serpent — restore 40-60 HP to all allies, cure one debuff",
+                "description": "Invoke the deep-sea serpent — restore 40-60 HP to all allies, cure one debuff",
                 "effect": {
                     "healBase": 40,
                     "healRandom": 20,
@@ -450,7 +459,8 @@
             "def": 1,
             "spd": 1,
             "mag": 7,
-            "lck": 2
+            "lck": 2,
+            "mdef": 5
         }
     },
     {
@@ -471,7 +481,8 @@
             "mag": 1.2,
             "lck": 1,
             "accuracy": 0.95,
-            "critRate": 0.05
+            "critRate": 0.05,
+            "mdef": 1.2
         },
         "abilities": [
             {
@@ -540,12 +551,13 @@
             "def": 5,
             "spd": 2,
             "mag": 3,
-            "lck": 2
+            "lck": 2,
+            "mdef": 3
         }
     },
     {
         "id": "dragoon_skyward",
-        "name": "Divine Dragoon",
+        "name": "Dragoon",
         "icon": "🏹",
         "element": "wind",
         "tag": "Dragon / Sky",
@@ -561,7 +573,8 @@
             "mag": 0.95,
             "lck": 1,
             "accuracy": 0.95,
-            "critRate": 0.05
+            "critRate": 0.05,
+            "mdef": 1
         },
         "abilities": [
             {
@@ -628,14 +641,15 @@
             "mp": 2,
             "atk": 5,
             "def": 3,
-            "spd": 5,
+            "spd": 4,
             "mag": 1,
-            "lck": 2
+            "lck": 2,
+            "mdef": 2
         }
     },
     {
         "id": "knight_king_divine",
-        "name": "Grail Guardian",
+        "name": "Lionheart King",
         "icon": "⚔️",
         "element": "holy",
         "tag": "Holy / Divinity",
@@ -651,7 +665,8 @@
             "mag": 1.25,
             "lck": 1,
             "accuracy": 0.95,
-            "critRate": 0.05
+            "critRate": 0.05,
+            "mdef": 1.2
         },
         "abilities": [
             {
@@ -710,22 +725,6 @@
                         "def"
                     ]
                 }
-            },
-            {
-                "id": "divine_execution",
-                "name": "Divine Execution",
-                "icon": "💫",
-                "mp": 13,
-                "type": "magic_damage",
-                "isUltimate": true,
-                "description": "Execute judgment — 3.6x magic damage, scales with DEF, stuns if enemy HP low",
-                "effect": {
-                    "dmgMultiplier": 3.6,
-                    "element": "holy",
-                    "statScale": "def",
-                    "stunLow": true,
-                    "cooldown": 2
-                }
             }
         ],
         "growthPerLevel": {
@@ -735,7 +734,8 @@
             "def": 5,
             "spd": 2,
             "mag": 3,
-            "lck": 2
+            "lck": 2,
+            "mdef": 4
         }
     },
     {
@@ -756,7 +756,8 @@
             "mag": 1.1,
             "lck": 1,
             "accuracy": 0.9,
-            "critRate": 0.05
+            "critRate": 0.05,
+            "mdef": 1.1
         },
         "abilities": [
             {
@@ -826,7 +827,8 @@
             "def": 6,
             "spd": 1,
             "mag": 2,
-            "lck": 1
+            "lck": 1,
+            "mdef": 3
         }
     },
     {
@@ -847,7 +849,8 @@
             "mag": 1.5,
             "lck": 1,
             "accuracy": 1,
-            "critRate": 0.08
+            "critRate": 0.08,
+            "mdef": 1.3
         },
         "abilities": [
             {
@@ -910,7 +913,8 @@
             "def": 2,
             "spd": 6,
             "mag": 6,
-            "lck": 2
+            "lck": 2,
+            "mdef": 4
         }
     }
 ]

@@ -4,6 +4,28 @@ This document contains the essential architectural and technical rules for the R
 
 ---
 
+## 🤖 Specialist Agent Roster
+
+This project uses **7 permanently active specialist agents** defined in `.claude/agents/`. Claude Code automatically discovers and routes to them via their YAML `name` field. Always delegate to the correct agent for the domain — never mix concerns.
+
+| Agent file | `name` key | Domain | Route when… |
+| :--- | :--- | :--- | :--- |
+| `aethon_architect.md` | `aethon-architect` | Engine, PWA, Service Worker, state machine | Touching `sw.js`, `map-engine.js`, `combat-engine.js`, `save.js`, `AssetPreloader` |
+| `vivid_aesthetic.md` | `vivid-aesthetic` | UI/UX, CSS VFX, sprites, art style | Any CSS, `index.html` layout, sprite generation, animations |
+| `chronicler_lore.md` | `chronicler-lore` | Dialogue, story arcs, NPC voice, lore | `data/story/*.json`, `data/npcs.js`, narrative continuity |
+| `aegis_balance.md` | `aegis-balance` | Combat math, enemy scaling, passives | `js/battle/*`, `data/enemies.json`, `data/classes.json`, stat formulas |
+| `atlas_worldbuilder.md` | `atlas-worldbuilder` | Map design, triggers, quests, NPCs | `js/map/data/*`, `data/quests.json`, map trigger wiring |
+| `curator_concepts.md` | `curator-concepts` | Feature gating, `_concepts/` staging | Any *new* feature before it touches live code |
+| `resonance_audio.md` | `resonance-audio` | BGM, SFX, audio encoding, Opus pipeline | `js/sfx.js`, `js/bgm.js`, `audio/bgm/*`, `audio/sfx/*` |
+
+### 🛡️ Global Agent Rules
+1. **Concept-First Directive** — All new features must have a `_concepts/` document approved by `curator-concepts` before any code is written.
+2. **MCP Protocol** — All agents prioritize MCP tools (`nexus_*`) over manual `grep`/`view_file` for database interrogation.
+3. **Cache Bump** — Any JS/CSS/asset change must be accompanied by a `sw.js` cache version bump (`aethon-architect` owns this).
+4. **Pre-PR Gate** — `aethon-architect` must run `tools/integrity-check.js`, `tools/asset-audit.js`, and `tools/verify-cache.js` before any PR is raised.
+
+---
+
 ## 🌍 Character Origin Protocol (The Summoned vs. The Native)
 The narrative core of *Shattered Nexus* relies on the distinction between the "Summoned" and the "Native."
 - **The Major 8 (Summoned)**: Aya, Tao, Lulu, Rei, Ria, Valka, Drake, and Rex are **Summoned Strangers**. Each comes from a different world/reality torn apart by the rifts. Their origins in `characters.json` must remain "Unknown — memory lost to the Rift" (or specific to their original world, NOT Aethoria).

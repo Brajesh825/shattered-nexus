@@ -56,7 +56,10 @@ const AssetPreloader = (() => {
     ],
     backgrounds: [
       'verdant_vale', 'forest_path', 'galdor_garden', 'oracle_chamber', 
-      'sacred_ruins_boss', 'summoning_ruins', 'aethalguard_ruins'
+      'sacred_ruins_boss', 'summoning_ruins', 'aethalguard_ruins',
+      'cavern_f1', 'cavern_f2', 'cavern_f3', 'ember_wastes',
+      'riverlands', 'sunken_temple', 'shadow_reach', 'void_citadel',
+      'eternal_void', 'guardian_arena', 'demon_lord_arena'
     ]
   };
 

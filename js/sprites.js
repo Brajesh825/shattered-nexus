@@ -5,109 +5,6 @@
  */
 const SpriteRenderer = (() => {
 
-  function p(ctx, x, y, w, h, col) {
-    ctx.fillStyle = col;
-    ctx.fillRect(x * 3, y * 3, w * 3, h * 3);
-  }
-
-  // ─── HERO SPRITES ──────────────────────────────────────────────
-  // Canvas: 48x57  (16×19 grid @ 3px)
-  // char: character data,  cls: class data
-
-  const HEROES = {
-
-    aya(ctx, char, cls) {
-      const sc = char.skin_color, hc = char.hair_color, ac = cls ? cls.color : char.armor_color;
-      // Hair (long, flowing)
-      p(ctx, 4, 0, 8, 4, hc);
-      p(ctx, 2, 3, 2, 10, hc);  // left side hair
-      p(ctx, 12, 3, 2, 10, hc);  // right side hair
-      p(ctx, 3, 0, 1, 2, hc);
-      // Head
-      p(ctx, 4, 2, 8, 5, sc);
-      // Eyes (almond shaped)
-      p(ctx, 5, 4, 2, 1, '#301010');
-      p(ctx, 9, 4, 2, 1, '#301010');
-      p(ctx, 5, 4, 1, 1, '#e06070');  // iris left
-      p(ctx, 9, 4, 1, 1, '#e06070');  // iris right
-      p(ctx, 6, 3, 1, 1, '#ffffff');  // glint l
-      p(ctx, 10, 3, 1, 1, '#ffffff');  // glint r
-      // Small nose / lips
-      p(ctx, 7, 5, 1, 1, '#d09080');
-      p(ctx, 7, 6, 2, 1, '#e08080');
-      // Scarf / neck
-      p(ctx, 4, 7, 8, 2, '#d04060');
-      // Torso (light armor)
-      p(ctx, 4, 9, 8, 5, ac);
-      p(ctx, 3, 9, 1, 5, '#ffffff');  // chest trim
-      // Belt
-      p(ctx, 3, 13, 10, 2, '#7a3010');
-      p(ctx, 5, 14, 2, 1, '#f0c040');  // buckle
-      // Sleeves
-      p(ctx, 2, 9, 2, 6, ac);
-      p(ctx, 12, 9, 2, 6, sc);   // bare right arm
-      // Glove
-      p(ctx, 2, 14, 2, 2, '#c03040');
-      // Legs
-      p(ctx, 4, 15, 3, 4, '#301830');
-      p(ctx, 9, 15, 3, 4, '#301830');
-      // Boots
-      p(ctx, 3, 17, 4, 2, '#401020');
-      p(ctx, 9, 17, 4, 2, '#401020');
-      // Dagger (right hip)
-      p(ctx, 13, 10, 1, 8, '#c0c0c0');
-      p(ctx, 12, 12, 3, 1, '#804010');
-      p(ctx, 13, 9, 1, 2, '#e0e0e0');
-    }
-  };
-
-  // ─── ENEMY SPRITES ─────────────────────────────────────────────
-  // Canvas: 72x84  (24×28 grid @ 3px)
-
-  const ENEMIES = {
-    slime(ctx, pal) {
-      // Body (round blob shape)
-      p(ctx, 7, 8, 10, 4, pal.body);
-      p(ctx, 5, 7, 14, 6, pal.body);
-      p(ctx, 4, 6, 16, 8, pal.body);
-      p(ctx, 3, 5, 18, 10, pal.body);
-      p(ctx, 4, 15, 16, 3, pal.body);
-      p(ctx, 5, 17, 14, 2, pal.body);
-      p(ctx, 7, 18, 10, 2, pal.body);
-      // Dark underside (ground shadow)
-      p(ctx, 5, 15, 14, 2, pal.dark);
-      p(ctx, 7, 17, 10, 2, pal.dark);
-      p(ctx, 8, 18, 8, 1, pal.dark);
-      // Shine top-left
-      p(ctx, 7, 6, 4, 2, pal.shine);
-      p(ctx, 6, 7, 2, 3, pal.shine);
-      p(ctx, 8, 5, 3, 2, pal.shine);
-      // Bubble highlights
-      p(ctx, 14, 7, 2, 2, pal.shine);
-      p(ctx, 17, 9, 2, 2, pal.shine);
-      // Eyes (cute)
-      p(ctx, 8, 9, 3, 4, pal.eye);
-      p(ctx, 13, 9, 3, 4, pal.eye);
-      p(ctx, 9, 10, 2, 2, pal.pupil);
-      p(ctx, 14, 10, 2, 2, pal.pupil);
-      // Eye glints
-      p(ctx, 9, 9, 1, 1, '#ffffff');
-      p(ctx, 14, 9, 1, 1, '#ffffff');
-      // Mouth (grin)
-      p(ctx, 9, 14, 6, 1, pal.dark);
-      p(ctx, 10, 15, 4, 1, pal.dark);
-      p(ctx, 9, 15, 1, 1, pal.dark);
-      p(ctx, 14, 15, 1, 1, pal.dark);
-      // Drips
-      p(ctx, 6, 18, 2, 3, pal.body);
-      p(ctx, 7, 20, 1, 2, pal.dark);
-      p(ctx, 16, 17, 2, 4, pal.body);
-      p(ctx, 16, 20, 1, 2, pal.dark);
-    }
-  };
-
-  // ─── PUBLIC API ────────────────────────────────────────────────
-
   const SHEET_COLS = 3;
   const SHEET_ROWS = 2;
 
@@ -178,11 +75,7 @@ const SpriteRenderer = (() => {
     };
     test.onerror = () => {
       if (!isAnimated) {
-        // Fallback: render via canvas → dataURL
-        const canvas = document.createElement('canvas');
-        canvas.width = 48; canvas.height = 57;
-        const ctx = canvas.getContext('2d');
-        HEROES['aya'](ctx, charData, classData);
+        const canvas = drawHeroToCanvas(charId, charData, classData);
         imgEl.style.backgroundImage = `url(${canvas.toDataURL()})`;
         imgEl.style.backgroundSize = 'contain';
         imgEl.style.backgroundPosition = 'bottom center';
@@ -197,10 +90,7 @@ const SpriteRenderer = (() => {
     const test = new Image();
     test.onload = () => { imgEl.src = webpPath; };
     test.onerror = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = 72; canvas.height = 84;
-      const ctx = canvas.getContext('2d');
-      ENEMIES['slime'](ctx, palette);
+      const canvas = drawEnemyToCanvas(enemyId, palette);
       imgEl.src = canvas.toDataURL();
     };
     test.src = webpPath;
@@ -210,7 +100,10 @@ const SpriteRenderer = (() => {
     const canvas = document.createElement('canvas');
     canvas.width = 48; canvas.height = 57;
     const ctx = canvas.getContext('2d');
-    HEROES['aya'](ctx, charData, classData);
+    ctx.fillStyle = charData?.portrait_color || '#7dd3fc';
+    ctx.beginPath();
+    ctx.arc(24, 28, 20, 0, Math.PI * 2);
+    ctx.fill();
     return canvas;
   }
 
@@ -218,7 +111,10 @@ const SpriteRenderer = (() => {
     const canvas = document.createElement('canvas');
     canvas.width = 72; canvas.height = 84;
     const ctx = canvas.getContext('2d');
-    ENEMIES['slime'](ctx, palette);
+    ctx.fillStyle = palette?.body || '#a04040';
+    ctx.beginPath();
+    ctx.arc(36, 42, 30, 0, Math.PI * 2);
+    ctx.fill();
     return canvas;
   }
 
@@ -228,10 +124,25 @@ const SpriteRenderer = (() => {
     const manifest = SPRITE_MANIFEST[id];
 
     if (!manifest) {
-      el.style.backgroundImage = `url(images/characters/spirits/${id}_sprite.png)`;
+      const playableChars = ['aya', 'tao', 'lulu', 'rei', 'ria', 'valka', 'drake', 'rex', 'sera'];
+      const isPlayable = playableChars.includes(id);
+      if (!isPlayable) {
+        el.style.backgroundImage = `url(images/enemies/${id}.webp)`;
+      } else {
+        el.style.backgroundImage = `url(images/characters/spirits/${id}_sprite.png)`;
+      }
       el.style.backgroundSize = 'contain';
       el.style.backgroundPosition = 'bottom center';
       el.style.backgroundRepeat = 'no-repeat';
+
+      if (typeof customHeight === 'string') {
+        el.style.width = customHeight;
+        el.style.height = customHeight;
+      } else {
+        const baseHeight = customHeight || (el.offsetHeight > 0 ? el.offsetHeight : 128);
+        el.style.width = `${baseHeight}px`;
+        el.style.height = `${baseHeight}px`;
+      }
       return;
     }
 
@@ -268,8 +179,8 @@ const SpriteRenderer = (() => {
     const isIllustrious = style === 'illustrious';
     const isLow = qual === 'low' || (qual === 'auto' && window.innerWidth < 800);
 
-    if (isIllustrious) return isLow ? '_sprite_1_low.webp' : '_sprite_1.png';
-    return isLow ? '_sprite_low.webp' : '_sprite.png';
+    if (isIllustrious) return isLow ? '_sprite_1_low.webp' : '_sprite_1.webp';
+    return isLow ? '_sprite_low.webp' : '_sprite.webp';
   }
 
   function getSpritePath(charId) {
@@ -279,8 +190,8 @@ const SpriteRenderer = (() => {
     return `images/characters/spirits/${baseId}${getSuffix()}`;
   }
 
-  function registerHero(id, fn) { HEROES[id] = fn; }
-  function registerEnemy(id, fn) { ENEMIES[id] = fn; }
+  function registerHero(id, fn) { }
+  function registerEnemy(id, fn) { }
 
   function refreshGlobalSprites() {
     console.log('[SpriteRenderer] Global refresh triggered.');

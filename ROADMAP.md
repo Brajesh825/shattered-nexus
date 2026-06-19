@@ -1,8 +1,20 @@
-# ⚔️ RPG+ Development Roadmap: Beta 1.0
+# ⚔️ RPG+ Development Roadmap: Beta 1.1
 
-## 🎯 Current Objective: The First Release
-**Scope**: Full playable experience through Arcs 1 & 2, including the first two Expansion Regions.
+## 🎯 Current Objective: Beta 1.1 Quality & Polish
+**Scope**: Resolve Beta 1.1 gameplay issues, progression bugs, UI scaling, and cinematic enhancements.
 
+---
+
+## 🔴 Beta 1.1 Issues & Feature Polish (Pending)
+- [ ] **Money, Weapon Level, and Upgrade Drop Balance**: Re-tune gold gains, weapon upgrade leveling, and item drops for upgrades to fix progression blockages.
+- [ ] **Riverside & Southern Island Backgrounds**: Fix rendering/display issues for Riverside and Southern Island map backgrounds.
+- [ ] **Enemy Spawn & Chase Tuning**: Balance enemy spawn rates (currently too high) and increase their chase speed (currently too low).
+- [ ] **Cutscene Character Continuity**: Update cutscenes to dynamically include and show newly unlocked/recruited characters.
+- [ ] **Spectral Guardian Boss Sequence**: Correct the bug where the Spectral Guardian battle suddenly switches to the Demon King.
+- [ ] **Pre-Combat Enemy Introduction**: Implement pre-battle cutscenes that introduce bosses and enemies before combat initiates.
+- [ ] **Riverside & Southern Island Boss Rewards**: Fix the bug preventing weapon rewards for Rei and Lulu after defeating their respective map bosses.
+- [ ] **Cinematic Weapon Acquisition**: Design and implement a cinematic, visually rewarding sequence when acquiring new weapons.
+- [ ] **Desktop Typography & Font Scaling**: Scale up text sizes on desktop for tutorials and in-battle boss dialogue to improve readability.
 
 ---
 

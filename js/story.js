@@ -187,6 +187,11 @@ const Story = {
       G.selectedChars = defaultChars;
       G.unlockedChars = defaultChars;
 
+      // Seed the shared wallet for fresh story start (300g covers a few early
+      // potions / first refine). buildParty's gold fallback mirrors this onto
+      // each party member.
+      G.gold = 300;
+
       // Find and set class for first character
       const firstChar = (G.chars || []).find(c => c.id === defaultChars[0]);
       if (firstChar) G.selectedClass = firstChar.classId || 'swordsman';
@@ -269,9 +274,44 @@ const Story = {
         G.hero.exp = s.hero.exp || 0;
         G.hero.gold = s.hero.gold || 0;
       }
+
+      // Sync the shared wallet (G.gold) from whichever save shape is present.
+      // partyStats[*].gold all match at save time because StateManager.addGold
+      // mirrors G.gold onto every member. Fall back to legacy hero.gold.
+      const savedGold = (s.partyStats && s.partyStats[0] && s.partyStats[0].gold) ||
+                        (s.hero && s.hero.gold) || 0;
+      G.gold = savedGold;
+      if (G.party) G.party.forEach(m => { m.gold = G.gold; });
+
       // Restore unlocked characters and inventory from save
       if (s.unlockedChars) G.unlockedChars = s.unlockedChars;
       if (s.clearedMaps) G.clearedMaps = s.clearedMaps;
+
+      // ── Migration: heal premature-clearedMaps softlock ──────────────────
+      // Older builds pushed the current map id into G.clearedMaps the moment
+      // the explore objective fired (BEFORE the arc boss battle). If the
+      // player lost/quit that boss, showIfMapCleared NPCs (e.g. Verdant Vale's
+      // ruin_closure offering point) would spawn onto the objective tile and
+      // block the player from re-triggering the boss chapter. If the player
+      // is still on arc N, the arc's primary map cannot legitimately be
+      // cleared yet — strip it.
+      if (Array.isArray(G.clearedMaps)) {
+        const mapsToStrip = [];
+        if (ARC_MAP_ID[this.arcIdx]) mapsToStrip.push(ARC_MAP_ID[this.arcIdx]);
+        if (this.arcIdx === 1) {
+          mapsToStrip.push('crystal_cavern_f2', 'crystal_cavern_f3');
+        }
+        mapsToStrip.forEach(mapId => {
+          if (G.clearedMaps.includes(mapId)) {
+            if (typeof StateManager !== 'undefined') {
+              StateManager.removeClearedMap(mapId);
+            } else {
+              G.clearedMaps = G.clearedMaps.filter(m => m !== mapId);
+            }
+            console.warn('[SaveMigration] Stripped premature clearedMaps entry:', mapId);
+          }
+        });
+      }
       if (s.inventory) G.inventory = s.inventory;
       if (s.npcTalked) G.npcTalked = s.npcTalked;
       if (s.ownedRelics) G.ownedRelics = s.ownedRelics;
@@ -422,10 +462,14 @@ const Story = {
 
     if (this.phase === 'boss_in') {
       // CLEAR MAP FOR THIS ARC ON BOSS DEFEAT
-      if (!Array.isArray(G.clearedMaps)) G.clearedMaps = [];
       const mapId = ARC_MAP_ID[this.arcIdx];
-      if (mapId && !G.clearedMaps.includes(mapId)) {
-        G.clearedMaps.push(mapId);
+      if (mapId) {
+        if (typeof StateManager !== 'undefined') {
+          StateManager.addClearedMap(mapId);
+        } else {
+          if (!Array.isArray(G.clearedMaps)) G.clearedMaps = [];
+          if (!G.clearedMaps.includes(mapId)) G.clearedMaps.push(mapId);
+        }
       }
       this.phase = 'boss_post';
       const postLines = chap.post_dialogue || [];
@@ -682,8 +726,8 @@ const Story = {
   /* ════════════════════════════════════════════════════════════════════════
      GENERIC LINE LIST RENDERER
   ════════════════════════════════════════════════════════════════════════ */
-  _showLines(lines, onDone) {
-    Cutscene.start(lines, onDone);
+  _showLines(lines, onDone, castOverride) {
+    Cutscene.start(lines, onDone, castOverride);
   },
 
 
@@ -763,11 +807,6 @@ const Story = {
      BATTLE LAUNCHER
   ════════════════════════════════════════════════════════════════════════ */
 
-  _scaleEnemy(def) {
-    // Only use leveling for difficulty scaling (no ARC_SCALE multiplier)
-    return def;
-  },
-
   async _launchStoryBattle(enemyId) {
     const raw = this._allEnemies.find(e => e.id === enemyId);
     if (!raw) { console.warn('Story: enemy not found:', enemyId); this.onBattleWon(); return; }
@@ -786,7 +825,7 @@ const Story = {
     // Hide dialogue during battle
     const dialogue = this.el('s-dialogue');
     if (dialogue) dialogue.style.display = 'none';
-    const def = this._scaleEnemy(raw);
+    const def = raw;
 
     // Build enemy group: boss is always solo
     const defs = [def];
@@ -915,6 +954,13 @@ const Story = {
       console.log('[Story] Seamlessly advancing chapter to:', nextChap.id);
       this.chapIdx++;
       this.currentChap = nextChap;
+      // Also bump _exploreChap so multi-floor dungeons (e.g. Crystal Cavern
+      // F1→F2→F3) end the final floor with the correct chapter's
+      // post_dialogue and `clearedMaps` entry. Without this, the post-boss
+      // handoff to the arc's boss_chapter uses Floor 1's stale chapter data.
+      if (nextChap.type === 'explore') {
+        this._exploreChap = nextChap;
+      }
       this._doSave();
 
       const lbl = document.getElementById('explore-map-name');
@@ -930,17 +976,30 @@ const Story = {
 
   /** Called by MapEngine when story_explore mode battle/explore ends */
   onExploreComplete() {
+    const objType = (typeof MapEngine !== 'undefined' && MapEngine.getMap && MapEngine.getMap()?.objective?.type) || null;
     MapEngine.stop();
     G.mode = 'story';
     const chap = this._exploreChap;
     this._exploreChap = null;
 
-    // Mark current map as cleared so it can be revisited directly from the world map
-    if (chap && chap.map) {
-      if (!Array.isArray(G.clearedMaps)) G.clearedMaps = [];
-      if (!G.clearedMaps.includes(chap.map)) G.clearedMaps.push(chap.map);
+    // Mark map cleared ONLY for kill_boss objectives (multi-floor dungeon floors,
+    // where the floor boss is actually dead by the time this fires). For
+    // reach/collect/survive objectives the arc boss hasn't been fought yet —
+    // defer to the boss_in→boss_post push in onBattleWon so showIfMapCleared
+    // NPCs don't spawn onto the objective tile and softlock the player.
+    if (chap && chap.map && objType === 'kill_boss') {
+      if (typeof StateManager !== 'undefined') {
+        StateManager.addClearedMap(chap.map);
+      } else {
+        if (!Array.isArray(G.clearedMaps)) G.clearedMaps = [];
+        if (!G.clearedMaps.includes(chap.map)) G.clearedMaps.push(chap.map);
+      }
     }
     
+    if (chap && chap.background) {
+      this._setBg(chap.background);
+    }
+
     this._showLines((chap && chap.post_dialogue) || [], () => this._nextChapter());
     showScreen('story-screen');
   },
@@ -979,7 +1038,25 @@ const Story = {
         lines.push({ speaker: d.speaker, text: d.text });
       }
     });
-    this._showLines(lines, () => this._showOutro());
+
+    // Build a cast override for the character_moment so the now-defeated
+    // boss doesn't linger on the layer next to the recruit. If the JSON
+    // specifies its own cast, use it directly. Otherwise default to the
+    // boss_chapter cast with non-playable speakers stripped out (the
+    // recruit's own name is auto-injected by Cutscene via the speaker path).
+    let castOverride = boss.character_moment.cast;
+    if (!castOverride && Array.isArray(boss.cast)) {
+      const playableIds = ['aya', 'tao', 'lulu', 'rei', 'ria', 'valka', 'drake', 'rex', 'sera'];
+      const aliasMap = (typeof Cutscene !== 'undefined' && Cutscene.ALIAS_TO_CHARID) ? Cutscene.ALIAS_TO_CHARID : {};
+      castOverride = boss.cast.filter(name => {
+        if (!name) return false;
+        const key = name.toLowerCase().replace(/\s+/g, '_');
+        const id = aliasMap[key] || key;
+        return playableIds.includes(id);
+      });
+    }
+
+    this._showLines(lines, () => this._showOutro(), castOverride);
     showScreen('story-screen');
   },
 

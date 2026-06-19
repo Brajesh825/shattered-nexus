@@ -272,6 +272,8 @@ const TutorialSystem = (() => {
       const sceneId = 'tut_' + _activeStage;
       if (typeof MapEngine !== 'undefined' && MapEngine.fireScene) {
         MapEngine.fireScene(sceneId);
+      } else if (typeof StateManager !== 'undefined') {
+        StateManager.recordFiredScene(sceneId);
       } else if (typeof G !== 'undefined') {
         if (!G.firedScenes) G.firedScenes = new Set();
         G.firedScenes.add(sceneId);

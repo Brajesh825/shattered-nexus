@@ -82,6 +82,13 @@ const TurnManager = {
 
     // 2. New round if current queue is exhausted
     if (idx >= queue.length) {
+      // Chronos: advance the in-game clock by 30 minutes for each completed
+      // battle round. Skip the opening round — `idx >= queue.length` also
+      // fires on the very first call when the prior queue was empty (battle
+      // start), and we only want to tick when a *previous* round just finished.
+      if (queue.length > 0 && typeof ChronosEngine !== 'undefined') {
+        ChronosEngine.advanceByBattleRound();
+      }
       queue = this.buildQueue();
       TurnState.setQueue(queue);
       TurnState.setIndex(0);
@@ -92,13 +99,14 @@ const TurnManager = {
     const t = queue[idx];
     const unit = t.type === 'party' ? G.party[t.idx] : G.enemyGroup[t.idx];
 
-    // 3. Status/Control Check (Stun/Frozen)
+    // 3. Status/Control Check (Stun/Frozen/Sleep)
     const stun = StatusSystem.has(unit, 'status_stunned');
     const frozen = StatusSystem.has(unit, 'status_frozen');
+    const asleep = StatusSystem.has(unit, 'status_sleep');
 
-    if (stun || frozen) {
-      const label = stun ? 'stunned' : 'frozen';
-      const icon = stun ? '💫' : '❄️';
+    if (stun || frozen || asleep) {
+      const label = stun ? 'stunned' : frozen ? 'frozen' : 'asleep';
+      const icon  = stun ? '💫' : frozen ? '❄️' : '😴';
       
       // Tick statuses (decrement duration) even when incapacitated
       StatusSystem.tick(unit, t.type === 'enemy');

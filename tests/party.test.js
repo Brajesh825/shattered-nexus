@@ -15,6 +15,7 @@ function createBaseStats(overrides = {}) {
     spd: 6,
     mag: 4,
     lck: 3,
+    mdef: 5,
     ...overrides
   };
 }
@@ -24,7 +25,7 @@ function createClass(overrides = {}) {
     id: 'knight',
     role: 'Knight',
     abilities: [],
-    growthPerLevel: { hp: 10, mp: 5, atk: 2, def: 1, spd: 1, mag: 0, lck: 0 },
+    growthPerLevel: { hp: 10, mp: 5, atk: 2, def: 1, spd: 1, mag: 0, lck: 0, mdef: 1 },
     stat_multipliers: {
       hp: 1.0,
       mp: 1.0,
@@ -33,6 +34,7 @@ function createClass(overrides = {}) {
       spd: 1.0,
       mag: 1.0,
       lck: 1.0,
+      mdef: 1.0,
       accuracy: 0.95,
       critRate: 0.05
     },
@@ -54,12 +56,12 @@ function installRuntime({ mastery = { atk: 0, def: 0, mag: 0, spd: 0, lck: 0 }, 
 
 test('computeStats follows the AGENTS formula', () => {
   const ch = {
-    base_stats: createBaseStats({ hp: 120, atk: 14, spd: 7 }),
-    stat_bonuses: { hp: 5, atk: 2, spd: 1 },
+    base_stats: createBaseStats({ hp: 120, atk: 14, spd: 7, mdef: 6 }),
+    stat_bonuses: { hp: 5, atk: 2, spd: 1, mdef: 1 },
     lv: 4
   };
   const cls = createClass({
-    growthPerLevel: { hp: 12, mp: 4, atk: 3, def: 2, spd: 1, mag: 1, lck: 0 },
+    growthPerLevel: { hp: 12, mp: 4, atk: 3, def: 2, spd: 1, mag: 1, lck: 0, mdef: 1 },
     stat_multipliers: {
       hp: 1.2,
       mp: 1.1,
@@ -68,6 +70,7 @@ test('computeStats follows the AGENTS formula', () => {
       spd: 1.1,
       mag: 1.0,
       lck: 1.0,
+      mdef: 1.2,
       accuracy: 0.95,
       critRate: 0.05
     }
@@ -78,6 +81,7 @@ test('computeStats follows the AGENTS formula', () => {
   assert.equal(stats.hp, Math.floor((120 + (4 - 1) * 12 + 5) * 1.2));
   assert.equal(stats.atk, Math.floor((14 + (4 - 1) * 3 + 2) * 1.5));
   assert.equal(stats.spd, Math.floor((7 + (4 - 1) * 1 + 1) * 1.1));
+  assert.equal(stats.mdef, Math.floor((6 + (4 - 1) * 1 + 1) * 1.2));
 });
 
 test('buildParty applies relic multipliers before Archive mastery and does not stack across rebuilds', () => {
@@ -120,7 +124,7 @@ test('buildParty applies relic multipliers before Archive mastery and does not s
 test('checkMemberLevel preserves relic and Archive bonuses after recomputing stats', () => {
   installRuntime({
     mastery: { atk: 4, def: 2, mag: 0, spd: 1, lck: 0 },
-    relics: [{ id: 'crest', bonus: { hp: 0.2, mp: 0.5, atk: 0.5, def: 0.25 } }],
+    relics: [{ id: 'crest', bonus: { hp: 0.2, mp: 0.5, atk: 0.5, def: 0.25, mdef: 0.3 } }],
     activeRelics: ['crest']
   });
 
@@ -129,7 +133,7 @@ test('checkMemberLevel preserves relic and Archive bonuses after recomputing sta
     name: 'Hero',
     alias: 'Hero',
     class_affinity: ['knight'],
-    base_stats: createBaseStats({ hp: 100, mp: 40, atk: 10, def: 8, spd: 6 }),
+    base_stats: createBaseStats({ hp: 100, mp: 40, atk: 10, def: 8, spd: 6, mdef: 5 }),
     stat_bonuses: {},
     lv: 1,
     exp: 0,
@@ -138,7 +142,7 @@ test('checkMemberLevel preserves relic and Archive bonuses after recomputing sta
     mp: 40
   };
   const cls = createClass({
-    growthPerLevel: { hp: 20, mp: 10, atk: 4, def: 2, spd: 1, mag: 0, lck: 0 }
+    growthPerLevel: { hp: 20, mp: 10, atk: 4, def: 2, spd: 1, mag: 0, lck: 0, mdef: 1 }
   });
 
   G.chars = [hero];
@@ -169,12 +173,14 @@ test('checkMemberLevel preserves relic and Archive bonuses after recomputing sta
   const expectedAtk = Math.floor(expectedBaseAtk * 1.5) + 4;
   const expectedDef = Math.floor(expectedBaseDef * 1.25) + 2;
   const expectedSpd = expectedBaseSpd + 1;
+  const expectedMdef = Math.floor((5 + 1) * 1.3); // (base 5 + growth 1) * relic 1.3
 
   assert.equal(member.maxHp, expectedMaxHp);
   assert.equal(member.maxMp, expectedMaxMp);
   assert.equal(member.atk, expectedAtk);
   assert.equal(member.def, expectedDef);
   assert.equal(member.spd, expectedSpd);
+  assert.equal(member.mdef, expectedMdef);
   assert.equal(member.hp, Math.min(60 + (expectedMaxHp - oldMaxHp), expectedMaxHp));
   assert.equal(member.mp, Math.min(20 + (expectedMaxMp - oldMaxMp), expectedMaxMp));
 });

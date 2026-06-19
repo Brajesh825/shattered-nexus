@@ -346,6 +346,61 @@
   z-index: 10;
 }
 
+.s-scene-char.s-enemy.active {
+  opacity: 1;
+  transform: translate(-50%, -10px) scale(1.22);
+  z-index: 21;
+  filter: brightness(1) drop-shadow(0 0 25px rgba(220, 38, 38, 0.75)) drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5));
+}
+
+.s-scene-char.s-enemy.dimmed {
+  opacity: 0.45;
+  transform: translate(-50%, 15px) scale(1.0);
+  filter: brightness(0.35) grayscale(0.2);
+  z-index: 10;
+}
+
+#s-scene-layer[data-cast-count="5"] .s-scene-char.s-enemy.active {
+  transform: translate(-50%, -10px) scale(1.22);
+}
+
+#s-scene-layer[data-cast-count="5"] .s-scene-char.s-enemy.dimmed {
+  transform: translate(-50%, 15px) scale(1.0);
+}
+
+
+/* ── Crowded-scene layout (5-cast boss intros) ───────────────────────
+   Shrink dimmed siblings harder + cap sprite height so 5 portraits
+   never bump shoulders or clip the screen edges on mobile. */
+#s-scene-layer[data-cast-count="5"] .s-scene-char.dimmed {
+  transform: translate(-50%, 18px) scale(0.78);
+  opacity: 0.42;
+  filter: brightness(0.35) grayscale(0.25);
+}
+#s-scene-layer[data-cast-count="5"] .s-scene-char.active {
+  transform: translate(-50%, 0) scale(1.02);
+}
+#s-scene-layer[data-cast-count="5"] .s-scene-char .s-scene-sprite {
+  max-height: 70vh;
+}
+@media (max-width: 768px) {
+  #s-scene-layer[data-cast-count="5"] .s-scene-char .s-scene-sprite {
+    max-height: 48vh;
+  }
+  #s-scene-layer[data-cast-count="5"] .s-scene-char.dimmed {
+    transform: translate(-50%, 20px) scale(0.7);
+    opacity: 0.38;
+  }
+}
+@media (max-width: 480px) {
+  #s-scene-layer[data-cast-count="5"] .s-scene-char .s-scene-sprite {
+    max-height: 42vh;
+  }
+  #s-scene-layer[data-cast-count="5"] .s-scene-char.dimmed {
+    transform: translate(-50%, 22px) scale(0.62);
+  }
+}
+
 .s-scene-char.active .s-scene-sprite {
   filter: drop-shadow(0 0 25px rgba(160, 144, 208, 0.75)) drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5));
 }
@@ -530,22 +585,22 @@
   background: #2a1e70;
 }
 
-.s-dialogue[data-speaker="ayaka"]::before {
+.s-dialogue[data-speaker="aya"]::before {
   background: var(--c-aya);
   box-shadow: 0 0 12px var(--c-aya);
 }
 
-.s-dialogue[data-speaker="hutao"]::before {
+.s-dialogue[data-speaker="tao"]::before {
   background: var(--c-tao);
   box-shadow: 0 0 12px var(--c-tao);
 }
 
-.s-dialogue[data-speaker="nilou"]::before {
+.s-dialogue[data-speaker="lulu"]::before {
   background: var(--c-lulu);
   box-shadow: 0 0 12px var(--c-lulu);
 }
 
-.s-dialogue[data-speaker="xiao"]::before {
+.s-dialogue[data-speaker="rei"]::before {
   background: var(--c-rei);
   box-shadow: 0 0 12px var(--c-rei);
 }
@@ -674,19 +729,19 @@
 }
 
 /* Speaker name colours */
-.s-dialogue[data-speaker="ayaka"] .s-speaker {
+.s-dialogue[data-speaker="aya"] .s-speaker {
   color: var(--c-aya);
 }
 
-.s-dialogue[data-speaker="hutao"] .s-speaker {
+.s-dialogue[data-speaker="tao"] .s-speaker {
   color: var(--c-tao);
 }
 
-.s-dialogue[data-speaker="nilou"] .s-speaker {
+.s-dialogue[data-speaker="lulu"] .s-speaker {
   color: var(--c-lulu);
 }
 
-.s-dialogue[data-speaker="xiao"] .s-speaker {
+.s-dialogue[data-speaker="rei"] .s-speaker {
   color: var(--c-rei);
 }
 
@@ -1049,3 +1104,11 @@
   filter: contrast(1.1) drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
 }
 
+
+/* ══════════════════════════════════════════════════════════════
+   DESKTOP TYPOGRAPHY SCALING  (≥ 1024 px)
+   ══════════════════════════════════════════════════════════════ */
+@media (min-width: 1024px) {
+  .s-text    { font-size: 26px !important; line-height: 1.7 !important; }
+  .s-speaker { font-size: 17px !important; }
+}

@@ -25,7 +25,7 @@ const EnemyScaling = (() => {
 
     return {
       exp: Math.floor(def.reward.exp * growth.expMult * hordeScale * levelScale * bossExpMult),
-      gold: Math.floor(def.reward.gold * growth.expMult * hordeScale * bossGoldMult)
+      gold: Math.floor(def.reward.gold * growth.expMult * hordeScale * levelScale * bossGoldMult * 2.5)
     };
   }
 
@@ -40,6 +40,7 @@ const EnemyScaling = (() => {
     const finalDef = calcEnemyStat(def.stats.def, 'def', growth, spawnLevel, actualIsBoss, scaling);
     const finalSpd = calcEnemyStat(def.stats.spd, 'spd', growth, spawnLevel, actualIsBoss, scaling);
     const finalMag = calcEnemyStat(def.stats.mag, 'mag', growth, spawnLevel, actualIsBoss, scaling);
+    const finalMdef = calcEnemyStat(def.stats.mdef || Math.max(1, Math.floor((def.stats.def || 0) * 0.8)), 'mdef', growth, spawnLevel, actualIsBoss, scaling);
 
     return {
       id: def.id,
@@ -52,6 +53,7 @@ const EnemyScaling = (() => {
       def: finalDef,
       spd: finalSpd,
       mag: finalMag,
+      mdef: finalMdef,
       exp: rewards.exp,
       gold: rewards.gold,
       abilityDefs: def.abilities || [],

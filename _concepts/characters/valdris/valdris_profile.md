@@ -15,7 +15,7 @@
 ## 📖 Lore
 Valdris was once the realm's most brilliant scholar, dedicated to studying the Five Elemental Seals. His obsession with conquering death led him to the Forbidden Void. Over six centuries, he shattered four of the Five Seals, devouring their power and becoming a being of pure cosmic shadow.
 
-He does not hate the world; he is simply indifferent to its existence. To him, all life is a temporary glitch in the perfect silence of the void. He believes that by consuming all worlds, he is bringing them to a state of eternal peace.
+He does not hate the world; he is simply indifferent to its existence. To him, all life is a temporary glitch in the perfect silence of the void. He believes that by consuming Aethoria, he is bringing its people to a state of eternal peace.
 
 ## ⚔️ Combat Style: The End of All Things
 Valdris does not use physical weapons. He manipulates the fundamental forces of the Void.

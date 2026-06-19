@@ -3,12 +3,12 @@
         "id": "aya",
         "name": "Aya",
         "alias": "Aya",
-        "title": "The Cryo Princess",
+        "title": "The Frost-Petal Exile",
         "gender": "female",
         "age": 19,
-        "origin": "Unknown — memory lost to the Rift",
-        "description": "A noble warrior summoned mid-prayer to a world unknown. She fights with precise, frozen grace — every strike a bloom of ice.",
-        "personality": "Graceful, noble, quietly fierce",
+        "origin": "Hanamori — The Blossom-Shrine Realm (Memories Fragmented)",
+        "description": "A noble swordswoman summoned from a realm of eternal falling blossoms. Her memories are shattered by the Rift, leaving only the instinct of her frozen blade.",
+        "personality": "Graceful, quiet, plagued by fleeting visions of a home she cannot recall",
         "icon": "❄️",
         "portrait_color": "#7dd3fc",
         "hair_color": "#c0e8ff",
@@ -21,7 +21,8 @@
             "def": 12,
             "spd": 18,
             "mag": 14,
-            "lck": 10
+            "lck": 10,
+            "mdef": 11
         },
         "stat_bonuses": {
             "spd": 3,
@@ -33,8 +34,8 @@
         "equippedWeapon": "",
         "passive": {
             "id": "frostflake",
-            "name": "Frostflake Dance",
-            "description": "Always acts first in battle — +3 SPD bonus and attacks carry a cryo edge.",
+            "name": "Rime-Petal Dance",
+            "description": "Always acts first in battle — +3 SPD bonus and attacks carry a glacial edge.",
             "traits": [
                 {
                     "type": "STAT_BOOST",
@@ -46,31 +47,32 @@
                 }
             ]
         },
-        "lore": "Torn from her world mid-prayer at a sacred shrine. The last thing she saw was cherry blossoms — the first thing she felt was the cold darkness of the rift."
+        "lore": "She remembers cherry blossoms falling like snow, and snow falling like cherry blossoms—the two images are glitched together in her mind. Torn from her shrine mid-prayer, she seeks to reconstruct her past, one cold strike at a time."
     },
     {
         "id": "tao",
         "name": "Tao",
         "alias": "Tao",
-        "title": "The Ghost Guide",
+        "title": "The Soul-Fire Guide",
         "gender": "female",
         "age": 20,
-        "origin": "Unknown — memory lost to the Rift",
-        "description": "A spirit guide and amateur poet. She was chasing a runaway spirit when the rift swallowed her whole — she considers it a professional hazard.",
-        "personality": "Mischievous, death-obsessed, surprisingly caring",
+        "origin": "Kozuka — The Spirit-Medium Afterlife Plane (Memories Fragmented)",
+        "description": "A mischievous guide of souls who crossed the veil of death. The Rift disrupted her spiritual anchors, leaving her memories of the dead glitched and unreliable.",
+        "personality": "Mischievous, eccentric, chasing the static-filled whispers of departed spirits",
         "icon": "🔥",
         "portrait_color": "#ef4444",
         "hair_color": "#4a2020",
         "skin_color": "#f5c8a0",
         "armor_color": "#c03010",
         "base_stats": {
-            "hp": 50,
+            "hp": 55,
             "mp": 22,
             "atk": 20,
-            "def": 7,
+            "def": 9,
             "spd": 14,
             "mag": 12,
-            "lck": 10
+            "lck": 10,
+            "mdef": 10
         },
         "stat_bonuses": {
             "atk": 4,
@@ -82,8 +84,8 @@
         "equippedWeapon": "",
         "passive": {
             "id": "blood_blossom",
-            "name": "Blood Blossom",
-            "description": "When HP drops below 50%, ATK increases by 35%. Life fuels the flame.",
+            "name": "Soul-Sacrifice Ember",
+            "description": "When HP drops below 50%, ATK increases by 35%. Vitality feeds the nether-flame.",
             "traits": [
                 {
                     "type": "LOW_HP_STAT_BOOST",
@@ -93,18 +95,18 @@
                 }
             ]
         },
-        "lore": "She once wrote a poem about her own funeral — three stanzas in, she realized she was genuinely enjoying it. A more dedicated spirit guide has never walked these paths."
+        "lore": "She remembers guiding souls through a foggy river, but the river has turned to static, and the souls speak in glitched echoes. Summoned while chasing a runaway phantom, she treats this broken world as just another realm to guide."
     },
     {
         "id": "lulu",
         "name": "Lulu",
         "alias": "Lulu",
-        "title": "The Star Dancer",
+        "title": "The Star-Water Dancer",
         "gender": "female",
         "age": 18,
-        "origin": "Unknown — memory lost to the Rift",
-        "description": "A beloved dancer whose grace captivates all who witness her. She was dancing at the edge of a sacred pool when the summoning light carried her away.",
-        "personality": "Gentle, radiant, courageous at heart",
+        "origin": "Zanara — The Oasis of Whispering Waters (Memories Fragmented)",
+        "description": "A dancer of the sacred oasis pools whose movements control the tides. The Rift corrupted her memories of the ancient water hymns, turning them into fragmented static.",
+        "personality": "Radiant, gentle, trying to sing a song whose lyrics are glitched away",
         "icon": "💧",
         "portrait_color": "#2dd4bf",
         "hair_color": "#40d0c0",
@@ -117,7 +119,8 @@
             "def": 13,
             "spd": 11,
             "mag": 20,
-            "lck": 10
+            "lck": 10,
+            "mdef": 16
         },
         "stat_bonuses": {
             "hp": 8,
@@ -129,9 +132,9 @@
         ],
         "equippedWeapon": "",
         "passive": {
-            "id": "dance_of_haftkarsvar",
-            "name": "Dance of Haftkarsvar",
-            "description": "All healing effects are amplified by 30%. Her dance brings life to all.",
+            "id": "priestess_cleansing_dance",
+            "name": "Priestess's Cleansing Dance",
+            "description": "All healing effects are amplified by 30%. Her dance restores hope to the weary.",
             "traits": [
                 {
                     "type": "HEAL_AMP",
@@ -139,18 +142,18 @@
                 }
             ]
         },
-        "lore": "She used to worry that her dancing was not grand enough for the gods. The moment she stepped through the rift, sword in hand, she stopped worrying about that."
+        "lore": "She recalls a sacred dance under a crescent moon, where the water rose to meet her feet. But now, when she tries to recall the steps, her mind experiences a sharp spike of Rift static. She dances anyway, hoping the rhythm will mend her mind."
     },
     {
         "id": "rei",
         "name": "Rei",
         "alias": "Rei",
-        "title": "The Ancient Warden",
+        "title": "The Karmic Warden",
         "gender": "male",
         "age": 2000,
-        "origin": "Unknown — memory lost to the Rift",
-        "description": "An ancient warden who has carried karmic debt for two thousand years. He arrived in this world following the scent of malevolent energy — and stayed because the darkness called to him by name.",
-        "personality": "Stoic, solitary, fiercely protective",
+        "origin": "Aegis-Grave — The Desolate War-Plane (Memories Fragmented)",
+        "description": "An ancient guardian who stood vigil over a battlefield of fallen gods. The karmic burden he carries has glitched his memory, leaving him with only a sense of duty.",
+        "personality": "Stoic, solitary, haunted by the digital-like screeching of ancient wars in his head",
         "icon": "🌀",
         "portrait_color": "#4ade80",
         "hair_color": "#1a6040",
@@ -161,9 +164,10 @@
             "mp": 18,
             "atk": 18,
             "def": 16,
-            "spd": 13,
+            "spd": 15,
             "mag": 8,
-            "lck": 10
+            "lck": 10,
+            "mdef": 11
         },
         "stat_bonuses": {
             "atk": 3,
@@ -175,7 +179,7 @@
         "equippedWeapon": "",
         "passive": {
             "id": "yakshas_valor",
-            "name": "Warden\u0027s Valor",
+            "name": "Vigilant Karma",
             "description": "Takes 10% reduced damage. ATK +15% from karmic resolve. Iron Will: Extreme DEF boost at low HP.",
             "traits": [
                 {
@@ -196,18 +200,18 @@
                 }
             ]
         },
-        "lore": "He has slain ten thousand demons. He does not speak of it. The shadows in this new world smell the same as the ones he burned long ago — and that is enough to make him stay."
+        "lore": "Two thousand years of guarding the graves of giants, now condensed into fragmented static. He remembers the smell of burning metal and the cries of the fallen, but the faces are gone. He fights the Rift to preserve the few names he has left."
     },
     {
         "id": "ria",
         "name": "Ria",
         "alias": "Ria",
-        "title": "The Summoner",
+        "title": "The Phantasm Binder",
         "gender": "female",
         "age": 25,
-        "origin": "Unknown — memory lost to the Rift",
-        "description": "A powerful summoner blessed with the ability to call forth creatures from ancient realms. She channels ancient summons with graceful precision, commanding beasts of fire, ice, and thunder to do her bidding.",
-        "personality": "Wise, compassionate, magically attuned",
+        "origin": "Aethelgard — The High-Magic Archives (Memories Fragmented)",
+        "description": "A master of binding ancient entities into physical grimoires. The Rift's distortion has glitched her grimoire, causing her bound spirits to manifest as corrupted echoes.",
+        "personality": "Compassionate, studious, speaking to unseen phantoms of the archive",
         "icon": "✨",
         "portrait_color": "#a78bfa",
         "hair_color": "#8b5cf6",
@@ -220,7 +224,8 @@
             "def": 9,
             "spd": 12,
             "mag": 24,
-            "lck": 10
+            "lck": 10,
+            "mdef": 20
         },
         "stat_bonuses": {
             "mag": 6,
@@ -232,8 +237,8 @@
         "equippedWeapon": "eidolons_grimoire",
         "passive": {
             "id": "eidolon_bond",
-            "name": "Eidolon Bond",
-            "description": "Summoned creatures gain +20% stats. MP efficiency increased by 15%.",
+            "name": "Bound Pact",
+            "description": "Bound spirits gain +20% stats. MP efficiency increased by 15%.",
             "traits": [
                 {
                     "type": "MP_COST_MULT",
@@ -245,18 +250,18 @@
                 }
             ]
         },
-        "lore": "In her world, she commanded the mightiest creatures of ancient realms. When the rift opened, her summoned eidolons followed her through — loyal companions across worlds."
+        "lore": "She remembers an archive of infinite books, where she signed pacts with ancient primals. Now, the ink is smeared with Rift-static, and her summons speak in garbled voices. She seeks to restore the contracts she once held."
     },
     {
         "id": "valka",
         "name": "Valka",
         "alias": "Valka",
-        "title": "The Valkyrie",
+        "title": "The Aegis of Ascended Souls",
         "gender": "female",
         "age": 1000,
-        "origin": "Unknown — memory lost to the Rift",
-        "description": "A divine Valkyrie warrior who judges souls and claims the worthy. She wields sacred power and divine authority, her blade blessed by ancient power. Ageless and formidable in combat.",
-        "personality": "Principled, commanding, divinely righteous",
+        "origin": "Valen-Glaive — The Cloud-Spire Hall (Memories Fragmented)",
+        "description": "A warrior of the heavens whose duty was to choose the souls of the brave. The Rift's interference has glitched her scales of judgment, blurring the line between ally and enemy.",
+        "personality": "Principled, solemn, trying to recall the faces of the soldiers she ascended",
         "icon": "👑",
         "portrait_color": "#e879f9",
         "hair_color": "#c084fc",
@@ -269,7 +274,8 @@
             "def": 18,
             "spd": 15,
             "mag": 16,
-            "lck": 10
+            "lck": 10,
+            "mdef": 15
         },
         "stat_bonuses": {
             "atk": 4,
@@ -281,7 +287,7 @@
         "equippedWeapon": "aegis_archangel",
         "passive": {
             "id": "divine_authority",
-            "name": "Divine Authority",
+            "name": "Ascendant Scale",
             "description": "DEF increased by 20%. Reflects 10% of damage taken back to attacker.",
             "traits": [
                 {
@@ -295,18 +301,18 @@
                 }
             ]
         },
-        "lore": "For millennia she walked between worlds, judging souls worthy of ascension. Now she stands in this shadowed realm, where even gods fear to tread — and she must decide if darkness itself can be redeemed."
+        "lore": "She used to descend upon blood-soaked fields to lift heroes to the heavens. But the heavens of her home have collapsed into a glitching vortex of memories. She now stands on the soil of Shattered Nexus, searching for the hall she once guarded."
     },
     {
         "id": "drake",
         "name": "Drake",
         "alias": "Drake",
-        "title": "The Dragoon",
+        "title": "The Sky-Drift Lancer",
         "gender": "male",
         "age": 28,
-        "origin": "Unknown — memory lost to the Rift",
-        "description": "A noble Dragoon knight whose lance pierces the sky. He channels the power of dragons to perform devastating aerial attacks, his spear dancing through the air with lethal grace.",
-        "personality": "Honorable, conflicted, steadfastly loyal",
+        "origin": "Wyrm-Spire — The Wind-Sheared Peaks (Memories Fragmented)",
+        "description": "A sky-ward knight who leaped among the clouds to defend a mountain kingdom. The Rift's altitude corruption has glitched his memories of flight.",
+        "personality": "Honor-bound, quiet, feeling a constant, glitched vertigo from the lost sky",
         "icon": "🐉",
         "portrait_color": "#0ea5e9",
         "hair_color": "#0369a1",
@@ -319,7 +325,8 @@
             "def": 14,
             "spd": 16,
             "mag": 10,
-            "lck": 10
+            "lck": 10,
+            "mdef": 11
         },
         "stat_bonuses": {
             "atk": 3,
@@ -331,7 +338,7 @@
         "equippedWeapon": "wyrmtooth_lance",
         "passive": {
             "id": "dragon_leap",
-            "name": "Dragon\u0027s Leap",
+            "name": "Tempest Leap",
             "description": "Every 3rd turn, perform a bonus aerial attack. SPD +2 during aerial combat.",
             "traits": [
                 {
@@ -345,18 +352,18 @@
                 }
             ]
         },
-        "lore": "A Dragoon knight who swore oaths to a kingdom long since lost to the rift. But loyalties fracture when worlds collide. He came seeking redemption — instead, he found new purpose."
+        "lore": "He remembers leaping from the back of a dragon into a sea of clouds, but when he tries to recall the landing, there is only a long drop into Rift-static. His kingdom is gone, but his lance still seeks the sky."
     },
     {
         "id": "rex",
         "name": "Rex",
         "alias": "Rex",
-        "title": "The Lionheart King",
+        "title": "The Fallen Sovereign",
         "gender": "male",
         "age": 200,
-        "origin": "Unknown — memory lost to the Rift",
-        "description": "An immortal warrior-king who ruled for two centuries, blessed by the gods themselves. He commands divine power and can summon gods through sacred rituals. His presence radiates ancient authority.",
-        "personality": "Regal, stoic, divinely resolute",
+        "origin": "Aurelia — The Sun-Drenched Throne (Memories Fragmented)",
+        "description": "An immortal king who ruled a golden empire for two centuries. The Rift's decay has eroded his memories of his empire, leaving only the shadow of a crown.",
+        "personality": "Regal, heavy-hearted, carrying the weight of a kingdom he can no longer name",
         "icon": "⚔️",
         "portrait_color": "#fbbf24",
         "hair_color": "#fcd34d",
@@ -369,7 +376,8 @@
             "def": 20,
             "spd": 14,
             "mag": 18,
-            "lck": 10
+            "lck": 10,
+            "mdef": 16
         },
         "stat_bonuses": {
             "atk": 5,
@@ -382,8 +390,8 @@
         "equippedWeapon": "arrens_oath",
         "passive": {
             "id": "divine_blessing",
-            "name": "Divine Blessing",
-            "description": "As a demi-god, grants allies +15% HP regeneration. Takes 12% reduced damage from all sources.",
+            "name": "Imperial Grace",
+            "description": "Grants allies +15% HP regeneration. Takes 12% reduced damage from all sources.",
             "traits": [
                 {
                     "type": "HP_REGEN_AMP",
@@ -395,7 +403,7 @@
                 }
             ]
         },
-        "lore": "He lived 200 years as a king, commanding gods and demons alike. When he was pulled into this shadowed realm, even he felt the weight of something beyond his ken. Yet his blade still shines with purpose."
+        "lore": "A monarch of a golden age that lasted two hundred years. Yet in his mind, the court is empty, the gold is turned to grey dust, and the names of his queens and sons are lost behind a wall of static. He swings his blade with the heavy, muscle-remembered majesty of a king."
     },
     {
         "id": "sera",
@@ -419,7 +427,8 @@
             "def": 22,
             "spd": 10,
             "mag": 12,
-            "lck": 10
+            "lck": 10,
+            "mdef": 14
         },
         "stat_bonuses": {
             "def": 6,

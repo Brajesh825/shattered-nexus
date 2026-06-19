@@ -19,18 +19,19 @@
       "Aya",
       "Tao",
       "Lulu",
-      "Rei"
+      "Rei",
+      "Void Knight"
     ],
     "pre_dialogue": [
       {
         "speaker": "narrator",
         "emotion": "grave",
-        "text": "The Sacred Ruins of Aethoria. What was once a place of light and ceremony is now a hollow throne of shadow. And on that throne \u2014 something waits."
+        "text": "The Sacred Ruins of Aethoria. On the hollow throne of shadow, a silent guardian stands."
       },
       {
-        "speaker": "narrator",
+        "speaker": "Void Knight",
         "emotion": "ominous",
-        "text": "It was a warrior once. A name. A life. Valdris took both and left only the shape of a soldier, filled with darkness and given one purpose: guard the Seal Fragment. Forever."
+        "text": "Intruders... turn... back... The Fragment... belongs to... the Void..."
       },
       {
         "speaker": "Rei",
@@ -53,16 +54,16 @@
         "text": "We defeat it first. Then we ask that question."
       },
       {
-        "speaker": "narrator",
+        "speaker": "Void Knight",
         "emotion": "tense",
-        "text": "The Void Knight raises its blade. It does not speak. It has forgotten how. The only thing left in it is the order it was given \u2014 and the four of them stand between it and that order."
+        "text": "Must... protect... Cannot... fail... the Emperor..."
       }
     ],
     "post_dialogue": [
       {
-        "speaker": "narrator",
+        "speaker": "Void Knight",
         "emotion": "solemn",
-        "text": "The Void Knight staggers. The darkness holding it together begins to fracture \u2014 hairline cracks of pale light splitting through the shadow armor."
+        "text": "The... darkness... is cracking... The light... returns..."
       },
       {
         "speaker": "Tao",
@@ -75,9 +76,9 @@
         "text": "A remnant. It has been in there the whole time."
       },
       {
-        "speaker": "narrator",
+        "speaker": "Void Knight",
         "emotion": "gentle",
-        "text": "The Void Knight goes still. The blade lowers. And for one brief, impossible moment \u2014 something like recognition crosses what remains of its face."
+        "text": "...Thank... you... My name... was... Arren..."
       },
       {
         "speaker": "Lulu",
@@ -87,7 +88,7 @@
       {
         "speaker": "narrator",
         "emotion": "solemn",
-        "text": "Then the shadow collapses inward. The knight crumbles. And where it stood, a pale crystal pulses once \u2014 like a heartbeat \u2014 and goes quiet. The first Seal Fragment."
+        "text": "The shadow collapses and the knight crumbles. In its place, the first Seal Fragment pulses."
       },
       {
         "speaker": "Aya",
@@ -700,7 +701,7 @@
             {
               "speaker": "Aya",
               "emotion": "calm",
-              "text": "It never does."
+              "text": "Then we must face him. Duty calls us forward."
             }
           ]
         },

@@ -114,13 +114,13 @@
   100% { opacity: 0; transform: scale(0.7); filter: brightness(0.5) saturate(0.5); }
 }
 
-@keyframes anim-paramita_papilio {
+@keyframes anim-wraith_form_ascension {
   0% { filter: brightness(1); }
   50% { filter: brightness(1.15) drop-shadow(0 0 10px #ff6b4a); }
   100% { filter: brightness(1); }
 }
 
-@keyframes overlay-paramita_papilio {
+@keyframes overlay-wraith_form_ascension {
   0% { opacity: 1; transform: scale(1) translateY(0); filter: brightness(1); }
   50% { opacity: 1; transform: scale(1.3) translateY(-10px); filter: brightness(1.6) saturate(2) hue-rotate(15deg); }
   100% { opacity: 0; transform: scale(0.6) translateY(20px); filter: brightness(0.4); }
@@ -190,13 +190,13 @@
   100% { opacity: 0; transform: scale(0.85); filter: brightness(0.7); }
 }
 
-@keyframes anim-hajras_hymn {
+@keyframes anim-oasis_invocation {
   0% { filter: brightness(1); }
   50% { filter: brightness(1.2) drop-shadow(0 0 15px #f1c40f); }
   100% { filter: brightness(1); }
 }
 
-@keyframes overlay-hajras_hymn {
+@keyframes overlay-oasis_invocation {
   0% { opacity: 1; transform: scale(1) rotateZ(0deg); filter: brightness(1); }
   10% { opacity: 1; transform: scale(1.35) rotateZ(45deg); filter: brightness(1.6) saturate(2) drop-shadow(0 0 25px #f1c40f); }
   50% { opacity: 1; transform: scale(1.2) rotateZ(180deg); filter: brightness(1.3) saturate(1.8); }
@@ -218,13 +218,13 @@
   100% { opacity: 0; transform: scale(0.8) translateY(8px); filter: brightness(0.7); }
 }
 
-@keyframes anim-yaksha_valor_active {
+@keyframes anim-sentinels_resolve {
   0% { filter: brightness(1); }
   50% { filter: brightness(1.12) drop-shadow(0 0 10px #0a4030); }
   100% { filter: brightness(1); }
 }
 
-@keyframes overlay-yaksha_valor_active {
+@keyframes overlay-sentinels_resolve {
   0% { opacity: 1; transform: scale(1); filter: brightness(1); }
   50% { opacity: 1; transform: scale(1.2); filter: brightness(1.3) saturate(1.5) hue-rotate(120deg); }
   100% { opacity: 0; transform: scale(0.85); filter: brightness(0.7); }
@@ -242,13 +242,13 @@
   100% { opacity: 0; transform: scale(0.88); filter: brightness(0.75); }
 }
 
-@keyframes anim-mastery_of_pain {
+@keyframes anim-aura_of_retribution {
   0% { filter: brightness(1); }
   50% { filter: brightness(1.2) drop-shadow(0 0 15px #7ddc5f); }
   100% { filter: brightness(1); }
 }
 
-@keyframes overlay-mastery_of_pain {
+@keyframes overlay-aura_of_retribution {
   0% { opacity: 1; transform: scale(1) rotateZ(0deg); filter: brightness(1); }
   10% { opacity: 1; transform: scale(1.35) rotateZ(45deg); filter: brightness(1.5) saturate(2) drop-shadow(0 0 20px #7ddc5f); }
   50% { opacity: 1; transform: scale(1.2) rotateZ(180deg); filter: brightness(1.25) saturate(1.6); }
@@ -303,19 +303,19 @@
 .anim-cryoclasm { animation: anim-cryoclasm 800ms ease-out; }
 
 .anim-spirit_flame { animation: anim-spirit_flame 560ms ease-out; }
-.anim-paramita_papilio { animation: anim-paramita_papilio 560ms ease-out; }
+.anim-wraith_form_ascension { animation: anim-wraith_form_ascension 560ms ease-out; }
 .anim-blood_blossom_enhanced { animation: anim-blood_blossom_enhanced 560ms ease-out; }
 .anim-guide_to_afterlife { animation: anim-guide_to_afterlife 800ms ease-out; }
 
 .anim-dance_of_blessing { animation: anim-dance_of_blessing 560ms ease-out; }
 .anim-water_wheel { animation: anim-water_wheel 560ms ease-out; }
 .anim-harmony_preservation { animation: anim-harmony_preservation 560ms ease-out; }
-.anim-hajras_hymn { animation: anim-hajras_hymn 800ms ease-out; }
+.anim-oasis_invocation { animation: anim-oasis_invocation 800ms ease-out; }
 
 .anim-lancing_strike { animation: anim-lancing_strike 560ms ease-out; }
-.anim-yaksha_valor_active { animation: anim-yaksha_valor_active 560ms ease-out; }
+.anim-sentinels_resolve { animation: anim-sentinels_resolve 560ms ease-out; }
 .anim-karmic_barrier { animation: anim-karmic_barrier 560ms ease-out; }
-.anim-mastery_of_pain { animation: anim-mastery_of_pain 800ms ease-out; }
+.anim-aura_of_retribution { animation: anim-aura_of_retribution 800ms ease-out; }
 
 /* Overlay animation classes */
 .overlay-frostblossom { animation: overlay-frostblossom 600ms ease-out forwards; }
@@ -324,19 +324,19 @@
 .overlay-cryoclasm { animation: overlay-cryoclasm 3000ms ease-out forwards; }
 
 .overlay-spirit_flame { animation: overlay-spirit_flame 600ms ease-out forwards; }
-.overlay-paramita_papilio { animation: overlay-paramita_papilio 600ms ease-out forwards; }
+.overlay-wraith_form_ascension { animation: overlay-wraith_form_ascension 600ms ease-out forwards; }
 .overlay-blood_blossom_enhanced { animation: overlay-blood_blossom_enhanced 600ms ease-out forwards; }
 .overlay-guide_to_afterlife { animation: overlay-guide_to_afterlife 3000ms ease-out forwards; }
 
 .overlay-dance_of_blessing { animation: overlay-dance_of_blessing 600ms ease-out forwards; }
 .overlay-water_wheel { animation: overlay-water_wheel 600ms ease-out forwards; }
 .overlay-harmony_preservation { animation: overlay-harmony_preservation 600ms ease-out forwards; }
-.overlay-hajras_hymn { animation: overlay-hajras_hymn 3000ms ease-out forwards; }
+.overlay-oasis_invocation { animation: overlay-oasis_invocation 3000ms ease-out forwards; }
 
 .overlay-lancing_strike { animation: overlay-lancing_strike 600ms ease-out forwards; }
-.overlay-yaksha_valor_active { animation: overlay-yaksha_valor_active 600ms ease-out forwards; }
+.overlay-sentinels_resolve { animation: overlay-sentinels_resolve 600ms ease-out forwards; }
 .overlay-karmic_barrier { animation: overlay-karmic_barrier 600ms ease-out forwards; }
-.overlay-mastery_of_pain { animation: overlay-mastery_of_pain 3000ms ease-out forwards; }
+.overlay-aura_of_retribution { animation: overlay-aura_of_retribution 3000ms ease-out forwards; }
 
 /* Basic animations */
 .anim-slash { animation: heroSlash 460ms ease-out; }
@@ -354,4 +354,40 @@
   margin-top: -30px;
   border-radius: 4px;
   flex-shrink: 0; /* Prevent squishing in flex containers */
+}
+
+
+/* ========== BOSS DEFEAT IMPACT — SHATTER FLASH & HEAVY SHAKE ========== */
+
+@keyframes shake-heavy {
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  10%  { transform: translate(-8px,  6px) rotate(-1.5deg); }
+  20%  { transform: translate( 8px, -5px) rotate( 1.5deg); }
+  30%  { transform: translate(-6px,  8px) rotate(-1deg);   }
+  40%  { transform: translate( 6px, -7px) rotate( 1deg);   }
+  50%  { transform: translate(-4px,  4px) rotate(-0.8deg); }
+  60%  { transform: translate( 4px, -4px) rotate( 0.8deg); }
+  70%  { transform: translate(-3px,  3px) rotate(-0.4deg); }
+  80%  { transform: translate( 3px, -2px) rotate( 0.4deg); }
+  90%  { transform: translate(-1px,  1px) rotate(-0.2deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+.shake-heavy {
+  animation: shake-heavy 520ms cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes shatter-flash-in {
+  0%   { opacity: 0; }
+  15%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.shatter-flash {
+  position: fixed;
+  inset: 0;
+  z-index: 98000;
+  background: #ffffff;
+  pointer-events: none;
+  animation: shatter-flash-in 700ms cubic-bezier(0.4, 0, 0.6, 1) forwards;
 }

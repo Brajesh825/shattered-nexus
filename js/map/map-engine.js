@@ -119,6 +119,10 @@ const MapEngine = (() => {
 
   // Region triggers already fired this session
   const _firedTriggers = new Set();
+  // ID of the encounter-type trigger that launched the current/last battle.
+  // Used to refire the trigger when the player loses, so boss tiles like the
+  // Spectral Guardian can be re-attempted instead of being permanently skipped.
+  let _lastEncounterTriggerId = null;
 
   // ── Cinematic Scene State ──────────────────────────────
   let _sceneRunning = false; // blocks encounters, triggers, and player movement
@@ -1076,15 +1080,18 @@ const MapEngine = (() => {
     } else {
       _fogTime += dt;
     }
-    if (typeof ChronosEngine !== 'undefined') ChronosEngine.update(dt);
+    // Chronos is step- and battle-round-driven now; update(dt) is a no-op.
     MapInput.poll();
     if (!_playerLocked) MapPlayer.update(dt, _map);
     MapEntities.updateEnemies(dt, _map);
     if (_marchEnemies.length) _updateMarchEnemies(dt);
     _updateParticles(dt);
 
-    // Detect step landing → footstep SFX
+    // Detect step landing → footstep SFX + Chronos advancement
     if (_prevMoving && !MapPlayer.moving) {
+      // Advance the Nexus clock exactly once per logical tile-step.
+      if (typeof ChronosEngine !== 'undefined') ChronosEngine.advanceBySteps(1);
+
       if (_footstepCooldown <= 0) {
         const tid = MapData.getTileAt(_map, MapPlayer.tx, MapPlayer.ty);
         if (typeof SFX !== 'undefined') SFX.footstep(_tileToSurface(tid));
@@ -1124,12 +1131,16 @@ const MapEngine = (() => {
       interact();
     }
 
-    // Objective check each frame
-    _checkObjective();
-
-    // Region triggers and scene triggers
+    // Region triggers FIRST — when a `reach` objective and an `encounter`
+    // trigger share the same tile (the Spectral Guardian / tile-based boss
+    // pattern), the encounter must fire before the objective auto-completes.
+    // If a trigger pauses the engine (battle / dialogue / scene), the
+    // objective check below is skipped this tick so the trigger's flow wins.
     if (!_sceneRunning) _checkRegionTriggers();
     _checkScenes();
+
+    // Objective check each frame — but only if no trigger paused us this tick
+    if (_running) _checkObjective();
 
     // Fog dialogue + ambient voice lines
     _updateFogDialogue(dt);
@@ -1203,7 +1214,10 @@ const MapEngine = (() => {
               // 1. Always write to G.chars (source of truth) so the weapon persists
               //    even when the character is not in the active party.
               if (!G.weaponsLevels) G.weaponsLevels = {};
-              if (G.weaponsLevels[trig.weaponId] === undefined) G.weaponsLevels[trig.weaponId] = 1;
+              if (G.weaponsLevels[trig.weaponId] === undefined) {
+                if (typeof StateManager !== 'undefined') StateManager.setWeaponLevel(trig.weaponId, 1);
+                else G.weaponsLevels[trig.weaponId] = 1;
+              }
               const sourceChar = (G.chars || []).find(c => c.id === targetCharId);
               if (sourceChar) {
                 sourceChar.equippedWeapon = trig.weaponId;
@@ -1222,16 +1236,24 @@ const MapEngine = (() => {
 
               // 3. Mark chest as permanently opened so it won't re-fire on reload.
               const chestId = trig.id || `${trig.x},${trig.y}`;
-              if (!G.openedChests) G.openedChests = new Set();
-              G.openedChests.add(chestId);
+              if (typeof StateManager !== 'undefined') {
+                StateManager.openChest(chestId);
+              } else {
+                if (!G.openedChests) G.openedChests = new Set();
+                G.openedChests.add(chestId);
+              }
             }
             if (typeof SFX !== 'undefined' && SFX.victory) SFX.victory();
             if (typeof MapUI !== 'undefined') MapUI.showMsg(`🎁 Acquired ${wpName}!`, 2000);
             resume();
           });
         } else if (trig.type === 'encounter' && trig.enemies) {
-          // Trigger a direct encounter / boss fight from a map zone
-          // Optional: show a pre-battle message before launching
+          // Trigger a direct encounter / boss fight from a map zone.
+          // Stop the engine immediately so subsequent ticks don't race the
+          // pre-message setTimeout (e.g. a `reach` objective sharing the tile
+          // would otherwise auto-complete before the boss fight begins).
+          stop();
+          _lastEncounterTriggerId = id;
           const launch = () => _triggerEncounter({
             enemies: trig.enemies,
             isBoss: trig.isBoss || false,
@@ -1313,8 +1335,12 @@ const MapEngine = (() => {
     }
 
     // Persist the "seen" flag immediately so it survives before next camp save
-    if (!G.firedScenes) G.firedScenes = new Set();
-    G.firedScenes.add(scene.id);
+    if (typeof StateManager !== 'undefined') {
+      StateManager.recordFiredScene(scene.id);
+    } else {
+      if (!G.firedScenes) G.firedScenes = new Set();
+      G.firedScenes.add(scene.id);
+    }
     const slot = (G.currentSaveSlot !== undefined) ? G.currentSaveSlot : 0;
     if (typeof Save !== 'undefined') {
       Save.patch({ firedScenes: Array.from(G.firedScenes) }, slot);
@@ -1614,7 +1640,6 @@ const MapEngine = (() => {
     }
 
     // 7. Delayed Nexus Shatter Transition
-    MapEntities.removeEncountered();
     const alertDelay = 1200;
     setTimeout(() => {
       // Hide warning overlay
@@ -1642,11 +1667,17 @@ const MapEngine = (() => {
   function onBattleComplete(victory) {
     if (typeof BGM !== 'undefined') BGM.playMap(_map);
 
+    // On victory, the encounter trigger has done its job and the tile-based
+    // boss fight is resolved — drop the trigger ID so a future loss elsewhere
+    // doesn't mis-target the wrong _firedTriggers entry. The defeat branch
+    // below handles its own cleanup before this point.
+    if (victory) _lastEncounterTriggerId = null;
+
     // Scene ambush intercept — hand control back to the scene runner
     if (_sceneAmbushActive) {
       _sceneAmbushActive = false;
       showScreen('explore-screen');
-      MapPlayer.setCooldown(4);
+      MapPlayer.setCooldown(10);
       resume();
       const cb = _sceneAmbushCallback;
       _sceneAmbushCallback = null;
@@ -1668,11 +1699,22 @@ const MapEngine = (() => {
           m.isKO = false;
           m.statuses = [];
         });
-        MapEntities.clear();
+        // Do NOT call MapEntities.clear() here — it would wipe every enemy on
+        // the map including the boss the player just lost to (Bug 3). On loss
+        // we only need to release the encounter handles so the map can be
+        // re-traversed cleanly.
+        if (MapEntities.releaseEncountered) MapEntities.releaseEncountered();
+        // If the battle was launched by an `encounter`-type region trigger,
+        // clear that trigger from _firedTriggers so the player can re-attempt
+        // the fight by walking back onto the tile.
+        if (_lastEncounterTriggerId) {
+          _firedTriggers.delete(_lastEncounterTriggerId);
+          _lastEncounterTriggerId = null;
+        }
         MapPlayer.reset(_map.playerStart.x, _map.playerStart.y);
         _campUnlocked = false; _atCamp = false;
         showScreen('explore-screen');
-        MapPlayer.setCooldown(8); // Grace period
+        MapPlayer.setCooldown(12); // Grace period
         resume();
         if (typeof MapUI !== 'undefined') MapUI.showMsg('💀 Defeated — returned to camp.', 2400);
       } else {
@@ -1690,7 +1732,7 @@ const MapEngine = (() => {
       const interMsg = _waveState.waves[_waveState.waveIdx] && _waveState.waves[_waveState.waveIdx].interWaveMsg;
       _waveState.waveIdx++;
       showScreen('explore-screen');
-      MapPlayer.setCooldown(4);
+      MapPlayer.setCooldown(10);
 
       if (_waveState.waveIdx < _waveState.waves.length) {
         // More waves — brief pause then next
@@ -1710,60 +1752,107 @@ const MapEngine = (() => {
     }
 
     // ── Normal battle complete ───────────────────────────
-    const defeatedEnemy = MapEntities.getActiveEncountered ? MapEntities.getActiveEncountered() : null;
+    const defeatedEnemy = (MapEntities.getLastEncountered ? MapEntities.getLastEncountered() : null) || (MapEntities.getActiveEncountered ? MapEntities.getActiveEncountered() : null);
     if (victory && defeatedEnemy) {
       if (defeatedEnemy.id === 'river_king') {
         const wId = 'chain_of_nights';
         const alreadyHas = G.weaponsLevels && G.weaponsLevels[wId] !== undefined;
         if (!alreadyHas) {
-          const wData = (window.WEAPONS_DATA || []).find(w => w.id === wId);
-          if (wData) {
-            const party = G.party || [];
-            const resChar = party.find(m => m.charId === 'rei');
-            if (resChar) {
-              resChar.char.equippedWeapon = wId;
-              resChar.equippedWeapon = wData;
-              if (!G.weaponsLevels) G.weaponsLevels = {};
-              G.weaponsLevels[wId] = 1;
-              if (typeof rebuildMemberCombatStats !== 'undefined') {
-                rebuildMemberCombatStats(resChar, { resourceStrategy: 'clamp' });
+          const dialogueLines = [
+            { speaker: null, text: "The River King sinks back into the depths of the waterfall. As the mist clears, a heavy, dark iron chain lies coiled on the stone altar, pulsing with wind resonance." },
+            { speaker: "Rei", text: "This... is the Chain of Ten Thousand Nights. It was forged in the deep vaults of Aethalgard before the corruption." },
+            { speaker: "Aya", text: "It responds to your resonance, Rei. It has been waiting for someone who carries your weight." },
+            { speaker: "Rei", text: "Then I will carry it. Its balance is familiar." }
+          ];
+          showScreen('explore-screen');
+          _openGenericDialogue(dialogueLines, () => {
+            const wData = (window.WEAPONS_DATA || []).find(w => w.id === wId);
+            if (wData) {
+              const party = G.party || [];
+              const resChar = party.find(m => m.charId === 'rei');
+              if (resChar) {
+                resChar.char.equippedWeapon = wId;
+                resChar.equippedWeapon = wData;
+                if (typeof StateManager !== 'undefined') {
+                  StateManager.setWeaponLevel(wId, 1);
+                } else {
+                  if (!G.weaponsLevels) G.weaponsLevels = {};
+                  G.weaponsLevels[wId] = 1;
+                }
+                if (typeof rebuildMemberCombatStats !== 'undefined') {
+                  rebuildMemberCombatStats(resChar, { resourceStrategy: 'clamp' });
+                }
               }
             }
-            if (typeof MapUI !== 'undefined') {
-              MapUI.showMsg('🎁 Acquired Chain of Ten Thousand Nights for Rei!', 3500);
+            if (typeof MapUI !== 'undefined' && MapUI.showWeaponAcquisition) {
+              MapUI.showWeaponAcquisition(wId, 'rei', () => {
+                MapEntities.removeEncountered();
+                MapEntities.clearLastEncountered();
+                MapPlayer.setCooldown(12);
+                resume();
+              });
+            } else {
+              MapEntities.removeEncountered();
+              MapEntities.clearLastEncountered();
+              MapPlayer.setCooldown(12);
+              resume();
             }
-            if (typeof SFX !== 'undefined' && SFX.victory) SFX.victory();
-          }
+          });
+          return;
         }
       } else if (defeatedEnemy.id === 'sunken_leviathan') {
         const wId = 'tide_caller';
         const alreadyHas = G.weaponsLevels && G.weaponsLevels[wId] !== undefined;
         if (!alreadyHas) {
-          const wData = (window.WEAPONS_DATA || []).find(w => w.id === wId);
-          if (wData) {
-            const party = G.party || [];
-            const resChar = party.find(m => m.charId === 'lulu');
-            if (resChar) {
-              resChar.char.equippedWeapon = wId;
-              resChar.equippedWeapon = wData;
-              if (!G.weaponsLevels) G.weaponsLevels = {};
-              G.weaponsLevels[wId] = 1;
-              if (typeof rebuildMemberCombatStats !== 'undefined') {
-                rebuildMemberCombatStats(resChar, { resourceStrategy: 'clamp' });
+          const dialogueLines = [
+            { speaker: null, text: "The Leviathan retreats into the abyssal trench. As the water calms, a glowing staff of blue driftwood floats to the surface, surrounded by pristine tide bubbles." },
+            { speaker: "Lulu", text: "The Tide Caller... I can feel the memories of the old priests inside it. It's warm, despite the deep water." },
+            { speaker: "Tao", text: "It likes you, Lulu! The tide spirits are dancing around your feet. That's a good sign." },
+            { speaker: "Lulu", text: "I will carry their memories. They won't be forgotten." }
+          ];
+          showScreen('explore-screen');
+          _openGenericDialogue(dialogueLines, () => {
+            const wData = (window.WEAPONS_DATA || []).find(w => w.id === wId);
+            if (wData) {
+              const party = G.party || [];
+              const resChar = party.find(m => m.charId === 'lulu');
+              if (resChar) {
+                resChar.char.equippedWeapon = wId;
+                resChar.equippedWeapon = wData;
+                if (typeof StateManager !== 'undefined') {
+                  StateManager.setWeaponLevel(wId, 1);
+                } else {
+                  if (!G.weaponsLevels) G.weaponsLevels = {};
+                  G.weaponsLevels[wId] = 1;
+                }
+                if (typeof rebuildMemberCombatStats !== 'undefined') {
+                  rebuildMemberCombatStats(resChar, { resourceStrategy: 'clamp' });
+                }
               }
             }
-            if (typeof MapUI !== 'undefined') {
-              MapUI.showMsg('🎁 Acquired Tide Caller for Lulu!', 3500);
+            if (typeof MapUI !== 'undefined' && MapUI.showWeaponAcquisition) {
+              MapUI.showWeaponAcquisition(wId, 'lulu', () => {
+                MapEntities.removeEncountered();
+                MapEntities.clearLastEncountered();
+                MapPlayer.setCooldown(12);
+                resume();
+              });
+            } else {
+              MapEntities.removeEncountered();
+              MapEntities.clearLastEncountered();
+              MapPlayer.setCooldown(12);
+              resume();
             }
-            if (typeof SFX !== 'undefined' && SFX.victory) SFX.victory();
-          }
+          });
+          return;
         }
       }
     }
 
     MapEntities.removeEncountered();
+    if (MapEntities.clearLastEncountered) MapEntities.clearLastEncountered();
     showScreen('explore-screen');
-    MapPlayer.setCooldown(8);
+    MapPlayer.setCooldown(12);
     resume();
     if (typeof MapUI !== 'undefined') MapUI.showMsg('Victory!', 1200);
   }
@@ -2089,7 +2178,7 @@ const MapEngine = (() => {
   let _npcLines = [], _npcLineIdx = 0, _npcCurrent = null;
   let _npcQuestFlow = false; // true when dialogue came from quest priority path
 
-  const _NPC_PARTY_IDS = ['aya', 'tao', 'lulu', 'rei', 'ria', 'rydia', 'lenneth', 'kain', 'leon', 'sera'];
+  const _NPC_PARTY_IDS = ['aya', 'tao', 'lulu', 'rei', 'ria', 'valka', 'drake', 'rex', 'sera'];
 
   function _isPartySpeaker(name) {
     const sl = (name || '').toLowerCase().replace(/\s+/g, '_');
@@ -2511,8 +2600,12 @@ const MapEngine = (() => {
     hasFiredScene: (id) => _firedScenes.has(id) || !!(G.firedScenes && (G.firedScenes.has ? G.firedScenes.has(id) : G.firedScenes.includes(id))),
     fireScene: (id) => {
       _firedScenes.add(id);
-      if (!G.firedScenes) G.firedScenes = new Set();
-      G.firedScenes.add(id);
+      if (typeof StateManager !== 'undefined') {
+        StateManager.recordFiredScene(id);
+      } else {
+        if (!G.firedScenes) G.firedScenes = new Set();
+        G.firedScenes.add(id);
+      }
     },
     // Optional callback — wire this up after init to handle encounter transitions:
     // MapEngine.onEncounterStart = function(enc) { ... }

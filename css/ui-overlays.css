@@ -2474,3 +2474,283 @@ body.is-touch-device #control-hints-bar { display: none; }
   }
 }
 
+
+/* ══════════════════════════════════════════════════════════════
+   DESKTOP TYPOGRAPHY SCALING  (≥ 1024 px)
+   ══════════════════════════════════════════════════════════════ */
+@media (min-width: 1024px) {
+  /* Tutorial overlay */
+  .tut-title  { font-size: 24px !important; }
+  .tut-text   { font-size: 17px !important; line-height: 1.6 !important; }
+  .tut-msg    { font-size: 16px !important; line-height: 1.55 !important; }
+  .tut-speaker{ font-size: 14px !important; }
+
+  /* Cutscene / Boss dialogue panels */
+  .s-text     { font-size: 26px !important; line-height: 1.7 !important; }
+  .s-speaker  { font-size: 17px !important; }
+
+  /* NPC dialogue panel */
+  .npc-dialogue-text { font-size: 20px !important; line-height: 1.6 !important; }
+  .npc-dialogue-name { font-size: 16px !important; }
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   WEAPON ACQUISITION OVERLAY  (wao-*)
+   ══════════════════════════════════════════════════════════════ */
+.weapon-acquisition-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: all;
+}
+
+.wao-backdrop {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 40%, hsla(240, 30%, 10%, 0.97), hsla(240, 50%, 4%, 0.99));
+  backdrop-filter: blur(18px) saturate(1.4);
+  animation: wao-fade-in 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@keyframes wao-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Card */
+.wao-card {
+  position: relative;
+  z-index: 1;
+  width: min(420px, 92vw);
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 18px;
+  padding: 28px 24px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: linear-gradient(160deg, hsla(230, 25%, 12%, 0.98), hsla(250, 30%, 8%, 0.99));
+  border: 1.5px solid hsla(260, 60%, 55%, 0.35);
+  box-shadow: 0 0 60px hsla(260, 60%, 50%, 0.25), 0 0 120px hsla(240, 70%, 30%, 0.15), inset 0 1px 0 hsla(260, 60%, 70%, 0.12);
+  animation: wao-card-rise 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes wao-card-rise {
+  from { opacity: 0; transform: translateY(40px) scale(0.92); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Rotating conic light ring */
+.wao-conic-ring {
+  position: absolute;
+  inset: -2px;
+  border-radius: 20px;
+  background: conic-gradient(from var(--wao-angle, 0deg), transparent 70%, hsla(260, 80%, 65%, 0.6), transparent 30%);
+  z-index: -1;
+  animation: wao-ring-spin 4s linear infinite;
+}
+
+@property --wao-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes wao-ring-spin {
+  to { --wao-angle: 360deg; }
+}
+
+/* Header */
+.wao-eyebrow {
+  text-align: center;
+  font-size: 10px;
+  letter-spacing: 3px;
+  font-weight: 700;
+  color: hsla(260, 70%, 75%, 0.8);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.wao-icon-wrap {
+  display: flex;
+  justify-content: center;
+}
+
+.wao-icon {
+  font-size: 56px;
+  filter: drop-shadow(0 0 18px hsla(260, 80%, 65%, 0.7));
+  animation: wao-float 3s ease-in-out infinite;
+}
+
+@keyframes wao-float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}
+
+/* Weapon name & element */
+.wao-weapon-name {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: hsl(48, 95%, 75%);
+  text-shadow: 0 0 24px hsla(48, 90%, 60%, 0.5);
+}
+
+.wao-weapon-element {
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: hsla(260, 60%, 70%, 0.7);
+  margin-top: -8px;
+}
+
+/* Description */
+.wao-weapon-desc {
+  font-size: 13px;
+  line-height: 1.65;
+  color: hsla(220, 30%, 80%, 0.85);
+  text-align: center;
+  padding: 0 8px;
+}
+
+/* Stats grid */
+.wao-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.wao-stat-chip {
+  background: hsla(250, 25%, 16%, 0.9);
+  border: 1px solid hsla(260, 40%, 35%, 0.4);
+  border-radius: 8px;
+  padding: 6px 8px;
+  text-align: center;
+}
+
+.wao-stat-chip .label {
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: hsla(260, 50%, 65%, 0.7);
+}
+
+.wao-stat-chip .value {
+  font-size: 15px;
+  font-weight: 700;
+  color: hsl(210, 90%, 78%);
+}
+
+/* Passive block */
+.wao-passive-block {
+  background: hsla(270, 30%, 13%, 0.8);
+  border: 1px solid hsla(280, 50%, 45%, 0.35);
+  border-radius: 10px;
+  padding: 10px 14px;
+}
+
+.wao-passive-label {
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: hsla(280, 60%, 70%, 0.7);
+  margin-bottom: 4px;
+}
+
+.wao-passive-text {
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: hsl(275, 60%, 82%);
+}
+
+/* Resonance block */
+.wao-resonance-block {
+  background: hsla(330, 25%, 13%, 0.8);
+  border: 1px solid hsla(330, 50%, 45%, 0.35);
+  border-radius: 10px;
+  padding: 10px 14px;
+}
+
+.wao-resonance-label {
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: hsla(330, 60%, 70%, 0.7);
+  margin-bottom: 4px;
+}
+
+.wao-resonance-text {
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: hsl(330, 55%, 82%);
+}
+
+/* Footer */
+.wao-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.wao-owner-badge {
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: hsla(140, 60%, 65%, 0.75);
+}
+
+.wao-equip-btn {
+  width: 100%;
+  padding: 13px 0;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, hsl(260, 65%, 40%), hsl(240, 70%, 30%));
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 0 24px hsla(260, 70%, 50%, 0.35);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.wao-equip-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 30%, hsla(255, 100%, 90%, 0.15) 50%, transparent 70%);
+  transform: translateX(-100%);
+  transition: transform 0.5s ease;
+}
+
+.wao-equip-btn:hover::after {
+  transform: translateX(100%);
+}
+
+.wao-equip-btn:hover {
+  background: linear-gradient(135deg, hsl(260, 70%, 50%), hsl(240, 75%, 38%));
+  box-shadow: 0 0 40px hsla(260, 75%, 55%, 0.5), 0 4px 20px rgba(0,0,0,0.4);
+  transform: translateY(-2px);
+}
+
+.wao-equip-btn:active {
+  transform: translateY(0);
+}
+
+/* Element colour overrides */
+.wao-card[data-element="wind"]      { --wao-accent: hsl(160, 70%, 55%); }
+.wao-card[data-element="water"]     { --wao-accent: hsl(200, 80%, 55%); }
+.wao-card[data-element="fire"]      { --wao-accent: hsl(22, 90%, 55%);  }
+.wao-card[data-element="ice"]       { --wao-accent: hsl(195, 85%, 65%); }
+.wao-card[data-element="lightning"] { --wao-accent: hsl(50, 100%, 55%); }
+.wao-card[data-element="void"]      { --wao-accent: hsl(280, 70%, 60%); }

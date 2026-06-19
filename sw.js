@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nexus-cache-v9.21';
+const CACHE_NAME = 'nexus-cache-v9.40';
 
 // Core shell — always pre-cached regardless of quality setting
 const SHELL_ASSETS = [
@@ -28,6 +28,7 @@ const SHELL_ASSETS = [
   './js/game.js',
   './js/utils.js',
   './js/systems/settings-manager.js',
+  './js/systems/state-manager.js',
   './js/asset-preloader.js',
   './js/ambient.js',
   './js/bgm.js',
@@ -140,31 +141,34 @@ const SHELL_ASSETS = [
   './images/enemies/rat.webp',
   './images/enemies/slime.webp',
   './images/enemies/void_knight.webp',
-  // Backgrounds (Arc 1)
+  // Backgrounds (Arc 1 & Riverside/Isles)
   './images/backgrounds/verdant_vale.webp',
   './images/backgrounds/forest_path.webp',
+  './images/backgrounds/riverlands.webp',
+  './images/backgrounds/sunken_temple.webp',
   './images/environment/png/offering_point.png',
 ];
 
-// Normal quality character sprites (~37 MB total)
+// Normal quality character sprites (~11.8 MB total — WebP-converted from ~96 MB PNG)
 const SPRITES_NORMAL = [
-  './images/characters/spirits/aya_sprite.png',
-  './images/characters/spirits/drake_sprite.png',
-  './images/characters/spirits/lulu_sprite.png',
-  './images/characters/spirits/rei_sprite.png',
-  './images/characters/spirits/rex_sprite.png',
-  './images/characters/spirits/ria_sprite.png',
-  './images/characters/spirits/sera_sprite.png',
-  './images/characters/spirits/tao_sprite.png',
-  './images/characters/spirits/valka_sprite.png',
-  './images/characters/map/sheets/aya_sheet.png',
-  './images/characters/map/sheets/drake_sheet.png',
-  './images/characters/map/sheets/lulu_sheet.png',
-  './images/characters/map/sheets/rei_sheet.png',
-  './images/characters/map/sheets/rex_sheet.png',
-  './images/characters/map/sheets/ria_sheet.png',
-  './images/characters/map/sheets/tao_sheet.png',
-  './images/characters/map/sheets/valka_sheet.png',
+  './images/characters/spirits/aya_sprite.webp',
+  './images/characters/spirits/drake_sprite.webp',
+  './images/characters/spirits/lulu_sprite.webp',
+  './images/characters/spirits/rei_sprite.webp',
+  './images/characters/spirits/rex_sprite.webp',
+  './images/characters/spirits/ria_sprite.webp',
+  './images/characters/spirits/sera_sprite.webp',
+  './images/characters/spirits/tao_sprite.webp',
+  './images/characters/spirits/valka_sprite.webp',
+  './images/characters/map/sheets/aya_sheet.webp',
+  './images/characters/map/sheets/drake_sheet.webp',
+  './images/characters/map/sheets/lulu_sheet.webp',
+  './images/characters/map/sheets/rei_sheet.webp',
+  './images/characters/map/sheets/rex_sheet.webp',
+  './images/characters/map/sheets/ria_sheet.webp',
+  './images/characters/map/sheets/sera_sheet.webp',
+  './images/characters/map/sheets/tao_sheet.webp',
+  './images/characters/map/sheets/valka_sheet.webp',
 ];
 
 // Low quality character sprites (~1.7 MB total)
@@ -184,6 +188,7 @@ const SPRITES_LOW = [
   './images/characters/map/sheets/rei_sheet_low.webp',
   './images/characters/map/sheets/rex_sheet_low.webp',
   './images/characters/map/sheets/ria_sheet_low.webp',
+  './images/characters/map/sheets/sera_sheet_low.webp',
   './images/characters/map/sheets/tao_sheet_low.webp',
   './images/characters/map/sheets/valka_sheet_low.webp',
 ];

@@ -70,7 +70,7 @@
             {
               "speaker": "narrator",
               "emotion": "fearful",
-              "text": "Old Keeper: He was in the throne room. But he moves. He knows when something is coming. He has been waiting for something to be worth facing."
+              "text": "Old Keeper: He is in the throne room, waiting. He knows when something is coming. He has been waiting for something to be worth facing."
             },
             {
               "speaker": "Lulu",
@@ -80,17 +80,17 @@
             {
               "speaker": "narrator",
               "emotion": "hollow",
-              "text": "Old Keeper: Two did. A summoner and a winged warrior — radiant things, not from here. They fought him in the undercroft before the city fell. He did not kill them. He kept them. Said their power was too rare to waste."
+              "text": "Old Keeper: Two did. A summoner and a winged warrior — radiant things, not from here. The winged one was dragged off toward the ocean depths, but the summoner... he kept her chained here in the deep vault beneath the palace."
             },
             {
               "speaker": "Rei",
               "emotion": "sharp",
-              "text": "He has prisoners."
+              "text": "He has a prisoner."
             },
             {
               "speaker": "narrator",
               "emotion": "hollow",
-              "text": "Old Keeper: Chained in the deep vault beneath the palace. He feeds on their resonance to hold the Fragment steady. Without them, it would burn him alive."
+              "text": "Old Keeper: Chained in the deep vault beneath the palace. He feeds on her resonance to hold the Fragment steady. Without her, it would burn him alive."
             },
             {
               "speaker": "Tao",
@@ -183,23 +183,24 @@
   ],
   "boss_chapter": {
     "title": "The Ambush in the Undercroft",
-    "background": "throne_room",
+    "background": "guardian_arena",
     "cast": [
       "Aya",
       "Tao",
       "Lulu",
-      "Rei"
+      "Rei",
+      "Demon Lord"
     ],
     "pre_dialogue": [
       {
         "speaker": "narrator",
         "emotion": "intense",
-        "text": "The Demon Lord fills the undercroft \u2014 the fire Seal Fragment blazing against his chest, the heat warping the air around him. He did not wait in his throne room. He hunted them into the tunnel and let them walk straight to him."
+        "text": "The throne room is hot enough to melt stone. The fire Seal Fragment blazes on the Demon Lord's chest as he rises."
       },
       {
-        "speaker": "narrator",
+        "speaker": "Demon Lord",
         "emotion": "sinister",
-        "text": "Demon Lord: You are smaller than I expected. The Fragment told me you were coming days ago. I have been patient."
+        "text": "You are smaller than I expected. The Fragment told me you were coming days ago. I have been patient... and now, you are trapped."
       },
       {
         "speaker": "Rei",
@@ -207,24 +208,24 @@
         "text": "The Fragment speaks to you."
       },
       {
-        "speaker": "narrator",
+        "speaker": "Demon Lord",
         "emotion": "sinister",
-        "text": "Demon Lord: Everything that burns speaks to me. And you four burn very brightly."
+        "text": "Everything that burns speaks to me. And you four burn very brightly."
       },
       {
         "speaker": "Tao",
         "emotion": "cold",
-        "text": "Release them. The ones you took. A summoner and a warrior. Release them."
+        "text": "Release her. The summoner you took. Release her."
       },
       {
-        "speaker": "narrator",
+        "speaker": "Demon Lord",
         "emotion": "amused",
-        "text": "Demon Lord: My guests? They sustain the Fragment. Without their resonance anchoring it, it would have consumed me months ago. They are... useful. As you will be, once I am done with you."
+        "text": "My guest? She sustains the Fragment. Without her resonance anchoring it, it would have consumed me months ago. She is... useful. As you will be, once I am done with you."
       },
       {
         "speaker": "Lulu",
         "emotion": "steady",
-        "text": "They are not yours to use. That Fragment does not belong to you. None of this does."
+        "text": "She is not yours to use. That Fragment does not belong to you. None of this does."
       },
       {
         "speaker": "Rei",
@@ -234,14 +235,14 @@
     ],
     "post_dialogue": [
       {
-        "speaker": "narrator",
+        "speaker": "Demon Lord",
         "emotion": "solemn",
-        "text": "The Demon Lord falls. Not with a roar \u2014 with a sound like an exhale. Like something holding its breath for a very long time finally letting go."
+        "text": "The fire... it... extinguishes... The heat... fades..."
       },
       {
         "speaker": "narrator",
         "emotion": "quiet",
-        "text": "The red crystal floats free from the ash. Its burning light shifts \u2014 from predatory to something older. Warmer. Like a hearthfire that remembers what homes felt like."
+        "text": "The red crystal floats free from the ash, its predatory light shifting into a warm hearthfire."
       },
       {
         "speaker": "Lulu",
@@ -271,12 +272,12 @@
       {
         "speaker": "narrator",
         "emotion": "cold",
-        "text": "Then a presence settles over the undercroft. Not a sound. Not a figure. A weight \u2014 the kind that has no temperature, that presses from every direction at once."
+        "text": "A cold weight settles over the undercroft. Valdris's voice echoes directly in their minds."
       },
       {
-        "speaker": "narrator",
+        "speaker": "Valdris",
         "emotion": "cold",
-        "text": "Valdris: You freed the Fragment. Good. That creature was wasting it."
+        "text": "You freed the Fragment. Good. That creature was wasting it."
       },
       {
         "speaker": "Aya",
@@ -284,9 +285,9 @@
         "text": "You are watching us."
       },
       {
-        "speaker": "narrator",
+        "speaker": "Valdris",
         "emotion": "measured",
-        "text": "Valdris: I have always been watching. You are the most interesting thing to enter my world in a century. The Oracle chose well \u2014 four resonances, cleanly matched. I almost respect it."
+        "text": "I have always been watching. You are the most interesting thing to enter my world in a century. The Oracle chose well \u2014 four resonances, cleanly matched. I almost respect it."
       },
       {
         "speaker": "Rei",
@@ -294,9 +295,9 @@
         "text": "The kingdom. The people. This destruction \u2014 this is your doing. Not the Demon Lord's. Yours."
       },
       {
-        "speaker": "narrator",
+        "speaker": "Valdris",
         "emotion": "indifferent",
-        "text": "Valdris: I broke a Seal. The unraveling was a consequence. I do not govern consequences. That is what mortality is \u2014 an endless chain of consequences that someone else pays."
+        "text": "I broke a Seal. The unraveling was a consequence. I do not govern consequences. That is what mortality is \u2014 an endless chain of consequences that someone else pays."
       },
       {
         "speaker": "Tao",
@@ -304,19 +305,19 @@
         "text": "There was a child's shoe in that garden."
       },
       {
-        "speaker": "narrator",
+        "speaker": "Valdris",
         "emotion": "unmoved",
-        "text": "Valdris: I have consumed worlds older than that child's entire civilization. Grief is a luxury I shed six centuries ago. Come. Shatter my anchors. Break everything I have built. I will be patient."
+        "text": "I have consumed civilizations older than that child's entire lineage. Grief is a luxury I shed six centuries ago. Come. Shatter my anchors. Break everything I have built. I will be patient."
       },
       {
-        "speaker": "narrator",
+        "speaker": "Valdris",
         "emotion": "precise",
-        "text": "Valdris: I am very good at patient."
+        "text": "I am very good at being patient."
       },
       {
         "speaker": "narrator",
         "emotion": "quiet",
-        "text": "The presence lifts. The ash settles. The four stand in the silence of a kingdom that will never fully recover \u2014 and carry the second Fragment forward anyway."
+        "text": "The cold presence lifts, leaving the ash to settle in silence. The second Fragment is theirs."
       },
       {
         "speaker": "Lulu",
@@ -350,7 +351,7 @@
       "dialogue": [
         {
           "speaker": null,
-          "text": "The deep vault beneath the undercroft shudders. Then cracks. Chains of shadow-iron, laced with the Demon Lord's binding sigils, fracture all at once \u2014 his power gone, his hold over them dissolved."
+          "text": "The deep vault beneath the undercroft shudders. Then cracks. Chains of shadow-iron, laced with the Demon Lord's binding sigils, fracture all at once \u2014 his power gone, his hold over her dissolved."
         },
         {
           "speaker": null,

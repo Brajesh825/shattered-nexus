@@ -115,7 +115,7 @@
             {
               "speaker": "narrator",
               "emotion": "quiet_revelation",
-              "text": "Valdris: I have consumed seventeen worlds. Scholars. Warriors. Gods. Not one of them stood in this sanctum and spoke to me like I was still a person worth arguing with."
+              "text": "Valdris: I have consumed entire civilizations. Scholars. Warriors. Gods. Not one of them stood in this sanctum and spoke to me like I was still a person worth arguing with."
             },
             {
               "speaker": "Tao",
@@ -194,7 +194,7 @@
         {
           "speaker": "narrator",
           "emotion": "sinister",
-          "text": "Valdris: I will add your worlds to my silence. Every memory of you that exists anywhere. I will end it cleanly."
+          "text": "Valdris: I will add your stories to my silence. Every memory of you that exists anywhere. I will end it cleanly."
         },
         {
           "speaker": "Rei",
@@ -232,7 +232,7 @@
       {
         "speaker": "Aya",
         "emotion": "fierce",
-        "text": "Your reign ends here. For Aethoria. For all the worlds you have consumed."
+        "text": "Your reign ends here. For Aethoria. For all the civilizations you have consumed."
       },
       {
         "speaker": "Tao",

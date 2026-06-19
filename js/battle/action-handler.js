@@ -96,7 +96,7 @@ function resolveOffensiveAction(actor, target, targetIdx, action, element) {
   if (isMagic) {
     const _pBoost = PassiveSystem.val(actor, 'MAGIC_BOOST', 1.0);
     const _summonBonus = (action.id?.startsWith('summon_') || action.id?.startsWith('absolute_')) ? PassiveSystem.val(actor, 'SUMMON_STAT_BOOST', 1.0) : 1.0;
-    const _mdef = Battle.getStat(target, 'def') * 0.25 + Battle.getStat(target, 'mag') * 0.25 + (target.lv || target.level || 1) * 0.5;
+    const _mdef = Battle.getStat(target, 'mdef');
     const _reduction = Battle.getStat(target, 'reduction') || 1.0;
     dmg = Battle.magicDmg(Battle.getStat(actor, 'mag'), _mdef, e.dmgMultiplier || NexusScaling.engine.magicDmgFallback,
       { passiveBonus: _pBoost, magLevel: actor.lv || 1, mdefLevel: target.level || 1, isCrit });
@@ -185,6 +185,12 @@ function resolveOffensiveAction(actor, target, targetIdx, action, element) {
   target.hp = Math.max(0, target.hp - dmg);
   BattleUI.renderEnemyRow(); // Immediate refresh for boss/enemy bars
   if (typeof _checkStatPhases === 'function') _checkStatPhases(target);
+
+  // Wake sleeping enemies — any damage wakes them up
+  if (typeof StatusSystem !== 'undefined' && StatusSystem.has(target, 'status_sleep')) {
+    StatusSystem.remove(target, 'status_sleep');
+    BattleUI.addLog(`😴 ${target.name} woke up from the impact!`, 'regen');
+  }
 
   // Strategic Thaw: Attacking a frozen target breaks the ice
   // (Non-Ice attacks only; Ice damage shouldn't thaw ice)
@@ -318,7 +324,7 @@ function resolveEnemyOffensiveAction(actor, target, targetIdx, ab, element) {
   let dmg;
   if (isMagic) {
     const _eMag = Battle.getStat(actor, 'mag');
-    const _tMdef = Battle.getStat(target, 'def') * 0.25 + Battle.getStat(target, 'mag') * 0.25 + (target.lv || target.level || 1) * 0.5;
+    const _tMdef = Battle.getStat(target, 'mdef');
     const _reduction = Battle.getStat(target, 'reduction') || 1.0;
     dmg = Battle.magicDmg(_eMag, _tMdef, ab.dmgMultiplier || NexusScaling.engine.enemyMagicFallback,
       { magLevel: actor.level || 1, mdefLevel: target.lv || 1, isCrit });
@@ -413,6 +419,24 @@ function resolveEnemyOffensiveAction(actor, target, targetIdx, ab, element) {
   const preHp = target.hp;
   target.hp = Math.max(0, target.hp - dmg);
   if (window.LogDebug) window.LogDebug(`[STATE-DIAG] ${target.displayName} HP Transition: ${preHp} -> ${target.hp}`, 'dmg');
+
+  // Wake sleeping targets — taking damage always dispels sleep
+  if (typeof StatusSystem !== 'undefined' && StatusSystem.has(target, 'status_sleep')) {
+    StatusSystem.remove(target, 'status_sleep');
+    BattleUI.addLog(`😴 ${target.displayName} woke up from the impact!`, 'regen');
+  }
+
+  // MP Drain: enemy drains flat MP from the target
+  const mpDrain = ab?.effect?.mpDrain;
+  if (mpDrain && mpDrain > 0 && target.mp !== undefined) {
+    const drained = Math.min(target.mp, mpDrain);
+    if (drained > 0) {
+      target.mp = Math.max(0, target.mp - drained);
+      actor.mp = Math.min(actor.maxMp || actor.mp + drained, (actor.maxMp || 9999), actor.mp + drained);
+      BattleUI.addLog(`🔵 ${actor.name} drained ${drained} MP from ${target.displayName}!`, 'magic');
+      BattleUI.popParty(targetIdx, `−${drained} MP`, 'magic', 'void');
+    }
+  }
 
   if (target.hp <= 0) Battle.setKO(target, false);
   BattleUI.popParty(targetIdx, dmg, isMagic ? 'magic' : 'dmg', element);
@@ -647,6 +671,20 @@ const ActionEngine = {
       if (e.freezeChance && !StatusSystem.has(enemy, 'status_frozen') && Math.random() < e.freezeChance) { Battle.addStatus(enemy, { id: `status_frozen${sourceSuffix}`, label: 'Frozen', icon: '❄️', type: 'control', turns: 2 }); BattleUI.addLog(`❄️ ${enemy.name} is Frozen for 2 turns!`, 'magic'); debuffParts.push(`Freeze(${e.freezeChance*100}%)`); }
       if (e.slowChance && !StatusSystem.has(enemy, 'status_slow') && Math.random() < e.slowChance) { Battle.addStatus(enemy, { ...StatusSystem.DEFS.slow, id: `status_slow${sourceSuffix}` }); BattleUI.addLog(`🐌 ${enemy.name} is Slowed!`, 'magic'); debuffParts.push(`Slow(${e.slowChance*100}%)`); }
       if (e.evasion) { Battle.addStatus(enemy, { id: `debuff_evasion${sourceSuffix}`, label: 'Weighted', icon: '⚓', type: 'evasion', value: e.evasion, turns: e.duration || 2 }); BattleUI.addLog(`⚓ ${enemy.name} is weighed down!`, 'magic'); debuffParts.push(`Evasion(${e.evasion})`); }
+      if (e.poisonChance && !StatusSystem.has(enemy, 'status_poison') && Math.random() < e.poisonChance) { Battle.addStatus(enemy, { ...StatusSystem.DEFS.poison, id: `status_poison${sourceSuffix}`, turns: e.duration || 3 }); BattleUI.addLog(`🟢 ${enemy.name} is Poisoned!`, 'magic'); debuffParts.push(`Poison(${e.poisonChance*100}%)`); }
+      if (e.sleepChance && !StatusSystem.has(enemy, 'status_sleep') && Math.random() < e.sleepChance) { Battle.addStatus(enemy, { ...StatusSystem.DEFS.sleep, id: `status_sleep${sourceSuffix}` }); BattleUI.addLog(`😴 ${enemy.name} fell asleep!`, 'magic'); debuffParts.push(`Sleep(${e.sleepChance*100}%)`); }
+      if (e.stunChance && !StatusSystem.has(enemy, 'status_stunned') && Math.random() < e.stunChance) { Battle.addStatus(enemy, { id: `status_stunned${sourceSuffix}`, label: 'Stunned', icon: '💫', type: 'control', turns: 1 }); BattleUI.addLog(`💫 ${enemy.name} is Stunned!`, 'magic'); debuffParts.push(`Stun(${e.stunChance*100}%)`); }
+      if (e.mpDrain && e.mpDrain > 0 && enemy.mp !== undefined) {
+        const drained = Math.min(enemy.mp, e.mpDrain);
+        if (drained > 0) {
+          enemy.mp = Math.max(0, enemy.mp - drained);
+          if (actor.mp !== undefined) actor.mp = Math.min(actor.maxMp ?? (actor.mp + drained), actor.mp + drained);
+          BattleUI.addLog(`🔵 ${actor.displayName || actor.name} drained ${drained} MP from ${enemy.displayName || enemy.name}!`, 'magic');
+          if (isEnemyAction) BattleUI.popParty(G.party.indexOf(enemy), `−${drained} MP`, 'magic', 'void');
+          else BattleUI.popEnemy(G.enemyGroup.indexOf(enemy), `−${drained} MP`, 'magic', 'void');
+          debuffParts.push(`MP-Drain(${drained})`);
+        }
+      }
 
       if (window.LogDebug) {
         window.LogDebug(`[DEBUFF] ${actor.displayName || actor.name} uses ${ab.name} -> ${enemy.name}: ${debuffParts.join(', ') || 'no effect'} (${e.duration || 2} turns)`, 'dmg');
@@ -677,7 +715,16 @@ const ActionEngine = {
     steal(actor, targets, ab, element, moveConfig) {
       const e = ab.effect || {};
       const enemy = targets[0];
-      if (enemy && Math.random() < (e.stealChance || NexusScaling.thresholds.stealChanceDefault)) { const gold = 5 + Math.floor(Math.random() * 10); actor.gold += gold; BattleUI.addLog(`Stole ${gold} gold from ${enemy.name}!`, 'steal'); }
+      if (enemy && Math.random() < (e.stealChance || NexusScaling.thresholds.stealChanceDefault)) {
+        const gold = 5 + Math.floor(Math.random() * 10);
+        if (typeof StateManager !== 'undefined') {
+          StateManager.addGold(gold);
+        } else {
+          G.gold = (G.gold || 0) + gold;
+        }
+        if (G.party) G.party.forEach(m => m.gold = G.gold);
+        BattleUI.addLog(`Stole ${gold} gold from ${enemy.name}!`, 'steal');
+      }
       else BattleUI.addLog('Steal failed!', '');
       setTimeout(() => TurnManager.advance(), 750);
     },
@@ -740,8 +787,8 @@ const ActionEngine = {
         if (e.guardMark) {
           Battle.addStatus(actor, { id: `status_taunt_${ab.id}`, label: 'Taunt', icon: '🛡️', type: 'buff', turns: e.duration || 3 });
           BattleUI.addLog(`🛡️ ${actor.displayName} taunted all enemies!`, 'buff');
-          if (ab.id === 'mastery_of_pain' && actor.equippedWeapon?.id === 'chain_of_nights') {
-            Battle.addStatus(actor, { id: 'status_mastery_pain_resonance', label: 'Karmic Shield', icon: '⛓️', type: 'reduction', value: 0.85, turns: 2 });
+          if (ab.id === 'aura_of_retribution' && actor.equippedWeapon?.id === 'chain_of_nights') {
+            Battle.addStatus(actor, { id: 'status_retribution_resonance', label: 'Karmic Shield', icon: '⛓️', type: 'reduction', value: 0.85, turns: 2 });
             BattleUI.addLog(`⛓️ Chain of Ten Thousand Nights: Karmic Shield reduces damage taken by 15%!`, 'buff');
           }
         }
@@ -968,7 +1015,7 @@ function heroAbility(ab) {
 
     // ── Set ultimate cooldown ──
     let abilityCD = ab.effect?.cooldown ?? (ab.isUltimate ? 2 : 0);
-    if (ab.id === 'hajras_hymn' && actor.equippedWeapon?.id === 'tide_caller') {
+    if (ab.id === 'oasis_invocation' && actor.equippedWeapon?.id === 'tide_caller') {
       abilityCD = 1;
     }
     if (abilityCD > 0) {
@@ -1000,7 +1047,7 @@ function heroAbility(ab) {
     }
     BattleUI.setLog([`${actor.displayName} uses ${ab.name}!`], ['magic']);
 
-    const ultimateChannels = { cryoclasm: 'channels ice blades...', spirit_soother: 'channels soul fire...', hajras_hymn: 'channels star blessing...', mastery_of_pain: 'channels karmic winds...', absolute_summon: 'commands the Phantom Guardian...' };
+    const ultimateChannels = { cryoclasm: 'channels ice blades...', spirit_soother: 'channels soul fire...', oasis_invocation: 'channels star blessing...', aura_of_retribution: 'channels karmic winds...', absolute_summon: 'commands the Phantom Guardian...' };
     const isUltimate = ultimateChannels.hasOwnProperty(ab.id);
 
     const enemy = G.enemy;
@@ -1259,6 +1306,11 @@ function _checkStatPhases(unit) {
   });
 
   if (triggeredNew) {
+    // Phase 4 cache invalidation: keep CombatEngine's triggered-phase cache
+    // in lockstep with the authoritative triggered flag.
+    if (typeof CombatEngine !== 'undefined' && CombatEngine.refreshTriggeredCache) {
+      CombatEngine.refreshTriggeredCache(unit);
+    }
     BattleUI.addLog(`⚡ ${unit.name} is evolving!`, 'dmg');
     if (unit.id === 'spectral_guardian') {
       BattleUI.addLog(`⚡ THE GUARDIAN SHATTERS!`, 'magic');

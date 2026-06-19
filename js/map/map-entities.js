@@ -154,7 +154,7 @@ const MapPlayer = (() => {
                 ty >= zone.yMin && ty <= zone.yMax
             );
             
-            if (!isSafe && Math.random() < 0.08) {
+            if (!isSafe && Math.random() < 0.035) {
                 _pendingRandomEncounter = true;
             }
         }
@@ -420,6 +420,7 @@ const MapPlayer = (() => {
 const MapEntities = (() => {
   let _enemies = [];  // live enemy objects
   let _encounteredIdx = -1;
+  let _lastEncountered = null;
 
   const PATROL_SPEED = {
     horizontal: 1.5, vertical: 1.5, random: 1.2, chase: 2.0,
@@ -471,7 +472,11 @@ const MapEntities = (() => {
       // 1. Timing Gating
       if (!_isEntityActive(e)) return false;
 
-      // 2. Elite Check
+      // 2. Already Defeated Side Boss Check
+      if (e.id === 'river_king' && window.G && G.weaponsLevels && G.weaponsLevels['chain_of_nights'] !== undefined) return false;
+      if (e.id === 'sunken_leviathan' && window.G && G.weaponsLevels && G.weaponsLevels['tide_caller'] !== undefined) return false;
+
+      // 3. Elite Check
       const raw = (G && G.enemies) ? G.enemies.find(r => r.id === e.id) : null;
       const isElite = raw ? (raw.isBoss || raw.tier >= 3) : (e.isBoss || e.id.includes('boss'));
       
@@ -493,7 +498,8 @@ const MapEntities = (() => {
       py:      e.y * MapEngine.getTile(),
       patrol:  e.patrol || 'random',
       range:   e.range  || 3,
-      speed:   e.speed  || 1.2,
+      baseSpeed: e.speed || PATROL_SPEED[e.patrol || 'random'] || 1.2,
+      speed:   e.speed  || PATROL_SPEED[e.patrol || 'random'] || 1.2,
       moveTimer: 0,
       moveDur:   1 / (e.speed || 1.2),
       moving:    false,
@@ -513,13 +519,30 @@ const MapEntities = (() => {
       bg:             e.bg || e.background || null,
     }));
     _encounteredIdx = -1;
+    // CRITICAL: also reset _lastEncountered. Without this, a boss entity from
+    // a previous map session (e.g. river_king / sunken_leviathan) can survive
+    // into the next map and falsely trigger weapon-acquisition dialogues on
+    // any subsequent victory.
+    _lastEncountered = null;
 
     // Preload PNG sprites for all unique enemy IDs on this map
     const uniqueIds = [...new Set(_enemies.map(e => e.id))];
     uniqueIds.forEach(id => _getEnemySprite(id));
   }
 
-  function clear() { _enemies = []; _encounteredIdx = -1; }
+  function clear() {
+    _enemies = [];
+    _encounteredIdx = -1;
+    _lastEncountered = null;
+  }
+
+  // Lighter than clear() — used on battle defeat. Releases the encounter
+  // handles so the next checkEncounter() can fire cleanly, but leaves the
+  // enemy roster intact so the player can re-attempt the fight.
+  function releaseEncountered() {
+    _encounteredIdx = -1;
+    _lastEncountered = null;
+  }
 
   function removeEncountered() {
     if (_encounteredIdx >= 0 && _encounteredIdx < _enemies.length) {
@@ -626,6 +649,9 @@ const MapEntities = (() => {
     const TILE = MapEngine.getTile();
     _enemies.forEach(en => {
       if (!en.alive) return;
+      // Phase-gated enemies freeze (no movement, no mutation tick) when their
+      // Chronos phase is inactive. They re-animate when the phase comes back.
+      if (!_isEntityActive(en)) return;
 
       // ── Mutation timer ────────────────────────────────
       en.mapTime       += dt;
@@ -659,6 +685,11 @@ const MapEntities = (() => {
       }
 
       // Fog scales movement speed — recalc moveDur each frame
+      const ptx = MapPlayer.tx, pty = MapPlayer.ty;
+      const dist = Math.abs(en.tx - ptx) + Math.abs(en.ty - pty);
+      const isChasing = (en.patrol === 'chase' || dist <= _aggroRange());
+      const targetSpeed = isChasing ? Math.max(en.baseSpeed || 1.2, en.isBoss ? 4.0 : 3.2) : (en.baseSpeed || 1.2);
+      en.speed = targetSpeed;
       en.moveDur = (1 / en.speed) / _fogSpeedMult();
       if (en.moving) {
         en.moveTimer += dt;
@@ -701,6 +732,7 @@ const MapEntities = (() => {
 
       if (en.tx === ptx && en.ty === pty) {
         _encounteredIdx = i;
+        _lastEncountered = en;
         const ids = _buildEncounterGroup(en.id, map);
         return { 
           enemies: ids, 
@@ -760,20 +792,32 @@ const MapEntities = (() => {
       }
     }
 
+    // Strip bosses / Tier-3 alphas from the pool used for random group composition.
+    // The trigger-is-boss case already returned solo above; this guard prevents a
+    // map boss listed in `enemies[]` from being rolled into a normal mob group
+    // (e.g. galdor_king appearing alongside a `bat` encounter on Verdant Vale).
+    const _isBossOrAlpha = (id) => {
+      const r = (G && G.enemies) ? G.enemies.find(x => x.id === id) : null;
+      return r ? !!(r.isBoss || r.tier >= 3) : false;
+    };
+    const safePool = pool.filter(id => !_isBossOrAlpha(id));
+    const rollPool = safePool.length ? safePool : pool;
+
     // Use encounter templates if defined on the map, else roll random group size
     if (map.encounterTemplates && map.encounterTemplates.length) {
-      // 1. Filter templates by Chronos Cycle (Time Gating)
-      let templates = map.encounterTemplates.filter(t => _isEntityActive(t));
-      
-      // 2. If we have a triggerId (physical enemy touched), prioritize templates containing that enemy
+      let templates;
+
       if (triggerId) {
-        const matching = templates.filter(t => t.enemies.includes(triggerId));
-        if (matching.length) templates = matching;
-        else {
-          // If the physical enemy isn't in ANY active template, skip template logic 
-          // to ensure the fallback logic uses the correct firstEnemy (line 785)
-          templates = []; 
-        }
+        // Visible-enemy trigger: the player can already see what they walked
+        // into, so phase gating is bypassed — any template containing this
+        // enemy is fair game ("whatever feels similar should trigger"). This
+        // also closes the prior leak where time-gated templates silently
+        // dropped the trigger into the random-pool fallback.
+        templates = map.encounterTemplates.filter(t => t.enemies.includes(triggerId));
+      } else {
+        // Invisible random encounter (fog ambush / step-roll) — respect the
+        // Chronos phase gating so the random pool reflects time of day.
+        templates = map.encounterTemplates.filter(t => _isEntityActive(t));
       }
 
       if (templates.length) {
@@ -795,10 +839,10 @@ const MapEntities = (() => {
     else if (r < 0.85) groupSize = 3;   // 25% trio
     else               groupSize = 4;   // 15% quad (horde)
 
-    const firstEnemy = triggerId || pool[Math.floor(Math.random() * pool.length)];
+    const firstEnemy = triggerId || rollPool[Math.floor(Math.random() * rollPool.length)];
     const ids = [firstEnemy];
     while (ids.length < groupSize) {
-      ids.push(pool[Math.floor(Math.random() * pool.length)]);
+      ids.push(rollPool[Math.floor(Math.random() * rollPool.length)]);
     }
     return ids;
   }
@@ -833,6 +877,9 @@ const MapEntities = (() => {
 
   function _renderEnemy(ctx, cam, TILE, en, inVision) {
       if (!en.alive) return;
+      // Hide phase-gated enemies whose active phase doesn't match the current
+      // Chronos cycle (mirrors the NPC render gate at _renderNPC).
+      if (!_isEntityActive(en)) return;
       if (typeof inVision === 'function' && !inVision(en.tx, en.ty)) return;
       const sx = en.px - cam.x;
       const sy = en.py - cam.y;
@@ -1547,9 +1594,11 @@ const MapEntities = (() => {
   function markNPCTalked(id) { MapNPCs.markTalked(id); }
 
   return {
-    init, clear, updateEnemies, renderEnemies, renderEnemiesForRow, checkEncounter, removeEncountered,
+    init, clear, releaseEncountered, updateEnemies, renderEnemies, renderEnemiesForRow, checkEncounter, removeEncountered,
     allCleared, bossCleared, remaining, hasEnemyAt, prepareBuckets,
     getActiveEncountered: () => (_encounteredIdx >= 0 && _encounteredIdx < _enemies.length) ? _enemies[_encounteredIdx] : null,
+    getLastEncountered: () => _lastEncountered,
+    clearLastEncountered: () => { _lastEncountered = null; },
     initNPCs, renderNPCs, renderNPCsForRow, checkNPCAt, getNPCDialogue, markNPCTalked,
     getNPCs: () => MapNPCs.getNPCs(),
     setNPCSceneWalk: (id, cb)        => MapNPCs.setNPCSceneWalk(id, cb),

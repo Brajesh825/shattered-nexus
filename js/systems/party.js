@@ -5,7 +5,7 @@ function computeStats(ch, cls) {
   const lv = ch.lv || 1;
   const out = {};
 
-  ['hp', 'mp', 'atk', 'def', 'spd', 'mag', 'lck'].forEach(k => {
+  ['hp', 'mp', 'atk', 'def', 'spd', 'mag', 'lck', 'mdef'].forEach(k => {
     // Unified Formula: (Base + (Lv-1)*Growth + Bonus) * ClassMultiplier
     const baseWithGrowth = b[k] + (lv - 1) * (g[k] || 0);
     out[k] = Math.floor((baseWithGrowth + (bon[k] || 0)) * (m[k] || 1));
@@ -26,9 +26,9 @@ function computeStats(ch, cls) {
     const level = (_G && _G.weaponsLevels && _G.weaponsLevels[weaponId]) || 1;
     
     // Rarity and level growth mapping (vivid_hybrid_weapon_system.md roadmap)
-    const growth = { hp: 8, mp: 2, atk: 4, def: 2, spd: 1, mag: 3, lck: 1 };
+    const growth = { hp: 8, mp: 2, atk: 4, def: 2, spd: 1, mag: 3, lck: 1, mdef: 2 };
 
-    ['hp', 'mp', 'atk', 'def', 'spd', 'mag', 'lck'].forEach(k => {
+    ['hp', 'mp', 'atk', 'def', 'spd', 'mag', 'lck', 'mdef'].forEach(k => {
       if (weaponDef.stats[k] !== undefined) {
         let val = weaponDef.stats[k];
         // Apply level growth
@@ -100,6 +100,7 @@ function rebuildMemberCombatStats(member, options = {}) {
   member.mag = Math.floor(base.mag * relicMult.mag);
   member.spd = Math.floor(base.spd * relicMult.spd);
   member.lck = Math.floor(base.lck * relicMult.lck);
+  member.mdef = Math.floor(base.mdef * relicMult.mdef);
 
   const weapons = window.WEAPONS_DATA || [];
   member.equippedWeapon = weapons.find(w => w.id === member.char.equippedWeapon) || null;
@@ -148,10 +149,13 @@ function buildParty() {
       mp: (ch.mp !== undefined ? Math.min(ch.mp, s.mp) : s.mp), maxMp: s.mp,
       // Restore saved HP if available; otherwise start at max
       hp: (ch.hp !== undefined ? Math.min(ch.hp, s.hp) : s.hp), maxHp: s.hp,
-      atk: s.atk, def: s.def, spd: s.spd, mag: s.mag, lck: s.lck,
+      atk: s.atk, def: s.def, spd: s.spd, mag: s.mag, lck: s.lck, mdef: s.mdef,
       accuracy: cls.stat_multipliers.accuracy || 0.95,
       critRate: cls.stat_multipliers.critRate || 0.05,
-      lv: ch.lv || 1, exp: ch.exp || 0, gold: ch.gold || 0,
+      // gold is a shared wallet; fall back to G.gold if the per-character field
+      // is missing (fresh build / mid-arc unlock) so every member mirrors the
+      // shared value. After this, StateManager.addGold/spendGold keeps them in sync.
+      lv: ch.lv || 1, exp: ch.exp || 0, gold: (ch.gold !== undefined ? ch.gold : (G.gold || 0)),
       char: ch, cls: cls,
       equippedWeapon: (() => {
         const wDef = (window.WEAPONS_DATA || []).find(w => w.id === ch.equippedWeapon) || null;
@@ -209,7 +213,7 @@ function applyRelicBonuses() {
 
   // Aggregate bonuses from all active relics
   const bonus = { 
-    hp: 1, mp: 1, atk: 1, def: 1, spd: 1, mag: 1, lck: 1, 
+    hp: 1, mp: 1, atk: 1, def: 1, spd: 1, mag: 1, lck: 1, mdef: 1,
     healAmp: 1, mpRegen: 0, eliteResist: 0, fireResist: 0, 
     statusResist: 0, firstStrike: false, reviveOnce: false 
   };
@@ -223,6 +227,7 @@ function applyRelicBonuses() {
     if (r.bonus.spd) bonus.spd += r.bonus.spd;
     if (r.bonus.mag) bonus.mag += r.bonus.mag;
     if (r.bonus.lck) bonus.lck += r.bonus.lck;
+    if (r.bonus.mdef) bonus.mdef += r.bonus.mdef;
     if (r.bonus.healAmp) bonus.healAmp += r.bonus.healAmp;
     if (r.bonus.mpRegen) bonus.mpRegen += r.bonus.mpRegen;
     if (r.bonus.eliteResist) bonus.eliteResist += r.bonus.eliteResist;
@@ -242,6 +247,7 @@ function applyRelicBonuses() {
     m.spd = Math.floor(m.spd * bonus.spd);
     m.mag = Math.floor(m.mag * bonus.mag);
     m.lck = Math.floor(m.lck * bonus.lck);
+    m.mdef = Math.floor(m.mdef * bonus.mdef);
     m._healAmpRelic = bonus.healAmp;     // used by healing logic
     m._mpRegenBonus = bonus.mpRegen;     // extra % of maxMp per turn
     m._eliteResist = bonus.eliteResist; // fraction of damage reduction vs Corrupted/Mutant
@@ -289,7 +295,7 @@ function applyBondRewards() {
     const bonus = charBonus[m.charId];
     if (!bonus) return;
 
-    const STAT_FIELD = { hp: 'maxHp', mp: 'maxMp', atk: 'atk', def: 'def', spd: 'spd', mag: 'mag', lck: 'lck' };
+    const STAT_FIELD = { hp: 'maxHp', mp: 'maxMp', atk: 'atk', def: 'def', spd: 'spd', mag: 'mag', lck: 'lck', mdef: 'mdef' };
     Object.entries(bonus).forEach(([stat, val]) => {
       if (stat === 'critRate') {
         m.critRate = (m.critRate || 0.05) + val;
@@ -332,7 +338,7 @@ function getExpThreshold(lv) {
 // Example: 3 relics each granting +0.25 atk → raw sum = 1.75, clamped to 1.5.
 // This prevents relic stacking from bypassing the CombatEngine 8× safety cap in an uncontrolled way.
 function _getRelicStatMult() {
-  const mult = { hp: 1, mp: 1, atk: 1, def: 1, spd: 1, mag: 1, lck: 1 };
+  const mult = { hp: 1, mp: 1, atk: 1, def: 1, spd: 1, mag: 1, lck: 1, mdef: 1 };
   const active = G.activeRelics || [];
   if (!active.length) return mult;
   const defs = G.relics || [];
@@ -340,12 +346,12 @@ function _getRelicStatMult() {
   active.forEach(id => {
     const r = defs.find(d => d.id === id);
     if (!r || !r.bonus) return;
-    ['hp', 'mp', 'atk', 'def', 'spd', 'mag', 'lck'].forEach(k => {
+    ['hp', 'mp', 'atk', 'def', 'spd', 'mag', 'lck', 'mdef'].forEach(k => {
       if (r.bonus[k]) mult[k] += r.bonus[k];
     });
   });
   // Enforce per-stat relic bonus cap after full aggregation
-  ['hp', 'mp', 'atk', 'def', 'spd', 'mag', 'lck'].forEach(k => {
+  ['hp', 'mp', 'atk', 'def', 'spd', 'mag', 'lck', 'mdef'].forEach(k => {
     mult[k] = Math.min(bonusCap, mult[k]);
   });
   return mult;

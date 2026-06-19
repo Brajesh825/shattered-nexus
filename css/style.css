@@ -4449,6 +4449,21 @@ body {
   filter: drop-shadow(0 0 20px rgba(160, 144, 208, 0.6)) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
 }
 
+.s-scene-char.s-enemy.active {
+  opacity: 1;
+  transform: translate(-50%, -10px) scale(1.22);
+  z-index: 21;
+  filter: brightness(1) drop-shadow(0 0 25px rgba(220, 38, 38, 0.75)) drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5));
+}
+
+.s-scene-char.s-enemy.dimmed {
+  opacity: 0.45;
+  transform: translate(-50%, 15px) scale(1.0);
+  filter: brightness(0.35) grayscale(0.2);
+  z-index: 10;
+}
+
+
 .s-scene-char-name {
   font-size: 11px;
   color: #a090d0;
@@ -4632,22 +4647,22 @@ body {
   background: #2a1e70;
 }
 
-.s-dialogue[data-speaker="ayaka"]::before {
+.s-dialogue[data-speaker="aya"]::before {
   background: var(--c-aya);
   box-shadow: 0 0 12px var(--c-aya);
 }
 
-.s-dialogue[data-speaker="hutao"]::before {
+.s-dialogue[data-speaker="tao"]::before {
   background: var(--c-tao);
   box-shadow: 0 0 12px var(--c-tao);
 }
 
-.s-dialogue[data-speaker="nilou"]::before {
+.s-dialogue[data-speaker="lulu"]::before {
   background: var(--c-lulu);
   box-shadow: 0 0 12px var(--c-lulu);
 }
 
-.s-dialogue[data-speaker="xiao"]::before {
+.s-dialogue[data-speaker="rei"]::before {
   background: var(--c-rei);
   box-shadow: 0 0 12px var(--c-rei);
 }
@@ -4782,19 +4797,19 @@ body {
 }
 
 /* Speaker name colours */
-.s-dialogue[data-speaker="ayaka"] .s-speaker {
+.s-dialogue[data-speaker="aya"] .s-speaker {
   color: var(--c-aya);
 }
 
-.s-dialogue[data-speaker="hutao"] .s-speaker {
+.s-dialogue[data-speaker="tao"] .s-speaker {
   color: var(--c-tao);
 }
 
-.s-dialogue[data-speaker="nilou"] .s-speaker {
+.s-dialogue[data-speaker="lulu"] .s-speaker {
   color: var(--c-lulu);
 }
 
-.s-dialogue[data-speaker="xiao"] .s-speaker {
+.s-dialogue[data-speaker="rei"] .s-speaker {
   color: var(--c-rei);
 }
 

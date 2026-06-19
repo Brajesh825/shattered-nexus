@@ -311,8 +311,8 @@ const MapUI = (() => {
 
   /* ── Pause Menu ─────────────────────────────────────── */
   const CHAR_COLOR_MAP = {
-    aya:'#7dd3fc', tao:'#ef4444', lulu:'#2dd4bf', rei:'#4ade80',
-    rydia:'#a78bfa', lenneth:'#e879f9', kain:'#0ea5e9', leon:'#fbbf24'
+    aya: '#7dd3fc', tao: '#ef4444', lulu: '#2dd4bf', rei: '#4ade80',
+    ria: '#a78bfa', valka: '#e879f9', drake: '#0ea5e9', rex: '#fbbf24'
   };
 
   function openPauseMenu() {
@@ -441,11 +441,14 @@ const MapUI = (() => {
       _renderCorruptionMeter();
       _renderQuestTracker();
       if (typeof ChronosEngine !== 'undefined') {
-        const hintEl = document.querySelector('.explore-map-hint');
-        if (hintEl) {
-          const phaseIcons = { dawn: '🌅 Dawn', noon: '☀️ Noon', dusk: '🌆 Dusk', midnight: '🌙 Midnight' };
+        const clockEl = document.getElementById('explore-hud-clock');
+        if (clockEl) {
           const phase = ChronosEngine.getPhase();
-          hintEl.textContent = `↑↓←→ · WASD to move  |  🕰️ ${ChronosEngine.formatTime()} — ${phaseIcons[phase] || phase}`;
+          const label = (typeof ChronosEngine.getPhaseLabel === 'function')
+            ? ChronosEngine.getPhaseLabel()
+            : phase;
+          clockEl.textContent = `🕰️ ${ChronosEngine.formatTime()} — ${label}`;
+          clockEl.dataset.phase = phase;
         }
       }
     }
@@ -766,9 +769,12 @@ const MapUI = (() => {
         };
 
         // Level Up Cost calculations
-        const refGoldCost = level < 10 ? level * 100 : (level - 10) * 500;
+        // Material curve halved (Math.ceil(n/2)) so L1→L10 total drops from
+        // 90 to 25 shards per tier — pacing-feasible for the Arc 1–2 beta given
+        // the 75% T1 / 35% T2 drop rates.
+        const refGoldCost = level < 10 ? level * 50 : 500 + (level - 10) * 150;
         const refMat = getElementalMaterial(w.element || 'void', level);
-        const refMatCost = level < 10 ? level * 2 : (level - 10) * 2;
+        const refMatCost = level < 10 ? Math.ceil(level / 2) : Math.ceil((level - 10) / 2);
         
         const hasRefGold = (G.gold || 0) >= refGoldCost;
         const hasRefMat = getInventoryQty(refMat.id) >= refMatCost;
@@ -900,11 +906,16 @@ const MapUI = (() => {
         const btnLevel = forgeEl.querySelector('#btn-forge-level');
         if (btnLevel && canLevelUp) {
           btnLevel.addEventListener('click', () => {
-            G.gold -= refGoldCost;
-            if (G.party) G.party.forEach(m => m.gold = G.gold);
-            removeFromInventory(refMat.id, refMatCost);
-            
-            G.weaponsLevels[w.id] = level + 1;
+            if (typeof StateManager !== 'undefined') {
+              StateManager.spendGold(refGoldCost);
+              removeFromInventory(refMat.id, refMatCost);
+              StateManager.setWeaponLevel(w.id, level + 1);
+            } else {
+              G.gold -= refGoldCost;
+              if (G.party) G.party.forEach(m => m.gold = G.gold);
+              removeFromInventory(refMat.id, refMatCost);
+              G.weaponsLevels[w.id] = level + 1;
+            }
 
             // Recompute combat stats
             const eqMember = G.party.find(m => m.char.equippedWeapon === w.id);
@@ -927,12 +938,18 @@ const MapUI = (() => {
         const btnAscend = forgeEl.querySelector('#btn-forge-ascend');
         if (btnAscend && canAscend) {
           btnAscend.addEventListener('click', () => {
-            G.gold -= ascGoldCost;
-            if (G.party) G.party.forEach(m => m.gold = G.gold);
-            G.voidFragments -= ascFragsCost;
-            removeFromInventory(ascMat.id, ascMatCost);
-            
-            G.weaponsUpgrades[w.id] = nextRarity;
+            if (typeof StateManager !== 'undefined') {
+              StateManager.spendGold(ascGoldCost);
+              StateManager.spendVoidFragments(ascFragsCost);
+              removeFromInventory(ascMat.id, ascMatCost);
+              StateManager.setWeaponUpgrade(w.id, nextRarity);
+            } else {
+              G.gold -= ascGoldCost;
+              if (G.party) G.party.forEach(m => m.gold = G.gold);
+              G.voidFragments -= ascFragsCost;
+              removeFromInventory(ascMat.id, ascMatCost);
+              G.weaponsUpgrades[w.id] = nextRarity;
+            }
             w.rarity = nextRarity; // Keep backwards compatibility
 
             // Recompute combat stats
@@ -1117,12 +1134,22 @@ const MapUI = (() => {
     if (typeof MapEngine !== 'undefined' && MapEngine.openDialogue) {
       MapEngine.openDialogue(lines, () => {
         // Advance tier
-        G.bondProgress[bond.pair.id] = (G.bondProgress[bond.pair.id] || 0) + 1;
+        const nextTier = (G.bondProgress[bond.pair.id] || 0) + 1;
+        if (typeof StateManager !== 'undefined') {
+          StateManager.setBondProgress(bond.pair.id, nextTier);
+        } else {
+          G.bondProgress[bond.pair.id] = nextTier;
+        }
 
         // Store and apply reward
         if (bond.tier.reward) {
-          G.earnedBondRewards = G.earnedBondRewards || [];
-          G.earnedBondRewards.push({ pairId: bond.pair.id, reward: bond.tier.reward });
+          const reward = { pairId: bond.pair.id, reward: bond.tier.reward };
+          if (typeof StateManager !== 'undefined') {
+            StateManager.addEarnedBondReward(reward);
+          } else {
+            G.earnedBondRewards = G.earnedBondRewards || [];
+            G.earnedBondRewards.push(reward);
+          }
           if (typeof applyBondRewards === 'function') applyBondRewards();
         }
 
@@ -1320,6 +1347,109 @@ const MapUI = (() => {
   });
   */
 
+  /* ── Weapon Acquisition Cinematic Overlay ─────────────────────── */
+  let _waoCallback = null;
+
+  function showWeaponAcquisition(weaponId, characterId, cb) {
+    const overlay = document.getElementById('weapon-acquisition-overlay');
+    if (!overlay) { if (cb) cb(); return; }
+
+    _waoCallback = cb || null;
+
+    // Resolve weapon data
+    const wData = (window.WEAPONS_DATA || []).find(w => w.id === weaponId);
+    if (!wData) { if (cb) cb(); return; }
+
+    // Element theming
+    const elem = (wData.element || 'void').toLowerCase();
+    const elemColors = {
+      wind: '#22d3ee', water: '#38bdf8', fire: '#fb923c', ice: '#7dd3fc',
+      lightning: '#facc15', void: '#a78bfa', physical: '#e2e8f0'
+    };
+    const accentColor = elemColors[elem] || elemColors.void;
+    const elemIcons = {
+      wind: '🌀', water: '💧', fire: '🔥', ice: '❄️', lightning: '⚡', void: '🌑', physical: '⚔️'
+    };
+
+    // Populate: icon
+    const iconEl = document.getElementById('wao-icon');
+    if (iconEl) iconEl.textContent = wData.icon || elemIcons[elem] || '⚔️';
+
+    // Name
+    const nameEl = document.getElementById('wao-weapon-name');
+    if (nameEl) nameEl.textContent = wData.name || weaponId;
+
+    // Element badge
+    const elemEl = document.getElementById('wao-weapon-element');
+    if (elemEl) { elemEl.textContent = `${elemIcons[elem] || ''} ${elem.toUpperCase()} WEAPON`; elemEl.style.color = accentColor; }
+
+    // Description
+    const descEl = document.getElementById('wao-weapon-desc');
+    if (descEl) descEl.textContent = wData.description || wData.desc || '';
+
+    // Stats
+    const statsEl = document.getElementById('wao-stats-grid');
+    if (statsEl) {
+      const stats = [];
+      if (wData.atk   !== undefined) stats.push({ label: 'ATK',  value: `+${wData.atk}`  });
+      if (wData.mag   !== undefined) stats.push({ label: 'MAG',  value: `+${wData.mag}`  });
+      if (wData.def   !== undefined) stats.push({ label: 'DEF',  value: `+${wData.def}`  });
+      if (wData.spd   !== undefined) stats.push({ label: 'SPD',  value: `+${wData.spd}`  });
+      if (wData.hp    !== undefined) stats.push({ label: 'HP',   value: `+${wData.hp}`   });
+      if (wData.mp    !== undefined) stats.push({ label: 'MP',   value: `+${wData.mp}`   });
+      statsEl.innerHTML = stats.map(s =>
+        `<div class="wao-stat-chip"><div class="label">${s.label}</div><div class="value" style="color:${accentColor}">${s.value}</div></div>`
+      ).join('');
+    }
+
+    // Passive
+    const passiveEl = document.getElementById('wao-passive-block');
+    if (passiveEl) {
+      const passive = wData.passive || wData.passiveSkill;
+      if (passive) {
+        passiveEl.style.display = '';
+        passiveEl.innerHTML = `<div class="wao-passive-label">✦ PASSIVE SKILL</div><div class="wao-passive-text" style="color:hsl(275,60%,82%)">${passive.name || ''}: ${passive.desc || passive.description || ''}</div>`;
+      } else {
+        passiveEl.style.display = 'none';
+      }
+    }
+
+    // Resonance
+    const resonEl = document.getElementById('wao-resonance-block');
+    if (resonEl) {
+      const reson = wData.resonance || wData.characterResonance;
+      if (reson) {
+        resonEl.style.display = '';
+        resonEl.innerHTML = `<div class="wao-resonance-label">✦ CHARACTER RESONANCE</div><div class="wao-resonance-text">${reson.name || ''}: ${reson.desc || reson.description || ''}</div>`;
+      } else {
+        resonEl.style.display = 'none';
+      }
+    }
+
+    // Owner badge
+    const ownerEl = document.getElementById('wao-owner-badge');
+    if (ownerEl) {
+      const charNames = { aya: 'Aya', tao: 'Tao', lulu: 'Lulu', rei: 'Rei', ria: 'Ria', valka: 'Valka', drake: 'Drake', rex: 'Rex', sera: 'Sera' };
+      ownerEl.textContent = `⚔ EQUIPPED ON ${(charNames[characterId] || characterId).toUpperCase()}`;
+    }
+
+    // Set element attribute for colour overrides
+    const card = overlay.querySelector('.wao-card');
+    if (card) card.dataset.element = elem;
+
+    // Show
+    overlay.style.display = 'flex';
+    if (typeof SFX !== 'undefined' && SFX.victory) SFX.victory();
+  }
+
+  function closeWeaponAcquisition() {
+    const overlay = document.getElementById('weapon-acquisition-overlay');
+    if (overlay) overlay.style.display = 'none';
+    const cb = _waoCallback;
+    _waoCallback = null;
+    if (cb) cb();
+  }
+
   return {
     showMsg,
     showMapBanner,
@@ -1345,5 +1475,26 @@ const MapUI = (() => {
     openBondPanel,
     closeBondPanel,
     triggerBanter: _showBanter,
+    showWeaponAcquisition,
+    closeWeaponAcquisition,
   };
 })();
+
+// ── StateManager subscriber proof-of-life ─────────────────────────────────
+// Live-update the Weapons-panel gold/void counters whenever a transaction
+// fires `gold_changed` or `void_fragments_changed`, instead of relying on
+// the full panel re-render path to push the new value.
+if (typeof StateManager !== 'undefined' && StateManager.on) {
+  StateManager.on('gold_changed', (payload) => {
+    const el = document.getElementById('wp-gold-count');
+    if (el && payload && typeof payload.gold === 'number') {
+      el.textContent = payload.gold.toLocaleString();
+    }
+  });
+  StateManager.on('void_fragments_changed', (payload) => {
+    const el = document.getElementById('wp-void-count');
+    if (el && payload && typeof payload.voidFragments === 'number') {
+      el.textContent = payload.voidFragments.toString();
+    }
+  });
+}

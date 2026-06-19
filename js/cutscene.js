@@ -15,6 +15,8 @@ const Cutscene = {
     Drake: '#0ea5e9',
     Rex: '#fbbf24',
     Sera: '#93c5fd',
+    'Demon Lord': '#f97316',
+    Valdris: '#c084fc',
   },
 
   ALIAS_TO_CHARID: {
@@ -26,6 +28,11 @@ const Cutscene = {
     valka: 'valka',
     drake: 'drake',
     rex: 'rex',
+    sera: 'sera',
+    'king_galdor': 'galdor_king',
+    'void_knight': 'void_knight',
+    'demon_lord': 'demon_lord',
+    'valdris': 'shadow_emperor'
   },
 
   SPEAKER_PORTRAIT: {
@@ -48,12 +55,15 @@ const Cutscene = {
     this.clear();
   },
 
-  /** 
-   * Start a sequence of lines. 
+  /**
+   * Start a sequence of lines.
    * @param {Array} lines - Array of { speaker, text, emotion } objects.
    * @param {Function} onDone - Callback when lines are finished.
+   * @param {Array<string>} [castOverride] - Optional cast for this segment only.
+   *   When provided, replaces the chapter's canonical cast as the rendering
+   *   baseline (used by character_moment scenes to drop the defeated boss).
    */
-  start(lines, onDone) {
+  start(lines, onDone, castOverride) {
     const flat = [];
     (lines || []).forEach(l => {
       if (l.is_narration || (!l.speaker && l.narration)) {
@@ -69,6 +79,30 @@ const Cutscene = {
     this._charAppeared = {};
     this._charPositions = {};
     this._posCounter = 0;
+
+    // Wipe any sprites from the previous cutscene segment. Without this, each
+    // consecutive start() call (pre_dialogue → post_dialogue → character_moment,
+    // etc.) stacks fresh DOM sprites on top of the old ones since _charAppeared
+    // was just reset to {} but the layer still held the prior chapter's cast.
+    this._clearSceneLayer();
+
+    // Reset the chapter cast to a canonical baseline so speaker / party
+    // auto-injects from a *previous* segment don't bleed into this one.
+    // On first sight, snapshot the chapter's authored cast (or null if none).
+    // If the caller passed a `castOverride`, use that as the baseline for
+    // this segment only — character_moment scenes use this to drop the
+    // already-defeated boss from the layer.
+    if (window.Story && window.Story.currentChap) {
+      const chap = window.Story.currentChap;
+      if (chap._canonicalCast === undefined) {
+        chap._canonicalCast = Array.isArray(chap.cast) ? [...chap.cast] : null;
+      }
+      if (Array.isArray(castOverride)) {
+        chap.cast = [...castOverride];
+      } else {
+        chap.cast = chap._canonicalCast ? [...chap._canonicalCast] : [];
+      }
+    }
 
     if (flat.length === 0) {
       onDone && onDone();
@@ -216,31 +250,107 @@ const Cutscene = {
   },
 
   _renderSceneCharacters(speaker, emotion) {
-    if (!window.Story || !window.Story.currentChap || !window.Story.currentChap.cast) return;
+    if (!window.Story || !window.Story.currentChap) return;
+    if (!window.Story.currentChap.cast) window.Story.currentChap.cast = [];
 
     const layer = this.el('s-scene-layer');
     if (!layer) return;
 
     const cast = window.Story.currentChap.cast;
 
+    // Author-curated cast: if the chapter shipped an explicit cast, respect
+    // it and SKIP the party auto-injection so unlocked-but-not-relevant
+    // party members (e.g. Sera during the Arc 2 boss intro) don't leak onto
+    // the layer. Speaker auto-injection below still fires so guest speakers
+    // appear correctly.
+    const canonical = window.Story.currentChap._canonicalCast;
+    const isAuthorCurated = canonical && canonical.length > 0;
+
+    // Dynamically inject active party members into cast — only when the
+    // chapter didn't define its own cast (free-explore / generic scenes).
+    if (!isAuthorCurated && window.G && G.party) {
+      G.party.forEach(m => {
+        if (!m) return;
+        const nameMap = {
+          aya: 'Aya', tao: 'Tao', lulu: 'Lulu', rei: 'Rei', ria: 'Ria', valka: 'Valka', drake: 'Drake', rex: 'Rex', sera: 'Sera'
+        };
+        const standardName = nameMap[m.charId];
+        if (standardName && !cast.includes(standardName)) {
+          cast.push(standardName);
+        }
+      });
+    }
+
+    // Dynamically inject current speaker if not already in cast (excluding off-screen voices)
+    const offScreenSpeakers = ['valdris'];
+    if (speaker && speaker.toLowerCase() !== 'narrator' && !offScreenSpeakers.includes(speaker.toLowerCase()) && !cast.includes(speaker)) {
+      cast.push(speaker);
+    }
+
+    // Surface the cast count on the layer so CSS can scale dimmed siblings tighter
+    // when the scene is crowded (e.g. 5-cast boss intros: 4 heroes + boss enemy).
+    if (layer.dataset.castCount !== String(cast.length)) {
+      layer.dataset.castCount = String(cast.length);
+    }
+
+    // Separate into heroes and enemies to calculate position offsets
+    const playableIds = ['aya', 'tao', 'lulu', 'rei', 'ria', 'valka', 'drake', 'rex', 'sera'];
+    const categorized = cast.map((charName, index) => {
+      const charId = this._charIdForSpeaker(charName);
+      const isPlayable = playableIds.includes(charId);
+      return { charName, index, charId, isPlayable };
+    });
+
+    const heroesList = categorized.filter(c => c.isPlayable);
+    const enemiesList = categorized.filter(c => !c.isPlayable);
+    const hasMix = heroesList.length > 0 && enemiesList.length > 0;
+
     cast.forEach((charName, idx) => {
       if (!charName) return;
+
+      const charId = this._charIdForSpeaker(charName);
+      const isPlayable = playableIds.includes(charId);
 
       if (!this._charAppeared[charName]) {
         this._charAppeared[charName] = true;
 
         const charEl = document.createElement('div');
         charEl.className = 's-scene-char';
-        charEl.id = `s-scene-char-${charName.toLowerCase()}`;
+        if (!isPlayable) {
+          charEl.classList.add('s-enemy');
+        }
+        charEl.id = `s-scene-char-${charName.toLowerCase().replace(/ /g, '_')}`;
 
-        // Calculate horizontal offset based on cast index
+        // Calculate horizontal offset based on character type
         let leftPct = 50;
-        if (cast.length === 2) {
-          leftPct = idx === 0 ? 25 : 75;
-        } else if (cast.length === 3) {
-          leftPct = idx === 0 ? 15 : idx === 1 ? 50 : 85;
-        } else if (cast.length >= 4) {
-          leftPct = 10 + (idx / (cast.length - 1)) * 80;
+        if (hasMix) {
+          if (isPlayable) {
+            const heroIdx = heroesList.findIndex(h => h.charName === charName);
+            if (heroesList.length === 1) {
+              leftPct = 25;
+            } else {
+              leftPct = Math.round(8 + (heroIdx / (heroesList.length - 1)) * 46);
+            }
+          } else {
+            const enemyIdx = enemiesList.findIndex(e => e.charName === charName);
+            if (enemiesList.length === 1) {
+              leftPct = 82;
+            } else {
+              leftPct = Math.round(72 + (enemyIdx / (enemiesList.length - 1)) * 20);
+            }
+          }
+        } else {
+          if (cast.length === 2) {
+            leftPct = idx === 0 ? 25 : 75;
+          } else if (cast.length === 3) {
+            leftPct = idx === 0 ? 15 : idx === 1 ? 50 : 85;
+          } else if (cast.length === 4) {
+            leftPct = [12, 38, 62, 88][idx];
+          } else if (cast.length === 5) {
+            leftPct = [8, 28, 50, 72, 92][idx];
+          } else if (cast.length > 5) {
+            leftPct = Math.round(8 + (idx / (cast.length - 1)) * 84);
+          }
         }
         charEl.style.left = `${leftPct}%`;
 
@@ -263,7 +373,7 @@ const Cutscene = {
         layer.appendChild(charEl);
       }
 
-      const charEl = this.el(`s-scene-char-${charName.toLowerCase()}`);
+      const charEl = this.el(`s-scene-char-${charName.toLowerCase().replace(/ /g, '_')}`);
       if (charEl) {
         const spriteEl = charEl.querySelector('.s-scene-sprite');
         if (speaker && speaker.toLowerCase() === charName.toLowerCase()) {
@@ -287,7 +397,9 @@ const Cutscene = {
   /* ── Helpers ────────────────────────────────────────────────────────────── */
 
   _charIdForSpeaker(name) {
-    return this.ALIAS_TO_CHARID[name.toLowerCase()] || name.toLowerCase();
+    if (!name) return '';
+    const clean = name.toLowerCase().replace(/ /g, '_');
+    return this.ALIAS_TO_CHARID[clean] || clean;
   },
 
   _spiritSrc(name) {
