@@ -1,0 +1,41 @@
+{
+  "character_id": "layla_magma_shaman",
+  "name": "Layla",
+  "title": "The Ashborn Forgemaiden",
+  "arc_debut": 3,
+  "combat_style": "Magma Bruiser (Obsidian Hammer / Volcano Shield)",
+  "attributes": {
+    "element": "Earth/Magma",
+    "weapon_type": "Obsidian Maul (Heated)",
+    "tool": "Cinder Anvil"
+  },
+  "lore": {
+    "background": "A native Aethorian forgemaiden from the Scorched Spiral. Her clan guarded the ancient geothermal engines of the Ember Wastes, using molten earth to shape high-resonance metals.",
+    "the_fraying": "When the Earth Seal Fragment cracked and the Dark Phoenix went rogue, Layla's forge collapsed. To survive the suffocating ash storms, she bound her life force to the volcanic core, letting molten rock take the place of her armor and shield.",
+    "mission": "She joins the party in Arc 3 because the Forge Sentinel (which her ancestors built) and the Dark Phoenix have locked the Ember Wastes in an endless, toxic heat cycle. She provides the key to cooling the spiral and retrieving the Earth Fragment.",
+    "combat_philosophy": "High Durability Bruiser. She uses her Obsidian Maul to smash enemy armor and apply the Earth status, then detonates auras with explosive Magma bursts while protecting teammates with solid basalt barriers."
+  },
+  "narrative_hook": "She connects the party to the ancient technology of Aethoria. She talks about the history of the Forge Lords, the construction of the sentinels, and struggles with the high-heat environment that she is now physically tied to.",
+  "action_spritesheet_metadata": {
+    "file": "layla_action_spritesheet.png",
+    "grid": "2x3",
+    "frame_map": {
+      "0": "idle",
+      "1": "charge_hammer",
+      "2": "atk_smash",
+      "3": "magma_shout",
+      "4": "hurt",
+      "5": "defeated"
+    }
+  },
+  "chibi_spritesheet_metadata": {
+    "file": "layla_chibi_spritesheet.png",
+    "grid": "2x6",
+    "animation_loops": {
+      "south_walk": "frames 0-2",
+      "west_walk": "frames 3-5",
+      "east_walk": "frames 6-8",
+      "north_walk": "frames 9-11"
+    }
+  }
+}
