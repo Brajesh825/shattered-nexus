@@ -4,7 +4,7 @@
  */
 const ReleaseConfig = {
   // Current release version string
-  VERSION: "v1.0.0-beta",
+  VERSION: "v1.2.0-beta",
 
   // The index of the last reachable arc in this specific build.
   // 0 = Arc 1 (Verdant Vale)
