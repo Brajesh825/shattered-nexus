@@ -1,0 +1,3 @@
+# Devblog Draft: Standardizing Character Sprite Sheets
+
+We're standardizing our character sheets into a unified 1024x1024 layout containing 128x128px cells that cover walking, talking cycles, emotes, and full combat poses. We chose this specific square dimension to optimize web GPU rendering while giving characters enough breathing room for wide weapon swings and magical effects. I've already built a few mannequin bases to test this system out, and shifting to this structured layout will allow us to implement dynamic palette swaps so players can customize outfit colors directly from the profile menu.
