@@ -2083,7 +2083,7 @@ body.is-touch-device #control-hints-bar { display: none; }
 }
 
 /* ── Small portrait phones (≤ 480px): tighten font sizes ── */
-@media (max-width: 480px) {
+@media (max-width: 480px), (max-height: 500px) {
   .quest-card {
     padding: 12px;
     margin-bottom: 12px;
@@ -2117,6 +2117,8 @@ body.is-touch-device #control-hints-bar { display: none; }
 }
 
 .tut-card {
+  max-height: 95vh;
+  overflow-y: auto;
   width: 90%;
   max-width: 500px;
   border-radius: 20px;
@@ -2339,8 +2341,10 @@ body.is-touch-device #control-hints-bar { display: none; }
 }
 
 /* 📱 Mobile Responsive Overrides for Interactive Tutorials (down to iPhone SE 375px) */
-@media (max-width: 480px) {
+@media (max-width: 480px), (max-height: 500px) {
   .tut-card {
+  max-height: 95vh;
+  overflow-y: auto;
     padding: 16px;
     gap: 14px;
     border-radius: 16px;
